@@ -29,17 +29,14 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-surface-low">
-      {/* Sidebar */}
-      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-outline-variant/10 bg-surface pl-6 pr-6 py-8">
+      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-outline-variant/10 bg-surface px-6 py-8">
         <div className="flex items-center gap-3">
-          <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-white shadow-ritual">
+          <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-white shadow-card">
             <ShieldCheck className="size-6" />
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-xl tracking-tight text-primary">
-              Admin Portal
-            </span>
-            <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">
+            <span className="font-serif text-xl tracking-tight text-primary">Admin Portal</span>
+            <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70">
               Velvet Brew Operations
             </span>
           </div>
@@ -53,23 +50,23 @@ export function AdminLayout() {
               className={({ isActive }) =>
                 `group flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-primary text-white shadow-ritual'
-                    : 'text-on-surface-variant hover:bg-surface-low hover:text-primary'
+                    ? 'bg-primary text-white shadow-card'
+                    : 'text-on-surface hover:bg-surface-low hover:text-primary'
                 }`
               }
             >
               <div className="flex items-center gap-3">
-                <item.icon className="size-5 opacity-70 group-hover:opacity-100" />
+                <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
                 {item.label}
               </div>
-              <ChevronRight className={`size-4 opacity-30 group-hover:opacity-100 transition-transform ${navigation.find(n => n.to === item.to) ? '' : ''}`} />
+              <ChevronRight className="size-4 opacity-40 transition-opacity group-hover:opacity-100" />
             </NavLink>
           ))}
         </nav>
 
         <div className="mt-auto">
           <Separator className="bg-outline-variant/10" />
-          
+
           <div className="mt-8 flex items-center gap-4 px-2">
             <Avatar className="size-10 ring-2 ring-primary/5">
               <AvatarFallback className="bg-surface-low text-primary">
@@ -77,26 +74,22 @@ export function AdminLayout() {
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-on-surface">
-                {profile?.fullName}
-              </span>
-              <span className="text-xs text-on-surface-variant/60">
-                Operations Lead
-              </span>
+              <span className="truncate text-sm font-semibold text-on-surface">{profile?.fullName}</span>
+              <span className="text-xs text-on-surface-variant/80">Operations Lead</span>
             </div>
           </div>
 
           <div className="mt-6 flex flex-col gap-2">
             <Button
               variant="ghost"
-              className="justify-start gap-3 rounded-2xl text-on-surface-variant transition-all hover:bg-surface-low hover:text-primary"
+              className="justify-start gap-3 rounded-2xl text-on-surface transition-all hover:bg-surface-low hover:text-primary"
             >
               <Settings className="size-5" />
               Settings
             </Button>
             <Button
               variant="ghost"
-              className="justify-start gap-3 rounded-2xl text-on-surface-variant transition-all hover:bg-red-50 hover:text-red-600"
+              className="justify-start gap-3 rounded-2xl text-on-surface transition-all hover:bg-red-50 hover:text-red-600"
               onClick={() => void signOut()}
             >
               <LogOut className="size-5" />
@@ -106,8 +99,7 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      {/* Main Content */}
-      <main className="flex-1 ml-72 min-h-screen">
+      <main className="ml-72 min-h-screen flex-1">
         <div className="mx-auto w-full max-w-7xl px-10 py-12">
           <Outlet />
         </div>

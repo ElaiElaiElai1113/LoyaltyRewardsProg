@@ -9,11 +9,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-primary-container text-white shadow-ritual hover:brightness-110 active:scale-[0.98]',
+        default: 'bg-primary-container text-on-primary shadow-card hover:brightness-110 active:scale-[0.98]',
         secondary: 'bg-secondary-container text-primary hover:brightness-110 active:scale-[0.98]',
         outline: 'border border-outline-variant/20 bg-transparent text-on-surface hover:bg-surface-low',
         ghost: 'text-on-surface hover:bg-surface-low hover:text-primary',
-        ritual: 'bg-tertiary text-primary hover:brightness-105 active:scale-[0.98]',
+        tertiary: 'bg-tertiary text-primary hover:brightness-105 active:scale-[0.98]',
       },
       size: {
         default: 'h-12 px-8 py-3',

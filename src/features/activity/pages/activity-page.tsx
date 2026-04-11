@@ -21,26 +21,26 @@ export function ActivityPage() {
     <div className="space-y-16 pb-20">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
-          <Badge variant="ritual" className="bg-tertiary/20 text-primary">
-            Narrative History
+          <Badge variant="accent" className="bg-tertiary/20 text-primary">
+            Activity History
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Your Chronicle
+            Your History
           </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/60 font-medium">
-            Every visit, bonus, and redemption in one clear timeline. Your journey with Velvet Brew is preserved here.
+          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+            Every visit, bonus, and redemption in one clear timeline.
           </p>
         </div>
 
         <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Loyalty Status</span>
+          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Loyalty Status</span>
           <div className="rounded-2xl bg-surface-low px-6 py-4 text-primary shadow-sm flex items-center gap-4 border border-outline-variant/10">
              <div className="size-10 rounded-full bg-primary flex items-center justify-center">
                 <Wallet className="size-5 text-secondary-container" />
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{rewardBalance.data?.points ?? 0}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/40">Total Resonance</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Total Points</span>
              </div>
           </div>
         </div>
@@ -48,29 +48,29 @@ export function ActivityPage() {
 
       <div className="grid gap-6 md:grid-cols-3">
         <MetricCard
-          label="Presence"
+          label="Visits"
           value={`${postedCount}`}
           icon={History}
-          helper="Verified ritual visits"
+          helper="Total recorded visits"
         />
         <MetricCard
-          label="Resonance"
+          label="Points Earned"
           value={`${earnedThisMonth}`}
           icon={ChartNoAxesColumn}
-          helper="Recent points accumulation"
+          helper="Recent points earned"
         />
         <MetricCard
           label="Redemptions"
           value={`${redeemedThisMonth}`}
           icon={Gift}
-          helper="Artisanal rewards unlocked"
+          helper="Rewards redeemed"
         />
       </div>
 
       <div className="space-y-8">
         <div className="flex items-end justify-between border-b border-outline-variant/5 pb-4">
           <h2 className="font-serif text-3xl text-primary">Timeline</h2>
-          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/40 italic">Descending Chronicle</span>
+          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 italic">Most Recent First</span>
         </div>
         <ActivityList items={activities.data ?? []} />
       </div>

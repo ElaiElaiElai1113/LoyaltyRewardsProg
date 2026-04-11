@@ -101,7 +101,7 @@ const promotions: Promotion[] = [
   {
     id: 'promo-1',
     title: 'Double points after 3 PM',
-    description: 'Pick up your afternoon ritual and earn twice the points on any handcrafted drink.',
+    description: 'Stop by after 3 PM and earn twice the points on any handcrafted drink.',
     badge: 'Weekday perk',
     cta: 'Drop by after work',
     expiresAt: '2026-04-24T23:59:59.000Z',

@@ -44,26 +44,26 @@ export function ProfilePage() {
     <div className="space-y-16 pb-20">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
-          <Badge variant="ritual" className="bg-tertiary/20 text-primary">
-            Account Resonance
+          <Badge variant="accent" className="bg-tertiary/20 text-primary">
+            Account Settings
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Your Narrative
+            Your Profile
           </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/60 font-medium">
-            Keep your member details and preferences close at hand. Your Velvet Brew experience is deeply personal.
+          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+            Keep your details and preferences up to date.
           </p>
         </div>
 
         <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Status level</span>
-          <div className="rounded-2xl bg-secondary-container px-6 py-4 text-primary shadow-ritual flex items-center gap-4">
+          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Status level</span>
+          <div className="rounded-2xl bg-secondary-container px-6 py-4 text-primary shadow-card flex items-center gap-4">
              <div className="size-10 rounded-full bg-primary flex items-center justify-center">
                 <Award className="size-5 text-white" />
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{profile.data?.tier ?? 'Bronze'}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/50">Current Tier</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">Current Tier</span>
              </div>
           </div>
         </div>
@@ -72,18 +72,18 @@ export function ProfilePage() {
       <div className="grid gap-16 lg:grid-cols-[400px_1fr]">
         <div className="space-y-8">
            <div className="space-y-2 pb-4 border-b border-outline-variant/5">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Snapshots</span>
-            <h2 className="font-serif text-3xl text-primary">Vital Signals</h2>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Quick Info</span>
+            <h2 className="font-serif text-3xl text-primary">Contact Details</h2>
           </div>
           <div className="grid gap-6">
             <MetricCard
-              label="Presence"
+              label="Phone"
               value={profile.data?.phone ?? 'N/A'}
               icon={Phone}
-              helper="Pickup coordination"
+              helper="For order coordination"
             />
             <MetricCard
-              label="Sanctuary"
+              label="Location"
               value={profile.data?.location ?? 'N/A'}
               icon={MapPin}
               helper="Default shop location"
@@ -93,8 +93,8 @@ export function ProfilePage() {
 
         <div className="space-y-8">
           <div className="space-y-2 pb-4 border-b border-outline-variant/5">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Preferences</span>
-            <h2 className="font-serif text-3xl text-primary">Modify Identity</h2>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Preferences</span>
+            <h2 className="font-serif text-3xl text-primary">Edit Profile</h2>
           </div>
           <div className="rounded-3xl bg-surface-low p-10 border border-outline-variant/10">
             <form
@@ -106,7 +106,7 @@ export function ProfilePage() {
             >
               <div className="grid gap-3">
                 <Label htmlFor="fullName">Full Name</Label>
-                <Input id="fullName" placeholder="How shall we address you?" {...form.register('fullName')} />
+                <Input id="fullName" placeholder="Your name" {...form.register('fullName')} />
               </div>
 
               <div className="grid gap-8 md:grid-cols-2">
@@ -116,24 +116,24 @@ export function ProfilePage() {
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="location">Home Shop</Label>
-                  <Input id="location" placeholder="e.g., Downtown Velvet" {...form.register('location')} />
+                  <Input id="location" placeholder="e.g., Downtown" {...form.register('location')} />
                 </div>
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="favoriteOrder">The Chosen Ritual</Label>
+                <Label htmlFor="favoriteOrder">Favorite Order</Label>
                 <Input id="favoriteOrder" placeholder="Your favorite drink..." {...form.register('favoriteOrder')} />
-                <p className="text-[0.65rem] text-on-surface-variant/40 mt-1 italic font-medium">This helps our baristas prepare for your presence.</p>
+                <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">This helps our baristas prepare your order.</p>
               </div>
 
               <div className="mt-4 pt-8 border-t border-outline-variant/5 flex justify-end">
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   size="lg"
-                  className="rounded-full px-12 h-14" 
+                  className="rounded-full px-12 h-14"
                   disabled={updateProfile.isPending}
                 >
-                  {updateProfile.isPending ? 'Syncing...' : 'Update Resonance'}
+                  {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
                   <Save className="size-5 ml-2" />
                 </Button>
               </div>

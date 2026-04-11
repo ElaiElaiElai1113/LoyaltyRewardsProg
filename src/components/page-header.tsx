@@ -23,7 +23,7 @@ export function PageHeader({
     <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between border-b border-outline-variant/10 pb-10">
       <div className="space-y-4">
         {eyebrow ? (
-          <Badge variant="ritual" className="w-fit">
+          <Badge variant="accent" className="w-fit">
             {eyebrow}
           </Badge>
         ) : null}
@@ -31,7 +31,7 @@ export function PageHeader({
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-6xl max-w-3xl leading-[1.1]">
             {title}
           </h1>
-          <p className="max-w-xl text-lg leading-relaxed text-on-surface-variant/60 font-medium">
+          <p className="max-w-xl text-lg leading-relaxed text-on-surface-variant/85 font-medium">
             {description}
           </p>
         </div>

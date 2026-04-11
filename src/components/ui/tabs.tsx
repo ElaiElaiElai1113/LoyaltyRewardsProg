@@ -12,7 +12,7 @@ function TabsList({
   return (
     <TabsPrimitive.List
       className={cn(
-        'inline-flex h-16 items-center rounded-xl bg-surface-low p-2 text-on-surface-variant/40 shadow-sm border border-outline-variant/10',
+        'inline-flex h-16 items-center rounded-xl bg-surface-low p-2 text-on-surface-variant/80 shadow-sm border border-outline-variant/10',
         className,
       )}
       {...props}
@@ -27,7 +27,7 @@ function TabsTrigger({
   return (
     <TabsPrimitive.Trigger
       className={cn(
-        'inline-flex min-w-32 items-center justify-center rounded-xl px-8 py-2.5 text-sm font-bold tracking-widest uppercase transition-all data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-ritual hover:text-primary',
+        'inline-flex min-w-32 items-center justify-center rounded-xl px-8 py-2.5 text-sm font-bold tracking-widest uppercase text-on-surface transition-all data-[state=active]:bg-primary data-[state=active]:text-white data-[state=active]:shadow-card hover:text-primary',
         className,
       )}
       {...props}

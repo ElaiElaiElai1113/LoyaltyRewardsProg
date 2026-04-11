@@ -40,16 +40,16 @@ export function ActivityList({ items }: ActivityListProps) {
                     {item.points >= 0 ? `+${formatPoints(item.points)}` : formatPoints(item.points)}
                   </Badge>
                 </div>
-                <p className="text-sm font-medium text-on-surface-variant/50">{item.description}</p>
+                <p className="text-sm font-medium text-on-surface-variant/80">{item.description}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-between md:flex-col md:items-end gap-1">
               <div className="flex flex-col md:items-end">
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/30">Occasion</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">Date</span>
                 <p className="text-sm font-semibold text-on-surface-variant/70">{formatDate(item.createdAt)}</p>
               </div>
-              <p className="hidden md:block text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/20 italic">{formatTime(item.createdAt)}</p>
+              <p className="hidden text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/65 italic md:block">{formatTime(item.createdAt)}</p>
             </div>
           </div>
         )

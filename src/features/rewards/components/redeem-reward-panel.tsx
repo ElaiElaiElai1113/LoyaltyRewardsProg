@@ -35,9 +35,9 @@ export function RedeemRewardPanel({
   return (
     <div className="space-y-12">
       <div className="flex flex-wrap items-center gap-4">
-        <Badge variant="ritual" className="bg-primary/5 text-primary border-none">{reward.category}</Badge>
-        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40 italic">
-          {reward.inventory} Manifestations Remaining
+        <Badge variant="accent" className="bg-primary/5 text-primary border-none">{reward.category}</Badge>
+        <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80 italic">
+          {reward.inventory} Available
         </span>
       </div>
 
@@ -45,35 +45,35 @@ export function RedeemRewardPanel({
         <h2 className="font-serif text-5xl tracking-tight text-primary">
           {reward.title}
         </h2>
-        <p className="text-xl font-medium text-on-surface-variant/60 leading-relaxed max-w-2xl">
+        <p className="max-w-2xl text-xl font-medium leading-relaxed text-on-surface-variant/85">
           {reward.description}
         </p>
       </div>
 
-      <div className="grid gap-1 overflow-hidden rounded-[2.5rem] bg-surface-lowest border border-outline-variant/5 shadow-ritual md:grid-cols-3">
+      <div className="grid gap-1 overflow-hidden rounded-[2.5rem] bg-surface-lowest border border-outline-variant/5 shadow-card md:grid-cols-3">
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/40">
-            Ritual Cost
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
+            Points Cost
           </p>
           <p className="font-serif text-4xl text-primary">
             {formatPoints(reward.pointsCost)}
           </p>
         </div>
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/40">
-            Your Presence
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
+            Your Balance
           </p>
-          <p className="font-serif text-4xl text-primary/60">
+          <p className="font-serif text-4xl text-primary">
             {formatPoints(balancePoints)}
           </p>
         </div>
         <div className="p-10 space-y-2">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/40">
-            Future Resonance
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
+            Balance After
           </p>
           <p className={cn(
             "font-serif text-4xl",
-            canRedeem ? "text-primary/30" : "text-error/40"
+            canRedeem ? "text-primary/80" : "text-error/80"
           )}>
             {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))}
           </p>
@@ -101,7 +101,7 @@ export function RedeemRewardPanel({
           </div>
 
           <div className="grid gap-3">
-            <Label htmlFor="notes">Ritual Personalization</Label>
+            <Label htmlFor="notes">Notes</Label>
             <Input
               id="notes"
               placeholder="e.g., Warm, on the patio..."
@@ -113,17 +113,17 @@ export function RedeemRewardPanel({
           </div>
         </div>
 
-        <Button 
-          type="submit" 
-          size="lg" 
-          className="w-full rounded-full h-16 text-lg font-bold tracking-wide shadow-ritual" 
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full rounded-full h-16 text-lg font-bold tracking-wide shadow-card"
           disabled={!canRedeem || isSubmitting}
         >
           {isSubmitting
-            ? 'Processing Ritual...'
+            ? 'Processing...'
             : canRedeem
-              ? 'Initiate Redemption'
-              : 'Points Required'}
+              ? 'Redeem Now'
+              : 'Not Enough Points'}
         </Button>
       </form>
     </div>

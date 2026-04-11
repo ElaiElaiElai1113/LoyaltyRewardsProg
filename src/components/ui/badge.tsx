@@ -9,10 +9,10 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: 'bg-surface-highest text-on-surface-variant',
-        accent: 'bg-secondary-container text-primary',
+        accent: 'bg-tertiary text-primary uppercase tracking-[0.1em] font-bold text-[0.6rem] px-4 py-1.5',
         success: 'bg-tertiary text-primary',
         outline: 'border border-outline-variant/30 text-on-surface-variant',
-        ritual: 'bg-tertiary text-primary uppercase tracking-[0.1em] font-bold text-[0.6rem] px-4 py-1.5',
+        secondary: 'bg-secondary-container text-primary',
       },
     },
     defaultVariants: {

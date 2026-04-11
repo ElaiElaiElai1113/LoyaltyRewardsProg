@@ -26,20 +26,20 @@ export function RedeemRewardPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-12 py-8">
       <div className="space-y-4">
-        <Badge variant="ritual" className="bg-primary/10 text-primary">
-          Reward Manifestation
+        <Badge variant="accent" className="bg-primary/10 text-primary">
+          Redeem Reward
         </Badge>
         <div className="space-y-2">
           <h1 className="font-serif text-5xl tracking-tight text-primary">
             Confirm your next treat.
           </h1>
-          <p className="max-w-2xl text-lg font-medium text-on-surface-variant/40 leading-relaxed">
-            Finalizing your artisanal selection. Once confirmed, your resonance points will be adjusted and your reward will be ready for pick-up.
+          <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
+            Review the details and confirm. Your points will be deducted and your reward will be ready for pick-up.
           </p>
         </div>
       </div>
 
-      <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-ritual">
+      <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card">
         <RedeemRewardPanel
           reward={reward.data}
           balancePoints={rewardBalance.data?.points ?? 0}
@@ -55,10 +55,10 @@ export function RedeemRewardPage() {
       </div>
 
       <div className="flex justify-center">
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           onClick={() => navigate('/rewards')}
-          className="text-on-surface-variant/40 hover:text-primary transition-colors font-bold uppercase tracking-widest text-[0.65rem] h-auto p-0"
+          className="h-auto p-0 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 transition-colors hover:text-primary"
         >
           Return to Catalog
         </Button>

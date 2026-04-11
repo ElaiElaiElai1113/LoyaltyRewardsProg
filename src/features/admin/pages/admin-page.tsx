@@ -73,24 +73,24 @@ export function AdminPage() {
   if (profile?.role !== 'admin') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-8 bg-surface-low rounded-3xl p-16 border border-outline-variant/10">
-        <Badge variant="ritual" className="bg-primary/10 text-primary">
+        <Badge variant="accent" className="bg-primary/10 text-primary">
           Staff Authentication Required
         </Badge>
         <div className="space-y-4 max-w-2xl">
           <h1 className="font-serif text-5xl tracking-tight text-primary leading-tight">
-            Admin access is reserved for staff rituals.
+            Admin access requires staff credentials.
           </h1>
-          <p className="text-lg font-medium text-on-surface-variant/60 leading-relaxed">
-            Please use the staff demo credentials or authenticate with a verified admin account to access reward adjustments, promotion management, and redemption visibility.
+          <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">
+            Please use the staff demo credentials or sign in with a verified admin account to manage rewards, promotions, and member data.
           </p>
         </div>
-        <Button 
-          variant="ritual" 
-          size="lg" 
+        <Button
+          variant="tertiary"
+          size="lg"
           onClick={() => window.location.href = '/'}
           className="rounded-full px-12"
         >
-          Return to Sanctuary
+          Return to Home
         </Button>
       </div>
     )
@@ -100,28 +100,28 @@ export function AdminPage() {
     <div className="space-y-16 pb-20">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
-          <Badge variant="ritual" className="bg-primary/10 text-primary">
+          <Badge variant="accent" className="bg-primary/10 text-primary">
             Operations Portal
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Management Rituals
+            Admin Dashboard
           </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/60 font-medium">
-            Member operations without the clutter. Monitor residence, resonance, and rituals across the entire collective.
+          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+            Manage members, rewards, promotions, and monitor activity across the platform.
           </p>
         </div>
 
         <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Active Collective</span>
+          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Overview</span>
           <div className="rounded-2xl bg-surface-low px-8 py-5 text-primary shadow-sm flex items-center gap-6 border border-outline-variant/10">
              <div className="flex flex-col">
                 <span className="font-serif text-3xl leading-none">{(users.data ?? []).length}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/40">Total Members</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Total Members</span>
              </div>
              <div className="w-px h-8 bg-outline-variant/20" />
              <div className="flex flex-col">
                 <span className="font-serif text-3xl leading-none">{(rewards.data ?? []).length}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/40">Catalog Items</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Catalog Items</span>
              </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ export function AdminPage() {
             <TabsTrigger value="members">Members</TabsTrigger>
             <TabsTrigger value="catalog">Rewards</TabsTrigger>
             <TabsTrigger value="promotions">Promotions</TabsTrigger>
-            <TabsTrigger value="activity">Chronicle</TabsTrigger>
+            <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
         </div>
 
@@ -141,10 +141,10 @@ export function AdminPage() {
           <div className="grid gap-16 xl:grid-cols-[450px_1fr]">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Intervention</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Quick Action</span>
                 <h2 className="font-serif text-3xl text-primary">Reward Adjustment</h2>
               </div>
-              
+
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
                   className="space-y-8"
@@ -158,7 +158,7 @@ export function AdminPage() {
                   })}
                 >
                   <div className="grid gap-3">
-                    <Label htmlFor="profileId">Member Identification</Label>
+                    <Label htmlFor="profileId">Member ID</Label>
                     <Input
                       id="profileId"
                       list="member-id-options"
@@ -174,15 +174,15 @@ export function AdminPage() {
                     </datalist>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="delta">Resonance Delta</Label>
+                    <Label htmlFor="delta">Points Adjustment</Label>
                     <Input id="delta" type="number" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="reason">Context / Reason</Label>
+                    <Label htmlFor="reason">Reason</Label>
                     <Input id="reason" placeholder="e.g., Service recovery" {...adjustmentForm.register('reason')} />
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={adjustRewards.isPending}>
-                    {adjustRewards.isPending ? 'Processing...' : 'Modify Resonance'}
+                    {adjustRewards.isPending ? 'Processing...' : 'Adjust Points'}
                   </Button>
                 </form>
               </div>
@@ -191,10 +191,10 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
                 <div>
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Active Members</span>
-                  <h2 className="font-serif text-3xl text-primary">The Collective</h2>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Active Members</span>
+                  <h2 className="font-serif text-3xl text-primary">Members</h2>
                 </div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/20 italic">Showing Latest 50</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">Showing Latest 50</span>
               </div>
 
               <div className="grid gap-3 pointer-events-auto">
@@ -209,16 +209,16 @@ export function AdminPage() {
                        </div>
                       <div>
                         <p className="font-serif text-xl tracking-tight text-primary leading-tight">{member.fullName}</p>
-                        <p className="text-sm font-medium text-on-surface-variant/40">{member.email}</p>
-                        <p className="mt-1 text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/20 italic">
+                        <p className="text-sm font-medium text-on-surface-variant/80">{member.email}</p>
+                        <p className="mt-1 text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70 italic">
                           ID: {member.id}
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <Badge variant="ritual" className="bg-primary/5 text-primary border-none">{member.role}</Badge>
-                      <Badge variant="ritual" className="bg-secondary-container/10 text-secondary-container border-none">{balance?.points ?? 0} Resonance</Badge>
-                      <Badge variant="ritual" className="bg-tertiary/10 text-primary border-none">{member.tier}</Badge>
+                      <Badge variant="accent" className="bg-primary/5 text-primary border-none">{member.role}</Badge>
+                      <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border-none">{balance?.points ?? 0} Points</Badge>
+                      <Badge variant="accent" className="bg-tertiary/10 text-primary border-none">{member.tier}</Badge>
                     </div>
                   </div>
                 ))}
@@ -231,8 +231,8 @@ export function AdminPage() {
           <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">The Collection</span>
-                <h2 className="font-serif text-3xl text-primary">Active Offerings</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Catalog</span>
+                <h2 className="font-serif text-3xl text-primary">Rewards</h2>
               </div>
               <div className="grid gap-8 sm:grid-cols-2">
                 {(rewards.data ?? []).map((reward) => (
@@ -243,7 +243,7 @@ export function AdminPage() {
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Manifestation</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Create</span>
                 <h2 className="font-serif text-3xl text-primary">Add Reward</h2>
               </div>
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
@@ -265,8 +265,8 @@ export function AdminPage() {
                     <Input id="reward-title" placeholder="e.g., Midnight Espresso" {...rewardForm.register('title')} />
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-description">The Experience</Label>
-                    <Input id="reward-description" placeholder="Describe the ritual..." {...rewardForm.register('description')} />
+                    <Label htmlFor="reward-description">Description</Label>
+                    <Input id="reward-description" placeholder="Describe the reward..." {...rewardForm.register('description')} />
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
@@ -285,11 +285,11 @@ export function AdminPage() {
                     </div>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-highlight">Editorial Highlight</Label>
-                    <Input id="reward-highlight" placeholder="Seasonal / Direct Trade / Ritual" {...rewardForm.register('highlight')} />
+                    <Label htmlFor="reward-highlight">Highlight Tag</Label>
+                    <Input id="reward-highlight" placeholder="Seasonal / Popular / New" {...rewardForm.register('highlight')} />
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={createReward.isPending}>
-                    {createReward.isPending ? 'Manifesting...' : 'Publish Reward'}
+                    {createReward.isPending ? 'Creating...' : 'Add Reward'}
                   </Button>
                 </form>
               </div>
@@ -301,7 +301,7 @@ export function AdminPage() {
           <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Active Currents</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Active</span>
                 <h2 className="font-serif text-3xl text-primary">Live Promotions</h2>
               </div>
               <div className="grid gap-8">
@@ -313,8 +313,8 @@ export function AdminPage() {
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Annunciations</span>
-                <h2 className="font-serif text-3xl text-primary">Create Promotion</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Create</span>
+                <h2 className="font-serif text-3xl text-primary">New Promotion</h2>
               </div>
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
@@ -340,8 +340,8 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
-                      <Label htmlFor="promotion-badge">Editorial Badge</Label>
-                      <Input id="promotion-badge" placeholder="New Ritual" {...promotionForm.register('badge')} />
+                      <Label htmlFor="promotion-badge">Badge Label</Label>
+                      <Input id="promotion-badge" placeholder="e.g., New Offer" {...promotionForm.register('badge')} />
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="promotion-cta">Action Label</Label>
@@ -349,11 +349,11 @@ export function AdminPage() {
                     </div>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="promotion-audience">Target Collective</Label>
+                    <Label htmlFor="promotion-audience">Target Audience</Label>
                     <Input id="promotion-audience" placeholder="All / Bronze / Gold" {...promotionForm.register('audience')} />
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={createPromotion.isPending}>
-                    {createPromotion.isPending ? 'Propagating...' : 'Launch Promotion'}
+                    {createPromotion.isPending ? 'Creating...' : 'Launch Promotion'}
                   </Button>
                 </form>
               </div>
@@ -365,7 +365,7 @@ export function AdminPage() {
           <div className="grid gap-16 xl:grid-cols-2">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Fulfilment</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Fulfillment</span>
                 <h2 className="font-serif text-3xl text-primary">Recent Redemptions</h2>
               </div>
               <div className="rounded-2xl bg-surface-low p-2 border border-outline-variant/10">
@@ -376,13 +376,13 @@ export function AdminPage() {
                         <div className="flex items-center justify-between gap-4">
                           <div className="space-y-1">
                             <p className="font-serif text-lg tracking-tight text-primary">{redemption.rewardTitle}</p>
-                            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/30 italic">{redemption.profileId}</p>
+                            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">{redemption.profileId}</p>
                           </div>
-                          <Badge variant="ritual" className="bg-success/10 text-success border-none">{redemption.status}</Badge>
+                          <Badge variant="accent" className="bg-success/10 text-success border-none">{redemption.status}</Badge>
                         </div>
                         <div className="mt-4 pt-4 border-t border-outline-variant/5 flex items-center justify-between">
-                           <span className="text-sm font-bold text-primary">{redemption.pointsCost} Resonance</span>
-                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/40">{formatDate(redemption.redeemedAt)}</span>
+                           <span className="text-sm font-bold text-primary">{redemption.pointsCost} Points</span>
+                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">{formatDate(redemption.redeemedAt)}</span>
                         </div>
                       </div>
                     ))}
@@ -393,7 +393,7 @@ export function AdminPage() {
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Audit Trace</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Audit Log</span>
                 <h2 className="font-serif text-3xl text-primary">Admin Logs</h2>
               </div>
                <div className="rounded-2xl bg-surface-low p-2 border border-outline-variant/10">
@@ -403,11 +403,11 @@ export function AdminPage() {
                       <div key={log.id} className="rounded-xl bg-surface-lowest p-6 border border-outline-variant/5 shadow-sm">
                         <div className="flex items-center justify-between gap-4">
                           <p className="font-serif text-lg tracking-tight text-primary leading-tight">{log.action}</p>
-                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/30">{formatDate(log.createdAt)}</span>
+                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75">{formatDate(log.createdAt)}</span>
                         </div>
-                        <p className="mt-2 text-sm font-medium text-on-surface-variant/60 leading-relaxed">{log.details}</p>
+                        <p className="mt-2 text-sm font-medium leading-relaxed text-on-surface-variant/85">{log.details}</p>
                         <div className="mt-4 pt-4 border-t border-outline-variant/5">
-                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">Signed by {log.actorName}</span>
+                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">By {log.actorName}</span>
                         </div>
                       </div>
                     ))}
@@ -420,10 +420,10 @@ export function AdminPage() {
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
               <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Total Perspective</span>
-                <h2 className="font-serif text-3xl text-primary">Consolidated Chronicle</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">All Activity</span>
+                <h2 className="font-serif text-3xl text-primary">Recent Activity</h2>
               </div>
-              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/20 italic">Recent 6 Rituals</span>
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">Latest 6</span>
             </div>
             <ActivityList items={overview.data?.activities.slice(0, 6) ?? []} />
           </div>

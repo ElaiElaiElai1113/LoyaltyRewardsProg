@@ -15,10 +15,10 @@ export function RewardCard({ reward, balancePoints = 0, onRedeem }: RewardCardPr
   const canRedeem = balancePoints >= reward.pointsCost && reward.inventory > 0
 
   return (
-    <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-ritual p-8">
+    <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
       <div className="flex flex-col gap-6 h-full">
         <div className="flex justify-between items-start">
-          <Badge variant="ritual" className="bg-tertiary/60">
+          <Badge variant="accent" className="bg-tertiary/60">
             {reward.category}
           </Badge>
           {reward.featured && (
@@ -33,25 +33,25 @@ export function RewardCard({ reward, balancePoints = 0, onRedeem }: RewardCardPr
           <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
             {reward.title}
           </h3>
-          <p className="text-sm leading-relaxed text-on-surface-variant/60 font-medium">
+          <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
             {reward.description}
           </p>
         </div>
 
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Cost</span>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Cost</span>
             <p className="font-serif text-3xl tracking-tight text-primary">
               {formatPoints(reward.pointsCost)}
             </p>
           </div>
-          
+
           <div className="flex flex-col items-end gap-3">
-            <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/40">
+            <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
               {reward.inventory} left
             </span>
-            <Button 
-              onClick={() => onRedeem(reward)} 
+            <Button
+              onClick={() => onRedeem(reward)}
               disabled={!canRedeem}
               variant={canRedeem ? "secondary" : "outline"}
               size="sm"

@@ -30,13 +30,13 @@ function DialogContent({
       <DialogOverlay className="bg-primary/20 backdrop-blur-sm" />
       <DialogPrimitive.Content
         className={cn(
-          'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-surface-lowest p-10 shadow-ritual outline-none border border-outline-variant/5',
+          'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-surface-lowest p-10 shadow-card outline-none border border-outline-variant/5',
           className,
         )}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-3 text-on-surface-variant/40 transition-all hover:bg-surface-low hover:text-primary">
+        <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-3 text-on-surface-variant/80 transition-all hover:bg-surface-low hover:text-primary">
           <X className="size-5" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>

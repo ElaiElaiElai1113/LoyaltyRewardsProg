@@ -39,26 +39,26 @@ export function RewardsPage() {
     <div className="space-y-16 pb-20">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
-          <Badge variant="ritual" className="bg-tertiary/20 text-primary">
-            Curated Selection
+          <Badge variant="accent" className="bg-tertiary/20 text-primary">
+            Rewards Catalog
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Artisanal Catalog
+            Rewards
           </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/60 font-medium">
-            Browse our ritual offerings. From high-integrity roasts to seasonal merch, everything is earned through presence.
+          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+            Browse rewards and redeem them with your points. From drinks to seasonal merch, everything is earned.
           </p>
         </div>
 
         <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/40">Your Resonance</span>
-          <div className="rounded-2xl bg-primary-container px-6 py-4 text-white shadow-ritual flex items-center gap-4">
+          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Your Points</span>
+          <div className="rounded-2xl bg-primary-container px-6 py-4 text-white shadow-card flex items-center gap-4">
              <div className="size-10 rounded-full bg-white/10 flex items-center justify-center">
                 <Gift className="size-5 text-secondary-container" />
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{balancePoints}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/50">Avaliable Points</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Available Points</span>
              </div>
           </div>
         </div>
@@ -66,16 +66,16 @@ export function RewardsPage() {
 
       <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md">
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/40">Filter by Ritual:</span>
+          <span className="mr-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">Category:</span>
           {filters.map((filter) => (
             <Button
               key={filter}
-              variant={activeFilter === filter ? 'ritual' : 'ghost'}
+              variant={activeFilter === filter ? 'tertiary' : 'ghost'}
               size="sm"
               className={`rounded-full transition-all ${
-                activeFilter === filter 
-                  ? 'px-8 shadow-sm' 
-                  : 'text-on-surface-variant/60 hover:text-primary'
+                activeFilter === filter
+                  ? 'px-8 shadow-sm'
+                  : 'text-on-surface-variant/85 hover:text-primary'
               }`}
               onClick={() => setActiveFilter(filter)}
             >
@@ -108,7 +108,7 @@ export function RewardsPage() {
           <DialogHeader>
             <DialogTitle>Redeem reward</DialogTitle>
             <DialogDescription>
-              Confirm the reward details, choose a pickup window, and keep the experience light.
+              Confirm the reward details, choose a pickup window, and submit.
             </DialogDescription>
           </DialogHeader>
 
