@@ -1,16 +1,17 @@
 import { readStore, updateStore } from '@/lib/mock-store'
 import type { Promotion } from '@/types/domain'
 import type { PromotionDraftFormValues } from '@/types/forms'
-
 import { delay } from './shared'
 
 export const promotionsService = {
-  async getPromotions() {
+  async getPromotions(businessId?: string): Promise<Promotion[]> {
     await delay()
-    return readStore().promotions.sort((a, b) => a.expiresAt.localeCompare(b.expiresAt))
+    const promotions = readStore().promotions
+    const filtered = businessId ? promotions.filter((p) => p.businessId === businessId) : promotions
+    return filtered.sort((a, b) => a.expiresAt.localeCompare(b.expiresAt))
   },
 
-  async createPromotion(values: PromotionDraftFormValues) {
+  async createPromotion(values: PromotionDraftFormValues & { businessId: string }): Promise<Promotion> {
     await delay()
 
     const promotion: Promotion = {

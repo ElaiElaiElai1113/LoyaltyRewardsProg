@@ -32,3 +32,10 @@ export function getInitials(name: string) {
     .map((part) => part[0]?.toUpperCase() ?? '')
     .join('')
 }
+
+export function formatCurrency(amount: number) {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount)
+}

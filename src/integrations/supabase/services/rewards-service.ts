@@ -15,17 +15,19 @@ function toTierProgress(points: number, nextRewardPoints: number) {
 }
 
 export const rewardsService = {
-  async getRewards() {
+  async getRewards(businessId?: string): Promise<Reward[]> {
     await delay()
-    return readStore().rewards.sort((a, b) => Number(b.featured) - Number(a.featured))
+    const rewards = readStore().rewards
+    const filtered = businessId ? rewards.filter((r) => r.businessId === businessId) : rewards
+    return filtered.sort((a, b) => Number(b.featured) - Number(a.featured))
   },
 
-  async getRewardById(rewardId: string) {
+  async getRewardById(rewardId: string): Promise<Reward | null> {
     await delay()
     return readStore().rewards.find((reward) => reward.id === rewardId) ?? null
   },
 
-  async redeemReward(input: RedeemInput) {
+  async redeemReward(input: RedeemInput): Promise<Redemption> {
     await delay()
 
     const reward = readStore().rewards.find((item) => item.id === input.rewardId)
@@ -91,7 +93,7 @@ export const rewardsService = {
     return redemption
   },
 
-  async createReward(values: RewardDraftFormValues) {
+  async createReward(values: RewardDraftFormValues): Promise<Reward> {
     await delay()
 
     const reward: Reward = {

@@ -1,6 +1,10 @@
 import type {
   Activity,
+  Business,
+  CartItem,
   MockStore,
+  Order,
+  Product,
   Profile,
   Promotion,
   Redemption,
@@ -11,6 +15,34 @@ import type {
 } from '@/types/domain'
 
 const STORAGE_KEY = 'velvet-brew-store-v1'
+const CART_KEY = 'velvet-brew-cart-v1'
+
+// ─── Businesses ────────────────────────────────────────────────
+
+const businesses: Business[] = [
+  {
+    id: 'biz-velvet-brew',
+    name: 'Velvet Brew',
+    slug: 'velvet-brew',
+    description: 'Artisanal coffee roasters specializing in single-origin beans and handcrafted drinks.',
+    earnRate: 10,
+    taxRate: 0.0875,
+    currency: 'USD',
+    active: true,
+  },
+  {
+    id: 'biz-cafe-luna',
+    name: 'Cafe Luna',
+    slug: 'cafe-luna',
+    description: 'A cozy bakery and cafe with fresh pastries, sandwiches, and specialty teas.',
+    earnRate: 8,
+    taxRate: 0.0925,
+    currency: 'USD',
+    active: true,
+  },
+]
+
+// ─── Profiles ──────────────────────────────────────────────────
 
 const profiles: Profile[] = [
   {
@@ -37,6 +69,8 @@ const profiles: Profile[] = [
   },
 ]
 
+// ─── Balances ──────────────────────────────────────────────────
+
 const balances: RewardBalance[] = [
   {
     profileId: 'profile-customer',
@@ -54,9 +88,12 @@ const balances: RewardBalance[] = [
   },
 ]
 
+// ─── Rewards ───────────────────────────────────────────────────
+
 const rewards: Reward[] = [
   {
     id: 'reward-1',
+    businessId: 'biz-velvet-brew',
     title: 'Signature Velvet Latte',
     description: 'Redeem any handcrafted latte with your choice of milk and syrup.',
     category: 'Drink',
@@ -67,6 +104,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-2',
+    businessId: 'biz-velvet-brew',
     title: 'Cold Brew Flight',
     description: 'Sample three seasonal cold brew profiles in one curated tasting.',
     category: 'Experience',
@@ -77,6 +115,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-3',
+    businessId: 'biz-velvet-brew',
     title: 'Butter Croissant Pairing',
     description: 'Fresh-baked croissant paired with any small brewed coffee.',
     category: 'Pastry',
@@ -87,6 +126,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-4',
+    businessId: 'biz-velvet-brew',
     title: 'Velvet Brew Tote',
     description: 'Canvas tote in oat with embossed monogram and internal bottle sleeve.',
     category: 'Merch',
@@ -95,11 +135,173 @@ const rewards: Reward[] = [
     featured: false,
     highlight: 'Limited spring merch',
   },
+  {
+    id: 'reward-5',
+    businessId: 'biz-cafe-luna',
+    title: 'Matcha Latte',
+    description: 'Ceremonial-grade matcha whisked with your choice of milk.',
+    category: 'Drink',
+    pointsCost: 200,
+    inventory: 60,
+    featured: true,
+    highlight: 'Fan favorite',
+  },
+  {
+    id: 'reward-6',
+    businessId: 'biz-cafe-luna',
+    title: 'Almond Croissant',
+    description: 'Flaky croissant filled with almond cream and topped with sliced almonds.',
+    category: 'Pastry',
+    pointsCost: 160,
+    inventory: 30,
+    featured: false,
+    highlight: 'Fresh daily',
+  },
+  {
+    id: 'reward-7',
+    businessId: 'biz-cafe-luna',
+    title: 'Afternoon Tea Set',
+    description: 'Pot of premium tea served with a selection of three mini pastries.',
+    category: 'Experience',
+    pointsCost: 400,
+    inventory: 15,
+    featured: true,
+    highlight: 'Weekend special',
+  },
 ]
+
+// ─── Products ──────────────────────────────────────────────────
+
+const products: Product[] = [
+  {
+    id: 'product-1',
+    businessId: 'biz-velvet-brew',
+    title: 'Velvet Oat Latte',
+    description: 'Our signature oat milk latte with house-made vanilla syrup.',
+    category: 'Coffee',
+    price: 5.50,
+    inventory: 200,
+    featured: true,
+    highlight: 'Best seller',
+  },
+  {
+    id: 'product-2',
+    businessId: 'biz-velvet-brew',
+    title: 'Cold Brew Concentrate 32oz',
+    description: 'Take home our 24-hour cold brew concentrate. Dilute to taste.',
+    category: 'Coffee',
+    price: 14.00,
+    inventory: 50,
+    featured: true,
+    highlight: 'Take-home',
+  },
+  {
+    id: 'product-3',
+    businessId: 'biz-velvet-brew',
+    title: 'Pistachio Cardamom Bun',
+    description: 'Flaky laminated pastry with pistachio frangipane and cardamom glaze.',
+    category: 'Pastry',
+    price: 4.75,
+    inventory: 30,
+    featured: false,
+    highlight: 'Seasonal',
+  },
+  {
+    id: 'product-4',
+    businessId: 'biz-velvet-brew',
+    title: 'Single Origin: Ethiopia Yirgacheffe',
+    description: '12oz bag of light-roasted whole beans with floral and citrus notes.',
+    category: 'Coffee',
+    price: 18.00,
+    inventory: 40,
+    featured: false,
+    highlight: 'Direct trade',
+  },
+  {
+    id: 'product-5',
+    businessId: 'biz-velvet-brew',
+    title: 'Velvet Brew Ceramic Tumbler',
+    description: '16oz double-walled ceramic tumbler in oat glaze with silicone lid.',
+    category: 'Merch',
+    price: 28.00,
+    inventory: 25,
+    featured: true,
+    highlight: 'New arrival',
+  },
+  {
+    id: 'product-6',
+    businessId: 'biz-velvet-brew',
+    title: 'Pour-Over Starter Kit',
+    description: 'Ceramic dripper, 100 filters, and a 12oz sample roast.',
+    category: 'Equipment',
+    price: 42.00,
+    inventory: 15,
+    featured: false,
+    highlight: 'Brew at home',
+  },
+  {
+    id: 'product-7',
+    businessId: 'biz-cafe-luna',
+    title: 'Chai Spice Latte',
+    description: 'House-blended chai with cinnamon, cardamom, ginger, and steamed milk.',
+    category: 'Coffee',
+    price: 5.00,
+    inventory: 150,
+    featured: true,
+    highlight: 'House blend',
+  },
+  {
+    id: 'product-8',
+    businessId: 'biz-cafe-luna',
+    title: 'Luna Breakfast Sandwich',
+    description: 'Scrambled eggs, gruyere, arugula, and truffle aioli on brioche.',
+    category: 'Pastry',
+    price: 9.50,
+    inventory: 40,
+    featured: true,
+    highlight: 'Morning staple',
+  },
+  {
+    id: 'product-9',
+    businessId: 'biz-cafe-luna',
+    title: 'Lavender Honey Scone',
+    description: 'Buttery scone with dried lavender and a honey glaze drizzle.',
+    category: 'Pastry',
+    price: 4.25,
+    inventory: 35,
+    featured: false,
+    highlight: 'Popular',
+  },
+  {
+    id: 'product-10',
+    businessId: 'biz-cafe-luna',
+    title: 'Premium Tea Sampler',
+    description: 'Set of 4 loose-leaf teas: Earl Grey, Jasmine, Chamomile, and Darjeeling.',
+    category: 'Coffee',
+    price: 22.00,
+    inventory: 20,
+    featured: false,
+    highlight: 'Gift idea',
+  },
+  {
+    id: 'product-11',
+    businessId: 'biz-cafe-luna',
+    title: 'Cafe Luna Mug',
+    description: 'Handmade ceramic mug with a crescent moon motif. 12oz capacity.',
+    category: 'Merch',
+    price: 24.00,
+    inventory: 18,
+    featured: true,
+    highlight: 'Limited edition',
+  },
+]
+
+// ─── Promotions ────────────────────────────────────────────────
 
 const promotions: Promotion[] = [
   {
     id: 'promo-1',
+    businessId: 'biz-velvet-brew',
     title: 'Double points after 3 PM',
     description: 'Stop by after 3 PM and earn twice the points on any handcrafted drink.',
     badge: 'Weekday perk',
@@ -109,6 +311,7 @@ const promotions: Promotion[] = [
   },
   {
     id: 'promo-2',
+    businessId: 'biz-velvet-brew',
     title: 'Spring pairing menu',
     description: 'Unlock a bonus 120 points when you pair a pistachio bun with any iced espresso.',
     badge: 'Seasonal',
@@ -118,6 +321,7 @@ const promotions: Promotion[] = [
   },
   {
     id: 'promo-3',
+    businessId: 'biz-velvet-brew',
     title: 'Bring-a-friend Saturdays',
     description: 'Invite a friend to scan your code in-store and both of you receive a surprise bonus.',
     badge: 'Referral',
@@ -125,7 +329,29 @@ const promotions: Promotion[] = [
     expiresAt: '2026-05-01T23:59:59.000Z',
     audience: 'Gold members',
   },
+  {
+    id: 'promo-4',
+    businessId: 'biz-cafe-luna',
+    title: 'Tea Tuesday Bonus',
+    description: 'Order any tea on Tuesdays and earn triple points all day.',
+    badge: 'Weekly',
+    cta: 'View teas',
+    expiresAt: '2026-05-15T23:59:59.000Z',
+    audience: 'All members',
+  },
+  {
+    id: 'promo-5',
+    businessId: 'biz-cafe-luna',
+    title: 'Brunch Bundle',
+    description: 'Get a free pastry when you order any breakfast sandwich before 11 AM.',
+    badge: 'Weekend',
+    cta: 'See menu',
+    expiresAt: '2026-04-30T23:59:59.000Z',
+    audience: 'All members',
+  },
 ]
+
+// ─── Activities ────────────────────────────────────────────────
 
 const activities: Activity[] = [
   {
@@ -183,14 +409,21 @@ const redemptions: Redemption[] = [
   },
 ]
 
+const orders: Order[] = []
+
+// ─── Store ─────────────────────────────────────────────────────
+
 export function createSeedStore(): MockStore {
   return {
+    businesses,
     profiles,
     balances,
     rewards,
+    products,
     promotions,
     activities,
     redemptions,
+    orders,
     adminLogs: [
       {
         id: 'log-1',
@@ -254,4 +487,27 @@ export function getProfileByRole(role: UserRole) {
 
 export function setSession(session: SessionUser | null) {
   updateStore((store) => ({ ...store, session }))
+}
+
+// ─── Cart (separate localStorage key) ──────────────────────────
+
+export function readCart(): CartItem[] {
+  if (!canUseStorage()) return []
+  const raw = window.localStorage.getItem(CART_KEY)
+  if (!raw) return []
+  try {
+    return JSON.parse(raw) as CartItem[]
+  } catch {
+    return []
+  }
+}
+
+export function writeCart(items: CartItem[]) {
+  if (!canUseStorage()) return
+  window.localStorage.setItem(CART_KEY, JSON.stringify(items))
+}
+
+export function clearCart() {
+  if (!canUseStorage()) return
+  window.localStorage.removeItem(CART_KEY)
 }

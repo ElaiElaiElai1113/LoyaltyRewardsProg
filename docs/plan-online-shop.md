@@ -1,144 +1,100 @@
-# Plan: Online Shop with Checkout
+# Plan: Shop + Rewards Catalog + Multi-Business
 
 ## Context
 
-The loyalty platform currently only has a rewards catalog (points-based redemption). The project outline requires two separate systems: **Spending** (real money) and **Rewards** (points). The spending/shop side is completely missing.
+The platform needs two separate tabs for customers:
+1. **Shop** — browse and buy products with real money (cash/card)
+2. **Rewards Catalog** — browse and redeem rewards with points
 
-This plan adds an online shop where customers browse products, add to cart, check out with simulated payment, and automatically earn reward points from purchases.
+Both tabs must be **filterable by business** (e.g. Velvet Brew, Cafe Luna, etc.). Points are **shared across all businesses** — earn at one, redeem at any. This is a multi-tenant SaaS loyalty platform.
 
----
+Currently the app only has a single "Catalog" page for points-based rewards with no business concept.
 
 ## Design Decisions
 
+- **Multi-tenant via `businessId`** — every product, reward, promotion, and order belongs to a business. One Supabase instance, filtered by business.
+- **Shared points balance** — one unified balance per customer, not per business. Points earned anywhere, spendable anywhere.
+- **Business filter on both tabs** — dropdown or pill selector to filter products/rewards by business (with an "All" option).
 - **Simulated payment** — mock checkout, no real payment processing
-- **Configurable earn rate** — admin sets points-per-dollar (default: 10 pts/$1)
-- **Immediate availability, "processing" display** — points added to balance immediately, but Activity entry shows as `pending` with "Processing - available within 24 hours" badge
-- **Cart in separate localStorage key** — ephemeral cart state, not mixed with domain data
-- **Products are separate from Rewards** — products have dollar prices, rewards have point costs
-
----
+- **Configurable earn rate** — each business sets its own points-per-dollar rate
+- **Immediate availability, "processing" display** — points added immediately, Activity shows as `pending` with "Processing - available within 24 hours" badge
+- **Cart in separate localStorage** — ephemeral cart state, not mixed with domain data
+- **Products (Shop) are separate from Rewards (Catalog)** — products have dollar prices, rewards have point costs
 
 ## New Data Models
 
 ```
-Product       — id, title, description, category, price, inventory, featured, highlight
-CartItem      — productId, quantity (stored in separate localStorage key)
-Order         — id, profileId, items[], subtotal, tax, total, pointsEarned, pointsStatus, paymentMethod, status, createdAt
-OrderLineItem — productId, productTitle, unitPrice, quantity, subtotal
-StoreSettings — earnRate (pts/$1), taxRate, currency
+Business       — id, name, slug, description, earnRate, taxRate, currency, active
+Product        — id, businessId, title, description, category, price, inventory, featured, highlight
+CartItem       — productId, quantity (separate localStorage key)
+Order          — id, profileId, businessId, items[], subtotal, tax, total, pointsEarned, pointsStatus, paymentMethod, status, createdAt
+OrderLineItem  — productId, productTitle, unitPrice, quantity, subtotal
 ```
 
----
+Existing models that gain a `businessId`:
+```
+Reward         — add businessId
+Promotion      — add businessId
+```
 
-## Files to Create (11 new)
+Balance stays **global per customer** (no businessId) — points are shared.
 
-### Services (4)
+## Seed Data: Two Businesses
 
-| File | Purpose |
-|------|---------|
-| `src/integrations/supabase/services/products-service.ts` | CRUD for products |
-| `src/integrations/supabase/services/cart-service.ts` | Add/remove/update cart items |
-| `src/integrations/supabase/services/orders-service.ts` | Place order, calculate points, update inventory |
-| `src/integrations/supabase/services/settings-service.ts` | Get/update store settings |
+```
+Business 1: Velvet Brew (coffee shop) — earnRate: 10 pts/$1
+Business 2: Cafe Luna (bakery/cafe) — earnRate: 8 pts/$1
+```
 
-### Components (2)
+Each gets its own set of products, rewards, and promotions.
 
-| File | Purpose |
-|------|---------|
-| `src/features/shop/components/product-card.tsx` | Product card with price + "Add to Cart" button |
-| `src/features/shop/components/cart-item-row.tsx` | Cart row with quantity controls and line total |
+## Customer Navigation (updated)
+
+```
+Dashboard | Shop | Rewards | Promotions | History | Profile
+                ↑ cash      ↑ points
+```
+
+## Files to Create (13 new)
+
+### Services (5)
+1. `src/integrations/supabase/services/business-service.ts`
+2. `src/integrations/supabase/services/products-service.ts`
+3. `src/integrations/supabase/services/cart-service.ts`
+4. `src/integrations/supabase/services/orders-service.ts`
+5. `src/integrations/supabase/services/settings-service.ts`
+
+### Components (3)
+6. `src/features/shop/components/product-card.tsx`
+7. `src/features/shop/components/cart-item-row.tsx`
+8. `src/components/business-filter.tsx` (shared between Shop + Rewards)
 
 ### Pages (5)
+9. `src/features/shop/pages/shop-page.tsx` — `/shop`
+10. `src/features/shop/pages/cart-page.tsx` — `/cart`
+11. `src/features/shop/pages/checkout-page.tsx` — `/checkout`
+12. `src/features/shop/pages/order-confirmation-page.tsx` — `/order-confirmation`
+13. `src/features/shop/pages/orders-page.tsx` — `/orders`
 
-| File | Route | Purpose |
-|------|-------|---------|
-| `src/features/shop/pages/shop-page.tsx` | `/shop` | Product catalog with category filters |
-| `src/features/shop/pages/cart-page.tsx` | `/cart` | Shopping cart with order summary |
-| `src/features/shop/pages/checkout-page.tsx` | `/checkout` | Simulated payment + place order |
-| `src/features/shop/pages/order-confirmation-page.tsx` | `/order-confirmation` | Success page with points earned |
-| `src/features/shop/pages/orders-page.tsx` | `/orders` | Order history |
-
----
-
-## Files to Modify (8 existing)
+## Files to Modify (10 existing)
 
 | File | Change |
 |------|--------|
-| `src/types/domain.ts` | Add Product, CartItem, Order, OrderLineItem, StoreSettings interfaces; extend MockStore |
-| `src/lib/mock-store.ts` | Add seed products (6 items), storeSettings, cart utilities (readCart/writeCart/clearCart) |
-| `src/types/forms.ts` | Add productDraftSchema, storeSettingsSchema, checkoutSchema |
-| `src/hooks/use-customer-data.ts` | Add query keys + hooks for products, cart, orders, place order |
-| `src/hooks/use-admin-data.ts` | Add hooks for product CRUD, store settings |
+| `src/types/domain.ts` | Add Business, Product, CartItem, Order, OrderLineItem. Add `businessId` to Reward, Promotion. Extend MockStore |
+| `src/lib/mock-store.ts` | Seed 2 businesses, products/rewards per business, cart utilities |
+| `src/types/forms.ts` | Add productDraftSchema, checkoutSchema, businessSettingsSchema |
+| `src/hooks/use-customer-data.ts` | Add hooks for businesses, products, cart, orders. Update reward/promo hooks with businessId filter |
+| `src/hooks/use-admin-data.ts` | Add hooks for product CRUD, business settings |
 | `src/routes/router.tsx` | Add 5 new customer routes |
-| `src/layouts/customer-layout.tsx` | Add "Shop" nav link + cart icon with count badge |
-| `src/features/admin/pages/admin-page.tsx` | Add Products tab (CRUD) and Settings tab (earn rate, tax rate) |
+| `src/layouts/customer-layout.tsx` | Add Shop nav, rename Catalog → Rewards, cart badge |
+| `src/features/rewards/pages/rewards-page.tsx` | Add business filter |
+| `src/features/admin/pages/admin-page.tsx` | Add Businesses + Products tabs |
+| `src/features/rewards/components/reward-card.tsx` | Show business name badge |
 
----
-
-## Implementation Order
-
-### Step 1: Data Foundation
-
-- Extend `src/types/domain.ts` with new interfaces + MockStore
-- Extend `src/lib/mock-store.ts` with seed data + cart utilities
-
-### Step 2: Forms + Utils
-
-- Add Zod schemas to `src/types/forms.ts` (productDraft, storeSettings, checkout)
-
-### Step 3: Services (in dependency order)
-
-1. `products-service.ts`
-2. `cart-service.ts`
-3. `settings-service.ts`
-4. `orders-service.ts` (depends on all above — orchestrates checkout)
-
-### Step 4: Hooks
-
-- Extend `src/hooks/use-customer-data.ts` with shop/cart/order hooks
-- Extend `src/hooks/use-admin-data.ts` with product/settings hooks
-
-### Step 5: Customer UI
-
-- Build `product-card.tsx` + `cart-item-row.tsx` components
-- Build pages: shop → cart → checkout → order-confirmation → orders
-
-### Step 6: Routing + Navigation
-
-- Add 5 routes to `src/routes/router.tsx`
-- Update `src/layouts/customer-layout.tsx` with Shop link + cart badge
-
-### Step 7: Admin Extensions
-
-- Add Products and Settings tabs to `src/features/admin/pages/admin-page.tsx`
-
----
-
-## Reward Points Flow
-
-```
-Customer browses /shop → adds items to cart → /cart reviews order
-  → /checkout selects payment → places order
-    → points calculated: total × earnRate
-    → order created with line items
-    → points added to balance (immediate)
-    → activity logged as 'pending' ("Processing - available within 24 hours")
-    → product inventory decremented
-    → cart cleared
-  → /order-confirmation shows success + points earned
-```
-
----
-
-## Verification Checklist
-
-- [ ] `npm run dev` — no build errors
-- [ ] Customer: Shop page shows 6 seed products with prices
-- [ ] Customer: Add to cart updates badge count
-- [ ] Customer: Cart page shows items, subtotal, tax, total, estimated points
-- [ ] Customer: Checkout completes and redirects to confirmation
-- [ ] Customer: Activity page shows new "earned" entry with "Processing" badge
-- [ ] Customer: Orders page shows order history
-- [ ] Customer: Balance updated with earned points
-- [ ] Admin: Products tab shows products, can add new ones
-- [ ] Admin: Settings tab shows earn rate and tax rate, can update
+## Verification
+1. `npm run dev` — no build errors
+2. Shop shows products from both businesses, filterable
+3. Rewards shows rewards from both businesses, filterable
+4. Purchase at Velvet Brew → points earned at Velvet Brew's rate
+5. Redeem those points on a Cafe Luna reward → works (shared balance)
+6. Admin can manage businesses and products per business

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { Gift } from 'lucide-react'
+import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
@@ -12,7 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/use-auth'
-import { useRedeemReward, useRewardBalance, useRewards } from '@/hooks/use-customer-data'
+import { useBusinesses, useRedeemReward, useRewardBalance, useRewards } from '@/hooks/use-customer-data'
 import type { Reward } from '@/types/domain'
 
 import { RedeemRewardPanel } from '../components/redeem-reward-panel'
@@ -24,16 +25,21 @@ export function RewardsPage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
   const rewardBalance = useRewardBalance(profile?.id)
-  const rewards = useRewards()
+  const businesses = useBusinesses()
   const redeemReward = useRedeemReward(profile?.id)
 
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All')
+  const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null)
 
+  const rewards = useRewards(selectedBusiness ?? undefined)
   const balancePoints = rewardBalance.data?.points ?? 0
   const filteredRewards = (rewards.data ?? []).filter((reward) =>
     activeFilter === 'All' ? true : reward.category === activeFilter,
   )
+
+  const getBusinessName = (businessId: string) =>
+    businesses.data?.find((b) => b.id === businessId)?.name ?? ''
 
   return (
     <div className="space-y-16 pb-20">
@@ -64,7 +70,14 @@ export function RewardsPage() {
         </div>
       </div>
 
-      <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md">
+      <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md space-y-3">
+        {(businesses.data ?? []).length > 1 && (
+          <BusinessFilter
+            businesses={businesses.data ?? []}
+            selected={selectedBusiness}
+            onChange={setSelectedBusiness}
+          />
+        )}
         <div className="flex flex-wrap items-center gap-3">
           <span className="mr-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">Category:</span>
           {filters.map((filter) => (
@@ -91,6 +104,7 @@ export function RewardsPage() {
             key={reward.id}
             reward={reward}
             balancePoints={balancePoints}
+            businessName={getBusinessName(reward.businessId)}
             onRedeem={(item) => setSelectedReward(item)}
           />
         ))}

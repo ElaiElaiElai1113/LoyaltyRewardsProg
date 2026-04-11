@@ -1,5 +1,16 @@
 export type UserRole = 'customer' | 'admin'
 
+export interface Business {
+  id: string
+  name: string
+  slug: string
+  description: string
+  earnRate: number // points earned per $1 spent
+  taxRate: number // e.g. 0.0875 for 8.75%
+  currency: string
+  active: boolean
+}
+
 export interface Profile {
   id: string
   fullName: string
@@ -22,6 +33,7 @@ export interface RewardBalance {
 
 export interface Reward {
   id: string
+  businessId: string
   title: string
   description: string
   category: 'Drink' | 'Pastry' | 'Merch' | 'Experience'
@@ -31,8 +43,49 @@ export interface Reward {
   highlight: string
 }
 
+export interface Product {
+  id: string
+  businessId: string
+  title: string
+  description: string
+  category: 'Coffee' | 'Pastry' | 'Merch' | 'Equipment'
+  price: number
+  inventory: number
+  featured: boolean
+  highlight: string
+}
+
+export interface CartItem {
+  productId: string
+  quantity: number
+}
+
+export interface OrderLineItem {
+  productId: string
+  productTitle: string
+  unitPrice: number
+  quantity: number
+  subtotal: number
+}
+
+export interface Order {
+  id: string
+  profileId: string
+  businessId: string
+  items: OrderLineItem[]
+  subtotal: number
+  tax: number
+  total: number
+  pointsEarned: number
+  pointsStatus: 'pending' | 'posted'
+  paymentMethod: string
+  status: 'confirmed' | 'processing' | 'delivered'
+  createdAt: string
+}
+
 export interface Promotion {
   id: string
+  businessId: string
   title: string
   description: string
   badge: string
@@ -77,12 +130,15 @@ export interface SessionUser {
 }
 
 export interface MockStore {
+  businesses: Business[]
   profiles: Profile[]
   balances: RewardBalance[]
   rewards: Reward[]
+  products: Product[]
   promotions: Promotion[]
   activities: Activity[]
   redemptions: Redemption[]
+  orders: Order[]
   adminLogs: AdminLog[]
   session: SessionUser | null
 }

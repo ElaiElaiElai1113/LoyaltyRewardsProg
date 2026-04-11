@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -12,22 +13,29 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   useAdjustRewards,
+  useAdminBusinesses,
   useAdminOverview,
+  useAdminProducts,
   useAdminUsers,
+  useCreateProduct,
   useCreatePromotion,
   useCreateReward,
+  useUpdateBusinessSettings,
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import {
+  productDraftSchema,
   promotionDraftSchema,
   rewardAdjustmentSchema,
   rewardDraftSchema,
+  type ProductDraftFormValues,
   type PromotionDraftFormValues,
   type RewardAdjustmentFormValues,
   type RewardDraftFormValues,
 } from '@/types/forms'
-import { formatDate } from '@/lib/utils'
+import type { Business } from '@/types/domain'
+import { formatCurrency, formatDate } from '@/lib/utils'
 
 export function AdminPage() {
   const { profile } = useAuth()
@@ -35,9 +43,13 @@ export function AdminPage() {
   const overview = useAdminOverview()
   const rewards = useRewards()
   const promotions = usePromotions()
+  const businesses = useAdminBusinesses()
+  const adminProducts = useAdminProducts()
   const adjustRewards = useAdjustRewards(profile)
   const createReward = useCreateReward()
   const createPromotion = useCreatePromotion()
+  const createProduct = useCreateProduct()
+  const updateSettings = useUpdateBusinessSettings()
 
   const adjustmentForm = useForm<RewardAdjustmentFormValues>({
     resolver: zodResolver(rewardAdjustmentSchema),
@@ -51,11 +63,25 @@ export function AdminPage() {
   const rewardForm = useForm<RewardDraftFormValues>({
     resolver: zodResolver(rewardDraftSchema),
     defaultValues: {
+      businessId: businesses.data?.[0]?.id ?? '',
       title: '',
       description: '',
       category: 'Drink',
       pointsCost: 220,
       highlight: '',
+    },
+  })
+
+  const productForm = useForm<ProductDraftFormValues>({
+    resolver: zodResolver(productDraftSchema),
+    defaultValues: {
+      businessId: businesses.data?.[0]?.id ?? '',
+      title: '',
+      description: '',
+      category: 'Coffee',
+      price: 5,
+      highlight: '',
+      inventory: 50,
     },
   })
 
@@ -69,6 +95,8 @@ export function AdminPage() {
       audience: '',
     },
   })
+
+  const [promoBusinessId, setPromoBusinessId] = useState(businesses.data?.[0]?.id ?? '')
 
   if (profile?.role !== 'admin') {
     return (
@@ -132,6 +160,8 @@ export function AdminPage() {
           <TabsList className="w-full max-w-4xl">
             <TabsTrigger value="members">Members</TabsTrigger>
             <TabsTrigger value="catalog">Rewards</TabsTrigger>
+            <TabsTrigger value="products">Products</TabsTrigger>
+            <TabsTrigger value="businesses">Businesses</TabsTrigger>
             <TabsTrigger value="promotions">Promotions</TabsTrigger>
             <TabsTrigger value="activity">Activity</TabsTrigger>
           </TabsList>
@@ -262,6 +292,26 @@ export function AdminPage() {
                 >
                   <div className="grid gap-3">
                     <Label htmlFor="reward-title">Reward Title</Label>
+                    <div className="grid gap-3 mb-4">
+                      <Label>Business</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {(businesses.data ?? []).map((b) => (
+                          <button
+                            key={b.id}
+                            type="button"
+                            onClick={() => rewardForm.setValue('businessId', b.id)}
+                            className={`rounded-2xl border p-3 text-sm font-medium transition-all ${
+                              rewardForm.watch('businessId') === b.id
+                                ? 'border-primary bg-primary/5 text-primary'
+                                : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
+                            }`}
+                          >
+                            {b.name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                    <Label htmlFor="reward-title">Reward Title</Label>
                     <Input id="reward-title" placeholder="e.g., Midnight Espresso" {...rewardForm.register('title')} />
                   </div>
                   <div className="grid gap-3">
@@ -297,6 +347,160 @@ export function AdminPage() {
           </div>
         </TabsContent>
 
+        <TabsContent value="products" className="space-y-12 outline-none">
+          <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
+            <div className="space-y-8">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Inventory</span>
+                <h2 className="font-serif text-3xl text-primary">Products</h2>
+              </div>
+              <div className="grid gap-3">
+                {(adminProducts.data ?? []).map((product) => (
+                  <div
+                    key={product.id}
+                    className="flex items-center justify-between rounded-2xl bg-surface-low p-5 border border-outline-variant/10"
+                  >
+                    <div className="space-y-1">
+                      <p className="font-serif text-lg text-primary">{product.title}</p>
+                      <p className="text-xs text-on-surface-variant/70">{product.category} · {product.inventory} in stock</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-serif text-xl text-primary">{formatCurrency(product.price)}</p>
+                      <Badge variant="outline" className="text-[0.55rem]">
+                        {businesses.data?.find((b) => b.id === product.businessId)?.name ?? 'Unknown'}
+                      </Badge>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Create</span>
+                <h2 className="font-serif text-3xl text-primary">Add Product</h2>
+              </div>
+              <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
+                <form
+                  className="space-y-6"
+                  onSubmit={productForm.handleSubmit(async (values) => {
+                    await createProduct.mutateAsync(values)
+                    productForm.reset({
+                      businessId: businesses.data?.[0]?.id ?? '',
+                      title: '',
+                      description: '',
+                      category: 'Coffee',
+                      price: 5,
+                      highlight: '',
+                      inventory: 50,
+                    })
+                  })}
+                >
+                  <div className="grid gap-3">
+                    <Label>Business</Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(businesses.data ?? []).map((b) => (
+                        <button
+                          key={b.id}
+                          type="button"
+                          onClick={() => productForm.setValue('businessId', b.id)}
+                          className={`rounded-2xl border p-3 text-sm font-medium transition-all ${
+                            productForm.watch('businessId') === b.id
+                              ? 'border-primary bg-primary/5 text-primary'
+                              : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
+                          }`}
+                        >
+                          {b.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="grid gap-3">
+                    <Label htmlFor="product-title">Product Title</Label>
+                    <Input id="product-title" placeholder="e.g., House Blend" {...productForm.register('title')} />
+                  </div>
+                  <div className="grid gap-3">
+                    <Label htmlFor="product-description">Description</Label>
+                    <Input id="product-description" placeholder="Describe the product..." {...productForm.register('description')} />
+                  </div>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="grid gap-3">
+                      <Label htmlFor="product-category">Category</Label>
+                      <Input id="product-category" list="product-category-options" {...productForm.register('category')} />
+                      <datalist id="product-category-options">
+                        <option value="Coffee" />
+                        <option value="Pastry" />
+                        <option value="Merch" />
+                        <option value="Equipment" />
+                      </datalist>
+                    </div>
+                    <div className="grid gap-3">
+                      <Label htmlFor="product-price">Price ($)</Label>
+                      <Input id="product-price" type="number" step="0.01" {...productForm.register('price', { valueAsNumber: true })} />
+                    </div>
+                  </div>
+                  <div className="grid gap-6 md:grid-cols-2">
+                    <div className="grid gap-3">
+                      <Label htmlFor="product-highlight">Highlight Tag</Label>
+                      <Input id="product-highlight" placeholder="Popular / New" {...productForm.register('highlight')} />
+                    </div>
+                    <div className="grid gap-3">
+                      <Label htmlFor="product-inventory">Inventory</Label>
+                      <Input id="product-inventory" type="number" {...productForm.register('inventory', { valueAsNumber: true })} />
+                    </div>
+                  </div>
+                  <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={createProduct.isPending}>
+                    {createProduct.isPending ? 'Creating...' : 'Add Product'}
+                  </Button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="businesses" className="space-y-12 outline-none">
+          <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
+            <div className="space-y-8">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partners</span>
+                <h2 className="font-serif text-3xl text-primary">Businesses</h2>
+              </div>
+              <div className="grid gap-4">
+                {(businesses.data ?? []).map((biz) => (
+                  <div
+                    key={biz.id}
+                    className="rounded-2xl bg-surface-low p-6 border border-outline-variant/10 space-y-4"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <p className="font-serif text-2xl text-primary">{biz.name}</p>
+                        <p className="text-sm text-on-surface-variant/70">{biz.description}</p>
+                      </div>
+                      <Badge variant={biz.active ? 'success' : 'outline'} className="text-[0.55rem]">
+                        {biz.active ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+                    <div className="flex gap-6 text-sm text-on-surface-variant/80">
+                      <span>Earn Rate: <strong className="text-primary">{biz.earnRate} pts/$1</strong></span>
+                      <span>Tax Rate: <strong className="text-primary">{(biz.taxRate * 100).toFixed(1)}%</strong></span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Settings</span>
+                <h2 className="font-serif text-3xl text-primary">Update Settings</h2>
+              </div>
+              {(businesses.data ?? []).map((biz) => (
+                <BusinessSettingsCard key={biz.id} business={biz} updateSettings={updateSettings} />
+              ))}
+            </div>
+          </div>
+        </TabsContent>
+
         <TabsContent value="promotions" className="space-y-12 outline-none">
           <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
             <div className="space-y-8">
@@ -320,7 +524,7 @@ export function AdminPage() {
                 <form
                   className="space-y-6"
                   onSubmit={promotionForm.handleSubmit(async (values) => {
-                    await createPromotion.mutateAsync(values)
+                    await createPromotion.mutateAsync({ ...values, businessId: promoBusinessId })
                     promotionForm.reset({
                       title: '',
                       description: '',
@@ -330,6 +534,25 @@ export function AdminPage() {
                     })
                   })}
                 >
+                  <div className="grid gap-3">
+                    <Label>Business</Label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {(businesses.data ?? []).map((b) => (
+                        <button
+                          key={b.id}
+                          type="button"
+                          onClick={() => setPromoBusinessId(b.id)}
+                          className={`rounded-2xl border p-3 text-sm font-medium transition-all ${
+                            promoBusinessId === b.id
+                              ? 'border-primary bg-primary/5 text-primary'
+                              : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
+                          }`}
+                        >
+                          {b.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-title">Promotion Title</Label>
                     <Input id="promotion-title" {...promotionForm.register('title')} />
@@ -429,6 +652,50 @@ export function AdminPage() {
           </div>
         </TabsContent>
       </Tabs>
+    </div>
+  )
+}
+
+function BusinessSettingsCard({
+  business,
+  updateSettings,
+}: {
+  business: Business
+  updateSettings: ReturnType<typeof useUpdateBusinessSettings>
+}) {
+  const [earnRate, setEarnRate] = useState(business.earnRate)
+  const [taxRate, setTaxRate] = useState(business.taxRate)
+
+  return (
+    <div className="rounded-2xl bg-surface-low p-6 border border-outline-variant/10 space-y-4">
+      <h3 className="font-serif text-xl text-primary">{business.name}</h3>
+      <div className="grid gap-4">
+        <div className="grid gap-3">
+          <Label>Earn Rate (pts/$1)</Label>
+          <Input
+            type="number"
+            value={earnRate}
+            onChange={(e) => setEarnRate(Number(e.target.value))}
+          />
+        </div>
+        <div className="grid gap-3">
+          <Label>Tax Rate (e.g. 0.09 for 9%)</Label>
+          <Input
+            type="number"
+            step="0.001"
+            value={taxRate}
+            onChange={(e) => setTaxRate(Number(e.target.value))}
+          />
+        </div>
+      </div>
+      <Button
+        size="sm"
+        className="w-full rounded-full"
+        disabled={updateSettings.isPending}
+        onClick={() => updateSettings.mutate({ businessId: business.id, values: { earnRate, taxRate } })}
+      >
+        {updateSettings.isPending ? 'Saving...' : `Save ${business.name} Settings`}
+      </Button>
     </div>
   )
 }

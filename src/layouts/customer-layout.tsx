@@ -4,6 +4,7 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
+  ShoppingBag,
   UserRound,
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
@@ -11,11 +12,13 @@ import { NavLink, Outlet } from 'react-router-dom'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
+import { useCart } from '@/hooks/use-customer-data'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/rewards', label: 'Catalog', icon: Gift },
+  { to: '/shop', label: 'Shop', icon: ShoppingBag },
+  { to: '/rewards', label: 'Rewards', icon: Gift },
   { to: '/promotions', label: 'Promotions', icon: Megaphone },
   { to: '/activity', label: 'History', icon: Activity },
   { to: '/profile', label: 'Profile', icon: UserRound },
@@ -23,6 +26,8 @@ const navigation = [
 
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
+  const cart = useCart()
+  const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <div className="flex min-h-screen flex-col bg-surface">
@@ -62,6 +67,15 @@ export function CustomerLayout() {
             </div>
 
             <div className="flex items-center gap-4">
+              <NavLink to="/cart" className="relative rounded-full p-2 text-on-surface hover:bg-surface-low hover:text-primary transition-all">
+                <ShoppingBag className="size-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[0.6rem] font-bold text-white">
+                    {cartCount}
+                  </span>
+                )}
+              </NavLink>
+
               <Avatar className="size-10 border-2 border-surface-highest ring-2 ring-primary/5">
                 <AvatarFallback className="bg-surface-low font-medium text-primary">
                   {getInitials(profile?.fullName ?? 'VB')}
@@ -101,6 +115,7 @@ export function CustomerLayout() {
                 </span>
                 <nav className="flex flex-col gap-2">
                   <NavLink to="/dashboard" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Dashboard</NavLink>
+                  <NavLink to="/shop" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Shop</NavLink>
                   <NavLink to="/rewards" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Rewards</NavLink>
                   <NavLink to="/promotions" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Promotions</NavLink>
                 </nav>
@@ -121,7 +136,7 @@ export function CustomerLayout() {
                 </span>
                 <nav className="flex flex-col gap-2">
                   <NavLink to="/profile" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Settings</NavLink>
-                  <NavLink to="/activity" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Order History</NavLink>
+                  <NavLink to="/orders" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary">Order History</NavLink>
                 </nav>
               </div>
             </div>

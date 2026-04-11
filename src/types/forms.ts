@@ -34,6 +34,7 @@ export const rewardAdjustmentSchema = z.object({
 export type RewardAdjustmentFormValues = z.infer<typeof rewardAdjustmentSchema>
 
 export const rewardDraftSchema = z.object({
+  businessId: z.string().min(1, 'Select a business'),
   title: z.string().min(2, 'Enter a reward title'),
   description: z.string().min(8, 'Add a short description'),
   category: z.enum(['Drink', 'Pastry', 'Merch', 'Experience']),
@@ -52,3 +53,28 @@ export const promotionDraftSchema = z.object({
 })
 
 export type PromotionDraftFormValues = z.infer<typeof promotionDraftSchema>
+
+export const productDraftSchema = z.object({
+  businessId: z.string().min(1, 'Select a business'),
+  title: z.string().min(2, 'Enter a product title'),
+  description: z.string().min(8, 'Add a short description'),
+  category: z.enum(['Coffee', 'Pastry', 'Merch', 'Equipment']),
+  price: z.number().min(0.5, 'Minimum price is $0.50'),
+  highlight: z.string().min(2, 'Add a highlight'),
+  inventory: z.number().int().min(0, 'Inventory cannot be negative'),
+})
+
+export type ProductDraftFormValues = z.infer<typeof productDraftSchema>
+
+export const checkoutSchema = z.object({
+  paymentMethod: z.enum(['visa', 'mastercard', 'applepay']),
+})
+
+export type CheckoutFormValues = z.infer<typeof checkoutSchema>
+
+export const businessSettingsSchema = z.object({
+  earnRate: z.number().min(0, 'Earn rate cannot be negative').max(100, 'Maximum 100 pts/$1'),
+  taxRate: z.number().min(0).max(0.5, 'Maximum 50% tax rate'),
+})
+
+export type BusinessSettingsFormValues = z.infer<typeof businessSettingsSchema>

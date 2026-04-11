@@ -2,34 +2,24 @@ import { Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { formatPoints } from '@/lib/utils'
-import type { Reward } from '@/types/domain'
+import { formatCurrency } from '@/lib/utils'
+import type { Product } from '@/types/domain'
 
-interface RewardCardProps {
-  reward: Reward
-  balancePoints?: number
-  businessName?: string
-  onRedeem: (reward: Reward) => void
+interface ProductCardProps {
+  product: Product
+  onAddToCart: (product: Product) => void
+  isAdding?: boolean
 }
 
-export function RewardCard({ reward, balancePoints = 0, businessName, onRedeem }: RewardCardProps) {
-  const canRedeem = balancePoints >= reward.pointsCost && reward.inventory > 0
-
+export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps) {
   return (
     <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
       <div className="flex flex-col gap-6 h-full">
         <div className="flex justify-between items-start">
-          <div className="flex items-center gap-2">
-            <Badge variant="accent" className="bg-tertiary/60">
-              {reward.category}
-            </Badge>
-            {businessName && (
-              <Badge variant="outline" className="text-[0.55rem] text-on-surface-variant/70">
-                {businessName}
-              </Badge>
-            )}
-          </div>
-          {reward.featured && (
+          <Badge variant="accent" className="bg-tertiary/60">
+            {product.category}
+          </Badge>
+          {product.featured && (
             <span className="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-widest text-secondary">
               <Sparkles className="size-3" />
               Featured
@@ -39,33 +29,33 @@ export function RewardCard({ reward, balancePoints = 0, businessName, onRedeem }
 
         <div className="space-y-4 grow">
           <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
-            {reward.title}
+            {product.title}
           </h3>
           <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
-            {reward.description}
+            {product.description}
           </p>
         </div>
 
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Cost</span>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Price</span>
             <p className="font-serif text-3xl tracking-tight text-primary">
-              {formatPoints(reward.pointsCost)}
+              {formatCurrency(product.price)}
             </p>
           </div>
 
           <div className="flex flex-col items-end gap-3">
             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
-              {reward.inventory} left
+              {product.inventory} in stock
             </span>
             <Button
-              onClick={() => onRedeem(reward)}
-              disabled={!canRedeem}
-              variant={canRedeem ? "secondary" : "outline"}
+              onClick={() => onAddToCart(product)}
+              disabled={product.inventory <= 0 || isAdding}
+              variant="secondary"
               size="sm"
               className="rounded-full"
             >
-              {canRedeem ? 'Redeem now' : 'More points needed'}
+              {isAdding ? 'Adding...' : 'Add to Cart'}
             </Button>
           </div>
         </div>
