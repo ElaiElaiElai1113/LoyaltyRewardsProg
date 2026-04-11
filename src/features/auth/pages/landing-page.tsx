@@ -38,7 +38,13 @@ export function LandingPage() {
   })
 
   const navigateByRole = (role: AuthFormValues['role']) => {
-    navigate(role === 'admin' ? '/admin' : '/dashboard')
+    if (role === 'platform-admin') {
+      navigate('/admin')
+    } else if (role === 'business-owner') {
+      navigate('/business/dashboard')
+    } else {
+      navigate('/dashboard')
+    }
   }
 
   return (
@@ -113,7 +119,7 @@ export function LandingPage() {
                   navigateByRole(profile.role)
                 }}
               >
-                Member Experience
+                Member
               </Button>
               <Button
                 variant="outline"
@@ -121,11 +127,23 @@ export function LandingPage() {
                 className="rounded-full px-10 h-14 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40"
                 onClick={async () => {
                   setError(null)
-                  const profile = await continueAsDemo('admin')
+                  const profile = await continueAsDemo('business-owner')
                   navigateByRole(profile.role)
                 }}
               >
-                Staff Access
+                Business Owner
+              </Button>
+              <Button
+                variant="outline"
+                size="lg"
+                className="rounded-full px-10 h-14 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40"
+                onClick={async () => {
+                  setError(null)
+                  const profile = await continueAsDemo('platform-admin')
+                  navigateByRole(profile.role)
+                }}
+              >
+                Platform Admin
               </Button>
             </div>
             <p className="mt-6 text-xs font-medium italic text-white/75">
@@ -186,7 +204,8 @@ export function LandingPage() {
                       <Input id="signin-role" list="role-options-signin" {...signInForm.register('role')} />
                       <datalist id="role-options-signin">
                         <option value="customer" />
-                        <option value="admin" />
+                        <option value="business-owner" />
+                        <option value="platform-admin" />
                       </datalist>
                     </div>
 
@@ -253,7 +272,8 @@ export function LandingPage() {
                       <Input id="signup-role" list="role-options-signup" {...signUpForm.register('role')} />
                       <datalist id="role-options-signup">
                         <option value="customer" />
-                        <option value="admin" />
+                        <option value="business-owner" />
+                        <option value="platform-admin" />
                       </datalist>
                     </div>
 

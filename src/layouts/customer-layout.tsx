@@ -63,7 +63,7 @@ export function CustomerLayout() {
           <div className="flex items-center gap-6">
             <div className="hidden flex-col items-end md:flex">
               <span className="text-sm font-semibold text-on-surface">{profile?.fullName}</span>
-              <span className="text-xs text-on-surface-variant/80">{profile?.tier} Member</span>
+              <span className="text-xs text-on-surface-variant/80">Member</span>
             </div>
 
             <div className="flex items-center gap-4">

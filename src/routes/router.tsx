@@ -13,8 +13,17 @@ import { CheckoutPage } from '@/features/shop/pages/checkout-page'
 import { OrderConfirmationPage } from '@/features/shop/pages/order-confirmation-page'
 import { OrdersPage } from '@/features/shop/pages/orders-page'
 import { ShopPage } from '@/features/shop/pages/shop-page'
+import {
+  BusinessDashboardPage,
+  MembersPage,
+  ProductsPage,
+  PromotionsPage as BusinessPromotionsPage,
+  RewardsPage as BusinessRewardsPage,
+  SettingsPage,
+} from '@/features/business-owner/pages'
 import { useAuth } from '@/hooks/use-auth'
 import { AdminLayout } from '@/layouts/admin-layout'
+import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 
 function LandingRoute() {
@@ -25,7 +34,13 @@ function LandingRoute() {
   }
 
   if (profile) {
-    return <Navigate replace to={profile.role === 'admin' ? '/admin' : '/dashboard'} />
+    if (profile.role === 'platform-admin') {
+      return <Navigate replace to="/admin" />
+    }
+    if (profile.role === 'business-owner') {
+      return <Navigate replace to="/business/dashboard" />
+    }
+    return <Navigate replace to="/dashboard" />
   }
 
   return <LandingPage />
@@ -52,11 +67,25 @@ function ProtectedAdminRoute() {
     return null
   }
 
-  if (!profile || profile.role !== 'admin') {
+  if (!profile || profile.role !== 'platform-admin') {
     return <Navigate replace to="/dashboard" />
   }
 
   return <AdminLayout />
+}
+
+function ProtectedBusinessOwnerRoute() {
+  const { profile, isLoading } = useAuth()
+
+  if (isLoading) {
+    return null
+  }
+
+  if (!profile || profile.role !== 'business-owner') {
+    return <Navigate replace to="/dashboard" />
+  }
+
+  return <BusinessOwnerLayout />
 }
 
 const router = createBrowserRouter([
@@ -84,6 +113,17 @@ const router = createBrowserRouter([
     element: <ProtectedAdminRoute />,
     children: [
       { path: '/admin', element: <AdminPage /> },
+    ],
+  },
+  {
+    element: <ProtectedBusinessOwnerRoute />,
+    children: [
+      { path: '/business/dashboard', element: <BusinessDashboardPage /> },
+      { path: '/business/products', element: <ProductsPage /> },
+      { path: '/business/rewards', element: <BusinessRewardsPage /> },
+      { path: '/business/promotions', element: <BusinessPromotionsPage /> },
+      { path: '/business/members', element: <MembersPage /> },
+      { path: '/business/settings', element: <SettingsPage /> },
     ],
   },
   {

@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { TrendingUp, Users, Gift, Activity } from 'lucide-react'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
@@ -98,7 +99,7 @@ export function AdminPage() {
 
   const [promoBusinessId, setPromoBusinessId] = useState(businesses.data?.[0]?.id ?? '')
 
-  if (profile?.role !== 'admin') {
+  if (profile?.role !== 'platform-admin') {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-8 bg-surface-low rounded-3xl p-16 border border-outline-variant/10">
         <Badge variant="accent" className="bg-primary/10 text-primary">
@@ -126,44 +127,57 @@ export function AdminPage() {
 
   return (
     <div className="space-y-16 pb-20">
-      <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
-        <div className="space-y-4 max-w-2xl">
-          <Badge variant="accent" className="bg-primary/10 text-primary">
-            Operations Portal
-          </Badge>
-          <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Admin Dashboard
-          </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            Manage members, rewards, promotions, and monitor activity across the platform.
-          </p>
-        </div>
+      {/* Enhanced Header with Gradient Accent */}
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-[#4b3621] to-[#33210d] px-8 py-12 shadow-2xl">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
+        <div className="relative">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="space-y-4 max-w-2xl">
+              <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-sm">
+                Operations Portal
+              </Badge>
+              <h1 className="font-serif text-5xl tracking-tight text-white md:text-7xl leading-[1.1]">
+                Admin Dashboard
+              </h1>
+              <p className="text-lg leading-relaxed text-white/80 font-medium">
+                Manage members, rewards, promotions, and monitor activity across the platform.
+              </p>
+            </div>
 
-        <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Overview</span>
-          <div className="rounded-2xl bg-surface-low px-8 py-5 text-primary shadow-sm flex items-center gap-6 border border-outline-variant/10">
-             <div className="flex flex-col">
-                <span className="font-serif text-3xl leading-none">{(users.data ?? []).length}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Total Members</span>
-             </div>
-             <div className="w-px h-8 bg-outline-variant/20" />
-             <div className="flex flex-col">
-                <span className="font-serif text-3xl leading-none">{(rewards.data ?? []).length}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Catalog Items</span>
-             </div>
+            {/* Enhanced Overview Cards */}
+            <div className="grid grid-cols-2 gap-4 lg:gap-6">
+              <div className="rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-5 text-white border border-white/10 flex items-center gap-4">
+                <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Users className="size-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-serif text-3xl leading-none">{(users.data ?? []).length}</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Members</span>
+                </div>
+              </div>
+              <div className="rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-5 text-white border border-white/10 flex items-center gap-4">
+                <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Gift className="size-6" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-serif text-3xl leading-none">{(rewards.data ?? []).length}</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Rewards</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <Tabs defaultValue="members" className="space-y-12">
-        <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md flex justify-center">
-          <TabsList className="w-full max-w-4xl">
-            <TabsTrigger value="members">Members</TabsTrigger>
-            <TabsTrigger value="catalog">Rewards</TabsTrigger>
-            <TabsTrigger value="products">Products</TabsTrigger>
-            <TabsTrigger value="businesses">Businesses</TabsTrigger>
-            <TabsTrigger value="promotions">Promotions</TabsTrigger>
-            <TabsTrigger value="activity">Activity</TabsTrigger>
+        <div className="sticky top-24 z-40 -mx-6 bg-surface/95 px-6 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
+          <TabsList className="w-full max-w-4xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
+            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Members</TabsTrigger>
+            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Rewards</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Products</TabsTrigger>
+            <TabsTrigger value="businesses" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Businesses</TabsTrigger>
+            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Promotions</TabsTrigger>
+            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Activity</TabsTrigger>
           </TabsList>
         </div>
 
@@ -175,9 +189,9 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">Reward Adjustment</h2>
               </div>
 
-              <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
+              <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
                 <form
-                  className="space-y-8"
+                  className="space-y-6"
                   onSubmit={adjustmentForm.handleSubmit(async (values) => {
                     await adjustRewards.mutateAsync(values)
                     adjustmentForm.reset({
@@ -187,12 +201,13 @@ export function AdminPage() {
                     })
                   })}
                 >
-                  <div className="grid gap-3">
-                    <Label htmlFor="profileId">Member ID</Label>
+                  <div className="grid gap-4">
+                    <Label htmlFor="profileId" className="text-sm font-semibold">Member ID</Label>
                     <Input
                       id="profileId"
                       list="member-id-options"
                       placeholder="Paste a member id"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
                       {...adjustmentForm.register('profileId')}
                     />
                     <datalist id="member-id-options">
@@ -203,15 +218,15 @@ export function AdminPage() {
                       ))}
                     </datalist>
                   </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="delta">Points Adjustment</Label>
-                    <Input id="delta" type="number" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
+                  <div className="grid gap-4">
+                    <Label htmlFor="delta" className="text-sm font-semibold">Points Adjustment</Label>
+                    <Input id="delta" type="number" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
                   </div>
-                  <div className="grid gap-3">
-                    <Label htmlFor="reason">Reason</Label>
-                    <Input id="reason" placeholder="e.g., Service recovery" {...adjustmentForm.register('reason')} />
+                  <div className="grid gap-4">
+                    <Label htmlFor="reason" className="text-sm font-semibold">Reason</Label>
+                    <Input id="reason" placeholder="e.g., Service recovery" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('reason')} />
                   </div>
-                  <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={adjustRewards.isPending}>
+                  <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
                     {adjustRewards.isPending ? 'Processing...' : 'Adjust Points'}
                   </Button>
                 </form>
@@ -227,28 +242,39 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">Showing Latest 50</span>
               </div>
 
-              <div className="grid gap-3 pointer-events-auto">
+              <div className="grid gap-4 pointer-events-auto">
                 {(users.data ?? []).map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className="group flex flex-col gap-6 rounded-2xl bg-surface-lowest p-6 transition-all hover:bg-surface-low md:flex-row md:items-center md:justify-between border border-transparent hover:border-outline-variant/10"
+                    className="group flex flex-col gap-6 rounded-3xl bg-white p-6 transition-all hover:shadow-xl hover:scale-[1.01] md:flex-row md:items-center md:justify-between border border-outline-variant/5 hover:border-primary/10"
                   >
                     <div className="flex items-center gap-6">
-                       <div className="size-14 rounded-full bg-surface-highest flex items-center justify-center font-serif text-xl text-primary group-hover:bg-primary group-hover:text-white transition-all">
+                       <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] flex items-center justify-center font-serif text-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
                           {member.fullName.charAt(0)}
                        </div>
                       <div>
-                        <p className="font-serif text-xl tracking-tight text-primary leading-tight">{member.fullName}</p>
-                        <p className="text-sm font-medium text-on-surface-variant/80">{member.email}</p>
-                        <p className="mt-1 text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70 italic">
-                          ID: {member.id}
-                        </p>
+                        <p className="font-serif text-2xl tracking-tight text-primary leading-tight">{member.fullName}</p>
+                        <p className="text-sm font-medium text-on-surface-variant/80 mt-1">{member.email}</p>
+                        <div className="mt-2 flex items-center gap-2">
+                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70 italic">
+                            ID: {member.id}
+                          </span>
+                          <span className="size-1 rounded-full bg-outline-variant/30"></span>
+                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70 italic">
+                            {member.location}
+                          </span>
+                        </div>
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <Badge variant="accent" className="bg-primary/5 text-primary border-none">{member.role}</Badge>
-                      <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border-none">{balance?.points ?? 0} Points</Badge>
-                      <Badge variant="accent" className="bg-tertiary/10 text-primary border-none">{member.tier}</Badge>
+                      <Badge variant="accent" className="bg-primary/5 text-primary border border-primary/10 font-medium px-3 py-1.5">{member.role}</Badge>
+                      <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border border-secondary-container/20 font-medium px-3 py-1.5 flex items-center gap-1.5">
+                        <Gift className="size-3" />
+                        {balance?.points ?? 0} Points
+                      </Badge>
+                      <Button variant="ghost" size="sm" className="rounded-full hover:bg-primary/5">
+                        View Details
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -358,15 +384,28 @@ export function AdminPage() {
                 {(adminProducts.data ?? []).map((product) => (
                   <div
                     key={product.id}
-                    className="flex items-center justify-between rounded-2xl bg-surface-low p-5 border border-outline-variant/10"
+                    className="group flex items-center justify-between rounded-3xl bg-white hover:bg-surface-low p-6 border border-outline-variant/5 hover:border-primary/10 transition-all hover:shadow-lg"
                   >
-                    <div className="space-y-1">
-                      <p className="font-serif text-lg text-primary">{product.title}</p>
-                      <p className="text-xs text-on-surface-variant/70">{product.category} · {product.inventory} in stock</p>
+                    <div className="flex items-center gap-4">
+                      <div className={`size-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold ${
+                        product.businessId === 'biz-velvet-brew'
+                          ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
+                          : 'bg-gradient-to-br from-[#D4A574] to-[#C19A6B]'
+                      }`}>
+                        {product.title.charAt(0)}
+                      </div>
+                      <div className="space-y-1">
+                        <p className="font-serif text-xl text-primary">{product.title}</p>
+                        <div className="flex items-center gap-3 text-sm text-on-surface-variant/70">
+                          <span>{product.category}</span>
+                          <span className="size-1 rounded-full bg-outline-variant/30"></span>
+                          <span>{product.inventory} in stock</span>
+                        </div>
+                      </div>
                     </div>
                     <div className="text-right">
-                      <p className="font-serif text-xl text-primary">{formatCurrency(product.price)}</p>
-                      <Badge variant="outline" className="text-[0.55rem]">
+                      <p className="font-serif text-2xl text-primary">{formatCurrency(product.price)}</p>
+                      <Badge variant="outline" className="text-[0.65rem] border-outline-variant/20 mt-1">
                         {businesses.data?.find((b) => b.id === product.businessId)?.name ?? 'Unknown'}
                       </Badge>
                     </div>
@@ -465,24 +504,47 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partners</span>
                 <h2 className="font-serif text-3xl text-primary">Businesses</h2>
               </div>
-              <div className="grid gap-4">
+              <div className="grid gap-6">
                 {(businesses.data ?? []).map((biz) => (
                   <div
                     key={biz.id}
-                    className="rounded-2xl bg-surface-low p-6 border border-outline-variant/10 space-y-4"
+                    className={`group rounded-3xl p-8 border border-outline-variant/5 hover:shadow-xl transition-all overflow-hidden ${
+                      biz.id === 'biz-velvet-brew'
+                        ? 'bg-gradient-to-br from-[#8B4513]/5 to-[#654321]/5 hover:from-[#8B4513]/10 hover:to-[#654321]/10'
+                        : 'bg-gradient-to-br from-[#D4A574]/5 to-[#C19A6B]/5 hover:from-[#D4A574]/10 hover:to-[#C19A6B]/10'
+                    }`}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="space-y-1">
-                        <p className="font-serif text-2xl text-primary">{biz.name}</p>
-                        <p className="text-sm text-on-surface-variant/70">{biz.description}</p>
+                    <div className="flex items-start justify-between">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-3">
+                          <div className={`size-12 rounded-xl flex items-center justify-center text-white text-lg font-bold ${
+                            biz.id === 'biz-velvet-brew'
+                              ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
+                              : 'bg-gradient-to-br from-[#D4A574] to-[#C19A6B]'
+                          }`}>
+                            {biz.name.charAt(0)}
+                          </div>
+                          <Badge variant={biz.active ? 'success' : 'outline'} className="text-[0.65rem] font-medium px-3 py-1">
+                            {biz.active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </div>
+                        <p className="font-serif text-3xl text-primary mt-4">{biz.name}</p>
+                        <p className="text-sm leading-relaxed text-on-surface-variant/80 max-w-md">{biz.description}</p>
                       </div>
-                      <Badge variant={biz.active ? 'success' : 'outline'} className="text-[0.55rem]">
-                        {biz.active ? 'Active' : 'Inactive'}
-                      </Badge>
                     </div>
-                    <div className="flex gap-6 text-sm text-on-surface-variant/80">
-                      <span>Earn Rate: <strong className="text-primary">{biz.earnRate} pts/$1</strong></span>
-                      <span>Tax Rate: <strong className="text-primary">{(biz.taxRate * 100).toFixed(1)}%</strong></span>
+                    <div className="mt-6 pt-6 border-t border-outline-variant/10 flex items-center gap-8">
+                      <div className="flex items-center gap-2">
+                        <TrendingUp className="size-4 text-secondary" />
+                        <span className="text-sm text-on-surface-variant/80">
+                          Earn Rate: <strong className="text-primary">{biz.earnRate} pts/$1</strong>
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Activity className="size-4 text-secondary" />
+                        <span className="text-sm text-on-surface-variant/80">
+                          Tax Rate: <strong className="text-primary">{(biz.taxRate * 100).toFixed(1)}%</strong>
+                        </span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -591,24 +653,48 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Fulfillment</span>
                 <h2 className="font-serif text-3xl text-primary">Recent Redemptions</h2>
               </div>
-              <div className="rounded-2xl bg-surface-low p-2 border border-outline-variant/10">
-                <ScrollArea className="h-[500px] px-6">
-                  <div className="space-y-4 py-6">
+              <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
+                <ScrollArea className="h-[500px]">
+                  <div className="space-y-2 p-4">
                     {(overview.data?.redemptions ?? []).map((redemption) => (
-                      <div key={redemption.id} className="rounded-xl bg-surface-lowest p-6 border border-outline-variant/5 shadow-sm">
-                        <div className="flex items-center justify-between gap-4">
-                          <div className="space-y-1">
-                            <p className="font-serif text-lg tracking-tight text-primary">{redemption.rewardTitle}</p>
-                            <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">{redemption.profileId}</p>
+                      <div key={redemption.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-5 border border-outline-variant/5 hover:border-outline-variant/10 transition-all">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-4">
+                            <div className="size-12 rounded-xl bg-tertiary/30 flex items-center justify-center text-primary shrink-0">
+                              <Gift className="size-5" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="font-serif text-xl tracking-tight text-primary">{redemption.rewardTitle}</p>
+                              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">
+                                Member: {redemption.profileId}
+                              </p>
+                            </div>
                           </div>
-                          <Badge variant="accent" className="bg-success/10 text-success border-none">{redemption.status}</Badge>
+                          <Badge variant={redemption.status === 'ready' ? 'outline' : 'accent'} className={
+                            redemption.status === 'ready'
+                              ? 'border-warning/50 text-warning bg-warning/10'
+                              : 'bg-success/10 text-success border-success/20'
+                          }>
+                            {redemption.status}
+                          </Badge>
                         </div>
                         <div className="mt-4 pt-4 border-t border-outline-variant/5 flex items-center justify-between">
-                           <span className="text-sm font-bold text-primary">{redemption.pointsCost} Points</span>
-                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">{formatDate(redemption.redeemedAt)}</span>
+                           <div className="flex items-center gap-2">
+                             <TrendingUp className="size-4 text-secondary" />
+                             <span className="text-sm font-bold text-primary">{redemption.pointsCost} Points</span>
+                           </div>
+                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 flex items-center gap-1">
+                             {formatDate(redemption.redeemedAt)}
+                           </span>
                         </div>
                       </div>
                     ))}
+                    {(overview.data?.redemptions?.length ?? 0) === 0 && (
+                      <div className="text-center py-12">
+                        <Gift className="size-12 text-on-surface-variant/20 mx-auto mb-4" />
+                        <p className="text-on-surface-variant/60 font-medium">No redemptions yet</p>
+                      </div>
+                    )}
                   </div>
                 </ScrollArea>
               </div>
@@ -619,18 +705,29 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Audit Log</span>
                 <h2 className="font-serif text-3xl text-primary">Admin Logs</h2>
               </div>
-               <div className="rounded-2xl bg-surface-low p-2 border border-outline-variant/10">
-                <ScrollArea className="h-[500px] px-6">
-                  <div className="space-y-4 py-6">
+               <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
+                <ScrollArea className="h-[500px]">
+                  <div className="space-y-2 p-4">
                     {(overview.data?.adminLogs ?? []).map((log) => (
-                      <div key={log.id} className="rounded-xl bg-surface-lowest p-6 border border-outline-variant/5 shadow-sm">
-                        <div className="flex items-center justify-between gap-4">
-                          <p className="font-serif text-lg tracking-tight text-primary leading-tight">{log.action}</p>
-                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75">{formatDate(log.createdAt)}</span>
+                      <div key={log.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-5 border border-outline-variant/5 hover:border-outline-variant/10 transition-all">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex items-start gap-4">
+                            <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                              <Activity className="size-5" />
+                            </div>
+                            <div className="space-y-1">
+                              <p className="font-serif text-lg tracking-tight text-primary leading-tight">{log.action}</p>
+                              <p className="text-sm font-medium leading-relaxed text-on-surface-variant/85 mt-2">{log.details}</p>
+                            </div>
+                          </div>
+                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 whitespace-nowrap">
+                            {formatDate(log.createdAt)}
+                          </span>
                         </div>
-                        <p className="mt-2 text-sm font-medium leading-relaxed text-on-surface-variant/85">{log.details}</p>
                         <div className="mt-4 pt-4 border-t border-outline-variant/5">
-                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">By {log.actorName}</span>
+                           <div className="flex items-center gap-2">
+                             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">By {log.actorName}</span>
+                           </div>
                         </div>
                       </div>
                     ))}
@@ -667,30 +764,41 @@ function BusinessSettingsCard({
   const [taxRate, setTaxRate] = useState(business.taxRate)
 
   return (
-    <div className="rounded-2xl bg-surface-low p-6 border border-outline-variant/10 space-y-4">
-      <h3 className="font-serif text-xl text-primary">{business.name}</h3>
+    <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-6 space-y-5">
+      <div className="flex items-center gap-3">
+        <div className={`size-10 rounded-xl flex items-center justify-center text-white text-lg font-bold ${
+          business.id === 'biz-velvet-brew'
+            ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
+            : 'bg-gradient-to-br from-[#D4A574] to-[#C19A6B]'
+        }`}>
+          {business.name.charAt(0)}
+        </div>
+        <h3 className="font-serif text-xl text-primary">{business.name}</h3>
+      </div>
       <div className="grid gap-4">
-        <div className="grid gap-3">
-          <Label>Earn Rate (pts/$1)</Label>
+        <div className="grid gap-2">
+          <Label className="text-sm font-semibold">Earn Rate (pts/$1)</Label>
           <Input
             type="number"
             value={earnRate}
             onChange={(e) => setEarnRate(Number(e.target.value))}
+            className="rounded-xl h-11 border-outline-variant/20 focus:border-primary/30"
           />
         </div>
-        <div className="grid gap-3">
-          <Label>Tax Rate (e.g. 0.09 for 9%)</Label>
+        <div className="grid gap-2">
+          <Label className="text-sm font-semibold">Tax Rate (e.g. 0.09 for 9%)</Label>
           <Input
             type="number"
             step="0.001"
             value={taxRate}
             onChange={(e) => setTaxRate(Number(e.target.value))}
+            className="rounded-xl h-11 border-outline-variant/20 focus:border-primary/30"
           />
         </div>
       </div>
       <Button
         size="sm"
-        className="w-full rounded-full"
+        className="w-full rounded-xl h-11 font-semibold"
         disabled={updateSettings.isPending}
         onClick={() => updateSettings.mutate({ businessId: business.id, values: { earnRate, taxRate } })}
       >

@@ -1,4 +1,4 @@
-export type UserRole = 'customer' | 'admin'
+export type UserRole = 'customer' | 'platform-admin' | 'business-owner'
 
 export interface Business {
   id: string
@@ -18,9 +18,9 @@ export interface Profile {
   phone: string
   location: string
   favoriteOrder: string
-  tier: 'Bronze' | 'Silver' | 'Gold'
   joinedAt: string
   role: UserRole
+  businessId?: string // For business owners - which business they belong to
 }
 
 export interface RewardBalance {
@@ -127,6 +127,16 @@ export interface AdminLog {
 export interface SessionUser {
   profileId: string
   role: UserRole
+  businessId?: string // Business owner's business
+}
+
+export interface BusinessMetrics {
+  totalMembers: number
+  totalOrders: number
+  totalRevenue: number
+  pointsIssued: number
+  pointsRedeemed: number
+  activePromotions: number
 }
 
 export interface MockStore {

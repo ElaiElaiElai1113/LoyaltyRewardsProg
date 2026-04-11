@@ -62,8 +62,8 @@ export function ProfilePage() {
                 <Award className="size-5 text-white" />
              </div>
              <div className="flex flex-col">
-                <span className="font-serif text-2xl leading-none">{profile.data?.tier ?? 'Bronze'}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">Current Tier</span>
+                <span className="font-serif text-2xl leading-none">Active</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">Member Status</span>
              </div>
           </div>
         </div>

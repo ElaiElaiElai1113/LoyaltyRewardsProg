@@ -1,0 +1,6 @@
+export { BusinessDashboardPage } from './business-dashboard-page'
+export { MembersPage } from './members-page'
+export { ProductsPage } from './products-page'
+export { PromotionsPage } from './promotions-page'
+export { RewardsPage } from './rewards-page'
+export { SettingsPage } from './settings-page'

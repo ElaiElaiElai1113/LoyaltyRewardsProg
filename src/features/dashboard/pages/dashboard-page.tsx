@@ -67,7 +67,7 @@ export function DashboardPage() {
 
             <div className="space-y-4 max-w-md">
               <div className="flex justify-between items-end">
-                <span className="text-sm font-bold uppercase tracking-widest text-white/85">{profile?.tier} Tier Status</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-white/85">Next Reward Progress</span>
                 <span className="font-serif text-2xl">{balance?.tierProgress ?? 0}%</span>
               </div>
               <div className="h-2 rounded-full bg-white/10 w-full overflow-hidden">

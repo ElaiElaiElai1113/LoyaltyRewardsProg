@@ -4,7 +4,7 @@ export const authSchema = z.object({
   fullName: z.string().min(2, 'Enter your name').optional(),
   email: z.email('Enter a valid email'),
   password: z.string().min(6, 'Use at least 6 characters'),
-  role: z.enum(['customer', 'admin']),
+  role: z.enum(['customer', 'business-owner', 'platform-admin']),
 })
 
 export type AuthFormValues = z.infer<typeof authSchema>

@@ -43,7 +43,7 @@ export const authService = {
       throw new Error('No account matches that email yet. Try creating one first.')
     }
 
-    setSession({ profileId: profile.id, role: profile.role })
+    setSession({ profileId: profile.id, role: profile.role, businessId: profile.businessId })
     return profile
   },
 
@@ -71,7 +71,6 @@ export const authService = {
       phone: '+1 (000) 000-0000',
       location: 'Downtown',
       favoriteOrder: 'House espresso',
-      tier: 'Bronze',
       joinedAt: new Date().toISOString(),
       role: input.role,
     }
@@ -80,7 +79,7 @@ export const authService = {
       ...store,
       profiles: [profile, ...store.profiles],
       balances: [createBalance(profile.id), ...store.balances],
-      session: { profileId: profile.id, role: profile.role },
+      session: { profileId: profile.id, role: profile.role, businessId: profile.businessId },
     }))
 
     return profile
@@ -95,7 +94,7 @@ export const authService = {
       throw new Error('Demo account is unavailable.')
     }
 
-    setSession({ profileId: profile.id, role: profile.role })
+    setSession({ profileId: profile.id, role: profile.role, businessId: profile.businessId })
     return profile
   },
 

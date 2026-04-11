@@ -38,7 +38,7 @@ export function AppShell() {
 
   const navigation = [
     ...memberNavigation,
-    ...(profile?.role === 'admin' ? adminNavigation : []),
+    ...(profile?.role === 'platform-admin' ? adminNavigation : []),
   ]
 
   return (
@@ -70,9 +70,9 @@ export function AppShell() {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge variant="outline">{profile?.tier ?? 'Member'} tier</Badge>
-            <Badge variant={profile?.role === 'admin' ? 'success' : 'accent'}>
-              {profile?.role === 'admin' ? 'Staff mode' : 'Member mode'}
+            <Badge variant="outline">Member</Badge>
+            <Badge variant={profile?.role === 'platform-admin' ? 'success' : 'accent'}>
+              {profile?.role === 'platform-admin' ? 'Platform Admin' : 'Member'}
             </Badge>
           </div>
 
@@ -117,9 +117,9 @@ export function AppShell() {
               </p>
             </div>
             <Button asChild variant="secondary" size="sm">
-              <NavLink to={profile?.role === 'admin' ? '/admin' : '/rewards'}>
+              <NavLink to={profile?.role === 'platform-admin' ? '/admin' : '/rewards'}>
                 <Settings2 className="size-4" />
-                {profile?.role === 'admin' ? 'Staff tools' : 'Browse rewards'}
+                {profile?.role === 'platform-admin' ? 'Staff tools' : 'Browse rewards'}
               </NavLink>
             </Button>
           </header>
