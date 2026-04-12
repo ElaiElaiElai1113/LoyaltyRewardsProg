@@ -1,42 +1,60 @@
-import { readStore, updateStore } from '@/lib/mock-store'
 import type { Product } from '@/types/domain'
 import type { ProductDraftFormValues } from '@/types/forms'
-import { delay } from './shared'
+import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
 
 export const productsService = {
   async getProducts(businessId?: string): Promise<Product[]> {
-    await delay()
-    const products = readStore().products
-    const filtered = businessId ? products.filter((p) => p.businessId === businessId) : products
-    return filtered.sort((a, b) => Number(b.featured) - Number(a.featured))
+    const sb = requireSupabase()
+
+    let query = sb.from('products').select('*')
+    if (businessId) {
+      query = query.eq('business_id', businessId)
+    }
+
+    const { data, error } = await query
+    if (error) throw new Error('Failed to load products.')
+
+    return (data as Record<string, unknown>[])
+      .map((row) => camelCaseRow(row) as unknown as Product)
+      .sort((a, b) => Number(b.featured) - Number(a.featured))
   },
 
   async getProductById(productId: string): Promise<Product | null> {
-    await delay()
-    return readStore().products.find((p) => p.id === productId) ?? null
+    const sb = requireSupabase()
+
+    const { data, error } = await sb
+      .from('products')
+      .select('*')
+      .eq('id', productId)
+      .single()
+
+    if (error || !data) return null
+    return camelCaseRow(data) as unknown as Product
   },
 
   async createProduct(values: ProductDraftFormValues): Promise<Product> {
-    await delay()
-    const product: Product = {
-      id: crypto.randomUUID(),
-      ...values,
-      featured: false,
+    const sb = requireSupabase()
+
+    const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
+
+    const { data, error } = await sb
+      .from('products')
+      .insert({ ...snakeValues, featured: false })
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error('Failed to create product.')
     }
-    updateStore((store) => ({
-      ...store,
-      products: [product, ...store.products],
-      adminLogs: [
-        {
-          id: crypto.randomUUID(),
-          actorName: 'Velvet Brew Admin',
-          action: 'Product created',
-          details: `Added ${product.title} to the shop.`,
-          createdAt: new Date().toISOString(),
-        },
-        ...store.adminLogs,
-      ],
-    }))
+
+    const product = camelCaseRow(data) as unknown as Product
+
+    await sb.from('admin_logs').insert({
+      actor_name: 'Business Owner',
+      action: 'Product created',
+      details: `Added ${product.title} to the shop.`,
+    })
+
     return product
   },
 }

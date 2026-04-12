@@ -36,7 +36,7 @@ export function CustomerLayout() {
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex flex-col">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.3em] text-on-surface-variant/80">
-                Velvet Brew
+                Cafe Cliche
               </span>
               <span className="font-serif text-2xl tracking-tight text-primary">Loyalty</span>
             </NavLink>
@@ -78,7 +78,7 @@ export function CustomerLayout() {
 
               <Avatar className="size-10 border-2 border-surface-highest ring-2 ring-primary/5">
                 <AvatarFallback className="bg-surface-low font-medium text-primary">
-                  {getInitials(profile?.fullName ?? 'VB')}
+                  {getInitials(profile?.fullName ?? 'CC')}
                 </AvatarFallback>
               </Avatar>
 
@@ -103,7 +103,7 @@ export function CustomerLayout() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
-              <span className="font-serif text-xl tracking-tight text-primary">Velvet Brew</span>
+              <span className="font-serif text-xl tracking-tight text-primary">Cafe Cliche</span>
               <p className="mt-4 text-sm leading-relaxed text-on-surface-variant/80">
                 Earn points on every purchase and redeem them for rewards you love.
               </p>
@@ -142,7 +142,7 @@ export function CustomerLayout() {
             </div>
           </div>
           <div className="mt-12 border-t border-outline-variant/10 pt-8 text-center text-xs text-on-surface-variant/70">
-            Copyright 2024 Velvet Brew Artisanal Coffee. All rights reserved.
+            Copyright 2024 Cafe Cliche Artisanal Coffee. All rights reserved.
           </div>
         </div>
       </footer>

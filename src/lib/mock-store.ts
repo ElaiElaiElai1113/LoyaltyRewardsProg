@@ -14,27 +14,27 @@ import type {
   UserRole,
 } from '@/types/domain'
 
-const STORAGE_KEY = 'velvet-brew-store-v1'
-const CART_KEY = 'velvet-brew-cart-v1'
+const STORAGE_KEY = 'loyalty-platform-store-v3'
+const CART_KEY = 'loyalty-platform-cart-v1'
 
 // ─── Businesses ────────────────────────────────────────────────
 
 const businesses: Business[] = [
   {
-    id: 'biz-velvet-brew',
-    name: 'Velvet Brew',
-    slug: 'velvet-brew',
-    description: 'Artisanal coffee roasters specializing in single-origin beans and handcrafted drinks.',
+    id: 'biz-cafe-cliche',
+    name: 'Cafe Cliche',
+    slug: 'cafe-cliche',
+    description: 'A trendy neighborhood cafe known for artisanal coffee and playful twists on classic drinks.',
     earnRate: 10,
     taxRate: 0.0875,
     currency: 'USD',
     active: true,
   },
   {
-    id: 'biz-cafe-luna',
-    name: 'Cafe Luna',
-    slug: 'cafe-luna',
-    description: 'A cozy bakery and cafe with fresh pastries, sandwiches, and specialty teas.',
+    id: 'biz-mystic-coffee',
+    name: 'Mystic Coffee',
+    slug: 'mystic-coffee',
+    description: 'A mystical coffee experience with ethically sourced beans, herbal infusions, and enchanted blends.',
     earnRate: 8,
     taxRate: 0.0925,
     currency: 'USD',
@@ -48,10 +48,10 @@ const profiles: Profile[] = [
   {
     id: 'profile-customer',
     fullName: 'Ava Mercer',
-    email: 'ava@velvetbrew.co',
+    email: 'ava@cafecliche.co',
     phone: '+1 (415) 555-0188',
     location: 'Mission District',
-    favoriteOrder: 'Velvet oat latte',
+    favoriteOrder: 'Oat milk latte',
     joinedAt: '2025-11-12T08:00:00.000Z',
     role: 'customer',
   },
@@ -66,26 +66,26 @@ const profiles: Profile[] = [
     role: 'platform-admin',
   },
   {
-    id: 'profile-velvet-owner',
+    id: 'profile-cliche-owner',
     fullName: 'Isabella Chen',
-    email: 'owner@velvetbrew.co',
+    email: 'owner@cafecliche.co',
     phone: '+1 (415) 555-0101',
     location: 'Valencia Street',
-    favoriteOrder: 'Velvet oat latte',
+    favoriteOrder: 'Oat milk latte',
     joinedAt: '2025-01-15T08:00:00.000Z',
     role: 'business-owner',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
   },
   {
-    id: 'profile-luna-owner',
+    id: 'profile-mystic-owner',
     fullName: 'Marcus Webb',
-    email: 'owner@cafeluna.co',
+    email: 'owner@mysticcoffee.co',
     phone: '+1 (415) 555-0202',
     location: 'Noe Valley',
     favoriteOrder: 'Matcha latte',
     joinedAt: '2025-02-01T08:00:00.000Z',
     role: 'business-owner',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
   },
 ]
 
@@ -100,7 +100,7 @@ const balances: RewardBalance[] = [
     tierProgress: 85,
   },
   {
-    profileId: 'profile-admin',
+    profileId: 'profile-platform-admin',
     points: 960,
     nextRewardPoints: 1200,
     availableCredits: 3,
@@ -113,8 +113,8 @@ const balances: RewardBalance[] = [
 const rewards: Reward[] = [
   {
     id: 'reward-1',
-    businessId: 'biz-velvet-brew',
-    title: 'Signature Velvet Latte',
+    businessId: 'biz-cafe-cliche',
+    title: 'Signature Cliche Latte',
     description: 'Redeem any handcrafted latte with your choice of milk and syrup.',
     category: 'Drink',
     pointsCost: 250,
@@ -124,7 +124,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-2',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Cold Brew Flight',
     description: 'Sample three seasonal cold brew profiles in one curated tasting.',
     category: 'Experience',
@@ -135,7 +135,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-3',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Butter Croissant Pairing',
     description: 'Fresh-baked croissant paired with any small brewed coffee.',
     category: 'Pastry',
@@ -146,9 +146,9 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-4',
-    businessId: 'biz-velvet-brew',
-    title: 'Velvet Brew Tote',
-    description: 'Canvas tote in oat with embossed monogram and internal bottle sleeve.',
+    businessId: 'biz-cafe-cliche',
+    title: 'Cafe Cliche Tote',
+    description: 'Canvas tote with embossed logo and internal bottle sleeve.',
     category: 'Merch',
     pointsCost: 700,
     inventory: 12,
@@ -157,8 +157,8 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-5',
-    businessId: 'biz-cafe-luna',
-    title: 'Matcha Latte',
+    businessId: 'biz-mystic-coffee',
+    title: 'Mystic Matcha Latte',
     description: 'Ceremonial-grade matcha whisked with your choice of milk.',
     category: 'Drink',
     pointsCost: 200,
@@ -168,7 +168,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-6',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Almond Croissant',
     description: 'Flaky croissant filled with almond cream and topped with sliced almonds.',
     category: 'Pastry',
@@ -179,9 +179,9 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-7',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Afternoon Tea Set',
-    description: 'Pot of premium tea served with a selection of three mini pastries.',
+    description: 'Pot of premium herbal tea served with a selection of three mini pastries.',
     category: 'Experience',
     pointsCost: 400,
     inventory: 15,
@@ -195,8 +195,8 @@ const rewards: Reward[] = [
 const products: Product[] = [
   {
     id: 'product-1',
-    businessId: 'biz-velvet-brew',
-    title: 'Velvet Oat Latte',
+    businessId: 'biz-cafe-cliche',
+    title: 'Oat Milk Latte',
     description: 'Our signature oat milk latte with house-made vanilla syrup.',
     category: 'Coffee',
     price: 5.50,
@@ -206,7 +206,7 @@ const products: Product[] = [
   },
   {
     id: 'product-2',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Cold Brew Concentrate 32oz',
     description: 'Take home our 24-hour cold brew concentrate. Dilute to taste.',
     category: 'Coffee',
@@ -217,7 +217,7 @@ const products: Product[] = [
   },
   {
     id: 'product-3',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Pistachio Cardamom Bun',
     description: 'Flaky laminated pastry with pistachio frangipane and cardamom glaze.',
     category: 'Pastry',
@@ -228,7 +228,7 @@ const products: Product[] = [
   },
   {
     id: 'product-4',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Single Origin: Ethiopia Yirgacheffe',
     description: '12oz bag of light-roasted whole beans with floral and citrus notes.',
     category: 'Coffee',
@@ -239,9 +239,9 @@ const products: Product[] = [
   },
   {
     id: 'product-5',
-    businessId: 'biz-velvet-brew',
-    title: 'Velvet Brew Ceramic Tumbler',
-    description: '16oz double-walled ceramic tumbler in oat glaze with silicone lid.',
+    businessId: 'biz-cafe-cliche',
+    title: 'Cafe Cliche Ceramic Tumbler',
+    description: '16oz double-walled ceramic tumbler in matte black with silicone lid.',
     category: 'Merch',
     price: 28.00,
     inventory: 25,
@@ -250,7 +250,7 @@ const products: Product[] = [
   },
   {
     id: 'product-6',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Pour-Over Starter Kit',
     description: 'Ceramic dripper, 100 filters, and a 12oz sample roast.',
     category: 'Equipment',
@@ -261,7 +261,7 @@ const products: Product[] = [
   },
   {
     id: 'product-7',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Chai Spice Latte',
     description: 'House-blended chai with cinnamon, cardamom, ginger, and steamed milk.',
     category: 'Coffee',
@@ -272,8 +272,8 @@ const products: Product[] = [
   },
   {
     id: 'product-8',
-    businessId: 'biz-cafe-luna',
-    title: 'Luna Breakfast Sandwich',
+    businessId: 'biz-mystic-coffee',
+    title: 'Mystic Breakfast Sandwich',
     description: 'Scrambled eggs, gruyere, arugula, and truffle aioli on brioche.',
     category: 'Pastry',
     price: 9.50,
@@ -283,7 +283,7 @@ const products: Product[] = [
   },
   {
     id: 'product-9',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Lavender Honey Scone',
     description: 'Buttery scone with dried lavender and a honey glaze drizzle.',
     category: 'Pastry',
@@ -294,9 +294,9 @@ const products: Product[] = [
   },
   {
     id: 'product-10',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Premium Tea Sampler',
-    description: 'Set of 4 loose-leaf teas: Earl Grey, Jasmine, Chamomile, and Darjeeling.',
+    description: 'Set of 4 loose-leaf herbal teas: Chamomile, Peppermint, Hibiscus, and Lavender.',
     category: 'Coffee',
     price: 22.00,
     inventory: 20,
@@ -305,9 +305,9 @@ const products: Product[] = [
   },
   {
     id: 'product-11',
-    businessId: 'biz-cafe-luna',
-    title: 'Cafe Luna Mug',
-    description: 'Handmade ceramic mug with a crescent moon motif. 12oz capacity.',
+    businessId: 'biz-mystic-coffee',
+    title: 'Mystic Coffee Mug',
+    description: 'Handmade ceramic mug with a mystical mountain motif. 12oz capacity.',
     category: 'Merch',
     price: 24.00,
     inventory: 18,
@@ -321,7 +321,7 @@ const products: Product[] = [
 const promotions: Promotion[] = [
   {
     id: 'promo-1',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Double points after 3 PM',
     description: 'Stop by after 3 PM and earn twice the points on any handcrafted drink.',
     badge: 'Weekday perk',
@@ -331,27 +331,27 @@ const promotions: Promotion[] = [
   },
   {
     id: 'promo-2',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Spring pairing menu',
     description: 'Unlock a bonus 120 points when you pair a pistachio bun with any iced espresso.',
     badge: 'Seasonal',
     cta: 'Try the pairing',
     expiresAt: '2026-04-17T23:59:59.000Z',
-    audience: 'Silver and Gold',
+    audience: 'All members',
   },
   {
     id: 'promo-3',
-    businessId: 'biz-velvet-brew',
+    businessId: 'biz-cafe-cliche',
     title: 'Bring-a-friend Saturdays',
     description: 'Invite a friend to scan your code in-store and both of you receive a surprise bonus.',
     badge: 'Referral',
     cta: 'Share your code',
     expiresAt: '2026-05-01T23:59:59.000Z',
-    audience: 'Gold members',
+    audience: 'All members',
   },
   {
     id: 'promo-4',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Tea Tuesday Bonus',
     description: 'Order any tea on Tuesdays and earn triple points all day.',
     badge: 'Weekly',
@@ -361,7 +361,7 @@ const promotions: Promotion[] = [
   },
   {
     id: 'promo-5',
-    businessId: 'biz-cafe-luna',
+    businessId: 'biz-mystic-coffee',
     title: 'Brunch Bundle',
     description: 'Get a free pastry when you order any breakfast sandwich before 11 AM.',
     badge: 'Weekend',
@@ -379,7 +379,7 @@ const activities: Activity[] = [
     profileId: 'profile-customer',
     type: 'earned',
     title: 'Morning purchase',
-    description: 'Velvet oat latte and cardamom bun at Valencia St.',
+    description: 'Oat milk latte and cardamom bun at Valencia St.',
     points: 96,
     createdAt: '2026-04-09T08:12:00.000Z',
     status: 'posted',
@@ -406,7 +406,7 @@ const activities: Activity[] = [
   },
   {
     id: 'activity-4',
-    profileId: 'profile-admin',
+    profileId: 'profile-platform-admin',
     type: 'earned',
     title: 'Staff training visit',
     description: 'Cortado and tasting notes session.',

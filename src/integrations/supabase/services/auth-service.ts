@@ -1,105 +1,103 @@
-import { getProfileByRole, readStore, setSession, updateStore } from '@/lib/mock-store'
 import type { Profile, UserRole } from '@/types/domain'
 import type { AuthFormValues } from '@/types/forms'
-
-import { delay } from './shared'
-
-function createBalance(profileId: string) {
-  return {
-    profileId,
-    points: 120,
-    nextRewardPoints: 300,
-    availableCredits: 1,
-    tierProgress: 18,
-  }
-}
+import { requireSupabase, camelCaseRow } from './shared'
 
 export const authService = {
-  async getSessionProfile() {
-    await delay()
+  async getSessionProfile(): Promise<Profile | null> {
+    const sb = requireSupabase()
 
-    const store = readStore()
-    const session = store.session
+    const { data: { session } } = await sb.auth.getSession()
+    if (!session) return null
 
-    if (!session) {
-      return null
-    }
+    const { data: row, error } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', session.user.id)
+      .single()
 
-    return store.profiles.find((profile) => profile.id === session.profileId) ?? null
+    if (error || !row) return null
+    return camelCaseRow(row) as unknown as Profile
   },
 
-  async signIn(input: AuthFormValues) {
-    await delay()
+  async signIn(input: AuthFormValues): Promise<Profile> {
+    const sb = requireSupabase()
 
-    const store = readStore()
-    const profile =
-      store.profiles.find(
-        (candidate) =>
-          candidate.email.toLowerCase() === input.email.toLowerCase() &&
-          candidate.role === input.role,
-      ) ?? null
+    const { error: authError } = await sb.auth.signInWithPassword({
+      email: input.email,
+      password: input.password,
+    })
 
-    if (!profile) {
-      throw new Error('No account matches that email yet. Try creating one first.')
+    if (authError) {
+      throw new Error(authError.message)
     }
 
-    setSession({ profileId: profile.id, role: profile.role, businessId: profile.businessId })
+    const { data: row, error: profileError } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('email', input.email.toLowerCase())
+      .single()
+
+    if (profileError || !row) {
+      throw new Error('Profile not found. Try creating an account first.')
+    }
+
+    const profile = camelCaseRow(row) as unknown as Profile
+    if (profile.role !== input.role) {
+      await sb.auth.signOut()
+      throw new Error(`This account is a ${profile.role}, not a ${input.role}.`)
+    }
+
     return profile
   },
 
-  async signUp(input: AuthFormValues) {
-    await delay()
+  async signUp(input: AuthFormValues): Promise<Profile> {
+    const sb = requireSupabase()
 
     const name = input.fullName?.trim()
-
     if (!name) {
       throw new Error('Enter your full name to create an account.')
     }
 
-    const existing = readStore().profiles.find(
-      (profile) => profile.email.toLowerCase() === input.email.toLowerCase(),
-    )
-
-    if (existing) {
-      throw new Error('That email already exists. Try signing in instead.')
-    }
-
-    const profile: Profile = {
-      id: crypto.randomUUID(),
-      fullName: name,
+    const { error: authError } = await sb.auth.signUp({
       email: input.email,
-      phone: '+1 (000) 000-0000',
-      location: 'Downtown',
-      favoriteOrder: 'House espresso',
-      joinedAt: new Date().toISOString(),
-      role: input.role,
+      password: input.password,
+      options: {
+        data: {
+          full_name: name,
+        },
+      },
+    })
+
+    if (authError) {
+      if (authError.message.includes('already registered')) {
+        throw new Error('That email already exists. Try signing in instead.')
+      }
+      throw new Error(authError.message)
     }
 
-    updateStore((store) => ({
-      ...store,
-      profiles: [profile, ...store.profiles],
-      balances: [createBalance(profile.id), ...store.balances],
-      session: { profileId: profile.id, role: profile.role, businessId: profile.businessId },
-    }))
+    // Auth trigger creates profile & balance automatically.
+    // Fetch the profile that was just created.
+    const { data: row, error: profileError } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('email', input.email)
+      .single()
 
-    return profile
-  },
-
-  async continueAsDemo(role: UserRole) {
-    await delay(80)
-
-    const profile = getProfileByRole(role)
-
-    if (!profile) {
-      throw new Error('Demo account is unavailable.')
+    if (profileError || !row) {
+      throw new Error('Account created but profile could not be loaded. Please sign in.')
     }
 
-    setSession({ profileId: profile.id, role: profile.role, businessId: profile.businessId })
-    return profile
+    return camelCaseRow(row) as unknown as Profile
   },
 
-  async signOut() {
-    await delay(60)
-    setSession(null)
+  async continueAsDemo(_role: UserRole): Promise<Profile> {
+    throw new Error(
+      'Demo mode is not available with the live database. Please sign in or create an account.',
+    )
+  },
+
+  async signOut(): Promise<void> {
+    const sb = requireSupabase()
+    await sb.auth.signOut()
   },
 }

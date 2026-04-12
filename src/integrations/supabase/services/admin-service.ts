@@ -1,83 +1,149 @@
-import { readStore, updateStore } from '@/lib/mock-store'
-import type { Profile } from '@/types/domain'
+import type { Activity, Profile, Redemption } from '@/types/domain'
 import type { RewardAdjustmentFormValues } from '@/types/forms'
+import { requireSupabase, camelCaseRow } from './shared'
 
-import { delay } from './shared'
-
-function recalculateTierProgress(points: number, target: number) {
+function toTierProgress(points: number, target: number) {
   return Math.max(0, Math.min(100, Math.round((points / target) * 100)))
 }
 
 export const adminService = {
   async getUsers() {
-    await delay()
+    const sb = requireSupabase()
 
-    const store = readStore()
+    const { data: profileRows, error: profError } = await sb
+      .from('profiles')
+      .select('*')
 
-    return store.profiles.map((profile) => ({
-      profile,
-      balance: store.balances.find((balance) => balance.profileId === profile.id) ?? null,
-    }))
+    if (profError) throw new Error('Failed to load users.')
+
+    const { data: balanceRows, error: balError } = await sb
+      .from('reward_balances')
+      .select('*')
+
+    if (balError) throw new Error('Failed to load balances.')
+
+    const balanceMap = new Map(
+      (balanceRows as Record<string, unknown>[]).map((b) => {
+        const mapped = camelCaseRow(b)
+        return [mapped.profileId as string, mapped]
+      }),
+    )
+
+    return (profileRows as Record<string, unknown>[]).map((row) => {
+      const profile = camelCaseRow(row) as unknown as Profile
+      const rawBalance = balanceMap.get(profile.id)
+      const balance = rawBalance
+        ? {
+            profileId: rawBalance.profileId as string,
+            points: rawBalance.points as number,
+            nextRewardPoints: rawBalance.nextRewardPoints as number,
+            availableCredits: rawBalance.availableCredits as number,
+            tierProgress: toTierProgress(rawBalance.points as number, rawBalance.nextRewardPoints as number),
+          }
+        : null
+      return { profile, balance }
+    })
   },
 
   async getOverview() {
-    await delay()
-    const store = readStore()
+    const sb = requireSupabase()
 
-    return {
-      redemptions: store.redemptions.sort((a, b) => b.redeemedAt.localeCompare(a.redeemedAt)),
-      adminLogs: store.adminLogs.sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-      activities: store.activities.sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-    }
+    const [redemptionsResult, logsResult, activitiesResult] = await Promise.all([
+      sb.from('redemptions').select('*').order('redeemed_at', { ascending: false }),
+      sb.from('admin_logs').select('*').order('created_at', { ascending: false }),
+      sb.from('activities').select('*').order('created_at', { ascending: false }),
+    ])
+
+    const redemptions = (redemptionsResult.data ?? []).map((r) => {
+      const m = camelCaseRow(r as Record<string, unknown>)
+      return {
+        id: m.id as string,
+        profileId: m.profileId as string,
+        rewardId: m.rewardId as string,
+        rewardTitle: m.rewardTitle as string,
+        pointsCost: m.pointsCost as number,
+        notes: m.notes as string | undefined,
+        redeemedAt: m.redeemedAt as string,
+        status: m.status as Redemption['status'],
+      }
+    })
+
+    const adminLogs = (logsResult.data ?? []).map((l) => {
+      const m = camelCaseRow(l as Record<string, unknown>)
+      return {
+        id: m.id as string,
+        actorName: m.actorName as string,
+        action: m.action as string,
+        details: m.details as string,
+        createdAt: m.createdAt as string,
+      }
+    })
+
+    const activities = (activitiesResult.data ?? []).map((a) => {
+      const m = camelCaseRow(a as Record<string, unknown>)
+      return {
+        id: m.id as string,
+        profileId: m.profileId as string,
+        type: m.type as Activity['type'],
+        title: m.title as string,
+        description: m.description as string,
+        points: m.points as number,
+        createdAt: m.createdAt as string,
+        status: m.status as Activity['status'],
+      }
+    })
+
+    return { redemptions, adminLogs, activities }
   },
 
   async adjustRewards(values: RewardAdjustmentFormValues, actor: Profile) {
-    await delay()
+    const sb = requireSupabase()
 
-    const store = readStore()
-    const target = store.profiles.find((profile) => profile.id === values.profileId)
+    // Fetch target profile
+    const { data: target, error: targetError } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', values.profileId)
+      .single()
 
-    if (!target) {
+    if (targetError || !target) {
       throw new Error('Member not found.')
     }
 
-    updateStore((currentStore) => ({
-      ...currentStore,
-      balances: currentStore.balances.map((balance) =>
-        balance.profileId === values.profileId
-          ? {
-              ...balance,
-              points: Math.max(0, balance.points + values.delta),
-              tierProgress: recalculateTierProgress(
-                Math.max(0, balance.points + values.delta),
-                Math.max(balance.nextRewardPoints, 1),
-              ),
-            }
-          : balance,
-      ),
-      activities: [
-        {
-          id: crypto.randomUUID(),
-          profileId: values.profileId,
-          type: 'adjustment',
-          title: values.delta >= 0 ? 'Points added by staff' : 'Points deducted by staff',
-          description: values.reason,
-          points: values.delta,
-          createdAt: new Date().toISOString(),
-          status: 'posted',
-        },
-        ...currentStore.activities,
-      ],
-      adminLogs: [
-        {
-          id: crypto.randomUUID(),
-          actorName: actor.fullName,
-          action: 'Manual reward adjustment',
-          details: `${values.delta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(values.delta)} points for ${target.fullName}.`,
-          createdAt: new Date().toISOString(),
-        },
-        ...currentStore.adminLogs,
-      ],
-    }))
+    // Fetch current balance
+    const { data: balance, error: balError } = await sb
+      .from('reward_balances')
+      .select('*')
+      .eq('profile_id', values.profileId)
+      .single()
+
+    if (balError || !balance) {
+      throw new Error('Balance not found.')
+    }
+
+    const newPoints = Math.max(0, balance.points + values.delta)
+
+    // Update balance
+    await sb
+      .from('reward_balances')
+      .update({ points: newPoints })
+      .eq('profile_id', values.profileId)
+
+    // Log activity
+    await sb.from('activities').insert({
+      profile_id: values.profileId,
+      type: 'adjustment',
+      title: values.delta >= 0 ? 'Points added by staff' : 'Points deducted by staff',
+      description: values.reason,
+      points: values.delta,
+      status: 'posted',
+    })
+
+    // Log admin action
+    await sb.from('admin_logs').insert({
+      actor_name: actor.fullName,
+      action: 'Manual reward adjustment',
+      details: `${values.delta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(values.delta)} points for ${(target as Record<string, unknown>).full_name}.`,
+    })
   },
 }

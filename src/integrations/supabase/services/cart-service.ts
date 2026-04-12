@@ -1,15 +1,12 @@
 import { readCart, writeCart, clearCart } from '@/lib/mock-store'
 import type { CartItem } from '@/types/domain'
-import { delay } from './shared'
 
 export const cartService = {
   async getCart(): Promise<CartItem[]> {
-    await delay(40)
     return readCart()
   },
 
   async addItem(productId: string, quantity: number = 1): Promise<CartItem[]> {
-    await delay(40)
     const items = readCart()
     const existing = items.find((i) => i.productId === productId)
     if (existing) {
@@ -22,7 +19,6 @@ export const cartService = {
   },
 
   async updateQuantity(productId: string, quantity: number): Promise<CartItem[]> {
-    await delay(40)
     let items = readCart()
     if (quantity <= 0) {
       items = items.filter((i) => i.productId !== productId)
@@ -35,14 +31,12 @@ export const cartService = {
   },
 
   async removeItem(productId: string): Promise<CartItem[]> {
-    await delay(40)
     const items = readCart().filter((i) => i.productId !== productId)
     writeCart(items)
     return items
   },
 
   async emptyCart(): Promise<void> {
-    await delay(40)
     clearCart()
   },
 }

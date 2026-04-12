@@ -52,6 +52,20 @@ export function AdminPage() {
   const createProduct = useCreateProduct()
   const updateSettings = useUpdateBusinessSettings()
 
+  const bizColorClass = (bizId: string) => {
+    const idx = businesses.data?.findIndex((b) => b.id === bizId) ?? 0
+    return idx === 0
+      ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
+      : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
+  }
+
+  const bizBgClass = (bizId: string) => {
+    const idx = businesses.data?.findIndex((b) => b.id === bizId) ?? 0
+    return idx === 0
+      ? 'bg-gradient-to-br from-[#8B4513]/5 to-[#654321]/5 hover:from-[#8B4513]/10 hover:to-[#654321]/10'
+      : 'bg-gradient-to-br from-[#5B2C6F]/5 to-[#4A235A]/5 hover:from-[#5B2C6F]/10 hover:to-[#4A235A]/10'
+  }
+
   const adjustmentForm = useForm<RewardAdjustmentFormValues>({
     resolver: zodResolver(rewardAdjustmentSchema),
     defaultValues: {
@@ -170,7 +184,7 @@ export function AdminPage() {
       </div>
 
       <Tabs defaultValue="members" className="space-y-12">
-        <div className="sticky top-24 z-40 -mx-6 bg-surface/95 px-6 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
+        <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
           <TabsList className="w-full max-w-4xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
             <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Members</TabsTrigger>
             <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Rewards</TabsTrigger>
@@ -388,9 +402,7 @@ export function AdminPage() {
                   >
                     <div className="flex items-center gap-4">
                       <div className={`size-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold ${
-                        product.businessId === 'biz-velvet-brew'
-                          ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
-                          : 'bg-gradient-to-br from-[#D4A574] to-[#C19A6B]'
+                        bizColorClass(product.businessId)
                       }`}>
                         {product.title.charAt(0)}
                       </div>
@@ -509,18 +521,18 @@ export function AdminPage() {
                   <div
                     key={biz.id}
                     className={`group rounded-3xl p-8 border border-outline-variant/5 hover:shadow-xl transition-all overflow-hidden ${
-                      biz.id === 'biz-velvet-brew'
+                      biz.id === 'biz-cafe-cliche'
                         ? 'bg-gradient-to-br from-[#8B4513]/5 to-[#654321]/5 hover:from-[#8B4513]/10 hover:to-[#654321]/10'
-                        : 'bg-gradient-to-br from-[#D4A574]/5 to-[#C19A6B]/5 hover:from-[#D4A574]/10 hover:to-[#C19A6B]/10'
+                        : 'bg-gradient-to-br from-[#5B2C6F]/5 to-[#4A235A]/5 hover:from-[#5B2C6F]/10 hover:to-[#4A235A]/10'
                     }`}
                   >
                     <div className="flex items-start justify-between">
                       <div className="space-y-2">
                         <div className="flex items-center gap-3">
                           <div className={`size-12 rounded-xl flex items-center justify-center text-white text-lg font-bold ${
-                            biz.id === 'biz-velvet-brew'
+                            biz.id === 'biz-cafe-cliche'
                               ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
-                              : 'bg-gradient-to-br from-[#D4A574] to-[#C19A6B]'
+                              : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
                           }`}>
                             {biz.name.charAt(0)}
                           </div>
@@ -767,9 +779,9 @@ function BusinessSettingsCard({
     <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-6 space-y-5">
       <div className="flex items-center gap-3">
         <div className={`size-10 rounded-xl flex items-center justify-center text-white text-lg font-bold ${
-          business.id === 'biz-velvet-brew'
+          business.id === 'biz-cafe-cliche'
             ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
-            : 'bg-gradient-to-br from-[#D4A574] to-[#C19A6B]'
+            : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
         }`}>
           {business.name.charAt(0)}
         </div>

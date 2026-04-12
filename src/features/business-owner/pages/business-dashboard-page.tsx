@@ -21,9 +21,9 @@ export function BusinessDashboardPage() {
   }
 
   const businessColors =
-    business?.slug === 'velvet-brew'
+    business?.slug === 'cafe-cliche'
       ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
-      : { primary: 'from-[#D4A574] to-[#C19A6B]', light: 'from-[#D4A574]/10 to-[#C19A6B]/10' }
+      : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
 
   return (
     <div className="space-y-16">

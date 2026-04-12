@@ -48,7 +48,7 @@ export function AppShell() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                Velvet Brew
+                Cafe Cliche
               </p>
               <h1 className="mt-1 font-serif text-3xl tracking-[-0.04em] text-foreground">
                 Loyalty
@@ -61,7 +61,7 @@ export function AppShell() {
 
           <div className="mt-6 flex items-center gap-3 rounded-[1.6rem] bg-card px-4 py-4">
             <Avatar className="size-12">
-              <AvatarFallback>{getInitials(profile?.fullName ?? 'VB')}</AvatarFallback>
+              <AvatarFallback>{getInitials(profile?.fullName ?? 'CC')}</AvatarFallback>
             </Avatar>
             <div className="min-w-0">
               <p className="truncate font-medium text-foreground">{profile?.fullName}</p>

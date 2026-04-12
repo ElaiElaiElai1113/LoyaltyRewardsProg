@@ -28,7 +28,7 @@ export function LandingPage() {
     resolver: zodResolver(authSchema),
     defaultValues: {
       ...defaultValues,
-      email: 'ava@velvetbrew.co',
+      email: 'ava@cafecliche.co',
     },
   })
 
@@ -59,7 +59,7 @@ export function LandingPage() {
             </Badge>
             <div className="max-w-3xl space-y-8">
               <h1 className="font-serif text-6xl tracking-tight leading-[0.95] md:text-8xl">
-                Velvet Brew.<br/>
+                Cafe Cliche.<br/>
                 Every visit<br/>
                 counts.
               </h1>
@@ -191,7 +191,7 @@ export function LandingPage() {
                   >
                     <div className="grid gap-3">
                       <Label htmlFor="signin-email">Email Address</Label>
-                      <Input id="signin-email" placeholder="ava@velvetbrew.co" {...signInForm.register('email')} />
+                      <Input id="signin-email" placeholder="ava@cafecliche.co" {...signInForm.register('email')} />
                     </div>
 
                     <div className="grid gap-3">
@@ -259,7 +259,7 @@ export function LandingPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="signup-email">Email Address</Label>
-                      <Input id="signup-email" placeholder="ava@velvetbrew.co" {...signUpForm.register('email')} />
+                      <Input id="signup-email" placeholder="ava@cafecliche.co" {...signUpForm.register('email')} />
                     </div>
 
                     <div className="grid gap-3">

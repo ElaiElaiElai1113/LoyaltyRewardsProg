@@ -13,9 +13,9 @@ export function SettingsPage() {
   }
 
   const businessColors =
-    business.slug === 'velvet-brew'
+    business.slug === 'cafe-cliche'
       ? { primary: 'from-[#8B4513] to-[#654321]' }
-      : { primary: 'from-[#D4A574] to-[#C19A6B]' }
+      : { primary: 'from-[#5B2C6F] to-[#4A235A]' }
 
   return (
     <div className="space-y-16">
