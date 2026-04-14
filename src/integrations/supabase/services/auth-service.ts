@@ -2,6 +2,19 @@ import type { Profile, UserRole } from '@/types/domain'
 import type { AuthFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow } from './shared'
 
+async function getProfileByUserId(userId: string): Promise<Profile | null> {
+  const sb = requireSupabase()
+
+  const { data: row, error } = await sb
+    .from('profiles')
+    .select('*')
+    .eq('id', userId)
+    .single()
+
+  if (error || !row) return null
+  return camelCaseRow(row) as unknown as Profile
+}
+
 export const authService = {
   async getSessionProfile(): Promise<Profile | null> {
     const sb = requireSupabase()
@@ -9,21 +22,15 @@ export const authService = {
     const { data: { session } } = await sb.auth.getSession()
     if (!session) return null
 
-    const { data: row, error } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('id', session.user.id)
-      .single()
-
-    if (error || !row) return null
-    return camelCaseRow(row) as unknown as Profile
+    return getProfileByUserId(session.user.id)
   },
 
   async signIn(input: AuthFormValues): Promise<Profile> {
     const sb = requireSupabase()
+    const email = input.email.trim().toLowerCase()
 
-    const { error: authError } = await sb.auth.signInWithPassword({
-      email: input.email,
+    const { data, error: authError } = await sb.auth.signInWithPassword({
+      email,
       password: input.password,
     })
 
@@ -31,17 +38,17 @@ export const authService = {
       throw new Error(authError.message)
     }
 
-    const { data: row, error: profileError } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('email', input.email.toLowerCase())
-      .single()
+    const userId = data.user?.id
+    if (!userId) {
+      throw new Error('Sign-in succeeded but the session user could not be loaded.')
+    }
 
-    if (profileError || !row) {
+    const profile = await getProfileByUserId(userId)
+    if (!profile) {
+      await sb.auth.signOut()
       throw new Error('Profile not found. Try creating an account first.')
     }
 
-    const profile = camelCaseRow(row) as unknown as Profile
     if (profile.role !== input.role) {
       await sb.auth.signOut()
       throw new Error(`This account is a ${profile.role}, not a ${input.role}.`)
@@ -54,12 +61,13 @@ export const authService = {
     const sb = requireSupabase()
 
     const name = input.fullName?.trim()
+    const email = input.email.trim().toLowerCase()
     if (!name) {
       throw new Error('Enter your full name to create an account.')
     }
 
-    const { error: authError } = await sb.auth.signUp({
-      email: input.email,
+    const { data, error: authError } = await sb.auth.signUp({
+      email,
       password: input.password,
       options: {
         data: {
@@ -77,17 +85,17 @@ export const authService = {
 
     // Auth trigger creates profile & balance automatically.
     // Fetch the profile that was just created.
-    const { data: row, error: profileError } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('email', input.email)
-      .single()
+    const userId = data.user?.id
+    if (!userId) {
+      throw new Error('Account created but the session user could not be loaded. Please sign in.')
+    }
 
-    if (profileError || !row) {
+    const profile = await getProfileByUserId(userId)
+    if (!profile) {
       throw new Error('Account created but profile could not be loaded. Please sign in.')
     }
 
-    return camelCaseRow(row) as unknown as Profile
+    return profile
   },
 
   async continueAsDemo(_role: UserRole): Promise<Profile> {

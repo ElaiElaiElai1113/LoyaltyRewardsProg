@@ -106,7 +106,10 @@ export const rewardsService = {
     }
   },
 
-  async createReward(values: RewardDraftFormValues): Promise<Reward> {
+  async createReward(
+    values: RewardDraftFormValues,
+    actorName = 'Business Owner',
+  ): Promise<Reward> {
     const sb = requireSupabase()
 
     const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
@@ -118,15 +121,69 @@ export const rewardsService = {
       .single()
 
     if (error || !data) {
-      throw new Error('Failed to create reward.')
+      throw new Error(error?.message ?? 'Failed to create reward.')
+    }
+
+    const reward = camelCaseRow(data) as unknown as Reward
+
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Reward created',
+      details: `Added ${reward.title} to the catalog.`,
+    })
+
+    if (logError) {
+      throw new Error(logError.message)
+    }
+
+    return reward
+  },
+
+  async deleteReward(rewardId: string, actorName = 'Platform Admin'): Promise<void> {
+    const sb = requireSupabase()
+
+    // Fetch reward info for logging
+    const reward = await this.getRewardById(rewardId)
+    if (!reward) return
+
+    const { error } = await sb.from('rewards').delete().eq('id', rewardId)
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Reward deleted',
+      details: `Removed ${reward.title} from the catalog.`,
+    })
+  },
+
+  async updateReward(
+    rewardId: string,
+    values: Partial<RewardDraftFormValues>,
+    actorName = 'Platform Admin',
+  ): Promise<Reward> {
+    const sb = requireSupabase()
+    const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
+
+    const { data, error } = await sb
+      .from('rewards')
+      .update(snakeValues)
+      .eq('id', rewardId)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to update reward.')
     }
 
     const reward = camelCaseRow(data) as unknown as Reward
 
     await sb.from('admin_logs').insert({
-      actor_name: 'Business Owner',
-      action: 'Reward created',
-      details: `Added ${reward.title} to the catalog.`,
+      actor_name: actorName,
+      action: 'Reward updated',
+      details: `Updated details for ${reward.title}.`,
     })
 
     return reward

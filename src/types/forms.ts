@@ -1,9 +1,9 @@
 import { z } from 'zod'
 
 export const authSchema = z.object({
-  fullName: z.string().min(2, 'Enter your name').optional(),
+  fullName: z.string().optional(),
   email: z.email('Enter a valid email'),
-  password: z.string().min(6, 'Use at least 6 characters'),
+  password: z.string().min(5, 'Use at least 5 characters'),
   role: z.enum(['customer', 'business-owner', 'platform-admin']),
 })
 

@@ -1,13 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Coffee, Gift, ShieldCheck, Sparkles } from 'lucide-react'
+import { Coffee, Gift, ShieldCheck, Sparkles, LogOut } from 'lucide-react'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { Controller, useForm } from 'react-hook-form'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authSchema, type AuthFormValues } from '@/types/forms'
@@ -20,8 +20,7 @@ const defaultValues: AuthFormValues = {
 }
 
 export function LandingPage() {
-  const navigate = useNavigate()
-  const { signIn, signUp, continueAsDemo } = useAuth()
+  const { signIn, signUp, continueAsDemo, signOut } = useAuth()
   const [error, setError] = useState<string | null>(null)
 
   const signInForm = useForm<AuthFormValues>({
@@ -37,18 +36,29 @@ export function LandingPage() {
     defaultValues,
   })
 
-  const navigateByRole = (role: AuthFormValues['role']) => {
-    if (role === 'platform-admin') {
-      navigate('/admin')
-    } else if (role === 'business-owner') {
-      navigate('/business/dashboard')
-    } else {
-      navigate('/dashboard')
-    }
-  }
-
   return (
-    <div className="min-h-screen px-4 py-8 md:px-8 lg:px-12 bg-surface">
+    <div className="relative min-h-screen px-4 py-8 md:px-8 lg:px-12 bg-surface">
+      {/* Emergency Logout for stuck sessions */}
+      <div className="absolute top-4 right-8 z-50">
+        <Button 
+          variant="outline" 
+          size="sm" 
+          className="rounded-full bg-white text-on-surface-variant hover:text-error hover:border-error"
+          onClick={async () => {
+            try {
+              setError(null)
+              await signOut()
+              window.location.reload()
+            } catch (err) {
+              console.error('Logout failed:', err)
+            }
+          }}
+        >
+          <LogOut className="size-4 mr-2" />
+          Troubleshoot: Force Logout
+        </Button>
+      </div>
+
       <div className="mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl gap-12 lg:grid-cols-[1.2fr_0.8fr]">
         <section className="relative overflow-hidden rounded-[3rem] bg-primary px-8 py-16 md:px-16 md:py-24 text-white shadow-card flex flex-col justify-between">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)] opacity-50" />
@@ -114,9 +124,12 @@ export function LandingPage() {
                 size="lg"
                 className="rounded-full px-10 h-14 font-bold tracking-wide"
                 onClick={async () => {
-                  setError(null)
-                  const profile = await continueAsDemo('customer')
-                  navigateByRole(profile.role)
+                  try {
+                    setError(null)
+                    await continueAsDemo('customer')
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'Demo unavailable.')
+                  }
                 }}
               >
                 Member
@@ -126,9 +139,12 @@ export function LandingPage() {
                 size="lg"
                 className="rounded-full px-10 h-14 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40"
                 onClick={async () => {
-                  setError(null)
-                  const profile = await continueAsDemo('business-owner')
-                  navigateByRole(profile.role)
+                  try {
+                    setError(null)
+                    await continueAsDemo('business-owner')
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'Demo unavailable.')
+                  }
                 }}
               >
                 Business Owner
@@ -138,14 +154,18 @@ export function LandingPage() {
                 size="lg"
                 className="rounded-full px-10 h-14 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40"
                 onClick={async () => {
-                  setError(null)
-                  const profile = await continueAsDemo('platform-admin')
-                  navigateByRole(profile.role)
+                  try {
+                    setError(null)
+                    await continueAsDemo('platform-admin')
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'Demo unavailable.')
+                  }
                 }}
               >
                 Platform Admin
               </Button>
             </div>
+            {error ? <p className="mt-4 text-sm font-bold text-red-300">{error}</p> : null}
             <p className="mt-6 text-xs font-medium italic text-white/75">
               Jump right in with a pre-loaded demo account.
             </p>
@@ -178,8 +198,7 @@ export function LandingPage() {
                     onSubmit={signInForm.handleSubmit(async (values) => {
                       try {
                         setError(null)
-                        const profile = await signIn(values)
-                        navigateByRole(profile.role)
+                        await signIn(values)
                       } catch (submissionError) {
                         setError(
                           submissionError instanceof Error
@@ -201,12 +220,22 @@ export function LandingPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="signin-role">Access Role</Label>
-                      <Input id="signin-role" list="role-options-signin" {...signInForm.register('role')} />
-                      <datalist id="role-options-signin">
-                        <option value="customer" />
-                        <option value="business-owner" />
-                        <option value="platform-admin" />
-                      </datalist>
+                      <Controller
+                        control={signInForm.control}
+                        name="role"
+                        render={({ field }) => (
+                          <Select value={field.value} onValueChange={field.onChange}>
+                            <SelectTrigger id="signin-role" className="rounded-xl h-12">
+                              <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="customer">Customer</SelectItem>
+                              <SelectItem value="business-owner">Business Owner</SelectItem>
+                              <SelectItem value="platform-admin">Platform Admin</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        )}
+                      />
                     </div>
 
                     {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
@@ -241,8 +270,7 @@ export function LandingPage() {
                     onSubmit={signUpForm.handleSubmit(async (values) => {
                       try {
                         setError(null)
-                        const profile = await signUp(values)
-                        navigateByRole(profile.role)
+                        await signUp(values)
                       } catch (submissionError) {
                         setError(
                           submissionError instanceof Error
@@ -259,7 +287,7 @@ export function LandingPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="signup-email">Email Address</Label>
-                      <Input id="signup-email" placeholder="ava@cafecliche.co" {...signUpForm.register('email')} />
+                      <Input id="signup-email" placeholder="you@example.com" {...signUpForm.register('email')} />
                     </div>
 
                     <div className="grid gap-3">
@@ -269,12 +297,10 @@ export function LandingPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="signup-role">Access Role</Label>
-                      <Input id="signup-role" list="role-options-signup" {...signUpForm.register('role')} />
-                      <datalist id="role-options-signup">
-                        <option value="customer" />
-                        <option value="business-owner" />
-                        <option value="platform-admin" />
-                      </datalist>
+                      <Input id="signup-role" value="Customer" disabled />
+                      <p className="text-xs text-on-surface-variant/75">
+                        Self-registration creates customer accounts only. Staff roles must be assigned in Supabase.
+                      </p>
                     </div>
 
                     {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}

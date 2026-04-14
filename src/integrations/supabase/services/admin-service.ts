@@ -124,13 +124,17 @@ export const adminService = {
     const newPoints = Math.max(0, balance.points + values.delta)
 
     // Update balance
-    await sb
+    const { error: updateError } = await sb
       .from('reward_balances')
       .update({ points: newPoints })
       .eq('profile_id', values.profileId)
 
+    if (updateError) {
+      throw new Error(updateError.message)
+    }
+
     // Log activity
-    await sb.from('activities').insert({
+    const { error: activityError } = await sb.from('activities').insert({
       profile_id: values.profileId,
       type: 'adjustment',
       title: values.delta >= 0 ? 'Points added by staff' : 'Points deducted by staff',
@@ -139,11 +143,56 @@ export const adminService = {
       status: 'posted',
     })
 
+    if (activityError) {
+      console.error('Activity log error:', activityError)
+      throw new Error(activityError.message)
+    }
+
     // Log admin action
-    await sb.from('admin_logs').insert({
-      actor_name: actor.fullName,
-      action: 'Manual reward adjustment',
-      details: `${values.delta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(values.delta)} points for ${(target as Record<string, unknown>).full_name}.`,
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actor?.fullName || 'Platform Admin',
+      action: 'Points Adjustment',
+      details: `${values.delta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(values.delta)} points for member ${values.profileId}. Reason: ${values.reason}`,
     })
+
+    if (logError) {
+      console.error('Admin log error:', logError)
+    }
+  },
+
+  async fulfillRedemption(redemptionId: string, actor: Profile) {
+    const sb = requireSupabase()
+
+    // Fetch redemption
+    const { data: redemption, error: fetchError } = await sb
+      .from('redemptions')
+      .select('*')
+      .eq('id', redemptionId)
+      .single()
+
+    if (fetchError || !redemption) {
+      throw new Error('Redemption not found.')
+    }
+
+    // Update status
+    const { error: updateError } = await sb
+      .from('redemptions')
+      .update({ status: 'fulfilled' })
+      .eq('id', redemptionId)
+
+    if (updateError) {
+      throw new Error(updateError.message)
+    }
+
+    // Log admin action
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actor.fullName,
+      action: 'Redemption fulfilled',
+      details: `Marked reward "${redemption.reward_title}" as fulfilled for member ID: ${redemption.profile_id}.`,
+    })
+
+    if (logError) {
+      throw new Error(logError.message)
+    }
   },
 }

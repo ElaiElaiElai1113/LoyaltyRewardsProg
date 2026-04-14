@@ -4,13 +4,11 @@ import { businessService } from '@/integrations/supabase/services/business-servi
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
-import { ordersService } from '@/integrations/supabase/services/orders-service'
-import { activityService } from '@/integrations/supabase/services/activity-service'
-import { adminService } from '@/integrations/supabase/services/admin-service'
+import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
 import { useAuth } from './use-auth'
 
 export function useBusinessOwnerData() {
-  const { session, profile } = useAuth()
+  const { session } = useAuth()
 
   const businessId = session?.businessId
 
@@ -47,9 +45,6 @@ export function useBusinessOwnerData() {
     queryKey: ['businessOrders', businessId],
     queryFn: async () => {
       if (!businessId) return []
-      // Business owners see all orders for their business
-      // We need a separate query for business-scoped orders
-      const { requireSupabase } = await import('@/integrations/supabase/services/shared')
       const sb = requireSupabase()
       const { data, error } = await sb
         .from('orders')
@@ -60,7 +55,6 @@ export function useBusinessOwnerData() {
       if (error) throw new Error('Failed to load orders.')
 
       return (data as Record<string, unknown>[]).map((orderRow) => {
-        const { camelCaseRow } = require('@/integrations/supabase/services/shared')
         const o = camelCaseRow(orderRow)
         const lineItems = ((orderRow).order_line_items ?? []) as Record<string, unknown>[]
         const items = lineItems.map((li) => {
@@ -92,17 +86,55 @@ export function useBusinessOwnerData() {
     enabled: !!businessId,
   })
 
+  // Get redemptions for this business only (via join with rewards)
+  const redemptionsQuery = useQuery({
+    queryKey: ['businessRedemptions', businessId],
+    queryFn: async () => {
+      if (!businessId) return []
+      const sb = requireSupabase()
+      
+      const { data, error } = await sb
+        .from('redemptions')
+        .select('*, rewards!inner(business_id)')
+        .eq('rewards.business_id', businessId)
+        .order('redeemed_at', { ascending: false })
+
+      if (error) throw new Error('Failed to load redemptions.')
+
+      return (data as Record<string, unknown>[]).map((r) => camelCaseRow(r) as any)
+    },
+    enabled: !!businessId,
+  })
+
   // Calculate business metrics
   const metricsQuery = useQuery({
     queryKey: ['metrics', businessId],
     queryFn: async () => {
-      if (!businessId || !profile?.id) return null
+      if (!businessId) return null
 
-      const users = await adminService.getUsers()
-      const activities = await activityService.getActivities(profile.id)
+      const sb = requireSupabase()
+      const [ordersResult, activitiesResult, promotionsResult] = await Promise.all([
+        sb
+          .from('orders')
+          .select('profile_id, total')
+          .eq('business_id', businessId),
+        sb
+          .from('activities')
+          .select('type, points, business_id')
+          .eq('business_id', businessId),
+        sb
+          .from('promotions')
+          .select('expires_at')
+          .eq('business_id', businessId),
+      ])
 
-      const orders = ordersQuery.data ?? []
-      const promotions = promotionsQuery.data ?? []
+      if (ordersResult.error) throw new Error('Failed to load order metrics.')
+      if (activitiesResult.error) throw new Error('Failed to load activity metrics.')
+      if (promotionsResult.error) throw new Error('Failed to load promotion metrics.')
+
+      const orders = ordersResult.data ?? []
+      const activities = activitiesResult.data ?? []
+      const promotions = promotionsResult.data ?? []
 
       const earnedPoints = activities
         .filter((a) => a.type === 'earned')
@@ -113,15 +145,15 @@ export function useBusinessOwnerData() {
         .reduce((sum, a) => sum + Math.abs(a.points), 0)
 
       return {
-        totalMembers: users.length,
+        totalMembers: new Set(orders.map((o) => o.profile_id)).size,
         totalOrders: orders.length,
-        totalRevenue: orders.reduce((sum, o) => sum + o.total, 0),
+        totalRevenue: orders.reduce((sum, o) => sum + Number(o.total), 0),
         pointsIssued: earnedPoints,
         pointsRedeemed: redeemedPoints,
-        activePromotions: promotions.filter((p) => new Date(p.expiresAt) > new Date()).length,
+        activePromotions: promotions.filter((p) => new Date(p.expires_at) > new Date()).length,
       }
     },
-    enabled: !!businessId && !!profile?.id,
+    enabled: !!businessId,
   })
 
   return {
@@ -130,12 +162,24 @@ export function useBusinessOwnerData() {
     rewards: rewardsQuery.data ?? [],
     promotions: promotionsQuery.data ?? [],
     orders: ordersQuery.data ?? [],
+    redemptions: redemptionsQuery.data ?? [],
     metrics: metricsQuery.data ?? null,
     isLoading:
       businessQuery.isLoading ||
       productsQuery.isLoading ||
       rewardsQuery.isLoading ||
       promotionsQuery.isLoading ||
+      ordersQuery.isLoading ||
+      redemptionsQuery.isLoading ||
       metricsQuery.isLoading,
+    error:
+      businessQuery.error ??
+      productsQuery.error ??
+      rewardsQuery.error ??
+      promotionsQuery.error ??
+      ordersQuery.error ??
+      redemptionsQuery.error ??
+      metricsQuery.error ??
+      null,
   }
 }

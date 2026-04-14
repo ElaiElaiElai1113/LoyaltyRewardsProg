@@ -26,11 +26,28 @@ import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 
+function getHomePathForRole(role: string) {
+  if (role === 'platform-admin') return '/admin'
+  if (role === 'business-owner') return '/business/dashboard'
+  return '/dashboard'
+}
+
+function RouteLoading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-surface">
+      <div className="text-center space-y-3">
+        <h1 className="font-serif text-3xl text-primary">Loading</h1>
+        <p className="text-on-surface-variant/80">Preparing your workspace.</p>
+      </div>
+    </div>
+  )
+}
+
 function LandingRoute() {
   const { profile, isLoading } = useAuth()
 
   if (isLoading) {
-    return null
+    return <RouteLoading />
   }
 
   if (profile) {
@@ -50,11 +67,15 @@ function ProtectedCustomerRoute() {
   const { profile, isLoading } = useAuth()
 
   if (isLoading) {
-    return null
+    return <RouteLoading />
   }
 
   if (!profile) {
     return <Navigate replace to="/" />
+  }
+
+  if (profile.role !== 'customer') {
+    return <Navigate replace to={getHomePathForRole(profile.role)} />
   }
 
   return <CustomerLayout />
@@ -64,11 +85,11 @@ function ProtectedAdminRoute() {
   const { profile, isLoading } = useAuth()
 
   if (isLoading) {
-    return null
+    return <RouteLoading />
   }
 
   if (!profile || profile.role !== 'platform-admin') {
-    return <Navigate replace to="/dashboard" />
+    return <Navigate replace to={profile ? getHomePathForRole(profile.role) : '/'} />
   }
 
   return <AdminLayout />
@@ -78,11 +99,11 @@ function ProtectedBusinessOwnerRoute() {
   const { profile, isLoading } = useAuth()
 
   if (isLoading) {
-    return null
+    return <RouteLoading />
   }
 
   if (!profile || profile.role !== 'business-owner') {
-    return <Navigate replace to="/dashboard" />
+    return <Navigate replace to={profile ? getHomePathForRole(profile.role) : '/'} />
   }
 
   return <BusinessOwnerLayout />

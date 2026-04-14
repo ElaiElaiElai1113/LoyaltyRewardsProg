@@ -27,15 +27,42 @@ const navigation = [
 
 export function BusinessOwnerLayout() {
   const { profile, signOut } = useAuth()
-  const { business } = useBusinessOwnerData()
+  const { business, isLoading, error } = useBusinessOwnerData()
 
-  if (profile?.role !== 'business-owner' || !business) {
+  if (isLoading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-surface">
+        <div className="text-center space-y-3">
+          <h1 className="font-serif text-3xl text-primary">Loading workspace</h1>
+          <p className="text-on-surface-variant/80">Fetching your business portal data.</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (profile?.role !== 'business-owner') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="text-center space-y-4">
           <h1 className="font-serif text-3xl text-primary">Access Denied</h1>
           <p className="text-on-surface-variant/80">This area is for business owners only.</p>
           <Button onClick={() => (window.location.href = '/dashboard')}>Return Home</Button>
+        </div>
+      </div>
+    )
+  }
+
+  if (!business) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-surface">
+        <div className="text-center space-y-4">
+          <h1 className="font-serif text-3xl text-primary">Business Setup Required</h1>
+          <p className="text-on-surface-variant/80">
+            {error instanceof Error
+              ? error.message
+              : 'This account does not have a business assigned yet.'}
+          </p>
+          <Button onClick={() => void signOut()}>Sign out</Button>
         </div>
       </div>
     )

@@ -19,7 +19,10 @@ export const promotionsService = {
       .sort((a, b) => a.expiresAt.localeCompare(b.expiresAt))
   },
 
-  async createPromotion(values: PromotionDraftFormValues & { businessId: string }): Promise<Promotion> {
+  async createPromotion(
+    values: PromotionDraftFormValues & { businessId: string },
+    actorName = 'Business Owner',
+  ): Promise<Promotion> {
     const sb = requireSupabase()
 
     const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
@@ -32,15 +35,65 @@ export const promotionsService = {
       .single()
 
     if (error || !data) {
-      throw new Error('Failed to create promotion.')
+      throw new Error(error?.message ?? 'Failed to create promotion.')
+    }
+
+    const promotion = camelCaseRow(data) as unknown as Promotion
+
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Promotion created',
+      details: `Created ${promotion.title}.`,
+    })
+
+    if (logError) {
+      throw new Error(logError.message)
+    }
+
+    return promotion
+  },
+
+  async deletePromotion(promotionId: string, actorName = 'Platform Admin'): Promise<void> {
+    const sb = requireSupabase()
+
+    const { error } = await sb.from('promotions').delete().eq('id', promotionId)
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Promotion deleted',
+      details: `Removed promotion ID: ${promotionId}.`,
+    })
+  },
+
+  async updatePromotion(
+    promotionId: string,
+    values: Partial<PromotionDraftFormValues>,
+    actorName = 'Platform Admin',
+  ): Promise<Promotion> {
+    const sb = requireSupabase()
+    const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
+
+    const { data, error } = await sb
+      .from('promotions')
+      .update(snakeValues)
+      .eq('id', promotionId)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to update promotion.')
     }
 
     const promotion = camelCaseRow(data) as unknown as Promotion
 
     await sb.from('admin_logs').insert({
-      actor_name: 'Business Owner',
-      action: 'Promotion created',
-      details: `Created ${promotion.title}.`,
+      actor_name: actorName,
+      action: 'Promotion updated',
+      details: `Updated details for ${promotion.title}.`,
     })
 
     return promotion

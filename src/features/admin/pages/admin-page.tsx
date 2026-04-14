@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle } from 'lucide-react'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
@@ -21,6 +21,10 @@ import {
   useCreateProduct,
   useCreatePromotion,
   useCreateReward,
+  useDeleteProduct,
+  useDeletePromotion,
+  useDeleteReward,
+  useFulfillRedemption,
   useUpdateBusinessSettings,
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
@@ -40,30 +44,31 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 export function AdminPage() {
   const { profile } = useAuth()
+  const [actionError, setActionError] = useState<string | null>(null)
   const users = useAdminUsers()
   const overview = useAdminOverview()
   const rewards = useRewards()
   const promotions = usePromotions()
   const businesses = useAdminBusinesses()
   const adminProducts = useAdminProducts()
+  
   const adjustRewards = useAdjustRewards(profile)
-  const createReward = useCreateReward()
-  const createPromotion = useCreatePromotion()
-  const createProduct = useCreateProduct()
+  const createReward = useCreateReward(profile)
+  const createPromotion = useCreatePromotion(profile)
+  const createProduct = useCreateProduct(profile)
   const updateSettings = useUpdateBusinessSettings()
+  const fulfillRedemption = useFulfillRedemption(profile)
+  const deleteReward = useDeleteReward(profile?.fullName)
+  const deleteProduct = useDeleteProduct(profile?.fullName)
+  const deletePromotion = useDeletePromotion(profile?.fullName)
+
+  const currentBusinessId = businesses.data?.[0]?.id ?? ''
 
   const bizColorClass = (bizId: string) => {
     const idx = businesses.data?.findIndex((b) => b.id === bizId) ?? 0
     return idx === 0
       ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
       : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
-  }
-
-  const bizBgClass = (bizId: string) => {
-    const idx = businesses.data?.findIndex((b) => b.id === bizId) ?? 0
-    return idx === 0
-      ? 'bg-gradient-to-br from-[#8B4513]/5 to-[#654321]/5 hover:from-[#8B4513]/10 hover:to-[#654321]/10'
-      : 'bg-gradient-to-br from-[#5B2C6F]/5 to-[#4A235A]/5 hover:from-[#5B2C6F]/10 hover:to-[#4A235A]/10'
   }
 
   const adjustmentForm = useForm<RewardAdjustmentFormValues>({
@@ -112,6 +117,22 @@ export function AdminPage() {
   })
 
   const [promoBusinessId, setPromoBusinessId] = useState(businesses.data?.[0]?.id ?? '')
+
+  useEffect(() => {
+    if (!currentBusinessId) return
+
+    if (!rewardForm.getValues('businessId')) {
+      rewardForm.setValue('businessId', currentBusinessId)
+    }
+
+    if (!productForm.getValues('businessId')) {
+      productForm.setValue('businessId', currentBusinessId)
+    }
+
+    if (!promoBusinessId) {
+      setPromoBusinessId(currentBusinessId)
+    }
+  }, [currentBusinessId, productForm, promoBusinessId, rewardForm])
 
   if (profile?.role !== 'platform-admin') {
     return (
@@ -207,12 +228,17 @@ export function AdminPage() {
                 <form
                   className="space-y-6"
                   onSubmit={adjustmentForm.handleSubmit(async (values) => {
-                    await adjustRewards.mutateAsync(values)
-                    adjustmentForm.reset({
-                      profileId: '',
-                      delta: 50,
-                      reason: '',
-                    })
+                    try {
+                      setActionError(null)
+                      await adjustRewards.mutateAsync(values)
+                      adjustmentForm.reset({
+                        profileId: '',
+                        delta: 50,
+                        reason: '',
+                      })
+                    } catch (error) {
+                      setActionError(error instanceof Error ? error.message : 'Failed to adjust points.')
+                    }
                   })}
                 >
                   <div className="grid gap-4">
@@ -243,6 +269,7 @@ export function AdminPage() {
                   <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
                     {adjustRewards.isPending ? 'Processing...' : 'Adjust Points'}
                   </Button>
+                  {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
             </div>
@@ -306,7 +333,22 @@ export function AdminPage() {
               </div>
               <div className="grid gap-8 sm:grid-cols-2">
                 {(rewards.data ?? []).map((reward) => (
-                  <RewardCard key={reward.id} reward={reward} balancePoints={9999} onRedeem={() => {}} />
+                  <div key={reward.id} className="relative group">
+                    <RewardCard reward={reward} balancePoints={9999} onRedeem={() => {}} />
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full size-8"
+                      onClick={() => {
+                        if (confirm('Are you sure you want to delete this reward?')) {
+                          deleteReward.mutate(reward.id)
+                        }
+                      }}
+                      disabled={deleteReward.isPending}
+                    >
+                      <Trash2 className="size-4" />
+                    </Button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -320,36 +362,31 @@ export function AdminPage() {
                 <form
                   className="space-y-6"
                   onSubmit={rewardForm.handleSubmit(async (values) => {
-                    await createReward.mutateAsync(values)
-                    rewardForm.reset({
-                      title: '',
-                      description: '',
-                      category: 'Drink',
-                      pointsCost: 220,
-                      highlight: '',
-                    })
+                    try {
+                      setActionError(null)
+                      const businessId = values.businessId || currentBusinessId
+                      if (!businessId) {
+                        throw new Error('No business is configured yet.')
+                      }
+
+                      await createReward.mutateAsync({ ...values, businessId })
+                      rewardForm.reset({
+                        businessId,
+                        title: '',
+                        description: '',
+                        category: 'Drink',
+                        pointsCost: 220,
+                        highlight: '',
+                      })
+                    } catch (error) {
+                      setActionError(error instanceof Error ? error.message : 'Failed to create reward.')
+                    }
                   })}
                 >
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-title">Reward Title</Label>
                     <div className="grid gap-3 mb-4">
                       <Label>Business</Label>
-                      <div className="grid grid-cols-2 gap-3">
-                        {(businesses.data ?? []).map((b) => (
-                          <button
-                            key={b.id}
-                            type="button"
-                            onClick={() => rewardForm.setValue('businessId', b.id)}
-                            className={`rounded-2xl border p-3 text-sm font-medium transition-all ${
-                              rewardForm.watch('businessId') === b.id
-                                ? 'border-primary bg-primary/5 text-primary'
-                                : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
-                            }`}
-                          >
-                            {b.name}
-                          </button>
-                        ))}
-                      </div>
+                      <Input value={businesses.data?.[0]?.name ?? 'No business configured'} disabled />
                     </div>
                     <Label htmlFor="reward-title">Reward Title</Label>
                     <Input id="reward-title" placeholder="e.g., Midnight Espresso" {...rewardForm.register('title')} />
@@ -378,9 +415,15 @@ export function AdminPage() {
                     <Label htmlFor="reward-highlight">Highlight Tag</Label>
                     <Input id="reward-highlight" placeholder="Seasonal / Popular / New" {...rewardForm.register('highlight')} />
                   </div>
-                  <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={createReward.isPending}>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full rounded-full h-14"
+                    disabled={createReward.isPending || !currentBusinessId}
+                  >
                     {createReward.isPending ? 'Creating...' : 'Add Reward'}
                   </Button>
+                  {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
             </div>
@@ -409,17 +452,33 @@ export function AdminPage() {
                       <div className="space-y-1">
                         <p className="font-serif text-xl text-primary">{product.title}</p>
                         <div className="flex items-center gap-3 text-sm text-on-surface-variant/70">
-                          <span>{product.category}</span>
-                          <span className="size-1 rounded-full bg-outline-variant/30"></span>
-                          <span>{product.inventory} in stock</span>
+                           <span>{product.category}</span>
+                           <span className="size-1 rounded-full bg-outline-variant/30"></span>
+                           <span>{product.inventory} in stock</span>
                         </div>
                       </div>
                     </div>
-                    <div className="text-right">
-                      <p className="font-serif text-2xl text-primary">{formatCurrency(product.price)}</p>
-                      <Badge variant="outline" className="text-[0.65rem] border-outline-variant/20 mt-1">
-                        {businesses.data?.find((b) => b.id === product.businessId)?.name ?? 'Unknown'}
-                      </Badge>
+                    <div className="flex flex-col items-end gap-3">
+                      <div className="text-right">
+                        <p className="font-serif text-2xl text-primary">{formatCurrency(product.price)}</p>
+                        <Badge variant="outline" className="text-[0.65rem] border-outline-variant/20 mt-1">
+                          {businesses.data?.find((b) => b.id === product.businessId)?.name ?? 'Unknown'}
+                        </Badge>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
+                        onClick={() => {
+                          if (confirm('Are you sure you want to delete this product?')) {
+                            deleteProduct.mutate(product.id)
+                          }
+                        }}
+                        disabled={deleteProduct.isPending}
+                      >
+                        <Trash2 className="size-4 mr-2" />
+                        Delete
+                      </Button>
                     </div>
                   </div>
                 ))}
@@ -435,36 +494,31 @@ export function AdminPage() {
                 <form
                   className="space-y-6"
                   onSubmit={productForm.handleSubmit(async (values) => {
-                    await createProduct.mutateAsync(values)
-                    productForm.reset({
-                      businessId: businesses.data?.[0]?.id ?? '',
-                      title: '',
-                      description: '',
-                      category: 'Coffee',
-                      price: 5,
-                      highlight: '',
-                      inventory: 50,
-                    })
+                    try {
+                      setActionError(null)
+                      const businessId = values.businessId || currentBusinessId
+                      if (!businessId) {
+                        throw new Error('No business is configured yet.')
+                      }
+
+                      await createProduct.mutateAsync({ ...values, businessId })
+                      productForm.reset({
+                        businessId,
+                        title: '',
+                        description: '',
+                        category: 'Coffee',
+                        price: 5,
+                        highlight: '',
+                        inventory: 50,
+                      })
+                    } catch (error) {
+                      setActionError(error instanceof Error ? error.message : 'Failed to create product.')
+                    }
                   })}
                 >
                   <div className="grid gap-3">
                     <Label>Business</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {(businesses.data ?? []).map((b) => (
-                        <button
-                          key={b.id}
-                          type="button"
-                          onClick={() => productForm.setValue('businessId', b.id)}
-                          className={`rounded-2xl border p-3 text-sm font-medium transition-all ${
-                            productForm.watch('businessId') === b.id
-                              ? 'border-primary bg-primary/5 text-primary'
-                              : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
-                          }`}
-                        >
-                          {b.name}
-                        </button>
-                      ))}
-                    </div>
+                    <Input value={businesses.data?.[0]?.name ?? 'No business configured'} disabled />
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="product-title">Product Title</Label>
@@ -500,9 +554,15 @@ export function AdminPage() {
                       <Input id="product-inventory" type="number" {...productForm.register('inventory', { valueAsNumber: true })} />
                     </div>
                   </div>
-                  <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={createProduct.isPending}>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full rounded-full h-14"
+                    disabled={createProduct.isPending || !currentBusinessId}
+                  >
                     {createProduct.isPending ? 'Creating...' : 'Add Product'}
                   </Button>
+                  {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
             </div>
@@ -584,7 +644,22 @@ export function AdminPage() {
               </div>
               <div className="grid gap-8">
                 {(promotions.data ?? []).map((promotion) => (
-                  <PromotionCard key={promotion.id} promotion={promotion} />
+                  <div key={promotion.id} className="relative group">
+                    <PromotionCard promotion={promotion} />
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity rounded-full size-10"
+                      onClick={() => {
+                        if (confirm('Are you sure you want to delete this promotion?')) {
+                          deletePromotion.mutate(promotion.id)
+                        }
+                      }}
+                      disabled={deletePromotion.isPending}
+                    >
+                      <Trash2 className="size-5" />
+                    </Button>
+                  </div>
                 ))}
               </div>
             </div>
@@ -598,34 +673,29 @@ export function AdminPage() {
                 <form
                   className="space-y-6"
                   onSubmit={promotionForm.handleSubmit(async (values) => {
-                    await createPromotion.mutateAsync({ ...values, businessId: promoBusinessId })
-                    promotionForm.reset({
-                      title: '',
-                      description: '',
-                      badge: '',
-                      cta: '',
-                      audience: '',
-                    })
+                    try {
+                      setActionError(null)
+                      const businessId = promoBusinessId || currentBusinessId
+                      if (!businessId) {
+                        throw new Error('No business is configured yet.')
+                      }
+
+                      await createPromotion.mutateAsync({ ...values, businessId })
+                      promotionForm.reset({
+                        title: '',
+                        description: '',
+                        badge: '',
+                        cta: '',
+                        audience: '',
+                      })
+                    } catch (error) {
+                      setActionError(error instanceof Error ? error.message : 'Failed to create promotion.')
+                    }
                   })}
                 >
                   <div className="grid gap-3">
                     <Label>Business</Label>
-                    <div className="grid grid-cols-2 gap-3">
-                      {(businesses.data ?? []).map((b) => (
-                        <button
-                          key={b.id}
-                          type="button"
-                          onClick={() => setPromoBusinessId(b.id)}
-                          className={`rounded-2xl border p-3 text-sm font-medium transition-all ${
-                            promoBusinessId === b.id
-                              ? 'border-primary bg-primary/5 text-primary'
-                              : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
-                          }`}
-                        >
-                          {b.name}
-                        </button>
-                      ))}
-                    </div>
+                    <Input value={businesses.data?.[0]?.name ?? 'No business configured'} disabled />
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-title">Promotion Title</Label>
@@ -649,9 +719,15 @@ export function AdminPage() {
                     <Label htmlFor="promotion-audience">Target Audience</Label>
                     <Input id="promotion-audience" placeholder="All / Bronze / Gold" {...promotionForm.register('audience')} />
                   </div>
-                  <Button type="submit" size="lg" className="w-full rounded-full h-14" disabled={createPromotion.isPending}>
+                  <Button
+                    type="submit"
+                    size="lg"
+                    className="w-full rounded-full h-14"
+                    disabled={createPromotion.isPending || !currentBusinessId}
+                  >
                     {createPromotion.isPending ? 'Creating...' : 'Launch Promotion'}
                   </Button>
+                  {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
             </div>
@@ -678,17 +754,31 @@ export function AdminPage() {
                             <div className="space-y-1">
                               <p className="font-serif text-xl tracking-tight text-primary">{redemption.rewardTitle}</p>
                               <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">
-                                Member: {redemption.profileId}
+                                Member ID: {redemption.profileId.slice(0, 8)}...
                               </p>
                             </div>
                           </div>
-                          <Badge variant={redemption.status === 'ready' ? 'outline' : 'accent'} className={
-                            redemption.status === 'ready'
-                              ? 'border-warning/50 text-warning bg-warning/10'
-                              : 'bg-success/10 text-success border-success/20'
-                          }>
-                            {redemption.status}
-                          </Badge>
+                          <div className="flex flex-col items-end gap-3">
+                            <Badge variant={redemption.status === 'ready' ? 'outline' : 'accent'} className={
+                              redemption.status === 'ready'
+                                ? 'border-warning/50 text-warning bg-warning/10'
+                                : 'bg-success/10 text-success border-success/20'
+                            }>
+                              {redemption.status}
+                            </Badge>
+                            {redemption.status === 'ready' && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                className="rounded-full bg-success/5 text-success hover:bg-success/10 border-success/20 h-8 px-3"
+                                onClick={() => fulfillRedemption.mutate(redemption.id)}
+                                disabled={fulfillRedemption.isPending}
+                              >
+                                <CheckCircle className="size-4 mr-1.5" />
+                                Fulfill
+                              </Button>
+                            )}
+                          </div>
                         </div>
                         <div className="mt-4 pt-4 border-t border-outline-variant/5 flex items-center justify-between">
                            <div className="flex items-center gap-2">

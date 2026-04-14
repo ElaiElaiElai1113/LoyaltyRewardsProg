@@ -11,10 +11,14 @@ import { Link } from 'react-router-dom'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useAuth } from '@/hooks/use-auth'
+import { useFulfillRedemption } from '@/hooks/use-admin-data'
 import { formatCurrency, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
-  const { business, metrics, products, rewards, promotions } = useBusinessOwnerData()
+  const { business, metrics, products, rewards, promotions, redemptions } = useBusinessOwnerData()
+  const { profile } = useAuth()
+  const fulfillRedemption = useFulfillRedemption(profile)
 
   if (!metrics) {
     return <div className="text-center py-20 text-on-surface-variant/60">Loading...</div>
@@ -154,6 +158,64 @@ export function BusinessDashboardPage() {
               <ArrowUpRight className="size-8 text-primary/70 group-hover:text-white/70" />
             </div>
           </Link>
+        </div>
+      </div>
+
+      {/* Recent Redemptions Fulfillment */}
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="space-y-1">
+            <h2 className="font-serif text-2xl text-primary">Recent Redemptions</h2>
+            <p className="text-sm text-on-surface-variant/70">Manage and fulfill pending rewards</p>
+          </div>
+          <Link to="/business/rewards" className="text-sm font-semibold text-primary hover:underline">
+            Manage Rewards
+          </Link>
+        </div>
+
+        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          {redemptions.length === 0 ? (
+            <div className="p-12 text-center">
+              <p className="text-on-surface-variant/60 font-medium">No redemptions yet.</p>
+            </div>
+          ) : (
+            redemptions.slice(0, 5).map((redemption: any) => (
+              <div key={redemption.id} className="p-6 flex items-center justify-between group hover:bg-surface-low transition-colors">
+                <div className="flex items-center gap-4">
+                  <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                    <Gift className="size-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-primary">{redemption.rewardTitle}</h4>
+                    <p className="text-xs text-on-surface-variant/70">
+                      Redeemed {new Date(redemption.redeemedAt).toLocaleDateString()} at {new Date(redemption.redeemedAt).toLocaleTimeString()}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center gap-4">
+                   <div className={`px-3 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest ${
+                    redemption.status === 'ready' 
+                      ? 'bg-amber-100 text-amber-700' 
+                      : 'bg-green-100 text-green-700'
+                  }`}>
+                    {redemption.status}
+                  </div>
+                  
+                  {redemption.status === 'ready' && (
+                    <Button 
+                      size="sm" 
+                      className="rounded-full h-8 px-4 text-xs font-bold"
+                      onClick={() => fulfillRedemption.mutate(redemption.id)}
+                      disabled={fulfillRedemption.isPending}
+                    >
+                      {fulfillRedemption.isPending ? '...' : 'Fulfill'}
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))
+          )}
         </div>
       </div>
     </div>

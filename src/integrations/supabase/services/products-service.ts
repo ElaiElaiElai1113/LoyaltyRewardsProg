@@ -32,7 +32,10 @@ export const productsService = {
     return camelCaseRow(data) as unknown as Product
   },
 
-  async createProduct(values: ProductDraftFormValues): Promise<Product> {
+  async createProduct(
+    values: ProductDraftFormValues,
+    actorName = 'Business Owner',
+  ): Promise<Product> {
     const sb = requireSupabase()
 
     const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
@@ -44,15 +47,69 @@ export const productsService = {
       .single()
 
     if (error || !data) {
-      throw new Error('Failed to create product.')
+      throw new Error(error?.message ?? 'Failed to create product.')
+    }
+
+    const product = camelCaseRow(data) as unknown as Product
+
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Product created',
+      details: `Added ${product.title} to the shop.`,
+    })
+
+    if (logError) {
+      throw new Error(logError.message)
+    }
+
+    return product
+  },
+
+  async deleteProduct(productId: string, actorName = 'Platform Admin'): Promise<void> {
+    const sb = requireSupabase()
+
+    // Fetch product info for logging
+    const product = await this.getProductById(productId)
+    if (!product) return
+
+    const { error } = await sb.from('products').delete().eq('id', productId)
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Product deleted',
+      details: `Removed ${product.title} from the shop.`,
+    })
+  },
+
+  async updateProduct(
+    productId: string,
+    values: Partial<ProductDraftFormValues>,
+    actorName = 'Platform Admin',
+  ): Promise<Product> {
+    const sb = requireSupabase()
+    const snakeValues = snakeCaseObj(values as unknown as Record<string, unknown>)
+
+    const { data, error } = await sb
+      .from('products')
+      .update(snakeValues)
+      .eq('id', productId)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to update product.')
     }
 
     const product = camelCaseRow(data) as unknown as Product
 
     await sb.from('admin_logs').insert({
-      actor_name: 'Business Owner',
-      action: 'Product created',
-      details: `Added ${product.title} to the shop.`,
+      actor_name: actorName,
+      action: 'Product updated',
+      details: `Updated details for ${product.title}.`,
     })
 
     return product

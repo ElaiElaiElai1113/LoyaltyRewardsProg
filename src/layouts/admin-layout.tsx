@@ -1,12 +1,8 @@
 import {
-  Activity,
-  ChevronRight,
   LayoutDashboard,
   LogOut,
-  Megaphone,
   Settings,
   ShieldCheck,
-  Users,
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
@@ -18,10 +14,6 @@ import { getInitials } from '@/lib/utils'
 
 const navigation = [
   { to: '/admin', label: 'Operations', icon: LayoutDashboard },
-  { to: '/admin/users', label: 'Customers', icon: Users },
-  { to: '/admin/rewards', label: 'Rewards Management', icon: ShieldCheck },
-  { to: '/admin/promotions', label: 'Campaigns', icon: Megaphone },
-  { to: '/admin/activity', label: 'System Logs', icon: Activity },
 ]
 
 export function AdminLayout() {
@@ -59,7 +51,6 @@ export function AdminLayout() {
                 <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
                 {item.label}
               </div>
-              <ChevronRight className="size-4 opacity-30 transition-opacity group-hover:opacity-100" />
             </NavLink>
           ))}
         </nav>
