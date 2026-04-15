@@ -16,6 +16,10 @@ async function getProfileByUserId(userId: string): Promise<Profile | null> {
 }
 
 export const authService = {
+  async getProfileForUserId(userId: string): Promise<Profile | null> {
+    return getProfileByUserId(userId)
+  },
+
   async getSessionProfile(): Promise<Profile | null> {
     const sb = requireSupabase()
 
@@ -98,7 +102,8 @@ export const authService = {
     return profile
   },
 
-  async continueAsDemo(_role: UserRole): Promise<Profile> {
+  async continueAsDemo(role: UserRole): Promise<Profile> {
+    void role
     throw new Error(
       'Demo mode is not available with the live database. Please sign in or create an account.',
     )

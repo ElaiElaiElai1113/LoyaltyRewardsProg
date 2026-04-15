@@ -45,7 +45,7 @@ export function useAdminProducts(businessId?: string) {
 export function useAdminBusinesses() {
   return useQuery({
     queryKey: adminKeys.businesses,
-    queryFn: () => businessService.getBusinesses(),
+    queryFn: async () => [await businessService.getSingleBusiness()],
   })
 }
 

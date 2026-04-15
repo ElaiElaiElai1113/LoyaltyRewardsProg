@@ -1,43 +1,51 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
+import { adminService } from '@/integrations/supabase/services/admin-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
+import type { Profile, Redemption } from '@/types/domain'
+import type { RewardAdjustmentFormValues } from '@/types/forms'
 import { useAuth } from './use-auth'
 
 export function useBusinessOwnerData() {
-  const { session } = useAuth()
-
-  const businessId = session?.businessId
+  useAuth()
 
   // Get the business details
   const businessQuery = useQuery({
-    queryKey: ['business', businessId],
-    queryFn: () => businessService.getBusinessById(businessId!),
-    enabled: !!businessId,
+    queryKey: ['business', 'single'],
+    queryFn: () => businessService.getSingleBusiness(),
+    retry: false,
   })
+
+  const businessId = businessQuery.data?.id
+  const sharedQueryOptions = {
+    enabled: !!businessId,
+    retry: false,
+  } as const
 
   // Get products for this business only
   const productsQuery = useQuery({
     queryKey: ['products', businessId],
     queryFn: () => productsService.getProducts(businessId!),
-    enabled: !!businessId,
+    ...sharedQueryOptions,
   })
 
   // Get rewards for this business only
   const rewardsQuery = useQuery({
     queryKey: ['rewards', businessId],
     queryFn: () => rewardsService.getRewards(businessId!),
-    enabled: !!businessId,
+    ...sharedQueryOptions,
   })
 
   // Get promotions for this business only
   const promotionsQuery = useQuery({
     queryKey: ['promotions', businessId],
     queryFn: () => promotionsService.getPromotions(businessId!),
-    enabled: !!businessId,
+    ...sharedQueryOptions,
   })
 
   // Get orders for this business only (admin/biz owner can see all orders)
@@ -83,7 +91,7 @@ export function useBusinessOwnerData() {
         }
       })
     },
-    enabled: !!businessId,
+    ...sharedQueryOptions,
   })
 
   // Get redemptions for this business only (via join with rewards)
@@ -101,9 +109,21 @@ export function useBusinessOwnerData() {
 
       if (error) throw new Error('Failed to load redemptions.')
 
-      return (data as Record<string, unknown>[]).map((r) => camelCaseRow(r) as any)
+      return (data as Record<string, unknown>[]).map((redemptionRow) => {
+        const redemption = camelCaseRow(redemptionRow)
+        return {
+          id: redemption.id as string,
+          profileId: redemption.profileId as string,
+          rewardId: redemption.rewardId as string,
+          rewardTitle: redemption.rewardTitle as string,
+          pointsCost: redemption.pointsCost as number,
+          notes: redemption.notes as string | undefined,
+          redeemedAt: redemption.redeemedAt as string,
+          status: redemption.status as Redemption['status'],
+        }
+      })
     },
-    enabled: !!businessId,
+    ...sharedQueryOptions,
   })
 
   // Calculate business metrics
@@ -153,7 +173,7 @@ export function useBusinessOwnerData() {
         activePromotions: promotions.filter((p) => new Date(p.expires_at) > new Date()).length,
       }
     },
-    enabled: !!businessId,
+    ...sharedQueryOptions,
   })
 
   return {
@@ -164,6 +184,7 @@ export function useBusinessOwnerData() {
     orders: ordersQuery.data ?? [],
     redemptions: redemptionsQuery.data ?? [],
     metrics: metricsQuery.data ?? null,
+    isBusinessLoading: businessQuery.isLoading,
     isLoading:
       businessQuery.isLoading ||
       productsQuery.isLoading ||
@@ -182,4 +203,58 @@ export function useBusinessOwnerData() {
       metricsQuery.error ??
       null,
   }
+}
+
+export function useBusinessMembers(businessId?: string) {
+  return useQuery({
+    queryKey: ['businessMembers', businessId],
+    queryFn: async () => {
+      if (!businessId) return []
+
+      const sb = requireSupabase()
+      const { data: profileRows, error: profError } = await sb
+        .from('profiles')
+        .select('*')
+        .eq('role', 'customer')
+
+      if (profError) throw new Error('Failed to load customers.')
+
+      const { data: balanceRows, error: balError } = await sb
+        .from('reward_balances')
+        .select('*')
+
+      if (balError) throw new Error('Failed to load balances.')
+
+      const balanceMap = new Map(
+        (balanceRows ?? []).map((balance) => [balance.profile_id as string, balance.points as number]),
+      )
+
+      return (profileRows ?? []).map((profile) => ({
+        id: profile.id as string,
+        fullName: profile.full_name as string,
+        email: profile.email as string,
+        points: balanceMap.get(profile.id as string) ?? 0,
+      }))
+    },
+    enabled: !!businessId,
+  })
+}
+
+export function useAwardPoints(actor?: Profile | null, businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: RewardAdjustmentFormValues) =>
+      adminService.adjustRewardsForBusiness(values, actor!, businessId!),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
+      void queryClient.invalidateQueries({ queryKey: ['activities'] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      toast.success('Points awarded successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(`Award failed: ${error.message}`)
+    },
+  })
 }

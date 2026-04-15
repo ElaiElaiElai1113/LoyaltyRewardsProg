@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Coffee, Gift, ShieldCheck, Sparkles, LogOut } from 'lucide-react'
+import { Coffee, Gift, ShieldCheck, LogOut } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 
@@ -20,7 +20,7 @@ const defaultValues: AuthFormValues = {
 }
 
 export function LandingPage() {
-  const { signIn, signUp, continueAsDemo, signOut } = useAuth()
+  const { signIn, signUp, signOut } = useAuth()
   const [error, setError] = useState<string | null>(null)
 
   const signInForm = useForm<AuthFormValues>({
@@ -111,65 +111,7 @@ export function LandingPage() {
             </div>
           </div>
 
-          <div className="relative z-10 mt-16 rounded-[2.5rem] bg-white/5 p-8 backdrop-blur-md border border-white/10">
-            <div className="flex items-center gap-3">
-              <Sparkles className="size-5 text-secondary-container" />
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-white/80">
-                Try the Demo
-              </p>
-            </div>
-            <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-              <Button
-                variant="secondary"
-                size="lg"
-                className="rounded-full px-10 h-14 font-bold tracking-wide"
-                onClick={async () => {
-                  try {
-                    setError(null)
-                    await continueAsDemo('customer')
-                  } catch (err) {
-                    setError(err instanceof Error ? err.message : 'Demo unavailable.')
-                  }
-                }}
-              >
-                Member
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="rounded-full px-10 h-14 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40"
-                onClick={async () => {
-                  try {
-                    setError(null)
-                    await continueAsDemo('business-owner')
-                  } catch (err) {
-                    setError(err instanceof Error ? err.message : 'Demo unavailable.')
-                  }
-                }}
-              >
-                Business Owner
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="rounded-full px-10 h-14 border-white/20 bg-white/5 text-white hover:bg-white/10 hover:border-white/40"
-                onClick={async () => {
-                  try {
-                    setError(null)
-                    await continueAsDemo('platform-admin')
-                  } catch (err) {
-                    setError(err instanceof Error ? err.message : 'Demo unavailable.')
-                  }
-                }}
-              >
-                Platform Admin
-              </Button>
-            </div>
-            {error ? <p className="mt-4 text-sm font-bold text-red-300">{error}</p> : null}
-            <p className="mt-6 text-xs font-medium italic text-white/75">
-              Jump right in with a pre-loaded demo account.
-            </p>
-          </div>
+          {error ? <p className="relative z-10 mt-8 text-sm font-bold text-red-300">{error}</p> : null}
         </section>
 
         <section className="flex flex-col justify-center py-12">

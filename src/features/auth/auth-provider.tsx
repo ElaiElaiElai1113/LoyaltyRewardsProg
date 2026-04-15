@@ -3,6 +3,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 import { AuthContext } from '@/features/auth/auth-context'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { supabase } from '@/integrations/supabase/client'
+import { queryClient } from '@/lib/query-client'
 import type { Profile, SessionUser, UserRole } from '@/types/domain'
 import type { AuthFormValues } from '@/types/forms'
 
@@ -33,6 +34,23 @@ export function AuthProvider({ children }: AuthProviderProps) {
       )
     }
 
+    function finishLoading() {
+      if (isActive) {
+        setIsLoading(false)
+      }
+    }
+
+    function handleResolvedProfile(nextProfile: Profile | null) {
+      syncSession(nextProfile)
+      finishLoading()
+    }
+
+    function handleProfileError(context: string, error: unknown) {
+      console.error(context, error)
+      syncSession(null)
+      finishLoading()
+    }
+
     const loadingFallback = window.setTimeout(() => {
       if (isActive) {
         setIsLoading(false)
@@ -42,16 +60,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
     void authService
       .getSessionProfile()
       .then((sessionProfile) => {
-        syncSession(sessionProfile)
+        handleResolvedProfile(sessionProfile)
       })
       .catch((error) => {
-        console.error('Failed to restore auth session:', error)
-        syncSession(null)
+        handleProfileError('Failed to restore auth session:', error)
       })
       .finally(() => {
-        if (isActive) {
-          setIsLoading(false)
-        }
         window.clearTimeout(loadingFallback)
       })
 
@@ -64,23 +78,24 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
-      try {
-        if (!nextSession) {
-          syncSession(null)
-          return
-        }
-
-        const sessionProfile = await authService.getSessionProfile()
-        syncSession(sessionProfile)
-      } catch (error) {
-        console.error('Failed to sync auth state:', error)
+    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      if (!nextSession) {
+        queryClient.clear()
         syncSession(null)
-      } finally {
-        if (isActive) {
-          setIsLoading(false)
-        }
+        finishLoading()
+        return
       }
+
+      window.setTimeout(() => {
+        void authService
+          .getProfileForUserId(nextSession.user.id)
+          .then((sessionProfile) => {
+            handleResolvedProfile(sessionProfile)
+          })
+          .catch((error) => {
+            handleProfileError('Failed to sync auth state:', error)
+          })
+      }, 0)
     })
 
     return () => {
@@ -95,42 +110,71 @@ export function AuthProvider({ children }: AuthProviderProps) {
     session,
     isLoading,
     async signIn(values: AuthFormValues) {
-      const sessionProfile = await authService.signIn(values)
-      setProfile(sessionProfile)
-      setSession({
-        profileId: sessionProfile.id,
-        role: sessionProfile.role,
-        businessId: sessionProfile.businessId,
-      })
-      return sessionProfile
+      setIsLoading(true)
+      try {
+        const sessionProfile = await authService.signIn(values)
+        queryClient.clear()
+        setProfile(sessionProfile)
+        setSession({
+          profileId: sessionProfile.id,
+          role: sessionProfile.role,
+          businessId: sessionProfile.businessId,
+        })
+        return sessionProfile
+      } finally {
+        setIsLoading(false)
+      }
     },
     async signUp(values: AuthFormValues) {
-      const sessionProfile = await authService.signUp(values)
-      setProfile(sessionProfile)
-      setSession({
-        profileId: sessionProfile.id,
-        role: sessionProfile.role,
-        businessId: sessionProfile.businessId,
-      })
-      return sessionProfile
+      setIsLoading(true)
+      try {
+        const sessionProfile = await authService.signUp(values)
+        queryClient.clear()
+        setProfile(sessionProfile)
+        setSession({
+          profileId: sessionProfile.id,
+          role: sessionProfile.role,
+          businessId: sessionProfile.businessId,
+        })
+        return sessionProfile
+      } finally {
+        setIsLoading(false)
+      }
     },
     async continueAsDemo(role: UserRole) {
-      const sessionProfile = await authService.continueAsDemo(role)
-      setProfile(sessionProfile)
-      setSession({
-        profileId: sessionProfile.id,
-        role: sessionProfile.role,
-        businessId: sessionProfile.businessId,
-      })
-      return sessionProfile
+      setIsLoading(true)
+      try {
+        const sessionProfile = await authService.continueAsDemo(role)
+        queryClient.clear()
+        setProfile(sessionProfile)
+        setSession({
+          profileId: sessionProfile.id,
+          role: sessionProfile.role,
+          businessId: sessionProfile.businessId,
+        })
+        return sessionProfile
+      } finally {
+        setIsLoading(false)
+      }
     },
     async signOut() {
-      await authService.signOut()
-      setProfile(null)
-      setSession(null)
+      setIsLoading(true)
+      try {
+        await authService.signOut()
+      } finally {
+        queryClient.clear()
+        setProfile(null)
+        setSession(null)
+        setIsLoading(false)
+      }
     },
     syncProfile(nextProfile: Profile) {
       setProfile(nextProfile)
+      setSession({
+        profileId: nextProfile.id,
+        role: nextProfile.role,
+        businessId: nextProfile.businessId,
+      })
     },
   }
 

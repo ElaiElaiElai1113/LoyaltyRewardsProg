@@ -13,11 +13,12 @@ import { useCreatePromotion, useDeletePromotion, useUpdatePromotion } from '@/ho
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { formatDate } from '@/lib/utils'
+import type { Promotion } from '@/types/domain'
 import { promotionDraftSchema, type PromotionDraftFormValues } from '@/types/forms'
 
 export function PromotionsPage() {
-  const { promotions } = useBusinessOwnerData()
-  const { session, profile } = useAuth()
+  const { business, promotions } = useBusinessOwnerData()
+  const { profile } = useAuth()
   const createPromotion = useCreatePromotion(profile)
   const deletePromotion = useDeletePromotion(profile?.fullName)
   const updatePromotion = useUpdatePromotion(profile?.fullName)
@@ -36,7 +37,7 @@ export function PromotionsPage() {
     },
   })
 
-  const handleEdit = (promotion: any) => {
+  const handleEdit = (promotion: Promotion) => {
     setEditingId(promotion.id)
     form.reset({
       title: promotion.title,
@@ -74,7 +75,7 @@ export function PromotionsPage() {
       if (editingId) {
         await updatePromotion.mutateAsync({ promotionId: editingId, values })
       } else {
-        await createPromotion.mutateAsync({ ...values, businessId: session!.businessId! })
+        await createPromotion.mutateAsync({ ...values, businessId: business!.id })
       }
       form.reset()
       setOpen(false)

@@ -25,7 +25,6 @@ import {
   useDeletePromotion,
   useDeleteReward,
   useFulfillRedemption,
-  useUpdateBusinessSettings,
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
@@ -39,7 +38,6 @@ import {
   type RewardAdjustmentFormValues,
   type RewardDraftFormValues,
 } from '@/types/forms'
-import type { Business } from '@/types/domain'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
 export function AdminPage() {
@@ -56,17 +54,16 @@ export function AdminPage() {
   const createReward = useCreateReward(profile)
   const createPromotion = useCreatePromotion(profile)
   const createProduct = useCreateProduct(profile)
-  const updateSettings = useUpdateBusinessSettings()
   const fulfillRedemption = useFulfillRedemption(profile)
   const deleteReward = useDeleteReward(profile?.fullName)
   const deleteProduct = useDeleteProduct(profile?.fullName)
   const deletePromotion = useDeletePromotion(profile?.fullName)
 
-  const currentBusinessId = businesses.data?.[0]?.id ?? ''
+  const currentBusiness = businesses.data?.[0] ?? null
+  const currentBusinessId = currentBusiness?.id ?? ''
 
   const bizColorClass = (bizId: string) => {
-    const idx = businesses.data?.findIndex((b) => b.id === bizId) ?? 0
-    return idx === 0
+    return bizId === currentBusinessId
       ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
       : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
   }
@@ -83,7 +80,7 @@ export function AdminPage() {
   const rewardForm = useForm<RewardDraftFormValues>({
     resolver: zodResolver(rewardDraftSchema),
     defaultValues: {
-      businessId: businesses.data?.[0]?.id ?? '',
+      businessId: currentBusinessId,
       title: '',
       description: '',
       category: 'Drink',
@@ -95,7 +92,7 @@ export function AdminPage() {
   const productForm = useForm<ProductDraftFormValues>({
     resolver: zodResolver(productDraftSchema),
     defaultValues: {
-      businessId: businesses.data?.[0]?.id ?? '',
+      businessId: currentBusinessId,
       title: '',
       description: '',
       category: 'Coffee',
@@ -116,8 +113,6 @@ export function AdminPage() {
     },
   })
 
-  const [promoBusinessId, setPromoBusinessId] = useState(businesses.data?.[0]?.id ?? '')
-
   useEffect(() => {
     if (!currentBusinessId) return
 
@@ -128,11 +123,7 @@ export function AdminPage() {
     if (!productForm.getValues('businessId')) {
       productForm.setValue('businessId', currentBusinessId)
     }
-
-    if (!promoBusinessId) {
-      setPromoBusinessId(currentBusinessId)
-    }
-  }, [currentBusinessId, productForm, promoBusinessId, rewardForm])
+  }, [currentBusinessId, productForm, rewardForm])
 
   if (profile?.role !== 'platform-admin') {
     return (
@@ -210,7 +201,6 @@ export function AdminPage() {
             <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Members</TabsTrigger>
             <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Rewards</TabsTrigger>
             <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Products</TabsTrigger>
-            <TabsTrigger value="businesses" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Businesses</TabsTrigger>
             <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Promotions</TabsTrigger>
             <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Activity</TabsTrigger>
           </TabsList>
@@ -227,19 +217,24 @@ export function AdminPage() {
               <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
                 <form
                   className="space-y-6"
-                  onSubmit={adjustmentForm.handleSubmit(async (values) => {
-                    try {
-                      setActionError(null)
-                      await adjustRewards.mutateAsync(values)
-                      adjustmentForm.reset({
-                        profileId: '',
-                        delta: 50,
-                        reason: '',
-                      })
-                    } catch (error) {
-                      setActionError(error instanceof Error ? error.message : 'Failed to adjust points.')
-                    }
-                  })}
+                  onSubmit={adjustmentForm.handleSubmit(
+                    async (values) => {
+                      try {
+                        setActionError(null)
+                        await adjustRewards.mutateAsync(values)
+                        adjustmentForm.reset({
+                          profileId: '',
+                          delta: 50,
+                          reason: '',
+                        })
+                      } catch (error) {
+                        setActionError(error instanceof Error ? error.message : 'Failed to adjust points.')
+                      }
+                    },
+                    () => {
+                      setActionError('Please fix the highlighted member adjustment fields.')
+                    },
+                  )}
                 >
                   <div className="grid gap-4">
                     <Label htmlFor="profileId" className="text-sm font-semibold">Member ID</Label>
@@ -257,14 +252,23 @@ export function AdminPage() {
                         </option>
                       ))}
                     </datalist>
+                    {adjustmentForm.formState.errors.profileId ? (
+                      <p className="text-xs text-red-500">{adjustmentForm.formState.errors.profileId.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="delta" className="text-sm font-semibold">Points Adjustment</Label>
                     <Input id="delta" type="number" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
+                    {adjustmentForm.formState.errors.delta ? (
+                      <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="reason" className="text-sm font-semibold">Reason</Label>
                     <Input id="reason" placeholder="e.g., Service recovery" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('reason')} />
+                    {adjustmentForm.formState.errors.reason ? (
+                      <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
+                    ) : null}
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
                     {adjustRewards.isPending ? 'Processing...' : 'Adjust Points'}
@@ -361,39 +365,46 @@ export function AdminPage() {
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
                   className="space-y-6"
-                  onSubmit={rewardForm.handleSubmit(async (values) => {
-                    try {
-                      setActionError(null)
-                      const businessId = values.businessId || currentBusinessId
-                      if (!businessId) {
-                        throw new Error('No business is configured yet.')
-                      }
+                  onSubmit={rewardForm.handleSubmit(
+                    async (values) => {
+                      try {
+                        setActionError(null)
+                        const businessId = values.businessId || currentBusinessId
+                        if (!businessId) {
+                          throw new Error('No business is configured yet.')
+                        }
 
-                      await createReward.mutateAsync({ ...values, businessId })
-                      rewardForm.reset({
-                        businessId,
-                        title: '',
-                        description: '',
-                        category: 'Drink',
-                        pointsCost: 220,
-                        highlight: '',
-                      })
-                    } catch (error) {
-                      setActionError(error instanceof Error ? error.message : 'Failed to create reward.')
-                    }
-                  })}
+                        await createReward.mutateAsync({ ...values, businessId })
+                        rewardForm.reset({
+                          businessId,
+                          title: '',
+                          description: '',
+                          category: 'Drink',
+                          pointsCost: 220,
+                          highlight: '',
+                        })
+                      } catch (error) {
+                        setActionError(error instanceof Error ? error.message : 'Failed to create reward.')
+                      }
+                    },
+                    () => {
+                      setActionError('Please fix the highlighted reward fields.')
+                    },
+                  )}
                 >
                   <div className="grid gap-3">
-                    <div className="grid gap-3 mb-4">
-                      <Label>Business</Label>
-                      <Input value={businesses.data?.[0]?.name ?? 'No business configured'} disabled />
-                    </div>
                     <Label htmlFor="reward-title">Reward Title</Label>
                     <Input id="reward-title" placeholder="e.g., Midnight Espresso" {...rewardForm.register('title')} />
+                    {rewardForm.formState.errors.title ? (
+                      <p className="text-xs text-red-500">{rewardForm.formState.errors.title.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="reward-description">Description</Label>
                     <Input id="reward-description" placeholder="Describe the reward..." {...rewardForm.register('description')} />
+                    {rewardForm.formState.errors.description ? (
+                      <p className="text-xs text-red-500">{rewardForm.formState.errors.description.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
@@ -405,24 +416,38 @@ export function AdminPage() {
                         <option value="Merch" />
                         <option value="Experience" />
                       </datalist>
+                      {rewardForm.formState.errors.category ? (
+                        <p className="text-xs text-red-500">{rewardForm.formState.errors.category.message}</p>
+                      ) : null}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="reward-cost">Points Cost</Label>
                       <Input id="reward-cost" type="number" {...rewardForm.register('pointsCost', { valueAsNumber: true })} />
+                      {rewardForm.formState.errors.pointsCost ? (
+                        <p className="text-xs text-red-500">{rewardForm.formState.errors.pointsCost.message}</p>
+                      ) : null}
                     </div>
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="reward-highlight">Highlight Tag</Label>
                     <Input id="reward-highlight" placeholder="Seasonal / Popular / New" {...rewardForm.register('highlight')} />
+                    {rewardForm.formState.errors.highlight ? (
+                      <p className="text-xs text-red-500">{rewardForm.formState.errors.highlight.message}</p>
+                    ) : null}
                   </div>
                   <Button
                     type="submit"
                     size="lg"
                     className="w-full rounded-full h-14"
-                    disabled={createReward.isPending || !currentBusinessId}
+                    disabled={createReward.isPending || businesses.isLoading || !currentBusinessId}
                   >
                     {createReward.isPending ? 'Creating...' : 'Add Reward'}
                   </Button>
+                  {!businesses.isLoading && !currentBusinessId ? (
+                    <p className="text-sm font-medium text-on-surface-variant/75">
+                      Setup is incomplete. Reward creation is disabled until the site is connected to its store record.
+                    </p>
+                  ) : null}
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
@@ -462,7 +487,7 @@ export function AdminPage() {
                       <div className="text-right">
                         <p className="font-serif text-2xl text-primary">{formatCurrency(product.price)}</p>
                         <Badge variant="outline" className="text-[0.65rem] border-outline-variant/20 mt-1">
-                          {businesses.data?.find((b) => b.id === product.businessId)?.name ?? 'Unknown'}
+                          {currentBusiness?.name ?? 'Current business'}
                         </Badge>
                       </div>
                       <Button
@@ -493,40 +518,47 @@ export function AdminPage() {
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
                   className="space-y-6"
-                  onSubmit={productForm.handleSubmit(async (values) => {
-                    try {
-                      setActionError(null)
-                      const businessId = values.businessId || currentBusinessId
-                      if (!businessId) {
-                        throw new Error('No business is configured yet.')
-                      }
+                  onSubmit={productForm.handleSubmit(
+                    async (values) => {
+                      try {
+                        setActionError(null)
+                        const businessId = values.businessId || currentBusinessId
+                        if (!businessId) {
+                          throw new Error('No business is configured yet.')
+                        }
 
-                      await createProduct.mutateAsync({ ...values, businessId })
-                      productForm.reset({
-                        businessId,
-                        title: '',
-                        description: '',
-                        category: 'Coffee',
-                        price: 5,
-                        highlight: '',
-                        inventory: 50,
-                      })
-                    } catch (error) {
-                      setActionError(error instanceof Error ? error.message : 'Failed to create product.')
-                    }
-                  })}
+                        await createProduct.mutateAsync({ ...values, businessId })
+                        productForm.reset({
+                          businessId,
+                          title: '',
+                          description: '',
+                          category: 'Coffee',
+                          price: 5,
+                          highlight: '',
+                          inventory: 50,
+                        })
+                      } catch (error) {
+                        setActionError(error instanceof Error ? error.message : 'Failed to create product.')
+                      }
+                    },
+                    () => {
+                      setActionError('Please fix the highlighted product fields.')
+                    },
+                  )}
                 >
-                  <div className="grid gap-3">
-                    <Label>Business</Label>
-                    <Input value={businesses.data?.[0]?.name ?? 'No business configured'} disabled />
-                  </div>
                   <div className="grid gap-3">
                     <Label htmlFor="product-title">Product Title</Label>
                     <Input id="product-title" placeholder="e.g., House Blend" {...productForm.register('title')} />
+                    {productForm.formState.errors.title ? (
+                      <p className="text-xs text-red-500">{productForm.formState.errors.title.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="product-description">Description</Label>
                     <Input id="product-description" placeholder="Describe the product..." {...productForm.register('description')} />
+                    {productForm.formState.errors.description ? (
+                      <p className="text-xs text-red-500">{productForm.formState.errors.description.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
@@ -538,99 +570,50 @@ export function AdminPage() {
                         <option value="Merch" />
                         <option value="Equipment" />
                       </datalist>
+                      {productForm.formState.errors.category ? (
+                        <p className="text-xs text-red-500">{productForm.formState.errors.category.message}</p>
+                      ) : null}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="product-price">Price ($)</Label>
                       <Input id="product-price" type="number" step="0.01" {...productForm.register('price', { valueAsNumber: true })} />
+                      {productForm.formState.errors.price ? (
+                        <p className="text-xs text-red-500">{productForm.formState.errors.price.message}</p>
+                      ) : null}
                     </div>
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
                       <Label htmlFor="product-highlight">Highlight Tag</Label>
                       <Input id="product-highlight" placeholder="Popular / New" {...productForm.register('highlight')} />
+                      {productForm.formState.errors.highlight ? (
+                        <p className="text-xs text-red-500">{productForm.formState.errors.highlight.message}</p>
+                      ) : null}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="product-inventory">Inventory</Label>
                       <Input id="product-inventory" type="number" {...productForm.register('inventory', { valueAsNumber: true })} />
+                      {productForm.formState.errors.inventory ? (
+                        <p className="text-xs text-red-500">{productForm.formState.errors.inventory.message}</p>
+                      ) : null}
                     </div>
                   </div>
                   <Button
                     type="submit"
                     size="lg"
                     className="w-full rounded-full h-14"
-                    disabled={createProduct.isPending || !currentBusinessId}
+                    disabled={createProduct.isPending || businesses.isLoading || !currentBusinessId}
                   >
                     {createProduct.isPending ? 'Creating...' : 'Add Product'}
                   </Button>
+                  {!businesses.isLoading && !currentBusinessId ? (
+                    <p className="text-sm font-medium text-on-surface-variant/75">
+                      Setup is incomplete. Product creation is disabled until the site is connected to its store record.
+                    </p>
+                  ) : null}
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
-            </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="businesses" className="space-y-12 outline-none">
-          <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
-            <div className="space-y-8">
-              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partners</span>
-                <h2 className="font-serif text-3xl text-primary">Businesses</h2>
-              </div>
-              <div className="grid gap-6">
-                {(businesses.data ?? []).map((biz) => (
-                  <div
-                    key={biz.id}
-                    className={`group rounded-3xl p-8 border border-outline-variant/5 hover:shadow-xl transition-all overflow-hidden ${
-                      biz.id === 'biz-cafe-cliche'
-                        ? 'bg-gradient-to-br from-[#8B4513]/5 to-[#654321]/5 hover:from-[#8B4513]/10 hover:to-[#654321]/10'
-                        : 'bg-gradient-to-br from-[#5B2C6F]/5 to-[#4A235A]/5 hover:from-[#5B2C6F]/10 hover:to-[#4A235A]/10'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-3">
-                          <div className={`size-12 rounded-xl flex items-center justify-center text-white text-lg font-bold ${
-                            biz.id === 'biz-cafe-cliche'
-                              ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
-                              : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
-                          }`}>
-                            {biz.name.charAt(0)}
-                          </div>
-                          <Badge variant={biz.active ? 'success' : 'outline'} className="text-[0.65rem] font-medium px-3 py-1">
-                            {biz.active ? 'Active' : 'Inactive'}
-                          </Badge>
-                        </div>
-                        <p className="font-serif text-3xl text-primary mt-4">{biz.name}</p>
-                        <p className="text-sm leading-relaxed text-on-surface-variant/80 max-w-md">{biz.description}</p>
-                      </div>
-                    </div>
-                    <div className="mt-6 pt-6 border-t border-outline-variant/10 flex items-center gap-8">
-                      <div className="flex items-center gap-2">
-                        <TrendingUp className="size-4 text-secondary" />
-                        <span className="text-sm text-on-surface-variant/80">
-                          Earn Rate: <strong className="text-primary">{biz.earnRate} pts/$1</strong>
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Activity className="size-4 text-secondary" />
-                        <span className="text-sm text-on-surface-variant/80">
-                          Tax Rate: <strong className="text-primary">{(biz.taxRate * 100).toFixed(1)}%</strong>
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="space-y-8">
-              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Settings</span>
-                <h2 className="font-serif text-3xl text-primary">Update Settings</h2>
-              </div>
-              {(businesses.data ?? []).map((biz) => (
-                <BusinessSettingsCard key={biz.id} business={biz} updateSettings={updateSettings} />
-              ))}
             </div>
           </div>
         </TabsContent>
@@ -672,61 +655,82 @@ export function AdminPage() {
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
                   className="space-y-6"
-                  onSubmit={promotionForm.handleSubmit(async (values) => {
-                    try {
-                      setActionError(null)
-                      const businessId = promoBusinessId || currentBusinessId
-                      if (!businessId) {
-                        throw new Error('No business is configured yet.')
-                      }
+                  onSubmit={promotionForm.handleSubmit(
+                    async (values) => {
+                      try {
+                        setActionError(null)
+                        const businessId = currentBusinessId
+                        if (!businessId) {
+                          throw new Error('No business is configured yet.')
+                        }
 
-                      await createPromotion.mutateAsync({ ...values, businessId })
-                      promotionForm.reset({
-                        title: '',
-                        description: '',
-                        badge: '',
-                        cta: '',
-                        audience: '',
-                      })
-                    } catch (error) {
-                      setActionError(error instanceof Error ? error.message : 'Failed to create promotion.')
-                    }
-                  })}
+                        await createPromotion.mutateAsync({ ...values, businessId })
+                        promotionForm.reset({
+                          title: '',
+                          description: '',
+                          badge: '',
+                          cta: '',
+                          audience: '',
+                        })
+                      } catch (error) {
+                        setActionError(error instanceof Error ? error.message : 'Failed to create promotion.')
+                      }
+                    },
+                    () => {
+                      setActionError('Please fix the highlighted promotion fields.')
+                    },
+                  )}
                 >
-                  <div className="grid gap-3">
-                    <Label>Business</Label>
-                    <Input value={businesses.data?.[0]?.name ?? 'No business configured'} disabled />
-                  </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-title">Promotion Title</Label>
                     <Input id="promotion-title" {...promotionForm.register('title')} />
+                    {promotionForm.formState.errors.title ? (
+                      <p className="text-xs text-red-500">{promotionForm.formState.errors.title.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-description">Description</Label>
                     <Input id="promotion-description" {...promotionForm.register('description')} />
+                    {promotionForm.formState.errors.description ? (
+                      <p className="text-xs text-red-500">{promotionForm.formState.errors.description.message}</p>
+                    ) : null}
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
                       <Label htmlFor="promotion-badge">Badge Label</Label>
                       <Input id="promotion-badge" placeholder="e.g., New Offer" {...promotionForm.register('badge')} />
+                      {promotionForm.formState.errors.badge ? (
+                        <p className="text-xs text-red-500">{promotionForm.formState.errors.badge.message}</p>
+                      ) : null}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="promotion-cta">Action Label</Label>
                       <Input id="promotion-cta" placeholder="Unlock Now" {...promotionForm.register('cta')} />
+                      {promotionForm.formState.errors.cta ? (
+                        <p className="text-xs text-red-500">{promotionForm.formState.errors.cta.message}</p>
+                      ) : null}
                     </div>
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-audience">Target Audience</Label>
                     <Input id="promotion-audience" placeholder="All / Bronze / Gold" {...promotionForm.register('audience')} />
+                    {promotionForm.formState.errors.audience ? (
+                      <p className="text-xs text-red-500">{promotionForm.formState.errors.audience.message}</p>
+                    ) : null}
                   </div>
                   <Button
                     type="submit"
                     size="lg"
                     className="w-full rounded-full h-14"
-                    disabled={createPromotion.isPending || !currentBusinessId}
+                    disabled={createPromotion.isPending || businesses.isLoading || !currentBusinessId}
                   >
                     {createPromotion.isPending ? 'Creating...' : 'Launch Promotion'}
                   </Button>
+                  {!businesses.isLoading && !currentBusinessId ? (
+                    <p className="text-sm font-medium text-on-surface-variant/75">
+                      Setup is incomplete. Promotion creation is disabled until the site is connected to its store record.
+                    </p>
+                  ) : null}
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
               </div>
@@ -851,61 +855,6 @@ export function AdminPage() {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
-  )
-}
-
-function BusinessSettingsCard({
-  business,
-  updateSettings,
-}: {
-  business: Business
-  updateSettings: ReturnType<typeof useUpdateBusinessSettings>
-}) {
-  const [earnRate, setEarnRate] = useState(business.earnRate)
-  const [taxRate, setTaxRate] = useState(business.taxRate)
-
-  return (
-    <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-6 space-y-5">
-      <div className="flex items-center gap-3">
-        <div className={`size-10 rounded-xl flex items-center justify-center text-white text-lg font-bold ${
-          business.id === 'biz-cafe-cliche'
-            ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
-            : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
-        }`}>
-          {business.name.charAt(0)}
-        </div>
-        <h3 className="font-serif text-xl text-primary">{business.name}</h3>
-      </div>
-      <div className="grid gap-4">
-        <div className="grid gap-2">
-          <Label className="text-sm font-semibold">Earn Rate (pts/$1)</Label>
-          <Input
-            type="number"
-            value={earnRate}
-            onChange={(e) => setEarnRate(Number(e.target.value))}
-            className="rounded-xl h-11 border-outline-variant/20 focus:border-primary/30"
-          />
-        </div>
-        <div className="grid gap-2">
-          <Label className="text-sm font-semibold">Tax Rate (e.g. 0.09 for 9%)</Label>
-          <Input
-            type="number"
-            step="0.001"
-            value={taxRate}
-            onChange={(e) => setTaxRate(Number(e.target.value))}
-            className="rounded-xl h-11 border-outline-variant/20 focus:border-primary/30"
-          />
-        </div>
-      </div>
-      <Button
-        size="sm"
-        className="w-full rounded-xl h-11 font-semibold"
-        disabled={updateSettings.isPending}
-        onClick={() => updateSettings.mutate({ businessId: business.id, values: { earnRate, taxRate } })}
-      >
-        {updateSettings.isPending ? 'Saving...' : `Save ${business.name} Settings`}
-      </Button>
     </div>
   )
 }

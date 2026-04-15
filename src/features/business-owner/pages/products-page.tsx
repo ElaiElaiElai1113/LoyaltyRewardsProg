@@ -13,12 +13,13 @@ import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useCreateProduct, useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { formatCurrency } from '@/lib/utils'
+import type { Product } from '@/types/domain'
 import { productDraftSchema, type ProductDraftFormValues } from '@/types/forms'
 import { Controller } from 'react-hook-form'
 
 export function ProductsPage() {
   const { business, products } = useBusinessOwnerData()
-  const { session, profile } = useAuth()
+  const { profile } = useAuth()
   const createProduct = useCreateProduct(profile)
   const deleteProduct = useDeleteProduct(profile?.fullName)
   const updateProduct = useUpdateProduct(profile?.fullName)
@@ -30,7 +31,7 @@ export function ProductsPage() {
   const form = useForm<ProductDraftFormValues>({
     resolver: zodResolver(productDraftSchema),
     defaultValues: {
-      businessId: session?.businessId ?? '',
+      businessId: business?.id ?? '',
       title: '',
       description: '',
       category: 'Coffee',
@@ -39,7 +40,7 @@ export function ProductsPage() {
     },
   })
 
-  const handleEdit = (product: any) => {
+  const handleEdit = (product: Product) => {
     setEditingId(product.id)
     form.reset({
       businessId: product.businessId,
@@ -55,7 +56,7 @@ export function ProductsPage() {
   const handleOpenForCreate = () => {
     setEditingId(null)
     form.reset({
-      businessId: session?.businessId ?? '',
+      businessId: business?.id ?? '',
       title: '',
       description: '',
       category: 'Coffee',
@@ -77,7 +78,7 @@ export function ProductsPage() {
       if (editingId) {
         await updateProduct.mutateAsync({ productId: editingId, values })
       } else {
-        await createProduct.mutateAsync({ ...values, businessId: session!.businessId! })
+        await createProduct.mutateAsync({ ...values, businessId: business!.id })
       }
       form.reset()
       setOpen(false)

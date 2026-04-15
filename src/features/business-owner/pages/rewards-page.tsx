@@ -14,11 +14,12 @@ import { useCreateReward, useDeleteReward, useUpdateReward } from '@/hooks/use-a
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { formatPoints } from '@/lib/utils'
+import type { Reward } from '@/types/domain'
 import { rewardDraftSchema, type RewardDraftFormValues } from '@/types/forms'
 
 export function RewardsPage() {
-  const { rewards } = useBusinessOwnerData()
-  const { session, profile } = useAuth()
+  const { business, rewards } = useBusinessOwnerData()
+  const { profile } = useAuth()
   const createReward = useCreateReward(profile)
   const deleteReward = useDeleteReward(profile?.fullName)
   const updateReward = useUpdateReward(profile?.fullName)
@@ -29,7 +30,7 @@ export function RewardsPage() {
   const form = useForm<RewardDraftFormValues>({
     resolver: zodResolver(rewardDraftSchema),
     defaultValues: {
-      businessId: session?.businessId ?? '',
+      businessId: business?.id ?? '',
       title: '',
       description: '',
       category: 'Drink',
@@ -38,7 +39,7 @@ export function RewardsPage() {
     },
   })
 
-  const handleEdit = (reward: any) => {
+  const handleEdit = (reward: Reward) => {
     setEditingId(reward.id)
     form.reset({
       businessId: reward.businessId,
@@ -54,7 +55,7 @@ export function RewardsPage() {
   const handleOpenForCreate = () => {
     setEditingId(null)
     form.reset({
-      businessId: session?.businessId ?? '',
+      businessId: business?.id ?? '',
       title: '',
       description: '',
       category: 'Drink',
@@ -76,7 +77,7 @@ export function RewardsPage() {
       if (editingId) {
         await updateReward.mutateAsync({ rewardId: editingId, values })
       } else {
-        await createReward.mutateAsync({ ...values, businessId: session!.businessId! })
+        await createReward.mutateAsync({ ...values, businessId: business!.id })
       }
       form.reset()
       setOpen(false)

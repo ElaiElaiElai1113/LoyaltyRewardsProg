@@ -3,16 +3,38 @@ import type { BusinessSettingsFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
 
 export const businessService = {
-  async getBusinesses(): Promise<Business[]> {
+  async getBusinesses(includeInactive = false): Promise<Business[]> {
+    const sb = requireSupabase()
+
+    let query = sb
+      .from('businesses')
+      .select('*')
+
+    if (!includeInactive) {
+      query = query.eq('active', true)
+    }
+
+    const { data, error } = await query
+
+    if (error) throw new Error('Failed to load businesses.')
+    return data.map((row) => camelCaseRow(row) as unknown as Business)
+  },
+
+  async getSingleBusiness(): Promise<Business> {
     const sb = requireSupabase()
 
     const { data, error } = await sb
       .from('businesses')
       .select('*')
       .eq('active', true)
+      .limit(1)
+      .single()
 
-    if (error) throw new Error('Failed to load businesses.')
-    return data.map((row) => camelCaseRow(row) as unknown as Business)
+    if (error || !data) {
+      throw new Error('No business configured.')
+    }
+
+    return camelCaseRow(data) as unknown as Business
   },
 
   async getBusinessById(businessId: string): Promise<Business | null> {

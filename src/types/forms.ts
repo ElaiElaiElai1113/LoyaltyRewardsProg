@@ -27,7 +27,7 @@ export type RedeemFormValues = z.infer<typeof redeemSchema>
 
 export const rewardAdjustmentSchema = z.object({
   profileId: z.string().min(1, 'Select a member'),
-  delta: z.number().int().min(-500, 'Minimum -500').max(500, 'Maximum 500'),
+  delta: z.number().int().min(-10000, 'Minimum -10000').max(10000, 'Maximum 10000'),
   reason: z.string().min(4, 'Add a clear reason'),
 })
 

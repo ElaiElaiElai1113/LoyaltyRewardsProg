@@ -27,9 +27,9 @@ const navigation = [
 
 export function BusinessOwnerLayout() {
   const { profile, signOut } = useAuth()
-  const { business, isLoading, error } = useBusinessOwnerData()
+  const { business, isBusinessLoading, error } = useBusinessOwnerData()
 
-  if (isLoading) {
+  if (isBusinessLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="text-center space-y-3">
