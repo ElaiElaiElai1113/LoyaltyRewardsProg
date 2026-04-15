@@ -340,9 +340,9 @@ export function AdminPage() {
                   <div key={reward.id} className="relative group">
                     <RewardCard reward={reward} balancePoints={9999} onRedeem={() => {}} />
                     <Button
-                      variant="destructive"
+                      variant="ghost"
                       size="icon"
-                      className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity rounded-full size-8"
+                      className="absolute top-2 right-2 size-8 rounded-full text-red-500 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                       onClick={() => {
                         if (confirm('Are you sure you want to delete this reward?')) {
                           deleteReward.mutate(reward.id)
@@ -630,9 +630,9 @@ export function AdminPage() {
                   <div key={promotion.id} className="relative group">
                     <PromotionCard promotion={promotion} />
                     <Button
-                      variant="destructive"
+                      variant="ghost"
                       size="icon"
-                      className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity rounded-full size-10"
+                      className="absolute top-4 right-4 size-10 rounded-full text-red-500 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                       onClick={() => {
                         if (confirm('Are you sure you want to delete this promotion?')) {
                           deletePromotion.mutate(promotion.id)

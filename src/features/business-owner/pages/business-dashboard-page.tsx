@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router-dom'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
+import { Button } from '@/components/ui/button'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
