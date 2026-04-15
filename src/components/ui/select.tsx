@@ -38,11 +38,13 @@ function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          'z-50 min-w-[8rem] overflow-hidden rounded-2xl border border-border/80 bg-popover p-1 text-popover-foreground shadow-soft',
+          'z-[100] min-w-[8rem] overflow-hidden rounded-2xl border border-border/80 bg-popover p-1 text-popover-foreground shadow-soft',
           position === 'popper' && 'translate-y-1',
           className,
         )}
         position={position}
+        sideOffset={8}
+        collisionPadding={16}
         {...props}
       >
         <SelectPrimitive.Viewport className="p-1">{children}</SelectPrimitive.Viewport>

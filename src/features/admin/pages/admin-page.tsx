@@ -76,6 +76,9 @@ export function AdminPage() {
       reason: '',
     },
   })
+  const customerMembers = (users.data ?? []).filter(({ profile: member }) => member.role === 'customer')
+  const selectedProfileId = adjustmentForm.watch('profileId')
+  const selectedMember = customerMembers.find(({ profile: member }) => member.id === selectedProfileId) ?? null
 
   const rewardForm = useForm<RewardDraftFormValues>({
     resolver: zodResolver(rewardDraftSchema),
@@ -124,6 +127,15 @@ export function AdminPage() {
       productForm.setValue('businessId', currentBusinessId)
     }
   }, [currentBusinessId, productForm, rewardForm])
+
+  useEffect(() => {
+    if (selectedProfileId || customerMembers.length === 0) return
+
+    adjustmentForm.setValue('profileId', customerMembers[0].profile.id, {
+      shouldDirty: false,
+      shouldValidate: true,
+    })
+  }, [adjustmentForm, customerMembers, selectedProfileId])
 
   if (profile?.role !== 'platform-admin') {
     return (
@@ -210,11 +222,63 @@ export function AdminPage() {
           <div className="grid gap-16 xl:grid-cols-[450px_1fr]">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Quick Action</span>
-                <h2 className="font-serif text-3xl text-primary">Reward Adjustment</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Member Profile</span>
+                <h2 className="font-serif text-3xl text-primary">Adjust Points</h2>
               </div>
 
-              <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+              <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
+                {selectedMember ? (
+                  <div className="rounded-[2rem] border border-primary/10 bg-primary/[0.03] p-6">
+                    <div className="flex items-start gap-4">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-xl text-white shadow-lg">
+                        {selectedMember.profile.fullName.charAt(0)}
+                      </div>
+                      <div className="space-y-2">
+                        <div>
+                          <p className="font-serif text-2xl tracking-tight text-primary">
+                            {selectedMember.profile.fullName}
+                          </p>
+                          <p className="text-sm font-medium text-on-surface-variant/80">
+                            {selectedMember.profile.email}
+                          </p>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border border-secondary-container/20">
+                            <Gift className="size-3 mr-1" />
+                            {selectedMember.balance?.points ?? 0} Points
+                          </Badge>
+                          <Badge variant="outline" className="border-outline-variant/20">
+                            Joined {formatDate(selectedMember.profile.joinedAt)}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-5 grid gap-4 text-sm text-on-surface-variant/80">
+                      <div className="grid gap-1">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Phone</span>
+                        <span>{selectedMember.profile.phone || 'Not provided'}</span>
+                      </div>
+                      <div className="grid gap-1">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Location</span>
+                        <span>{selectedMember.profile.location || 'Not provided'}</span>
+                      </div>
+                      <div className="grid gap-1">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Favorite Order</span>
+                        <span>{selectedMember.profile.favoriteOrder || 'Not provided'}</span>
+                      </div>
+                      <div className="grid gap-1">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Member ID</span>
+                        <span className="break-all">{selectedMember.profile.id}</span>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="rounded-[2rem] border border-dashed border-outline-variant/20 bg-surface-low p-6 text-sm text-on-surface-variant/75">
+                    Select a member to view the profile and update points.
+                  </div>
+                )}
+
                 <form
                   className="space-y-6"
                   onSubmit={adjustmentForm.handleSubmit(
@@ -223,7 +287,7 @@ export function AdminPage() {
                         setActionError(null)
                         await adjustRewards.mutateAsync(values)
                         adjustmentForm.reset({
-                          profileId: '',
+                          profileId: values.profileId,
                           delta: 50,
                           reason: '',
                         })
@@ -237,28 +301,34 @@ export function AdminPage() {
                   )}
                 >
                   <div className="grid gap-4">
-                    <Label htmlFor="profileId" className="text-sm font-semibold">Member ID</Label>
+                    <Label htmlFor="profileId" className="text-sm font-semibold">Member</Label>
                     <Input
                       id="profileId"
                       list="member-id-options"
-                      placeholder="Paste a member id"
+                      placeholder="Select from the customer list or paste a member id"
                       className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
                       {...adjustmentForm.register('profileId')}
                     />
                     <datalist id="member-id-options">
-                      {(users.data ?? []).map(({ profile: member }) => (
+                      {customerMembers.map(({ profile: member }) => (
                         <option key={member.id} value={member.id}>
-                          {member.fullName}
+                          {member.fullName} • {member.email}
                         </option>
                       ))}
                     </datalist>
                     {adjustmentForm.formState.errors.profileId ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.profileId.message}</p>
                     ) : null}
+                    {selectedMember ? (
+                      <p className="text-xs text-on-surface-variant/70">
+                        Selected: {selectedMember.profile.fullName} • Current balance: {selectedMember.balance?.points ?? 0} points
+                      </p>
+                    ) : null}
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="delta" className="text-sm font-semibold">Points Adjustment</Label>
                     <Input id="delta" type="number" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
+                    <p className="text-xs text-on-surface-variant/70">Use a positive number to add points and a negative number to deduct them.</p>
                     {adjustmentForm.formState.errors.delta ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
                     ) : null}
@@ -271,7 +341,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
-                    {adjustRewards.isPending ? 'Processing...' : 'Adjust Points'}
+                    {adjustRewards.isPending ? 'Processing...' : 'Update Points'}
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
@@ -284,14 +354,20 @@ export function AdminPage() {
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Active Members</span>
                   <h2 className="font-serif text-3xl text-primary">Members</h2>
                 </div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">Showing Latest 50</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                  {customerMembers.length} customers
+                </span>
               </div>
 
               <div className="grid gap-4 pointer-events-auto">
-                {(users.data ?? []).map(({ profile: member, balance }) => (
+                {customerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className="group flex flex-col gap-6 rounded-3xl bg-white p-6 transition-all hover:shadow-xl hover:scale-[1.01] md:flex-row md:items-center md:justify-between border border-outline-variant/5 hover:border-primary/10"
+                    className={`group flex flex-col gap-6 rounded-3xl bg-white p-6 transition-all hover:shadow-xl hover:scale-[1.01] md:flex-row md:items-center md:justify-between border ${
+                      selectedProfileId === member.id
+                        ? 'border-primary/30 shadow-lg ring-1 ring-primary/10'
+                        : 'border-outline-variant/5 hover:border-primary/10'
+                    }`}
                   >
                     <div className="flex items-center gap-6">
                        <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] flex items-center justify-center font-serif text-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
@@ -317,8 +393,19 @@ export function AdminPage() {
                         <Gift className="size-3" />
                         {balance?.points ?? 0} Points
                       </Badge>
-                      <Button variant="ghost" size="sm" className="rounded-full hover:bg-primary/5">
-                        View Details
+                      <Button
+                        variant={selectedProfileId === member.id ? 'secondary' : 'ghost'}
+                        size="sm"
+                        className="rounded-full hover:bg-primary/5"
+                        onClick={() => {
+                          adjustmentForm.setValue('profileId', member.id, {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                          setActionError(null)
+                        }}
+                      >
+                        {selectedProfileId === member.id ? 'Selected' : 'View Profile'}
                       </Button>
                     </div>
                   </div>
