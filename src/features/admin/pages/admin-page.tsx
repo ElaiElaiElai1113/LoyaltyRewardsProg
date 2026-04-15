@@ -210,11 +210,11 @@ export function AdminPage() {
       <Tabs defaultValue="members" className="space-y-12">
         <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
           <TabsList className="w-full max-w-4xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
-            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Members</TabsTrigger>
-            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Rewards</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Products</TabsTrigger>
-            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Promotions</TabsTrigger>
-            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:shadow-md">Activity</TabsTrigger>
+            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Members</TabsTrigger>
+            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Rewards</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Products</TabsTrigger>
+            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Promotions</TabsTrigger>
+            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Activity</TabsTrigger>
           </TabsList>
         </div>
 
