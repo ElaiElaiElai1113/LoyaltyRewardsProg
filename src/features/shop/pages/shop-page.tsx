@@ -3,11 +3,13 @@ import { useState } from 'react'
 import { Badge } from '@/components/ui/badge'
 import { BusinessFilter } from '@/components/business-filter'
 import { ProductCard } from '@/features/shop/components/product-card'
+import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
 
 const categories = ['All', 'Coffee', 'Pastry', 'Merch', 'Equipment'] as const
 
 export function ShopPage() {
+  const requireAuth = useLoginGate()
   const businesses = useBusinesses()
   const products = useProducts()
   const addToCart = useAddToCart()
@@ -20,6 +22,10 @@ export function ShopPage() {
     if (selectedCategory !== 'All' && p.category !== selectedCategory) return false
     return true
   })
+
+  const handleAddToCart = (productId: string) => {
+    requireAuth(() => addToCart.mutate({ productId }))
+  }
 
   return (
     <div className="space-y-16 pb-20">
@@ -66,7 +72,7 @@ export function ShopPage() {
           <ProductCard
             key={product.id}
             product={product}
-            onAddToCart={(p) => addToCart.mutate({ productId: p.id })}
+            onAddToCart={(p) => handleAddToCart(p.id)}
             isAdding={addToCart.isPending}
           />
         ))}

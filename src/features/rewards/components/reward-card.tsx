@@ -9,11 +9,21 @@ interface RewardCardProps {
   reward: Reward
   balancePoints?: number
   businessName?: string
+  requirePoints?: boolean
   onRedeem: (reward: Reward) => void
 }
 
-export function RewardCard({ reward, balancePoints = 0, businessName, onRedeem }: RewardCardProps) {
-  const canRedeem = balancePoints >= reward.pointsCost && reward.inventory > 0
+export function RewardCard({
+  reward,
+  balancePoints = 0,
+  businessName,
+  requirePoints = true,
+  onRedeem,
+}: RewardCardProps) {
+  const hasInventory = reward.inventory > 0
+  const hasEnoughPoints = balancePoints >= reward.pointsCost
+  const canRedeem = hasInventory && (!requirePoints || hasEnoughPoints)
+  const buttonLabel = !hasInventory ? 'Sold out' : canRedeem ? 'Redeem now' : 'More points needed'
 
   return (
     <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
@@ -61,11 +71,11 @@ export function RewardCard({ reward, balancePoints = 0, businessName, onRedeem }
             <Button
               onClick={() => onRedeem(reward)}
               disabled={!canRedeem}
-              variant={canRedeem ? "secondary" : "outline"}
+              variant={canRedeem ? 'secondary' : 'outline'}
               size="sm"
               className="rounded-full"
             >
-              {canRedeem ? 'Redeem now' : 'More points needed'}
+              {buttonLabel}
             </Button>
           </div>
         </div>

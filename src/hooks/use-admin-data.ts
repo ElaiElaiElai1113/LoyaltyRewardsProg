@@ -5,6 +5,7 @@ import { adminService } from '@/integrations/supabase/services/admin-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
+import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import type {
   BusinessSettingsFormValues,
@@ -46,6 +47,95 @@ export function useAdminBusinesses() {
   return useQuery({
     queryKey: adminKeys.businesses,
     queryFn: async () => [await businessService.getSingleBusiness()],
+  })
+}
+
+export function useAdminAllBusinesses() {
+  return useQuery({
+    queryKey: ['admin', 'businesses'],
+    queryFn: () => adminService.getBusinessesWithMetrics(),
+  })
+}
+
+export function useAllReferrals() {
+  return useQuery({
+    queryKey: ['referrals', 'all'],
+    queryFn: () => referralsService.getAllReferrals(),
+  })
+}
+
+export function useUseCredit() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ profileId, actorName }: { profileId: string; actorName: string }) =>
+      referralsService.useCredit(profileId, actorName),
+    onSuccess: (_, variables) => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance', variables.profileId] })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
+      void queryClient.invalidateQueries({ queryKey: ['activities', variables.profileId] })
+      toast.success('Coffee credit used')
+    },
+    onError: (error: Error) => {
+      toast.error(`Credit use failed: ${error.message}`)
+    },
+  })
+}
+
+export function useAdminApproveReferral() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, approverId }: { id: string; approverId: string }) =>
+      referralsService.approveReferral(id, approverId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['referrals', 'all'] })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
+      void queryClient.invalidateQueries({ queryKey: ['activities'] })
+      toast.success('Referral approved')
+    },
+    onError: (error: Error) => {
+      toast.error(`Approval failed: ${error.message}`)
+    },
+  })
+}
+
+export function useAdminRejectReferral() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => referralsService.rejectReferral(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['referrals', 'all'] })
+      toast.success('Referral rejected')
+    },
+    onError: (error: Error) => {
+      toast.error(`Rejection failed: ${error.message}`)
+    },
+  })
+}
+
+export function useUpdateBusiness() {
+  const qc = useQueryClient()
+  return useMutation({
+    mutationFn: ({
+      id,
+      patch,
+    }: {
+      id: string
+      patch: Parameters<typeof adminService.updateBusiness>[1]
+    }) => adminService.updateBusiness(id, patch),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'businesses'] }),
+  })
+}
+
+export function useOrdersForVerification(businessId?: string) {
+  return useQuery({
+    queryKey: ['admin', 'verification', businessId],
+    queryFn: () => adminService.getOrdersForVerification(businessId),
   })
 }
 

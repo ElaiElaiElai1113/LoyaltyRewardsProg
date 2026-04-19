@@ -109,6 +109,15 @@ export const authService = {
     )
   },
 
+  async resetPassword(email: string): Promise<void> {
+    const sb = requireSupabase()
+    const { error } = await sb.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    })
+
+    if (error) throw error
+  },
+
   async signOut(): Promise<void> {
     const sb = requireSupabase()
     await sb.auth.signOut()

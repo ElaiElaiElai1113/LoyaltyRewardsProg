@@ -1,25 +1,41 @@
 import {
   ArrowUpRight,
+  CheckCircle,
   Gift,
   Package,
   ShoppingBag,
   Sparkles,
   TrendingUp,
   Users,
+  XCircle,
 } from 'lucide-react'
+import { useState } from 'react'
+import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
 import { Button } from '@/components/ui/button'
-import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { Input } from '@/components/ui/input'
+import {
+  useApproveReferral,
+  useBusinessOwnerData,
+  usePendingReferrals,
+  useRejectReferral,
+  useValidateCreditCode,
+} from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
-import { formatCurrency, formatPoints } from '@/lib/utils'
+import { formatCurrency, formatDate, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
   const { business, metrics, products, rewards, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
+  const [redemptionCode, setRedemptionCode] = useState('')
   const fulfillRedemption = useFulfillRedemption(profile)
+  const pendingReferrals = usePendingReferrals(business?.id)
+  const approveReferral = useApproveReferral(business?.id)
+  const rejectReferral = useRejectReferral(business?.id)
+  const validateCreditCode = useValidateCreditCode(business?.id)
 
   if (!metrics) {
     return <div className="text-center py-20 text-on-surface-variant/60">Loading...</div>
@@ -162,6 +178,121 @@ export function BusinessDashboardPage() {
         </div>
       </div>
 
+      {/* Credit Redemption Validation */}
+      <div>
+        <div className="mb-6 space-y-1">
+          <h2 className="font-serif text-2xl text-primary">Validate Redemption Code</h2>
+          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit coffee credit code</p>
+        </div>
+
+        <form
+          className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-6"
+          onSubmit={(event: FormEvent<HTMLFormElement>) => {
+            event.preventDefault()
+            if (!business?.id || redemptionCode.length !== 6) return
+            validateCreditCode.mutate(redemptionCode, {
+              onSuccess: () => setRedemptionCode(''),
+            })
+          }}
+        >
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <Input
+              value={redemptionCode}
+              inputMode="numeric"
+              pattern="[0-9]{6}"
+              maxLength={6}
+              placeholder="000000"
+              aria-label="Redemption code"
+              className="h-14 rounded-2xl bg-surface-lowest text-center font-mono text-2xl tracking-[0.2em]"
+              onChange={(event) => {
+                setRedemptionCode(event.target.value.replace(/\D/g, '').slice(0, 6))
+              }}
+            />
+            <Button
+              type="submit"
+              className="h-14 rounded-2xl px-8"
+              disabled={!business?.id || redemptionCode.length !== 6 || validateCreditCode.isPending}
+            >
+              <CheckCircle className="size-4" />
+              {validateCreditCode.isPending ? 'Validating...' : 'Validate'}
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {/* Referral Approvals */}
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <div className="space-y-1">
+            <h2 className="font-serif text-2xl text-primary">Referral Approvals</h2>
+            <p className="text-sm text-on-surface-variant/70">Review new customer referral credits</p>
+          </div>
+          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+            {pendingReferrals.data?.length ?? 0} pending
+          </span>
+        </div>
+
+        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          {pendingReferrals.isLoading ? (
+            <div className="p-12 text-center">
+              <p className="text-on-surface-variant/60 font-medium">Loading referrals...</p>
+            </div>
+          ) : null}
+
+          {!pendingReferrals.isLoading && (pendingReferrals.data?.length ?? 0) === 0 ? (
+            <div className="p-12 text-center">
+              <p className="text-on-surface-variant/60 font-medium">No pending referrals.</p>
+            </div>
+          ) : null}
+
+          {(pendingReferrals.data ?? []).map((referral) => (
+            <div key={referral.id} className="p-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+              <div className="grid flex-1 gap-6 md:grid-cols-2">
+                <div className="space-y-1">
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Referrer</p>
+                  <p className="font-serif text-xl text-primary">{referral.referrer.fullName}</p>
+                  <p className="text-sm font-medium text-on-surface-variant/75">{referral.referrer.email}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">New Customer</p>
+                  <p className="font-serif text-xl text-primary">{referral.referee.fullName}</p>
+                  <p className="text-sm font-medium text-on-surface-variant/75">{referral.referee.email}</p>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">
+                  {formatDate(referral.createdAt)}
+                </span>
+                <Button
+                  type="button"
+                  size="sm"
+                  className="rounded-full bg-success/10 text-success hover:bg-success/15"
+                  disabled={approveReferral.isPending || rejectReferral.isPending || !profile?.id}
+                  onClick={() => {
+                    if (!profile?.id) return
+                    approveReferral.mutate({ id: referral.id, approverId: profile.id })
+                  }}
+                >
+                  <CheckCircle className="size-4" />
+                  Approve
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                  disabled={approveReferral.isPending || rejectReferral.isPending}
+                  onClick={() => rejectReferral.mutate(referral.id)}
+                >
+                  <XCircle className="size-4" />
+                  Reject
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Recent Redemptions Fulfillment */}
       <div>
         <div className="flex items-center justify-between mb-6">
@@ -180,7 +311,7 @@ export function BusinessDashboardPage() {
               <p className="text-on-surface-variant/60 font-medium">No redemptions yet.</p>
             </div>
           ) : (
-            redemptions.slice(0, 5).map((redemption: any) => (
+            redemptions.slice(0, 5).map((redemption) => (
               <div key={redemption.id} className="p-6 flex items-center justify-between group hover:bg-surface-low transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">

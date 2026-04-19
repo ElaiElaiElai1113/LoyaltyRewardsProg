@@ -7,6 +7,7 @@ import { ordersService } from '@/integrations/supabase/services/orders-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { profileService } from '@/integrations/supabase/services/profile-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
+import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import type { ProfileFormValues, RedeemFormValues } from '@/types/forms'
 
@@ -20,6 +21,7 @@ const customerKeys = {
   promotions: (businessId?: string) => ['promotions', businessId ?? 'all'] as const,
   activities: (profileId: string) => ['activities', profileId] as const,
   profile: (profileId: string) => ['profile', profileId] as const,
+  referralStatus: (profileId: string) => ['referrals', 'referee', profileId] as const,
   cart: ['cart'] as const,
   orders: (profileId: string) => ['orders', profileId] as const,
 }
@@ -80,6 +82,14 @@ export function useActivities(profileId?: string) {
   return useQuery({
     queryKey: profileId ? customerKeys.activities(profileId) : ['activities', 'guest'],
     queryFn: () => activityService.getActivities(profileId!),
+    enabled: Boolean(profileId),
+  })
+}
+
+export function useReferralStatus(profileId?: string) {
+  return useQuery({
+    queryKey: profileId ? customerKeys.referralStatus(profileId) : ['referrals', 'referee', 'guest'],
+    queryFn: () => referralsService.getReferralForReferee(profileId!),
     enabled: Boolean(profileId),
   })
 }
@@ -179,6 +189,12 @@ export function useRedeemReward(profileId?: string) {
       void queryClient.invalidateQueries({ queryKey: ['rewards'] })
       void queryClient.invalidateQueries({ queryKey: customerKeys.reward(variables.rewardId) })
     },
+  })
+}
+
+export function useGenerateCreditCode(profileId?: string) {
+  return useMutation({
+    mutationFn: () => referralsService.generateCreditCode(profileId!),
   })
 }
 

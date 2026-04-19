@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { AuthContext } from '@/features/auth/auth-context'
 import { authService } from '@/integrations/supabase/services/auth-service'
+import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { supabase } from '@/integrations/supabase/client'
 import { queryClient } from '@/lib/query-client'
 import type { Profile, SessionUser, UserRole } from '@/types/domain'
@@ -9,6 +10,16 @@ import type { AuthFormValues } from '@/types/forms'
 
 interface AuthProviderProps {
   children: ReactNode
+}
+
+async function createPendingReferralForProfile(profileId: string) {
+  const referralCode = sessionStorage.getItem('referralCode')
+  if (!referralCode || referralCode === profileId) return
+
+  const referralBusinessId = sessionStorage.getItem('referralBusinessId')
+  await referralsService.createReferral(referralCode, profileId, referralBusinessId ?? null)
+  sessionStorage.removeItem('referralCode')
+  sessionStorage.removeItem('referralBusinessId')
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -105,57 +116,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
+  useEffect(() => {
+    if (!profile?.id) return
+
+    void createPendingReferralForProfile(profile.id).catch((error) => {
+      console.warn('Pending referral creation skipped:', error)
+    })
+  }, [profile?.id])
+
   const value = {
     profile,
     session,
     isLoading,
     async signIn(values: AuthFormValues) {
-      setIsLoading(true)
-      try {
-        const sessionProfile = await authService.signIn(values)
-        queryClient.clear()
-        setProfile(sessionProfile)
-        setSession({
-          profileId: sessionProfile.id,
-          role: sessionProfile.role,
-          businessId: sessionProfile.businessId,
-        })
-        return sessionProfile
-      } finally {
-        setIsLoading(false)
-      }
+      const sessionProfile = await authService.signIn(values)
+      queryClient.clear()
+      setProfile(sessionProfile)
+      setSession({
+        profileId: sessionProfile.id,
+        role: sessionProfile.role,
+        businessId: sessionProfile.businessId,
+      })
+      return sessionProfile
     },
     async signUp(values: AuthFormValues) {
-      setIsLoading(true)
-      try {
-        const sessionProfile = await authService.signUp(values)
-        queryClient.clear()
-        setProfile(sessionProfile)
-        setSession({
-          profileId: sessionProfile.id,
-          role: sessionProfile.role,
-          businessId: sessionProfile.businessId,
-        })
-        return sessionProfile
-      } finally {
-        setIsLoading(false)
-      }
+      const sessionProfile = await authService.signUp(values)
+      queryClient.clear()
+      setProfile(sessionProfile)
+      setSession({
+        profileId: sessionProfile.id,
+        role: sessionProfile.role,
+        businessId: sessionProfile.businessId,
+      })
+      return sessionProfile
     },
     async continueAsDemo(role: UserRole) {
-      setIsLoading(true)
-      try {
-        const sessionProfile = await authService.continueAsDemo(role)
-        queryClient.clear()
-        setProfile(sessionProfile)
-        setSession({
-          profileId: sessionProfile.id,
-          role: sessionProfile.role,
-          businessId: sessionProfile.businessId,
-        })
-        return sessionProfile
-      } finally {
-        setIsLoading(false)
-      }
+      const sessionProfile = await authService.continueAsDemo(role)
+      queryClient.clear()
+      setProfile(sessionProfile)
+      setSession({
+        profileId: sessionProfile.id,
+        role: sessionProfile.role,
+        businessId: sessionProfile.businessId,
+      })
+      return sessionProfile
     },
     async signOut() {
       setIsLoading(true)

@@ -6,6 +6,8 @@ import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { ProfilePage } from '@/features/profile/pages/profile-page'
 import { PromotionsPage } from '@/features/promotions/pages/promotions-page'
+import { PromoPage } from '@/features/referrals/pages/promo-page'
+import { ReferralRegisterPage } from '@/features/referrals/pages/referral-register-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
 import { RewardsPage } from '@/features/rewards/pages/rewards-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
@@ -25,6 +27,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
+import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
 
 function getHomePathForRole(role: string) {
   if (role === 'platform-admin') return '/admin'
@@ -63,6 +66,26 @@ function LandingRoute() {
   return <LandingPage />
 }
 
+function RootRoute() {
+  const { profile, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  if (profile) {
+    if (profile.role === 'platform-admin') {
+      return <Navigate replace to="/admin" />
+    }
+    if (profile.role === 'business-owner') {
+      return <Navigate replace to="/business/dashboard" />
+    }
+    return <Navigate replace to="/dashboard" />
+  }
+
+  return <Navigate replace to="/shop" />
+}
+
 function ProtectedCustomerRoute() {
   const { profile, isLoading } = useAuth()
 
@@ -79,6 +102,28 @@ function ProtectedCustomerRoute() {
   }
 
   return <CustomerLayout />
+}
+
+function PublicOrCustomerRoute() {
+  const { profile, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  if (profile && profile.role === 'platform-admin') {
+    return <Navigate replace to="/admin" />
+  }
+
+  if (profile && profile.role === 'business-owner') {
+    return <Navigate replace to="/business/dashboard" />
+  }
+
+  if (profile?.role === 'customer') {
+    return <CustomerLayout />
+  }
+
+  return <PublicBrowseLayout />
 }
 
 function ProtectedAdminRoute() {
@@ -112,20 +157,37 @@ function ProtectedBusinessOwnerRoute() {
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <RootRoute />,
+  },
+  {
+    path: '/signin',
     element: <LandingRoute />,
+  },
+  {
+    path: '/promo',
+    element: <PromoPage />,
+  },
+  {
+    path: '/promo/register',
+    element: <ReferralRegisterPage />,
+  },
+  {
+    element: <PublicOrCustomerRoute />,
+    children: [
+      { path: '/shop', element: <ShopPage /> },
+      { path: '/rewards', element: <RewardsPage /> },
+      { path: '/promotions', element: <PromotionsPage /> },
+    ],
   },
   {
     element: <ProtectedCustomerRoute />,
     children: [
       { path: '/dashboard', element: <DashboardPage /> },
-      { path: '/shop', element: <ShopPage /> },
       { path: '/cart', element: <CartPage /> },
       { path: '/checkout', element: <CheckoutPage /> },
       { path: '/order-confirmation', element: <OrderConfirmationPage /> },
       { path: '/orders', element: <OrdersPage /> },
-      { path: '/rewards', element: <RewardsPage /> },
       { path: '/redeem/:rewardId', element: <RedeemRewardPage /> },
-      { path: '/promotions', element: <PromotionsPage /> },
       { path: '/activity', element: <ActivityPage /> },
       { path: '/profile', element: <ProfilePage /> },
     ],

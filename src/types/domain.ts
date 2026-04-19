@@ -11,6 +11,21 @@ export interface Business {
   active: boolean
 }
 
+export interface BusinessWithMetrics {
+  id: string
+  name: string
+  slug: string
+  description: string | null
+  earnRate: number
+  currency: string
+  active: boolean
+  logoUrl: string | null
+  totalMembers: number
+  totalRevenue: number
+  pointsIssued: number
+  creditsOutstanding: number
+}
+
 export interface Profile {
   id: string
   fullName: string
@@ -29,6 +44,27 @@ export interface RewardBalance {
   nextRewardPoints: number
   availableCredits: number
   tierProgress: number
+}
+
+export type ReferralStatus = 'pending' | 'approved' | 'rejected'
+
+export interface ReferralWithProfiles {
+  id: string
+  referrerId: string
+  refereeId: string
+  businessId: string | null
+  status: ReferralStatus
+  approvedBy: string | null
+  approvedAt: string | null
+  createdAt: string
+  referrer: {
+    fullName: string
+    email: string
+  }
+  referee: {
+    fullName: string
+    email: string
+  }
 }
 
 export interface Reward {
@@ -80,6 +116,18 @@ export interface Order {
   pointsStatus: 'pending' | 'posted'
   paymentMethod: string
   status: 'confirmed' | 'processing' | 'delivered'
+  createdAt: string
+}
+
+export interface OrderForVerification {
+  id: string
+  profileId: string
+  businessId: string
+  businessName: string
+  total: number
+  pointsEarned: number
+  expectedPoints: number
+  mismatch: boolean
   createdAt: string
 }
 

@@ -5,6 +5,7 @@ import { adminService } from '@/integrations/supabase/services/admin-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
+import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
 import type { Profile, Redemption } from '@/types/domain'
@@ -255,6 +256,63 @@ export function useAwardPoints(actor?: Profile | null, businessId?: string) {
     },
     onError: (error: Error) => {
       toast.error(`Award failed: ${error.message}`)
+    },
+  })
+}
+
+export function usePendingReferrals(businessId: string | undefined) {
+  return useQuery({
+    queryKey: ['referrals', 'pending', businessId],
+    queryFn: () => referralsService.getPendingReferrals(businessId!),
+    enabled: Boolean(businessId),
+  })
+}
+
+export function useApproveReferral(businessId: string | undefined) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, approverId }: { id: string; approverId: string }) =>
+      referralsService.approveReferral(id, approverId),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['referrals', 'pending', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      toast.success('Referral approved')
+    },
+    onError: (error: Error) => {
+      toast.error(`Approval failed: ${error.message}`)
+    },
+  })
+}
+
+export function useRejectReferral(businessId: string | undefined) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => referralsService.rejectReferral(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['referrals', 'pending', businessId] })
+      toast.success('Referral rejected')
+    },
+    onError: (error: Error) => {
+      toast.error(`Rejection failed: ${error.message}`)
+    },
+  })
+}
+
+export function useValidateCreditCode(businessId: string | undefined) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (code: string) => referralsService.validateCreditCode(code, businessId!),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      toast.success('Credit redeemed successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
     },
   })
 }

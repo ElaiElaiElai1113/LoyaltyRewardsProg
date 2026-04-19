@@ -1,6 +1,12 @@
-import type { Activity, Profile, Redemption } from '@/types/domain'
+import type {
+  Activity,
+  BusinessWithMetrics,
+  OrderForVerification,
+  Profile,
+  Redemption,
+} from '@/types/domain'
 import type { RewardAdjustmentFormValues } from '@/types/forms'
-import { requireSupabase, camelCaseRow } from './shared'
+import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
 
 function toTierProgress(points: number, target: number) {
   return Math.max(0, Math.min(100, Math.round((points / target) * 100)))
@@ -79,6 +85,97 @@ async function performRewardAdjustment(
 }
 
 export const adminService = {
+  async getBusinessesWithMetrics(): Promise<BusinessWithMetrics[]> {
+    const sb = requireSupabase()
+
+    const [businessesResult, ordersResult, activitiesResult, profilesResult, balancesResult] =
+      await Promise.all([
+        sb.from('businesses').select('*').order('name'),
+        sb.from('orders').select('business_id, profile_id, total'),
+        sb.from('activities').select('business_id, points').eq('type', 'earned'),
+        sb.from('profiles').select('id, business_id'),
+        sb.from('reward_balances').select('profile_id, available_credits'),
+      ])
+
+    if (businessesResult.error) throw new Error('Failed to load businesses.')
+    if (ordersResult.error) throw new Error('Failed to load business order metrics.')
+    if (activitiesResult.error) throw new Error('Failed to load business activity metrics.')
+    if (profilesResult.error) throw new Error('Failed to load business credit metrics.')
+    if (balancesResult.error) throw new Error('Failed to load member credit balances.')
+
+    const memberIdsByBusiness = new Map<string, Set<string>>()
+    const revenueByBusiness = new Map<string, number>()
+
+    for (const order of ordersResult.data ?? []) {
+      const businessId = order.business_id as string | null
+      const profileId = order.profile_id as string | null
+      if (!businessId) continue
+
+      if (profileId) {
+        const memberSet = memberIdsByBusiness.get(businessId) ?? new Set<string>()
+        memberSet.add(profileId)
+        memberIdsByBusiness.set(businessId, memberSet)
+      }
+
+      revenueByBusiness.set(
+        businessId,
+        (revenueByBusiness.get(businessId) ?? 0) + Number(order.total ?? 0),
+      )
+    }
+
+    const pointsIssuedByBusiness = new Map<string, number>()
+    for (const activity of activitiesResult.data ?? []) {
+      const businessId = activity.business_id as string | null
+      if (!businessId) continue
+
+      pointsIssuedByBusiness.set(
+        businessId,
+        (pointsIssuedByBusiness.get(businessId) ?? 0) + Number(activity.points ?? 0),
+      )
+    }
+
+    const businessIdByProfile = new Map<string, string>()
+    for (const profile of profilesResult.data ?? []) {
+      if (typeof profile.id === 'string' && typeof profile.business_id === 'string') {
+        businessIdByProfile.set(profile.id, profile.business_id)
+      }
+    }
+
+    const creditsOutstandingByBusiness = new Map<string, number>()
+    for (const balance of balancesResult.data ?? []) {
+      const profileId = balance.profile_id as string | null
+      if (!profileId) continue
+
+      const businessId = businessIdByProfile.get(profileId)
+      if (!businessId) continue
+
+      creditsOutstandingByBusiness.set(
+        businessId,
+        (creditsOutstandingByBusiness.get(businessId) ?? 0) + Number(balance.available_credits ?? 0),
+      )
+    }
+
+    return (businessesResult.data ?? []).map((row) => {
+      const business = camelCaseRow(row as Record<string, unknown>)
+      const businessId = business.id as string
+
+      return {
+        id: businessId,
+        name: business.name as string,
+        slug: business.slug as string,
+        description: (business.description as string | null) ?? null,
+        earnRate: Number(business.earnRate ?? 0),
+        currency: (business.currency as string) || 'USD',
+        active: Boolean(business.active),
+        logoUrl: (business.logoUrl as string | null) ?? null,
+        totalMembers: memberIdsByBusiness.get(businessId)?.size ?? 0,
+        totalRevenue: revenueByBusiness.get(businessId) ?? 0,
+        pointsIssued: pointsIssuedByBusiness.get(businessId) ?? 0,
+        creditsOutstanding: creditsOutstandingByBusiness.get(businessId) ?? 0,
+      }
+    })
+  },
+
   async getUsers() {
     const sb = requireSupabase()
 
@@ -177,6 +274,37 @@ export const adminService = {
     })
   },
 
+  async updateBusiness(
+    id: string,
+    patch: { name?: string; description?: string; logoUrl?: string },
+  ) {
+    const sb = requireSupabase()
+    const snakePatch = snakeCaseObj(patch as Record<string, unknown>)
+
+    const { data, error } = await sb
+      .from('businesses')
+      .update(snakePatch)
+      .eq('id', id)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error('Failed to update business.')
+    }
+
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: 'Platform Admin',
+      action: 'business_info_updated',
+      details: JSON.stringify(patch),
+    })
+
+    if (logError) {
+      console.error('Admin log error:', logError)
+    }
+
+    return camelCaseRow(data as Record<string, unknown>)
+  },
+
   async adjustRewardsForBusiness(
     values: RewardAdjustmentFormValues,
     actor: Profile,
@@ -188,6 +316,50 @@ export const adminService = {
       businessId,
       addedTitle: 'Points added by business',
       deductedTitle: 'Points deducted by business',
+    })
+  },
+
+  async getOrdersForVerification(businessId?: string): Promise<OrderForVerification[]> {
+    const sb = requireSupabase()
+
+    let query = sb
+      .from('orders')
+      .select('id, profile_id, business_id, total, points_earned, created_at, businesses(name, earn_rate)')
+      .order('created_at', { ascending: false })
+      .limit(100)
+
+    if (businessId) {
+      query = query.eq('business_id', businessId)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      throw new Error('Failed to load orders for verification.')
+    }
+
+    return (data ?? []).map((row) => {
+      const order = camelCaseRow(row as Record<string, unknown>)
+      const rawBusinesses = (row as { businesses?: unknown }).businesses
+      const businessRow = Array.isArray(rawBusinesses)
+        ? ((rawBusinesses[0] as Record<string, unknown> | undefined) ?? null)
+        : ((rawBusinesses as Record<string, unknown> | null | undefined) ?? null)
+      const earnRate = Number(businessRow?.earn_rate ?? 0)
+      const total = Number(order.total ?? 0)
+      const pointsEarned = Number(order.pointsEarned ?? 0)
+      const expectedPoints = Math.floor(total * earnRate)
+
+      return {
+        id: order.id as string,
+        profileId: order.profileId as string,
+        businessId: order.businessId as string,
+        businessName: (businessRow?.name as string) ?? 'Unknown Partner',
+        total,
+        pointsEarned,
+        expectedPoints,
+        mismatch: pointsEarned !== expectedPoints,
+        createdAt: order.createdAt as string,
+      }
     })
   },
 

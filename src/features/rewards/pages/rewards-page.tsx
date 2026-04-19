@@ -13,6 +13,7 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/use-auth'
+import { useLoginGate } from '@/hooks/use-login-gate'
 import { useBusinesses, useRedeemReward, useRewardBalance, useRewards } from '@/hooks/use-customer-data'
 import type { Reward } from '@/types/domain'
 
@@ -24,6 +25,7 @@ const filters = ['All', 'Drink', 'Pastry', 'Merch', 'Experience'] as const
 export function RewardsPage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
+  const requireAuth = useLoginGate()
   const rewardBalance = useRewardBalance(profile?.id)
   const businesses = useBusinesses()
   const redeemReward = useRedeemReward(profile?.id)
@@ -41,6 +43,10 @@ export function RewardsPage() {
   const getBusinessName = (businessId: string) =>
     businesses.data?.find((b) => b.id === businessId)?.name ?? ''
 
+  const handleRedeem = (reward: Reward) => {
+    requireAuth(() => setSelectedReward(reward))
+  }
+
   return (
     <div className="space-y-16 pb-20">
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
@@ -56,18 +62,20 @@ export function RewardsPage() {
           </p>
         </div>
 
-        <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Your Points</span>
-          <div className="rounded-2xl bg-primary-container px-6 py-4 text-white shadow-card flex items-center gap-4">
-             <div className="size-10 rounded-full bg-white/10 flex items-center justify-center">
+        {profile && (
+          <div className="flex flex-col items-start gap-4 lg:items-end">
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Your Points</span>
+            <div className="flex items-center gap-4 rounded-2xl bg-primary-container px-6 py-4 text-white shadow-card">
+              <div className="flex size-10 items-center justify-center rounded-full bg-white/10">
                 <Gift className="size-5 text-secondary-container" />
-             </div>
-             <div className="flex flex-col">
+              </div>
+              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{balancePoints}</span>
                 <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Available Points</span>
-             </div>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md space-y-3">
@@ -105,7 +113,8 @@ export function RewardsPage() {
             reward={reward}
             balancePoints={balancePoints}
             businessName={getBusinessName(reward.businessId)}
-            onRedeem={(item) => setSelectedReward(item)}
+            requirePoints={Boolean(profile)}
+            onRedeem={handleRedeem}
           />
         ))}
       </div>
