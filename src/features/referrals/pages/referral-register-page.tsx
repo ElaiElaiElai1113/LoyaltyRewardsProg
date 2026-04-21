@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
-import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const defaultValues: AuthFormValues = {
@@ -106,12 +105,7 @@ export function ReferralRegisterPage() {
                         sessionStorage.setItem('referralBusinessId', businessId)
                       }
                     }
-                    const newProfile = await signUp({ ...values, role: 'customer' })
-                    if (referrerId) {
-                      await referralsService.createReferral(referrerId, newProfile.id, businessId ?? null)
-                    }
-                    sessionStorage.removeItem('referralCode')
-                    sessionStorage.removeItem('referralBusinessId')
+                    await signUp({ ...values, role: 'customer' })
                     setSignUpComplete(true)
                     form.reset(defaultValues)
                   } catch (submissionError) {

@@ -57,8 +57,8 @@ export function DashboardPage() {
   const referral = referralStatus.data
   const currentBusiness = businesses.data?.[0] ?? null
   const referralUrl =
-    profile && currentBusiness && typeof window !== 'undefined'
-      ? `${window.location.origin}/promo?ref=${profile.id}&business=${currentBusiness.id}`
+    profile?.referralCode && currentBusiness && typeof window !== 'undefined'
+      ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${currentBusiness.id}`
       : ''
   const featuredRewards = rewards.data?.filter((reward) => reward.featured).slice(0, 2) ?? []
   const activePromotions = promotions.data?.slice(0, 2) ?? []

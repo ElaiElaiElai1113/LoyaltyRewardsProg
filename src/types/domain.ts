@@ -36,6 +36,7 @@ export interface Profile {
   joinedAt: string
   role: UserRole
   businessId?: string // For business owners - which business they belong to
+  referralCode: string
 }
 
 export interface RewardBalance {

@@ -13,12 +13,18 @@ import type { RewardAdjustmentFormValues } from '@/types/forms'
 import { useAuth } from './use-auth'
 
 export function useBusinessOwnerData() {
-  useAuth()
+  const { profile } = useAuth()
 
   // Get the business details
   const businessQuery = useQuery({
-    queryKey: ['business', 'single'],
-    queryFn: () => businessService.getSingleBusiness(),
+    queryKey: ['business', profile?.businessId ?? 'unassigned'],
+    queryFn: () => {
+      if (!profile?.businessId) {
+        throw new Error('This account does not have a business assigned yet.')
+      }
+      return businessService.getSingleBusiness(profile.businessId)
+    },
+    enabled: Boolean(profile?.businessId),
     retry: false,
   })
 

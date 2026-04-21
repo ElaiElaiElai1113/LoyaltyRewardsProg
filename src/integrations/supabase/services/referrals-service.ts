@@ -26,6 +26,10 @@ type StaffReferralRow = {
   referee_email: string | null
 }
 
+type ReferralCreateResult =
+  | { status: 'created'; referral: Record<string, unknown> }
+  | { status: 'skipped'; reason: 'duplicate' | 'missing-referrer' | 'self-referral' }
+
 function firstProfile(value: ProfileSummary | ProfileSummary[] | null | undefined): ProfileSummary {
   const profile = Array.isArray(value) ? value[0] : value
   return {
@@ -81,28 +85,6 @@ function mapStaffReferral(row: StaffReferralRow): ReferralWithProfiles {
       fullName: row.referee_full_name || 'Unknown member',
       email: row.referee_email || '',
     },
-  }
-}
-
-async function incrementAvailableCredit(profileId: string) {
-  const sb = requireSupabase()
-  const { data: balance, error: balanceError } = await sb
-    .from('reward_balances')
-    .select('available_credits')
-    .eq('profile_id', profileId)
-    .single()
-
-  if (balanceError || !balance) {
-    throw new Error('Balance not found.')
-  }
-
-  const { error: updateError } = await sb
-    .from('reward_balances')
-    .update({ available_credits: Number(balance.available_credits ?? 0) + 1 })
-    .eq('profile_id', profileId)
-
-  if (updateError) {
-    throw new Error(updateError.message)
   }
 }
 
@@ -162,65 +144,46 @@ export const referralsService = {
 
   async validateCreditCode(code: string, businessId: string): Promise<{ profileId: string }> {
     const sb = requireSupabase()
-    const normalizedCode = code.replace(/\D/g, '')
+    const { data, error } = await sb.rpc('redeem_credit_code', {
+      code,
+      business_id: businessId,
+    })
 
-    const { data: redemption, error: lookupError } = await sb
-      .from('credit_redemptions')
-      .select('id, profile_id')
-      .eq('code', normalizedCode)
-      .eq('status', 'pending')
-      .gt('expires_at', new Date().toISOString())
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .maybeSingle()
+    if (error) throw new Error(error.message)
 
-    if (lookupError) {
-      throw new Error(lookupError.message)
-    }
-
-    if (!redemption) {
-      throw new Error('Invalid or expired code')
-    }
-
-    const profileId = redemption.profile_id as string
-    await referralsService.useCredit(profileId, 'Barista redemption')
-
-    const { error: updateError } = await sb
-      .from('credit_redemptions')
-      .update({
-        status: 'used',
-        used_at: new Date().toISOString(),
-        used_by_business_id: businessId,
-      })
-      .eq('id', redemption.id as string)
-      .eq('status', 'pending')
-
-    if (updateError) {
-      throw new Error(updateError.message)
-    }
+    const row = Array.isArray(data) ? data[0] : data
+    const profileId = (row as { profile_id?: string } | null)?.profile_id
+    if (!profileId) throw new Error('Credit code was redeemed but no member was returned.')
 
     return { profileId }
   },
 
-  async createReferral(referrerId: string, refereeId: string, businessId: string | null) {
+  async createReferral(referrerCode: string, refereeId: string, businessId: string | null): Promise<ReferralCreateResult | null> {
     try {
       const sb = requireSupabase()
-      const { data, error } = await sb
-        .from('referrals')
-        .insert({
-          referrer_id: referrerId,
-          referee_id: refereeId,
-          business_id: businessId,
-        })
-        .select('*')
-        .single()
+      const { data, error } = await sb.rpc('create_referral', {
+        referrer_code: referrerCode,
+        referee_id: refereeId,
+        target_business_id: businessId,
+      })
 
-      if (error || !data) {
+      if (error) {
         console.warn('Referral creation skipped:', error?.message)
         return null
       }
 
-      return camelCaseRow(data as Record<string, unknown>)
+      const row = Array.isArray(data) ? data[0] : data
+      const status = (row as { status?: string } | null)?.status
+      const referralId = (row as { referral_id?: string | null } | null)?.referral_id ?? null
+
+      if (status === 'created') {
+        return { status: 'created', referral: { id: referralId } }
+      }
+      if (status === 'duplicate' || status === 'missing-referrer' || status === 'self-referral') {
+        return { status: 'skipped', reason: status }
+      }
+
+      return null
     } catch (error) {
       console.warn('Referral creation skipped:', error)
       return null
@@ -233,28 +196,13 @@ export const referralsService = {
       target_business_id: businessId,
     })
 
-    if (!rpcError && rpcData && rpcData.length > 0) {
-      return (rpcData as StaffReferralRow[])
-        .filter((row) => row.status === 'pending' && row.business_id === businessId)
-        .map(mapStaffReferral)
-    }
-
-    const { data, error } = await sb
-      .from('referrals')
-      .select(`
-        *,
-        referrer:profiles!referrals_referrer_id_fkey(full_name,email),
-        referee:profiles!referrals_referee_id_fkey(full_name,email)
-      `)
-      .eq('status', 'pending')
-      .eq('business_id', businessId)
-      .order('created_at', { ascending: false })
-
-    if (error) {
+    if (rpcError) {
       throw new Error('Failed to load pending referrals.')
     }
 
-    return ((data ?? []) as ReferralRow[]).map(mapReferral)
+    return ((rpcData ?? []) as StaffReferralRow[])
+        .filter((row) => row.status === 'pending' && row.business_id === businessId)
+        .map(mapStaffReferral)
   },
 
   async getAllReferrals(): Promise<ReferralWithProfiles[]> {
@@ -263,24 +211,11 @@ export const referralsService = {
       target_business_id: null,
     })
 
-    if (!rpcError && rpcData && rpcData.length > 0) {
-      return (rpcData as StaffReferralRow[]).map(mapStaffReferral)
-    }
-
-    const { data, error } = await sb
-      .from('referrals')
-      .select(`
-        *,
-        referrer:profiles!referrals_referrer_id_fkey(full_name,email),
-        referee:profiles!referrals_referee_id_fkey(full_name,email)
-      `)
-      .order('created_at', { ascending: false })
-
-    if (error) {
+    if (rpcError) {
       throw new Error('Failed to load referrals.')
     }
 
-    return ((data ?? []) as ReferralRow[]).map(mapReferral)
+    return ((rpcData ?? []) as StaffReferralRow[]).map(mapStaffReferral)
   },
 
   async getReferralForReferee(profileId: string): Promise<ReferralWithProfiles | null> {
@@ -304,64 +239,21 @@ export const referralsService = {
 
   async approveReferral(referralId: string, approverId: string): Promise<void> {
     const sb = requireSupabase()
-    const { data: referral, error: updateError } = await sb
-      .from('referrals')
-      .update({
-        status: 'approved',
-        approved_by: approverId,
-        approved_at: new Date().toISOString(),
-      })
-      .eq('id', referralId)
-      .eq('status', 'pending')
-      .select('referrer_id, referee_id, business_id')
-      .single()
+    const { error } = await sb.rpc('approve_referral', {
+      referral_id: referralId,
+      approver_id: approverId,
+    })
 
-    if (updateError || !referral) {
-      throw new Error('Referral is not pending or could not be approved.')
-    }
-
-    const referrerId = referral.referrer_id as string
-    const refereeId = referral.referee_id as string
-    const businessId = (referral.business_id as string | null) ?? null
-
-    await incrementAvailableCredit(referrerId)
-    await incrementAvailableCredit(refereeId)
-
-    const { error: activityError } = await sb.from('activities').insert([
-      {
-        profile_id: referrerId,
-        business_id: businessId,
-        type: 'bonus',
-        title: 'Referral credit awarded',
-        points: 0,
-        status: 'posted',
-      },
-      {
-        profile_id: refereeId,
-        business_id: businessId,
-        type: 'bonus',
-        title: 'Referral credit awarded',
-        points: 0,
-        status: 'posted',
-      },
-    ])
-
-    if (activityError) {
-      throw new Error(activityError.message)
-    }
+    if (error) throw new Error(error.message)
   },
 
   async rejectReferral(referralId: string): Promise<void> {
     const sb = requireSupabase()
-    const { error } = await sb
-      .from('referrals')
-      .update({ status: 'rejected' })
-      .eq('id', referralId)
-      .eq('status', 'pending')
+    const { error } = await sb.rpc('reject_referral', {
+      referral_id: referralId,
+    })
 
-    if (error) {
-      throw new Error(error.message)
-    }
+    if (error) throw new Error(error.message)
   },
 
   async useCredit(profileId: string, actorName: string): Promise<void> {

@@ -12,12 +12,12 @@ interface AuthProviderProps {
   children: ReactNode
 }
 
-async function createPendingReferralForProfile(profileId: string) {
+async function createPendingReferralForProfile(profile: Profile) {
   const referralCode = sessionStorage.getItem('referralCode')
-  if (!referralCode || referralCode === profileId) return
+  if (!referralCode || referralCode === profile.id || referralCode === profile.referralCode) return
 
   const referralBusinessId = sessionStorage.getItem('referralBusinessId')
-  await referralsService.createReferral(referralCode, profileId, referralBusinessId ?? null)
+  await referralsService.createReferral(referralCode, profile.id, referralBusinessId ?? null)
   sessionStorage.removeItem('referralCode')
   sessionStorage.removeItem('referralBusinessId')
 }
@@ -119,10 +119,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     if (!profile?.id) return
 
-    void createPendingReferralForProfile(profile.id).catch((error) => {
+    void createPendingReferralForProfile(profile).catch((error) => {
       console.warn('Pending referral creation skipped:', error)
     })
-  }, [profile?.id])
+  }, [profile])
 
   const value = {
     profile,

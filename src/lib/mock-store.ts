@@ -54,6 +54,7 @@ const profiles: Profile[] = [
     favoriteOrder: 'Oat milk latte',
     joinedAt: '2025-11-12T08:00:00.000Z',
     role: 'customer',
+    referralCode: 'AVAMERC1',
   },
   {
     id: 'profile-platform-admin',
@@ -64,6 +65,7 @@ const profiles: Profile[] = [
     favoriteOrder: 'Cortado',
     joinedAt: '2025-10-01T08:00:00.000Z',
     role: 'platform-admin',
+    referralCode: 'NOAHADM1',
   },
   {
     id: 'profile-cliche-owner',
@@ -75,6 +77,7 @@ const profiles: Profile[] = [
     joinedAt: '2025-01-15T08:00:00.000Z',
     role: 'business-owner',
     businessId: 'biz-cafe-cliche',
+    referralCode: 'CAFOWNR1',
   },
   {
     id: 'profile-mystic-owner',
@@ -86,6 +89,7 @@ const profiles: Profile[] = [
     joinedAt: '2025-02-01T08:00:00.000Z',
     role: 'business-owner',
     businessId: 'biz-mystic-coffee',
+    referralCode: 'MYSOWNR1',
   },
 ]
 

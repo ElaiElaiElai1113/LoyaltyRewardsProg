@@ -22,13 +22,14 @@ begin
   )::uuid;
 
   -- Create profile
-  insert into public.profiles (id, full_name, email, role, business_id)
+  insert into public.profiles (id, full_name, email, role, business_id, referral_code)
   values (
     new.id,
     coalesce(new.raw_user_meta_data ->> 'full_name', new.email),
     new.email,
     new_role,
-    new_business_id
+    new_business_id,
+    public.generate_referral_code()
   );
 
   -- Create reward balance for all new users

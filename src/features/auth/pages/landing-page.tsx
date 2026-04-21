@@ -12,7 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
-import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const defaultValues: AuthFormValues = {
@@ -433,23 +432,7 @@ export function LandingPage() {
                       onSubmit={signUpForm.handleSubmit(async (values) => {
                         try {
                           setError(null)
-                          const newProfile = await signUp(values)
-                          const referralCode = sessionStorage.getItem('referralCode')
-                          const referralBusinessId = sessionStorage.getItem('referralBusinessId')
-                          if (referralCode) {
-                            try {
-                              await referralsService.createReferral(
-                                referralCode,
-                                newProfile.id,
-                                referralBusinessId ?? null,
-                              )
-                            } catch {
-                              // Referral creation should never block account creation.
-                            } finally {
-                              sessionStorage.removeItem('referralCode')
-                              sessionStorage.removeItem('referralBusinessId')
-                            }
-                          }
+                          await signUp(values)
                           setSignUpComplete(true)
                           signUpForm.reset(defaultValues)
                         } catch (submissionError) {

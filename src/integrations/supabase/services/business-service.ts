@@ -20,15 +20,21 @@ export const businessService = {
     return data.map((row) => camelCaseRow(row) as unknown as Business)
   },
 
-  async getSingleBusiness(): Promise<Business> {
+  async getSingleBusiness(businessId?: string): Promise<Business> {
     const sb = requireSupabase()
 
-    const { data, error } = await sb
+    let query = sb
       .from('businesses')
       .select('*')
       .eq('active', true)
-      .limit(1)
-      .single()
+
+    if (businessId) {
+      query = query.eq('id', businessId)
+    } else {
+      query = query.limit(1)
+    }
+
+    const { data, error } = await query.single()
 
     if (error || !data) {
       throw new Error('No business configured.')

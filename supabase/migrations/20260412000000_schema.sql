@@ -75,9 +75,30 @@ create table public.profiles (
   favorite_order text not null default '',
   role           public.user_role not null default 'customer',
   business_id    uuid references public.businesses(id) on delete set null,
+  referral_code  text not null unique,
   created_at     timestamptz not null default now(),
   updated_at     timestamptz not null default now()
 );
+
+create or replace function public.generate_referral_code()
+returns text
+language plpgsql
+as $$
+declare
+  candidate text;
+begin
+  loop
+    candidate := upper(substr(md5(gen_random_uuid()::text), 1, 8));
+    exit when not exists (
+      select 1
+      from public.profiles
+      where referral_code = candidate
+    );
+  end loop;
+
+  return candidate;
+end;
+$$;
 
 -- ─── Reward Balances ─────────────────────────────────────────
 
