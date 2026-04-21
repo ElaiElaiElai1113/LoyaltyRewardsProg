@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useSearchParams } from 'react-router-dom'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -51,9 +50,7 @@ export function ReferralRegisterPage() {
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl gap-10 lg:grid-cols-[1fr_480px]">
         <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-primary px-8 py-12 text-white shadow-card md:px-14 md:py-16">
           <div className="flex items-center justify-between gap-4">
-            <Badge variant="accent" className="border-white/20 bg-white/10 text-white">
-              Cafe Cliche Rewards
-            </Badge>
+            <div />
             <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
               <Coffee className="size-6" />
             </div>

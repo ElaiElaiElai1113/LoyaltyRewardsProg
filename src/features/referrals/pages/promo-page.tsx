@@ -2,7 +2,6 @@ import { Coffee, Gift } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 export function PromoPage() {
@@ -25,9 +24,7 @@ export function PromoPage() {
     <main className="min-h-screen bg-surface px-4 py-8 md:px-8 lg:px-12">
       <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-primary px-8 py-12 text-white shadow-card md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-4">
-          <Badge variant="accent" className="border-white/20 bg-white/10 text-white">
-            Cafe Cliche Rewards
-          </Badge>
+          <div />
           <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
             <Coffee className="size-6" />
           </div>
