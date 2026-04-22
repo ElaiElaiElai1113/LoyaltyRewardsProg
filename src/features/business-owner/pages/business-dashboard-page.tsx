@@ -1,8 +1,10 @@
 import {
   ArrowUpRight,
   CheckCircle,
+  Copy,
   Gift,
   Package,
+  QrCode,
   ShoppingBag,
   Sparkles,
   TrendingUp,
@@ -11,7 +13,9 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 import type { FormEvent } from 'react'
+import { QRCodeSVG } from 'qrcode.react'
 import { Link } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
 import { Button } from '@/components/ui/button'
@@ -31,6 +35,7 @@ export function BusinessDashboardPage() {
   const { business, metrics, products, rewards, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
   const [redemptionCode, setRedemptionCode] = useState('')
+  const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
   const fulfillRedemption = useFulfillRedemption(profile)
   const pendingReferrals = usePendingReferrals(business?.id)
   const approveReferral = useApproveReferral(business?.id)
@@ -45,6 +50,10 @@ export function BusinessDashboardPage() {
     business?.slug === 'velvet-brew'
       ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
       : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
+  const signupQrUrl =
+    profile?.referralCode && business?.id && typeof window !== 'undefined'
+      ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
+      : ''
 
   return (
     <div className="space-y-16">
@@ -175,6 +184,59 @@ export function BusinessDashboardPage() {
               <ArrowUpRight className="size-8 text-primary/70 group-hover:text-white/70" />
             </div>
           </Link>
+        </div>
+      </div>
+
+      {/* Customer Signup QR */}
+      <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <div className="space-y-2">
+              <h2 className="font-serif text-2xl text-primary">Customer Signup QR</h2>
+              <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
+                Display this QR at checkout or on signage. New customers can scan it, create an account,
+                and appear below for approval before their reward credit is added.
+              </p>
+            </div>
+            <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
+              <QrCode className="size-6" />
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-4 sm:flex-row">
+            <Input
+              readOnly
+              value={signupQrUrl}
+              placeholder="Signup QR link unavailable"
+              className="h-14 rounded-2xl bg-surface-lowest text-sm"
+            />
+            <Button
+              type="button"
+              variant="outline"
+              className="h-14 rounded-2xl px-6"
+              disabled={!signupQrUrl}
+              onClick={async () => {
+                if (!signupQrUrl) return
+                await navigator.clipboard.writeText(signupQrUrl)
+                setCopiedSignupUrl(true)
+                toast.success('Signup QR link copied')
+                window.setTimeout(() => setCopiedSignupUrl(false), 1800)
+              }}
+            >
+              <Copy className="size-4" />
+              {copiedSignupUrl ? 'Copied' : 'Copy Link'}
+            </Button>
+          </div>
+        </div>
+
+        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+          <div className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
+            {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
+          </div>
+          <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} signup offer</p>
+          <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
+            Approve the signup below to grant the reward credit.
+          </p>
         </div>
       </div>
 
