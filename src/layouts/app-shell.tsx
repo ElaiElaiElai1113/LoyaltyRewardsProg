@@ -48,10 +48,10 @@ export function AppShell() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                Cafe Cliche
+                Synergize
               </p>
               <h1 className="mt-1 font-serif text-3xl tracking-[-0.04em] text-foreground">
-                Loyalty
+                Rewards
               </h1>
             </div>
             <div className="rounded-full bg-secondary/80 p-3 text-primary">
@@ -88,9 +88,9 @@ export function AppShell() {
           </nav>
 
           <div className="mt-6 rounded-[1.6rem] bg-[linear-gradient(135deg,rgba(198,144,94,0.16),rgba(100,124,95,0.12))] p-4">
-            <p className="text-sm font-medium text-foreground">Coffee-first today, flexible later.</p>
+            <p className="text-sm font-medium text-foreground">Built for repeat customers.</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              The data and services are structured to extend into multi-location and multi-brand use.
+              The data and services support multi-location and multi-brand reward programs.
             </p>
           </div>
 

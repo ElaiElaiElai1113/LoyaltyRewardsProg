@@ -1,4 +1,4 @@
-import { Coffee, Gift } from 'lucide-react'
+import { Gift, Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
@@ -26,7 +26,7 @@ export function PromoPage() {
         <div className="flex items-center justify-between gap-4">
           <div />
           <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
-            <Coffee className="size-6" />
+            <Sparkles className="size-6" />
           </div>
         </div>
 
@@ -37,22 +37,22 @@ export function PromoPage() {
               {hasReferral ? 'Referral invitation' : 'Loyalty invitation'}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? 'Your friend saved you a free coffee.' : 'Join our loyalty program.'}
+              {hasReferral ? 'Your friend saved you a reward credit.' : 'Join our loyalty program.'}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'Create your rewards account and, after a barista approves the referral, both you and your friend get a coffee credit.'
-                : 'Create your rewards account to earn points, track coffee credits, and redeem cafe rewards.'}
+                ? 'Create your rewards account and, after the referral is approved, both you and your friend get a reward credit.'
+                : 'Create your rewards account to earn points, track credits, and redeem rewards.'}
             </p>
           </div>
 
           <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6">
             <p className="font-serif text-3xl leading-tight">
-              {hasReferral ? 'Two coffee credits, one invitation.' : 'Rewards start here.'}
+              {hasReferral ? 'Two reward credits, one invitation.' : 'Rewards start here.'}
             </p>
             <p className="mt-4 text-sm font-medium leading-relaxed text-white/75">
               {hasReferral
-                ? 'Your credit appears after your signup is reviewed at the cafe.'
+                ? 'Your credit appears after your signup is reviewed.'
                 : 'Sign up once and keep every visit connected to your rewards balance.'}
             </p>
           </div>
@@ -80,7 +80,7 @@ export function PromoPage() {
               navigate(`/promo/register?${params.toString()}`)
             }}
           >
-            {hasReferral ? 'Claim your free coffee - Create Account' : 'Create Account'}
+            {hasReferral ? 'Claim your reward - Create Account' : 'Create Account'}
           </Button>
         </div>
       </section>

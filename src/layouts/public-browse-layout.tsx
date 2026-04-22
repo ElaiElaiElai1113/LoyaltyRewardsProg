@@ -16,9 +16,9 @@ export function PublicBrowseLayout() {
           <div className="flex items-center gap-12">
             <NavLink to="/" className="flex flex-col">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.3em] text-on-surface-variant/80">
-                Cafe Cliche
+                Synergize
               </span>
-              <span className="font-serif text-2xl tracking-tight text-primary">Loyalty</span>
+              <span className="font-serif text-2xl tracking-tight text-primary">Rewards</span>
             </NavLink>
 
             <nav className="hidden items-center gap-1 md:flex">

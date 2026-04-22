@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Coffee, Gift } from 'lucide-react'
+import { Gift, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useSearchParams } from 'react-router-dom'
@@ -52,7 +52,7 @@ export function ReferralRegisterPage() {
           <div className="flex items-center justify-between gap-4">
             <div />
             <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
-              <Coffee className="size-6" />
+              <Sparkles className="size-6" />
             </div>
           </div>
 
@@ -66,7 +66,7 @@ export function ReferralRegisterPage() {
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'After a barista approves the referral, both you and your friend receive a coffee credit.'
+                ? 'After staff approves the referral, both you and your friend receive a reward credit.'
                 : 'Join the loyalty program to earn points, track credits, and redeem rewards.'}
             </p>
           </div>
@@ -83,7 +83,7 @@ export function ReferralRegisterPage() {
                 <div className="space-y-3">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">Welcome aboard!</h2>
                   <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
-                    Your referral status is pending. A barista will review it before coffee credits are added.
+                    Your referral status is pending. Staff will review it before reward credits are added.
                   </p>
                 </div>
                 <Button asChild size="lg" className="rounded-full">

@@ -21,9 +21,9 @@ In Supabase Dashboard → Authentication → Users, create these users:
 
 | Email | Password | app_metadata |
 |-------|----------|-------------|
-| `ava@cafecliche.co` | `demo1234` | `{ "role": "customer" }` |
+| `ava@example.com` | `demo1234` | `{ "role": "customer" }` |
 | `admin@loyaltyplatform.co` | `demo1234` | `{ "role": "platform-admin" }` |
-| `owner@cafecliche.co` | `demo1234` | `{ "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }` |
+| `owner@velvetbrew.co` | `demo1234` | `{ "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }` |
 | `owner@mysticcoffee.co` | `demo1234` | `{ "role": "business-owner", "business_id": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22" }` |
 
 **Important:** Set `role` in `app_metadata` (not `user_metadata`). The auth trigger reads from `app_metadata` to set the profile role.

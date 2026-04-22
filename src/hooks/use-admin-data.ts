@@ -75,7 +75,7 @@ export function useUseCredit() {
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', variables.profileId] })
       void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
       void queryClient.invalidateQueries({ queryKey: ['activities', variables.profileId] })
-      toast.success('Coffee credit used')
+      toast.success('Reward credit used')
     },
     onError: (error: Error) => {
       toast.error(`Credit use failed: ${error.message}`)

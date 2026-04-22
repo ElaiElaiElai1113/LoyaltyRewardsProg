@@ -6,22 +6,22 @@
 -- ─── Businesses ──────────────────────────────────────────────
 
 insert into public.businesses (id, name, slug, description, earn_rate, tax_rate, currency, active) values
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Cafe Cliche', 'cafe-cliche', 'A trendy neighborhood cafe known for artisanal coffee and playful twists on classic drinks.', 10, 0.0875, 'USD', true),
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Velvet Brew', 'velvet-brew', 'A neighborhood beverage shop known for handcrafted drinks, seasonal pastries, and retail favorites.', 10, 0.0875, 'USD', true),
   ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Coffee', 'mystic-coffee', 'A mystical coffee experience with ethically sourced beans, herbal infusions, and enchanted blends.', 8, 0.0925, 'USD', true);
 
 -- ─── Demo Users (create via Supabase Auth, then profiles are auto-created) ──
 -- After running seed, create these users in Supabase Auth:
 --
 -- 1. Customer Demo
---    Email: ava@cafecliche.co  Password: demo1234
+--    Email: ava@example.com  Password: demo1234
 --    app_metadata: { "role": "customer" }
 --
 -- 2. Platform Admin
 --    Email: admin@loyaltyplatform.co  Password: demo1234
 --    app_metadata: { "role": "platform-admin" }
 --
--- 3. Cafe Cliche Owner
---    Email: owner@cafecliche.co  Password: demo1234
+-- 3. Velvet Brew Owner
+--    Email: owner@velvetbrew.co  Password: demo1234
 --    app_metadata: { "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }
 --
 -- 4. Mystic Coffee Owner
@@ -31,11 +31,11 @@ insert into public.businesses (id, name, slug, description, earn_rate, tax_rate,
 -- ─── Rewards ─────────────────────────────────────────────────
 
 insert into public.rewards (business_id, title, description, category, points_cost, inventory, featured, highlight) values
-  -- Cafe Cliche
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Signature Cliche Latte', 'Redeem any handcrafted latte with your choice of milk and syrup.', 'Drink', 250, 99, true, 'Most redeemed this week'),
+  -- Velvet Brew
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Signature Velvet Latte', 'Redeem any handcrafted latte with your choice of milk and syrup.', 'Drink', 250, 99, true, 'Most redeemed this week'),
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Cold Brew Flight', 'Sample three seasonal cold brew profiles in one curated tasting.', 'Experience', 480, 24, true, 'Weekend-only tasting'),
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Butter Croissant Pairing', 'Fresh-baked croissant paired with any small brewed coffee.', 'Pastry', 180, 44, false, 'Morning favorite'),
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Cafe Cliche Tote', 'Canvas tote with embossed logo and internal bottle sleeve.', 'Merch', 700, 12, false, 'Limited spring merch'),
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Velvet Brew Tote', 'Canvas tote with embossed logo and internal bottle sleeve.', 'Merch', 700, 12, false, 'Limited spring merch'),
   -- Mystic Coffee
   ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Matcha Latte', 'Ceremonial-grade matcha whisked with your choice of milk.', 'Drink', 200, 60, true, 'Fan favorite'),
   ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Almond Croissant', 'Flaky croissant filled with almond cream and topped with sliced almonds.', 'Pastry', 160, 30, false, 'Fresh daily'),
@@ -44,12 +44,12 @@ insert into public.rewards (business_id, title, description, category, points_co
 -- ─── Products ────────────────────────────────────────────────
 
 insert into public.products (business_id, title, description, category, price, inventory, featured, highlight) values
-  -- Cafe Cliche
+  -- Velvet Brew
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Oat Milk Latte', 'Our signature oat milk latte with house-made vanilla syrup.', 'Coffee', 5.50, 200, true, 'Best seller'),
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Cold Brew Concentrate 32oz', 'Take home our 24-hour cold brew concentrate. Dilute to taste.', 'Coffee', 14.00, 50, true, 'Take-home'),
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Pistachio Cardamom Bun', 'Flaky laminated pastry with pistachio frangipane and cardamom glaze.', 'Pastry', 4.75, 30, false, 'Seasonal'),
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Single Origin: Ethiopia Yirgacheffe', '12oz bag of light-roasted whole beans with floral and citrus notes.', 'Coffee', 18.00, 40, false, 'Direct trade'),
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Cafe Cliche Ceramic Tumbler', '16oz double-walled ceramic tumbler in matte black with silicone lid.', 'Merch', 28.00, 25, true, 'New arrival'),
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Velvet Brew Ceramic Tumbler', '16oz double-walled ceramic tumbler in matte black with silicone lid.', 'Merch', 28.00, 25, true, 'New arrival'),
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Pour-Over Starter Kit', 'Ceramic dripper, 100 filters, and a 12oz sample roast.', 'Equipment', 42.00, 15, false, 'Brew at home'),
   -- Mystic Coffee
   ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Chai Spice Latte', 'House-blended chai with cinnamon, cardamom, ginger, and steamed milk.', 'Coffee', 5.00, 150, true, 'House blend'),

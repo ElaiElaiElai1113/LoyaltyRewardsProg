@@ -69,7 +69,7 @@ export function BusinessOwnerLayout() {
   }
 
   const businessColors =
-    business.slug === 'cafe-cliche'
+    business.slug === 'velvet-brew'
       ? {
           primary: 'from-[#8B4513] to-[#654321]',
           light: 'from-[#8B4513]/10 to-[#654321]/10',

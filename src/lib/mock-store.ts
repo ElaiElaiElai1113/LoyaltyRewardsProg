@@ -21,10 +21,10 @@ const CART_KEY = 'loyalty-platform-cart-v1'
 
 const businesses: Business[] = [
   {
-    id: 'biz-cafe-cliche',
-    name: 'Cafe Cliche',
-    slug: 'cafe-cliche',
-    description: 'A trendy neighborhood cafe known for artisanal coffee and playful twists on classic drinks.',
+    id: 'biz-velvet-brew',
+    name: 'Velvet Brew',
+    slug: 'velvet-brew',
+    description: 'A neighborhood beverage shop known for handcrafted drinks, seasonal pastries, and retail favorites.',
     earnRate: 10,
     taxRate: 0.0875,
     currency: 'USD',
@@ -48,7 +48,7 @@ const profiles: Profile[] = [
   {
     id: 'profile-customer',
     fullName: 'Ava Mercer',
-    email: 'ava@cafecliche.co',
+    email: 'ava@example.com',
     phone: '+1 (415) 555-0188',
     location: 'Mission District',
     favoriteOrder: 'Oat milk latte',
@@ -68,15 +68,15 @@ const profiles: Profile[] = [
     referralCode: 'NOAHADM1',
   },
   {
-    id: 'profile-cliche-owner',
+    id: 'profile-velvet-owner',
     fullName: 'Isabella Chen',
-    email: 'owner@cafecliche.co',
+    email: 'owner@velvetbrew.co',
     phone: '+1 (415) 555-0101',
     location: 'Valencia Street',
     favoriteOrder: 'Oat milk latte',
     joinedAt: '2025-01-15T08:00:00.000Z',
     role: 'business-owner',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     referralCode: 'CAFOWNR1',
   },
   {
@@ -117,8 +117,8 @@ const balances: RewardBalance[] = [
 const rewards: Reward[] = [
   {
     id: 'reward-1',
-    businessId: 'biz-cafe-cliche',
-    title: 'Signature Cliche Latte',
+    businessId: 'biz-velvet-brew',
+    title: 'Signature Velvet Latte',
     description: 'Redeem any handcrafted latte with your choice of milk and syrup.',
     category: 'Drink',
     pointsCost: 250,
@@ -128,7 +128,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-2',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Cold Brew Flight',
     description: 'Sample three seasonal cold brew profiles in one curated tasting.',
     category: 'Experience',
@@ -139,7 +139,7 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-3',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Butter Croissant Pairing',
     description: 'Fresh-baked croissant paired with any small brewed coffee.',
     category: 'Pastry',
@@ -150,8 +150,8 @@ const rewards: Reward[] = [
   },
   {
     id: 'reward-4',
-    businessId: 'biz-cafe-cliche',
-    title: 'Cafe Cliche Tote',
+    businessId: 'biz-velvet-brew',
+    title: 'Velvet Brew Tote',
     description: 'Canvas tote with embossed logo and internal bottle sleeve.',
     category: 'Merch',
     pointsCost: 700,
@@ -199,7 +199,7 @@ const rewards: Reward[] = [
 const products: Product[] = [
   {
     id: 'product-1',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Oat Milk Latte',
     description: 'Our signature oat milk latte with house-made vanilla syrup.',
     category: 'Coffee',
@@ -210,7 +210,7 @@ const products: Product[] = [
   },
   {
     id: 'product-2',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Cold Brew Concentrate 32oz',
     description: 'Take home our 24-hour cold brew concentrate. Dilute to taste.',
     category: 'Coffee',
@@ -221,7 +221,7 @@ const products: Product[] = [
   },
   {
     id: 'product-3',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Pistachio Cardamom Bun',
     description: 'Flaky laminated pastry with pistachio frangipane and cardamom glaze.',
     category: 'Pastry',
@@ -232,7 +232,7 @@ const products: Product[] = [
   },
   {
     id: 'product-4',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Single Origin: Ethiopia Yirgacheffe',
     description: '12oz bag of light-roasted whole beans with floral and citrus notes.',
     category: 'Coffee',
@@ -243,8 +243,8 @@ const products: Product[] = [
   },
   {
     id: 'product-5',
-    businessId: 'biz-cafe-cliche',
-    title: 'Cafe Cliche Ceramic Tumbler',
+    businessId: 'biz-velvet-brew',
+    title: 'Velvet Brew Ceramic Tumbler',
     description: '16oz double-walled ceramic tumbler in matte black with silicone lid.',
     category: 'Merch',
     price: 28.00,
@@ -254,7 +254,7 @@ const products: Product[] = [
   },
   {
     id: 'product-6',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Pour-Over Starter Kit',
     description: 'Ceramic dripper, 100 filters, and a 12oz sample roast.',
     category: 'Equipment',
@@ -325,7 +325,7 @@ const products: Product[] = [
 const promotions: Promotion[] = [
   {
     id: 'promo-1',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Double points after 3 PM',
     description: 'Stop by after 3 PM and earn twice the points on any handcrafted drink.',
     badge: 'Weekday perk',
@@ -335,7 +335,7 @@ const promotions: Promotion[] = [
   },
   {
     id: 'promo-2',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Spring pairing menu',
     description: 'Unlock a bonus 120 points when you pair a pistachio bun with any iced espresso.',
     badge: 'Seasonal',
@@ -345,7 +345,7 @@ const promotions: Promotion[] = [
   },
   {
     id: 'promo-3',
-    businessId: 'biz-cafe-cliche',
+    businessId: 'biz-velvet-brew',
     title: 'Bring-a-friend Saturdays',
     description: 'Invite a friend to scan your code in-store and both of you receive a surprise bonus.',
     badge: 'Referral',

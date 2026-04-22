@@ -322,7 +322,7 @@ begin
     and available_credits > 0;
 
   if not found then
-    raise exception 'No coffee credits are available for this member.';
+    raise exception 'No reward credits are available for this member.';
   end if;
 
   update public.credit_redemptions
@@ -332,14 +332,14 @@ begin
   where id = redemption_row.id;
 
   insert into public.activities (profile_id, business_id, type, title, points, status)
-  values (redemption_row.profile_id, redeem_credit_code.business_id, 'adjustment', 'Coffee credit used', 0, 'posted');
+  values (redemption_row.profile_id, redeem_credit_code.business_id, 'adjustment', 'Reward credit used', 0, 'posted');
 
   insert into public.admin_logs (actor_id, actor_name, action, details)
   values (
     auth.uid(),
-    coalesce(actor_name, 'Barista redemption'),
-    'Coffee credit used',
-    format('Used 1 coffee credit for member %s.', redemption_row.profile_id)
+    coalesce(actor_name, 'Staff redemption'),
+    'Reward credit used',
+    format('Used 1 reward credit for member %s.', redemption_row.profile_id)
   );
 
   profile_id := redemption_row.profile_id;

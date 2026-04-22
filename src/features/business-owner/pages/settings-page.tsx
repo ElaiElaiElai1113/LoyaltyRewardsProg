@@ -27,7 +27,7 @@ export function SettingsPage() {
   }
 
   const businessColors =
-    business.slug === 'cafe-cliche'
+    business.slug === 'velvet-brew'
       ? { primary: 'from-[#8B4513] to-[#654321]' }
       : { primary: 'from-[#5B2C6F] to-[#4A235A]' }
 

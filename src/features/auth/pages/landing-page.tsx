@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Coffee, Gift, LogOut, ShieldCheck } from 'lucide-react'
+import { Gift, LogOut, Repeat2, ShieldCheck } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -125,7 +125,7 @@ export function LandingPage() {
             </Badge>
             <div className="max-w-3xl space-y-8">
               <h1 className="font-serif text-6xl tracking-tight leading-[0.95] md:text-8xl">
-                Cafe Cliche.<br />
+                Synergize Rewards.<br />
                 Every visit<br />
                 counts.
               </h1>
@@ -151,7 +151,7 @@ export function LandingPage() {
             <div className="grid gap-8 sm:grid-cols-3">
               {[
                 {
-                  icon: Coffee,
+                  icon: Repeat2,
                   title: 'Track',
                   body: 'See your points, tier, and activity at a glance.',
                 },

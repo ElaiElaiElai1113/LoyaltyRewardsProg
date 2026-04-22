@@ -89,7 +89,7 @@ export function ProductsPage() {
   })
 
   const businessColors =
-    business?.slug === 'cafe-cliche'
+    business?.slug === 'velvet-brew'
       ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
       : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
 

@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, Copy, CupSoda, Gift, Ticket, XCircle } from 'lucide-react'
+import { CheckCircle, Clock, Copy, Gift, Ticket, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -151,9 +151,9 @@ export function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="space-y-3">
               <MetricCard
-                label="Drink Credits"
+                label="Reward Credits"
                 value={`${balance?.availableCredits ?? 0}`}
-                icon={CupSoda}
+                icon={Gift}
                 helper="Credits ready to use"
               />
               {(balance?.availableCredits ?? 0) > 0 ? (
@@ -164,8 +164,8 @@ export function DashboardPage() {
                   disabled={generateCreditCode.isPending || !profile?.id}
                   onClick={handleGenerateCreditCode}
                 >
-                  <CupSoda className="size-4" />
-                  {generateCreditCode.isPending ? 'Generating...' : 'Redeem Free Coffee'}
+                  <Gift className="size-4" />
+                  {generateCreditCode.isPending ? 'Generating...' : 'Redeem Reward Credit'}
                 </Button>
               ) : null}
             </div>
@@ -184,7 +184,7 @@ export function DashboardPage() {
                   <div className="space-y-2">
                     <h3 className="font-serif text-2xl tracking-tight">Refer a Friend</h3>
                     <p className="text-sm font-medium leading-relaxed text-on-surface-variant">
-                      Share this QR to give a friend (and yourself) a free coffee.
+                      Share this QR to give a friend (and yourself) a reward credit.
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -232,9 +232,9 @@ export function DashboardPage() {
         <DialogContent className="flex min-h-[100dvh] w-screen max-w-none items-center justify-center rounded-none border-0 bg-primary-container p-6 text-white sm:p-10">
           <div className="w-full max-w-xl rounded-3xl bg-white p-8 text-center text-primary shadow-card sm:p-12">
             <DialogHeader className="mb-8 items-center">
-              <DialogTitle className="text-4xl text-primary sm:text-5xl">Redeem Free Coffee</DialogTitle>
+              <DialogTitle className="text-4xl text-primary sm:text-5xl">Redeem Reward Credit</DialogTitle>
               <DialogDescription className="text-base font-medium text-on-surface-variant">
-                Show this code to your barista
+                Show this code to staff
               </DialogDescription>
             </DialogHeader>
 
@@ -291,10 +291,10 @@ export function DashboardPage() {
                 </p>
                 <p className="max-w-2xl text-sm font-medium leading-relaxed text-on-surface-variant/80">
                   {referral.status === 'approved'
-                    ? 'Your referral was approved. Your coffee credit has been added to your balance.'
+                    ? 'Your referral was approved. Your reward credit has been added to your balance.'
                     : referral.status === 'rejected'
-                      ? 'This referral was not approved. Ask a barista if you think this needs another look.'
-                      : 'Your referral is pending barista approval. Your coffee credit will appear after approval.'}
+                      ? 'This referral was not approved. Ask staff if you think this needs another look.'
+                      : 'Your referral is pending staff approval. Your reward credit will appear after approval.'}
                 </p>
               </div>
             </div>

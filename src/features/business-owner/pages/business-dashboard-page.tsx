@@ -42,7 +42,7 @@ export function BusinessDashboardPage() {
   }
 
   const businessColors =
-    business?.slug === 'cafe-cliche'
+    business?.slug === 'velvet-brew'
       ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
       : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
 
@@ -182,7 +182,7 @@ export function BusinessDashboardPage() {
       <div>
         <div className="mb-6 space-y-1">
           <h2 className="font-serif text-2xl text-primary">Validate Redemption Code</h2>
-          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit coffee credit code</p>
+          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit reward credit code</p>
         </div>
 
         <form

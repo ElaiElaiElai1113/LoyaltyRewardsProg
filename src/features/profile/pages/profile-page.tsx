@@ -123,7 +123,7 @@ export function ProfilePage() {
               <div className="grid gap-3">
                 <Label htmlFor="favoriteOrder">Favorite Order</Label>
                 <Input id="favoriteOrder" placeholder="Your favorite drink..." {...form.register('favoriteOrder')} />
-                <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">This helps our baristas prepare your order.</p>
+                <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">This helps staff prepare your order.</p>
               </div>
 
               <div className="mt-4 pt-8 border-t border-outline-variant/5 flex justify-end">
