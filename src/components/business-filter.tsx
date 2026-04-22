@@ -28,6 +28,7 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
           onClick={() => onChange(business.id)}
         >
           {business.name}
+          
         </Button>
       ))}
     </div>

@@ -51,6 +51,7 @@ Recommended Vercel settings:
 
 After adding the env vars, deploy with either the Vercel dashboard or:
 
+asd
 ```bash
 vercel
 ```

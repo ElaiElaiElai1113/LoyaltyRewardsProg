@@ -10,7 +10,7 @@ create type public.user_role as enum (
   'platform-admin',
   'business-owner'
 );
-
+f
 create type public.order_status as enum (
   'confirmed',
   'processing',
