@@ -47,7 +47,7 @@ export function MembersPage() {
         <div className="space-y-4">
           <h1 className="font-serif text-5xl tracking-tight text-primary">Customers</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Look up a customer, review their balance, and award points for in-store purchases.
+            Look up a customer, review their balance, and award XP for in-store purchases.
           </p>
         </div>
         <Badge variant="accent" className="w-fit rounded-full bg-primary/5 px-5 py-3 text-primary">
@@ -61,7 +61,7 @@ export function MembersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               Quick Action
             </span>
-            <h2 className="font-serif text-3xl text-primary">Award Points</h2>
+            <h2 className="font-serif text-3xl text-primary">Award XP</h2>
           </div>
 
           <div className="rounded-3xl border border-outline-variant/5 bg-white p-8 shadow-sm">
@@ -118,14 +118,14 @@ export function MembersPage() {
                       <p className="truncate text-sm text-on-surface-variant/75">{selectedMember.email}</p>
                     </div>
                     <Badge variant="accent" className="rounded-full bg-primary/5 px-4 py-2 text-primary">
-                      {formatPoints(selectedMember.points)} pts
+                      {formatPoints(selectedMember.points)} XP
                     </Badge>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <p className="font-serif text-xl text-primary">No customer selected</p>
                     <p className="text-sm text-on-surface-variant/75">
-                      Choose a customer to preview their current balance before awarding points.
+                      Choose a customer to preview their current balance before awarding XP.
                     </p>
                   </div>
                 )}
@@ -133,7 +133,7 @@ export function MembersPage() {
 
               <div className="grid gap-3">
                 <Label htmlFor="delta" className="text-sm font-semibold">
-                  Points to Award
+                  XP to Award
                 </Label>
                 <Input
                   id="delta"
@@ -152,7 +152,7 @@ export function MembersPage() {
                 </Label>
                 <Input
                   id="reason"
-                  placeholder="e.g., Coffee purchase $12.50"
+                  placeholder="e.g., In-store purchase $12.50"
                   className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                   {...form.register('reason')}
                 />
@@ -167,7 +167,7 @@ export function MembersPage() {
                 className="h-14 w-full rounded-full font-semibold"
                 disabled={awardPoints.isPending}
               >
-                {awardPoints.isPending ? 'Awarding...' : 'Award Points'}
+                {awardPoints.isPending ? 'Awarding...' : 'Award XP'}
               </Button>
               {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
             </form>
@@ -219,7 +219,7 @@ export function MembersPage() {
                         className="flex items-center gap-1.5 rounded-full border border-primary/10 bg-primary/5 px-4 py-2 text-primary"
                       >
                         <Gift className="size-3" />
-                        {formatPoints(member.points)} Points
+                        {formatPoints(member.points)} XP
                       </Badge>
                       <Button
                         variant={selected ? 'default' : 'outline'}

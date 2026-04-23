@@ -75,7 +75,7 @@ export function useUseCredit() {
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', variables.profileId] })
       void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
       void queryClient.invalidateQueries({ queryKey: ['activities', variables.profileId] })
-      toast.success('Reward credit used')
+      toast.success('Power Credit used')
     },
     onError: (error: Error) => {
       toast.error(`Credit use failed: ${error.message}`)
@@ -165,7 +165,7 @@ export function useAdjustRewards(actor?: Profile | null) {
       void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
       void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
       void queryClient.invalidateQueries({ queryKey: ['activities'] })
-      toast.success('Points adjusted successfully')
+      toast.success('XP adjusted successfully')
     },
     onError: (error: Error) => {
       toast.error(`Adjustment failed: ${error.message}`)

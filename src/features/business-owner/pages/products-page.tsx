@@ -143,10 +143,10 @@ export function ProductsPage() {
                       <SelectValue placeholder="Select a category" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Coffee">Coffee</SelectItem>
-                      <SelectItem value="Pastry">Pastry</SelectItem>
-                      <SelectItem value="Merch">Merch</SelectItem>
-                      <SelectItem value="Equipment">Equipment</SelectItem>
+                      <SelectItem value="Coffee">Drinks</SelectItem>
+                      <SelectItem value="Pastry">Bites</SelectItem>
+                      <SelectItem value="Merch">Gear</SelectItem>
+                      <SelectItem value="Equipment">Tools</SelectItem>
                     </SelectContent>
                   </Select>
                 )}

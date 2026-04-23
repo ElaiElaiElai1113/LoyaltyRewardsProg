@@ -46,9 +46,9 @@ export function ReferralRegisterPage() {
   const hasReferral = Boolean(referrerId)
 
   return (
-    <main className="min-h-screen bg-surface px-4 py-8 md:px-8 lg:px-12">
+    <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl gap-10 lg:grid-cols-[1fr_480px]">
-        <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-primary px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+        <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#18215a,#283593_52%,#c026d3)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
           <div className="flex items-center justify-between gap-4">
             <div />
             <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
@@ -59,15 +59,15 @@ export function ReferralRegisterPage() {
           <div className="max-w-4xl space-y-8 py-14">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
-              Referral signup
+              Party Invite
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? 'Create your account to claim the invitation.' : 'Create your rewards account.'}
+              {hasReferral ? 'Create your account to claim the invite.' : 'Create your rewards account.'}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'After staff approves the referral, both you and your friend receive a reward credit.'
-                : 'Join the loyalty program to earn points, track credits, and redeem rewards.'}
+                ? 'After staff approves the invite, both you and your friend receive a power credit.'
+                : 'Join the loyalty program to earn XP, track credits, and redeem rewards.'}
             </p>
           </div>
 
@@ -77,13 +77,13 @@ export function ReferralRegisterPage() {
         </section>
 
         <section className="flex items-center">
-          <div className="w-full rounded-[2.5rem] border border-outline-variant/10 bg-surface-low p-8 shadow-sm md:p-10">
+          <div className="w-full quest-panel p-8 md:p-10">
             {signUpComplete ? (
               <div className="space-y-8 text-center">
                 <div className="space-y-3">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">Welcome aboard!</h2>
                   <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
-                    Your referral status is pending. Staff will review it before reward credits are added.
+                    Your invite status is pending. Staff will review it before power credits are added.
                   </p>
                 </div>
                 <Button asChild size="lg" className="rounded-full">

@@ -21,8 +21,8 @@ export function PromoPage() {
   }, [businessId, referrerId])
 
   return (
-    <main className="min-h-screen bg-surface px-4 py-8 md:px-8 lg:px-12">
-      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-primary px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+    <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
+      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#18215a,#283593_52%,#c026d3)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-4">
           <div />
           <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
@@ -34,26 +34,26 @@ export function PromoPage() {
           <div className="max-w-4xl space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
-              {hasReferral ? 'Referral invitation' : 'Loyalty invitation'}
+              {hasReferral ? 'Party Invite' : 'Quest Invitation'}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? 'Your friend saved you a reward credit.' : 'Join our loyalty program.'}
+              {hasReferral ? 'Your party invite unlocked a power credit.' : 'Join the rewards quest.'}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'Create your rewards account and, after the referral is approved, both you and your friend get a reward credit.'
-                : 'Create your rewards account to earn points, track credits, and redeem rewards.'}
+                ? 'Create your rewards account and, after the invite is approved, both you and your friend get a power credit.'
+                : 'Create your rewards account to earn XP, track credits, and unlock rewards.'}
             </p>
           </div>
 
           <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6">
             <p className="font-serif text-3xl leading-tight">
-              {hasReferral ? 'Two reward credits, one invitation.' : 'Rewards start here.'}
+              {hasReferral ? 'Two power credits, one party invite.' : 'Your first quest starts here.'}
             </p>
             <p className="mt-4 text-sm font-medium leading-relaxed text-white/75">
               {hasReferral
                 ? 'Your credit appears after your signup is reviewed.'
-                : 'Sign up once and keep every visit connected to your rewards balance.'}
+                : 'Sign up once and keep every visit connected to your XP balance.'}
             </p>
           </div>
         </div>
@@ -80,7 +80,7 @@ export function PromoPage() {
               navigate(`/promo/register?${params.toString()}`)
             }}
           >
-            {hasReferral ? 'Claim your reward - Create Account' : 'Create Account'}
+            {hasReferral ? 'Claim Power Credit' : 'Start Quest'}
           </Button>
         </div>
       </section>

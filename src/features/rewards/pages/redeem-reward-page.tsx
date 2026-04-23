@@ -34,7 +34,7 @@ export function RedeemRewardPage() {
             Confirm your next treat.
           </h1>
           <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            Review the details and confirm. Your points will be deducted and your reward will be ready for pick-up.
+            Review the details and confirm. Your XP will be deducted and your reward will be ready for pick-up.
           </p>
         </div>
       </div>

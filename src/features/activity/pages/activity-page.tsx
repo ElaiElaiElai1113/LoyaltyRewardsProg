@@ -22,13 +22,13 @@ export function ActivityPage() {
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
           <Badge variant="accent" className="bg-tertiary/20 text-primary">
-            Activity History
+            Quest History
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Your History
+            Your Timeline
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            Every visit, bonus, and redemption in one clear timeline.
+            Every visit, bonus, and reward claim in one clear timeline.
           </p>
         </div>
 
@@ -40,7 +40,7 @@ export function ActivityPage() {
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{rewardBalance.data?.points ?? 0}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Total Points</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">Total XP</span>
              </div>
           </div>
         </div>
@@ -54,10 +54,10 @@ export function ActivityPage() {
           helper="Total recorded visits"
         />
         <MetricCard
-          label="Points Earned"
+          label="XP Earned"
           value={`${earnedThisMonth}`}
           icon={ChartNoAxesColumn}
-          helper="Recent points earned"
+          helper="Recent XP earned"
         />
         <MetricCard
           label="Redemptions"

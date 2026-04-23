@@ -90,14 +90,14 @@ export function PromotionsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Promotions</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">Quests</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Create and manage promotions to engage and reward your customers.
+            Create and manage bonus quests to engage and reward your customers.
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Megaphone className="size-5 mr-2" />
-          Create Promotion
+          Create Quest
         </Button>
       </div>
 
@@ -106,27 +106,27 @@ export function PromotionsPage() {
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
-              {editingId ? 'Edit Promotion' : 'New Promotion'}
+              {editingId ? 'Edit Quest' : 'New Quest'}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="promo-title">Title</Label>
-              <Input id="promo-title" placeholder="Double Points Weekend" {...form.register('title')} />
+              <Input id="promo-title" placeholder="Double XP Weekend" {...form.register('title')} />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-description">Description</Label>
-              <Textarea id="promo-description" placeholder="Earn 2x points on all purchases this weekend." {...form.register('description')} />
+              <Textarea id="promo-description" placeholder="Earn 2x XP on all purchases this weekend." {...form.register('description')} />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-badge">Badge Label</Label>
-              <Input id="promo-badge" placeholder="2x Points" {...form.register('badge')} />
+              <Input id="promo-badge" placeholder="2x XP" {...form.register('badge')} />
               {form.formState.errors.badge && (
                 <p className="text-xs text-red-500">{form.formState.errors.badge.message}</p>
               )}
@@ -151,7 +151,7 @@ export function PromotionsPage() {
                 Cancel
               </Button>
               <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Promotion' : 'Create Promotion'}
+                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Quest' : 'Create Quest'}
               </Button>
             </div>
           </form>
@@ -163,11 +163,11 @@ export function PromotionsPage() {
         {promotions.length === 0 ? (
           <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
             <Megaphone className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">No promotions yet</h3>
-            <p className="text-on-surface-variant/70 mb-8">Create your first promotion to drive engagement</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">No quests yet</h3>
+            <p className="text-on-surface-variant/70 mb-8">Create your first bonus quest to drive engagement.</p>
             <Button className="rounded-full h-12 px-8" onClick={() => setOpen(true)}>
               <Megaphone className="size-5 mr-2" />
-              Create First Promotion
+              Create First Quest
             </Button>
           </div>
         ) : (

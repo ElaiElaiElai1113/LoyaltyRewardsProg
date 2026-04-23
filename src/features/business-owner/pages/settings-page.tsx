@@ -43,7 +43,7 @@ export function SettingsPage() {
       <div className="space-y-4">
         <h1 className="font-serif text-5xl tracking-tight text-primary">Settings</h1>
         <p className="text-lg text-on-surface-variant/85">
-          Manage your business information and loyalty program settings.
+          Manage your business information and quest reward settings.
         </p>
       </div>
 
@@ -103,7 +103,7 @@ export function SettingsPage() {
           <div className="space-y-6">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                Loyalty Program
+                Quest Program
               </span>
               <h2 className="font-serif text-2xl text-primary">Settings</h2>
             </div>
@@ -113,7 +113,7 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="earn-rate" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    Earn Rate (points per $1)
+                    XP Rate (XP per $1)
                   </Label>
                   <Input
                     id="earn-rate"
@@ -125,7 +125,7 @@ export function SettingsPage() {
                     <p className="text-xs text-red-500">{form.formState.errors.earnRate.message}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    Customers earn this many points for every dollar spent
+                    Customers earn this much XP for every dollar spent.
                   </p>
                 </div>
 

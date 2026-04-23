@@ -53,29 +53,29 @@ export function RedeemRewardPanel({
       <div className="grid gap-1 overflow-hidden rounded-[2.5rem] bg-surface-lowest border border-outline-variant/5 shadow-card md:grid-cols-3">
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            Points Cost
+            XP Cost
           </p>
           <p className="font-serif text-4xl text-primary">
-            {formatPoints(reward.pointsCost)}
+            {formatPoints(reward.pointsCost)} XP
           </p>
         </div>
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            Your Balance
+            Your XP
           </p>
           <p className="font-serif text-4xl text-primary">
-            {formatPoints(balancePoints)}
+            {formatPoints(balancePoints)} XP
           </p>
         </div>
         <div className="p-10 space-y-2">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            Balance After
+            XP After
           </p>
           <p className={cn(
             "font-serif text-4xl",
             canRedeem ? "text-primary/80" : "text-error/80"
           )}>
-            {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))}
+            {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))} XP
           </p>
         </div>
       </div>
@@ -104,7 +104,7 @@ export function RedeemRewardPanel({
             <Label htmlFor="notes">Notes</Label>
             <Input
               id="notes"
-              placeholder="e.g., Warm, on the patio..."
+          placeholder="Pickup notes, substitutions, or timing..."
               {...form.register('notes')}
             />
             {form.formState.errors.notes ? (
@@ -123,7 +123,7 @@ export function RedeemRewardPanel({
             ? 'Processing...'
             : canRedeem
               ? 'Redeem Now'
-              : 'Not Enough Points'}
+              : 'Not Enough XP'}
         </Button>
       </form>
     </div>

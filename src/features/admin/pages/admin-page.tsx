@@ -133,7 +133,7 @@ export function AdminPage() {
       businessId: currentBusinessId,
       title: '',
       description: '',
-      category: 'Coffee',
+      category: 'Merch',
       price: 5,
       highlight: '',
       inventory: 50,
@@ -308,7 +308,7 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Member Profile</span>
-                <h2 className="font-serif text-3xl text-primary">Adjust Points</h2>
+                <h2 className="font-serif text-3xl text-primary">Adjust XP</h2>
               </div>
 
               <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
@@ -330,7 +330,7 @@ export function AdminPage() {
                         <div className="flex flex-wrap items-center gap-2">
                           <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border border-secondary-container/20">
                             <Gift className="size-3 mr-1" />
-                            {selectedMember.balance?.points ?? 0} Points
+                            {selectedMember.balance?.points ?? 0} XP
                           </Badge>
                           <Badge variant="accent" className="bg-success/10 text-success border border-success/20">
                             {selectedMember.balance?.availableCredits ?? 0} Credits
@@ -380,7 +380,7 @@ export function AdminPage() {
                   </div>
                 ) : (
                   <div className="rounded-[2rem] border border-dashed border-outline-variant/20 bg-surface-low p-6 text-sm text-on-surface-variant/75">
-                    Select a member to view the profile and update points.
+                    Select a member to view the profile and update XP.
                   </div>
                 )}
 
@@ -397,7 +397,7 @@ export function AdminPage() {
                           reason: '',
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : 'Failed to adjust points.')
+                        setActionError(error instanceof Error ? error.message : 'Failed to adjust XP.')
                       }
                     },
                     () => {
@@ -426,14 +426,14 @@ export function AdminPage() {
                     ) : null}
                     {selectedMember ? (
                       <p className="text-xs text-on-surface-variant/70">
-                        Selected: {selectedMember.profile.fullName} • Current balance: {selectedMember.balance?.points ?? 0} points
+                        Selected: {selectedMember.profile.fullName} • Current balance: {selectedMember.balance?.points ?? 0} XP
                       </p>
                     ) : null}
                   </div>
                   <div className="grid gap-4">
-                    <Label htmlFor="delta" className="text-sm font-semibold">Points Adjustment</Label>
+                    <Label htmlFor="delta" className="text-sm font-semibold">XP Adjustment</Label>
                     <Input id="delta" type="number" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
-                    <p className="text-xs text-on-surface-variant/70">Use a positive number to add points and a negative number to deduct them.</p>
+                    <p className="text-xs text-on-surface-variant/70">Use a positive number to add XP and a negative number to deduct it.</p>
                     {adjustmentForm.formState.errors.delta ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
                     ) : null}
@@ -446,7 +446,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
-                    {adjustRewards.isPending ? 'Processing...' : 'Update Points'}
+                    {adjustRewards.isPending ? 'Processing...' : 'Update XP'}
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
@@ -496,7 +496,7 @@ export function AdminPage() {
                       <Badge variant="accent" className="bg-primary/5 text-primary border border-primary/10 font-medium px-3 py-1.5">{member.role}</Badge>
                       <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border border-secondary-container/20 font-medium px-3 py-1.5 flex items-center gap-1.5">
                         <Gift className="size-3" />
-                        {balance?.points ?? 0} Points
+                        {balance?.points ?? 0} XP
                       </Badge>
                       <Badge variant="accent" className="bg-success/10 text-success border border-success/20 font-medium px-3 py-1.5">
                         {balance?.availableCredits ?? 0} Credits
@@ -667,7 +667,7 @@ export function AdminPage() {
                       ) : null}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="reward-cost">Points Cost</Label>
+                      <Label htmlFor="reward-cost">XP Cost</Label>
                       <Input id="reward-cost" type="number" {...rewardForm.register('pointsCost', { valueAsNumber: true })} />
                       {rewardForm.formState.errors.pointsCost ? (
                         <p className="text-xs text-red-500">{rewardForm.formState.errors.pointsCost.message}</p>
@@ -807,7 +807,7 @@ export function AdminPage() {
                           businessId,
                           title: '',
                           description: '',
-                          category: 'Coffee',
+                          category: 'Merch',
                           price: 5,
                           highlight: '',
                           inventory: 50,
@@ -859,10 +859,10 @@ export function AdminPage() {
                       <Label htmlFor="product-category">Category</Label>
                       <Input id="product-category" list="product-category-options" {...productForm.register('category')} />
                       <datalist id="product-category-options">
-                        <option value="Coffee" />
-                        <option value="Pastry" />
-                        <option value="Merch" />
-                        <option value="Equipment" />
+                        <option value="Coffee" label="Drinks" />
+                        <option value="Pastry" label="Bites" />
+                        <option value="Merch" label="Gear" />
+                        <option value="Equipment" label="Tools" />
                       </datalist>
                       {productForm.formState.errors.category ? (
                         <p className="text-xs text-red-500">{productForm.formState.errors.category.message}</p>
@@ -1147,7 +1147,7 @@ export function AdminPage() {
                       <p className="mt-2 font-serif text-2xl text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
                     </div>
                     <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">Points Issued</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">XP Issued</p>
                       <p className="mt-2 font-serif text-2xl text-primary">{business.pointsIssued}</p>
                     </div>
                     <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
@@ -1442,7 +1442,7 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Fulfillment</span>
-                <h2 className="font-serif text-3xl text-primary">Recent Redemptions</h2>
+                <h2 className="font-serif text-3xl text-primary">Fulfillment Queue</h2>
               </div>
               <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
@@ -1486,7 +1486,7 @@ export function AdminPage() {
                         <div className="mt-4 pt-4 border-t border-outline-variant/5 flex items-center justify-between">
                            <div className="flex items-center gap-2">
                              <TrendingUp className="size-4 text-secondary" />
-                             <span className="text-sm font-bold text-primary">{redemption.pointsCost} Points</span>
+                             <span className="text-sm font-bold text-primary">{redemption.pointsCost} XP</span>
                            </div>
                            <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 flex items-center gap-1">
                              {formatDate(redemption.redeemedAt)}

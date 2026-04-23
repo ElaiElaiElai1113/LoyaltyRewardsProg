@@ -76,7 +76,7 @@ async function performRewardAdjustment(
   const { error: logError } = await sb.from('admin_logs').insert({
     actor_name: context.actorName,
     action: context.adminAction,
-    details: `${actualDelta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(actualDelta)} points for member ${values.profileId}. Reason: ${values.reason}`,
+    details: `${actualDelta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(actualDelta)} XP for member ${values.profileId}. Reason: ${values.reason}`,
   })
 
   if (logError) {
@@ -268,9 +268,9 @@ export const adminService = {
   async adjustRewards(values: RewardAdjustmentFormValues, actor: Profile) {
     await performRewardAdjustment(values, {
       actorName: actor?.fullName || 'Platform Admin',
-      adminAction: 'Points Adjustment',
-      addedTitle: 'Points added by staff',
-      deductedTitle: 'Points deducted by staff',
+      adminAction: 'XP Adjustment',
+      addedTitle: 'XP added by staff',
+      deductedTitle: 'XP deducted by staff',
     })
   },
 
@@ -312,10 +312,10 @@ export const adminService = {
   ) {
     await performRewardAdjustment(values, {
       actorName: actor?.fullName || 'Business Owner',
-      adminAction: 'Business Points Adjustment',
+      adminAction: 'Business XP Adjustment',
       businessId,
-      addedTitle: 'Points added by business',
-      deductedTitle: 'Points deducted by business',
+      addedTitle: 'XP added by business',
+      deductedTitle: 'XP deducted by business',
     })
   },
 

@@ -92,14 +92,14 @@ export function RewardsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Rewards</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">Reward Vault</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Create and manage rewards your customers can redeem with their points.
+            Create and manage vault rewards your customers can unlock with XP.
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Gift className="size-5 mr-2" />
-          Add Reward
+          Add Vault Reward
         </Button>
       </div>
 
@@ -114,14 +114,14 @@ export function RewardsPage() {
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="reward-title">Title</Label>
-              <Input id="reward-title" placeholder="Free Latte" {...form.register('title')} />
+              <Input id="reward-title" placeholder="Free bonus item" {...form.register('title')} />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="reward-description">Description</Label>
-              <Textarea id="reward-description" placeholder="Any size latte of your choice" {...form.register('description')} />
+              <Textarea id="reward-description" placeholder="A bonus item, discount, or member-only perk" {...form.register('description')} />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
@@ -138,9 +138,9 @@ export function RewardsPage() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="Drink">Drink</SelectItem>
-                      <SelectItem value="Pastry">Pastry</SelectItem>
-                      <SelectItem value="Merch">Merch</SelectItem>
-                      <SelectItem value="Beans">Beans</SelectItem>
+                      <SelectItem value="Pastry">Bites</SelectItem>
+                      <SelectItem value="Merch">Gear</SelectItem>
+                      <SelectItem value="Beans">Specialty</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -150,7 +150,7 @@ export function RewardsPage() {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="reward-points">Points Cost</Label>
+              <Label htmlFor="reward-points">XP Cost</Label>
               <Input
                 id="reward-points"
                 type="number"
@@ -171,7 +171,7 @@ export function RewardsPage() {
                 Cancel
               </Button>
               <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Reward' : 'Add Reward'}
+                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Reward' : 'Add Vault Reward'}
               </Button>
             </div>
           </form>
@@ -183,11 +183,11 @@ export function RewardsPage() {
         {rewards.length === 0 ? (
           <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
             <Gift className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">No rewards yet</h3>
-            <p className="text-on-surface-variant/70 mb-8">Create your first reward to engage your customers</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">No vault rewards yet</h3>
+            <p className="text-on-surface-variant/70 mb-8">Create your first unlockable reward for members.</p>
             <Button className="rounded-full h-12 px-8" onClick={handleOpenForCreate}>
               <Gift className="size-5 mr-2" />
-              Create First Reward
+              Create First Vault Reward
             </Button>
           </div>
         ) : (
@@ -231,10 +231,10 @@ export function RewardsPage() {
                 <div className="flex items-end justify-between mt-4">
                   <div className="space-y-1">
                     <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                      Cost
+                      XP Cost
                     </span>
                     <p className="font-serif text-3xl tracking-tight text-primary">
-                      {formatPoints(reward.pointsCost)}
+                      {formatPoints(reward.pointsCost)} XP
                     </p>
                   </div>
 

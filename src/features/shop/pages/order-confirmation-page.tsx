@@ -57,7 +57,7 @@ export function OrderConfirmationPage() {
         </div>
 
         <div className="rounded-xl bg-tertiary/20 p-6 text-center space-y-2">
-          <p className="font-serif text-3xl text-primary">+{order.data.pointsEarned} points</p>
+          <p className="font-serif text-3xl text-primary">+{order.data.pointsEarned} XP</p>
           <p className="text-sm text-on-surface-variant/80">Processing — available within 24 hours</p>
         </div>
 

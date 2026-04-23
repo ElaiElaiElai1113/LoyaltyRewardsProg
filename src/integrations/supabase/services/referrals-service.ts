@@ -107,7 +107,7 @@ export const referralsService = {
 
     const availableCredits = Number(balance.available_credits ?? 0)
     if (availableCredits <= 0) {
-      throw new Error('No reward credits are available for this member.')
+      throw new Error('No Power Credits are available for this member.')
     }
 
     const { error: expireError } = await sb
@@ -270,7 +270,7 @@ export const referralsService = {
 
     const availableCredits = Number(balance.available_credits ?? 0)
     if (availableCredits <= 0) {
-      throw new Error('No reward credits are available for this member.')
+      throw new Error('No Power Credits are available for this member.')
     }
 
     const { error: updateError } = await sb
@@ -285,7 +285,7 @@ export const referralsService = {
     const { error: activityError } = await sb.from('activities').insert({
       profile_id: profileId,
       type: 'adjustment',
-      title: 'Reward credit used',
+      title: 'Power Credit used',
       points: 0,
       status: 'posted',
     })
@@ -296,8 +296,8 @@ export const referralsService = {
 
     const { error: logError } = await sb.from('admin_logs').insert({
       actor_name: actorName,
-      action: 'Reward credit used',
-      details: `Used 1 reward credit for member ${profileId}.`,
+      action: 'Power Credit used',
+      details: `Used 1 Power Credit for member ${profileId}.`,
     })
 
     if (logError) {

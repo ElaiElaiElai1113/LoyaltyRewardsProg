@@ -187,7 +187,7 @@ export const ordersService = {
       business_id: businessId,
       type: 'earned',
       title: `Purchase at ${biz.name} — $${total.toFixed(2)}`,
-      description: `${lineItems.length} item(s) ordered. ${pointsEarned} points earned (processing — available within 24 hours).`,
+      description: `${lineItems.length} item(s) ordered. ${pointsEarned} XP earned (processing - available within 24 hours).`,
       points: pointsEarned,
       status: 'pending',
     })
@@ -196,7 +196,7 @@ export const ordersService = {
     await sb.from('admin_logs').insert({
       actor_name: 'System',
       action: 'Order placed',
-      details: `Order at ${biz.name}. Total: $${total.toFixed(2)}. Points earned: ${pointsEarned}.`,
+      details: `Order at ${biz.name}. Total: $${total.toFixed(2)}. XP earned: ${pointsEarned}.`,
     })
 
     clearCart()

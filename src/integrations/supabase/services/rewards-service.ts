@@ -49,7 +49,7 @@ export const rewardsService = {
     // Check balance
     const balance = await profileService.ensureBalance(input.profileId)
     if (balance.points < reward.pointsCost) {
-      throw new Error('You do not have enough points for this reward yet.')
+      throw new Error('You do not have enough XP for this reward yet.')
     }
 
     // Create redemption

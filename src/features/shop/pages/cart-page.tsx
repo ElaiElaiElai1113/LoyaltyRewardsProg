@@ -84,7 +84,7 @@ export function CartPage() {
               </div>
             </div>
             <div className="rounded-xl bg-tertiary/20 p-4 text-sm">
-              <span className="font-bold text-primary">+{estimatedPoints} points</span>
+              <span className="font-bold text-primary">+{estimatedPoints} XP</span>
               <span className="text-on-surface-variant/80"> earned from this order</span>
             </div>
             <Button asChild variant="default" size="lg" className="w-full rounded-full h-14">

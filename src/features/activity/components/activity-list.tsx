@@ -37,7 +37,7 @@ export function ActivityList({ items }: ActivityListProps) {
                 <div className="flex flex-wrap items-center gap-3">
                   <h3 className="font-serif text-xl tracking-tight text-primary leading-tight">{item.title}</h3>
                   <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full">
-                    {item.points >= 0 ? `+${formatPoints(item.points)}` : formatPoints(item.points)}
+                    {item.points >= 0 ? `+${formatPoints(item.points)} XP` : `${formatPoints(item.points)} XP`}
                   </Badge>
                 </div>
                 <p className="text-sm font-medium text-on-surface-variant/80">{item.description}</p>
