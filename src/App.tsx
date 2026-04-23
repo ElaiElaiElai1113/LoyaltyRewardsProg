@@ -9,16 +9,16 @@ import { Toaster } from 'sonner'
 
 function App() {
   return (
-    <ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <LanguageProvider>
+    <LanguageProvider>
+      <ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
           <AuthProvider>
             <AppRouter />
             <Toaster position="bottom-right" closeButton richColors />
           </AuthProvider>
-        </LanguageProvider>
-      </QueryClientProvider>
-    </ErrorBoundary>
+        </QueryClientProvider>
+      </ErrorBoundary>
+    </LanguageProvider>
   )
 }
 
