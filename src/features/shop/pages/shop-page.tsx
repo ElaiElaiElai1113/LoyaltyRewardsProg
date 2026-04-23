@@ -6,7 +6,13 @@ import { ProductCard } from '@/features/shop/components/product-card'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
 
-const categories = ['All', 'Coffee', 'Pastry', 'Merch', 'Equipment'] as const
+const categories = [
+  { value: 'All', label: 'All' },
+  { value: 'Coffee', label: 'Drinks' },
+  { value: 'Pastry', label: 'Bites' },
+  { value: 'Merch', label: 'Gear' },
+  { value: 'Equipment', label: 'Tools' },
+] as const
 
 export function ShopPage() {
   const requireAuth = useLoginGate()
@@ -15,7 +21,7 @@ export function ShopPage() {
   const addToCart = useAddToCart()
 
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<(typeof categories)[number]>('All')
+  const [selectedCategory, setSelectedCategory] = useState<(typeof categories)[number]['value']>('All')
 
   const filtered = (products.data ?? []).filter((p) => {
     if (selectedBusiness && p.businessId !== selectedBusiness) return false
@@ -30,18 +36,18 @@ export function ShopPage() {
   return (
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
-        <Badge variant="accent" className="bg-tertiary/20 text-primary">
-          Shop
+        <Badge variant="accent">
+          Partner Realms
         </Badge>
-        <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-          Shop
+        <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
+          Shop Realms
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-          Browse products from all partner businesses. Purchase with cash or card and earn points automatically.
+          Browse partner businesses, complete purchases, and earn XP automatically.
         </p>
       </div>
 
-      <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md space-y-3">
+      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-primary-container/15 bg-[#120d0b]/82 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (
           <BusinessFilter
             businesses={businesses.data ?? []}
@@ -50,18 +56,18 @@ export function ShopPage() {
           />
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">Category:</span>
+          <span className="mr-2 quest-kicker">Item Type:</span>
           {categories.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              key={cat.value}
+              onClick={() => setSelectedCategory(cat.value)}
               className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
-                selectedCategory === cat
-                  ? 'bg-primary text-white shadow-sm'
-                  : 'text-on-surface-variant/85 hover:bg-surface-low hover:text-primary'
+                selectedCategory === cat.value
+                  ? 'bg-secondary-container text-[#2d1a06] shadow-[0_0_16px_rgba(216,162,58,0.16)]'
+                  : 'border border-primary-container/20 bg-primary-container/5 text-on-surface-variant/85 hover:bg-primary-container/10 hover:text-primary-container'
               }`}
             >
-              {cat}
+              {cat.label}
             </button>
           ))}
         </div>

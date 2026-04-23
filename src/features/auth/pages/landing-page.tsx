@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Gift, LogOut, Repeat2, ShieldCheck } from 'lucide-react'
+import { Crown, Gift, Repeat2 } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -42,7 +42,7 @@ function LoadingSpinner() {
 export function LandingPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { signIn, signUp, signOut } = useAuth()
+  const { signIn, signUp } = useAuth()
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
   const [error, setError] = useState<string | null>(null)
   const [showStaffLogin, setShowStaffLogin] = useState(false)
@@ -94,87 +94,72 @@ export function LandingPage() {
   }
 
   return (
-    <div className="relative min-h-screen px-4 py-8 md:px-8 lg:px-12 bg-surface">
-      <div className="absolute top-4 right-8 z-50">
-        <Button
-          variant="outline"
-          size="sm"
-          className="rounded-full bg-white text-on-surface-variant hover:text-error hover:border-error"
-          onClick={async () => {
-            try {
-              setError(null)
-              await signOut()
-              window.location.reload()
-            } catch (err) {
-              console.error('Logout failed:', err)
-            }
-          }}
-        >
-          <LogOut className="size-4 mr-2" />
-          Troubleshoot: Force Logout
-        </Button>
-      </div>
+    <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
+      <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
+        <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-primary-container/20 bg-[#120d0b] px-8 py-10 text-on-surface shadow-card md:px-12 lg:px-14">
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(244,168,79,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(244,168,79,0.045)_1px,transparent_1px)] bg-[length:40px_40px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(244,168,79,0.22),transparent_28rem),radial-gradient(circle_at_86%_18%,rgba(123,216,207,0.12),transparent_24rem),linear-gradient(145deg,rgba(244,168,79,0.08),transparent_45%)]" />
+          <div className="hud-scanline" />
 
-      <div className="mx-auto grid min-h-[calc(100vh-6rem)] max-w-7xl gap-12 lg:grid-cols-[1.2fr_0.8fr]">
-        <section className="relative overflow-hidden rounded-[3rem] bg-primary px-8 py-16 md:px-16 md:py-24 text-white shadow-card flex flex-col justify-between">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.1),transparent)] opacity-50" />
-
-          <div className="relative z-10 space-y-12">
-            <Badge variant="accent" className="bg-white/10 text-white border-white/20 px-6 py-2">
-              Rewards Program
+          <div className="relative z-10 space-y-8">
+            <Badge variant="accent" className="border-primary-container/35 bg-primary-container/12 px-5 py-2 text-primary-container">
+              Rewards Game
             </Badge>
-            <div className="max-w-3xl space-y-8">
-              <h1 className="font-serif text-6xl tracking-tight leading-[0.95] md:text-8xl">
+            <div className="max-w-3xl space-y-6">
+              <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
                 Synergize Rewards.<br />
-                Every visit<br />
-                counts.
+                Play every<br />
+                visit.
               </h1>
-              <p className="max-w-xl text-xl font-medium leading-relaxed text-white/85">
-                Earn points on every purchase. Redeem them for drinks, pastries, merch, and more.
+              <p className="max-w-xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
+                Earn XP on every purchase, unlock reward drops, and climb levels across partner businesses.
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/shop"
-                  className="inline-flex items-center rounded-full border border-white/40 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+                  className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-[0_0_20px_rgba(244,168,79,0.18)] transition hover:bg-primary-fixed"
                 >
-                  Browse Menu →
+                  Start Quest
                 </Link>
                 <Link
                   to="/rewards"
-                  className="inline-flex items-center rounded-full border border-white/40 px-6 py-3 text-sm font-bold text-white transition hover:bg-white/10"
+                  className="inline-flex h-11 items-center rounded border border-primary-container/35 bg-primary-container/8 px-6 text-xs font-bold uppercase tracking-[0.08em] text-primary-container transition hover:bg-primary-container/14"
                 >
-                  View Rewards →
+                  Open Vault
                 </Link>
               </div>
             </div>
 
-            <div className="grid gap-8 sm:grid-cols-3">
+            <div className="grid gap-3 sm:grid-cols-3">
               {[
                 {
                   icon: Repeat2,
-                  title: 'Track',
-                  body: 'See your points, tier, and activity at a glance.',
+                  title: 'Level Up',
+                  body: 'Watch your XP, streaks, and progress build after each visit.',
                 },
                 {
                   icon: Gift,
-                  title: 'Earn',
-                  body: 'Get rewarded every time you visit.',
+                  title: 'Unlock',
+                  body: 'Spend XP on perks, drops, credits, and partner rewards.',
                 },
                 {
-                  icon: ShieldCheck,
-                  title: 'Manage',
-                  body: 'Staff tools for rewards and members.',
+                  icon: Crown,
+                  title: 'Compete',
+                  body: 'Keep momentum with quests, referrals, and limited-time bonuses.',
                 },
               ].map((item) => (
-                <div key={item.title} className="group space-y-4">
-                  <div className="flex size-14 items-center justify-center rounded-2xl bg-white/5 text-secondary-container transition-all group-hover:bg-white/10">
-                    <item.icon className="size-6" />
+                <div
+                  key={item.title}
+                  className="group rounded-lg border border-primary-container/15 bg-[#1a120e]/72 p-4 backdrop-blur transition-all hover:border-primary-container/35 hover:bg-[#211713]/80"
+                >
+                  <div className="mb-5 flex size-10 items-center justify-center rounded border border-secondary-container/35 bg-secondary-container/10 text-secondary-container transition-all group-hover:bg-secondary-container/15">
+                    <item.icon className="size-5" />
                   </div>
                   <div>
-                    <h2 className="font-serif text-2xl text-white">
+                    <h2 className="font-serif text-lg font-semibold uppercase tracking-[0.03em] text-primary">
                       {item.title}
                     </h2>
-                    <p className="mt-2 text-sm leading-relaxed text-white/80">{item.body}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">{item.body}</p>
                   </div>
                 </div>
               ))}
@@ -184,8 +169,8 @@ export function LandingPage() {
           {error ? <p className="relative z-10 mt-8 text-sm font-bold text-red-300">{error}</p> : null}
         </section>
 
-        <section className="flex flex-col justify-center py-12">
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-10">
+        <section className="flex min-h-[42rem] flex-col justify-center py-4">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-7">
             <div className="flex justify-center">
               <TabsList className="w-full max-w-md">
                 <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -194,7 +179,7 @@ export function LandingPage() {
             </div>
 
             <TabsContent value="signin" className="outline-none">
-              <div className="space-y-10">
+              <div className="space-y-7">
                 <div className="space-y-2 text-center">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">
                     Welcome Back
@@ -204,10 +189,10 @@ export function LandingPage() {
                   </p>
                 </div>
 
-                <div className="mx-auto max-w-md rounded-[2.5rem] bg-surface-low p-10 border border-outline-variant/10 min-h-[29rem]">
+                <div className="mx-auto min-h-[25.5rem] max-w-md rounded-[1.5rem] border border-outline-variant/20 bg-surface-low p-8">
                   {showForgotPassword ? (
                     <form
-                      className="space-y-8"
+                      className="space-y-6"
                       onSubmit={resetForm.handleSubmit(async (values) => {
                         try {
                           setError(null)
@@ -253,7 +238,7 @@ export function LandingPage() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="w-full rounded-full h-14 font-bold tracking-wide"
+                        className="h-12 w-full font-bold tracking-wide"
                         disabled={resetForm.formState.isSubmitting}
                       >
                         {resetForm.formState.isSubmitting ? (
@@ -279,7 +264,7 @@ export function LandingPage() {
                     </form>
                   ) : (
                     <form
-                      className="space-y-8"
+                      className="space-y-6"
                       onSubmit={signInForm.handleSubmit(
                         async (values) => {
                           try {
@@ -367,7 +352,7 @@ export function LandingPage() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="w-full rounded-full h-14 font-bold tracking-wide"
+                        className="h-12 w-full font-bold tracking-wide"
                         disabled={signInForm.formState.isSubmitting}
                       >
                         {signInForm.formState.isSubmitting ? (
@@ -394,7 +379,7 @@ export function LandingPage() {
             </TabsContent>
 
             <TabsContent value="signup" className="outline-none">
-              <div className="space-y-10">
+              <div className="space-y-7">
                 <div className="space-y-2 text-center">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">
                     Create Account
@@ -404,9 +389,9 @@ export function LandingPage() {
                   </p>
                 </div>
 
-                <div className="mx-auto max-w-md rounded-[2.5rem] bg-surface-low p-10 border border-outline-variant/10 min-h-[29rem] flex flex-col justify-center">
+                <div className="mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-low p-8">
                   {signUpComplete ? (
-                    <div className="space-y-8 text-center">
+                    <div className="space-y-6 text-center">
                       <div className="space-y-3">
                         <h3 className="font-serif text-3xl tracking-tight text-primary">Welcome aboard!</h3>
                         <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
@@ -428,7 +413,7 @@ export function LandingPage() {
                     </div>
                   ) : (
                     <form
-                      className="space-y-8"
+                      className="space-y-6"
                       onSubmit={signUpForm.handleSubmit(async (values) => {
                         try {
                           setError(null)
@@ -446,7 +431,7 @@ export function LandingPage() {
                     >
                       <div className="space-y-2">
                         <p className="text-sm font-medium text-on-surface-variant/80">
-                          Create your free rewards account and start earning points today.
+                          Create your free rewards account and start earning XP today.
                         </p>
                       </div>
 
@@ -470,7 +455,7 @@ export function LandingPage() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="w-full rounded-full h-14 font-bold tracking-wide"
+                        className="h-12 w-full font-bold tracking-wide"
                         disabled={signUpForm.formState.isSubmitting}
                       >
                         {signUpForm.formState.isSubmitting ? (

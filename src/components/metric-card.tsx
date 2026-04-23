@@ -11,15 +11,16 @@ interface MetricCardProps {
 
 export function MetricCard({ label, value, icon: Icon, helper }: MetricCardProps) {
   return (
-    <div className="rounded-2xl bg-surface-low p-6 transition-all hover:bg-surface-highest/50">
+    <div className="quest-panel relative overflow-hidden p-6 transition-all hover:-translate-y-0.5 hover:shadow-[0_0_0_1px_rgba(244,168,79,0.28),0_0_26px_rgba(244,168,79,0.14)]">
+      <div className="hud-scanline" />
       <div className="flex items-center justify-between mb-4">
-        <span className="text-[0.65rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/80">{label}</span>
-        <div className="rounded-full bg-surface-lowest p-2.5 text-primary shadow-sm">
+        <span className="quest-kicker">{label}</span>
+        <div className="rounded border border-primary-container/30 bg-primary-container/10 p-2.5 text-primary-container shadow-[0_0_14px_rgba(244,168,79,0.14)]">
           <Icon className="size-5" />
         </div>
       </div>
       <div className="space-y-1">
-        <p className="font-serif text-4xl tracking-tight text-primary leading-none">{value}</p>
+        <p className="font-serif text-4xl font-bold tracking-tight text-primary-container leading-none">{value}</p>
         <p className="mt-2 text-xs font-medium text-on-surface-variant/75">{helper}</p>
       </div>
     </div>

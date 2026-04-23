@@ -1,4 +1,4 @@
-import { CheckCircle, Clock, Copy, Gift, Ticket, XCircle } from 'lucide-react'
+import { CheckCircle, Clock, Copy, Crown, Flame, Gift, Swords, Ticket, Trophy, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -63,6 +63,11 @@ export function DashboardPage() {
   const featuredRewards = rewards.data?.filter((reward) => reward.featured).slice(0, 2) ?? []
   const activePromotions = promotions.data?.slice(0, 2) ?? []
   const recentActivity = activities.data?.slice(0, 4) ?? []
+  const points = balance?.points ?? 0
+  const level = Math.max(1, Math.floor(points / 500) + 1)
+  const nextLevelPoints = level * 500
+  const levelBasePoints = (level - 1) * 500
+  const levelProgress = Math.min(100, Math.round(((points - levelBasePoints) / 500) * 100))
 
   useEffect(() => {
     if (!creditCodeCreatedAt) return
@@ -92,58 +97,80 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-16 pb-20">
-      <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:justify-between">
+      <div className="glass-panel relative overflow-hidden p-8 lg:p-10">
+        <div className="hud-scanline" />
+        <div className="absolute right-8 top-8 hidden rounded border border-secondary-container/50 bg-secondary-container/15 px-5 py-2 text-xs font-black uppercase tracking-widest text-secondary-container shadow-[0_0_16px_rgba(216,162,58,0.16)] md:block">
+          Level {level}
+        </div>
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-6 max-w-2xl">
-          <Badge variant="accent" className="bg-secondary-container/20 text-secondary">
-            Dashboard
+          <Badge variant="accent">
+            Player Dashboard
           </Badge>
-          <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.05]">
-            Good to see you, <br />
-            <span className="text-secondary">{profile?.fullName?.split(' ')[0] ?? 'Member'}.</span>
+          <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
+            Welcome back, <br />
+            <span className="text-secondary-container">{profile?.fullName?.split(' ')[0] ?? 'Member'}.</span>
           </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium italic">
-            Your balance, rewards, promotions, and recent activity — all in one place.
+          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+            Complete visits, stack XP, unlock rewards, and keep your streak alive.
           </p>
         </div>
 
-        <div className="flex-shrink-0">
-          <Button asChild variant="default" size="lg" className="rounded-full h-16 px-10">
+        <div className="flex-shrink-0 space-y-4">
+          <div className="rounded border border-primary-container/25 bg-[#17100d]/82 p-5 text-white shadow-card">
+            <div className="flex items-center justify-between gap-6">
+              <span className="text-xs font-black uppercase tracking-widest text-white/75">Next Level</span>
+              <span className="font-serif text-2xl font-bold text-primary-container">{levelProgress}%</span>
+            </div>
+            <div className="mt-4 h-3 overflow-hidden bg-primary-container/10">
+              <div
+                className="h-full bg-[linear-gradient(90deg,#7bd8cf,#f4a84f,#d8a23a)] transition-all duration-700 shadow-[0_0_12px_rgba(244,168,79,0.42)]"
+                style={{ width: `${levelProgress}%` }}
+              />
+            </div>
+            <p className="mt-3 text-xs font-bold text-white/70">
+              {formatPoints(Math.max(nextLevelPoints - points, 0))} XP until Level {level + 1}
+            </p>
+          </div>
+          <Button asChild variant="default" size="lg" className="h-16 px-10">
             <Link to="/rewards" className="flex items-center gap-3 text-lg">
-              Explore Rewards
-              <Gift className="size-6" />
+              Open Reward Vault
+              <Crown className="size-6" />
             </Link>
           </Button>
+        </div>
         </div>
       </div>
 
       {/* Hero Balance Section */}
-      <section className="relative overflow-hidden rounded-3xl bg-primary-container p-10 md:p-16 text-white shadow-card">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-white/5 to-transparent pointer-events-none" />
+      <section className="glass-panel relative overflow-hidden p-10 text-white md:p-16">
+        <div className="hud-scanline" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(244,168,79,0.055)_1px,transparent_1px),linear-gradient(rgba(244,168,79,0.055)_1px,transparent_1px)] bg-[length:40px_40px] opacity-50" />
         <div className="relative z-10 grid gap-12 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-10">
             <div className="space-y-2">
-              <span className="text-[0.7rem] font-bold uppercase tracking-[0.3em] text-white/80">Available Balance</span>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.3em] text-white/80">XP Balance</span>
               <div className="flex items-baseline gap-4">
-                <span className="font-serif text-7xl md:text-9xl tracking-tighter leading-none">
-                  {formatPoints(balance?.points ?? 0)}
+                <span className="font-serif text-7xl font-bold tracking-tighter text-primary-container md:text-9xl leading-none">
+                  {formatPoints(points)}
                 </span>
-                <span className="text-xl md:text-2xl font-medium text-white/80 italic">Points</span>
+                <span className="text-xl md:text-2xl font-medium text-white/80 italic">XP</span>
               </div>
             </div>
 
             <div className="space-y-4 max-w-md">
               <div className="flex justify-between items-end">
-                <span className="text-sm font-bold uppercase tracking-widest text-white/85">Next Reward Progress</span>
-                <span className="font-serif text-2xl">{balance?.tierProgress ?? 0}%</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-white/85">Reward Quest Progress</span>
+                <span className="font-serif text-2xl font-bold text-primary-container">{balance?.tierProgress ?? 0}%</span>
               </div>
-              <div className="h-2 rounded-full bg-white/10 w-full overflow-hidden">
+              <div className="h-2 bg-primary-container/10 w-full overflow-hidden">
                 <div
-                  className="h-full bg-secondary-container transition-all duration-1000 ease-out"
+                  className="h-full bg-[linear-gradient(90deg,#7bd8cf,#f4a84f,#d8a23a)] transition-all duration-1000 ease-out shadow-[0_0_12px_rgba(244,168,79,0.42)]"
                   style={{ width: `${balance?.tierProgress ?? 0}%` }}
                 />
               </div>
               <p className="text-sm font-medium leading-relaxed text-white/80">
-                Just {formatPoints(Math.max((balance?.nextRewardPoints ?? 0) - (balance?.points ?? 0), 0))} points away from your next reward.
+                Just {formatPoints(Math.max((balance?.nextRewardPoints ?? 0) - (balance?.points ?? 0), 0))} XP away from your next reward.
               </p>
             </div>
           </div>
@@ -151,10 +178,10 @@ export function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="space-y-3">
               <MetricCard
-                label="Reward Credits"
+                label="Power Credits"
                 value={`${balance?.availableCredits ?? 0}`}
                 icon={Gift}
-                helper="Credits ready to use"
+                helper="Instant perks ready"
               />
               {(balance?.availableCredits ?? 0) > 0 ? (
                 <Button
@@ -165,39 +192,39 @@ export function DashboardPage() {
                   onClick={handleGenerateCreditCode}
                 >
                   <Gift className="size-4" />
-                  {generateCreditCode.isPending ? 'Generating...' : 'Redeem Reward Credit'}
+                  {generateCreditCode.isPending ? 'Generating...' : 'Use Power Credit'}
                 </Button>
               ) : null}
             </div>
             <MetricCard
-              label="Redeemable"
+              label="Unlocked"
               value={`${rewards.data?.filter((reward) => (balance?.points ?? 0) >= reward.pointsCost).length ?? 0}`}
               icon={Ticket}
-              helper="Rewards you can afford"
+              helper="Rewards in your vault"
             />
-            <div className="rounded-3xl bg-white/95 p-6 text-primary shadow-card">
+            <div className="rounded border border-primary-container/20 bg-[#17100d]/88 p-6 text-on-surface shadow-card">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center lg:flex-col lg:items-start">
-                <div className="rounded-2xl bg-white p-3 text-primary shadow-sm">
+                <div className="rounded border border-primary-container/35 bg-[#fff8ef] p-3 text-primary shadow-[0_0_18px_rgba(244,168,79,0.14)]">
                   {referralUrl ? <QRCodeSVG value={referralUrl} size={120} /> : <div className="size-[120px]" />}
                 </div>
                 <div className="min-w-0 flex-1 space-y-4">
                   <div className="space-y-2">
-                    <h3 className="font-serif text-2xl tracking-tight">Refer a Friend</h3>
+                    <h3 className="font-serif text-2xl font-semibold uppercase tracking-[0.04em] text-primary-container">Party Invite</h3>
                     <p className="text-sm font-medium leading-relaxed text-on-surface-variant">
-                      Share this QR to give a friend (and yourself) a reward credit.
+                      Share this QR to give a friend and yourself a power credit.
                     </p>
                   </div>
                   <div className="flex gap-2">
                     <Input
                       readOnly
                       value={referralUrl}
-                      className="h-11 min-w-0 rounded-xl bg-surface-lowest px-3 py-2 text-xs"
+                      className="h-11 min-w-0 rounded bg-surface-lowest px-3 py-2 text-xs"
                     />
                     <Button
                       type="button"
                       variant="outline"
                       size="icon"
-                      className="shrink-0 rounded-xl bg-white"
+                      className="shrink-0 bg-primary-container/10"
                       disabled={!referralUrl}
                       aria-label="Copy referral link"
                       onClick={async () => {
@@ -229,24 +256,24 @@ export function DashboardPage() {
           }
         }}
       >
-        <DialogContent className="flex min-h-[100dvh] w-screen max-w-none items-center justify-center rounded-none border-0 bg-primary-container p-6 text-white sm:p-10">
-          <div className="w-full max-w-xl rounded-3xl bg-white p-8 text-center text-primary shadow-card sm:p-12">
+        <DialogContent className="flex min-h-[100dvh] w-screen max-w-none items-center justify-center rounded-none border-0 bg-[#120d0b]/95 p-6 text-white sm:p-10">
+          <div className="glass-panel w-full max-w-xl p-8 text-center text-on-surface sm:p-12">
             <DialogHeader className="mb-8 items-center">
-              <DialogTitle className="text-4xl text-primary sm:text-5xl">Redeem Reward Credit</DialogTitle>
+              <DialogTitle className="text-4xl text-primary-container sm:text-5xl">Redeem Power Credit</DialogTitle>
               <DialogDescription className="text-base font-medium text-on-surface-variant">
                 Show this code to staff
               </DialogDescription>
             </DialogHeader>
 
             <div className="space-y-8">
-              <div className="rounded-3xl bg-surface-low px-6 py-8">
-                <p className="font-mono text-6xl font-bold tracking-[0.18em] text-primary sm:text-7xl">
+              <div className="rounded border border-primary-container/20 bg-surface-low px-6 py-8">
+                <p className="font-mono text-6xl font-bold tracking-[0.18em] text-primary-container sm:text-7xl">
                   {creditCode}
                 </p>
               </div>
               <div className="flex items-center justify-center gap-3 text-on-surface-variant">
                 <Clock className="size-5" />
-                <span className="font-serif text-3xl text-primary">{formatCountdown(remainingSeconds)}</span>
+                <span className="font-serif text-3xl text-primary-container">{formatCountdown(remainingSeconds)}</span>
               </div>
               <p className="text-sm font-medium leading-relaxed text-on-surface-variant/75">
                 This code expires 15 minutes after it is generated.
@@ -258,11 +285,11 @@ export function DashboardPage() {
 
       {referral ? (
         <section
-          className={`rounded-3xl border p-6 shadow-sm ${
+          className={`rounded border p-6 shadow-sm ${
             referral.status === 'approved'
               ? 'border-success/20 bg-success/10'
               : referral.status === 'rejected'
-                ? 'border-red-200 bg-red-50'
+                ? 'border-red-400/30 bg-red-500/10'
                 : 'border-warning/20 bg-warning/10'
           }`}
         >
@@ -273,7 +300,7 @@ export function DashboardPage() {
                   referral.status === 'approved'
                     ? 'bg-success/15 text-success'
                     : referral.status === 'rejected'
-                      ? 'bg-red-100 text-red-600'
+                      ? 'bg-red-500/15 text-red-300'
                       : 'bg-warning/15 text-warning'
                 }`}
               >
@@ -286,15 +313,15 @@ export function DashboardPage() {
                 )}
               </div>
               <div className="space-y-1">
-                <p className="font-serif text-2xl tracking-tight text-primary">
+                <p className="font-serif text-2xl tracking-tight text-primary-container">
                   Referral {referral.status}
                 </p>
                 <p className="max-w-2xl text-sm font-medium leading-relaxed text-on-surface-variant/80">
                   {referral.status === 'approved'
-                    ? 'Your referral was approved. Your reward credit has been added to your balance.'
+                    ? 'Your party invite was approved. Your Power Credit has been added to your balance.'
                     : referral.status === 'rejected'
                       ? 'This referral was not approved. Ask staff if you think this needs another look.'
-                      : 'Your referral is pending staff approval. Your reward credit will appear after approval.'}
+                      : 'Your party invite is pending staff approval. Your Power Credit will appear after approval.'}
                 </p>
               </div>
             </div>
@@ -304,7 +331,7 @@ export function DashboardPage() {
                 referral.status === 'approved'
                   ? 'bg-success/10 text-success border-success/20'
                   : referral.status === 'rejected'
-                    ? 'bg-red-100 text-red-600 border-red-200'
+                    ? 'bg-red-500/10 text-red-300 border-red-400/30'
                     : 'bg-warning/10 text-warning border-warning/20'
               }
             >
@@ -314,15 +341,51 @@ export function DashboardPage() {
         </section>
       ) : null}
 
+      <section className="grid gap-6 md:grid-cols-3">
+        {[
+          {
+            icon: Flame,
+            title: 'Daily Streak',
+            body: 'Visit, scan, or order to keep momentum and earn faster.',
+            stat: '3x',
+          },
+          {
+            icon: Swords,
+            title: 'Side Quest',
+            body: 'Try a new partner business to discover more reward options.',
+            stat: '+120 XP',
+          },
+          {
+            icon: Trophy,
+            title: 'Boss Reward',
+            body: 'Reach the next tier and unlock higher-value perks.',
+            stat: `L${level + 1}`,
+          },
+        ].map((quest) => (
+          <div key={quest.title} className="glass-panel p-6">
+            <div className="flex items-center justify-between">
+              <div className="flex size-12 items-center justify-center rounded border border-primary-container/35 bg-primary-container/10 text-primary-container">
+                <quest.icon className="size-6" />
+              </div>
+              <span className="rounded border border-secondary-container/45 bg-secondary-container/15 px-4 py-1 text-sm font-black text-secondary-container">
+                {quest.stat}
+              </span>
+            </div>
+            <h3 className="mt-5 font-serif text-2xl font-semibold uppercase tracking-[0.03em] text-primary-container">{quest.title}</h3>
+            <p className="mt-2 text-sm font-medium leading-relaxed text-on-surface-variant/80">{quest.body}</p>
+          </div>
+        ))}
+      </section>
+
       <div className="grid gap-20 lg:grid-cols-[1fr_400px]">
         {/* Featured Rewards */}
         <div className="space-y-10">
           <div className="flex items-end justify-between border-b border-outline-variant/10 pb-6">
             <div className="space-y-2">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Featured</span>
-              <h2 className="font-serif text-4xl tracking-tight text-primary">Featured Rewards</h2>
+              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">Featured Rewards</h2>
             </div>
-            <Button asChild variant="ghost" className="rounded-full">
+            <Button asChild variant="ghost">
               <Link to="/rewards">Full Catalog</Link>
             </Button>
           </div>
@@ -343,7 +406,7 @@ export function DashboardPage() {
           <div className="flex items-end justify-between border-b border-outline-variant/10 pb-6">
              <div className="space-y-2">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Limited Time</span>
-              <h2 className="font-serif text-4xl tracking-tight text-primary">Promotions</h2>
+              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">Promotions</h2>
             </div>
           </div>
           <div className="space-y-6">
@@ -355,18 +418,18 @@ export function DashboardPage() {
       </div>
 
       {/* Activity Section */}
-      <section className="space-y-10 bg-surface-low -mx-6 px-6 py-20 rounded-[3rem]">
+      <section className="glass-panel -mx-5 space-y-10 px-5 py-16 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         <div className="mx-auto max-w-5xl space-y-10">
           <div className="flex items-end justify-between border-b border-outline-variant/10 pb-6">
             <div className="space-y-2">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Activity</span>
-              <h2 className="font-serif text-4xl tracking-tight text-primary">Recent Activity</h2>
+              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">Recent Activity</h2>
             </div>
-            <Button asChild variant="ghost" className="rounded-full">
+            <Button asChild variant="ghost">
               <Link to="/activity">History</Link>
             </Button>
           </div>
-          <div className="bg-surface-lowest rounded-3xl p-2 shadow-sm overflow-hidden border border-outline-variant/5">
+          <div className="overflow-hidden rounded border border-primary-container/15 bg-surface-lowest/80 p-2 shadow-sm">
             <ActivityList items={recentActivity} />
           </div>
         </div>

@@ -10,21 +10,21 @@ interface BusinessFilterProps {
 export function BusinessFilter({ businesses, selected, onChange }: BusinessFilterProps) {
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">Business:</span>
+      <span className="mr-2 quest-kicker">Realm:</span>
       <Button
         variant={selected === null ? 'tertiary' : 'ghost'}
         size="sm"
-        className={`rounded-full transition-all ${selected === null ? 'px-8 shadow-sm' : 'text-on-surface-variant/85 hover:text-primary'}`}
+        className={`transition-all ${selected === null ? 'px-8' : 'text-on-surface-variant/85 hover:text-primary-container'}`}
         onClick={() => onChange(null)}
       >
-        All
+        All Realms
       </Button>
       {businesses.map((business) => (
         <Button
           key={business.id}
           variant={selected === business.id ? 'tertiary' : 'ghost'}
           size="sm"
-          className={`rounded-full transition-all ${selected === business.id ? 'px-8 shadow-sm' : 'text-on-surface-variant/85 hover:text-primary'}`}
+          className={`transition-all ${selected === business.id ? 'px-8' : 'text-on-surface-variant/85 hover:text-primary-container'}`}
           onClick={() => onChange(business.id)}
         >
           {business.name}

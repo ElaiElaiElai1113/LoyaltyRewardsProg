@@ -20,16 +20,16 @@ export function AdminLayout() {
   const { profile, signOut } = useAuth()
 
   return (
-    <div className="flex min-h-screen bg-surface-low">
-      <aside className="fixed inset-y-0 left-0 flex w-80 flex-col border-r border-outline-variant/10 bg-gradient-to-b from-surface to-surface-low px-6 py-8">
+    <div className="flex min-h-screen bg-transparent">
+      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-primary-container/20 bg-[#120d0b]/85 px-5 py-7 text-white shadow-[5px_0_24px_rgba(8,5,3,0.45)] backdrop-blur-2xl">
         <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] text-white shadow-lg">
+          <div className="flex size-12 items-center justify-center rounded border border-primary-container/50 bg-primary-container/10 text-primary-container shadow-[0_0_18px_rgba(244,168,79,0.16)]">
             <ShieldCheck className="size-6" />
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-xl tracking-tight text-primary">Admin Portal</span>
-            <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70">
-              Operations
+            <span className="font-serif text-xl font-black uppercase tracking-[0.12em] text-primary-container">Admin Portal</span>
+            <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+              Game Ops
             </span>
           </div>
         </div>
@@ -40,10 +40,10 @@ export function AdminLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `group flex items-center justify-between rounded-2xl px-5 py-3.5 text-sm font-medium transition-all ${
+                `group flex items-center justify-between rounded px-5 py-3.5 text-xs font-black uppercase tracking-[0.14em] transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-primary to-[#4b3621] text-white shadow-md'
-                    : 'text-on-surface hover:bg-surface-lowest hover:text-primary hover:shadow-sm'
+                    ? 'border-r-4 border-primary-container bg-primary-container/10 text-primary-container shadow-[inset_-10px_0_20px_rgba(244,168,79,0.08)]'
+                    : 'text-on-surface-variant/70 hover:bg-primary-container/5 hover:text-primary-container'
                 }`
               }
             >
@@ -59,13 +59,13 @@ export function AdminLayout() {
           <Separator className="bg-outline-variant/10" />
 
           <div className="mt-8 flex items-center gap-4 px-2">
-            <Avatar className="size-12 ring-2 ring-primary/10">
-              <AvatarFallback className="bg-gradient-to-br from-primary/10 to-primary/5 text-primary font-semibold">
+            <Avatar className="size-12 rounded border border-primary-container/40 ring-2 ring-primary-container/10">
+              <AvatarFallback className="rounded bg-surface-highest text-primary-container font-semibold">
                 {getInitials(profile?.fullName ?? 'AD')}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-on-surface">{profile?.fullName}</span>
+              <span className="truncate text-sm font-semibold text-white">{profile?.fullName}</span>
               <span className="text-xs text-on-surface-variant/70">Operations Lead</span>
             </div>
           </div>
@@ -73,14 +73,14 @@ export function AdminLayout() {
           <div className="mt-6 flex flex-col gap-2">
             <Button
               variant="ghost"
-              className="justify-start gap-3 rounded-2xl text-on-surface transition-all hover:bg-surface-lowest hover:text-primary"
+              className="justify-start gap-3 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container"
             >
               <Settings className="size-5" />
               Settings
             </Button>
             <Button
               variant="ghost"
-              className="justify-start gap-3 rounded-2xl text-on-surface transition-all hover:bg-red-50 hover:text-red-600"
+              className="justify-start gap-3 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-error"
               onClick={() => void signOut()}
             >
               <LogOut className="size-5" />
@@ -90,7 +90,7 @@ export function AdminLayout() {
         </div>
       </aside>
 
-      <main className="ml-80 min-h-screen flex-1">
+      <main className="ml-72 min-h-screen flex-1">
         <div className="mx-auto w-full max-w-7xl px-10 py-12">
           <Outlet />
         </div>

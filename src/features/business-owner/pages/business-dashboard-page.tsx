@@ -46,10 +46,7 @@ export function BusinessDashboardPage() {
     return <div className="text-center py-20 text-on-surface-variant/60">Loading...</div>
   }
 
-  const businessColors =
-    business?.slug === 'velvet-brew'
-      ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
-      : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
+  const businessColors = { primary: 'from-[#7a4a1f] to-[#d8a23a]', light: 'from-primary-container/18 to-secondary-container/14' }
   const signupQrUrl =
     profile?.referralCode && business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
@@ -58,14 +55,15 @@ export function BusinessDashboardPage() {
   return (
     <div className="space-y-16">
       {/* Welcome Section */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-[#4b3621] to-[#33210d] px-8 py-12 shadow-2xl">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
+      <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#18215a,#283593_50%,#c026d3)] px-8 py-12 text-white shadow-2xl">
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
+          <p className="quest-kicker-light mb-3">Mission Control</p>
           <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">
-            Welcome back, {business?.name}
+            {business?.name} Command Center
           </h1>
           <p className="mt-4 text-lg text-white/80 font-medium">
-            Here's what's happening with your business today.
+            Track members, quests, credits, and reward fulfillment from one arcade operations hub.
           </p>
         </div>
       </div>
@@ -73,40 +71,40 @@ export function BusinessDashboardPage() {
       {/* Metrics Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <BusinessMetricCard
-          title="Total Members"
+          title="Members Recruited"
           value={metrics.totalMembers.toString()}
           icon={<Users className="size-6" />}
           trend="+12%"
           trendUp
         />
         <BusinessMetricCard
-          title="Total Orders"
+          title="Orders Completed"
           value={metrics.totalOrders.toString()}
           icon={<ShoppingBag className="size-6" />}
           trend="+8%"
           trendUp
         />
         <BusinessMetricCard
-          title="Revenue"
+          title="Realm Revenue"
           value={formatCurrency(metrics.totalRevenue)}
           icon={<TrendingUp className="size-6" />}
           trend="+15%"
           trendUp
         />
         <BusinessMetricCard
-          title="Active Promotions"
+          title="Active Quests"
           value={metrics.activePromotions.toString()}
           icon={<Sparkles className="size-6" />}
         />
       </div>
 
-      {/* Points Overview */}
+      {/* XP Overview */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+        <div className="quest-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">Points Issued</h3>
-              <p className="text-sm text-on-surface-variant/70">Total points awarded to customers</p>
+              <h3 className="font-serif text-2xl text-primary">XP Issued</h3>
+              <p className="text-sm text-on-surface-variant/70">Total XP awarded to customers</p>
             </div>
             <div className="size-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
               <TrendingUp className="size-6" />
@@ -115,11 +113,11 @@ export function BusinessDashboardPage() {
           <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
         </div>
 
-        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+        <div className="quest-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">Points Redeemed</h3>
-              <p className="text-sm text-on-surface-variant/70">Total points used for rewards</p>
+              <h3 className="font-serif text-2xl text-primary">XP Redeemed</h3>
+              <p className="text-sm text-on-surface-variant/70">Total XP spent on rewards</p>
             </div>
             <div className="size-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
               <Gift className="size-6" />
@@ -131,7 +129,7 @@ export function BusinessDashboardPage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="font-serif text-2xl text-primary mb-6">Quick Actions</h2>
+        <h2 className="font-serif text-2xl text-primary mb-6">Command Shortcuts</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             to="/business/products"
@@ -187,15 +185,15 @@ export function BusinessDashboardPage() {
         </div>
       </div>
 
-      {/* Customer Signup QR */}
+      {/* Signup Portal */}
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+        <div className="quest-panel p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="space-y-2">
-              <h2 className="font-serif text-2xl text-primary">Customer Signup QR</h2>
+              <h2 className="font-serif text-2xl text-primary">Signup Portal</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
-                Display this QR at checkout or on signage. New customers can scan it, create an account,
-                and appear below for approval before their reward credit is added.
+                Display this portal at checkout or on signage. New customers scan it, create an account,
+                and appear below as pending invites before their power credit is added.
               </p>
             </div>
             <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
@@ -224,18 +222,18 @@ export function BusinessDashboardPage() {
               }}
             >
               <Copy className="size-4" />
-              {copiedSignupUrl ? 'Copied' : 'Copy Link'}
+              {copiedSignupUrl ? 'Copied' : 'Copy Portal Link'}
             </Button>
           </div>
         </div>
 
-        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+        <div className="quest-panel p-8">
           <div className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
             {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
           </div>
-          <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} signup offer</p>
+          <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} signup portal</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
-            Approve the signup below to grant the reward credit.
+            Approve the invite below to grant the power credit.
           </p>
         </div>
       </div>
@@ -243,12 +241,12 @@ export function BusinessDashboardPage() {
       {/* Credit Redemption Validation */}
       <div>
         <div className="mb-6 space-y-1">
-          <h2 className="font-serif text-2xl text-primary">Validate Redemption Code</h2>
-          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit reward credit code</p>
+          <h2 className="font-serif text-2xl text-primary">Credit Scanner</h2>
+          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit power credit code</p>
         </div>
 
         <form
-          className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-6"
+          className="quest-panel p-6"
           onSubmit={(event: FormEvent<HTMLFormElement>) => {
             event.preventDefault()
             if (!business?.id || redemptionCode.length !== 6) return
@@ -276,25 +274,25 @@ export function BusinessDashboardPage() {
               disabled={!business?.id || redemptionCode.length !== 6 || validateCreditCode.isPending}
             >
               <CheckCircle className="size-4" />
-              {validateCreditCode.isPending ? 'Validating...' : 'Validate'}
+              {validateCreditCode.isPending ? 'Scanning...' : 'Validate Credit'}
             </Button>
           </div>
         </form>
       </div>
 
-      {/* Referral Approvals */}
+      {/* Pending Invites */}
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">Referral Approvals</h2>
-            <p className="text-sm text-on-surface-variant/70">Review new customer referral credits</p>
+            <h2 className="font-serif text-2xl text-primary">Pending Invites</h2>
+            <p className="text-sm text-on-surface-variant/70">Review new customer invite credits</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
             {pendingReferrals.data?.length ?? 0} pending
           </span>
         </div>
 
-        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+        <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
           {pendingReferrals.isLoading ? (
             <div className="p-12 text-center">
               <p className="text-on-surface-variant/60 font-medium">Loading referrals...</p>
@@ -355,19 +353,19 @@ export function BusinessDashboardPage() {
         </div>
       </div>
 
-      {/* Recent Redemptions Fulfillment */}
+      {/* Fulfillment Queue */}
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">Recent Redemptions</h2>
-            <p className="text-sm text-on-surface-variant/70">Manage and fulfill pending rewards</p>
+            <h2 className="font-serif text-2xl text-primary">Fulfillment Queue</h2>
+            <p className="text-sm text-on-surface-variant/70">Manage and fulfill pending reward claims</p>
           </div>
           <Link to="/business/rewards" className="text-sm font-semibold text-primary hover:underline">
-            Manage Rewards
+            Manage Vault
           </Link>
         </div>
 
-        <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+        <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
           {redemptions.length === 0 ? (
             <div className="p-12 text-center">
               <p className="text-on-surface-variant/60 font-medium">No redemptions yet.</p>

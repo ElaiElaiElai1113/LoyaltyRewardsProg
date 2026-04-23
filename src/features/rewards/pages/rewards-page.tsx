@@ -49,36 +49,36 @@ export function RewardsPage() {
 
   return (
     <div className="space-y-16 pb-20">
-      <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
+      <div className="flex flex-col gap-10 border-b border-primary-container/15 pb-12 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4 max-w-2xl">
-          <Badge variant="accent" className="bg-tertiary/20 text-primary">
-            Rewards Catalog
+          <Badge variant="accent">
+            Reward Vault
           </Badge>
-          <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Rewards
+          <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
+            Loot Vault
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            Browse rewards and redeem them with your points. From drinks to seasonal merch, everything is earned.
+            Spend XP on unlocked perks, rare drops, and partner rewards.
           </p>
         </div>
 
         {profile && (
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Your Points</span>
-            <div className="flex items-center gap-4 rounded-2xl bg-primary-container px-6 py-4 text-white shadow-card">
-              <div className="flex size-10 items-center justify-center rounded-full bg-white/10">
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Your XP</span>
+            <div className="glass-panel flex items-center gap-4 px-6 py-4">
+              <div className="flex size-10 items-center justify-center rounded border border-secondary-container/40 bg-secondary-container/10">
                 <Gift className="size-5 text-secondary-container" />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-2xl leading-none">{balancePoints}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Available Points</span>
+                <span className="font-serif text-2xl font-bold leading-none text-primary-container">{balancePoints}</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Available XP</span>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      <div className="sticky top-24 z-40 -mx-6 bg-surface/80 px-6 py-4 backdrop-blur-md space-y-3">
+      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-primary-container/15 bg-[#120d0b]/82 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (
           <BusinessFilter
             businesses={businesses.data ?? []}
@@ -87,7 +87,7 @@ export function RewardsPage() {
           />
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">Category:</span>
+          <span className="mr-2 quest-kicker">Item Type:</span>
           {filters.map((filter) => (
             <Button
               key={filter}
@@ -95,8 +95,8 @@ export function RewardsPage() {
               size="sm"
               className={`rounded-full transition-all ${
                 activeFilter === filter
-                  ? 'px-8 shadow-sm'
-                  : 'text-on-surface-variant/85 hover:text-primary'
+                  ? 'px-8'
+                  : 'text-on-surface-variant/85 hover:text-primary-container'
               }`}
               onClick={() => setActiveFilter(filter)}
             >
