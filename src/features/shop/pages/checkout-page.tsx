@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useBusinesses, useCart, usePlaceOrder, useProducts } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 import type { CheckoutFormValues } from '@/types/forms'
 import { checkoutSchema } from '@/types/forms'
@@ -15,6 +16,7 @@ import { checkoutSchema } from '@/types/forms'
 export function CheckoutPage() {
   const navigate = useNavigate()
   const cart = useCart()
+  const { t } = useLanguage()
   const products = useProducts()
   const businesses = useBusinesses()
   const placeOrder = usePlaceOrder()
@@ -24,6 +26,10 @@ export function CheckoutPage() {
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: { paymentMethod: 'visa' },
+  })
+  const selectedPaymentMethod = useWatch({
+    control: form.control,
+    name: 'paymentMethod',
   })
 
   const cartItems = cart.data ?? []
@@ -53,17 +59,17 @@ export function CheckoutPage() {
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
-          Checkout
+          {t('Checkout')}
         </Badge>
         <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-          Checkout
+          {t('Checkout')}
         </h1>
       </div>
 
       <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
         <div className="space-y-8">
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6">
-            <h2 className="font-serif text-3xl text-primary">Payment Method</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Payment Method')}</h2>
             <form
               className="space-y-6"
               onSubmit={form.handleSubmit(async (values) => {
@@ -75,12 +81,12 @@ export function CheckoutPage() {
                   })
                   navigate('/order-confirmation', { state: { orderId: order.id } })
                 } catch (err) {
-                  setError(err instanceof Error ? err.message : 'Order failed.')
+                  setError(err instanceof Error ? err.message : t('Order failed.'))
                 }
               })}
             >
               <div className="grid gap-3">
-                <Label>Card Type</Label>
+                <Label>{t('Card Type')}</Label>
                 <div className="grid grid-cols-3 gap-3">
                   {[
                     { value: 'visa', label: 'Visa •••• 4242' },
@@ -92,7 +98,7 @@ export function CheckoutPage() {
                       type="button"
                       onClick={() => form.setValue('paymentMethod', option.value as 'visa' | 'mastercard' | 'applepay')}
                       className={`rounded-2xl border p-4 text-sm font-medium transition-all ${
-                        form.watch('paymentMethod') === option.value
+                        selectedPaymentMethod === option.value
                           ? 'border-primary bg-primary/5 text-primary'
                           : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
                       }`}
@@ -104,17 +110,17 @@ export function CheckoutPage() {
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="card-number">Card Number</Label>
+                <Label htmlFor="card-number">{t('Card Number')}</Label>
                 <Input id="card-number" value="4242 4242 4242 4242" disabled />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-3">
-                  <Label>Expiry</Label>
+                  <Label>{t('Expiry')}</Label>
                   <Input value="12/28" disabled />
                 </div>
                 <div className="grid gap-3">
-                  <Label>CVC</Label>
+                  <Label>{t('CVC')}</Label>
                   <Input value="•••" disabled />
                 </div>
               </div>
@@ -127,39 +133,39 @@ export function CheckoutPage() {
                 className="w-full rounded-full h-16 text-lg font-bold shadow-card"
                 disabled={placeOrder.isPending}
               >
-                {placeOrder.isPending ? 'Placing Order...' : `Pay ${formatCurrency(total)}`}
+                {placeOrder.isPending ? t('Placing Order...') : `${t('Pay')} ${formatCurrency(total)}`}
               </Button>
             </form>
           </div>
         </div>
 
         <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6 h-fit sticky top-32">
-          <h2 className="font-serif text-2xl text-primary">Order Summary</h2>
+          <h2 className="font-serif text-2xl text-primary">{t('Order Summary')}</h2>
           <div className="space-y-3">
             {resolvedItems.map(({ product, quantity }) => (
               <div key={product.id} className="flex justify-between text-sm">
-                <span className="text-on-surface-variant">{product.title} x{quantity}</span>
+                <span className="text-on-surface-variant">{t(product.title)} x{quantity}</span>
                 <span className="text-primary font-medium">{formatCurrency(product.price * quantity)}</span>
               </div>
             ))}
           </div>
           <div className="border-t border-outline-variant/10 pt-3 space-y-2 text-sm">
             <div className="flex justify-between text-on-surface-variant">
-              <span>Subtotal</span>
+              <span>{t('Subtotal')}</span>
               <span>{formatCurrency(subtotal)}</span>
             </div>
             <div className="flex justify-between text-on-surface-variant">
-              <span>Tax</span>
+              <span>{t('Tax')}</span>
               <span>{formatCurrency(tax)}</span>
             </div>
             <div className="flex justify-between font-bold text-primary text-lg pt-2 border-t border-outline-variant/10">
-              <span>Total</span>
+              <span>{t('Total')}</span>
               <span>{formatCurrency(total)}</span>
             </div>
           </div>
           <div className="rounded-xl bg-tertiary/20 p-4 text-sm">
             <span className="font-bold text-primary">+{estimatedPoints} XP</span>
-            <span className="text-on-surface-variant/80"> will be earned</span>
+            <span className="text-on-surface-variant/80"> {t('will be earned')}</span>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { CircleDollarSign, Gift, ShieldCheck, Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { useLanguage } from '@/lib/language'
 import { formatDate, formatPoints, formatTime } from '@/lib/utils'
 import type { Activity } from '@/types/domain'
 
@@ -22,6 +23,8 @@ function getIcon(type: Activity['type']) {
 }
 
 export function ActivityList({ items }: ActivityListProps) {
+  const { t } = useLanguage()
+
   return (
     <div className="space-y-3">
       {items.map((item) => {
@@ -35,18 +38,18 @@ export function ActivityList({ items }: ActivityListProps) {
               </div>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="font-serif text-xl tracking-tight text-primary leading-tight">{item.title}</h3>
+                  <h3 className="font-serif text-xl tracking-tight text-primary leading-tight">{t(item.title)}</h3>
                   <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full">
                     {item.points >= 0 ? `+${formatPoints(item.points)} XP` : `${formatPoints(item.points)} XP`}
                   </Badge>
                 </div>
-                <p className="text-sm font-medium text-on-surface-variant/80">{item.description}</p>
+                <p className="text-sm font-medium text-on-surface-variant/80">{t(item.description)}</p>
               </div>
             </div>
 
             <div className="flex items-center justify-between md:flex-col md:items-end gap-1">
               <div className="flex flex-col md:items-end">
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">Date</span>
+                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">{t('Date')}</span>
                 <p className="text-sm font-semibold text-on-surface-variant/70">{formatDate(item.createdAt)}</p>
               </div>
               <p className="hidden text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/65 italic md:block">{formatTime(item.createdAt)}</p>

@@ -4,10 +4,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CartItemRow } from '@/features/shop/components/cart-item-row'
 import { useBusinesses, useCart, useProducts, useRemoveFromCart, useUpdateCartItem } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 
 export function CartPage() {
   const cart = useCart()
+  const { t } = useLanguage()
   const products = useProducts()
   const businesses = useBusinesses()
   const updateCartItem = useUpdateCartItem()
@@ -39,18 +41,18 @@ export function CartPage() {
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
-          Shopping Cart
+          {t('Shopping Cart')}
         </Badge>
         <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-          Your Cart
+          {t('Your Cart')}
         </h1>
       </div>
 
       {resolvedItems.length === 0 ? (
         <div className="text-center py-20 space-y-6">
-          <p className="text-on-surface-variant/60 font-medium text-lg">Your cart is empty.</p>
+          <p className="text-on-surface-variant/60 font-medium text-lg">{t('Your cart is empty.')}</p>
           <Button asChild variant="default" size="lg" className="rounded-full">
-            <Link to="/shop">Browse Products</Link>
+            <Link to="/shop">{t('Browse Products')}</Link>
           </Button>
         </div>
       ) : (
@@ -68,27 +70,27 @@ export function CartPage() {
           </div>
 
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6 h-fit sticky top-32">
-            <h2 className="font-serif text-3xl text-primary">Order Summary</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Order Summary')}</h2>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-on-surface-variant">
-                <span>Subtotal</span>
+                <span>{t('Subtotal')}</span>
                 <span>{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between text-on-surface-variant">
-                <span>Tax ({(taxRate * 100).toFixed(2)}%)</span>
+                <span>{t('Tax')} ({(taxRate * 100).toFixed(2)}%)</span>
                 <span>{formatCurrency(tax)}</span>
               </div>
               <div className="border-t border-outline-variant/10 pt-3 flex justify-between font-bold text-primary text-lg">
-                <span>Total</span>
+                <span>{t('Total')}</span>
                 <span>{formatCurrency(total)}</span>
               </div>
             </div>
             <div className="rounded-xl bg-tertiary/20 p-4 text-sm">
               <span className="font-bold text-primary">+{estimatedPoints} XP</span>
-              <span className="text-on-surface-variant/80"> earned from this order</span>
+              <span className="text-on-surface-variant/80"> {t('earned from this order')}</span>
             </div>
             <Button asChild variant="default" size="lg" className="w-full rounded-full h-14">
-              <Link to="/checkout">Proceed to Checkout</Link>
+              <Link to="/checkout">{t('Proceed to Checkout')}</Link>
             </Button>
           </div>
         </div>

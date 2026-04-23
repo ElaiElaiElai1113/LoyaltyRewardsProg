@@ -5,6 +5,7 @@ import { BusinessFilter } from '@/components/business-filter'
 import { ProductCard } from '@/features/shop/components/product-card'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 
 const categories = [
   { value: 'All', label: 'All' },
@@ -16,6 +17,7 @@ const categories = [
 
 export function ShopPage() {
   const requireAuth = useLoginGate()
+  const { t } = useLanguage()
   const businesses = useBusinesses()
   const products = useProducts()
   const addToCart = useAddToCart()
@@ -37,13 +39,13 @@ export function ShopPage() {
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
         <Badge variant="accent">
-          Partner Realms
+          {t('Partner Realms')}
         </Badge>
         <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
-          Shop Realms
+          {t('Shop Realms')}
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-          Browse partner businesses, complete purchases, and earn XP automatically.
+          {t('Browse partner businesses, complete purchases, and earn XP automatically.')}
         </p>
       </div>
 
@@ -56,7 +58,7 @@ export function ShopPage() {
           />
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 quest-kicker">Item Type:</span>
+          <span className="mr-2 quest-kicker">{t('Item Type:')}</span>
           {categories.map((cat) => (
             <button
               key={cat.value}
@@ -67,7 +69,7 @@ export function ShopPage() {
                   : 'border border-primary-container/20 bg-primary-container/5 text-on-surface-variant/85 hover:bg-primary-container/10 hover:text-primary-container'
               }`}
             >
-              {cat.label}
+              {t(cat.label)}
             </button>
           ))}
         </div>
@@ -86,7 +88,7 @@ export function ShopPage() {
 
       {filtered.length === 0 && (
         <div className="text-center py-20">
-          <p className="text-on-surface-variant/60 font-medium">No products found matching your filters.</p>
+          <p className="text-on-surface-variant/60 font-medium">{t('No products found matching your filters.')}</p>
         </div>
       )}
     </div>

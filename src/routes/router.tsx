@@ -28,6 +28,7 @@ import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
+import { useLanguage } from '@/lib/language'
 
 function getHomePathForRole(role: string) {
   if (role === 'platform-admin') return '/admin'
@@ -36,11 +37,13 @@ function getHomePathForRole(role: string) {
 }
 
 function RouteLoading() {
+  const { t } = useLanguage()
+
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface">
       <div className="text-center space-y-3">
-        <h1 className="font-serif text-3xl text-primary">Loading</h1>
-        <p className="text-on-surface-variant/80">Preparing your workspace.</p>
+        <h1 className="font-serif text-3xl text-primary">{t('Loading')}</h1>
+        <p className="text-on-surface-variant/80">{t('Preparing your workspace.')}</p>
       </div>
     </div>
   )

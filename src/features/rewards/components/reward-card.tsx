@@ -2,6 +2,7 @@ import { Lock, Sparkles, Trophy, Zap } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
 
@@ -20,6 +21,7 @@ export function RewardCard({
   requirePoints = true,
   onRedeem,
 }: RewardCardProps) {
+  const { t } = useLanguage()
   const hasInventory = reward.inventory > 0
   const hasEnoughPoints = balancePoints >= reward.pointsCost
   const canRedeem = hasInventory && (!requirePoints || hasEnoughPoints)
@@ -51,7 +53,7 @@ export function RewardCard({
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
             <Badge variant="accent">
-              {reward.category}
+              {t(reward.category)}
             </Badge>
             {businessName && (
               <Badge variant="outline" className="text-[0.55rem] text-on-surface-variant/70">
@@ -61,7 +63,7 @@ export function RewardCard({
           </div>
             <span className={`flex items-center gap-1.5 rounded px-3 py-1 text-[0.6rem] font-black uppercase tracking-widest ${rarityClass}`}>
               <Sparkles className="size-3" />
-              {rarity}
+              {t(rarity)}
             </span>
         </div>
 
@@ -71,17 +73,17 @@ export function RewardCard({
 
         <div className="space-y-4 grow">
           <h3 className="font-serif text-3xl font-semibold uppercase tracking-[0.01em] text-on-surface leading-tight">
-            {reward.title}
+            {t(reward.title)}
           </h3>
           <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
-            {reward.description}
+            {t(reward.description)}
           </p>
         </div>
 
         {requirePoints && (
           <div className="space-y-2">
             <div className="flex justify-between text-[0.65rem] font-black uppercase tracking-widest text-on-surface-variant/75">
-              <span>Unlock Meter</span>
+              <span>{t('Unlock Meter')}</span>
               <span>{unlockProgress}%</span>
             </div>
             <div className="h-2 overflow-hidden bg-primary-container/10">
@@ -95,18 +97,18 @@ export function RewardCard({
 
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">XP Cost</span>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('XP Cost')}</span>
             <p className="font-serif text-3xl font-bold tracking-tight text-primary-container">
               {formatPoints(reward.pointsCost)}
             </p>
             {!canRedeem && hasInventory && requirePoints ? (
-              <p className="text-xs font-bold text-secondary">{formatPoints(pointsRemaining)} XP to unlock</p>
+              <p className="text-xs font-bold text-secondary">{formatPoints(pointsRemaining)} {t('XP to unlock')}</p>
             ) : null}
           </div>
 
           <div className="flex flex-col items-end gap-3">
             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
-              {reward.inventory} left
+              {reward.inventory} {t('left')}
             </span>
             <Button
               onClick={() => onRedeem(reward)}
@@ -115,7 +117,7 @@ export function RewardCard({
               size="sm"
             >
               {canRedeem ? <Zap className="size-4" /> : null}
-              {buttonLabel}
+              {t(buttonLabel)}
             </Button>
           </div>
         </div>

@@ -28,6 +28,7 @@ import {
   useRewards,
 } from '@/hooks/use-customer-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
 
 const creditCodeLifetimeSeconds = 15 * 60
@@ -41,6 +42,7 @@ function formatCountdown(totalSeconds: number) {
 export function DashboardPage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const [copiedReferralUrl, setCopiedReferralUrl] = useState(false)
   const [creditCode, setCreditCode] = useState<string | null>(null)
   const [creditCodeCreatedAt, setCreditCodeCreatedAt] = useState<number | null>(null)
@@ -100,26 +102,26 @@ export function DashboardPage() {
       <div className="glass-panel relative overflow-hidden p-8 lg:p-10">
         <div className="hud-scanline" />
         <div className="absolute right-8 top-8 hidden rounded border border-secondary-container/50 bg-secondary-container/15 px-5 py-2 text-xs font-black uppercase tracking-widest text-secondary-container shadow-[0_0_16px_rgba(216,162,58,0.16)] md:block">
-          Level {level}
+          {t('Level')} {level}
         </div>
         <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-6 max-w-2xl">
           <Badge variant="accent">
-            Player Dashboard
+            {t('Player Dashboard')}
           </Badge>
           <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
-            Welcome back, <br />
-            <span className="text-secondary-container">{profile?.fullName?.split(' ')[0] ?? 'Member'}.</span>
+            {t('Welcome back,')} <br />
+            <span className="text-secondary-container">{profile?.fullName?.split(' ')[0] ?? t('Member')}.</span>
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            Complete visits, stack XP, unlock rewards, and keep your streak alive.
+            {t('Complete visits, stack XP, unlock rewards, and keep your streak alive.')}
           </p>
         </div>
 
         <div className="flex-shrink-0 space-y-4">
           <div className="rounded border border-primary-container/25 bg-[#17100d]/82 p-5 text-white shadow-card">
             <div className="flex items-center justify-between gap-6">
-              <span className="text-xs font-black uppercase tracking-widest text-white/75">Next Level</span>
+              <span className="text-xs font-black uppercase tracking-widest text-white/75">{t('Next Level')}</span>
               <span className="font-serif text-2xl font-bold text-primary-container">{levelProgress}%</span>
             </div>
             <div className="mt-4 h-3 overflow-hidden bg-primary-container/10">
@@ -129,12 +131,12 @@ export function DashboardPage() {
               />
             </div>
             <p className="mt-3 text-xs font-bold text-white/70">
-              {formatPoints(Math.max(nextLevelPoints - points, 0))} XP until Level {level + 1}
+              {formatPoints(Math.max(nextLevelPoints - points, 0))} XP {t('until Level')} {level + 1}
             </p>
           </div>
           <Button asChild variant="default" size="lg" className="h-16 px-10">
             <Link to="/rewards" className="flex items-center gap-3 text-lg">
-              Open Reward Vault
+              {t('Open Reward Vault')}
               <Crown className="size-6" />
             </Link>
           </Button>
@@ -149,7 +151,7 @@ export function DashboardPage() {
         <div className="relative z-10 grid gap-12 lg:grid-cols-[1.2fr_0.8fr]">
           <div className="space-y-10">
             <div className="space-y-2">
-              <span className="text-[0.7rem] font-bold uppercase tracking-[0.3em] text-white/80">XP Balance</span>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.3em] text-white/80">{t('XP Balance')}</span>
               <div className="flex items-baseline gap-4">
                 <span className="font-serif text-7xl font-bold tracking-tighter text-primary-container md:text-9xl leading-none">
                   {formatPoints(points)}
@@ -160,7 +162,7 @@ export function DashboardPage() {
 
             <div className="space-y-4 max-w-md">
               <div className="flex justify-between items-end">
-                <span className="text-sm font-bold uppercase tracking-widest text-white/85">Reward Quest Progress</span>
+                <span className="text-sm font-bold uppercase tracking-widest text-white/85">{t('Reward Quest Progress')}</span>
                 <span className="font-serif text-2xl font-bold text-primary-container">{balance?.tierProgress ?? 0}%</span>
               </div>
               <div className="h-2 bg-primary-container/10 w-full overflow-hidden">
@@ -170,7 +172,7 @@ export function DashboardPage() {
                 />
               </div>
               <p className="text-sm font-medium leading-relaxed text-white/80">
-                Just {formatPoints(Math.max((balance?.nextRewardPoints ?? 0) - (balance?.points ?? 0), 0))} XP away from your next reward.
+                {t('Just')} {formatPoints(Math.max((balance?.nextRewardPoints ?? 0) - (balance?.points ?? 0), 0))} XP {t('away from your next reward.')}
               </p>
             </div>
           </div>
@@ -178,10 +180,10 @@ export function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="space-y-3">
               <MetricCard
-                label="Power Credits"
+                label={t('Power Credits')}
                 value={`${balance?.availableCredits ?? 0}`}
                 icon={Gift}
-                helper="Instant perks ready"
+                helper={t('Instant perks ready')}
               />
               {(balance?.availableCredits ?? 0) > 0 ? (
                 <Button
@@ -192,15 +194,15 @@ export function DashboardPage() {
                   onClick={handleGenerateCreditCode}
                 >
                   <Gift className="size-4" />
-                  {generateCreditCode.isPending ? 'Generating...' : 'Use Power Credit'}
+                  {generateCreditCode.isPending ? t('Generating...') : t('Use Power Credit')}
                 </Button>
               ) : null}
             </div>
             <MetricCard
-              label="Unlocked"
+              label={t('Unlocked')}
               value={`${rewards.data?.filter((reward) => (balance?.points ?? 0) >= reward.pointsCost).length ?? 0}`}
               icon={Ticket}
-              helper="Rewards in your vault"
+              helper={t('Rewards in your vault')}
             />
             <div className="rounded border border-primary-container/20 bg-[#17100d]/88 p-6 text-on-surface shadow-card">
               <div className="flex flex-col gap-5 sm:flex-row sm:items-center lg:flex-col lg:items-start">
@@ -209,9 +211,9 @@ export function DashboardPage() {
                 </div>
                 <div className="min-w-0 flex-1 space-y-4">
                   <div className="space-y-2">
-                    <h3 className="font-serif text-2xl font-semibold uppercase tracking-[0.04em] text-primary-container">Party Invite</h3>
+                    <h3 className="font-serif text-2xl font-semibold uppercase tracking-[0.04em] text-primary-container">{t('Party Invite')}</h3>
                     <p className="text-sm font-medium leading-relaxed text-on-surface-variant">
-                      Share this QR to give a friend and yourself a power credit.
+                      {t('Share this QR to give a friend and yourself a power credit.')}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -226,7 +228,7 @@ export function DashboardPage() {
                       size="icon"
                       className="shrink-0 bg-primary-container/10"
                       disabled={!referralUrl}
-                      aria-label="Copy referral link"
+                      aria-label={t('Copy referral link')}
                       onClick={async () => {
                         if (!referralUrl) return
                         await navigator.clipboard.writeText(referralUrl)
@@ -238,7 +240,7 @@ export function DashboardPage() {
                     </Button>
                   </div>
                   {copiedReferralUrl ? (
-                    <p className="text-xs font-bold text-success">Referral link copied.</p>
+                    <p className="text-xs font-bold text-success">{t('Referral link copied.')}</p>
                   ) : null}
                 </div>
               </div>
@@ -259,9 +261,9 @@ export function DashboardPage() {
         <DialogContent className="flex min-h-[100dvh] w-screen max-w-none items-center justify-center rounded-none border-0 bg-[#120d0b]/95 p-6 text-white sm:p-10">
           <div className="glass-panel w-full max-w-xl p-8 text-center text-on-surface sm:p-12">
             <DialogHeader className="mb-8 items-center">
-              <DialogTitle className="text-4xl text-primary-container sm:text-5xl">Redeem Power Credit</DialogTitle>
+              <DialogTitle className="text-4xl text-primary-container sm:text-5xl">{t('Redeem Power Credit')}</DialogTitle>
               <DialogDescription className="text-base font-medium text-on-surface-variant">
-                Show this code to staff
+                {t('Show this code to staff')}
               </DialogDescription>
             </DialogHeader>
 
@@ -276,7 +278,7 @@ export function DashboardPage() {
                 <span className="font-serif text-3xl text-primary-container">{formatCountdown(remainingSeconds)}</span>
               </div>
               <p className="text-sm font-medium leading-relaxed text-on-surface-variant/75">
-                This code expires 15 minutes after it is generated.
+                {t('This code expires 15 minutes after it is generated.')}
               </p>
             </div>
           </div>
@@ -314,14 +316,14 @@ export function DashboardPage() {
               </div>
               <div className="space-y-1">
                 <p className="font-serif text-2xl tracking-tight text-primary-container">
-                  Referral {referral.status}
+                  {t('Referral')} {t(referral.status)}
                 </p>
                 <p className="max-w-2xl text-sm font-medium leading-relaxed text-on-surface-variant/80">
                   {referral.status === 'approved'
-                    ? 'Your party invite was approved. Your Power Credit has been added to your balance.'
+                    ? t('Your party invite was approved. Your Power Credit has been added to your balance.')
                     : referral.status === 'rejected'
-                      ? 'This referral was not approved. Ask staff if you think this needs another look.'
-                      : 'Your party invite is pending staff approval. Your Power Credit will appear after approval.'}
+                      ? t('This referral was not approved. Ask staff if you think this needs another look.')
+                      : t('Your party invite is pending staff approval. Your Power Credit will appear after approval.')}
                 </p>
               </div>
             </div>
@@ -335,7 +337,7 @@ export function DashboardPage() {
                     : 'bg-warning/10 text-warning border-warning/20'
               }
             >
-              {referral.status}
+              {t(referral.status)}
             </Badge>
           </div>
         </section>
@@ -345,20 +347,20 @@ export function DashboardPage() {
         {[
           {
             icon: Flame,
-            title: 'Daily Streak',
-            body: 'Visit, scan, or order to keep momentum and earn faster.',
+            title: t('Daily Streak'),
+            body: t('Visit, scan, or order to keep momentum and earn faster.'),
             stat: '3x',
           },
           {
             icon: Swords,
-            title: 'Side Quest',
-            body: 'Try a new partner business to discover more reward options.',
+            title: t('Side Quest'),
+            body: t('Try a new partner business to discover more reward options.'),
             stat: '+120 XP',
           },
           {
             icon: Trophy,
-            title: 'Boss Reward',
-            body: 'Reach the next tier and unlock higher-value perks.',
+            title: t('Boss Reward'),
+            body: t('Reach the next tier and unlock higher-value perks.'),
             stat: `L${level + 1}`,
           },
         ].map((quest) => (
@@ -382,11 +384,11 @@ export function DashboardPage() {
         <div className="space-y-10">
           <div className="flex items-end justify-between border-b border-outline-variant/10 pb-6">
             <div className="space-y-2">
-              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Featured</span>
-              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">Featured Rewards</h2>
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Featured')}</span>
+              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">{t('Featured Rewards')}</h2>
             </div>
             <Button asChild variant="ghost">
-              <Link to="/rewards">Full Catalog</Link>
+              <Link to="/rewards">{t('Full Catalog')}</Link>
             </Button>
           </div>
           <div className="grid gap-8 sm:grid-cols-2">
@@ -405,8 +407,8 @@ export function DashboardPage() {
         <div className="space-y-10">
           <div className="flex items-end justify-between border-b border-outline-variant/10 pb-6">
              <div className="space-y-2">
-              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Limited Time</span>
-              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">Promotions</h2>
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Limited Time')}</span>
+              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">{t('Promotions')}</h2>
             </div>
           </div>
           <div className="space-y-6">
@@ -422,11 +424,11 @@ export function DashboardPage() {
         <div className="mx-auto max-w-5xl space-y-10">
           <div className="flex items-end justify-between border-b border-outline-variant/10 pb-6">
             <div className="space-y-2">
-              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Activity</span>
-              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">Recent Activity</h2>
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Activity')}</span>
+              <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">{t('Recent Activity')}</h2>
             </div>
             <Button asChild variant="ghost">
-              <Link to="/activity">History</Link>
+              <Link to="/activity">{t('History')}</Link>
             </Button>
           </div>
           <div className="overflow-hidden rounded border border-primary-container/15 bg-surface-lowest/80 p-2 shadow-sm">

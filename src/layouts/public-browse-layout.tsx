@@ -1,6 +1,8 @@
 import { NavLink, Outlet } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 
 const navigation = [
   { to: '/shop', label: 'Menu' },
@@ -9,6 +11,8 @@ const navigation = [
 ]
 
 export function PublicBrowseLayout() {
+  const { t } = useLanguage()
+
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
       <header className="sticky top-0 z-50 border-b border-primary-container/20 bg-[#120d0b]/82 text-white shadow-card backdrop-blur-xl">
@@ -37,15 +41,18 @@ export function PublicBrowseLayout() {
                     }`
                   }
                 >
-                  {item.label}
+                  {t(item.label)}
                 </NavLink>
               ))}
             </nav>
           </div>
 
-          <Button asChild variant="outline" size="sm">
-            <NavLink to="/signin">Sign In</NavLink>
-          </Button>
+          <div className="flex items-center gap-3">
+            <LanguagePicker className="text-on-surface-variant" compact />
+            <Button asChild variant="outline" size="sm">
+              <NavLink to="/signin">{t('Sign In')}</NavLink>
+            </Button>
+          </div>
         </div>
       </header>
 

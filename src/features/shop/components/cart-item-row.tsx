@@ -1,6 +1,7 @@
 import { Minus, Plus, Trash2 } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
 
@@ -12,13 +13,15 @@ interface CartItemRowProps {
 }
 
 export function CartItemRow({ product, quantity, onUpdateQuantity, onRemove }: CartItemRowProps) {
+  const { t } = useLanguage()
+
   return (
     <div className="flex items-center gap-6 rounded-2xl bg-surface-lowest p-6 border border-outline-variant/5">
       <div className="flex-1 min-w-0">
         <h3 className="font-serif text-xl tracking-tight text-primary leading-tight truncate">
-          {product.title}
+          {t(product.title)}
         </h3>
-        <p className="text-sm text-on-surface-variant/80">{formatCurrency(product.price)} each</p>
+        <p className="text-sm text-on-surface-variant/80">{formatCurrency(product.price)} {t('each')}</p>
       </div>
 
       <div className="flex items-center gap-2">

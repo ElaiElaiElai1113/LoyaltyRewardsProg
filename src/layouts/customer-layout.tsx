@@ -9,10 +9,12 @@ import {
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
@@ -26,6 +28,7 @@ const navigation = [
 
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
+  const { t } = useLanguage()
   const cart = useCart()
   const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
@@ -57,7 +60,7 @@ export function CustomerLayout() {
                     }`
                   }
                 >
-                  {item.label}
+                  {t(item.label)}
                 </NavLink>
               ))}
             </nav>
@@ -66,10 +69,11 @@ export function CustomerLayout() {
           <div className="flex items-center gap-6">
             <div className="hidden flex-col items-end md:flex">
               <span className="text-sm font-semibold uppercase tracking-[0.08em] text-white">{profile?.fullName}</span>
-              <span className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-secondary-container">Player</span>
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-secondary-container">{t('Player')}</span>
             </div>
 
             <div className="flex items-center gap-4">
+              <LanguagePicker className="hidden text-on-surface-variant md:flex" compact />
               <NavLink to="/cart" className="relative rounded p-2 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container">
                 <ShoppingBag className="size-5" />
                 {cartCount > 0 && (
@@ -100,8 +104,8 @@ export function CustomerLayout() {
 
       <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100vh-64px)] w-64 flex-col border-r border-primary-container/20 bg-[#120d0b]/82 py-8 text-white shadow-[5px_0_24px_rgba(8,5,3,0.45)] backdrop-blur-2xl md:flex">
         <div className="px-6 pb-8">
-          <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-primary-container">Rank: Legendary</p>
-          <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">LVL 99 Elite</p>
+          <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-primary-container">{t('Rank: Legendary')}</p>
+          <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('LVL 99 Elite')}</p>
         </div>
 
         <nav className="flex flex-1 flex-col gap-2">
@@ -118,7 +122,7 @@ export function CustomerLayout() {
               }
             >
               <item.icon className="size-5" />
-              {item.label}
+              {t(item.label)}
             </NavLink>
           ))}
         </nav>
@@ -134,44 +138,44 @@ export function CustomerLayout() {
             <div className="max-w-xs">
               <span className="font-serif text-xl font-black uppercase tracking-[0.16em] text-primary-container">Synergize Quest</span>
               <p className="mt-4 text-sm leading-relaxed text-on-surface-variant/80">
-                Earn XP, complete quests, and unlock rewards across partner realms.
+                {t('Earn XP, complete quests, and unlock rewards across partner realms.')}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-12 sm:grid-cols-3">
               <div className="flex flex-col gap-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-primary-container/90">
-                  Platform
+                  {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/dashboard" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">Dashboard</NavLink>
-                  <NavLink to="/shop" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">Shop</NavLink>
-                  <NavLink to="/rewards" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">Vault</NavLink>
-                  <NavLink to="/promotions" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">Promotions</NavLink>
+                  <NavLink to="/dashboard" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Dashboard')}</NavLink>
+                  <NavLink to="/shop" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Shop')}</NavLink>
+                  <NavLink to="/rewards" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Vault')}</NavLink>
+                  <NavLink to="/promotions" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Promotions')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-primary-container/90">
-                  Company
+                  {t('Company')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <span className="text-sm text-on-surface-variant/80">About Us</span>
-                  <span className="text-sm text-on-surface-variant/80">Contact</span>
-                  <span className="text-sm text-on-surface-variant/80">Store Locator</span>
+                  <span className="text-sm text-on-surface-variant/80">{t('About Us')}</span>
+                  <span className="text-sm text-on-surface-variant/80">{t('Contact')}</span>
+                  <span className="text-sm text-on-surface-variant/80">{t('Store Locator')}</span>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
                 <span className="text-xs font-bold uppercase tracking-widest text-primary-container/90">
-                  Account
+                  {t('Account')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/profile" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">Settings</NavLink>
-                  <NavLink to="/orders" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">Order History</NavLink>
+                  <NavLink to="/profile" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Settings')}</NavLink>
+                  <NavLink to="/orders" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Order History')}</NavLink>
                 </nav>
               </div>
             </div>
           </div>
           <div className="mt-12 border-t border-outline-variant/10 pt-8 text-center text-xs text-on-surface-variant/70">
-            Copyright 2024 Synergize Business Group. All rights reserved.
+            {t('Copyright 2024 Synergize Business Group. All rights reserved.')}
           </div>
         </div>
       </footer>

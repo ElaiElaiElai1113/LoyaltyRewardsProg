@@ -15,6 +15,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useBusinesses, useRedeemReward, useRewardBalance, useRewards } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 import type { Reward } from '@/types/domain'
 
 import { RedeemRewardPanel } from '../components/redeem-reward-panel'
@@ -25,6 +26,7 @@ const filters = ['All', 'Drink', 'Pastry', 'Merch', 'Experience'] as const
 export function RewardsPage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const requireAuth = useLoginGate()
   const rewardBalance = useRewardBalance(profile?.id)
   const businesses = useBusinesses()
@@ -52,26 +54,26 @@ export function RewardsPage() {
       <div className="flex flex-col gap-10 border-b border-primary-container/15 pb-12 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4 max-w-2xl">
           <Badge variant="accent">
-            Reward Vault
+            {t('Reward Vault')}
           </Badge>
           <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
-            Loot Vault
+            {t('Loot Vault')}
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            Spend XP on unlocked perks, rare drops, and partner rewards.
+            {t('Spend XP on unlocked perks, rare drops, and partner rewards.')}
           </p>
         </div>
 
         {profile && (
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Your XP</span>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Your XP')}</span>
             <div className="glass-panel flex items-center gap-4 px-6 py-4">
               <div className="flex size-10 items-center justify-center rounded border border-secondary-container/40 bg-secondary-container/10">
                 <Gift className="size-5 text-secondary-container" />
               </div>
               <div className="flex flex-col">
                 <span className="font-serif text-2xl font-bold leading-none text-primary-container">{balancePoints}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Available XP</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Available XP')}</span>
               </div>
             </div>
           </div>
@@ -87,7 +89,7 @@ export function RewardsPage() {
           />
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 quest-kicker">Item Type:</span>
+          <span className="mr-2 quest-kicker">{t('Item Type:')}</span>
           {filters.map((filter) => (
             <Button
               key={filter}
@@ -100,7 +102,7 @@ export function RewardsPage() {
               }`}
               onClick={() => setActiveFilter(filter)}
             >
-              {filter}
+              {t(filter)}
             </Button>
           ))}
         </div>
@@ -129,9 +131,9 @@ export function RewardsPage() {
       >
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Redeem reward</DialogTitle>
+            <DialogTitle>{t('Redeem reward')}</DialogTitle>
             <DialogDescription>
-              Confirm the reward details, choose a pickup window, and submit.
+              {t('Confirm the reward details, choose a pickup window, and submit.')}
             </DialogDescription>
           </DialogHeader>
 

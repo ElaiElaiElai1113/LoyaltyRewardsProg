@@ -5,6 +5,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
+import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
+import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const defaultValues: AuthFormValues = {
@@ -43,6 +45,7 @@ export function LandingPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { signIn, signUp } = useAuth()
+  const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
   const [error, setError] = useState<string | null>(null)
   const [showStaffLogin, setShowStaffLogin] = useState(false)
@@ -103,29 +106,29 @@ export function LandingPage() {
 
           <div className="relative z-10 space-y-8">
             <Badge variant="accent" className="border-primary-container/35 bg-primary-container/12 px-5 py-2 text-primary-container">
-              Rewards Game
+              {t('Rewards Game')}
             </Badge>
             <div className="max-w-3xl space-y-6">
               <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
-                Synergize Rewards.<br />
-                Play every<br />
-                visit.
+                {t('Synergize Rewards.')}<br />
+                {t('Play every')}<br />
+                {t('visit')}.
               </h1>
               <p className="max-w-xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
-                Earn XP on every purchase, unlock reward drops, and climb levels across partner businesses.
+                {t('Earn XP on every purchase, unlock reward drops, and climb levels across partner businesses.')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/shop"
                   className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-[0_0_20px_rgba(244,168,79,0.18)] transition hover:bg-primary-fixed"
                 >
-                  Start Quest
+                  {t('Start Quest')}
                 </Link>
                 <Link
                   to="/rewards"
                   className="inline-flex h-11 items-center rounded border border-primary-container/35 bg-primary-container/8 px-6 text-xs font-bold uppercase tracking-[0.08em] text-primary-container transition hover:bg-primary-container/14"
                 >
-                  Open Vault
+                  {t('Open Vault')}
                 </Link>
               </div>
             </div>
@@ -134,18 +137,18 @@ export function LandingPage() {
               {[
                 {
                   icon: Repeat2,
-                  title: 'Level Up',
-                  body: 'Watch your XP, streaks, and progress build after each visit.',
+                  title: t('Level Up'),
+                  body: t('Watch your XP, streaks, and progress build after each visit.'),
                 },
                 {
                   icon: Gift,
-                  title: 'Unlock',
-                  body: 'Spend XP on perks, drops, credits, and partner rewards.',
+                  title: t('Unlock'),
+                  body: t('Spend XP on perks, drops, credits, and partner rewards.'),
                 },
                 {
                   icon: Crown,
-                  title: 'Compete',
-                  body: 'Keep momentum with quests, referrals, and limited-time bonuses.',
+                  title: t('Compete'),
+                  body: t('Keep momentum with quests, referrals, and limited-time bonuses.'),
                 },
               ].map((item) => (
                 <div
@@ -170,11 +173,14 @@ export function LandingPage() {
         </section>
 
         <section className="flex min-h-[42rem] flex-col justify-center py-4">
+          <div className="mb-6 flex justify-end">
+            <LanguagePicker className="text-on-surface-variant" />
+          </div>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-7">
             <div className="flex justify-center">
               <TabsList className="w-full max-w-md">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Register</TabsTrigger>
+                <TabsTrigger value="signin">{t('Sign In')}</TabsTrigger>
+                <TabsTrigger value="signup">{t('Register')}</TabsTrigger>
               </TabsList>
             </div>
 
@@ -182,10 +188,10 @@ export function LandingPage() {
               <div className="space-y-7">
                 <div className="space-y-2 text-center">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">
-                    Welcome Back
+                    {t('Welcome Back')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
-                    Sign in to check your balance and redeem rewards.
+                    {t('Sign in to check your balance and redeem rewards.')}
                   </p>
                 </div>
 
@@ -198,7 +204,7 @@ export function LandingPage() {
                           setError(null)
                           setResetSuccessMessage(null)
                           await authService.resetPassword(values.email.trim())
-                          setResetSuccessMessage('Check your email for a password reset link.')
+                          setResetSuccessMessage(t('Check your email for a password reset link.'))
                           setShowForgotPassword(false)
                           resetForm.reset({ email: '' })
                         } catch (submissionError) {
@@ -214,22 +220,22 @@ export function LandingPage() {
                           setError(
                             submissionError instanceof Error
                               ? submissionError.message
-                              : 'Unable to send reset link.',
+                              : t('Unable to send reset link.'),
                           )
                         }
                       })}
                     >
                       <div className="space-y-2 text-center">
                         <h3 className="font-serif text-3xl tracking-tight text-primary">
-                          Reset Password
+                          {t('Reset Password')}
                         </h3>
                         <p className="text-sm font-medium text-on-surface-variant/80">
-                          Enter your email and we&apos;ll send you a reset link.
+                          {t("Enter your email and we'll send you a reset link.")}
                         </p>
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="reset-email">Email Address</Label>
+                        <Label htmlFor="reset-email">{t('Email Address')}</Label>
                         <Input id="reset-email" placeholder="your@email.com" {...resetForm.register('email')} />
                       </div>
 
@@ -244,10 +250,10 @@ export function LandingPage() {
                         {resetForm.formState.isSubmitting ? (
                           <span className="inline-flex items-center gap-2">
                             <LoadingSpinner />
-                            Send reset link
+                            {t('Send reset link')}
                           </span>
                         ) : (
-                          'Send reset link'
+                          t('Send reset link')
                         )}
                       </Button>
 
@@ -259,7 +265,7 @@ export function LandingPage() {
                           setShowForgotPassword(false)
                         }}
                       >
-                        Back to sign in
+                        {t('Back to sign in')}
                       </button>
                     </form>
                   ) : (
@@ -282,12 +288,12 @@ export function LandingPage() {
                             setError(
                               submissionError instanceof Error
                                 ? submissionError.message
-                                : 'Unable to sign in.',
+                                : t('Unable to sign in.'),
                             )
                           }
                         },
                         () => {
-                          setError('Enter a valid email address and password to sign in.')
+                          setError(t('Enter a valid email address and password to sign in.'))
                         },
                       )}
                     >
@@ -296,7 +302,7 @@ export function LandingPage() {
                       ) : null}
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signin-email">Email Address</Label>
+                        <Label htmlFor="signin-email">{t('Email Address')}</Label>
                         <Input id="signin-email" placeholder="your@email.com" {...signInForm.register('email')} />
                         {signInForm.formState.errors.email ? (
                           <p className="text-xs font-bold text-red-500">
@@ -306,7 +312,7 @@ export function LandingPage() {
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signin-password">Password</Label>
+                        <Label htmlFor="signin-password">{t('Password')}</Label>
                         <Input id="signin-password" type="password" placeholder="••••••••" {...signInForm.register('password')} />
                         {signInForm.formState.errors.password ? (
                           <p className="text-xs font-bold text-red-500">
@@ -322,24 +328,24 @@ export function LandingPage() {
                             setShowForgotPassword(true)
                           }}
                         >
-                          Forgot password?
+                          {t('Forgot password?')}
                         </button>
                       </div>
 
                       {showStaffLogin ? (
                         <div className="grid gap-3">
-                          <Label htmlFor="signin-role">Staff Role</Label>
+                          <Label htmlFor="signin-role">{t('Staff Role')}</Label>
                           <Controller
                             control={signInForm.control}
                             name="role"
                             render={({ field }) => (
                               <Select value={field.value} onValueChange={field.onChange}>
                                 <SelectTrigger id="signin-role" className="rounded-xl h-12">
-                                  <SelectValue placeholder="Select a staff role" />
+                                  <SelectValue placeholder={t('Select a staff role')} />
                                 </SelectTrigger>
                                 <SelectContent>
-                                  <SelectItem value="business-owner">Business Owner</SelectItem>
-                                  <SelectItem value="platform-admin">Platform Admin</SelectItem>
+                                  <SelectItem value="business-owner">{t('Business Owner')}</SelectItem>
+                                  <SelectItem value="platform-admin">{t('Platform Admin')}</SelectItem>
                                 </SelectContent>
                               </Select>
                             )}
@@ -358,10 +364,10 @@ export function LandingPage() {
                         {signInForm.formState.isSubmitting ? (
                           <span className="inline-flex items-center gap-2">
                             <LoadingSpinner />
-                            Signing in…
+                            {t('Signing in...')}
                           </span>
                         ) : (
-                          'Sign In'
+                          t('Sign In')
                         )}
                       </Button>
 
@@ -370,7 +376,7 @@ export function LandingPage() {
                         className="block w-full text-center text-sm font-medium text-on-surface-variant/60 transition hover:text-primary"
                         onClick={toggleStaffLogin}
                       >
-                        {showStaffLogin ? 'Customer login ←' : 'Staff login →'}
+                        {showStaffLogin ? t('Customer login <-') : t('Staff login ->')}
                       </button>
                     </form>
                   )}
@@ -382,10 +388,10 @@ export function LandingPage() {
               <div className="space-y-7">
                 <div className="space-y-2 text-center">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">
-                    Create Account
+                    {t('Create Account')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
-                    Join the rewards program and start earning.
+                    {t('Join the rewards program and start earning.')}
                   </p>
                 </div>
 
@@ -393,9 +399,9 @@ export function LandingPage() {
                   {signUpComplete ? (
                     <div className="space-y-6 text-center">
                       <div className="space-y-3">
-                        <h3 className="font-serif text-3xl tracking-tight text-primary">Welcome aboard!</h3>
+                        <h3 className="font-serif text-3xl tracking-tight text-primary">{t('Welcome aboard!')}</h3>
                         <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
-                          Check your email to verify your account, then sign in to start earning rewards.
+                          {t('Check your email to verify your account, then sign in to start earning rewards.')}
                         </p>
                       </div>
 
@@ -408,7 +414,7 @@ export function LandingPage() {
                           setError(null)
                         }}
                       >
-                        Go to sign in →
+                        {t('Go to sign in ->')}
                       </button>
                     </div>
                   ) : (
@@ -424,29 +430,29 @@ export function LandingPage() {
                           setError(
                             submissionError instanceof Error
                               ? submissionError.message
-                              : 'Unable to create the account.',
+                              : t('Unable to create the account.'),
                           )
                         }
                       })}
                     >
                       <div className="space-y-2">
                         <p className="text-sm font-medium text-on-surface-variant/80">
-                          Create your free rewards account and start earning XP today.
+                          {t('Create your free rewards account and start earning XP today.')}
                         </p>
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signup-name">Full Name</Label>
-                        <Input id="signup-name" placeholder="Your name" {...signUpForm.register('fullName')} />
+                        <Label htmlFor="signup-name">{t('Full Name')}</Label>
+                        <Input id="signup-name" placeholder={t('Your name')} {...signUpForm.register('fullName')} />
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signup-email">Email Address</Label>
+                        <Label htmlFor="signup-email">{t('Email Address')}</Label>
                         <Input id="signup-email" placeholder="your@email.com" {...signUpForm.register('email')} />
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signup-password">Password</Label>
+                        <Label htmlFor="signup-password">{t('Password')}</Label>
                         <Input id="signup-password" type="password" placeholder="••••••••" {...signUpForm.register('password')} />
                       </div>
 
@@ -461,10 +467,10 @@ export function LandingPage() {
                         {signUpForm.formState.isSubmitting ? (
                           <span className="inline-flex items-center gap-2">
                             <LoadingSpinner />
-                            Creating account…
+                            {t('Creating account...')}
                           </span>
                         ) : (
-                          'Create Account'
+                          t('Create Account')
                         )}
                       </Button>
                     </form>

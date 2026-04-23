@@ -2,6 +2,7 @@ import { PackagePlus, Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
 
@@ -12,6 +13,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps) {
+  const { t } = useLanguage()
   const displayCategory = product.category === 'Coffee' ? 'Drinks' : product.category
 
   return (
@@ -21,12 +23,12 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
       <div className="relative flex h-full flex-col gap-6 rounded-md bg-[#17100d]/82 p-7">
         <div className="flex justify-between items-start">
           <Badge variant="accent">
-              {displayCategory}
+              {t(displayCategory)}
           </Badge>
           {product.featured && (
             <span className="flex items-center gap-1.5 rounded border border-secondary-container/60 bg-secondary-container/15 px-3 py-1 text-[0.6rem] font-black uppercase tracking-widest text-secondary-container">
               <Sparkles className="size-3" />
-              Bonus Drop
+              {t('Bonus Drop')}
             </span>
           )}
         </div>
@@ -37,16 +39,16 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
 
         <div className="space-y-4 grow">
           <h3 className="font-serif text-3xl font-semibold uppercase tracking-[0.01em] text-on-surface leading-tight">
-            {product.title}
+            {t(product.title)}
           </h3>
           <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
-            {product.description}
+            {t(product.description)}
           </p>
         </div>
 
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="quest-kicker">Cash Price</span>
+            <span className="quest-kicker">{t('Cash Price')}</span>
             <p className="font-serif text-3xl font-bold tracking-tight text-primary-container">
               {formatCurrency(product.price)}
             </p>
@@ -54,7 +56,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
 
           <div className="flex flex-col items-end gap-3">
             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
-              {product.inventory} in stock
+              {product.inventory} {t('in stock')}
             </span>
             <Button
               onClick={() => onAddToCart(product)}
@@ -62,7 +64,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
               variant="secondary"
               size="sm"
             >
-              {isAdding ? 'Adding...' : 'Add to Cart'}
+              {isAdding ? t('Adding...') : t('Add to Cart')}
             </Button>
           </div>
         </div>

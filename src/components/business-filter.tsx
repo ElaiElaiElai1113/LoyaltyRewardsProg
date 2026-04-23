@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import type { Business } from '@/types/domain'
 
 interface BusinessFilterProps {
@@ -8,16 +9,18 @@ interface BusinessFilterProps {
 }
 
 export function BusinessFilter({ businesses, selected, onChange }: BusinessFilterProps) {
+  const { t } = useLanguage()
+
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-2 quest-kicker">Realm:</span>
+      <span className="mr-2 quest-kicker">{t('Realm:')}</span>
       <Button
         variant={selected === null ? 'tertiary' : 'ghost'}
         size="sm"
         className={`transition-all ${selected === null ? 'px-8' : 'text-on-surface-variant/85 hover:text-primary-container'}`}
         onClick={() => onChange(null)}
       >
-        All Realms
+        {t('All Realms')}
       </Button>
       {businesses.map((business) => (
         <Button
