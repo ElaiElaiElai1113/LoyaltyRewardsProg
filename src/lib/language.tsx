@@ -584,6 +584,35 @@ const spanishTranslations: Record<string, string> = {
   'Update XP': 'Actualizar XP',
   'Active Members': 'Miembros activos',
   'View Profile': 'Ver perfil',
+  'Something went wrong': 'Algo salió mal',
+  'An unexpected error occurred. Please reload the page to continue.':
+    'Ocurrió un error inesperado. Recarga la página para continuar.',
+  'Reload Page': 'Recargar página',
+  'Command Center': 'Centro de mando',
+  'Track members, quests, reward credits, and reward fulfillment from one arcade operations hub.':
+    'Administra miembros, misiones, créditos de recompensa y cumplimiento de recompensas desde un solo panel.',
+  'Members Recruited': 'Miembros reclutados',
+  'Orders Completed': 'Pedidos completados',
+  'Realm Revenue': 'Ingresos del negocio',
+  'XP Issued': 'XP otorgado',
+  'Total XP awarded to customers': 'Total de XP otorgado a clientes',
+  'XP Redeemed': 'XP canjeado',
+  'Total XP spent on rewards': 'Total de XP gastado en recompensas',
+  'Command Shortcuts': 'Accesos rápidos',
+  Manage: 'Gestionar',
+  'Loading referrals...': 'Cargando referidos...',
+  'No pending referrals.': 'No hay referidos pendientes.',
+  Referrer: 'Referidor',
+  'New Customer': 'Nuevo cliente',
+  Approve: 'Aprobar',
+  Reject: 'Rechazar',
+  'Fulfillment Queue': 'Cola de cumplimiento',
+  'Manage and fulfill pending reward claims':
+    'Gestiona y cumple las solicitudes de recompensas pendientes.',
+  'Manage Vault': 'Gestionar bóveda',
+  'No redemptions yet.': 'Aún no hay canjes.',
+  'Redeemed {date} at {time}': 'Canjeado el {date} a las {time}',
+  Fulfill: 'Completar',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)

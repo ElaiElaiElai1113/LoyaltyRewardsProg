@@ -45,7 +45,7 @@ export function BusinessDashboardPage() {
   const validateCreditCode = useValidateCreditCode(business?.id)
 
   if (!metrics) {
-    return <div className="text-center py-20 text-on-surface-variant/60">Loading...</div>
+    return <div className="text-center py-20 text-on-surface-variant/60">{t('Loading...')}</div>
   }
 
   const businessColors = { primary: 'from-[#7a4a1f] to-[#d8a23a]', light: 'from-primary-container/18 to-secondary-container/14' }
@@ -60,12 +60,12 @@ export function BusinessDashboardPage() {
       <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#18215a,#283593_50%,#c026d3)] px-8 py-12 text-white shadow-2xl">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
-          <p className="quest-kicker-light mb-3">Mission Control</p>
+          <p className="quest-kicker-light mb-3">{t('Mission Control')}</p>
           <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">
-            {business?.name} Command Center
+            {business?.name} {t('Command Center')}
           </h1>
           <p className="mt-4 text-lg text-white/80 font-medium">
-            Track members, quests, reward credits, and reward fulfillment from one arcade operations hub.
+            {t('Track members, quests, reward credits, and reward fulfillment from one arcade operations hub.')}
           </p>
         </div>
       </div>
@@ -73,28 +73,28 @@ export function BusinessDashboardPage() {
       {/* Metrics Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <BusinessMetricCard
-          title="Members Recruited"
+          title={t('Members Recruited')}
           value={metrics.totalMembers.toString()}
           icon={<Users className="size-6" />}
           trend="+12%"
           trendUp
         />
         <BusinessMetricCard
-          title="Orders Completed"
+          title={t('Orders Completed')}
           value={metrics.totalOrders.toString()}
           icon={<ShoppingBag className="size-6" />}
           trend="+8%"
           trendUp
         />
         <BusinessMetricCard
-          title="Realm Revenue"
+          title={t('Realm Revenue')}
           value={formatCurrency(metrics.totalRevenue)}
           icon={<TrendingUp className="size-6" />}
           trend="+15%"
           trendUp
         />
         <BusinessMetricCard
-          title="Active Quests"
+          title={t('Active Quests')}
           value={metrics.activePromotions.toString()}
           icon={<Sparkles className="size-6" />}
         />
@@ -105,8 +105,8 @@ export function BusinessDashboardPage() {
         <div className="quest-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">XP Issued</h3>
-              <p className="text-sm text-on-surface-variant/70">Total XP awarded to customers</p>
+              <h3 className="font-serif text-2xl text-primary">{t('XP Issued')}</h3>
+              <p className="text-sm text-on-surface-variant/70">{t('Total XP awarded to customers')}</p>
             </div>
             <div className="size-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
               <TrendingUp className="size-6" />
@@ -118,8 +118,8 @@ export function BusinessDashboardPage() {
         <div className="quest-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">XP Redeemed</h3>
-              <p className="text-sm text-on-surface-variant/70">Total XP spent on rewards</p>
+              <h3 className="font-serif text-2xl text-primary">{t('XP Redeemed')}</h3>
+              <p className="text-sm text-on-surface-variant/70">{t('Total XP spent on rewards')}</p>
             </div>
             <div className="size-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
               <Gift className="size-6" />
@@ -131,7 +131,7 @@ export function BusinessDashboardPage() {
 
       {/* Quick Actions */}
       <div>
-        <h2 className="font-serif text-2xl text-primary mb-6">Command Shortcuts</h2>
+        <h2 className="font-serif text-2xl text-primary mb-6">{t('Command Shortcuts')}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             to="/business/products"
@@ -139,7 +139,7 @@ export function BusinessDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Products</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Products')}</p>
                 <p className="font-serif text-3xl text-primary group-hover:text-white">{products.length}</p>
               </div>
               <Package className="size-8 text-primary/70 group-hover:text-white/70" />
@@ -152,7 +152,7 @@ export function BusinessDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Rewards</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Rewards')}</p>
                 <p className="font-serif text-3xl text-primary group-hover:text-white">{rewards.length}</p>
               </div>
               <Gift className="size-8 text-primary/70 group-hover:text-white/70" />
@@ -165,7 +165,7 @@ export function BusinessDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Promotions</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Promotions')}</p>
                 <p className="font-serif text-3xl text-primary group-hover:text-white">{promotions.length}</p>
               </div>
               <Sparkles className="size-8 text-primary/70 group-hover:text-white/70" />
@@ -178,8 +178,8 @@ export function BusinessDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Settings</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">Manage</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Settings')}</p>
+                <p className="font-serif text-3xl text-primary group-hover:text-white">{t('Manage')}</p>
               </div>
               <ArrowUpRight className="size-8 text-primary/70 group-hover:text-white/70" />
             </div>
@@ -289,20 +289,20 @@ export function BusinessDashboardPage() {
             <p className="text-sm text-on-surface-variant/70">{t('Review new customer reward credit invites')}</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-            {pendingReferrals.data?.length ?? 0} pending
+            {pendingReferrals.data?.length ?? 0} {t('pending')}
           </span>
         </div>
 
         <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
           {pendingReferrals.isLoading ? (
             <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">Loading referrals...</p>
+              <p className="text-on-surface-variant/60 font-medium">{t('Loading referrals...')}</p>
             </div>
           ) : null}
 
           {!pendingReferrals.isLoading && (pendingReferrals.data?.length ?? 0) === 0 ? (
             <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">No pending referrals.</p>
+              <p className="text-on-surface-variant/60 font-medium">{t('No pending referrals.')}</p>
             </div>
           ) : null}
 
@@ -310,12 +310,12 @@ export function BusinessDashboardPage() {
             <div key={referral.id} className="p-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
               <div className="grid flex-1 gap-6 md:grid-cols-2">
                 <div className="space-y-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Referrer</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Referrer')}</p>
                   <p className="font-serif text-xl text-primary">{referral.referrer.fullName}</p>
                   <p className="text-sm font-medium text-on-surface-variant/75">{referral.referrer.email}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">New Customer</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('New Customer')}</p>
                   <p className="font-serif text-xl text-primary">{referral.referee.fullName}</p>
                   <p className="text-sm font-medium text-on-surface-variant/75">{referral.referee.email}</p>
                 </div>
@@ -335,7 +335,7 @@ export function BusinessDashboardPage() {
                   }}
                 >
                   <CheckCircle className="size-4" />
-                  Approve
+                  {t('Approve')}
                 </Button>
                 <Button
                   type="button"
@@ -346,7 +346,7 @@ export function BusinessDashboardPage() {
                   onClick={() => rejectReferral.mutate(referral.id)}
                 >
                   <XCircle className="size-4" />
-                  Reject
+                  {t('Reject')}
                 </Button>
               </div>
             </div>
@@ -358,18 +358,18 @@ export function BusinessDashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">Fulfillment Queue</h2>
-            <p className="text-sm text-on-surface-variant/70">Manage and fulfill pending reward claims</p>
+            <h2 className="font-serif text-2xl text-primary">{t('Fulfillment Queue')}</h2>
+            <p className="text-sm text-on-surface-variant/70">{t('Manage and fulfill pending reward claims')}</p>
           </div>
           <Link to="/business/rewards" className="text-sm font-semibold text-primary hover:underline">
-            Manage Vault
+            {t('Manage Vault')}
           </Link>
         </div>
 
         <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
           {redemptions.length === 0 ? (
             <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">No redemptions yet.</p>
+              <p className="text-on-surface-variant/60 font-medium">{t('No redemptions yet.')}</p>
             </div>
           ) : (
             redemptions.slice(0, 5).map((redemption) => (
@@ -381,7 +381,10 @@ export function BusinessDashboardPage() {
                   <div>
                     <h4 className="font-semibold text-primary">{redemption.rewardTitle}</h4>
                     <p className="text-xs text-on-surface-variant/70">
-                      Redeemed {new Date(redemption.redeemedAt).toLocaleDateString()} at {new Date(redemption.redeemedAt).toLocaleTimeString()}
+                      {t('Redeemed {date} at {time}', {
+                        date: new Date(redemption.redeemedAt).toLocaleDateString(),
+                        time: new Date(redemption.redeemedAt).toLocaleTimeString(),
+                      })}
                     </p>
                   </div>
                 </div>
@@ -402,7 +405,7 @@ export function BusinessDashboardPage() {
                       onClick={() => fulfillRedemption.mutate(redemption.id)}
                       disabled={fulfillRedemption.isPending}
                     >
-                      {fulfillRedemption.isPending ? '...' : 'Fulfill'}
+                      {fulfillRedemption.isPending ? '...' : t('Fulfill')}
                     </Button>
                   )}
                 </div>

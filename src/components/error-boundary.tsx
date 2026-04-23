@@ -1,14 +1,22 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
+import { useLanguage } from '@/lib/language'
+
 interface Props {
   children: ReactNode
+}
+
+interface ErrorBoundaryContent {
+  title: string
+  message: string
+  action: string
 }
 
 interface State {
   hasError: boolean
 }
 
-export class ErrorBoundary extends Component<Props, State> {
+class ErrorBoundaryFallback extends Component<Props & ErrorBoundaryContent, State> {
   state: State = { hasError: false }
 
   static getDerivedStateFromError(): State {
@@ -24,15 +32,15 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="min-h-screen flex items-center justify-center bg-surface px-4">
           <div className="text-center space-y-6 max-w-md">
-            <h1 className="font-serif text-4xl text-primary">Something went wrong</h1>
+            <h1 className="font-serif text-4xl text-primary">{this.props.title}</h1>
             <p className="text-on-surface-variant/70">
-              An unexpected error occurred. Please reload the page to continue.
+              {this.props.message}
             </p>
             <button
               onClick={() => window.location.reload()}
               className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
             >
-              Reload Page
+              {this.props.action}
             </button>
           </div>
         </div>
@@ -41,4 +49,18 @@ export class ErrorBoundary extends Component<Props, State> {
 
     return this.props.children
   }
+}
+
+export function ErrorBoundary({ children }: Props) {
+  const { t } = useLanguage()
+
+  return (
+    <ErrorBoundaryFallback
+      title={t('Something went wrong')}
+      message={t('An unexpected error occurred. Please reload the page to continue.')}
+      action={t('Reload Page')}
+    >
+      {children}
+    </ErrorBoundaryFallback>
+  )
 }
