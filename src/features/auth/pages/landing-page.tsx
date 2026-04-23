@@ -143,7 +143,7 @@ export function LandingPage() {
                 {
                   icon: Gift,
                   title: t('Unlock'),
-                  body: t('Spend XP on perks, drops, credits, and partner rewards.'),
+                  body: t('Spend XP on perks, reward credits, and partner rewards.'),
                 },
                 {
                   icon: Crown,

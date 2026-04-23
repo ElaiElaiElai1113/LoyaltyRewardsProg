@@ -39,6 +39,25 @@ const spanishTranslations: Record<string, string> = {
   Contact: 'Contacto',
   'Store Locator': 'Buscar tiendas',
   Settings: 'Configuración',
+  'Sign out': 'Cerrar sesión',
+  Operations: 'Operaciones',
+  'Admin Portal': 'Portal admin',
+  'Game Ops': 'Operaciones del juego',
+  'Operations Lead': 'Líder de operaciones',
+  'Mission Control': 'Centro de control',
+  Products: 'Productos',
+  Rewards: 'Recompensas',
+  Customers: 'Clientes',
+  Commander: 'Comandante',
+  'Account Settings': 'Configuración de cuenta',
+  'Loading workspace': 'Cargando espacio de trabajo',
+  'Fetching your business portal data.': 'Obteniendo los datos de tu portal de negocio.',
+  'Access Denied': 'Acceso denegado',
+  'This area is for business owners only.': 'Esta área es solo para dueños de negocio.',
+  'Return Home': 'Volver al inicio',
+  'Business Setup Required': 'Configuración de negocio requerida',
+  'This account does not have a business assigned yet.':
+    'Esta cuenta aún no tiene un negocio asignado.',
   'Order History': 'Historial de pedidos',
   'Earn XP, complete quests, and unlock rewards across partner realms.':
     'Gana XP, completa misiones y desbloquea recompensas en negocios aliados.',
@@ -58,8 +77,8 @@ const spanishTranslations: Record<string, string> = {
   'Watch your XP, streaks, and progress build after each visit.':
     'Mira cómo crecen tu XP, rachas y progreso después de cada visita.',
   Unlock: 'Desbloquea',
-  'Spend XP on perks, drops, credits, and partner rewards.':
-    'Usa XP en beneficios, premios, créditos y recompensas de aliados.',
+  'Spend XP on perks, reward credits, and partner rewards.':
+    'Usa XP en beneficios, créditos de recompensa y recompensas de aliados.',
   Compete: 'Compite',
   'Keep momentum with quests, referrals, and limited-time bonuses.':
     'Mantén el ritmo con misiones, referidos y bonos por tiempo limitado.',
@@ -168,18 +187,18 @@ const spanishTranslations: Record<string, string> = {
   'Reward Quest Progress': 'Progreso de recompensa',
   Just: 'Solo',
   'away from your next reward.': 'para tu próxima recompensa.',
-  'Power Credits': 'Créditos de poder',
+  'Reward Credits': 'Créditos de recompensa',
   'Instant perks ready': 'Beneficios listos',
   'Generating...': 'Generando...',
-  'Use Power Credit': 'Usar crédito',
+  'Use Reward Credit': 'Usar crédito de recompensa',
   Unlocked: 'Desbloqueadas',
   'Rewards in your vault': 'Recompensas en tu bóveda',
   'Party Invite': 'Invitación',
-  'Share this QR to give a friend and yourself a power credit.':
-    'Comparte este QR para darle a un amigo y a ti un crédito de poder.',
+  'Share this QR to give a friend and yourself a reward credit.':
+    'Comparte este QR para darte a ti y a un amigo un crédito de recompensa.',
   'Copy referral link': 'Copiar enlace de referido',
   'Referral link copied.': 'Enlace de referido copiado.',
-  'Redeem Power Credit': 'Canjear crédito',
+  'Redeem Reward Credit': 'Canjear crédito de recompensa',
   'Show this code to staff': 'Muestra este código al personal',
   'This code expires 15 minutes after it is generated.':
     'Este código vence 15 minutos después de generarse.',
@@ -187,12 +206,12 @@ const spanishTranslations: Record<string, string> = {
   approved: 'aprobado',
   rejected: 'rechazado',
   pending: 'pendiente',
-  'Your party invite was approved. Your Power Credit has been added to your balance.':
-    'Tu invitación fue aprobada. El crédito de poder se agregó a tu saldo.',
+  'Your party invite was approved. Your Reward Credit has been added to your balance.':
+    'Tu invitación fue aprobada. Tu crédito de recompensa se agregó a tu saldo.',
   'This referral was not approved. Ask staff if you think this needs another look.':
     'Este referido no fue aprobado. Consulta al personal si crees que debe revisarse.',
-  'Your party invite is pending staff approval. Your Power Credit will appear after approval.':
-    'Tu invitación está pendiente de aprobación. El crédito aparecerá después de aprobarse.',
+  'Your party invite is pending staff approval. Your Reward Credit will appear after approval.':
+    'Tu invitación está pendiente de aprobación. Tu crédito de recompensa aparecerá después de aprobarse.',
   'Daily Streak': 'Racha diaria',
   'Visit, scan, or order to keep momentum and earn faster.':
     'Visita, escanea o pide para mantener el ritmo y ganar más rápido.',
@@ -320,6 +339,7 @@ const spanishTranslations: Record<string, string> = {
     'Maridaje gratis de croissant de mantequilla recogido en tienda.',
   'Staff training visit': 'Visita de capacitación del personal',
   'Cortado and tasting notes session.': 'Cortado y sesión de notas de cata.',
+  'Reward Credit used': 'Crédito de recompensa usado',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)

@@ -9,11 +9,13 @@ import {
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
@@ -28,13 +30,17 @@ const navigation = [
 export function BusinessOwnerLayout() {
   const { profile, signOut } = useAuth()
   const { business, isBusinessLoading, error } = useBusinessOwnerData()
+  const { t } = useLanguage()
 
   if (isBusinessLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
+        <div className="absolute right-6 top-6">
+          <LanguagePicker className="text-on-surface-variant" />
+        </div>
         <div className="text-center space-y-3">
-          <h1 className="font-serif text-3xl text-primary-container">Loading workspace</h1>
-          <p className="text-on-surface-variant/80">Fetching your business portal data.</p>
+          <h1 className="font-serif text-3xl text-primary-container">{t('Loading workspace')}</h1>
+          <p className="text-on-surface-variant/80">{t('Fetching your business portal data.')}</p>
         </div>
       </div>
     )
@@ -43,10 +49,13 @@ export function BusinessOwnerLayout() {
   if (profile?.role !== 'business-owner') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
+        <div className="absolute right-6 top-6">
+          <LanguagePicker className="text-on-surface-variant" />
+        </div>
         <div className="text-center space-y-4">
-          <h1 className="font-serif text-3xl text-primary-container">Access Denied</h1>
-          <p className="text-on-surface-variant/80">This area is for business owners only.</p>
-          <Button onClick={() => (window.location.href = '/dashboard')}>Return Home</Button>
+          <h1 className="font-serif text-3xl text-primary-container">{t('Access Denied')}</h1>
+          <p className="text-on-surface-variant/80">{t('This area is for business owners only.')}</p>
+          <Button onClick={() => (window.location.href = '/dashboard')}>{t('Return Home')}</Button>
         </div>
       </div>
     )
@@ -55,14 +64,17 @@ export function BusinessOwnerLayout() {
   if (!business) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
+        <div className="absolute right-6 top-6">
+          <LanguagePicker className="text-on-surface-variant" />
+        </div>
         <div className="text-center space-y-4">
-          <h1 className="font-serif text-3xl text-primary-container">Business Setup Required</h1>
+          <h1 className="font-serif text-3xl text-primary-container">{t('Business Setup Required')}</h1>
           <p className="text-on-surface-variant/80">
             {error instanceof Error
               ? error.message
-              : 'This account does not have a business assigned yet.'}
+              : t('This account does not have a business assigned yet.')}
           </p>
-          <Button onClick={() => void signOut()}>Sign out</Button>
+          <Button onClick={() => void signOut()}>{t('Sign out')}</Button>
         </div>
       </div>
     )
@@ -79,7 +91,7 @@ export function BusinessOwnerLayout() {
           <div className="flex flex-col overflow-hidden">
             <span className="truncate font-serif text-xl font-black uppercase tracking-[0.1em] text-primary-container">{business.name}</span>
             <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-              Mission Control
+              {t('Mission Control')}
             </span>
           </div>
         </div>
@@ -100,7 +112,7 @@ export function BusinessOwnerLayout() {
             >
               <div className="flex items-center gap-3">
                 <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
-                {item.label}
+                {t(item.label)}
               </div>
             </NavLink>
           ))}
@@ -118,17 +130,18 @@ export function BusinessOwnerLayout() {
             </Avatar>
             <div className="flex flex-col overflow-hidden">
               <span className="truncate text-sm font-semibold text-white">{profile?.fullName}</span>
-              <span className="text-xs text-on-surface-variant/70">Commander</span>
+              <span className="text-xs text-on-surface-variant/70">{t('Commander')}</span>
             </div>
           </div>
 
           <div className="mt-6 flex flex-col gap-2">
+            <LanguagePicker className="mb-2 justify-between rounded border border-primary-container/15 bg-primary-container/5 px-3 py-2 text-on-surface-variant" />
             <Button
               variant="ghost"
               className="justify-start gap-3 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container"
             >
               <Settings className="size-5" />
-              Account Settings
+              {t('Account Settings')}
             </Button>
             <Button
               variant="ghost"
@@ -136,7 +149,7 @@ export function BusinessOwnerLayout() {
               onClick={() => void signOut()}
             >
               <LogOut className="size-5" />
-              Sign out
+              {t('Sign out')}
             </Button>
           </div>
         </div>

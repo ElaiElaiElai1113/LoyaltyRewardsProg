@@ -23,6 +23,7 @@ import {
   RewardsPage as BusinessRewardsPage,
   SettingsPage,
 } from '@/features/business-owner/pages'
+import { LanguagePicker } from '@/components/language-picker'
 import { useAuth } from '@/hooks/use-auth'
 import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
@@ -41,6 +42,9 @@ function RouteLoading() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface">
+      <div className="absolute right-6 top-6">
+        <LanguagePicker className="text-on-surface-variant" />
+      </div>
       <div className="text-center space-y-3">
         <h1 className="font-serif text-3xl text-primary">{t('Loading')}</h1>
         <p className="text-on-surface-variant/80">{t('Preparing your workspace.')}</p>

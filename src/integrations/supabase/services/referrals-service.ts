@@ -107,7 +107,7 @@ export const referralsService = {
 
     const availableCredits = Number(balance.available_credits ?? 0)
     if (availableCredits <= 0) {
-      throw new Error('No Power Credits are available for this member.')
+      throw new Error('No Reward Credits are available for this member.')
     }
 
     const { error: expireError } = await sb
@@ -153,7 +153,7 @@ export const referralsService = {
 
     const row = Array.isArray(data) ? data[0] : data
     const profileId = (row as { profile_id?: string } | null)?.profile_id
-    if (!profileId) throw new Error('Credit code was redeemed but no member was returned.')
+    if (!profileId) throw new Error('Reward credit code was redeemed but no member was returned.')
 
     return { profileId }
   },
@@ -270,7 +270,7 @@ export const referralsService = {
 
     const availableCredits = Number(balance.available_credits ?? 0)
     if (availableCredits <= 0) {
-      throw new Error('No Power Credits are available for this member.')
+      throw new Error('No Reward Credits are available for this member.')
     }
 
     const { error: updateError } = await sb
@@ -285,7 +285,7 @@ export const referralsService = {
     const { error: activityError } = await sb.from('activities').insert({
       profile_id: profileId,
       type: 'adjustment',
-      title: 'Power Credit used',
+      title: 'Reward Credit used',
       points: 0,
       status: 'posted',
     })
@@ -296,8 +296,8 @@ export const referralsService = {
 
     const { error: logError } = await sb.from('admin_logs').insert({
       actor_name: actorName,
-      action: 'Power Credit used',
-      details: `Used 1 Power Credit for member ${profileId}.`,
+      action: 'Reward Credit used',
+      details: `Used 1 Reward Credit for member ${profileId}.`,
     })
 
     if (logError) {

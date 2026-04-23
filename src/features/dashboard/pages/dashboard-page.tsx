@@ -180,7 +180,7 @@ export function DashboardPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-6">
             <div className="space-y-3">
               <MetricCard
-                label={t('Power Credits')}
+                label={t('Reward Credits')}
                 value={`${balance?.availableCredits ?? 0}`}
                 icon={Gift}
                 helper={t('Instant perks ready')}
@@ -194,7 +194,7 @@ export function DashboardPage() {
                   onClick={handleGenerateCreditCode}
                 >
                   <Gift className="size-4" />
-                  {generateCreditCode.isPending ? t('Generating...') : t('Use Power Credit')}
+                  {generateCreditCode.isPending ? t('Generating...') : t('Use Reward Credit')}
                 </Button>
               ) : null}
             </div>
@@ -213,7 +213,7 @@ export function DashboardPage() {
                   <div className="space-y-2">
                     <h3 className="font-serif text-2xl font-semibold uppercase tracking-[0.04em] text-primary-container">{t('Party Invite')}</h3>
                     <p className="text-sm font-medium leading-relaxed text-on-surface-variant">
-                      {t('Share this QR to give a friend and yourself a power credit.')}
+                      {t('Share this QR to give a friend and yourself a reward credit.')}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -261,7 +261,7 @@ export function DashboardPage() {
         <DialogContent className="flex min-h-[100dvh] w-screen max-w-none items-center justify-center rounded-none border-0 bg-[#120d0b]/95 p-6 text-white sm:p-10">
           <div className="glass-panel w-full max-w-xl p-8 text-center text-on-surface sm:p-12">
             <DialogHeader className="mb-8 items-center">
-              <DialogTitle className="text-4xl text-primary-container sm:text-5xl">{t('Redeem Power Credit')}</DialogTitle>
+              <DialogTitle className="text-4xl text-primary-container sm:text-5xl">{t('Redeem Reward Credit')}</DialogTitle>
               <DialogDescription className="text-base font-medium text-on-surface-variant">
                 {t('Show this code to staff')}
               </DialogDescription>
@@ -320,10 +320,10 @@ export function DashboardPage() {
                 </p>
                 <p className="max-w-2xl text-sm font-medium leading-relaxed text-on-surface-variant/80">
                   {referral.status === 'approved'
-                    ? t('Your party invite was approved. Your Power Credit has been added to your balance.')
+                    ? t('Your party invite was approved. Your Reward Credit has been added to your balance.')
                     : referral.status === 'rejected'
                       ? t('This referral was not approved. Ask staff if you think this needs another look.')
-                      : t('Your party invite is pending staff approval. Your Power Credit will appear after approval.')}
+                      : t('Your party invite is pending staff approval. Your Reward Credit will appear after approval.')}
                 </p>
               </div>
             </div>

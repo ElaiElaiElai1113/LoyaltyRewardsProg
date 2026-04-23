@@ -6,10 +6,12 @@ import {
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
@@ -18,6 +20,7 @@ const navigation = [
 
 export function AdminLayout() {
   const { profile, signOut } = useAuth()
+  const { t } = useLanguage()
 
   return (
     <div className="flex min-h-screen bg-transparent">
@@ -27,9 +30,9 @@ export function AdminLayout() {
             <ShieldCheck className="size-6" />
           </div>
           <div className="flex flex-col">
-            <span className="font-serif text-xl font-black uppercase tracking-[0.12em] text-primary-container">Admin Portal</span>
+            <span className="font-serif text-xl font-black uppercase tracking-[0.12em] text-primary-container">{t('Admin Portal')}</span>
             <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-              Game Ops
+              {t('Game Ops')}
             </span>
           </div>
         </div>
@@ -49,7 +52,7 @@ export function AdminLayout() {
             >
               <div className="flex items-center gap-3">
                 <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
-                {item.label}
+                {t(item.label)}
               </div>
             </NavLink>
           ))}
@@ -66,17 +69,18 @@ export function AdminLayout() {
             </Avatar>
             <div className="flex flex-col overflow-hidden">
               <span className="truncate text-sm font-semibold text-white">{profile?.fullName}</span>
-              <span className="text-xs text-on-surface-variant/70">Operations Lead</span>
+              <span className="text-xs text-on-surface-variant/70">{t('Operations Lead')}</span>
             </div>
           </div>
 
           <div className="mt-6 flex flex-col gap-2">
+            <LanguagePicker className="mb-2 justify-between rounded border border-primary-container/15 bg-primary-container/5 px-3 py-2 text-on-surface-variant" />
             <Button
               variant="ghost"
               className="justify-start gap-3 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container"
             >
               <Settings className="size-5" />
-              Settings
+              {t('Settings')}
             </Button>
             <Button
               variant="ghost"
@@ -84,7 +88,7 @@ export function AdminLayout() {
               onClick={() => void signOut()}
             >
               <LogOut className="size-5" />
-              Sign out
+              {t('Sign out')}
             </Button>
           </div>
         </div>

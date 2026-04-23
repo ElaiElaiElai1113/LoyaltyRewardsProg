@@ -100,8 +100,8 @@ export const adminService = {
     if (businessesResult.error) throw new Error('Failed to load businesses.')
     if (ordersResult.error) throw new Error('Failed to load business order metrics.')
     if (activitiesResult.error) throw new Error('Failed to load business activity metrics.')
-    if (profilesResult.error) throw new Error('Failed to load business credit metrics.')
-    if (balancesResult.error) throw new Error('Failed to load member credit balances.')
+    if (profilesResult.error) throw new Error('Failed to load business reward credit metrics.')
+    if (balancesResult.error) throw new Error('Failed to load member reward credit balances.')
 
     const memberIdsByBusiness = new Map<string, Set<string>>()
     const revenueByBusiness = new Map<string, number>()

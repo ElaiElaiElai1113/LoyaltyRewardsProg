@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useSearchParams } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -50,7 +51,7 @@ export function ReferralRegisterPage() {
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl gap-10 lg:grid-cols-[1fr_480px]">
         <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#18215a,#283593_52%,#c026d3)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
           <div className="flex items-center justify-between gap-4">
-            <div />
+            <LanguagePicker className="text-white/80" />
             <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
               <Sparkles className="size-6" />
             </div>
@@ -66,8 +67,8 @@ export function ReferralRegisterPage() {
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'After staff approves the invite, both you and your friend receive a power credit.'
-                : 'Join the loyalty program to earn XP, track credits, and redeem rewards.'}
+                ? 'After staff approves the invite, both you and your friend receive a reward credit.'
+                : 'Join the loyalty program to earn XP, track reward credits, and redeem rewards.'}
             </p>
           </div>
 
@@ -83,7 +84,7 @@ export function ReferralRegisterPage() {
                 <div className="space-y-3">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">Welcome aboard!</h2>
                   <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
-                    Your invite status is pending. Staff will review it before power credits are added.
+                    Your invite status is pending. Staff will review it before reward credits are added.
                   </p>
                 </div>
                 <Button asChild size="lg" className="rounded-full">

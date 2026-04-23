@@ -293,13 +293,13 @@ export function AdminPage() {
       <Tabs defaultValue="members" className="space-y-12">
         <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
           <TabsList className="w-full max-w-5xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
-            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Members</TabsTrigger>
-            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Rewards</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Products</TabsTrigger>
-            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Promotions</TabsTrigger>
-            <TabsTrigger value="partners" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Partners</TabsTrigger>
-            <TabsTrigger value="referrals" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Referrals</TabsTrigger>
-            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow-md">Activity</TabsTrigger>
+            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Members</TabsTrigger>
+            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Rewards</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Products</TabsTrigger>
+            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Promotions</TabsTrigger>
+            <TabsTrigger value="partners" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Partners</TabsTrigger>
+            <TabsTrigger value="referrals" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Referrals</TabsTrigger>
+            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Activity</TabsTrigger>
           </TabsList>
         </div>
 
@@ -311,7 +311,7 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">Adjust XP</h2>
               </div>
 
-              <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
+              <div className="admin-light-card rounded-3xl border shadow-sm p-8 space-y-6">
                 {selectedMember ? (
                   <div className="rounded-[2rem] border border-primary/10 bg-primary/[0.03] p-6">
                     <div className="flex items-start gap-4">
@@ -333,7 +333,7 @@ export function AdminPage() {
                             {selectedMember.balance?.points ?? 0} XP
                           </Badge>
                           <Badge variant="accent" className="bg-success/10 text-success border border-success/20">
-                            {selectedMember.balance?.availableCredits ?? 0} Credits
+                            {selectedMember.balance?.availableCredits ?? 0} Reward Credits
                           </Badge>
                           <Badge variant="outline" className="border-outline-variant/20">
                             Joined {formatDate(selectedMember.profile.joinedAt)}
@@ -353,7 +353,7 @@ export function AdminPage() {
                               })
                             }
                           >
-                            {useCredit.isPending ? 'Using...' : 'Use Credit'}
+                            {useCredit.isPending ? 'Using...' : 'Use Reward Credit'}
                           </Button>
                         ) : null}
                       </div>
@@ -379,7 +379,7 @@ export function AdminPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-[2rem] border border-dashed border-outline-variant/20 bg-surface-low p-6 text-sm text-on-surface-variant/75">
+                  <div className="rounded-[2rem] border border-dashed border-outline-variant/20 bg-white/70 p-6 text-sm text-on-surface-variant/75">
                     Select a member to view the profile and update XP.
                   </div>
                 )}
@@ -468,7 +468,7 @@ export function AdminPage() {
                 {customerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className={`group flex flex-col gap-6 rounded-3xl bg-white p-6 transition-all hover:shadow-xl hover:scale-[1.01] md:flex-row md:items-center md:justify-between border ${
+                    className={`admin-light-card group flex flex-col gap-6 rounded-3xl p-6 transition-all hover:shadow-xl hover:scale-[1.01] md:flex-row md:items-center md:justify-between border ${
                       selectedProfileId === member.id
                         ? 'border-primary/30 shadow-lg ring-1 ring-primary/10'
                         : 'border-outline-variant/5 hover:border-primary/10'
@@ -499,7 +499,7 @@ export function AdminPage() {
                         {balance?.points ?? 0} XP
                       </Badge>
                       <Badge variant="accent" className="bg-success/10 text-success border border-success/20 font-medium px-3 py-1.5">
-                        {balance?.availableCredits ?? 0} Credits
+                        {balance?.availableCredits ?? 0} Reward Credits
                       </Badge>
                       <Button
                         variant={selectedProfileId === member.id ? 'secondary' : 'ghost'}
@@ -1151,7 +1151,7 @@ export function AdminPage() {
                       <p className="mt-2 font-serif text-2xl text-primary">{business.pointsIssued}</p>
                     </div>
                     <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">Credits Outstanding</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">Reward Credits Outstanding</p>
                       <p className="mt-2 font-serif text-2xl text-primary">{business.creditsOutstanding}</p>
                     </div>
                   </div>

@@ -2,6 +2,7 @@ import { Gift, Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
 
 export function PromoPage() {
@@ -24,7 +25,7 @@ export function PromoPage() {
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
       <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#18215a,#283593_52%,#c026d3)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-4">
-          <div />
+          <LanguagePicker className="text-white/80" />
           <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
             <Sparkles className="size-6" />
           </div>
@@ -37,22 +38,22 @@ export function PromoPage() {
               {hasReferral ? 'Party Invite' : 'Quest Invitation'}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? 'Your party invite unlocked a power credit.' : 'Join the rewards quest.'}
+              {hasReferral ? 'Your party invite unlocked a reward credit.' : 'Join the rewards quest.'}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'Create your rewards account and, after the invite is approved, both you and your friend get a power credit.'
-                : 'Create your rewards account to earn XP, track credits, and unlock rewards.'}
+                ? 'Create your rewards account and, after the invite is approved, both you and your friend get a reward credit.'
+                : 'Create your rewards account to earn XP, track reward credits, and unlock rewards.'}
             </p>
           </div>
 
           <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6">
             <p className="font-serif text-3xl leading-tight">
-              {hasReferral ? 'Two power credits, one party invite.' : 'Your first quest starts here.'}
+              {hasReferral ? 'Two reward credits, one party invite.' : 'Your first quest starts here.'}
             </p>
             <p className="mt-4 text-sm font-medium leading-relaxed text-white/75">
               {hasReferral
-                ? 'Your credit appears after your signup is reviewed.'
+                ? 'Your reward credit appears after your signup is reviewed.'
                 : 'Sign up once and keep every visit connected to your XP balance.'}
             </p>
           </div>
@@ -80,7 +81,7 @@ export function PromoPage() {
               navigate(`/promo/register?${params.toString()}`)
             }}
           >
-            {hasReferral ? 'Claim Power Credit' : 'Start Quest'}
+            {hasReferral ? 'Claim Reward Credit' : 'Start Quest'}
           </Button>
         </div>
       </section>

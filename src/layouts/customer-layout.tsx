@@ -73,7 +73,7 @@ export function CustomerLayout() {
             </div>
 
             <div className="flex items-center gap-4">
-              <LanguagePicker className="hidden text-on-surface-variant md:flex" compact />
+              <LanguagePicker className="text-on-surface-variant" compact />
               <NavLink to="/cart" className="relative rounded p-2 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container">
                 <ShoppingBag className="size-5" />
                 {cartCount > 0 && (

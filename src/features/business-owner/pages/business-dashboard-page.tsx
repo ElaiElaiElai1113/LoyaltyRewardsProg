@@ -63,7 +63,7 @@ export function BusinessDashboardPage() {
             {business?.name} Command Center
           </h1>
           <p className="mt-4 text-lg text-white/80 font-medium">
-            Track members, quests, credits, and reward fulfillment from one arcade operations hub.
+            Track members, quests, reward credits, and reward fulfillment from one arcade operations hub.
           </p>
         </div>
       </div>
@@ -193,7 +193,7 @@ export function BusinessDashboardPage() {
               <h2 className="font-serif text-2xl text-primary">Signup Portal</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
                 Display this portal at checkout or on signage. New customers scan it, create an account,
-                and appear below as pending invites before their power credit is added.
+                and appear below as pending invites before their reward credit is added.
               </p>
             </div>
             <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
@@ -233,16 +233,16 @@ export function BusinessDashboardPage() {
           </div>
           <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} signup portal</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
-            Approve the invite below to grant the power credit.
+            Approve the invite below to grant the reward credit.
           </p>
         </div>
       </div>
 
-      {/* Credit Redemption Validation */}
-      <div>
-        <div className="mb-6 space-y-1">
-          <h2 className="font-serif text-2xl text-primary">Credit Scanner</h2>
-          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit power credit code</p>
+        {/* Reward Credit Redemption Validation */}
+        <div>
+          <div className="mb-6 space-y-1">
+          <h2 className="font-serif text-2xl text-primary">Reward Credit Scanner</h2>
+          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit reward credit code</p>
         </div>
 
         <form
@@ -274,7 +274,7 @@ export function BusinessDashboardPage() {
               disabled={!business?.id || redemptionCode.length !== 6 || validateCreditCode.isPending}
             >
               <CheckCircle className="size-4" />
-              {validateCreditCode.isPending ? 'Scanning...' : 'Validate Credit'}
+              {validateCreditCode.isPending ? 'Scanning...' : 'Validate Reward Credit'}
             </Button>
           </div>
         </form>
@@ -285,7 +285,7 @@ export function BusinessDashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
             <h2 className="font-serif text-2xl text-primary">Pending Invites</h2>
-            <p className="text-sm text-on-surface-variant/70">Review new customer invite credits</p>
+            <p className="text-sm text-on-surface-variant/70">Review new customer reward credit invites</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
             {pendingReferrals.data?.length ?? 0} pending

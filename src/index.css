@@ -138,6 +138,43 @@
   .hud-scanline {
     @apply pointer-events-none absolute inset-x-0 top-0 h-px bg-primary-container/45 shadow-[0_0_14px_rgba(244,168,79,0.45)];
   }
+
+  .admin-light-card {
+    background: #fffaf4;
+    border-color: rgba(74, 55, 40, 0.14);
+    color: #332820;
+  }
+
+  .admin-light-card [class*="text-primary"] {
+    color: #332820 !important;
+  }
+
+  .admin-light-card [class*="text-on-surface-variant"] {
+    color: #6f6258 !important;
+  }
+
+  .admin-light-card [class*="text-secondary-container"] {
+    color: #8a5a08 !important;
+  }
+
+  .admin-light-card [class*="text-success"] {
+    color: #087b3a !important;
+  }
+
+  .admin-light-card [class*="bg-primary/5"],
+  .admin-light-card [class*="bg-primary/\\[0\\.03\\]"] {
+    background-color: rgba(244, 168, 79, 0.12) !important;
+  }
+
+  .admin-light-card input {
+    background: #fffefd;
+    color: #2f251f;
+    border-color: rgba(74, 55, 40, 0.18);
+  }
+
+  .admin-light-card input::placeholder {
+    color: #8b7b70;
+  }
 }
 
 * {
