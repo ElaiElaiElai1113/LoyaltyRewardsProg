@@ -74,17 +74,20 @@ export function AdminLayout() {
           </div>
 
           <div className="mt-6 flex flex-col gap-2">
-            <LanguagePicker className="mb-2 justify-between rounded border border-primary-container/15 bg-primary-container/5 px-3 py-2 text-on-surface-variant" />
+            <LanguagePicker
+              compact
+              className="mb-2 w-full justify-between rounded border border-primary-container/15 bg-primary-container/5 px-3 py-2 text-on-surface-variant"
+            />
             <Button
               variant="ghost"
-              className="justify-start gap-3 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container"
+              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container"
             >
               <Settings className="size-5" />
               {t('Settings')}
             </Button>
             <Button
               variant="ghost"
-              className="justify-start gap-3 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-error"
+              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-error"
               onClick={() => void signOut()}
             >
               <LogOut className="size-5" />

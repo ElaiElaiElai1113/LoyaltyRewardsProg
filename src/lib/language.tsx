@@ -613,6 +613,9 @@ const spanishTranslations: Record<string, string> = {
   'No redemptions yet.': 'Aún no hay canjes.',
   'Redeemed {date} at {time}': 'Canjeado el {date} a las {time}',
   Fulfill: 'Completar',
+  'Download QR': 'Descargar QR',
+  'QR code downloaded.': 'Código QR descargado.',
+  'Unable to download QR code.': 'No se pudo descargar el código QR.',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)

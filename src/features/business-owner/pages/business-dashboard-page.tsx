@@ -2,6 +2,7 @@ import {
   ArrowUpRight,
   CheckCircle,
   Copy,
+  Download,
   Gift,
   Package,
   QrCode,
@@ -11,7 +12,7 @@ import {
   Users,
   XCircle,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import { Link } from 'react-router-dom'
@@ -36,6 +37,7 @@ export function BusinessDashboardPage() {
   const { business, metrics, products, rewards, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
+  const signupQrRef = useRef<HTMLDivElement | null>(null)
   const [redemptionCode, setRedemptionCode] = useState('')
   const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
   const fulfillRedemption = useFulfillRedemption(profile)
@@ -53,6 +55,29 @@ export function BusinessDashboardPage() {
     profile?.referralCode && business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
       : ''
+
+  const handleDownloadSignupQr = () => {
+    const svg = signupQrRef.current?.querySelector('svg')
+    if (!svg || !business?.name) {
+      toast.error(t('Unable to download QR code.'))
+      return
+    }
+
+    const serializer = new XMLSerializer()
+    const svgMarkup = serializer.serializeToString(svg)
+    const blob = new Blob([svgMarkup], { type: 'image/svg+xml;charset=utf-8' })
+    const url = window.URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    const fileBase = business.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'signup-portal'
+
+    link.href = url
+    link.download = `${fileBase}-signup-qr.svg`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    window.URL.revokeObjectURL(url)
+    toast.success(t('QR code downloaded.'))
+  }
 
   return (
     <div className="space-y-16">
@@ -229,13 +254,23 @@ export function BusinessDashboardPage() {
         </div>
 
         <div className="quest-panel p-8">
-          <div className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
+          <div ref={signupQrRef} className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
             {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
           </div>
           <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} {t('signup portal')}</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
             {t('Approve the invite below to grant the reward credit.')}
           </p>
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-5 w-full rounded-2xl"
+            disabled={!signupQrUrl}
+            onClick={handleDownloadSignupQr}
+          >
+            <Download className="size-4" />
+            {t('Download QR')}
+          </Button>
         </div>
       </div>
 
