@@ -10,10 +10,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
 import { useProfile, useUpdateProfile } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 import { profileSchema, type ProfileFormValues } from '@/types/forms'
 
 export function ProfilePage() {
   const { profile: sessionProfile, syncProfile } = useAuth()
+  const { t } = useLanguage()
   const profile = useProfile(sessionProfile?.id)
   const updateProfile = useUpdateProfile(sessionProfile?.id)
 
@@ -45,25 +47,25 @@ export function ProfilePage() {
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
           <Badge variant="accent" className="bg-tertiary/20 text-primary">
-            Account Settings
+            {t('Account Settings')}
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-            Your Profile
+            {t('Your Profile')}
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            Keep your details and preferences up to date.
+            {t('Keep your details and preferences up to date.')}
           </p>
         </div>
 
         <div className="flex flex-col items-start gap-4 lg:items-end">
-          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Status level</span>
+          <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Status level')}</span>
           <div className="rounded-2xl bg-secondary-container px-6 py-4 text-primary shadow-card flex items-center gap-4">
              <div className="size-10 rounded-full bg-primary flex items-center justify-center">
                 <Award className="size-5 text-white" />
              </div>
              <div className="flex flex-col">
-                <span className="font-serif text-2xl leading-none">Active</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">Member Status</span>
+                <span className="font-serif text-2xl leading-none">{t('Active')}</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">{t('Member Status')}</span>
              </div>
           </div>
         </div>
@@ -72,29 +74,29 @@ export function ProfilePage() {
       <div className="grid gap-16 lg:grid-cols-[400px_1fr]">
         <div className="space-y-8">
            <div className="space-y-2 pb-4 border-b border-outline-variant/5">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Quick Info</span>
-            <h2 className="font-serif text-3xl text-primary">Contact Details</h2>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Quick Info')}</span>
+            <h2 className="font-serif text-3xl text-primary">{t('Contact Details')}</h2>
           </div>
           <div className="grid gap-6">
             <MetricCard
-              label="Phone"
+              label={t('Phone')}
               value={profile.data?.phone ?? 'N/A'}
               icon={Phone}
-              helper="For order coordination"
+              helper={t('For order coordination')}
             />
             <MetricCard
-              label="Location"
+              label={t('Location')}
               value={profile.data?.location ?? 'N/A'}
               icon={MapPin}
-              helper="Default shop location"
+              helper={t('Default shop location')}
             />
           </div>
         </div>
 
         <div className="space-y-8">
           <div className="space-y-2 pb-4 border-b border-outline-variant/5">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Preferences</span>
-            <h2 className="font-serif text-3xl text-primary">Edit Profile</h2>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Preferences')}</span>
+            <h2 className="font-serif text-3xl text-primary">{t('Edit Profile')}</h2>
           </div>
           <div className="rounded-3xl bg-surface-low p-10 border border-outline-variant/10">
             <form
@@ -105,25 +107,25 @@ export function ProfilePage() {
               })}
             >
               <div className="grid gap-3">
-                <Label htmlFor="fullName">Full Name</Label>
-                <Input id="fullName" placeholder="Your name" {...form.register('fullName')} />
+                <Label htmlFor="fullName">{t('Full Name')}</Label>
+                <Input id="fullName" placeholder={t('Your name')} {...form.register('fullName')} />
               </div>
 
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="grid gap-3">
-                  <Label htmlFor="phone">Phone Number</Label>
+                  <Label htmlFor="phone">{t('Phone Number')}</Label>
                   <Input id="phone" placeholder="+1 (555) 000-0000" {...form.register('phone')} />
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="location">Home Shop</Label>
+                  <Label htmlFor="location">{t('Home Shop')}</Label>
                   <Input id="location" placeholder="e.g., Downtown" {...form.register('location')} />
                 </div>
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="favoriteOrder">Favorite Order</Label>
-                <Input id="favoriteOrder" placeholder="Your favorite drink..." {...form.register('favoriteOrder')} />
-                <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">This helps staff prepare your order.</p>
+                <Label htmlFor="favoriteOrder">{t('Favorite Order')}</Label>
+                <Input id="favoriteOrder" placeholder={t('Your favorite drink...')} {...form.register('favoriteOrder')} />
+                <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">{t('This helps staff prepare your order.')}</p>
               </div>
 
               <div className="mt-4 pt-8 border-t border-outline-variant/5 flex justify-end">
@@ -133,7 +135,7 @@ export function ProfilePage() {
                   className="rounded-full px-12 h-14"
                   disabled={updateProfile.isPending}
                 >
-                  {updateProfile.isPending ? 'Saving...' : 'Save Changes'}
+                  {updateProfile.isPending ? t('Saving...') : t('Save Changes')}
                   <Save className="size-5 ml-2" />
                 </Button>
               </div>

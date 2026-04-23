@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useCreateReward, useDeleteReward, useUpdateReward } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
 import { rewardDraftSchema, type RewardDraftFormValues } from '@/types/forms'
@@ -20,6 +21,7 @@ import { rewardDraftSchema, type RewardDraftFormValues } from '@/types/forms'
 export function RewardsPage() {
   const { business, rewards } = useBusinessOwnerData()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const createReward = useCreateReward(profile)
   const deleteReward = useDeleteReward(profile?.fullName)
   const updateReward = useUpdateReward(profile?.fullName)
@@ -66,7 +68,7 @@ export function RewardsPage() {
   }
 
   const handleDelete = async (rewardId: string) => {
-    if (confirm('Are you sure you want to delete this reward?')) {
+    if (confirm(t('Are you sure you want to delete this reward?'))) {
       await deleteReward.mutateAsync(rewardId)
     }
   }
@@ -83,7 +85,7 @@ export function RewardsPage() {
       setOpen(false)
       setEditingId(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Action failed.')
+      setError(err instanceof Error ? err.message : t('Action failed.'))
     }
   })
 
@@ -92,14 +94,14 @@ export function RewardsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Reward Vault</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Reward Vault')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Create and manage vault rewards your customers can unlock with XP.
+            {t('Create and manage vault rewards your customers can unlock with XP.')}
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Gift className="size-5 mr-2" />
-          Add Vault Reward
+          {t('Add Vault Reward')}
         </Button>
       </div>
 
@@ -108,39 +110,39 @@ export function RewardsPage() {
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
-              {editingId ? 'Edit Reward' : 'New Reward'}
+              {editingId ? t('Edit Reward') : t('New Reward')}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
-              <Label htmlFor="reward-title">Title</Label>
+              <Label htmlFor="reward-title">{t('Title')}</Label>
               <Input id="reward-title" placeholder="Free bonus item" {...form.register('title')} />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="reward-description">Description</Label>
+              <Label htmlFor="reward-description">{t('Description')}</Label>
               <Textarea id="reward-description" placeholder="A bonus item, discount, or member-only perk" {...form.register('description')} />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label>Category</Label>
+              <Label>{t('Category')}</Label>
               <Controller
                 control={form.control}
                 name="category"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="rounded-xl h-12">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t('Select a category')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Drink">Drink</SelectItem>
-                      <SelectItem value="Pastry">Bites</SelectItem>
-                      <SelectItem value="Merch">Gear</SelectItem>
-                      <SelectItem value="Beans">Specialty</SelectItem>
+                      <SelectItem value="Drink">{t('Drink')}</SelectItem>
+                      <SelectItem value="Pastry">{t('Bites')}</SelectItem>
+                      <SelectItem value="Merch">{t('Gear')}</SelectItem>
+                      <SelectItem value="Beans">{t('Specialty')}</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -150,7 +152,7 @@ export function RewardsPage() {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="reward-points">XP Cost</Label>
+              <Label htmlFor="reward-points">{t('XP Cost')}</Label>
               <Input
                 id="reward-points"
                 type="number"
@@ -162,16 +164,16 @@ export function RewardsPage() {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="reward-highlight">Highlight</Label>
+              <Label htmlFor="reward-highlight">{t('Highlight')}</Label>
               <Input id="reward-highlight" placeholder="Most popular" {...form.register('highlight')} />
             </div>
             {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
-                Cancel
+                {t('Cancel')}
               </Button>
               <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Reward' : 'Add Vault Reward'}
+                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Reward') : t('Add Vault Reward')}
               </Button>
             </div>
           </form>
@@ -183,11 +185,11 @@ export function RewardsPage() {
         {rewards.length === 0 ? (
           <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
             <Gift className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">No vault rewards yet</h3>
-            <p className="text-on-surface-variant/70 mb-8">Create your first unlockable reward for members.</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">{t('No vault rewards yet')}</h3>
+            <p className="text-on-surface-variant/70 mb-8">{t('Create your first unlockable reward for members.')}</p>
             <Button className="rounded-full h-12 px-8" onClick={handleOpenForCreate}>
               <Gift className="size-5 mr-2" />
-              Create First Vault Reward
+              {t('Create First Vault Reward')}
             </Button>
           </div>
         ) : (
@@ -200,12 +202,12 @@ export function RewardsPage() {
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col gap-2">
                     <Badge variant="accent" className="w-fit bg-tertiary/30 text-primary">
-                      {reward.category}
+                      {t(reward.category)}
                     </Badge>
                     {reward.featured && (
                       <span className="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-widest text-secondary">
                         <Sparkles className="size-3" />
-                        Featured
+                        {t('Featured')}
                       </span>
                     )}
                   </div>
@@ -221,17 +223,17 @@ export function RewardsPage() {
 
                 <div className="space-y-4 grow">
                   <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
-                    {reward.title}
+                    {t(reward.title)}
                   </h3>
                   <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
-                    {reward.description}
+                    {t(reward.description)}
                   </p>
                 </div>
 
                 <div className="flex items-end justify-between mt-4">
                   <div className="space-y-1">
                     <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                      XP Cost
+                      {t('XP Cost')}
                     </span>
                     <p className="font-serif text-3xl tracking-tight text-primary">
                       {formatPoints(reward.pointsCost)} XP
@@ -244,7 +246,7 @@ export function RewardsPage() {
                         reward.inventory < 10 ? 'text-error' : 'text-on-surface-variant/80'
                       }`}
                     >
-                      {reward.inventory} left
+                      {reward.inventory} {t('left')}
                     </span>
                   </div>
                 </div>

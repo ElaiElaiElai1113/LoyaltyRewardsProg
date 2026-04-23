@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useCreatePromotion, useDeletePromotion, useUpdatePromotion } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { formatDate } from '@/lib/utils'
 import type { Promotion } from '@/types/domain'
 import { promotionDraftSchema, type PromotionDraftFormValues } from '@/types/forms'
@@ -19,6 +20,7 @@ import { promotionDraftSchema, type PromotionDraftFormValues } from '@/types/for
 export function PromotionsPage() {
   const { business, promotions } = useBusinessOwnerData()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const createPromotion = useCreatePromotion(profile)
   const deletePromotion = useDeletePromotion(profile?.fullName)
   const updatePromotion = useUpdatePromotion(profile?.fullName)
@@ -62,7 +64,7 @@ export function PromotionsPage() {
   }
 
   const handleDelete = async (promotionId: string) => {
-    if (confirm('Are you sure you want to delete this promotion?')) {
+    if (confirm(t('Are you sure you want to delete this promotion?'))) {
       await deletePromotion.mutateAsync(promotionId)
     }
   }
@@ -81,7 +83,7 @@ export function PromotionsPage() {
       setOpen(false)
       setEditingId(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Action failed.')
+      setError(err instanceof Error ? err.message : t('Action failed.'))
     }
   })
 
@@ -90,14 +92,14 @@ export function PromotionsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Quests</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Quests')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Create and manage bonus quests to engage and reward your customers.
+            {t('Create and manage bonus quests to engage and reward your customers.')}
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Megaphone className="size-5 mr-2" />
-          Create Quest
+          {t('Create Quest')}
         </Button>
       </div>
 
@@ -106,40 +108,40 @@ export function PromotionsPage() {
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
-              {editingId ? 'Edit Quest' : 'New Quest'}
+              {editingId ? t('Edit Quest') : t('New Quest')}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
-              <Label htmlFor="promo-title">Title</Label>
+              <Label htmlFor="promo-title">{t('Title')}</Label>
               <Input id="promo-title" placeholder="Double XP Weekend" {...form.register('title')} />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="promo-description">Description</Label>
+              <Label htmlFor="promo-description">{t('Description')}</Label>
               <Textarea id="promo-description" placeholder="Earn 2x XP on all purchases this weekend." {...form.register('description')} />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="promo-badge">Badge Label</Label>
+              <Label htmlFor="promo-badge">{t('Badge Label')}</Label>
               <Input id="promo-badge" placeholder="2x XP" {...form.register('badge')} />
               {form.formState.errors.badge && (
                 <p className="text-xs text-red-500">{form.formState.errors.badge.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="promo-cta">Call to Action</Label>
+              <Label htmlFor="promo-cta">{t('Call to Action')}</Label>
               <Input id="promo-cta" placeholder="Shop now and earn double" {...form.register('cta')} />
               {form.formState.errors.cta && (
                 <p className="text-xs text-red-500">{form.formState.errors.cta.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="promo-audience">Audience</Label>
+              <Label htmlFor="promo-audience">{t('Audience')}</Label>
               <Input id="promo-audience" placeholder="All members" {...form.register('audience')} />
               {form.formState.errors.audience && (
                 <p className="text-xs text-red-500">{form.formState.errors.audience.message}</p>
@@ -148,10 +150,10 @@ export function PromotionsPage() {
             {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
-                Cancel
+                {t('Cancel')}
               </Button>
               <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Quest' : 'Create Quest'}
+                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Quest') : t('Create Quest')}
               </Button>
             </div>
           </form>
@@ -163,11 +165,11 @@ export function PromotionsPage() {
         {promotions.length === 0 ? (
           <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
             <Megaphone className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">No quests yet</h3>
-            <p className="text-on-surface-variant/70 mb-8">Create your first bonus quest to drive engagement.</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">{t('No quests yet')}</h3>
+            <p className="text-on-surface-variant/70 mb-8">{t('Create your first bonus quest to drive engagement.')}</p>
             <Button className="rounded-full h-12 px-8" onClick={() => setOpen(true)}>
               <Megaphone className="size-5 mr-2" />
-              Create First Quest
+              {t('Create First Quest')}
             </Button>
           </div>
         ) : (
@@ -191,12 +193,12 @@ export function PromotionsPage() {
                         active ? 'bg-secondary-container/30 text-secondary' : 'bg-outline-variant/10'
                       }`}
                     >
-                      {promotion.badge}
+                      {t(promotion.badge)}
                     </Badge>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
                         <CalendarDays className="size-3" />
-                        {active ? 'Active' : 'Expired'}
+                        {active ? t('Active') : t('Expired')}
                       </div>
                       <div className="flex gap-2">
                         <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={() => handleEdit(promotion)}>
@@ -211,18 +213,18 @@ export function PromotionsPage() {
 
                   <div className="space-y-4">
                     <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
-                      {promotion.title}
+                      {t(promotion.title)}
                     </h3>
                     <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium italic">
-                      "{promotion.description}"
+                      "{t(promotion.description)}"
                     </p>
                   </div>
 
                   <div className="mt-4 rounded-xl bg-surface-lowest p-5 flex items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-primary">{promotion.cta}</p>
+                      <p className="text-sm font-bold text-primary">{t(promotion.cta)}</p>
                       <p className="text-[0.65rem] uppercase tracking-wider text-on-surface-variant/70">
-                        {promotion.audience}
+                        {t(promotion.audience)}
                       </p>
                     </div>
                     <div className="size-8 rounded-full bg-surface-low flex items-center justify-center text-primary shadow-sm">
@@ -232,7 +234,7 @@ export function PromotionsPage() {
 
                   <div className="pt-4 border-t border-outline-variant/5">
                     <span className="text-xs text-on-surface-variant/60">
-                      Expires: {formatDate(promotion.expiresAt)}
+                      {t('Expires')}: {formatDate(promotion.expiresAt)}
                     </span>
                   </div>
                 </div>

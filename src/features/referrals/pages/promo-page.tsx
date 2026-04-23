@@ -4,10 +4,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 
 export function PromoPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const { t } = useLanguage()
   const referrerId = searchParams.get('ref')
   const businessId = searchParams.get('business')
   const hasReferral = Boolean(referrerId)
@@ -35,33 +37,33 @@ export function PromoPage() {
           <div className="max-w-4xl space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
-              {hasReferral ? 'Party Invite' : 'Quest Invitation'}
+              {hasReferral ? t('Party Invite') : t('Quest Invitation')}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? 'Your party invite unlocked a reward credit.' : 'Join the rewards quest.'}
+              {hasReferral ? t('Your party invite unlocked a reward credit.') : t('Join the rewards quest.')}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'Create your rewards account and, after the invite is approved, both you and your friend get a reward credit.'
-                : 'Create your rewards account to earn XP, track reward credits, and unlock rewards.'}
+                ? t('Create your rewards account and, after the invite is approved, both you and your friend get a reward credit.')
+                : t('Create your rewards account to earn XP, track reward credits, and unlock rewards.')}
             </p>
           </div>
 
           <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6">
             <p className="font-serif text-3xl leading-tight">
-              {hasReferral ? 'Two reward credits, one party invite.' : 'Your first quest starts here.'}
+              {hasReferral ? t('Two reward credits, one party invite.') : t('Your first quest starts here.')}
             </p>
             <p className="mt-4 text-sm font-medium leading-relaxed text-white/75">
               {hasReferral
-                ? 'Your reward credit appears after your signup is reviewed.'
-                : 'Sign up once and keep every visit connected to your XP balance.'}
+                ? t('Your reward credit appears after your signup is reviewed.')
+                : t('Sign up once and keep every visit connected to your XP balance.')}
             </p>
           </div>
         </div>
 
         <div className="flex flex-col gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm font-medium text-white/70">
-            {hasReferral ? 'Ready to claim the invitation?' : 'Ready to start earning?'}
+            {hasReferral ? t('Ready to claim the invitation?') : t('Ready to start earning?')}
           </p>
           <Button
             type="button"
@@ -81,7 +83,7 @@ export function PromoPage() {
               navigate(`/promo/register?${params.toString()}`)
             }}
           >
-            {hasReferral ? 'Claim Reward Credit' : 'Start Quest'}
+            {hasReferral ? t('Claim Reward Credit') : t('Start Quest')}
           </Button>
         </div>
       </section>

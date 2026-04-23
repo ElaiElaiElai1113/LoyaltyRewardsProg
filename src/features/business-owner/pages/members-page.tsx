@@ -13,6 +13,7 @@ import {
   useBusinessOwnerData,
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { cn, formatPoints, getInitials } from '@/lib/utils'
 import {
   rewardAdjustmentSchema,
@@ -21,6 +22,7 @@ import {
 
 export function MembersPage() {
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const { business, metrics } = useBusinessOwnerData()
   const members = useBusinessMembers(business?.id)
   const awardPoints = useAwardPoints(profile, business?.id)
@@ -45,13 +47,13 @@ export function MembersPage() {
     <div className="space-y-16">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Customers</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Customers')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Look up a customer, review their balance, and award XP for in-store purchases.
+            {t('Look up a customer, review their balance, and award XP for in-store purchases.')}
           </p>
         </div>
         <Badge variant="accent" className="w-fit rounded-full bg-primary/5 px-5 py-3 text-primary">
-          {metrics?.totalMembers ?? members.data?.length ?? 0} active customers
+          {metrics?.totalMembers ?? members.data?.length ?? 0} {t('active customers')}
         </Badge>
       </div>
 
@@ -59,9 +61,9 @@ export function MembersPage() {
         <div className="space-y-8">
           <div className="space-y-2 pb-4 border-b border-outline-variant/10">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Quick Action
+              {t('Quick Action')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">Award XP</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Award XP')}</h2>
           </div>
 
           <div className="rounded-3xl border border-outline-variant/5 bg-white p-8 shadow-sm">
@@ -77,20 +79,20 @@ export function MembersPage() {
                     reason: '',
                   })
                 } catch (error) {
-                  setActionError(error instanceof Error ? error.message : 'Failed to award points.')
+                  setActionError(error instanceof Error ? error.message : t('Failed to award points.'))
                 }
               })}
             >
               <div className="grid gap-3">
                 <Label htmlFor="profileId" className="text-sm font-semibold">
-                  Customer
+                  {t('Customer')}
                 </Label>
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant/45" />
                   <Input
                     id="profileId"
                     list="business-member-options"
-                    placeholder="Search by customer ID"
+                    placeholder={t('Search by customer ID')}
                     className="h-12 rounded-2xl border-outline-variant/20 pl-11 focus:border-primary/30"
                     {...form.register('profileId')}
                   />
@@ -123,9 +125,9 @@ export function MembersPage() {
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <p className="font-serif text-xl text-primary">No customer selected</p>
+                    <p className="font-serif text-xl text-primary">{t('No customer selected')}</p>
                     <p className="text-sm text-on-surface-variant/75">
-                      Choose a customer to preview their current balance before awarding XP.
+                      {t('Choose a customer to preview their current balance before awarding XP.')}
                     </p>
                   </div>
                 )}
@@ -133,7 +135,7 @@ export function MembersPage() {
 
               <div className="grid gap-3">
                 <Label htmlFor="delta" className="text-sm font-semibold">
-                  XP to Award
+                  {t('XP to Award')}
                 </Label>
                 <Input
                   id="delta"
@@ -148,11 +150,11 @@ export function MembersPage() {
 
               <div className="grid gap-3">
                 <Label htmlFor="reason" className="text-sm font-semibold">
-                  Reason
+                  {t('Reason')}
                 </Label>
                 <Input
                   id="reason"
-                  placeholder="e.g., In-store purchase $12.50"
+                  placeholder={t('e.g., In-store purchase $12.50')}
                   className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                   {...form.register('reason')}
                 />
@@ -167,7 +169,7 @@ export function MembersPage() {
                 className="h-14 w-full rounded-full font-semibold"
                 disabled={awardPoints.isPending}
               >
-                {awardPoints.isPending ? 'Awarding...' : 'Award XP'}
+                {awardPoints.isPending ? t('Awarding...') : t('Award XP')}
               </Button>
               {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
             </form>
@@ -177,14 +179,14 @@ export function MembersPage() {
         <div className="space-y-8">
           <div className="space-y-2 pb-4 border-b border-outline-variant/10">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Customer Base
+              {t('Customer Base')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">Your Customers</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Your Customers')}</h2>
           </div>
 
           {members.isLoading ? (
             <div className="rounded-3xl border border-outline-variant/5 bg-white p-12 text-center text-on-surface-variant/70 shadow-sm">
-              Loading customers...
+              {t('Loading customers...')}
             </div>
           ) : members.data?.length ? (
             <div className="grid gap-4">
@@ -226,7 +228,7 @@ export function MembersPage() {
                         className="rounded-full"
                         onClick={() => form.setValue('profileId', member.id, { shouldValidate: true })}
                       >
-                        {selected ? 'Selected' : 'Select'}
+                        {selected ? t('Selected') : t('Select')}
                       </Button>
                     </div>
                   </div>
@@ -236,9 +238,9 @@ export function MembersPage() {
           ) : (
             <div className="rounded-3xl border border-outline-variant/5 bg-white p-16 text-center shadow-sm">
               <Users className="mx-auto mb-6 size-16 text-on-surface-variant/20" />
-              <h3 className="mb-2 font-serif text-2xl text-primary">No customers yet</h3>
+              <h3 className="mb-2 font-serif text-2xl text-primary">{t('No customers yet')}</h3>
               <p className="mx-auto max-w-md text-on-surface-variant/70">
-                Customers will appear here once they’ve purchased from your business.
+                {t("Customers will appear here once they've purchased from your business.")}
               </p>
             </div>
           )}

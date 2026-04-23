@@ -4,11 +4,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
 import { useRedeemReward, useReward, useRewardBalance } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 
 import { RedeemRewardPanel } from '../components/redeem-reward-panel'
 
 export function RedeemRewardPage() {
   const navigate = useNavigate()
+  const { t } = useLanguage()
   const { rewardId } = useParams()
   const { profile } = useAuth()
   const reward = useReward(rewardId)
@@ -27,14 +29,14 @@ export function RedeemRewardPage() {
     <div className="mx-auto max-w-4xl space-y-12 py-8">
       <div className="space-y-4">
         <Badge variant="accent" className="bg-primary/10 text-primary">
-          Redeem Reward
+          {t('Redeem Reward')}
         </Badge>
         <div className="space-y-2">
           <h1 className="font-serif text-5xl tracking-tight text-primary">
-            Confirm your next treat.
+            {t('Confirm your next treat.')}
           </h1>
           <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            Review the details and confirm. Your XP will be deducted and your reward will be ready for pick-up.
+            {t('Review the details and confirm. Your XP will be deducted and your reward will be ready for pick-up.')}
           </p>
         </div>
       </div>
@@ -60,7 +62,7 @@ export function RedeemRewardPage() {
           onClick={() => navigate('/rewards')}
           className="h-auto p-0 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 transition-colors hover:text-primary"
         >
-          Return to Catalog
+          {t('Return to Catalog')}
         </Button>
       </div>
     </div>

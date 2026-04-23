@@ -36,6 +36,7 @@ import {
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
+import { useLanguage } from '@/lib/language'
 import {
   productDraftSchema,
   promotionDraftSchema,
@@ -50,6 +51,7 @@ import { formatCurrency, formatDate } from '@/lib/utils'
 
 export function AdminPage() {
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const [actionError, setActionError] = useState<string | null>(null)
   const users = useAdminUsers()
   const overview = useAdminOverview()
@@ -224,14 +226,14 @@ export function AdminPage() {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center space-y-8 bg-surface-low rounded-3xl p-16 border border-outline-variant/10">
         <Badge variant="accent" className="bg-primary/10 text-primary">
-          Staff Authentication Required
+          {t('Staff Authentication Required')}
         </Badge>
         <div className="space-y-4 max-w-2xl">
           <h1 className="font-serif text-5xl tracking-tight text-primary leading-tight">
-            Admin access requires staff credentials.
+            {t('Admin access requires staff credentials.')}
           </h1>
           <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            Please use the staff demo credentials or sign in with a verified admin account to manage rewards, promotions, and member data.
+            {t('Please use the staff demo credentials or sign in with a verified admin account to manage rewards, promotions, and member data.')}
           </p>
         </div>
         <Button
@@ -240,7 +242,7 @@ export function AdminPage() {
           onClick={() => window.location.href = '/'}
           className="rounded-full px-12"
         >
-          Return to Home
+          {t('Return to Home')}
         </Button>
       </div>
     )
@@ -255,13 +257,13 @@ export function AdminPage() {
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-4 max-w-2xl">
               <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-sm">
-                Operations Portal
+                {t('Operations Portal')}
               </Badge>
               <h1 className="font-serif text-5xl tracking-tight text-white md:text-7xl leading-[1.1]">
-                Admin Dashboard
+                {t('Admin Dashboard')}
               </h1>
               <p className="text-lg leading-relaxed text-white/80 font-medium">
-                Manage members, rewards, promotions, and monitor activity across the platform.
+                {t('Manage members, rewards, promotions, and monitor activity across the platform.')}
               </p>
             </div>
 
@@ -273,7 +275,7 @@ export function AdminPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif text-3xl leading-none">{(users.data ?? []).length}</span>
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Members</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Members')}</span>
                 </div>
               </div>
               <div className="rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-5 text-white border border-white/10 flex items-center gap-4">
@@ -282,7 +284,7 @@ export function AdminPage() {
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif text-3xl leading-none">{(allRewards.data ?? []).length}</span>
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">Rewards</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Rewards')}</span>
                 </div>
               </div>
             </div>
@@ -293,13 +295,13 @@ export function AdminPage() {
       <Tabs defaultValue="members" className="space-y-12">
         <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
           <TabsList className="w-full max-w-5xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
-            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Members</TabsTrigger>
-            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Rewards</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Products</TabsTrigger>
-            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Promotions</TabsTrigger>
-            <TabsTrigger value="partners" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Partners</TabsTrigger>
-            <TabsTrigger value="referrals" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Referrals</TabsTrigger>
-            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">Activity</TabsTrigger>
+            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Members')}</TabsTrigger>
+            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Rewards')}</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Products')}</TabsTrigger>
+            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Promotions')}</TabsTrigger>
+            <TabsTrigger value="partners" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Partners')}</TabsTrigger>
+            <TabsTrigger value="referrals" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Referrals')}</TabsTrigger>
+            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Activity')}</TabsTrigger>
           </TabsList>
         </div>
 
@@ -307,8 +309,8 @@ export function AdminPage() {
           <div className="grid gap-16 xl:grid-cols-[450px_1fr]">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Member Profile</span>
-                <h2 className="font-serif text-3xl text-primary">Adjust XP</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Member Profile')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Adjust XP')}</h2>
               </div>
 
               <div className="admin-light-card rounded-3xl border shadow-sm p-8 space-y-6">
@@ -333,10 +335,10 @@ export function AdminPage() {
                             {selectedMember.balance?.points ?? 0} XP
                           </Badge>
                           <Badge variant="accent" className="bg-success/10 text-success border border-success/20">
-                            {selectedMember.balance?.availableCredits ?? 0} Reward Credits
+                            {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
                           </Badge>
                           <Badge variant="outline" className="border-outline-variant/20">
-                            Joined {formatDate(selectedMember.profile.joinedAt)}
+                            {t('Joined')} {formatDate(selectedMember.profile.joinedAt)}
                           </Badge>
                         </div>
                         {(selectedMember.balance?.availableCredits ?? 0) > 0 ? (
@@ -353,7 +355,7 @@ export function AdminPage() {
                               })
                             }
                           >
-                            {useCredit.isPending ? 'Using...' : 'Use Reward Credit'}
+                            {useCredit.isPending ? t('Using...') : t('Use Reward Credit')}
                           </Button>
                         ) : null}
                       </div>
@@ -361,26 +363,26 @@ export function AdminPage() {
 
                     <div className="mt-5 grid gap-4 text-sm text-on-surface-variant/80">
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Phone</span>
-                        <span>{selectedMember.profile.phone || 'Not provided'}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Phone')}</span>
+                        <span>{selectedMember.profile.phone || t('Not provided')}</span>
                       </div>
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Location</span>
-                        <span>{selectedMember.profile.location || 'Not provided'}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Location')}</span>
+                        <span>{selectedMember.profile.location || t('Not provided')}</span>
                       </div>
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Favorite Order</span>
-                        <span>{selectedMember.profile.favoriteOrder || 'Not provided'}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Favorite Order')}</span>
+                        <span>{selectedMember.profile.favoriteOrder || t('Not provided')}</span>
                       </div>
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Member ID</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Member ID')}</span>
                         <span className="break-all">{selectedMember.profile.id}</span>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="rounded-[2rem] border border-dashed border-outline-variant/20 bg-white/70 p-6 text-sm text-on-surface-variant/75">
-                    Select a member to view the profile and update XP.
+                    {t('Select a member to view the profile and update XP.')}
                   </div>
                 )}
 
@@ -397,20 +399,20 @@ export function AdminPage() {
                           reason: '',
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : 'Failed to adjust XP.')
+                        setActionError(error instanceof Error ? error.message : t('Failed to adjust XP.'))
                       }
                     },
                     () => {
-                      setActionError('Please fix the highlighted member adjustment fields.')
+                      setActionError(t('Please fix the highlighted member adjustment fields.'))
                     },
                   )}
                 >
                   <div className="grid gap-4">
-                    <Label htmlFor="profileId" className="text-sm font-semibold">Member</Label>
+                    <Label htmlFor="profileId" className="text-sm font-semibold">{t('Member')}</Label>
                     <Input
                       id="profileId"
                       list="member-id-options"
-                      placeholder="Select from the customer list or paste a member id"
+                      placeholder={t('Select from the customer list or paste a member id')}
                       className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
                       {...adjustmentForm.register('profileId')}
                     />
@@ -426,27 +428,27 @@ export function AdminPage() {
                     ) : null}
                     {selectedMember ? (
                       <p className="text-xs text-on-surface-variant/70">
-                        Selected: {selectedMember.profile.fullName} • Current balance: {selectedMember.balance?.points ?? 0} XP
+                        {t('Selected')}: {selectedMember.profile.fullName} - {t('Current balance')}: {selectedMember.balance?.points ?? 0} XP
                       </p>
                     ) : null}
                   </div>
                   <div className="grid gap-4">
-                    <Label htmlFor="delta" className="text-sm font-semibold">XP Adjustment</Label>
+                    <Label htmlFor="delta" className="text-sm font-semibold">{t('XP Adjustment')}</Label>
                     <Input id="delta" type="number" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
-                    <p className="text-xs text-on-surface-variant/70">Use a positive number to add XP and a negative number to deduct it.</p>
+                    <p className="text-xs text-on-surface-variant/70">{t('Use a positive number to add XP and a negative number to deduct it.')}</p>
                     {adjustmentForm.formState.errors.delta ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-4">
-                    <Label htmlFor="reason" className="text-sm font-semibold">Reason</Label>
-                    <Input id="reason" placeholder="e.g., Service recovery" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('reason')} />
+                    <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
+                    <Input id="reason" placeholder={t('e.g., Service recovery')} className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('reason')} />
                     {adjustmentForm.formState.errors.reason ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
                     ) : null}
                   </div>
                   <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
-                    {adjustRewards.isPending ? 'Processing...' : 'Update XP'}
+                    {adjustRewards.isPending ? t('Processing...') : t('Update XP')}
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
@@ -456,11 +458,11 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
                 <div>
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Active Members</span>
-                  <h2 className="font-serif text-3xl text-primary">Members</h2>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Active Members')}</span>
+                  <h2 className="font-serif text-3xl text-primary">{t('Members')}</h2>
                 </div>
                 <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-                  {customerMembers.length} customers
+                  {customerMembers.length} {t('customers')}
                 </span>
               </div>
 
@@ -499,7 +501,7 @@ export function AdminPage() {
                         {balance?.points ?? 0} XP
                       </Badge>
                       <Badge variant="accent" className="bg-success/10 text-success border border-success/20 font-medium px-3 py-1.5">
-                        {balance?.availableCredits ?? 0} Reward Credits
+                        {balance?.availableCredits ?? 0} {t('Reward Credits')}
                       </Badge>
                       <Button
                         variant={selectedProfileId === member.id ? 'secondary' : 'ghost'}
@@ -513,7 +515,7 @@ export function AdminPage() {
                           setActionError(null)
                         }}
                       >
-                        {selectedProfileId === member.id ? 'Selected' : 'View Profile'}
+                        {selectedProfileId === member.id ? t('Selected') : t('View Profile')}
                       </Button>
                     </div>
                   </div>

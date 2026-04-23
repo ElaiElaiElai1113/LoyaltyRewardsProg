@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useCreateProduct, useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
 import { productDraftSchema, type ProductDraftFormValues } from '@/types/forms'
@@ -20,6 +21,7 @@ import { Controller } from 'react-hook-form'
 export function ProductsPage() {
   const { business, products } = useBusinessOwnerData()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const createProduct = useCreateProduct(profile)
   const deleteProduct = useDeleteProduct(profile?.fullName)
   const updateProduct = useUpdateProduct(profile?.fullName)
@@ -67,7 +69,7 @@ export function ProductsPage() {
   }
 
   const handleDelete = async (productId: string) => {
-    if (confirm('Are you sure you want to delete this product?')) {
+    if (confirm(t('Are you sure you want to delete this product?'))) {
       await deleteProduct.mutateAsync(productId)
     }
   }
@@ -84,7 +86,7 @@ export function ProductsPage() {
       setOpen(false)
       setEditingId(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Action failed.')
+      setError(err instanceof Error ? err.message : t('Action failed.'))
     }
   })
 
@@ -98,14 +100,14 @@ export function ProductsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Products</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Products')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            View and manage your product catalog and inventory.
+            {t('View and manage your product catalog and inventory.')}
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Plus className="size-5 mr-2" />
-          Add Product
+          {t('Add Product')}
         </Button>
       </div>
 
@@ -114,39 +116,39 @@ export function ProductsPage() {
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
-              {editingId ? 'Edit Product' : 'New Product'}
+              {editingId ? t('Edit Product') : t('New Product')}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
-              <Label htmlFor="product-title">Title</Label>
+              <Label htmlFor="product-title">{t('Title')}</Label>
               <Input id="product-title" placeholder="Nitro Cold Brew" {...form.register('title')} />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="product-description">Description</Label>
+              <Label htmlFor="product-description">{t('Description')}</Label>
               <Textarea id="product-description" placeholder="Our signature nitro brew..." {...form.register('description')} />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
-              <Label>Category</Label>
+              <Label>{t('Category')}</Label>
               <Controller
                 control={form.control}
                 name="category"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="rounded-xl h-12">
-                      <SelectValue placeholder="Select a category" />
+                      <SelectValue placeholder={t('Select a category')} />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Coffee">Drinks</SelectItem>
-                      <SelectItem value="Pastry">Bites</SelectItem>
-                      <SelectItem value="Merch">Gear</SelectItem>
-                      <SelectItem value="Equipment">Tools</SelectItem>
+                      <SelectItem value="Coffee">{t('Drinks')}</SelectItem>
+                      <SelectItem value="Pastry">{t('Bites')}</SelectItem>
+                      <SelectItem value="Merch">{t('Gear')}</SelectItem>
+                      <SelectItem value="Equipment">{t('Tools')}</SelectItem>
                     </SelectContent>
                   </Select>
                 )}
@@ -156,7 +158,7 @@ export function ProductsPage() {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="product-price">Price ($)</Label>
+              <Label htmlFor="product-price">{t('Price ($)')}</Label>
               <Input
                 id="product-price"
                 type="number"
@@ -169,16 +171,16 @@ export function ProductsPage() {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="product-highlight">Highlight</Label>
+              <Label htmlFor="product-highlight">{t('Highlight')}</Label>
               <Input id="product-highlight" placeholder="Special Roast" {...form.register('highlight')} />
             </div>
             {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
-                Cancel
+                {t('Cancel')}
               </Button>
               <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? 'Saving...' : editingId ? 'Update Product' : 'Add Product'}
+                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Product') : t('Add Product')}
               </Button>
             </div>
           </form>
@@ -190,8 +192,8 @@ export function ProductsPage() {
         {products.length === 0 ? (
           <div className="rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
             <Package className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">No products yet</h3>
-            <p className="text-on-surface-variant/70">Products added via the admin portal will appear here.</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">{t('No products yet')}</h3>
+            <p className="text-on-surface-variant/70">{t('Products added via the admin portal will appear here.')}</p>
           </div>
         ) : (
           products.map((product) => (
@@ -208,13 +210,13 @@ export function ProductsPage() {
                 <div className="space-y-1">
                   <p className="font-serif text-xl text-primary">{product.title}</p>
                   <div className="flex items-center gap-3 text-sm text-on-surface-variant/70">
-                    <span>{product.category}</span>
+                    <span>{t(product.category)}</span>
                     <span className="size-1 rounded-full bg-outline-variant/30"></span>
-                    <span>{product.inventory} in stock</span>
+                    <span>{product.inventory} {t('in stock')}</span>
                     {product.featured && (
                       <>
                         <span className="size-1 rounded-full bg-outline-variant/30"></span>
-                        <span className="text-secondary font-medium">Featured</span>
+                        <span className="text-secondary font-medium">{t('Featured')}</span>
                       </>
                     )}
                   </div>

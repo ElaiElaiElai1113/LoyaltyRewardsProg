@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const defaultValues: AuthFormValues = {
@@ -34,6 +35,7 @@ function LoadingSpinner() {
 export function ReferralRegisterPage() {
   const [searchParams] = useSearchParams()
   const { signUp } = useAuth()
+  const { t } = useLanguage()
   const [error, setError] = useState<string | null>(null)
   const [signUpComplete, setSignUpComplete] = useState(false)
   const referrerId = searchParams.get('ref')
@@ -60,20 +62,20 @@ export function ReferralRegisterPage() {
           <div className="max-w-4xl space-y-8 py-14">
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
-              Party Invite
+              {t('Party Invite')}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? 'Create your account to claim the invite.' : 'Create your rewards account.'}
+              {hasReferral ? t('Create your account to claim the invite.') : t('Create your rewards account.')}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasReferral
-                ? 'After staff approves the invite, both you and your friend receive a reward credit.'
-                : 'Join the loyalty program to earn XP, track reward credits, and redeem rewards.'}
+                ? t('After staff approves the invite, both you and your friend receive a reward credit.')
+                : t('Join the loyalty program to earn XP, track reward credits, and redeem rewards.')}
             </p>
           </div>
 
           <Link to="/signin" className="text-sm font-bold text-white/75 transition hover:text-white">
-            Already have an account? Sign in
+            {t('Already have an account? Sign in')}
           </Link>
         </section>
 
@@ -82,13 +84,13 @@ export function ReferralRegisterPage() {
             {signUpComplete ? (
               <div className="space-y-8 text-center">
                 <div className="space-y-3">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">Welcome aboard!</h2>
+                  <h2 className="font-serif text-4xl tracking-tight text-primary">{t('Welcome aboard!')}</h2>
                   <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
-                    Your invite status is pending. Staff will review it before reward credits are added.
+                    {t('Your invite status is pending. Staff will review it before reward credits are added.')}
                   </p>
                 </div>
                 <Button asChild size="lg" className="rounded-full">
-                  <Link to="/signin">Go to sign in</Link>
+                  <Link to="/signin">{t('Go to sign in')}</Link>
                 </Button>
               </div>
             ) : (
@@ -119,30 +121,30 @@ export function ReferralRegisterPage() {
                     setError(
                       submissionError instanceof Error
                         ? submissionError.message
-                        : 'Unable to create the account.',
+                        : t('Unable to create the account.'),
                     )
                   }
                 })}
               >
                 <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">Create Account</h2>
+                  <h2 className="font-serif text-4xl tracking-tight text-primary">{t('Create Account')}</h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
-                    Use a new email address to claim this referral offer.
+                    {t('Use a new email address to claim this referral offer.')}
                   </p>
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="referral-signup-name">Full Name</Label>
-                  <Input id="referral-signup-name" placeholder="Your name" {...form.register('fullName')} />
+                  <Label htmlFor="referral-signup-name">{t('Full Name')}</Label>
+                  <Input id="referral-signup-name" placeholder={t('Your name')} {...form.register('fullName')} />
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="referral-signup-email">Email Address</Label>
+                  <Label htmlFor="referral-signup-email">{t('Email Address')}</Label>
                   <Input id="referral-signup-email" placeholder="your@email.com" {...form.register('email')} />
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="referral-signup-password">Password</Label>
+                  <Label htmlFor="referral-signup-password">{t('Password')}</Label>
                   <Input
                     id="referral-signup-password"
                     type="password"
@@ -162,10 +164,10 @@ export function ReferralRegisterPage() {
                   {form.formState.isSubmitting ? (
                     <span className="inline-flex items-center gap-2">
                       <LoadingSpinner />
-                      Creating account...
+                      {t('Creating account...')}
                     </span>
                   ) : (
-                    'Create Account'
+                    t('Create Account')
                   )}
                 </Button>
               </form>

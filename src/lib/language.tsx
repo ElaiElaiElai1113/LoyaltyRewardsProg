@@ -194,6 +194,37 @@ const spanishTranslations: Record<string, string> = {
   Unlocked: 'Desbloqueadas',
   'Rewards in your vault': 'Recompensas en tu bóveda',
   'Party Invite': 'Invitación',
+  'Quest Invitation': 'Invitación de misión',
+  'Your party invite unlocked a reward credit.':
+    'Tu invitación desbloqueó un crédito de recompensa.',
+  'Join the rewards quest.': 'Únete a la misión de recompensas.',
+  'Create your rewards account and, after the invite is approved, both you and your friend get a reward credit.':
+    'Crea tu cuenta de recompensas y, cuando se apruebe la invitación, tú y tu amigo recibirán un crédito de recompensa.',
+  'Create your rewards account to earn XP, track reward credits, and unlock rewards.':
+    'Crea tu cuenta de recompensas para ganar XP, llevar el control de créditos de recompensa y desbloquear recompensas.',
+  'Two reward credits, one party invite.':
+    'Dos créditos de recompensa, una invitación.',
+  'Your first quest starts here.': 'Tu primera misión empieza aquí.',
+  'Your reward credit appears after your signup is reviewed.':
+    'Tu crédito de recompensa aparecerá cuando se revise tu registro.',
+  'Sign up once and keep every visit connected to your XP balance.':
+    'Regístrate una vez y mantén cada visita conectada a tu saldo de XP.',
+  'Ready to claim the invitation?': '¿Listo para reclamar la invitación?',
+  'Ready to start earning?': '¿Listo para empezar a ganar?',
+  'Claim Reward Credit': 'Reclamar crédito de recompensa',
+  'Create your account to claim the invite.':
+    'Crea tu cuenta para reclamar la invitación.',
+  'Create your rewards account.': 'Crea tu cuenta de recompensas.',
+  'After staff approves the invite, both you and your friend receive a reward credit.':
+    'Cuando el personal apruebe la invitación, tú y tu amigo recibirán un crédito de recompensa.',
+  'Join the loyalty program to earn XP, track reward credits, and redeem rewards.':
+    'Únete al programa de fidelidad para ganar XP, llevar el control de créditos de recompensa y canjear recompensas.',
+  'Already have an account? Sign in': '¿Ya tienes una cuenta? Inicia sesión',
+  'Your invite status is pending. Staff will review it before reward credits are added.':
+    'Tu invitación está pendiente. El personal la revisará antes de agregar los créditos de recompensa.',
+  'Go to sign in': 'Ir a iniciar sesión',
+  'Use a new email address to claim this referral offer.':
+    'Usa un correo nuevo para reclamar esta oferta de referido.',
   'Share this QR to give a friend and yourself a reward credit.':
     'Comparte este QR para darte a ti y a un amigo un crédito de recompensa.',
   'Copy referral link': 'Copiar enlace de referido',
@@ -340,6 +371,219 @@ const spanishTranslations: Record<string, string> = {
   'Staff training visit': 'Visita de capacitación del personal',
   'Cortado and tasting notes session.': 'Cortado y sesión de notas de cata.',
   'Reward Credit used': 'Crédito de recompensa usado',
+  'Quest History': 'Historial de misiones',
+  'Your Timeline': 'Tu cronología',
+  'Every visit, bonus, and reward claim in one clear timeline.':
+    'Cada visita, bono y canje de recompensa en una cronología clara.',
+  'Loyalty Status': 'Estado de fidelidad',
+  'Total XP': 'XP total',
+  Visits: 'Visitas',
+  'Total recorded visits': 'Total de visitas registradas',
+  'XP Earned': 'XP ganado',
+  'Recent XP earned': 'XP reciente ganado',
+  Redemptions: 'Canjes',
+  'Rewards redeemed': 'Recompensas canjeadas',
+  Timeline: 'Cronología',
+  'Most Recent First': 'Más reciente primero',
+  'Your Orders': 'Tus pedidos',
+  'View your past purchases and XP earned.':
+    'Revisa tus compras anteriores y el XP ganado.',
+  'No orders yet.': 'Aún no hay pedidos.',
+  'Start Shopping': 'Empezar a comprar',
+  'XP earned': 'XP ganado',
+  Processing: 'Procesando',
+  Posted: 'Publicado',
+  'Order not found.': 'Pedido no encontrado.',
+  'Continue Shopping': 'Seguir comprando',
+  'Order Confirmed': 'Pedido confirmado',
+  'Thank you!': '¡Gracias!',
+  'Your order has been placed successfully.':
+    'Tu pedido se realizó correctamente.',
+  'Order Details': 'Detalles del pedido',
+  'Processing - available within 24 hours':
+    'Procesando - disponible dentro de 24 horas',
+  'View Orders': 'Ver pedidos',
+  'Redeem Reward': 'Canjear recompensa',
+  'Confirm your next treat.': 'Confirma tu próximo premio.',
+  'Review the details and confirm. Your XP will be deducted and your reward will be ready for pick-up.':
+    'Revisa los detalles y confirma. Se descontará tu XP y tu recompensa estará lista para recoger.',
+  'Return to Catalog': 'Volver al catálogo',
+  Available: 'Disponibles',
+  'XP After': 'XP después',
+  'Pickup window': 'Horario de recogida',
+  Notes: 'Notas',
+  'Pickup notes, substitutions, or timing...':
+    'Notas de recogida, sustituciones u horario...',
+  'Processing...': 'Procesando...',
+  'Redeem Now': 'Canjear ahora',
+  'Not Enough XP': 'XP insuficiente',
+  'Your Profile': 'Tu perfil',
+  'Keep your details and preferences up to date.':
+    'Mantén tus datos y preferencias actualizados.',
+  'Status level': 'Nivel de estado',
+  Active: 'Activo',
+  'Member Status': 'Estado de miembro',
+  'Quick Info': 'Información rápida',
+  'Contact Details': 'Datos de contacto',
+  Phone: 'Teléfono',
+  'For order coordination': 'Para coordinar pedidos',
+  Location: 'Ubicación',
+  'Default shop location': 'Tienda predeterminada',
+  Preferences: 'Preferencias',
+  'Edit Profile': 'Editar perfil',
+  'Phone Number': 'Número de teléfono',
+  'Home Shop': 'Tienda principal',
+  'Favorite Order': 'Pedido favorito',
+  'Your favorite drink...': 'Tu bebida favorita...',
+  'This helps staff prepare your order.':
+    'Esto ayuda al personal a preparar tu pedido.',
+  'Saving...': 'Guardando...',
+  'Save Changes': 'Guardar cambios',
+  'Signup Portal': 'Portal de registro',
+  'Display this portal at checkout or on signage. New customers scan it, create an account, and appear below as pending invites before their reward credit is added.':
+    'Muestra este portal en caja o en letreros. Los nuevos clientes lo escanean, crean una cuenta y aparecen abajo como invitaciones pendientes antes de agregar su crédito de recompensa.',
+  'Signup QR link unavailable': 'Enlace QR de registro no disponible',
+  'Signup QR link copied': 'Enlace QR de registro copiado',
+  Copied: 'Copiado',
+  'Copy Portal Link': 'Copiar enlace del portal',
+  'signup portal': 'portal de registro',
+  'Approve the invite below to grant the reward credit.':
+    'Aprueba la invitación de abajo para otorgar el crédito de recompensa.',
+  'Reward Credit Scanner': 'Escáner de crédito de recompensa',
+  "Enter the customer's 6-digit reward credit code":
+    'Ingresa el código de crédito de recompensa de 6 dígitos del cliente',
+  'Redemption code': 'Código de canje',
+  'Scanning...': 'Escaneando...',
+  'Validate Reward Credit': 'Validar crédito de recompensa',
+  'Pending Invites': 'Invitaciones pendientes',
+  'Review new customer reward credit invites':
+    'Revisa las invitaciones de crédito de recompensa de nuevos clientes',
+  'View and manage your product catalog and inventory.':
+    'Consulta y administra tu catálogo de productos e inventario.',
+  'Add Product': 'Agregar producto',
+  'Edit Product': 'Editar producto',
+  'New Product': 'Nuevo producto',
+  Title: 'Título',
+  Description: 'Descripción',
+  Category: 'Categoría',
+  'Select a category': 'Selecciona una categoría',
+  'Price ($)': 'Precio ($)',
+  Highlight: 'Destacar',
+  Cancel: 'Cancelar',
+  'Update Product': 'Actualizar producto',
+  'No products yet': 'Aún no hay productos',
+  'Products added via the admin portal will appear here.':
+    'Los productos agregados desde el portal admin aparecerán aquí.',
+  'Are you sure you want to delete this product?':
+    '¿Seguro que quieres eliminar este producto?',
+  'Action failed.': 'La acción falló.',
+  'Create and manage vault rewards your customers can unlock with XP.':
+    'Crea y administra recompensas que tus clientes pueden desbloquear con XP.',
+  'Add Vault Reward': 'Agregar recompensa',
+  'Edit Reward': 'Editar recompensa',
+  'New Reward': 'Nueva recompensa',
+  Specialty: 'Especialidad',
+  'Update Reward': 'Actualizar recompensa',
+  'No vault rewards yet': 'Aún no hay recompensas',
+  'Create your first unlockable reward for members.':
+    'Crea tu primera recompensa desbloqueable para miembros.',
+  'Create First Vault Reward': 'Crear primera recompensa',
+  'Are you sure you want to delete this reward?':
+    '¿Seguro que quieres eliminar esta recompensa?',
+  Quests: 'Misiones',
+  'Create and manage bonus quests to engage and reward your customers.':
+    'Crea y administra misiones extra para atraer y recompensar a tus clientes.',
+  'Create Quest': 'Crear misión',
+  'Edit Quest': 'Editar misión',
+  'New Quest': 'Nueva misión',
+  'Badge Label': 'Etiqueta',
+  'Call to Action': 'Llamado a la acción',
+  Audience: 'Audiencia',
+  'Update Quest': 'Actualizar misión',
+  'No quests yet': 'Aún no hay misiones',
+  'Create your first bonus quest to drive engagement.':
+    'Crea tu primera misión extra para impulsar la participación.',
+  'Create First Quest': 'Crear primera misión',
+  Expired: 'Vencida',
+  'Are you sure you want to delete this promotion?':
+    '¿Seguro que quieres eliminar esta promoción?',
+  'Look up a customer, review their balance, and award XP for in-store purchases.':
+    'Busca un cliente, revisa su saldo y otorga XP por compras en tienda.',
+  'active customers': 'clientes activos',
+  'Quick Action': 'Acción rápida',
+  'Award XP': 'Otorgar XP',
+  'Failed to award points.': 'No se pudieron otorgar puntos.',
+  Customer: 'Cliente',
+  'Search by customer ID': 'Buscar por ID de cliente',
+  'No customer selected': 'Ningún cliente seleccionado',
+  'Choose a customer to preview their current balance before awarding XP.':
+    'Elige un cliente para ver su saldo actual antes de otorgar XP.',
+  'XP to Award': 'XP a otorgar',
+  Reason: 'Motivo',
+  'e.g., In-store purchase $12.50': 'p. ej., compra en tienda $12.50',
+  'Awarding...': 'Otorgando...',
+  'Customer Base': 'Base de clientes',
+  'Your Customers': 'Tus clientes',
+  'Loading customers...': 'Cargando clientes...',
+  Select: 'Seleccionar',
+  'No customers yet': 'Aún no hay clientes',
+  "Customers will appear here once they've purchased from your business.":
+    'Los clientes aparecerán aquí cuando compren en tu negocio.',
+  'Loading...': 'Cargando...',
+  'Manage your business information and quest reward settings.':
+    'Administra la información de tu negocio y la configuración de recompensas.',
+  'Business Information': 'Información del negocio',
+  Details: 'Detalles',
+  'Business Name': 'Nombre del negocio',
+  'Not set': 'Sin definir',
+  'Quest Program': 'Programa de misiones',
+  'XP Rate (XP per $1)': 'Tasa de XP (XP por $1)',
+  'Customers earn this much XP for every dollar spent.':
+    'Los clientes ganan esta cantidad de XP por cada dólar gastado.',
+  'Tax Rate': 'Tasa de impuesto',
+  'Enter as decimal (e.g., 0.0875 for 8.75%)':
+    'Ingresa como decimal (p. ej., 0.0875 para 8.75%)',
+  'Business Status': 'Estado del negocio',
+  'Your business is currently active': 'Tu negocio está activo',
+  'Your business is currently inactive': 'Tu negocio está inactivo',
+  Inactive: 'Inactivo',
+  'Failed to save settings. Please try again.':
+    'No se pudo guardar la configuración. Inténtalo de nuevo.',
+  'Settings saved!': 'Configuración guardada.',
+  'Staff Authentication Required': 'Autenticación de personal requerida',
+  'Admin access requires staff credentials.':
+    'El acceso admin requiere credenciales de personal.',
+  'Please use the staff demo credentials or sign in with a verified admin account to manage rewards, promotions, and member data.':
+    'Usa las credenciales demo del personal o inicia sesión con una cuenta admin verificada para administrar recompensas, promociones y datos de miembros.',
+  'Return to Home': 'Volver al inicio',
+  'Operations Portal': 'Portal de operaciones',
+  'Admin Dashboard': 'Panel admin',
+  'Manage members, rewards, promotions, and monitor activity across the platform.':
+    'Administra miembros, recompensas y promociones, y monitorea la actividad de la plataforma.',
+  Partners: 'Aliados',
+  Referrals: 'Referidos',
+  'Member Profile': 'Perfil del miembro',
+  'Adjust XP': 'Ajustar XP',
+  Joined: 'Se unió',
+  'Using...': 'Usando...',
+  'Not provided': 'No proporcionado',
+  'Member ID': 'ID de miembro',
+  'Select a member to view the profile and update XP.':
+    'Selecciona un miembro para ver el perfil y actualizar XP.',
+  'Failed to adjust XP.': 'No se pudo ajustar XP.',
+  'Please fix the highlighted member adjustment fields.':
+    'Corrige los campos marcados del ajuste de miembro.',
+  'Select from the customer list or paste a member id':
+    'Selecciona de la lista de clientes o pega un ID de miembro',
+  Selected: 'Seleccionado',
+  'Current balance': 'Saldo actual',
+  'XP Adjustment': 'Ajuste de XP',
+  'Use a positive number to add XP and a negative number to deduct it.':
+    'Usa un número positivo para agregar XP y uno negativo para descontarlo.',
+  'e.g., Service recovery': 'p. ej., compensación de servicio',
+  'Update XP': 'Actualizar XP',
+  'Active Members': 'Miembros activos',
+  'View Profile': 'Ver perfil',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)

@@ -29,11 +29,13 @@ import {
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
+import { useLanguage } from '@/lib/language'
 import { formatCurrency, formatDate, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
   const { business, metrics, products, rewards, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const [redemptionCode, setRedemptionCode] = useState('')
   const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
   const fulfillRedemption = useFulfillRedemption(profile)
@@ -190,10 +192,9 @@ export function BusinessDashboardPage() {
         <div className="quest-panel p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="space-y-2">
-              <h2 className="font-serif text-2xl text-primary">Signup Portal</h2>
+              <h2 className="font-serif text-2xl text-primary">{t('Signup Portal')}</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
-                Display this portal at checkout or on signage. New customers scan it, create an account,
-                and appear below as pending invites before their reward credit is added.
+                {t('Display this portal at checkout or on signage. New customers scan it, create an account, and appear below as pending invites before their reward credit is added.')}
               </p>
             </div>
             <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
@@ -205,7 +206,7 @@ export function BusinessDashboardPage() {
             <Input
               readOnly
               value={signupQrUrl}
-              placeholder="Signup QR link unavailable"
+              placeholder={t('Signup QR link unavailable')}
               className="h-14 rounded-2xl bg-surface-lowest text-sm"
             />
             <Button
@@ -217,12 +218,12 @@ export function BusinessDashboardPage() {
                 if (!signupQrUrl) return
                 await navigator.clipboard.writeText(signupQrUrl)
                 setCopiedSignupUrl(true)
-                toast.success('Signup QR link copied')
+                toast.success(t('Signup QR link copied'))
                 window.setTimeout(() => setCopiedSignupUrl(false), 1800)
               }}
             >
               <Copy className="size-4" />
-              {copiedSignupUrl ? 'Copied' : 'Copy Portal Link'}
+              {copiedSignupUrl ? t('Copied') : t('Copy Portal Link')}
             </Button>
           </div>
         </div>
@@ -231,9 +232,9 @@ export function BusinessDashboardPage() {
           <div className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
             {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
           </div>
-          <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} signup portal</p>
+          <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} {t('signup portal')}</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
-            Approve the invite below to grant the reward credit.
+            {t('Approve the invite below to grant the reward credit.')}
           </p>
         </div>
       </div>
@@ -241,8 +242,8 @@ export function BusinessDashboardPage() {
         {/* Reward Credit Redemption Validation */}
         <div>
           <div className="mb-6 space-y-1">
-          <h2 className="font-serif text-2xl text-primary">Reward Credit Scanner</h2>
-          <p className="text-sm text-on-surface-variant/70">Enter the customer&apos;s 6-digit reward credit code</p>
+          <h2 className="font-serif text-2xl text-primary">{t('Reward Credit Scanner')}</h2>
+          <p className="text-sm text-on-surface-variant/70">{t("Enter the customer's 6-digit reward credit code")}</p>
         </div>
 
         <form
@@ -262,7 +263,7 @@ export function BusinessDashboardPage() {
               pattern="[0-9]{6}"
               maxLength={6}
               placeholder="000000"
-              aria-label="Redemption code"
+              aria-label={t('Redemption code')}
               className="h-14 rounded-2xl bg-surface-lowest text-center font-mono text-2xl tracking-[0.2em]"
               onChange={(event) => {
                 setRedemptionCode(event.target.value.replace(/\D/g, '').slice(0, 6))
@@ -274,7 +275,7 @@ export function BusinessDashboardPage() {
               disabled={!business?.id || redemptionCode.length !== 6 || validateCreditCode.isPending}
             >
               <CheckCircle className="size-4" />
-              {validateCreditCode.isPending ? 'Scanning...' : 'Validate Reward Credit'}
+              {validateCreditCode.isPending ? t('Scanning...') : t('Validate Reward Credit')}
             </Button>
           </div>
         </form>
@@ -284,8 +285,8 @@ export function BusinessDashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">Pending Invites</h2>
-            <p className="text-sm text-on-surface-variant/70">Review new customer reward credit invites</p>
+            <h2 className="font-serif text-2xl text-primary">{t('Pending Invites')}</h2>
+            <p className="text-sm text-on-surface-variant/70">{t('Review new customer reward credit invites')}</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
             {pendingReferrals.data?.length ?? 0} pending

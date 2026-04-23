@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useLanguage } from '@/lib/language'
 import { cn, formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
 import { redeemSchema, type RedeemFormValues } from '@/types/forms'
@@ -22,6 +23,7 @@ export function RedeemRewardPanel({
   isSubmitting,
   onSubmit,
 }: RedeemRewardPanelProps) {
+  const { t } = useLanguage()
   const form = useForm<RedeemFormValues>({
     resolver: zodResolver(redeemSchema),
     defaultValues: {
@@ -35,25 +37,25 @@ export function RedeemRewardPanel({
   return (
     <div className="space-y-12">
       <div className="flex flex-wrap items-center gap-4">
-        <Badge variant="accent" className="bg-primary/5 text-primary border-none">{reward.category}</Badge>
+        <Badge variant="accent" className="bg-primary/5 text-primary border-none">{t(reward.category)}</Badge>
         <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80 italic">
-          {reward.inventory} Available
+          {reward.inventory} {t('Available')}
         </span>
       </div>
 
       <div className="space-y-4">
         <h2 className="font-serif text-5xl tracking-tight text-primary">
-          {reward.title}
+          {t(reward.title)}
         </h2>
         <p className="max-w-2xl text-xl font-medium leading-relaxed text-on-surface-variant/85">
-          {reward.description}
+          {t(reward.description)}
         </p>
       </div>
 
       <div className="grid gap-1 overflow-hidden rounded-[2.5rem] bg-surface-lowest border border-outline-variant/5 shadow-card md:grid-cols-3">
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            XP Cost
+            {t('XP Cost')}
           </p>
           <p className="font-serif text-4xl text-primary">
             {formatPoints(reward.pointsCost)} XP
@@ -61,7 +63,7 @@ export function RedeemRewardPanel({
         </div>
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            Your XP
+            {t('Your XP')}
           </p>
           <p className="font-serif text-4xl text-primary">
             {formatPoints(balancePoints)} XP
@@ -69,7 +71,7 @@ export function RedeemRewardPanel({
         </div>
         <div className="p-10 space-y-2">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            XP After
+            {t('XP After')}
           </p>
           <p className={cn(
             "font-serif text-4xl",
@@ -88,7 +90,7 @@ export function RedeemRewardPanel({
       >
         <div className="space-y-8">
           <div className="grid gap-3">
-            <Label htmlFor="pickupWindow">Pickup window</Label>
+            <Label htmlFor="pickupWindow">{t('Pickup window')}</Label>
             <Input id="pickupWindow" list="pickup-window-options" {...form.register('pickupWindow')} />
             <datalist id="pickup-window-options">
               <option value="Now" />
@@ -101,10 +103,10 @@ export function RedeemRewardPanel({
           </div>
 
           <div className="grid gap-3">
-            <Label htmlFor="notes">Notes</Label>
+            <Label htmlFor="notes">{t('Notes')}</Label>
             <Input
               id="notes"
-          placeholder="Pickup notes, substitutions, or timing..."
+              placeholder={t('Pickup notes, substitutions, or timing...')}
               {...form.register('notes')}
             />
             {form.formState.errors.notes ? (
@@ -120,10 +122,10 @@ export function RedeemRewardPanel({
           disabled={!canRedeem || isSubmitting}
         >
           {isSubmitting
-            ? 'Processing...'
+            ? t('Processing...')
             : canRedeem
-              ? 'Redeem Now'
-              : 'Not Enough XP'}
+              ? t('Redeem Now')
+              : t('Not Enough XP')}
         </Button>
       </form>
     </div>

@@ -8,10 +8,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useUpdateBusinessSettings } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useLanguage } from '@/lib/language'
 import { businessSettingsSchema, type BusinessSettingsFormValues } from '@/types/forms'
 
 export function SettingsPage() {
   const { business } = useBusinessOwnerData()
+  const { t } = useLanguage()
   const updateSettings = useUpdateBusinessSettings()
   const [saved, setSaved] = useState(false)
 
@@ -23,7 +25,7 @@ export function SettingsPage() {
   })
 
   if (!business) {
-    return <div className="text-center py-20">Loading...</div>
+    return <div className="text-center py-20">{t('Loading...')}</div>
   }
 
   const businessColors =
@@ -41,9 +43,9 @@ export function SettingsPage() {
     <div className="space-y-16">
       {/* Header */}
       <div className="space-y-4">
-        <h1 className="font-serif text-5xl tracking-tight text-primary">Settings</h1>
+        <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Settings')}</h1>
         <p className="text-lg text-on-surface-variant/85">
-          Manage your business information and quest reward settings.
+          {t('Manage your business information and quest reward settings.')}
         </p>
       </div>
 
@@ -53,9 +55,9 @@ export function SettingsPage() {
           <div className="space-y-6">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                Business Information
+                {t('Business Information')}
               </span>
-              <h2 className="font-serif text-2xl text-primary">Details</h2>
+              <h2 className="font-serif text-2xl text-primary">{t('Details')}</h2>
             </div>
 
             <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
@@ -75,7 +77,7 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label className="flex items-center gap-2 text-on-surface-variant/70">
                     <Building2 className="size-4" />
-                    Business Name
+                    {t('Business Name')}
                   </Label>
                   <Input readOnly value={business.name} className="rounded-xl h-12 bg-surface-low cursor-default" />
                 </div>
@@ -83,7 +85,7 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label className="flex items-center gap-2 text-on-surface-variant/70">
                     <Info className="size-4" />
-                    Description
+                    {t('Description')}
                   </Label>
                   <Input readOnly value={business.description} className="rounded-xl h-12 bg-surface-low cursor-default" />
                 </div>
@@ -91,9 +93,9 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label className="flex items-center gap-2 text-on-surface-variant/70">
                     <MapPin className="size-4" />
-                    Location
+                    {t('Location')}
                   </Label>
-                  <Input readOnly placeholder="Not set" className="rounded-xl h-12 bg-surface-low cursor-default" />
+                  <Input readOnly placeholder={t('Not set')} className="rounded-xl h-12 bg-surface-low cursor-default" />
                 </div>
               </div>
             </div>
@@ -103,9 +105,9 @@ export function SettingsPage() {
           <div className="space-y-6">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                Quest Program
+                {t('Quest Program')}
               </span>
-              <h2 className="font-serif text-2xl text-primary">Settings</h2>
+              <h2 className="font-serif text-2xl text-primary">{t('Settings')}</h2>
             </div>
 
             <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
@@ -113,7 +115,7 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="earn-rate" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    XP Rate (XP per $1)
+                    {t('XP Rate (XP per $1)')}
                   </Label>
                   <Input
                     id="earn-rate"
@@ -125,14 +127,14 @@ export function SettingsPage() {
                     <p className="text-xs text-red-500">{form.formState.errors.earnRate.message}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    Customers earn this much XP for every dollar spent.
+                    {t('Customers earn this much XP for every dollar spent.')}
                   </p>
                 </div>
 
                 <div className="grid gap-2">
                   <Label htmlFor="tax-rate" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    Tax Rate
+                    {t('Tax Rate')}
                   </Label>
                   <Input
                     id="tax-rate"
@@ -145,7 +147,7 @@ export function SettingsPage() {
                     <p className="text-xs text-red-500">{form.formState.errors.taxRate.message}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    Enter as decimal (e.g., 0.0875 for 8.75%)
+                    {t('Enter as decimal (e.g., 0.0875 for 8.75%)')}
                   </p>
                 </div>
               </div>
@@ -155,9 +157,9 @@ export function SettingsPage() {
             <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="font-serif text-xl text-primary">Business Status</h3>
+                  <h3 className="font-serif text-xl text-primary">{t('Business Status')}</h3>
                   <p className="text-sm text-on-surface-variant/70 mt-1">
-                    {business.active ? 'Your business is currently active' : 'Your business is currently inactive'}
+                    {business.active ? t('Your business is currently active') : t('Your business is currently inactive')}
                   </p>
                 </div>
                 <div
@@ -165,7 +167,7 @@ export function SettingsPage() {
                     business.active ? 'bg-success/10 text-success' : 'bg-outline-variant/10 text-on-surface-variant'
                   }`}
                 >
-                  {business.active ? 'Active' : 'Inactive'}
+                  {business.active ? t('Active') : t('Inactive')}
                 </div>
               </div>
             </div>
@@ -175,10 +177,10 @@ export function SettingsPage() {
         {/* Save Button */}
         <div className="flex items-center justify-end gap-4 mt-8">
           {updateSettings.isError && (
-            <p className="text-sm font-bold text-red-500">Failed to save settings. Please try again.</p>
+            <p className="text-sm font-bold text-red-500">{t('Failed to save settings. Please try again.')}</p>
           )}
           {saved && (
-            <p className="text-sm font-bold text-success">Settings saved!</p>
+            <p className="text-sm font-bold text-success">{t('Settings saved!')}</p>
           )}
           <Button
             type="submit"
@@ -186,7 +188,7 @@ export function SettingsPage() {
             disabled={form.formState.isSubmitting}
           >
             <Save className="size-5 mr-2" />
-            {form.formState.isSubmitting ? 'Saving...' : 'Save Changes'}
+            {form.formState.isSubmitting ? t('Saving...') : t('Save Changes')}
           </Button>
         </div>
       </form>
