@@ -48,7 +48,7 @@ export function AppShell() {
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                Synergize
+                Medellin Rewards
               </p>
               <h1 className="mt-1 font-serif text-3xl tracking-[-0.04em] text-foreground">
                 Rewards

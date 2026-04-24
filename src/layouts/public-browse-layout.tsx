@@ -20,7 +20,7 @@ export function PublicBrowseLayout() {
           <div className="flex items-center gap-12">
             <NavLink to="/" className="flex items-center gap-3">
               <span className="font-serif text-2xl font-black italic uppercase tracking-[0.2em] text-primary-container">
-                Synergize
+                Medellin Rewards
               </span>
               <span className="hidden h-6 w-px bg-primary-container/25 md:block" />
               <span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant md:block">

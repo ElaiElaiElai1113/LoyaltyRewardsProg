@@ -61,12 +61,10 @@ const spanishTranslations: Record<string, string> = {
   'Order History': 'Historial de pedidos',
   'Earn XP, complete quests, and unlock rewards across partner realms.':
     'Gana XP, completa misiones y desbloquea recompensas en negocios aliados.',
-  'Copyright 2024 Synergize Business Group. All rights reserved.':
-    'Copyright 2024 Synergize Business Group. Todos los derechos reservados.',
   'Sign In': 'Iniciar sesión',
   Register: 'Registrarse',
   'Rewards Game': 'Juego de recompensas',
-  'Synergize Rewards.': 'Synergize Rewards.',
+  'Medellin Rewards.': 'Medellin Rewards.',
   'Play every': 'Juega en cada',
   visit: 'visita',
   'Earn XP on every purchase, unlock reward drops, and climb levels across partner businesses.':

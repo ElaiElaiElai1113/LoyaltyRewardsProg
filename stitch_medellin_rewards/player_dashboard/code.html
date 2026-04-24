@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Medellin Rewards - Player Profile</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .shimmer-bg {
+            background: linear-gradient(90deg, transparent, rgba(0, 242, 255, 0.1), transparent);
+            background-size: 200% 100%;
+        }
+        .grid-floor {
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#ffe08b",
+                        "surface-variant": "#34343d",
+                        "secondary": "#ffecc0",
+                        "on-tertiary": "#4b007e",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-tint": "#00dbe7",
+                        "secondary-container": "#fecb00",
+                        "on-tertiary-fixed-variant": "#6b00b0",
+                        "outline": "#849495",
+                        "inverse-primary": "#00696f",
+                        "on-primary-container": "#006a71",
+                        "surface-container-low": "#1b1b23",
+                        "tertiary-fixed-dim": "#dfb7ff",
+                        "surface-container": "#1f1f27",
+                        "on-primary-fixed": "#002022",
+                        "tertiary": "#fff5ff",
+                        "on-secondary": "#3d2f00",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#6e5700",
+                        "on-secondary-fixed-variant": "#584400",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface-container-lowest": "#0d0d16",
+                        "surface-bright": "#393842",
+                        "on-surface": "#e4e1ed",
+                        "primary-fixed": "#74f5ff",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#3a494b",
+                        "background": "#13131b",
+                        "primary-fixed-dim": "#00dbe7",
+                        "tertiary-fixed": "#f1daff",
+                        "on-tertiary-fixed": "#2d004f",
+                        "surface-container-high": "#292932",
+                        "inverse-on-surface": "#302f39",
+                        "surface-container-highest": "#34343d",
+                        "on-surface-variant": "#b9cacb",
+                        "on-primary": "#00363a",
+                        "on-background": "#e4e1ed",
+                        "error-container": "#93000a",
+                        "surface-dim": "#13131b",
+                        "surface": "#13131b",
+                        "secondary-fixed-dim": "#f1c100",
+                        "primary": "#e1fdff",
+                        "on-tertiary-container": "#8e00e8",
+                        "inverse-surface": "#e4e1ed",
+                        "primary-container": "#00f2ff",
+                        "tertiary-container": "#edd1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "margin": "40px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-xp": ["Space Grotesk"],
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-xp": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container grid-floor min-h-screen">
+<!-- TopAppBar Shell -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0a0a12]/70 backdrop-blur-xl border-b border-[#00f2ff]/20 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
+<div class="flex items-center gap-8">
+<span class="text-2xl font-black text-[#00f2ff] italic tracking-widest font-['Space_Grotesk'] uppercase">MEDELLIN REWARDS</span>
+<nav class="hidden md:flex gap-6">
+<a class="font-['Space_Grotesk'] tracking-tighter uppercase text-slate-500 hover:text-[#00f2ff] transition-all duration-300" href="#">Dashboard</a>
+<a class="font-['Space_Grotesk'] tracking-tighter uppercase text-slate-500 hover:text-[#00f2ff] transition-all duration-300" href="#">Shop</a>
+<a class="font-['Space_Grotesk'] tracking-tighter uppercase text-[#00f2ff] drop-shadow-[0_0_8px_#00f2ff]" href="#">Profile</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-slate-500 hover:text-[#00f2ff] transition-all"><span class="material-symbols-outlined" data-icon="account_balance_wallet">account_balance_wallet</span></button>
+<button class="text-slate-500 hover:text-[#00f2ff] transition-all"><span class="material-symbols-outlined" data-icon="notifications">notifications</span></button>
+<button class="text-slate-500 hover:text-[#00f2ff] transition-all"><span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span></button>
+<div class="h-8 w-8 bg-surface-container-highest border border-[#00f2ff]/30 rounded-full flex items-center justify-center overflow-hidden">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="Stylized high-tech avatar for a futuristic gamer profile with neon blue highlights and cyberpunk accessories" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC2wDhTZpQ5I3xPPPXb0_lmDynYyfr8ZCcEYqAT8SIOwgVhdKWlbwfhu8UKRgzhzRySglxWstZQsBBpO_RtIaptcj4Y17l1uLrbdacZmh8PfZcu9yJq-SHMt9mRnYpdxhwiB-_zedQpfP5STjdU8aHAmgtMdbd4HFfYKCn2ebnmohY9q9krAgK28jSLxaStnNIhsC1Px7SLmZm2t53LHOa9WuHKJqT99fZFESkAsW2METc6EvtALKOZOPdeKq4wA7wD2ZWXZrlq800"/>
+</div>
+</div>
+</header>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] flex flex-col py-8 bg-[#0a0a12]/80 backdrop-blur-2xl w-20 md:w-64 border-r border-[#00f2ff]/20 shadow-[5px_0_20px_rgba(0,0,0,0.5)] hidden md:flex z-40">
+<div class="px-6 mb-10">
+<div class="flex flex-col">
+<span class="font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest text-[#00f2ff]">RANK: LEGENDARY</span>
+<span class="text-[10px] text-slate-400 opacity-70 tracking-[0.2em]">LVL 99 ELITE</span>
+</div>
+</div>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center px-6 py-4 gap-4 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest hidden md:block">Dashboard</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest hidden md:block">Shop</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="workspace_premium">workspace_premium</span>
+<span class="font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest hidden md:block">Rewards</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 bg-[#00f2ff]/10 text-[#00f2ff] border-r-4 border-[#00f2ff] shadow-[inset_-10px_0_20px_rgba(0,242,255,0.05)]" href="#">
+<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest hidden md:block">Profile</span>
+</a>
+<a class="flex items-center px-6 py-4 gap-4 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="font-['Space_Grotesk'] font-bold text-xs uppercase tracking-widest hidden md:block">History</span>
+</a>
+</nav>
+</aside>
+<!-- Main Content Canvas -->
+<main class="md:ml-64 mt-16 pb-24 md:pb-8 p-6 lg:p-10">
+<div class="max-w-container-max mx-auto space-y-8">
+<!-- Large Player Status Card -->
+<section class="relative overflow-hidden bg-[#0a0a12]/70 backdrop-blur-xl border border-[#00f2ff]/30 rounded-xl p-8 shadow-[0_0_40px_rgba(0,242,255,0.1)]">
+<div class="absolute top-0 right-0 w-64 h-64 bg-primary-container/10 blur-[100px] rounded-full -mr-20 -mt-20"></div>
+<div class="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+<div class="flex gap-6 items-center">
+<div class="w-24 h-24 rounded-lg bg-surface-container-highest border-2 border-primary-container p-1 shadow-[0_0_20px_rgba(0,242,255,0.4)]">
+<img alt="Alex Vance Profile" class="w-full h-full object-cover rounded" data-alt="Close-up avatar of a futuristic explorer with tech eyewear and neon blue accents on a dark background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB6aXwGljOnsWiu5NXlIZkr-0ycudvQ5L4xYTTRW9sP5H1jeLh42qy46zAH6UFySk5h_0IKCJdCSmhZvmsnrShnqfswXuamjcCNzOc4ZQq8aPInbwg_-5a_ewzmJnzIbZ_AXvuY5psZY4ond-cbaJjQBr7R8z_lfEYEC9Vad69VYsx4KMhw7fU4f5olKwoLB94ge-Tkf80nr7tEeAzQM7xVNiDDU7p7qa_BWhI20hEpz9DbtzBzivr6yKN78pj1uZIbUWbis_hEFxM"/>
+</div>
+<div>
+<h1 class="font-headline-lg text-primary-container tracking-tight">ALEX VANCE</h1>
+<div class="flex items-center gap-2 mt-1">
+<span class="bg-primary-container/20 text-primary-container border border-primary-container/40 px-2 py-0.5 font-label-caps text-[10px] rounded">LEVEL 42</span>
+<span class="font-headline-md text-on-surface uppercase text-sm tracking-widest opacity-80">Elite Voyager</span>
+</div>
+</div>
+</div>
+<div class="w-full md:w-1/3 space-y-3">
+<div class="flex justify-between items-end font-label-caps text-on-surface/60">
+<span>PROGRESS TO LVL 43</span>
+<span class="text-primary-container">2,450 / 3,000 XP</span>
+</div>
+<!-- Segmented XP Bar -->
+<div class="h-4 flex gap-1">
+<div class="flex-1 bg-primary-container shadow-[0_0_10px_rgba(0,242,255,0.5)]"></div>
+<div class="flex-1 bg-primary-container shadow-[0_0_10px_rgba(0,242,255,0.5)]"></div>
+<div class="flex-1 bg-primary-container shadow-[0_0_10px_rgba(0,242,255,0.5)]"></div>
+<div class="flex-1 bg-primary-container shadow-[0_0_10px_rgba(0,242,255,0.5)]"></div>
+<div class="flex-1 bg-primary-container/20 border border-primary-container/30"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Stats Grid -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-xl flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-orange-500/10 flex items-center justify-center text-orange-500">
+<span class="material-symbols-outlined" data-icon="local_fire_department" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+</div>
+<div>
+<p class="font-label-caps text-on-surface/50 text-[10px]">7-DAY STREAK</p>
+<p class="font-headline-md text-on-surface">Daily Warrior</p>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-xl flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-primary-container/10 flex items-center justify-center text-primary-container">
+<span class="material-symbols-outlined" data-icon="inventory_2" style="font-variation-settings: 'FILL' 1;">inventory_2</span>
+</div>
+<div>
+<p class="font-label-caps text-on-surface/50 text-[10px]">UNLOCKED REWARDS</p>
+<p class="font-headline-md text-on-surface">12 Vault Items</p>
+</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant/30 p-6 rounded-xl flex items-center gap-6">
+<div class="w-12 h-12 rounded-lg bg-secondary-container/10 flex items-center justify-center text-secondary-container">
+<span class="material-symbols-outlined" data-icon="bolt" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<div>
+<p class="font-label-caps text-on-surface/50 text-[10px]">POWER CREDITS</p>
+<p class="font-headline-md text-secondary-container">450 PC</p>
+</div>
+</div>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Quest Log Section -->
+<section class="lg:col-span-8 space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-primary-container flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="target">ads_click</span>
+                            ACTIVE QUESTS
+                        </h2>
+<button class="font-label-caps text-primary-container/60 hover:text-primary-container transition-colors uppercase">View All</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Quest Card 1 -->
+<div class="bg-[#0d0d16] border-l-4 border-green-500 p-5 rounded-r-xl group">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-md text-sm text-on-surface">Daily Login</h3>
+<span class="bg-green-500/10 text-green-500 px-2 py-0.5 rounded font-label-caps text-[9px]">COMPLETE</span>
+</div>
+<p class="text-xs text-on-surface/60 mb-4">Establish connection to the main grid today.</p>
+<div class="flex justify-between items-center">
+<span class="text-secondary-container text-xs font-bold">+50 XP</span>
+<span class="material-symbols-outlined text-green-500" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Quest Card 2 -->
+<div class="bg-[#0d0d16] border-l-4 border-primary-container p-5 rounded-r-xl group">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-md text-sm text-on-surface">Refer a Squad Member</h3>
+<span class="bg-primary-container/10 text-primary-container px-2 py-0.5 rounded font-label-caps text-[9px]">IN PROGRESS</span>
+</div>
+<p class="text-xs text-on-surface/60 mb-2">Expansion is key. Bring 3 allies to the network.</p>
+<div class="w-full bg-surface-container-highest h-1 rounded-full mb-3">
+<div class="w-1/3 bg-primary-container h-full rounded-full"></div>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-secondary-container text-xs font-bold">+500 XP</span>
+<span class="text-[10px] font-label-caps text-on-surface/40">1 / 3 ALLIES</span>
+</div>
+</div>
+<!-- Quest Card 3 -->
+<div class="bg-[#0d0d16] border-l-4 border-secondary-fixed-dim p-5 rounded-r-xl">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-md text-sm text-on-surface">New World Explorer</h3>
+<span class="bg-secondary-fixed-dim/10 text-secondary-fixed-dim px-2 py-0.5 rounded font-label-caps text-[9px]">AVAILABLE</span>
+</div>
+<p class="text-xs text-on-surface/60 mb-4">Visit any partner sector and verify presence.</p>
+<div class="flex justify-between items-center">
+<span class="text-secondary-container text-xs font-bold">+250 XP</span>
+<button class="font-label-caps text-xs text-primary-container uppercase border border-primary-container/30 px-3 py-1 rounded hover:bg-primary-container/10 transition-colors">Find Sector</button>
+</div>
+</div>
+<!-- Quest Card 4 -->
+<div class="bg-[#0d0d16] border-l-4 border-purple-500 p-5 rounded-r-xl">
+<div class="flex justify-between items-start mb-4">
+<h3 class="font-headline-md text-sm text-on-surface">Loot Claimer</h3>
+<span class="bg-purple-500/10 text-purple-500 px-2 py-0.5 rounded font-label-caps text-[9px]">LOCKED</span>
+</div>
+<p class="text-xs text-on-surface/60 mb-4">Claim your first reward from the Medellin Rewards Vault.</p>
+<div class="flex justify-between items-center">
+<span class="text-secondary-container text-xs font-bold">+100 XP</span>
+<span class="material-symbols-outlined text-on-surface/20" data-icon="lock">lock</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Party Invite Sidebar -->
+<aside class="lg:col-span-4 space-y-6">
+<h2 class="font-headline-md text-primary-container flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="diversity_3">diversity_3</span>
+                        SQUAD INVITE
+                    </h2>
+<div class="relative bg-gradient-to-br from-primary-container/20 to-transparent border border-primary-container/30 rounded-xl p-8 overflow-hidden">
+<div class="absolute -top-10 -right-10 w-40 h-40 bg-primary-container/10 rounded-full blur-3xl"></div>
+<div class="relative z-10 flex flex-col items-center gap-6">
+<div class="text-center">
+<p class="font-headline-md text-xs tracking-widest text-primary-container mb-1 uppercase">Holographic Game Pass</p>
+<p class="text-[10px] text-on-surface/50 font-label-caps">SCAN TO JOIN SQUAD</p>
+</div>
+<div class="bg-white p-3 rounded-lg shadow-[0_0_30px_rgba(0,242,255,0.3)] border-2 border-primary-container">
+<img alt="Referral QR Code" class="w-32 h-32 grayscale contrast-125" data-alt="A clean QR code against a white background for a digital referral pass" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNsI8TIUQR1o7LkGy7wYu02eKO2ufGV3na3Cxm7h1qytfscMi02ScTlBLu0ptgyRloj7P_79__md0nt-1bvxBXvx0r5gUUSvLZ25kG5cR4d8cYtmB9syYYn0kMD-W5a7DuNYgBNLA3rZ2tRm3ohX7ndFwLH5SfpBFUfDvCUX2WDjgDBWBZZoIxVhVpV0BXBV1iG3jSoT0POlzXKZ2VdIhNbrLQIyisddYy1knryruizMfLmIExSUsTuAXPqoW1TTH6piz58kbW_Yk"/>
+</div>
+<div class="w-full space-y-3">
+<button class="w-full bg-primary-container text-on-primary font-label-caps py-4 rounded-lg flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-[0_4px_15px_rgba(0,242,255,0.4)] relative group overflow-hidden">
+<div class="absolute inset-0 shimmer-bg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
+                                    COPY INVITE LINK
+                                </button>
+<p class="text-[9px] text-center text-on-surface/40 uppercase tracking-tighter">Share link to earn 500 XP per activation</p>
+</div>
+</div>
+</div>
+</aside>
+</div>
+<!-- Reward Vault Preview -->
+<section class="space-y-6">
+<div class="flex justify-between items-center">
+<h2 class="font-headline-md text-primary-container flex items-center gap-3">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+                        VAULT PREVIEW
+                    </h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Reward Card 1: Common -->
+<div class="bg-surface-container-low border border-outline-variant/30 rounded-xl overflow-hidden group hover:border-primary-container/50 transition-all">
+<div class="h-40 relative">
+<img alt="Tech Gadget" class="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Futuristic glowing hardware component on a dark tech workbench with cyan lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeP0p-ru6xwHtxft6dNpA7xUtvhGe8WCBhfDEzRS4I2GupkNqick-nVJfOOeCbdBdrdThWohMTLOxIlj6MCt2R1nbHypEdFWdR8s8YJLhH9SS32EiomiIYRYVw8Y5rGRivYeVxnHnBkCDea75gwAhzmCXJifsFPMAUVk8qYYEZUmIsMp7YDX8lEZbkX4DlLWVutY0O0w9QkSYGf1kgZxjE7xfYpK07oiiSU9QzEYNeH_ZlB4OHYdHbhZJ2BQQMjU6CxsdWM8hoIZ0"/>
+<span class="absolute top-3 right-3 bg-slate-500 text-white px-2 py-0.5 font-label-caps text-[9px] rounded">COMMON</span>
+</div>
+<div class="p-5 space-y-4">
+<div>
+<h3 class="font-headline-md text-base text-on-surface">Data Burst Pack</h3>
+<p class="text-xs text-on-surface/60">Bonus credits for your next sector scan.</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-outline-variant/20">
+<span class="font-display-xp text-lg text-primary-container">500 <span class="text-[10px]">XP</span></span>
+<button class="font-label-caps text-[10px] bg-surface-container-highest border border-outline-variant px-4 py-2 rounded hover:text-primary-container hover:border-primary-container transition-all">UNLOCK</button>
+</div>
+</div>
+</div>
+<!-- Reward Card 2: Epic -->
+<div class="bg-surface-container-low border border-purple-500/30 rounded-xl overflow-hidden group hover:border-purple-500 transition-all shadow-[0_0_20px_rgba(168,85,247,0.1)]">
+<div class="h-40 relative">
+<img alt="Epic Skin" class="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Abstract vibrant purple light trails and energy waves in a dark space environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_zNHkZU7E3hafPVFUdV18bERjPTYrLNgZR2b0d5He_NtAA6YQe0SOVAQsyBB1jAGICP8p4EEvuPCw9MfxAoqjNU9SxVu9h_Db5NV45ecga0GZIYGBU9KdyS9SS_jxdjkB-ZaM2pNZMB0C7T9R7vRM6FtQwwk40_YS5xGz5-j5go8bVkuy-0xOm_PP4j-D76o2YcNGTse5LBB1SwzRvUPvp03G7PUNfYFN45KhWn2PVfgvbfgP-KiAixOOrvBFTTSYJAI_oZ-Wj3g"/>
+<span class="absolute top-3 right-3 bg-purple-500 text-white px-2 py-0.5 font-label-caps text-[9px] rounded shadow-[0_0_10px_rgba(168,85,247,0.5)]">EPIC</span>
+</div>
+<div class="p-5 space-y-4">
+<div>
+<h3 class="font-headline-md text-base text-on-surface">Void Runner Skin</h3>
+<p class="text-xs text-on-surface/60">Limited edition avatar frame with pulse effect.</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-outline-variant/20">
+<span class="font-display-xp text-lg text-purple-400">2,500 <span class="text-[10px]">XP</span></span>
+<button class="font-label-caps text-[10px] bg-purple-500/10 border border-purple-500/40 text-purple-400 px-4 py-2 rounded hover:bg-purple-500 hover:text-white transition-all">UNLOCK</button>
+</div>
+</div>
+</div>
+<!-- Reward Card 3: Legendary -->
+<div class="bg-surface-container-low border border-secondary-container/30 rounded-xl overflow-hidden group hover:border-secondary-container transition-all shadow-[0_0_30px_rgba(254,203,0,0.1)]">
+<div class="h-40 relative">
+<img alt="Legendary Trip" class="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all" data-alt="Cinematic orbital view of earth at night with glowing city lights and golden atmosphere glow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8HMZn6OkuVbAJOTDIvhMDzzXfJQMn05K1nLHuFRkervTNtuGtykF96lVA_daDeUbap2kR3UUQo72pVmaYTqn-kAl8m8S67mYCRGVML3Y1voTAVgq7SvdwLMxox5ipuzXXy60V2ffmVCte-PhD0VTumPDyjW1yAqNYnL-v5RcbJeI8IGJg4JEC97rAx2SJwvfvWK2bnq3bg7PVXmdK9xRudDIdiHg_iytHd8-CfTmFd64zRIVQdQTV-XAhoCe8HeTO6E8NXwqdq7w"/>
+<span class="absolute top-3 right-3 bg-secondary-container text-on-secondary-container px-2 py-0.5 font-label-caps text-[9px] rounded shadow-[0_0_15px_rgba(254,203,0,0.6)]">LEGENDARY</span>
+</div>
+<div class="p-5 space-y-4">
+<div>
+<h3 class="font-headline-md text-base text-on-surface">Global Transit Pass</h3>
+<p class="text-xs text-on-surface/60">Full access to all physical partner locations.</p>
+</div>
+<div class="flex justify-between items-center pt-2 border-t border-outline-variant/20">
+<span class="font-display-xp text-lg text-secondary-container">15,000 <span class="text-[10px]">XP</span></span>
+<button class="font-label-caps text-[10px] bg-secondary-container/10 border border-secondary-container/40 text-secondary-container px-4 py-2 rounded hover:bg-secondary-container hover:text-on-secondary-container transition-all">UNLOCK</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- BottomNavBar Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe md:hidden bg-[#0a0a12]/90 backdrop-blur-lg border-t border-[#00f2ff]/30 shadow-[0_-5px_25px_rgba(0,242,255,0.15)]">
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]" href="#">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]" href="#">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Shop</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]" href="#">
+<span class="material-symbols-outlined" data-icon="ads_click">ads_click</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Quest</span>
+</a>
+<a class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]" href="#">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Perks</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#00f2ff] scale-110 drop-shadow-[0_0_5px_#00f2ff]" href="#">
+<span class="material-symbols-outlined" data-icon="manage_accounts" style="font-variation-settings: 'FILL' 1;">manage_accounts</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">User</span>
+</a>
+</nav>
+</body></html>

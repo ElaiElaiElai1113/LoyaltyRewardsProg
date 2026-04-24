@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#ffe08b",
+                        "surface-variant": "#34343d",
+                        "secondary": "#ffecc0",
+                        "on-tertiary": "#4b007e",
+                        "on-secondary-fixed": "#241a00",
+                        "surface-tint": "#00dbe7",
+                        "secondary-container": "#fecb00",
+                        "on-tertiary-fixed-variant": "#6b00b0",
+                        "outline": "#849495",
+                        "inverse-primary": "#00696f",
+                        "on-primary-container": "#006a71",
+                        "surface-container-low": "#1b1b23",
+                        "tertiary-fixed-dim": "#dfb7ff",
+                        "surface-container": "#1f1f27",
+                        "on-primary-fixed": "#002022",
+                        "tertiary": "#fff5ff",
+                        "on-secondary": "#3d2f00",
+                        "on-error": "#690005",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#6e5700",
+                        "on-secondary-fixed-variant": "#584400",
+                        "on-primary-fixed-variant": "#004f54",
+                        "surface-container-lowest": "#0d0d16",
+                        "surface-bright": "#393842",
+                        "on-surface": "#e4e1ed",
+                        "primary-fixed": "#74f5ff",
+                        "on-error-container": "#ffdad6",
+                        "outline-variant": "#3a494b",
+                        "background": "#13131b",
+                        "primary-fixed-dim": "#00dbe7",
+                        "tertiary-fixed": "#f1daff",
+                        "on-tertiary-fixed": "#2d004f",
+                        "surface-container-high": "#292932",
+                        "inverse-on-surface": "#302f39",
+                        "surface-container-highest": "#34343d",
+                        "on-surface-variant": "#b9cacb",
+                        "on-primary": "#00363a",
+                        "on-background": "#e4e1ed",
+                        "error-container": "#93000a",
+                        "surface-dim": "#13131b",
+                        "surface": "#13131b",
+                        "secondary-fixed-dim": "#f1c100",
+                        "primary": "#e1fdff",
+                        "on-tertiary-container": "#8e00e8",
+                        "inverse-surface": "#e4e1ed",
+                        "primary-container": "#00f2ff",
+                        "tertiary-container": "#edd1ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "gutter": "24px",
+                        "container-max": "1440px",
+                        "margin": "40px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "display-xp": ["Space Grotesk"],
+                        "headline-md": ["Space Grotesk"],
+                        "label-caps": ["Space Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Space Grotesk"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "display-xp": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(10, 10, 18, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.2);
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(0, 242, 255, 0.1);
+        }
+        .scanline {
+            background: linear-gradient(to right, transparent, rgba(0, 242, 255, 0.3), transparent);
+            width: 100%;
+            height: 2px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .grid-floor {
+            background-image: linear-gradient(rgba(0, 242, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 242, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-background min-h-screen grid-floor">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex justify-between items-center px-6 h-16 bg-[#0a0a12]/70 backdrop-blur-xl border-b border-[#00f2ff]/30 shadow-[0_0_15px_rgba(0,242,255,0.1)]">
+<div class="flex items-center gap-4">
+<span class="text-2xl font-black text-[#00f2ff] italic tracking-widest font-['Space_Grotesk'] uppercase">MEDELLIN REWARDS</span>
+<div class="hidden md:block h-6 w-[1px] bg-[#00f2ff]/20 mx-2"></div>
+<h1 class="font-headline-md text-primary tracking-tighter uppercase hidden md:block">Commander Console: Tech Haven Store #402</h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="flex gap-4">
+<span class="material-symbols-outlined text-[#00f2ff] cursor-pointer" data-icon="account_balance_wallet">account_balance_wallet</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-[#00f2ff] transition-all cursor-pointer" data-icon="notifications">notifications</span>
+<span class="material-symbols-outlined text-slate-500 hover:text-[#00f2ff] transition-all cursor-pointer" data-icon="leaderboard">leaderboard</span>
+</div>
+<div class="flex items-center gap-3 pl-4 border-l border-[#00f2ff]/20">
+<div class="text-right">
+<p class="font-label-caps text-[10px] text-secondary-fixed-dim">RANK: LEGENDARY</p>
+<p class="font-label-caps text-[10px] text-slate-400">LVL 99 ELITE</p>
+</div>
+<div class="w-10 h-10 rounded-full border border-[#00f2ff]/50 p-0.5">
+<img alt="Commander Avatar" class="w-full h-full rounded-full object-cover" data-alt="close-up portrait of a futuristic cybernetic commander with glowing cyan visor and sleek metallic armor details" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBef836Y5HjzJWhSnwAaNioVKW2-YwrWP_KBeNdDNpvv3bWhsmG48sjLSZYmDzWOcCeZyAdGPwxfmB_-3P8Pv6SZHIVadlHvwppB8BIwHwORJ5VWgyuZH-UUGn21sTy0NVa5iavY7_oUT-9WqYFZtcfq3-2NAJ1uXnNdPGjoL6FHEQ3ZX7fHtnv27aIdm5Q5TmyzXtUziWNPYXVFMDzHaQV2KIpFHpPmxFfMFLyFLihVxJ1bMxsYwmRY8KtJAJynziU4JTnoU6wCrc"/>
+</div>
+</div>
+</div>
+</header>
+<!-- SideNavBar -->
+<nav class="fixed left-0 top-16 h-[calc(100vh-64px)] flex flex-col py-8 bg-[#0a0a12]/80 backdrop-blur-2xl w-20 md:w-64 border-r border-[#00f2ff]/20 shadow-[5px_0_20px_rgba(0,0,0,0.5)] z-40">
+<div class="flex flex-col gap-2 px-2">
+<a class="flex items-center gap-4 px-4 py-3 bg-[#00f2ff]/10 text-[#00f2ff] border-r-4 border-[#00f2ff] shadow-[inset_-10px_0_20px_rgba(0,242,255,0.05)] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="hidden md:block font-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+<span class="hidden md:block font-label-caps">Shop</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="workspace_premium">workspace_premium</span>
+<span class="hidden md:block font-label-caps">Rewards</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="campaign">campaign</span>
+<span class="hidden md:block font-label-caps">Promotions</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="history_edu">history_edu</span>
+<span class="hidden md:block font-label-caps">History</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 text-slate-400 opacity-70 hover:bg-[#00f2ff]/5 hover:text-[#00f2ff] transition-all" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="hidden md:block font-label-caps">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="pt-24 pb-24 md:pb-8 pl-24 md:pl-72 pr-6 max-w-container-max mx-auto">
+<!-- Mission Control Metrics -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+<div class="glass-panel p-5 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-[#00f2ff]/30"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-[#00f2ff]" data-icon="groups">groups</span>
+<span class="font-label-caps text-[10px] text-green-400">+12%</span>
+</div>
+<p class="font-label-caps text-slate-400 mb-1">TOTAL MEMBERS</p>
+<p class="font-display-xp text-primary-container">12,842</p>
+</div>
+<div class="glass-panel p-5 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-secondary-container/30"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-secondary-container" data-icon="rocket_launch">rocket_launch</span>
+<span class="font-label-caps text-[10px] text-secondary-container">ACTIVE</span>
+</div>
+<p class="font-label-caps text-slate-400 mb-1">ACTIVE MISSIONS</p>
+<p class="font-display-xp text-secondary">08</p>
+</div>
+<div class="glass-panel p-5 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-tertiary-fixed-dim/30"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="bolt">bolt</span>
+<span class="font-label-caps text-[10px] text-slate-400">GH/S</span>
+</div>
+<p class="font-label-caps text-slate-400 mb-1">POWER ISSUED</p>
+<p class="font-display-xp text-tertiary-fixed-dim">842K</p>
+</div>
+<div class="glass-panel p-5 relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-1 bg-error/30"></div>
+<div class="flex justify-between items-start mb-4">
+<span class="material-symbols-outlined text-error" data-icon="redeem">redeem</span>
+<span class="font-label-caps text-[10px] text-error">98% RATE</span>
+</div>
+<p class="font-label-caps text-slate-400 mb-1">REWARDS FULFILLED</p>
+<p class="font-display-xp text-error">1,024</p>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- Left Column: Command Modules -->
+<div class="lg:col-span-8 space-y-8">
+<!-- Credit Scanner Module -->
+<div class="glass-panel p-6">
+<div class="flex items-center gap-3 mb-6">
+<span class="material-symbols-outlined text-[#00f2ff]" data-icon="qr_code_scanner">qr_code_scanner</span>
+<h2 class="font-headline-md text-primary uppercase">CREDIT VALIDATION SCANNER</h2>
+</div>
+<div class="flex flex-col md:flex-row gap-4">
+<div class="relative flex-grow">
+<input class="w-full bg-[#13131b]/80 border-b-2 border-[#00f2ff]/30 focus:border-[#00f2ff] focus:ring-0 text-primary-container font-headline-md py-4 px-4 transition-all placeholder:text-slate-600" placeholder="ENTER REDEMPTION CODE OR SCAN ID..." type="text"/>
+<div class="absolute right-4 top-1/2 -translate-y-1/2 flex gap-2">
+<span class="material-symbols-outlined text-slate-500 cursor-pointer hover:text-primary transition-all" data-icon="photo_camera">photo_camera</span>
+</div>
+</div>
+<button class="bg-[#00f2ff] text-[#00363a] font-label-caps px-8 py-4 flex items-center justify-center gap-2 hover:bg-[#74f5ff] transition-all shadow-[0_0_20px_rgba(0,242,255,0.3)]">
+<span class="material-symbols-outlined" data-icon="verified">verified</span>
+                            VALIDATE POWER
+                        </button>
+</div>
+</div>
+<!-- Reward Fulfillment Queue -->
+<div class="glass-panel overflow-hidden">
+<div class="p-6 border-b border-[#00f2ff]/10 flex justify-between items-center bg-[#0a0a12]/40">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-secondary-container" data-icon="pending_actions">pending_actions</span>
+<h2 class="font-headline-md text-primary uppercase">REWARD FULFILLMENT QUEUE</h2>
+</div>
+<span class="bg-secondary-container/10 text-secondary-container px-3 py-1 rounded font-label-caps text-[10px]">12 PENDING</span>
+</div>
+<div class="divide-y divide-[#00f2ff]/5">
+<!-- Redemption Item -->
+<div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#00f2ff]/5 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 glass-panel flex items-center justify-center border-secondary-container/50">
+<span class="material-symbols-outlined text-secondary-container" data-icon="coffee">coffee</span>
+</div>
+<div>
+<p class="font-headline-md text-sm text-primary">LEGENDARY ESPRESSO BOOST</p>
+<p class="text-xs text-slate-500 font-label-caps">MEMBER: CYBER_PUNK_88 • ID: #RX-9902</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-label-caps text-slate-400 mr-4">2 MINS AGO</span>
+<button class="px-4 py-2 border border-error text-error font-label-caps text-[10px] hover:bg-error hover:text-white transition-all">REJECT</button>
+<button class="px-6 py-2 bg-primary-container text-on-primary font-label-caps text-[10px] hover:shadow-[0_0_15px_rgba(0,242,255,0.4)] transition-all">APPROVE</button>
+</div>
+</div>
+<!-- Redemption Item -->
+<div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#00f2ff]/5 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 glass-panel flex items-center justify-center border-primary-container/50">
+<span class="material-symbols-outlined text-primary-container" data-icon="memory">memory</span>
+</div>
+<div>
+<p class="font-headline-md text-sm text-primary">TECH UPGRADE MODULE V.2</p>
+<p class="text-xs text-slate-500 font-label-caps">MEMBER: NEON_KNIGHT • ID: #RX-8841</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-label-caps text-slate-400 mr-4">14 MINS AGO</span>
+<button class="px-4 py-2 border border-error text-error font-label-caps text-[10px] hover:bg-error hover:text-white transition-all">REJECT</button>
+<button class="px-6 py-2 bg-primary-container text-on-primary font-label-caps text-[10px] hover:shadow-[0_0_15px_rgba(0,242,255,0.4)] transition-all">APPROVE</button>
+</div>
+</div>
+<!-- Redemption Item -->
+<div class="p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:bg-[#00f2ff]/5 transition-all">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 glass-panel flex items-center justify-center border-tertiary-container/50">
+<span class="material-symbols-outlined text-tertiary-container" data-icon="local_mall">local_mall</span>
+</div>
+<div>
+<p class="font-headline-md text-sm text-primary">ELITE BRAND MERCH BOX</p>
+<p class="text-xs text-slate-500 font-label-caps">MEMBER: VOID_WALKER • ID: #RX-7720</p>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-xs font-label-caps text-slate-400 mr-4">1 HR AGO</span>
+<button class="px-4 py-2 border border-error text-error font-label-caps text-[10px] hover:bg-error hover:text-white transition-all">REJECT</button>
+<button class="px-6 py-2 bg-primary-container text-on-primary font-label-caps text-[10px] hover:shadow-[0_0_15px_rgba(0,242,255,0.4)] transition-all">APPROVE</button>
+</div>
+</div>
+</div>
+<div class="p-4 text-center border-t border-[#00f2ff]/5">
+<button class="font-label-caps text-xs text-slate-500 hover:text-primary transition-all uppercase tracking-widest">VIEW ALL HISTORICAL DATA</button>
+</div>
+</div>
+<!-- Pending Invites -->
+<div class="glass-panel overflow-hidden">
+<div class="p-6 border-b border-[#00f2ff]/10 flex items-center gap-3 bg-[#0a0a12]/40">
+<span class="material-symbols-outlined text-tertiary-fixed-dim" data-icon="person_add">person_add</span>
+<h2 class="font-headline-md text-primary uppercase">PENDING REFERRAL AUTH</h2>
+</div>
+<div class="p-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="border border-[#00f2ff]/20 bg-[#13131b] p-4 flex items-center justify-between rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#00f2ff]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="link">link</span>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-primary">RECRUIT: ALEX_Z</p>
+<p class="text-[9px] text-slate-500">REF BY: MAX_O</p>
+</div>
+</div>
+<button class="text-[#00f2ff] hover:bg-[#00f2ff]/10 p-1 rounded transition-all">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</button>
+</div>
+<div class="border border-[#00f2ff]/20 bg-[#13131b] p-4 flex items-center justify-between rounded-lg">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded bg-[#00f2ff]/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px] text-primary" data-icon="link">link</span>
+</div>
+<div>
+<p class="font-label-caps text-[10px] text-primary">RECRUIT: SARAH_K</p>
+<p class="text-[9px] text-slate-500">REF BY: TECH_J</p>
+</div>
+</div>
+<button class="text-[#00f2ff] hover:bg-[#00f2ff]/10 p-1 rounded transition-all">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Portal & Stats -->
+<div class="lg:col-span-4 space-y-8">
+<!-- Acquisition Portal (QR Code) -->
+<div class="glass-panel p-8 text-center relative overflow-hidden group">
+<div class="scanline"></div>
+<h2 class="font-headline-md text-primary mb-2 uppercase">ACQUISITION PORTAL</h2>
+<p class="font-label-caps text-xs text-slate-400 mb-8">SCAN TO JOIN THE ELITE</p>
+<div class="relative inline-block p-4 border-2 border-[#00f2ff] mb-8 bg-white/5">
+<div class="absolute -top-1 -left-1 w-4 h-4 border-t-2 border-l-2 border-[#00f2ff]"></div>
+<div class="absolute -top-1 -right-1 w-4 h-4 border-t-2 border-r-2 border-[#00f2ff]"></div>
+<div class="absolute -bottom-1 -left-1 w-4 h-4 border-b-2 border-l-2 border-[#00f2ff]"></div>
+<div class="absolute -bottom-1 -right-1 w-4 h-4 border-b-2 border-r-2 border-[#00f2ff]"></div>
+<img alt="Medellin Rewards QR Code" class="w-48 h-48 opacity-90 group-hover:opacity-100 transition-opacity" data-alt="a high-tech glowing cyan qr code centered on a dark background with digital artifacts and holographic interference patterns" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDiIXCEFReqqCflMu2a-MLbOQNMh9udt7JrwmZryGRHq-7LpjD7R-SP3arg08Ownwe4sZwWnrcyNaKltohQtgXfo06WtC_oqzI-Q-gPF_KfwDNIEyNAjFwYOgrFGpoQYZZyBW5Udq3PVSLxUuD7ZHfJe2PARpukEx-5CkxXOuiquK2qxhdTgNdYSKiBMyTmQYHERIHfKVO4XxpisHeabPrYHs2J3OMFe4qszT3UJX3lLMWEQSQvcCU6Zpjg1GQcZ9SQTkJqPgZ2mk0"/>
+</div>
+<div class="space-y-4">
+<button class="w-full py-3 border border-[#00f2ff]/50 font-label-caps text-xs hover:bg-[#00f2ff]/10 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="content_copy">content_copy</span>
+                            COPY PORTAL URL
+                        </button>
+<button class="w-full py-3 bg-secondary-container text-on-secondary font-label-caps text-xs hover:bg-secondary-fixed transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="print">print</span>
+                            PRINT HUB FLYER
+                        </button>
+</div>
+</div>
+<!-- Mission Logs -->
+<div class="glass-panel p-6">
+<h2 class="font-label-caps text-slate-400 mb-4 border-b border-[#00f2ff]/10 pb-2 uppercase tracking-widest">REAL-TIME MISSION LOGS</h2>
+<div class="space-y-4">
+<div class="flex gap-3 text-[10px] font-body-md">
+<span class="text-[#00f2ff] font-bold">[14:22:01]</span>
+<span class="text-slate-300 uppercase">New Member 'Zero' Connected</span>
+</div>
+<div class="flex gap-3 text-[10px] font-body-md">
+<span class="text-[#00f2ff] font-bold">[14:18:45]</span>
+<span class="text-slate-300 uppercase">Power Surge: 500 XP Issued to #1221</span>
+</div>
+<div class="flex gap-3 text-[10px] font-body-md">
+<span class="text-secondary-container font-bold">[14:05:12]</span>
+<span class="text-slate-300 uppercase">Reward #RX-9902 Redeemed</span>
+</div>
+<div class="flex gap-3 text-[10px] font-body-md">
+<span class="text-error font-bold">[13:58:30]</span>
+<span class="text-slate-300 uppercase">System Maintenance Protocol Initiated</span>
+</div>
+<div class="flex gap-3 text-[10px] font-body-md">
+<span class="text-[#00f2ff] font-bold">[13:45:00]</span>
+<span class="text-slate-300 uppercase">Shift Commander Login: Admin_402</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center h-20 pb-safe md:hidden bg-[#0a0a12]/90 backdrop-blur-lg border-t border-[#00f2ff]/30 shadow-[0_-5px_25px_rgba(0,242,255,0.15)]">
+<div class="flex flex-col items-center justify-center text-[#00f2ff] scale-110 drop-shadow-[0_0_5px_#00f2ff]">
+<span class="material-symbols-outlined" data-icon="grid_view">grid_view</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Home</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]">
+<span class="material-symbols-outlined" data-icon="storefront">storefront</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Shop</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]">
+<span class="material-symbols-outlined" data-icon="ads_click">ads_click</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Quest</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]">
+<span class="material-symbols-outlined" data-icon="military_tech">military_tech</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">Perks</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#00f2ff]">
+<span class="material-symbols-outlined" data-icon="manage_accounts">manage_accounts</span>
+<span class="font-['Space_Grotesk'] text-[10px] font-bold uppercase">User</span>
+</div>
+</nav>
+</body></html>

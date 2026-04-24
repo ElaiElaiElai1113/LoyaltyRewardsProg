@@ -110,7 +110,7 @@ export function LandingPage() {
             </Badge>
             <div className="max-w-3xl space-y-6">
               <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
-                {t('Synergize Rewards.')}<br />
+                {t('Medellin Rewards.')}<br />
                 {t('Play every')}<br />
                 {t('visit')}.
               </h1>

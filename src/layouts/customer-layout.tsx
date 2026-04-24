@@ -39,7 +39,7 @@ export function CustomerLayout() {
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex items-center gap-3">
               <span className="font-serif text-2xl font-black italic uppercase tracking-[0.2em] text-primary-container">
-                Synergize
+                Medellin Rewards
               </span>
               <span className="hidden h-6 w-px bg-primary-container/25 md:block" />
               <span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant md:block">
@@ -136,7 +136,7 @@ export function CustomerLayout() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
-              <span className="font-serif text-xl font-black uppercase tracking-[0.16em] text-primary-container">Synergize Quest</span>
+              <span className="font-serif text-xl font-black uppercase tracking-[0.16em] text-primary-container">Medellin Rewards</span>
               <p className="mt-4 text-sm leading-relaxed text-on-surface-variant/80">
                 {t('Earn XP, complete quests, and unlock rewards across partner realms.')}
               </p>
@@ -175,7 +175,6 @@ export function CustomerLayout() {
             </div>
           </div>
           <div className="mt-12 border-t border-outline-variant/10 pt-8 text-center text-xs text-on-surface-variant/70">
-            {t('Copyright 2024 Synergize Business Group. All rights reserved.')}
           </div>
         </div>
       </footer>
