@@ -1,6 +1,37 @@
+import { createClientRequestId, normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { readCart, clearCart } from '@/lib/mock-store'
 import type { Order, OrderLineItem } from '@/types/domain'
-import { requireSupabase, camelCaseRow } from './shared'
+import { camelCaseRow, requireSupabase } from './shared'
+
+function mapOrder(orderRow: Record<string, unknown>): Order {
+  const o = camelCaseRow(orderRow)
+  const lineItems = (orderRow.order_line_items ?? []) as Record<string, unknown>[]
+  const items: OrderLineItem[] = lineItems.map((li) => {
+    const l = camelCaseRow(li)
+    return {
+      productId: l.productId as string,
+      productTitle: l.productTitle as string,
+      unitPrice: Number(l.unitPrice),
+      quantity: l.quantity as number,
+      subtotal: Number(l.subtotal),
+    }
+  })
+
+  return {
+    id: o.id as string,
+    profileId: o.profileId as string,
+    businessId: o.businessId as string,
+    items,
+    subtotal: Number(o.subtotal),
+    tax: Number(o.tax),
+    total: Number(o.total),
+    pointsEarned: o.pointsEarned as number,
+    pointsStatus: o.pointsStatus as Order['pointsStatus'],
+    paymentMethod: o.paymentMethod as string,
+    status: o.status as Order['status'],
+    createdAt: o.createdAt as string,
+  }
+}
 
 export const ordersService = {
   async getOrders(profileId: string): Promise<Order[]> {
@@ -14,34 +45,7 @@ export const ordersService = {
 
     if (error) throw new Error('Failed to load orders.')
 
-    return (data as Record<string, unknown>[]).map((orderRow) => {
-      const o = camelCaseRow(orderRow)
-      const lineItems = ((orderRow as Record<string, unknown>).order_line_items ?? []) as Record<string, unknown>[]
-      const items: OrderLineItem[] = lineItems.map((li) => {
-        const l = camelCaseRow(li)
-        return {
-          productId: l.productId as string,
-          productTitle: l.productTitle as string,
-          unitPrice: Number(l.unitPrice),
-          quantity: l.quantity as number,
-          subtotal: Number(l.subtotal),
-        }
-      })
-      return {
-        id: o.id as string,
-        profileId: o.profileId as string,
-        businessId: o.businessId as string,
-        items,
-        subtotal: Number(o.subtotal),
-        tax: Number(o.tax),
-        total: Number(o.total),
-        pointsEarned: o.pointsEarned as number,
-        pointsStatus: o.pointsStatus as Order['pointsStatus'],
-        paymentMethod: o.paymentMethod as string,
-        status: o.status as Order['status'],
-        createdAt: o.createdAt as string,
-      }
-    })
+    return (data as Record<string, unknown>[]).map(mapOrder)
   },
 
   async getOrderById(orderId: string): Promise<Order | null> {
@@ -55,166 +59,83 @@ export const ordersService = {
 
     if (error || !data) return null
 
-    const o = camelCaseRow(data as Record<string, unknown>)
-    const lineItems = ((data as Record<string, unknown>).order_line_items ?? []) as Record<string, unknown>[]
-    const items: OrderLineItem[] = lineItems.map((li) => {
-      const l = camelCaseRow(li)
-      return {
-        productId: l.productId as string,
-        productTitle: l.productTitle as string,
-        unitPrice: Number(l.unitPrice),
-        quantity: l.quantity as number,
-        subtotal: Number(l.subtotal),
-      }
-    })
-
-    return {
-      id: o.id as string,
-      profileId: o.profileId as string,
-      businessId: o.businessId as string,
-      items,
-      subtotal: Number(o.subtotal),
-      tax: Number(o.tax),
-      total: Number(o.total),
-      pointsEarned: o.pointsEarned as number,
-      pointsStatus: o.pointsStatus as Order['pointsStatus'],
-      paymentMethod: o.paymentMethod as string,
-      status: o.status as Order['status'],
-      createdAt: o.createdAt as string,
-    }
+    return mapOrder(data as Record<string, unknown>)
   },
 
   async placeOrder(profileId: string, businessId: string, paymentMethod: string): Promise<Order> {
     const sb = requireSupabase()
-
     const cartItems = readCart()
+
     if (cartItems.length === 0) throw new Error('Your cart is empty.')
 
-    // Fetch business for tax/earn rates
-    const { data: biz, error: bizError } = await sb
-      .from('businesses')
-      .select('*')
-      .eq('id', businessId)
-      .single()
-
-    if (bizError || !biz) throw new Error('Business not found.')
-
-    // Fetch products for cart items
-    const productIds = cartItems.map((c) => c.productId)
-    const { data: productRows, error: prodError } = await sb
+    const productIds = cartItems.map((item) => item.productId)
+    const { data: productRows, error: productsError } = await sb
       .from('products')
-      .select('*')
+      .select('id, business_id, title, price')
       .in('id', productIds)
 
-    if (prodError) throw new Error('Failed to load products.')
+    if (productsError) throw new Error('Failed to load products.')
 
+    const productMap = new Map((productRows ?? []).map((row) => [row.id as string, row]))
     const lineItems: OrderLineItem[] = cartItems.map((cartItem) => {
-      const product = productRows.find((p) => p.id === cartItem.productId)
+      const product = productMap.get(cartItem.productId)
       if (!product) throw new Error(`Product ${cartItem.productId} not found.`)
+
       return {
-        productId: product.id,
-        productTitle: product.title,
+        productId: product.id as string,
+        productTitle: product.title as string,
         unitPrice: Number(product.price),
         quantity: cartItem.quantity,
         subtotal: Number(product.price) * cartItem.quantity,
       }
     })
 
-    const subtotal = lineItems.reduce((sum, li) => sum + li.subtotal, 0)
-    const tax = +(subtotal * Number(biz.tax_rate)).toFixed(2)
-    const total = +(subtotal + tax).toFixed(2)
-    const pointsEarned = Math.floor(total * Number(biz.earn_rate))
+    const normalized = normalizeCheckoutItems(
+      cartItems.map((cartItem) => {
+        const product = productMap.get(cartItem.productId)
+        if (!product) throw new Error(`Product ${cartItem.productId} not found.`)
 
-    // Create order
-    const { data: orderRow, error: orderError } = await sb
-      .from('orders')
-      .insert({
-        profile_id: profileId,
-        business_id: businessId,
-        subtotal,
-        tax,
-        total,
-        points_earned: pointsEarned,
-        points_status: 'pending',
-        payment_method: paymentMethod,
-        status: 'confirmed',
-      })
-      .select('*')
-      .single()
+        return {
+          productId: cartItem.productId,
+          businessId: product.business_id as string,
+          quantity: cartItem.quantity,
+        }
+      }),
+    )
 
-    if (orderError || !orderRow) {
-      throw new Error('Failed to create order.')
+    if (normalized.businessId !== businessId) {
+      throw new Error('Checkout supports one business at a time. Remove other items from your cart first.')
     }
 
-    // Create line items
-    const lineItemsInsert = lineItems.map((li) => ({
-      order_id: orderRow.id,
-      product_id: li.productId,
-      product_title: li.productTitle,
-      unit_price: li.unitPrice,
-      quantity: li.quantity,
-      subtotal: li.subtotal,
-    }))
-
-    await sb.from('order_line_items').insert(lineItemsInsert)
-
-    // Update product inventory
-    for (const li of lineItems) {
-      const { data: p } = await sb.from('products').select('inventory').eq('id', li.productId).single()
-      if (p) {
-        await sb.from('products').update({ inventory: Math.max(0, p.inventory - li.quantity) }).eq('id', li.productId)
-      }
-    }
-
-    // Add points to balance
-    const { data: currentBalance } = await sb
-      .from('reward_balances')
-      .select('points, next_reward_points')
-      .eq('profile_id', profileId)
-      .single()
-
-    if (currentBalance) {
-      const newPoints = currentBalance.points + pointsEarned
-      await sb
-        .from('reward_balances')
-        .update({ points: newPoints })
-        .eq('profile_id', profileId)
-    }
-
-    // Log activity
-    await sb.from('activities').insert({
-      profile_id: profileId,
-      business_id: businessId,
-      type: 'earned',
-      title: `Purchase at ${biz.name} — $${total.toFixed(2)}`,
-      description: `${lineItems.length} item(s) ordered. ${pointsEarned} XP earned (processing - available within 24 hours).`,
-      points: pointsEarned,
-      status: 'pending',
+    const { data, error } = await sb.rpc('place_order', {
+      p_business_id: businessId,
+      p_payment_method: paymentMethod,
+      p_items: normalized.items,
+      p_client_request_id: createClientRequestId(),
     })
 
-    // Log admin action
-    await sb.from('admin_logs').insert({
-      actor_name: 'System',
-      action: 'Order placed',
-      details: `Order at ${biz.name}. Total: $${total.toFixed(2)}. XP earned: ${pointsEarned}.`,
-    })
+    const orderRow = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
+    if (error || !orderRow) {
+      throw new Error(error?.message ?? 'Failed to create order.')
+    }
 
     clearCart()
 
-    const o = camelCaseRow(orderRow as Record<string, unknown>)
-    return {
-      id: o.id as string,
-      profileId: o.profileId as string,
-      businessId: o.businessId as string,
-      items: lineItems,
-      subtotal: Number(o.subtotal),
-      tax: Number(o.tax),
-      total: Number(o.total),
-      pointsEarned: o.pointsEarned as number,
-      pointsStatus: o.pointsStatus as Order['pointsStatus'],
-      paymentMethod: o.paymentMethod as string,
-      status: o.status as Order['status'],
-      createdAt: o.createdAt as string,
+    const mappedOrder = mapOrder({
+      ...orderRow,
+      order_line_items: lineItems.map((item) => ({
+        product_id: item.productId,
+        product_title: item.productTitle,
+        unit_price: item.unitPrice,
+        quantity: item.quantity,
+        subtotal: item.subtotal,
+      })),
+    })
+
+    if (mappedOrder.profileId !== profileId) {
+      throw new Error('Order was created for the wrong member.')
     }
+
+    return mappedOrder
   },
 }

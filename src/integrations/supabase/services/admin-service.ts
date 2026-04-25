@@ -12,17 +12,13 @@ function toTierProgress(points: number, target: number) {
   return Math.max(0, Math.min(100, Math.round((points / target) * 100)))
 }
 
-type AdjustmentLogContext = {
-  actorName: string
-  adminAction: string
+type AdjustmentContext = {
   businessId?: string
-  addedTitle: string
-  deductedTitle: string
 }
 
 async function performRewardAdjustment(
   values: RewardAdjustmentFormValues,
-  context: AdjustmentLogContext,
+  context: AdjustmentContext,
 ) {
   const sb = requireSupabase()
 
@@ -36,51 +32,15 @@ async function performRewardAdjustment(
     throw new Error('Member not found.')
   }
 
-  const { data: balance, error: balError } = await sb
-    .from('reward_balances')
-    .select('*')
-    .eq('profile_id', values.profileId)
-    .single()
-
-  if (balError || !balance) {
-    throw new Error('Balance not found.')
-  }
-
-  const newPoints = Math.max(0, balance.points + values.delta)
-  const actualDelta = newPoints - balance.points
-
-  const { error: updateError } = await sb
-    .from('reward_balances')
-    .update({ points: newPoints })
-    .eq('profile_id', values.profileId)
-
-  if (updateError) {
-    throw new Error(updateError.message)
-  }
-
-  const { error: activityError } = await sb.from('activities').insert({
-    profile_id: values.profileId,
-    business_id: context.businessId,
-    type: 'adjustment',
-    title: actualDelta >= 0 ? context.addedTitle : context.deductedTitle,
-    description: values.reason,
-    points: actualDelta,
-    status: 'posted',
+  const { data: balance, error: adjustmentError } = await sb.rpc('adjust_member_points', {
+    p_profile_id: values.profileId,
+    p_delta: values.delta,
+    p_reason: values.reason,
+    p_business_id: context.businessId ?? null,
   })
 
-  if (activityError) {
-    console.error('Activity log error:', activityError)
-    throw new Error(activityError.message)
-  }
-
-  const { error: logError } = await sb.from('admin_logs').insert({
-    actor_name: context.actorName,
-    action: context.adminAction,
-    details: `${actualDelta >= 0 ? 'Added' : 'Deducted'} ${Math.abs(actualDelta)} XP for member ${values.profileId}. Reason: ${values.reason}`,
-  })
-
-  if (logError) {
-    console.error('Admin log error:', logError)
+  if (adjustmentError || !balance) {
+    throw new Error(adjustmentError?.message ?? 'Failed to adjust rewards.')
   }
 }
 
@@ -266,11 +226,8 @@ export const adminService = {
   },
 
   async adjustRewards(values: RewardAdjustmentFormValues, actor: Profile) {
+    void actor
     await performRewardAdjustment(values, {
-      actorName: actor?.fullName || 'Platform Admin',
-      adminAction: 'XP Adjustment',
-      addedTitle: 'XP added by staff',
-      deductedTitle: 'XP deducted by staff',
     })
   },
 
@@ -310,12 +267,9 @@ export const adminService = {
     actor: Profile,
     businessId: string,
   ) {
+    void actor
     await performRewardAdjustment(values, {
-      actorName: actor?.fullName || 'Business Owner',
-      adminAction: 'Business XP Adjustment',
       businessId,
-      addedTitle: 'XP added by business',
-      deductedTitle: 'XP deducted by business',
     })
   },
 

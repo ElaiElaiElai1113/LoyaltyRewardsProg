@@ -21,8 +21,35 @@ export function RedeemRewardPage() {
     return <Navigate to="/rewards" replace />
   }
 
-  if (!reward.data) {
-    return <Navigate to="/rewards" replace />
+  if (reward.isLoading || rewardBalance.isLoading) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-8 py-8">
+        <Badge variant="accent" className="bg-primary/10 text-primary">
+          {t('Redeem Reward')}
+        </Badge>
+        <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card">
+          <p className="text-lg font-medium text-on-surface-variant/85">{t('Loading reward details...')}</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (reward.error || !reward.data) {
+    return (
+      <div className="mx-auto max-w-4xl space-y-8 py-8">
+        <Badge variant="accent" className="bg-primary/10 text-primary">
+          {t('Redeem Reward')}
+        </Badge>
+        <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card space-y-4">
+          <p className="text-lg font-medium text-red-500">
+            {reward.error instanceof Error ? reward.error.message : t('Reward not found.')}
+          </p>
+          <Button onClick={() => navigate('/rewards')} className="rounded-full">
+            {t('Return to Catalog')}
+          </Button>
+        </div>
+      </div>
+    )
   }
 
   return (

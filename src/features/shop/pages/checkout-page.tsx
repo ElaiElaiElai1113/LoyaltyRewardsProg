@@ -1,12 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { useBusinesses, useCart, usePlaceOrder, useProducts } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
@@ -42,18 +43,31 @@ export function CheckoutPage() {
     })
     .filter(Boolean) as { product: typeof allProducts[0]; quantity: number }[]
 
+  if (resolvedItems.length === 0) {
+    return <Navigate to="/cart" replace />
+  }
+
+  let businessId = ''
+  let validationError: string | null = null
+
+  try {
+    businessId = normalizeCheckoutItems(
+      resolvedItems.map(({ product, quantity }) => ({
+        productId: product.id,
+        businessId: product.businessId,
+        quantity,
+      })),
+    ).businessId
+  } catch (validationIssue) {
+    validationError = validationIssue instanceof Error ? validationIssue.message : t('Your cart is invalid.')
+  }
+
   const subtotal = resolvedItems.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0)
-  const businessId = resolvedItems[0]?.product.businessId ?? ''
-  const business = businesses.data?.find((b) => b.id === businessId)
+  const business = businesses.data?.find((row) => row.id === businessId)
   const taxRate = business?.taxRate ?? 0.09
   const tax = +(subtotal * taxRate).toFixed(2)
   const total = +(subtotal + tax).toFixed(2)
   const estimatedPoints = Math.floor(total * (business?.earnRate ?? 10))
-
-  if (resolvedItems.length === 0) {
-    navigate('/cart')
-    return null
-  }
 
   return (
     <div className="space-y-16 pb-20">
@@ -73,6 +87,11 @@ export function CheckoutPage() {
             <form
               className="space-y-6"
               onSubmit={form.handleSubmit(async (values) => {
+                if (validationError) {
+                  setError(validationError)
+                  return
+                }
+
                 try {
                   setError(null)
                   const order = await placeOrder.mutateAsync({
@@ -125,13 +144,15 @@ export function CheckoutPage() {
                 </div>
               </div>
 
-              {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
+              {(validationError || error) && (
+                <p className="text-sm font-bold text-red-500 text-center">{validationError ?? error}</p>
+              )}
 
               <Button
                 type="submit"
                 size="lg"
                 className="w-full rounded-full h-16 text-lg font-bold shadow-card"
-                disabled={placeOrder.isPending}
+                disabled={placeOrder.isPending || Boolean(validationError)}
               >
                 {placeOrder.isPending ? t('Placing Order...') : `${t('Pay')} ${formatCurrency(total)}`}
               </Button>

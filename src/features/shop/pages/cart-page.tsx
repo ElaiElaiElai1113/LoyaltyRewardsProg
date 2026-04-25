@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { CartItemRow } from '@/features/shop/components/cart-item-row'
 import { useBusinesses, useCart, useProducts, useRemoveFromCart, useUpdateCartItem } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -25,12 +26,23 @@ export function CartPage() {
     })
     .filter(Boolean) as { product: typeof allProducts[0]; quantity: number }[]
 
-  // Cart items might come from different businesses — group totals per business
-  const subtotal = resolvedItems.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0)
+  let cartValidationError: string | null = null
+  let checkoutBusinessId = resolvedItems[0]?.product.businessId
 
-  // Use first item's business tax rate for display (in a real app, split by business)
-  const firstBusinessId = resolvedItems[0]?.product.businessId
-  const business = businesses.data?.find((b) => b.id === firstBusinessId)
+  try {
+    checkoutBusinessId = normalizeCheckoutItems(
+      resolvedItems.map(({ product, quantity }) => ({
+        productId: product.id,
+        businessId: product.businessId,
+        quantity,
+      })),
+    ).businessId
+  } catch (error) {
+    cartValidationError = error instanceof Error ? error.message : t('Your cart is invalid.')
+  }
+
+  const subtotal = resolvedItems.reduce((sum, { product, quantity }) => sum + product.price * quantity, 0)
+  const business = businesses.data?.find((row) => row.id === checkoutBusinessId)
   const taxRate = business?.taxRate ?? 0.09
   const tax = +(subtotal * taxRate).toFixed(2)
   const total = +(subtotal + tax).toFixed(2)
@@ -89,8 +101,17 @@ export function CartPage() {
               <span className="font-bold text-primary">+{estimatedPoints} XP</span>
               <span className="text-on-surface-variant/80"> {t('earned from this order')}</span>
             </div>
-            <Button asChild variant="default" size="lg" className="w-full rounded-full h-14">
-              <Link to="/checkout">{t('Proceed to Checkout')}</Link>
+            {cartValidationError ? (
+              <p className="text-sm font-semibold text-red-500">{cartValidationError}</p>
+            ) : null}
+            <Button
+              asChild={!cartValidationError}
+              variant="default"
+              size="lg"
+              className="w-full rounded-full h-14"
+              disabled={Boolean(cartValidationError)}
+            >
+              {cartValidationError ? <span>{t('Checkout unavailable')}</span> : <Link to="/checkout">{t('Proceed to Checkout')}</Link>}
             </Button>
           </div>
         </div>

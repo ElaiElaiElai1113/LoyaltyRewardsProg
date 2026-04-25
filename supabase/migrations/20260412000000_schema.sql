@@ -10,7 +10,7 @@ create type public.user_role as enum (
   'platform-admin',
   'business-owner'
 );
-f
+
 create type public.order_status as enum (
   'confirmed',
   'processing',
@@ -254,31 +254,31 @@ begin
 end;
 $$ language plpgsql;
 
-create trigger set_updated_at
+create trigger set_businesses_updated_at
   before update on public.businesses
   for each row execute function public.handle_updated_at();
 
-create trigger set_updated_at
+create trigger set_profiles_updated_at
   before update on public.profiles
   for each row execute function public.handle_updated_at();
 
-create trigger set_updated_at
+create trigger set_reward_balances_updated_at
   before update on public.reward_balances
   for each row execute function public.handle_updated_at();
 
-create trigger set_updated_at
+create trigger set_rewards_updated_at
   before update on public.rewards
   for each row execute function public.handle_updated_at();
 
-create trigger set_updated_at
+create trigger set_products_updated_at
   before update on public.products
   for each row execute function public.handle_updated_at();
 
-create trigger set_updated_at
+create trigger set_orders_updated_at
   before update on public.orders
   for each row execute function public.handle_updated_at();
 
-create trigger set_updated_at
+create trigger set_promotions_updated_at
   before update on public.promotions
   for each row execute function public.handle_updated_at();
 

@@ -23,6 +23,22 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 npm run dev
 ```
 
+## Database Setup
+
+Apply the Supabase migrations before using the app locally. The launch-critical flows now depend on database RPCs for checkout, reward redemption, reward-point adjustments, and reward-credit consumption.
+
+```bash
+supabase db reset
+```
+
+## Verification
+
+```bash
+npm run lint
+npm run test
+npm run build
+```
+
 ## Production Build
 
 ```bash
@@ -50,8 +66,6 @@ Recommended Vercel settings:
 - Output Directory: `dist`
 
 After adding the env vars, deploy with either the Vercel dashboard or:
-
-asd
 ```bash
 vercel
 ```

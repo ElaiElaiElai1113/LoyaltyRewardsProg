@@ -4,20 +4,39 @@
 
 ### 1. Create a Supabase Project
 
-Go to [supabase.com](https://supabase.com) and create a new project.
+Create a new Supabase project in the dashboard and keep the project ref handy for CLI linking.
 
-### 2. Run Migrations
+### 2. Link and Push Migrations
 
-Copy the SQL from the migration files and run them in the Supabase SQL Editor (Dashboard → SQL Editor):
+Use the Supabase CLI so the remote schema and migration history stay in sync:
 
-1. `supabase/migrations/20260412000000_schema.sql` — Tables, types, indexes, triggers
-2. `supabase/migrations/20260412000001_rls_policies.sql` — Row Level Security policies
-3. `supabase/migrations/20260412000002_auth_triggers.sql` — Auth triggers and helper functions
-4. `supabase/seed.sql` — Seed data (businesses, products, rewards, promotions)
+```bash
+# Link this repo to your Supabase project
+supabase link --project-ref your-project-ref
 
-### 3. Create Demo Users
+# Push all repo migrations to the linked remote database
+supabase db push
+```
 
-In Supabase Dashboard → Authentication → Users, create these users:
+If the remote database already contains schema changes that were applied manually, repair the migration history before pushing again:
+
+```bash
+supabase migration list --linked
+supabase migration repair <version> --status applied
+supabase db push
+```
+
+### 3. Seed Local Data
+
+Use a reset when you want the full local schema plus seed data:
+
+```bash
+supabase db reset
+```
+
+### 4. Create Demo Users
+
+In Supabase Dashboard -> Authentication -> Users, create these users:
 
 | Email | Password | app_metadata |
 |-------|----------|-------------|
@@ -26,28 +45,31 @@ In Supabase Dashboard → Authentication → Users, create these users:
 | `owner@velvetbrew.co` | `demo1234` | `{ "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }` |
 | `owner@mysticcoffee.co` | `demo1234` | `{ "role": "business-owner", "business_id": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22" }` |
 
-**Important:** Set `role` in `app_metadata` (not `user_metadata`). The auth trigger reads from `app_metadata` to set the profile role.
+Set `role` in `app_metadata`, not `user_metadata`. The auth trigger reads from `app_metadata` when creating the profile row.
 
-### 4. Configure Environment Variables
+### 5. Configure Environment Variables
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your Supabase credentials (from Dashboard → Settings → API):
+Edit `.env` with your Supabase credentials from Dashboard -> Settings -> API:
 
-```
+```bash
 VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGci...
 ```
 
-### 5. Verify
+### 6. Verify
 
 ```bash
 npm run dev
+npm run lint
+npm run test
+npm run build
 ```
 
-If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set, the app will use Supabase. If not, it falls back to the localStorage mock store.
+If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set, the app uses Supabase. Otherwise it falls back to the localStorage mock store.
 
 ---
 
@@ -73,49 +95,49 @@ If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set, the app will use Su
 
 | Action | Customer | Business Owner | Platform Admin |
 |--------|----------|---------------|----------------|
-| View businesses | ✅ | ✅ | ✅ |
-| Manage businesses | ❌ | ❌ | ✅ |
-| View own profile | ✅ | ✅ | ✅ |
-| View all profiles | ❌ | ❌ | ✅ |
-| View own balance | ✅ | ✅ | ✅ |
-| View all balances | ❌ | ❌ | ✅ |
-| View rewards/products | ✅ | ✅ | ✅ |
-| Manage own rewards | ❌ | ✅ | ✅ |
-| Manage all rewards | ❌ | ❌ | ✅ |
-| Place orders | ✅ | ❌ | ✅ |
-| View own orders | ✅ | ❌ | ✅ |
-| View business orders | ❌ | ✅ | ✅ |
-| View admin logs | ❌ | ❌ | ✅ |
+| View businesses | Yes | Yes | Yes |
+| Manage businesses | No | No | Yes |
+| View own profile | Yes | Yes | Yes |
+| View all profiles | No | No | Yes |
+| View own balance | Yes | Yes | Yes |
+| View all balances | No | No | Yes |
+| View rewards/products | Yes | Yes | Yes |
+| Manage own rewards | No | Yes | Yes |
+| Manage all rewards | No | No | Yes |
+| Place orders | Yes | No | Yes |
+| View own orders | Yes | No | Yes |
+| View business orders | No | Yes | Yes |
+| View admin logs | No | No | Yes |
 
 ---
 
-## Using Supabase CLI (Optional)
-
-If you install the Supabase CLI:
+## Using Supabase CLI
 
 ```bash
-# Install
-brew install supabase/tap/supabase
-
 # Link to your project
 supabase link --project-ref your-project-ref
 
-# Push migrations
+# See local vs remote migration history
+supabase migration list --linked
+
+# Push new migrations
 supabase db push
 
-# Reset and re-seed
+# Reset and re-seed locally
 supabase db reset
 ```
+
+Avoid mixing manual SQL execution in the dashboard with CLI-managed migrations unless you also repair the remote migration history afterward.
 
 ---
 
 ## Migration Path from Mock Store
 
-The current app uses a localStorage mock store. To switch to Supabase:
+The app still supports a localStorage mock store fallback. To use Supabase end-to-end:
 
-1. Set up Supabase (this guide)
-2. Create new service files that use `supabase` client instead of `readStore()`
-3. Update hooks to use the new services
-4. The `isSupabaseConfigured` flag in `client.ts` allows graceful fallback
+1. Set up Supabase with the CLI workflow above.
+2. Configure `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY`.
+3. Create the demo users or real tenant users in Supabase Auth.
+4. Verify the critical flows against the linked database.
 
-The service layer in `src/integrations/supabase/services/` is already structured for this migration — each service can be updated to use real Supabase queries while keeping the same interface.
+The service layer in `src/integrations/supabase/services/` is already structured to preserve the same frontend interface while swapping storage backends.

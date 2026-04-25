@@ -258,50 +258,13 @@ export const referralsService = {
 
   async useCredit(profileId: string, actorName: string): Promise<void> {
     const sb = requireSupabase()
-    const { data: balance, error: balanceError } = await sb
-      .from('reward_balances')
-      .select('available_credits')
-      .eq('profile_id', profileId)
-      .single()
-
-    if (balanceError || !balance) {
-      throw new Error('Balance not found.')
-    }
-
-    const availableCredits = Number(balance.available_credits ?? 0)
-    if (availableCredits <= 0) {
-      throw new Error('No Reward Credits are available for this member.')
-    }
-
-    const { error: updateError } = await sb
-      .from('reward_balances')
-      .update({ available_credits: availableCredits - 1 })
-      .eq('profile_id', profileId)
-
-    if (updateError) {
-      throw new Error(updateError.message)
-    }
-
-    const { error: activityError } = await sb.from('activities').insert({
-      profile_id: profileId,
-      type: 'adjustment',
-      title: 'Reward Credit used',
-      points: 0,
-      status: 'posted',
+    void actorName
+    const { error } = await sb.rpc('consume_reward_credit', {
+      p_profile_id: profileId,
     })
 
-    if (activityError) {
-      throw new Error(activityError.message)
-    }
-
-    const { error: logError } = await sb.from('admin_logs').insert({
-      actor_name: actorName,
-      action: 'Reward Credit used',
-      details: `Used 1 Reward Credit for member ${profileId}.`,
-    })
-
-    if (logError) {
-      console.error('Admin log error:', logError)
+    if (error) {
+      throw new Error(error.message)
     }
   },
 }

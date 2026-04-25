@@ -1,7 +1,7 @@
+import { createClientRequestId, isPickupWindow } from '@/features/critical-flows/critical-flow'
 import type { Redemption, Reward } from '@/types/domain'
 import type { RedeemFormValues, RewardDraftFormValues } from '@/types/forms'
-import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
-import { profileService } from './profile-service'
+import { camelCaseRow, requireSupabase, snakeCaseObj } from './shared'
 
 interface RedeemInput extends RedeemFormValues {
   profileId: string
@@ -41,59 +41,27 @@ export const rewardsService = {
   async redeemReward(input: RedeemInput): Promise<Redemption> {
     const sb = requireSupabase()
 
-    // Fetch reward
-    const reward = await this.getRewardById(input.rewardId)
-    if (!reward) throw new Error('Reward not found.')
-    if (reward.inventory <= 0) throw new Error('That reward is currently out of stock.')
-
-    // Check balance
-    const balance = await profileService.ensureBalance(input.profileId)
-    if (balance.points < reward.pointsCost) {
-      throw new Error('You do not have enough XP for this reward yet.')
+    if (!isPickupWindow(input.pickupWindow)) {
+      throw new Error('Invalid pickup window.')
     }
 
-    // Create redemption
-    const { data: redemptionRow, error: redeemError } = await sb
-      .from('redemptions')
-      .insert({
-        profile_id: input.profileId,
-        reward_id: reward.id,
-        reward_title: reward.title,
-        points_cost: reward.pointsCost,
-        notes: input.notes ?? null,
-      })
-      .select('*')
-      .single()
-
-    if (redeemError || !redemptionRow) {
-      throw new Error('Failed to create redemption.')
-    }
-
-    // Decrement inventory
-    await sb
-      .from('rewards')
-      .update({ inventory: reward.inventory - 1 })
-      .eq('id', reward.id)
-
-    // Deduct points
-    const newPoints = balance.points - reward.pointsCost
-    await sb
-      .from('reward_balances')
-      .update({ points: newPoints })
-      .eq('profile_id', input.profileId)
-
-    // Log activity
-    await sb.from('activities').insert({
-      profile_id: input.profileId,
-      business_id: reward.businessId,
-      type: 'redeemed',
-      title: `${reward.title} redeemed`,
-      description: `${input.pickupWindow} pickup selected${input.notes ? ` • ${input.notes}` : ''}`,
-      points: -reward.pointsCost,
-      status: 'posted',
+    const { data, error } = await sb.rpc('redeem_reward', {
+      p_reward_id: input.rewardId,
+      p_pickup_window: input.pickupWindow,
+      p_notes: input.notes ?? null,
+      p_client_request_id: createClientRequestId(),
     })
 
-    const mapped = camelCaseRow(redemptionRow) as Record<string, unknown>
+    const redemptionRow = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
+    if (error || !redemptionRow) {
+      throw new Error(error?.message ?? 'Failed to create redemption.')
+    }
+
+    const mapped = camelCaseRow(redemptionRow)
+    if (mapped.profileId !== input.profileId) {
+      throw new Error('Reward was redeemed for the wrong member.')
+    }
+
     return {
       id: mapped.id as string,
       profileId: mapped.profileId as string,
@@ -142,7 +110,6 @@ export const rewardsService = {
   async deleteReward(rewardId: string, actorName = 'Platform Admin'): Promise<void> {
     const sb = requireSupabase()
 
-    // Fetch reward info for logging
     const reward = await this.getRewardById(rewardId)
     if (!reward) return
 

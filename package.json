@@ -10,7 +10,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "tsc -p tsconfig.tests.json && node .tmp-tests/tests/run-tests.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
