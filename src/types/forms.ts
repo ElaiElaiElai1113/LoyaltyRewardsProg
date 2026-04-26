@@ -4,7 +4,7 @@ export const authSchema = z.object({
   fullName: z.string().optional(),
   email: z.email('Enter a valid email'),
   password: z.string().min(5, 'Use at least 5 characters'),
-  role: z.enum(['customer', 'business-owner', 'platform-admin']),
+  role: z.enum(['customer', 'business-owner', 'business-staff', 'platform-admin']),
 })
 
 export type AuthFormValues = z.infer<typeof authSchema>
@@ -78,3 +78,31 @@ export const businessSettingsSchema = z.object({
 })
 
 export type BusinessSettingsFormValues = z.infer<typeof businessSettingsSchema>
+
+export const createBusinessSchema = z.object({
+  name: z.string().trim().min(2, 'Enter a business name'),
+  slug: z
+    .string()
+    .trim()
+    .min(1, 'Enter a slug')
+    .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lowercase letters, numbers, and single hyphens only'),
+  description: z.string().optional(),
+  logoUrl: z.union([z.literal(''), z.url('Enter a valid logo URL')]).optional(),
+  earnRate: z.number().min(0, 'Earn rate cannot be negative'),
+  taxRate: z.number().min(0, 'Tax rate cannot be negative'),
+  currency: z
+    .string()
+    .trim()
+    .length(3, 'Use a 3-letter currency code')
+    .regex(/^[A-Za-z]{3}$/, 'Use a 3-letter currency code'),
+  active: z.boolean(),
+  ownerEmail: z.email('Enter a valid owner email'),
+})
+
+export type CreateBusinessFormValues = z.infer<typeof createBusinessSchema>
+
+export const assignBusinessOwnerSchema = z.object({
+  email: z.email('Enter a valid email'),
+})
+
+export type AssignBusinessOwnerFormValues = z.infer<typeof assignBusinessOwnerSchema>

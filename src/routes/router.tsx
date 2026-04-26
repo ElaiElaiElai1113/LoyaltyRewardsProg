@@ -33,7 +33,7 @@ import { useLanguage } from '@/lib/language'
 
 function getHomePathForRole(role: string) {
   if (role === 'platform-admin') return '/admin'
-  if (role === 'business-owner') return '/business/dashboard'
+  if (role === 'business-owner' || role === 'business-staff') return '/business/dashboard'
   return '/dashboard'
 }
 
@@ -64,7 +64,7 @@ function LandingRoute() {
     if (profile.role === 'platform-admin') {
       return <Navigate replace to="/admin" />
     }
-    if (profile.role === 'business-owner') {
+    if (profile.role === 'business-owner' || profile.role === 'business-staff') {
       return <Navigate replace to="/business/dashboard" />
     }
     return <Navigate replace to="/dashboard" />
@@ -84,7 +84,7 @@ function RootRoute() {
     if (profile.role === 'platform-admin') {
       return <Navigate replace to="/admin" />
     }
-    if (profile.role === 'business-owner') {
+    if (profile.role === 'business-owner' || profile.role === 'business-staff') {
       return <Navigate replace to="/business/dashboard" />
     }
     return <Navigate replace to="/dashboard" />
@@ -122,7 +122,7 @@ function PublicOrCustomerRoute() {
     return <Navigate replace to="/admin" />
   }
 
-  if (profile && profile.role === 'business-owner') {
+  if (profile && (profile.role === 'business-owner' || profile.role === 'business-staff')) {
     return <Navigate replace to="/business/dashboard" />
   }
 
@@ -154,7 +154,7 @@ function ProtectedBusinessOwnerRoute() {
     return <RouteLoading />
   }
 
-  if (!profile || profile.role !== 'business-owner') {
+  if (!profile || (profile.role !== 'business-owner' && profile.role !== 'business-staff')) {
     return <Navigate replace to={profile ? getHomePathForRole(profile.role) : '/'} />
   }
 

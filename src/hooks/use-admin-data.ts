@@ -8,7 +8,9 @@ import { promotionsService } from '@/integrations/supabase/services/promotions-s
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import type {
+  AssignBusinessOwnerFormValues,
   BusinessSettingsFormValues,
+  CreateBusinessFormValues,
   ProductDraftFormValues,
   PromotionDraftFormValues,
   RewardAdjustmentFormValues,
@@ -20,6 +22,20 @@ const adminKeys = {
   users: ['admin-users'] as const,
   overview: ['admin-overview'] as const,
   businesses: ['businesses'] as const,
+}
+
+export class OwnerNotFoundError extends Error {
+  constructor(email: string) {
+    super(`No account found for ${email}.`)
+    this.name = 'OwnerNotFoundError'
+  }
+}
+
+export class StaffNotFoundError extends Error {
+  constructor(email: string) {
+    super(`No account found for ${email}.`)
+    this.name = 'StaffNotFoundError'
+  }
 }
 
 export function useAdminUsers() {
@@ -129,6 +145,67 @@ export function useUpdateBusiness() {
       patch: Parameters<typeof adminService.updateBusiness>[1]
     }) => adminService.updateBusiness(id, patch),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'businesses'] }),
+  })
+}
+
+export function useCreateBusiness() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: CreateBusinessFormValues) => adminService.createBusiness(values),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.businesses })
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
+    },
+  })
+}
+
+export function useAssignBusinessOwner() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      email,
+      businessId,
+    }: AssignBusinessOwnerFormValues & { businessId: string }) => {
+      const userId = await adminService.lookupUserByEmail(email)
+
+      if (!userId) {
+        throw new OwnerNotFoundError(email)
+      }
+
+      await adminService.assignBusinessOwner(userId, businessId)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.businesses })
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+    },
+  })
+}
+
+export function useAssignBusinessStaff() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async ({
+      email,
+      businessId,
+    }: AssignBusinessOwnerFormValues & { businessId: string }) => {
+      const userId = await adminService.lookupUserByEmail(email)
+
+      if (!userId) {
+        throw new StaffNotFoundError(email)
+      }
+
+      await adminService.assignBusinessStaff(userId, businessId)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.businesses })
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+    },
   })
 }
 

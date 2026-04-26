@@ -1,4 +1,4 @@
-export type UserRole = 'customer' | 'platform-admin' | 'business-owner'
+export type UserRole = 'customer' | 'platform-admin' | 'business-owner' | 'business-staff'
 
 export interface Business {
   id: string
@@ -9,6 +9,7 @@ export interface Business {
   taxRate: number // e.g. 0.0875 for 8.75%
   currency: string
   active: boolean
+  ownerProfileId?: string | null
 }
 
 export interface BusinessWithMetrics {
@@ -24,6 +25,10 @@ export interface BusinessWithMetrics {
   totalRevenue: number
   pointsIssued: number
   creditsOutstanding: number
+  ownerProfileId: string | null
+  ownerName: string | null
+  ownerEmail: string | null
+  staffCount: number
 }
 
 export interface Profile {

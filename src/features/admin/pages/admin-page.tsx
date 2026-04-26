@@ -2,18 +2,22 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { RewardCard } from '@/features/rewards/components/reward-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import {
+  OwnerNotFoundError,
+  StaffNotFoundError,
   useAdjustRewards,
   useAllReferrals,
   useAdminApproveReferral,
@@ -23,6 +27,9 @@ import {
   useAdminProducts,
   useAdminUsers,
   useAdminRejectReferral,
+  useAssignBusinessOwner,
+  useAssignBusinessStaff,
+  useCreateBusiness,
   useCreateProduct,
   useCreatePromotion,
   useCreateReward,
@@ -38,16 +45,33 @@ import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import {
+  assignBusinessOwnerSchema,
+  createBusinessSchema,
   productDraftSchema,
   promotionDraftSchema,
   rewardAdjustmentSchema,
   rewardDraftSchema,
+  type AssignBusinessOwnerFormValues,
+  type CreateBusinessFormValues,
   type ProductDraftFormValues,
   type PromotionDraftFormValues,
   type RewardAdjustmentFormValues,
   type RewardDraftFormValues,
 } from '@/types/forms'
 import { formatCurrency, formatDate } from '@/lib/utils'
+
+function slugifyBusinessName(value: string) {
+  return value
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .replace(/-{2,}/g, '-')
+}
+
+function isUniqueSlugError(error: unknown) {
+  return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505'
+}
 
 export function AdminPage() {
   const { profile } = useAuth()
@@ -67,7 +91,13 @@ export function AdminPage() {
   const adminProducts = useAdminProducts(productBusinessId || undefined)
   const [editingBusinessId, setEditingBusinessId] = useState<string | null>(null)
   const [verificationBusinessId, setVerificationBusinessId] = useState('all')
+  const [createBusinessError, setCreateBusinessError] = useState<string | null>(null)
   const [partnerActionError, setPartnerActionError] = useState<string | null>(null)
+  const [businessAccessDialog, setBusinessAccessDialog] = useState<{
+    businessId: string
+    role: 'business-owner' | 'business-staff'
+  } | null>(null)
+  const [isCreateSlugManual, setIsCreateSlugManual] = useState(false)
   const [businessPatch, setBusinessPatch] = useState({
     name: '',
     description: '',
@@ -80,6 +110,10 @@ export function AdminPage() {
   const createProduct = useCreateProduct(profile)
   const fulfillRedemption = useFulfillRedemption(profile)
   const updateBusiness = useUpdateBusiness()
+  const createBusiness = useCreateBusiness()
+  const assignBusinessOwner = useAssignBusinessOwner()
+  const assignBusinessOwnerFromList = useAssignBusinessOwner()
+  const assignBusinessStaffFromList = useAssignBusinessStaff()
   const deleteReward = useDeleteReward(profile?.fullName)
   const deleteProduct = useDeleteProduct(profile?.fullName)
   const deletePromotion = useDeletePromotion(profile?.fullName)
@@ -104,6 +138,10 @@ export function AdminPage() {
       ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
       : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
   }
+  const adminNativeSelectClass =
+    'h-12 rounded-2xl border border-outline-variant/20 bg-surface-highest px-4 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
+  const adminTextareaClass =
+    'min-h-28 rounded-2xl border-outline-variant/20 bg-surface-highest text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
 
   const adjustmentForm = useForm<RewardAdjustmentFormValues>({
     resolver: zodResolver(rewardAdjustmentSchema),
@@ -153,6 +191,29 @@ export function AdminPage() {
     },
   })
 
+  const createBusinessForm = useForm<CreateBusinessFormValues>({
+    resolver: zodResolver(createBusinessSchema),
+    defaultValues: {
+      name: '',
+      slug: '',
+      description: '',
+      logoUrl: '',
+      earnRate: 1,
+      taxRate: 0,
+      currency: 'USD',
+      active: true,
+      ownerEmail: '',
+    },
+  })
+
+  const assignOwnerForm = useForm<AssignBusinessOwnerFormValues>({
+    resolver: zodResolver(assignBusinessOwnerSchema),
+    defaultValues: {
+      email: '',
+    },
+  })
+  const createBusinessName = createBusinessForm.watch('name')
+
   useEffect(() => {
     if (!availableBusinessId) return
 
@@ -190,6 +251,21 @@ export function AdminPage() {
     })
   }, [adjustmentForm, customerMembers, selectedProfileId])
 
+  useEffect(() => {
+    if (isCreateSlugManual) return
+
+    createBusinessForm.setValue('slug', slugifyBusinessName(createBusinessName), {
+      shouldDirty: false,
+      shouldValidate: true,
+    })
+  }, [createBusinessForm, createBusinessName, isCreateSlugManual])
+
+  useEffect(() => {
+    if (!businessAccessDialog) {
+      assignOwnerForm.reset({ email: '' })
+    }
+  }, [businessAccessDialog, assignOwnerForm])
+
   const beginBusinessEdit = (business: {
     id: string
     name: string
@@ -208,6 +284,8 @@ export function AdminPage() {
   const businessNameById = new Map(
     (allBusinesses.data ?? []).map((business) => [business.id, business.name]),
   )
+  const accessDialogBusiness =
+    allBusinesses.data?.find((business) => business.id === businessAccessDialog?.businessId) ?? null
   const memberById = new Map(
     (users.data ?? []).map(({ profile: member }) => [member.id, member]),
   )
@@ -545,7 +623,7 @@ export function AdminPage() {
                       setRewardBusinessId(nextBusinessId)
                       rewardForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
                     }}
-                    className="h-12 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                    className={adminNativeSelectClass}
                   >
                     {(allBusinesses.data ?? []).map((business) => (
                       <option key={business.id} value={business.id}>
@@ -631,7 +709,7 @@ export function AdminPage() {
                         rewardForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
                         setRewardBusinessId(nextBusinessId)
                       }}
-                      className="h-12 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                      className={adminNativeSelectClass}
                     >
                       {(allBusinesses.data ?? []).map((business) => (
                         <option key={business.id} value={business.id}>
@@ -723,7 +801,7 @@ export function AdminPage() {
                       setProductBusinessId(nextBusinessId)
                       productForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
                     }}
-                    className="h-12 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                    className={adminNativeSelectClass}
                   >
                     {(allBusinesses.data ?? []).map((business) => (
                       <option key={business.id} value={business.id}>
@@ -833,7 +911,7 @@ export function AdminPage() {
                         productForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
                         setProductBusinessId(nextBusinessId)
                       }}
-                      className="h-12 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                      className={adminNativeSelectClass}
                     >
                       {(allBusinesses.data ?? []).map((business) => (
                         <option key={business.id} value={business.id}>
@@ -930,7 +1008,7 @@ export function AdminPage() {
                     id="promotion-business-filter"
                     value={promotionBusinessId}
                     onChange={(event) => setPromotionBusinessId(event.target.value)}
-                    className="h-12 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                    className={adminNativeSelectClass}
                   >
                     {(allBusinesses.data ?? []).map((business) => (
                       <option key={business.id} value={business.id}>
@@ -1010,7 +1088,7 @@ export function AdminPage() {
                       id="promotion-business"
                       value={promotionBusinessId}
                       onChange={(event) => setPromotionBusinessId(event.target.value)}
-                      className="h-12 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                      className={adminNativeSelectClass}
                     >
                       {(allBusinesses.data ?? []).map((business) => (
                         <option key={business.id} value={business.id}>
@@ -1021,14 +1099,24 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-title">Promotion Title</Label>
-                    <Input id="promotion-title" {...promotionForm.register('title')} />
+                    <Input
+                      id="promotion-title"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      placeholder="Weekend espresso flight"
+                      {...promotionForm.register('title')}
+                    />
                     {promotionForm.formState.errors.title ? (
                       <p className="text-xs text-red-500">{promotionForm.formState.errors.title.message}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-description">Description</Label>
-                    <Input id="promotion-description" {...promotionForm.register('description')} />
+                    <Textarea
+                      id="promotion-description"
+                      className={adminTextareaClass}
+                      placeholder="Offer a limited-time bundle, perk, or challenge members can unlock this week."
+                      {...promotionForm.register('description')}
+                    />
                     {promotionForm.formState.errors.description ? (
                       <p className="text-xs text-red-500">{promotionForm.formState.errors.description.message}</p>
                     ) : null}
@@ -1036,14 +1124,24 @@ export function AdminPage() {
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
                       <Label htmlFor="promotion-badge">Badge Label</Label>
-                      <Input id="promotion-badge" placeholder="e.g., New Offer" {...promotionForm.register('badge')} />
+                      <Input
+                        id="promotion-badge"
+                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                        placeholder="e.g., New Offer"
+                        {...promotionForm.register('badge')}
+                      />
                       {promotionForm.formState.errors.badge ? (
                         <p className="text-xs text-red-500">{promotionForm.formState.errors.badge.message}</p>
                       ) : null}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="promotion-cta">Action Label</Label>
-                      <Input id="promotion-cta" placeholder="Unlock Now" {...promotionForm.register('cta')} />
+                      <Input
+                        id="promotion-cta"
+                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                        placeholder="Unlock Now"
+                        {...promotionForm.register('cta')}
+                      />
                       {promotionForm.formState.errors.cta ? (
                         <p className="text-xs text-red-500">{promotionForm.formState.errors.cta.message}</p>
                       ) : null}
@@ -1051,7 +1149,12 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-3">
                     <Label htmlFor="promotion-audience">Target Audience</Label>
-                    <Input id="promotion-audience" placeholder="All / Bronze / Gold" {...promotionForm.register('audience')} />
+                    <Input
+                      id="promotion-audience"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      placeholder="All / Bronze / Gold"
+                      {...promotionForm.register('audience')}
+                    />
                     {promotionForm.formState.errors.audience ? (
                       <p className="text-xs text-red-500">{promotionForm.formState.errors.audience.message}</p>
                     ) : null}
@@ -1077,175 +1180,566 @@ export function AdminPage() {
         </TabsContent>
 
         <TabsContent value="partners" className="space-y-12 outline-none">
-          <div className="space-y-8">
-            <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
-              <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Network</span>
-                <h2 className="font-serif text-3xl text-primary">Partner Cards</h2>
+          <div className="grid gap-8 xl:grid-cols-[420px_1fr]">
+            <div className="space-y-6">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Setup</span>
+                <h2 className="font-serif text-3xl text-primary">Create Business</h2>
               </div>
-              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-                {(allBusinesses.data ?? []).length} partners
-              </span>
+
+              <div className="rounded-3xl border border-primary-container/20 bg-[#120d0b]/78 p-8 shadow-card backdrop-blur-xl space-y-6">
+                <div className="rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-5">
+                  <p className="text-sm font-semibold text-on-surface">Create a business and assign its owner in one flow.</p>
+                  <p className="mt-2 text-sm text-on-surface-variant/80">
+                    If the owner email is missing, the business will still be created and you can finish setup from the partner card.
+                  </p>
+                </div>
+
+                <form
+                  className="space-y-5"
+                  onSubmit={createBusinessForm.handleSubmit(
+                    async (values) => {
+                      try {
+                        setCreateBusinessError(null)
+                        const business = await createBusiness.mutateAsync(values)
+
+                        try {
+                          await assignBusinessOwner.mutateAsync({
+                            email: values.ownerEmail,
+                            businessId: business.id as string,
+                          })
+
+                          createBusinessForm.reset({
+                            name: '',
+                            slug: '',
+                            description: '',
+                            logoUrl: '',
+                            earnRate: 1,
+                            taxRate: 0,
+                            currency: 'USD',
+                            active: true,
+                            ownerEmail: '',
+                          })
+                          setIsCreateSlugManual(false)
+                          toast.success('Business created and owner assigned.')
+                        } catch (ownerError) {
+                          if (ownerError instanceof OwnerNotFoundError) {
+                            toast.warning('Business created, but the owner email was not found. Use Assign Owner on the new partner card to finish setup.')
+                          } else {
+                            toast.warning('Business created, but owner assignment failed. Use Assign Owner on the new partner card to retry.')
+                          }
+                        }
+                      } catch (error) {
+                        if (isUniqueSlugError(error)) {
+                          createBusinessForm.setError('slug', {
+                            type: 'server',
+                            message: 'That slug is already in use. Choose a different one.',
+                          })
+                          return
+                        }
+
+                        setCreateBusinessError(
+                          error instanceof Error ? error.message : 'Failed to create business.',
+                        )
+                      }
+                    },
+                    () => {
+                      setCreateBusinessError('Please fix the highlighted business fields.')
+                    },
+                  )}
+                >
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-business-name">Name</Label>
+                    <Input
+                      id="create-business-name"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      placeholder="Harbor Roast"
+                      {...createBusinessForm.register('name')}
+                    />
+                    {createBusinessForm.formState.errors.name ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.name.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-business-slug">Slug</Label>
+                    <Input
+                      id="create-business-slug"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      placeholder="harbor-roast"
+                      {...createBusinessForm.register('slug', {
+                        onChange: () => {
+                          setIsCreateSlugManual(true)
+                        },
+                      })}
+                    />
+                    {createBusinessForm.formState.errors.slug ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.slug.message}</p>
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Lowercase letters, numbers, and single hyphens only.</p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-business-description">Description</Label>
+                    <Textarea
+                      id="create-business-description"
+                      className="min-h-28 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="Neighborhood espresso bar with all-day pastries."
+                      {...createBusinessForm.register('description')}
+                    />
+                    {createBusinessForm.formState.errors.description ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.description.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-business-logo-url">Logo URL</Label>
+                    <Input
+                      id="create-business-logo-url"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      placeholder="https://example.com/logo.png"
+                      {...createBusinessForm.register('logoUrl')}
+                    />
+                    {createBusinessForm.formState.errors.logoUrl ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.logoUrl.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <div className="grid gap-3">
+                      <Label htmlFor="create-business-earn-rate">Earn Rate</Label>
+                      <Input
+                        id="create-business-earn-rate"
+                        type="number"
+                        step="0.01"
+                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                        {...createBusinessForm.register('earnRate', { valueAsNumber: true })}
+                      />
+                      {createBusinessForm.formState.errors.earnRate ? (
+                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.earnRate.message}</p>
+                      ) : null}
+                    </div>
+
+                    <div className="grid gap-3">
+                      <Label htmlFor="create-business-tax-rate">Tax Rate</Label>
+                      <Input
+                        id="create-business-tax-rate"
+                        type="number"
+                        step="0.001"
+                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                        {...createBusinessForm.register('taxRate', { valueAsNumber: true })}
+                      />
+                      {createBusinessForm.formState.errors.taxRate ? (
+                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.taxRate.message}</p>
+                      ) : null}
+                    </div>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
+                    <div className="grid gap-3">
+                      <Label htmlFor="create-business-currency">Currency</Label>
+                      <Input
+                        id="create-business-currency"
+                        maxLength={3}
+                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30 uppercase"
+                        {...createBusinessForm.register('currency', {
+                          onChange: (event) => {
+                            createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                            })
+                          },
+                        })}
+                      />
+                      {createBusinessForm.formState.errors.currency ? (
+                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
+                      ) : null}
+                    </div>
+
+                    <label className="flex items-center gap-3 rounded-2xl border border-primary-container/20 bg-[#17100d]/70 px-4 py-3 text-sm font-semibold text-on-surface">
+                      <input
+                        type="checkbox"
+                        className="size-4 rounded border-outline-variant/30"
+                        {...createBusinessForm.register('active')}
+                      />
+                      Active
+                    </label>
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-business-owner-email">Owner Email</Label>
+                    <Input
+                      id="create-business-owner-email"
+                      type="email"
+                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      placeholder="owner@harborroast.com"
+                      {...createBusinessForm.register('ownerEmail')}
+                    />
+                    {createBusinessForm.formState.errors.ownerEmail ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.ownerEmail.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button
+                      type="submit"
+                      className="rounded-full"
+                      disabled={createBusiness.isPending || assignBusinessOwner.isPending}
+                    >
+                      {createBusiness.isPending || assignBusinessOwner.isPending ? 'Creating...' : 'Create Business'}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-full"
+                      onClick={() => {
+                        createBusinessForm.reset({
+                          name: '',
+                          slug: '',
+                          description: '',
+                          logoUrl: '',
+                          earnRate: 1,
+                          taxRate: 0,
+                          currency: 'USD',
+                          active: true,
+                          ownerEmail: '',
+                        })
+                        setCreateBusinessError(null)
+                        setIsCreateSlugManual(false)
+                      }}
+                      disabled={createBusiness.isPending || assignBusinessOwner.isPending}
+                    >
+                      Reset
+                    </Button>
+                  </div>
+                  {createBusinessError ? <p className="text-sm font-bold text-red-500">{createBusinessError}</p> : null}
+                </form>
+              </div>
             </div>
 
-            <div className="grid gap-4 xl:grid-cols-2">
-              {(allBusinesses.data ?? []).map((business) => (
-                <div key={business.id} className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm space-y-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex items-center gap-4">
-                      {business.logoUrl ? (
-                        <img
-                          src={business.logoUrl}
-                          alt={business.name}
-                          className="size-16 rounded-2xl object-cover border border-outline-variant/10"
-                        />
-                      ) : (
-                        <div className={`size-16 rounded-2xl flex items-center justify-center text-white shadow-lg ${bizColorClass(business.id)}`}>
-                          <Store className="size-7" />
-                        </div>
-                      )}
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <p className="font-serif text-2xl tracking-tight text-primary">{business.name}</p>
-                          <Badge
-                            variant="accent"
-                            className={
-                              business.active
-                                ? 'bg-success/10 text-success border-success/20'
-                                : 'bg-outline-variant/10 text-on-surface-variant border-outline-variant/15'
-                            }
+            <div className="space-y-8">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
+                <div>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Network</span>
+                  <h2 className="font-serif text-3xl text-primary">Partner Cards</h2>
+                </div>
+                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                  {(allBusinesses.data ?? []).length} partners
+                </span>
+              </div>
+
+              <div className="grid gap-4 xl:grid-cols-2">
+                {(allBusinesses.data ?? []).map((business) => (
+                  <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-7 shadow-card backdrop-blur-xl space-y-7">
+                    <div className="flex flex-col gap-5">
+                      <div className="flex flex-col gap-5">
+                        <div className="flex min-w-0 items-start gap-4">
+                        {business.logoUrl ? (
+                          <img
+                            src={business.logoUrl}
+                            alt={business.name}
+                            className="size-16 shrink-0 rounded-2xl object-cover border border-outline-variant/10"
+                          />
+                        ) : (
+                          <div className={`size-16 shrink-0 rounded-2xl flex items-center justify-center text-white shadow-lg ${bizColorClass(business.id)}`}>
+                            <Store className="size-7" />
+                          </div>
+                        )}
+                        <div className="min-w-0 space-y-3">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <p className="font-serif text-3xl leading-tight tracking-tight text-primary break-words">{business.name}</p>
+                            <Badge
+                              variant="accent"
+                              className={
+                                business.active
+                                  ? 'bg-success/10 text-success border-success/20'
+                                  : 'bg-outline-variant/10 text-on-surface-variant border-outline-variant/15'
+                              }
                           >
                             {business.active ? 'Active' : 'Inactive'}
                           </Badge>
+                          </div>
+                          <p className="max-w-md text-base leading-8 font-medium text-on-surface-variant/85">
+                            {business.description || 'No description provided yet.'}
+                          </p>
+                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.72rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                            <span>{business.earnRate} pts / $1</span>
+                            <span>{business.currency}</span>
+                            <span>{business.slug}</span>
+                          </div>
+                          <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/64 p-4 text-sm">
+                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Owner</p>
+                            <p className="mt-2 font-semibold text-primary">
+                              {business.ownerName || business.ownerEmail || 'Unassigned'}
+                            </p>
+                            <p className="mt-1 text-on-surface-variant/75">
+                              {business.ownerEmail ?? 'Assign an owner to unlock business access.'}
+                            </p>
+                          </div>
                         </div>
-                        <p className="text-sm font-medium text-on-surface-variant/80">
-                          {business.description || 'No description provided yet.'}
-                        </p>
-                        <p className="text-[0.7rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">
-                          {business.earnRate} pts / $1
-                        </p>
                       </div>
-                    </div>
-                    <Button
-                      variant="outline"
-                      className="rounded-full"
-                      onClick={() =>
-                        editingBusinessId === business.id
-                          ? setEditingBusinessId(null)
-                          : beginBusinessEdit(business)
-                      }
-                    >
-                      {editingBusinessId === business.id ? 'Cancel' : 'Edit'}
-                    </Button>
-                  </div>
-
-                  <div className="grid gap-3 sm:grid-cols-2 2xl:grid-cols-4">
-                    <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">Members</p>
-                      <p className="mt-2 font-serif text-2xl text-primary">{business.totalMembers}</p>
-                    </div>
-                    <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">Revenue</p>
-                      <p className="mt-2 font-serif text-2xl text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
-                    </div>
-                    <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">XP Issued</p>
-                      <p className="mt-2 font-serif text-2xl text-primary">{business.pointsIssued}</p>
-                    </div>
-                    <div className="rounded-2xl bg-surface-lowest p-4 border border-outline-variant/5">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/65">Reward Credits Outstanding</p>
-                      <p className="mt-2 font-serif text-2xl text-primary">{business.creditsOutstanding}</p>
-                    </div>
-                  </div>
-
-                  {editingBusinessId === business.id ? (
-                    <form
-                      className="space-y-4 rounded-[2rem] border border-primary/10 bg-primary/[0.03] p-6"
-                      onSubmit={async (event) => {
-                        event.preventDefault()
-                        try {
-                          setPartnerActionError(null)
-                          await updateBusiness.mutateAsync({
-                            id: business.id,
-                            patch: {
-                              name: businessPatch.name.trim(),
-                              description: businessPatch.description.trim(),
-                              logoUrl: businessPatch.logoUrl.trim(),
-                            },
-                          })
-                          setEditingBusinessId(null)
-                        } catch (error) {
-                          setPartnerActionError(
-                            error instanceof Error ? error.message : 'Failed to update partner info.',
-                          )
-                        }
-                      }}
-                    >
-                      <div className="grid gap-3">
-                        <Label htmlFor={`business-name-${business.id}`}>Name</Label>
-                        <Input
-                          id={`business-name-${business.id}`}
-                          value={businessPatch.name}
-                          onChange={(event) =>
-                            setBusinessPatch((current) => ({ ...current, name: event.target.value }))
-                          }
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor={`business-description-${business.id}`}>Description</Label>
-                        <Textarea
-                          id={`business-description-${business.id}`}
-                          value={businessPatch.description}
-                          onChange={(event) =>
-                            setBusinessPatch((current) => ({ ...current, description: event.target.value }))
-                          }
-                        />
-                      </div>
-                      <div className="grid gap-3">
-                        <Label htmlFor={`business-logo-${business.id}`}>Logo URL</Label>
-                        <Input
-                          id={`business-logo-${business.id}`}
-                          value={businessPatch.logoUrl}
-                          onChange={(event) =>
-                            setBusinessPatch((current) => ({ ...current, logoUrl: event.target.value }))
-                          }
-                        />
-                      </div>
-                      <div className="flex flex-wrap items-center gap-3">
-                        <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
-                          {updateBusiness.isPending ? 'Saving...' : 'Save'}
+                        <div className="grid grid-cols-2 gap-3 sm:flex sm:max-w-[220px] sm:flex-col sm:items-stretch">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="rounded-full px-4"
+                          onClick={() => {
+                            setPartnerActionError(null)
+                            setBusinessAccessDialog({
+                              businessId: business.id,
+                              role: 'business-owner',
+                            })
+                          }}
+                        >
+                          Assign Owner
                         </Button>
                         <Button
                           type="button"
                           variant="outline"
-                          className="rounded-full"
-                          onClick={() => setEditingBusinessId(null)}
-                          disabled={updateBusiness.isPending}
+                          className="rounded-full px-4"
+                          onClick={() => {
+                            setPartnerActionError(null)
+                            setBusinessAccessDialog({
+                              businessId: business.id,
+                              role: 'business-staff',
+                            })
+                          }}
                         >
-                          Cancel
+                          Add Staff
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="rounded-full px-4"
+                          onClick={() =>
+                            editingBusinessId === business.id
+                              ? setEditingBusinessId(null)
+                              : beginBusinessEdit(business)
+                          }
+                        >
+                          {editingBusinessId === business.id ? 'Cancel' : 'Edit'}
                         </Button>
                       </div>
-                      {partnerActionError ? (
-                        <p className="text-sm font-bold text-red-500">{partnerActionError}</p>
-                      ) : null}
-                    </form>
+                    </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Customers</p>
+                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.totalMembers}</p>
+                      </div>
+                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Revenue</p>
+                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
+                      </div>
+                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">XP Issued</p>
+                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.pointsIssued}</p>
+                      </div>
+                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Staff Accounts</p>
+                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.staffCount}</p>
+                      </div>
+                    </div>
+
+                    {editingBusinessId === business.id ? (
+                      <form
+                        className="space-y-4 rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-6"
+                        onSubmit={async (event) => {
+                          event.preventDefault()
+                          try {
+                            setPartnerActionError(null)
+                            await updateBusiness.mutateAsync({
+                              id: business.id,
+                              patch: {
+                                name: businessPatch.name.trim(),
+                                description: businessPatch.description.trim(),
+                                logoUrl: businessPatch.logoUrl.trim(),
+                              },
+                            })
+                            setEditingBusinessId(null)
+                            toast.success('Business updated.')
+                          } catch (error) {
+                            setPartnerActionError(
+                              error instanceof Error ? error.message : 'Failed to update partner info.',
+                            )
+                          }
+                        }}
+                      >
+                        <div className="grid gap-3">
+                          <Label htmlFor={`business-name-${business.id}`}>Name</Label>
+                          <Input
+                            id={`business-name-${business.id}`}
+                            value={businessPatch.name}
+                            onChange={(event) =>
+                              setBusinessPatch((current) => ({ ...current, name: event.target.value }))
+                            }
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor={`business-description-${business.id}`}>Description</Label>
+                          <Textarea
+                            id={`business-description-${business.id}`}
+                            value={businessPatch.description}
+                            onChange={(event) =>
+                              setBusinessPatch((current) => ({ ...current, description: event.target.value }))
+                            }
+                          />
+                        </div>
+                        <div className="grid gap-3">
+                          <Label htmlFor={`business-logo-${business.id}`}>Logo URL</Label>
+                          <Input
+                            id={`business-logo-${business.id}`}
+                            value={businessPatch.logoUrl}
+                            onChange={(event) =>
+                              setBusinessPatch((current) => ({ ...current, logoUrl: event.target.value }))
+                            }
+                          />
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3">
+                          <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
+                            {updateBusiness.isPending ? 'Saving...' : 'Save'}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="rounded-full"
+                            onClick={() => setEditingBusinessId(null)}
+                            disabled={updateBusiness.isPending}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                        {partnerActionError ? (
+                          <p className="text-sm font-bold text-red-500">{partnerActionError}</p>
+                        ) : null}
+                      </form>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+
+              {allBusinesses.isLoading ? (
+                <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-8 shadow-card text-on-surface-variant/75">
+                  Loading partner metrics...
+                </div>
+              ) : null}
+
+              {!allBusinesses.isLoading && (allBusinesses.data?.length ?? 0) === 0 ? (
+                <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-8 shadow-card text-on-surface-variant/75">
+                  No partners are available yet.
+                </div>
+              ) : null}
+            </div>
+          </div>
+
+          <Dialog
+            open={Boolean(businessAccessDialog)}
+            onOpenChange={(open) => {
+              if (!open) {
+                setBusinessAccessDialog(null)
+              }
+            }}
+          >
+            <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[#120d0b]/95 text-on-surface shadow-card">
+              <DialogHeader>
+                <DialogTitle className="font-serif text-2xl text-primary">
+                  {businessAccessDialog?.role === 'business-staff' ? 'Add Staff' : 'Assign Owner'}
+                </DialogTitle>
+                <DialogDescription className="text-sm text-on-surface-variant/80">
+                  {accessDialogBusiness
+                    ? businessAccessDialog?.role === 'business-staff'
+                      ? `Add a staff account to ${accessDialogBusiness.name}.`
+                      : `Assign the canonical owner for ${accessDialogBusiness.name}.`
+                    : 'Manage business access.'}
+                </DialogDescription>
+              </DialogHeader>
+
+              <form
+                className="space-y-5 pt-2"
+                onSubmit={assignOwnerForm.handleSubmit(async (values) => {
+                  if (!businessAccessDialog) return
+
+                  try {
+                    if (businessAccessDialog.role === 'business-staff') {
+                      await assignBusinessStaffFromList.mutateAsync({
+                        email: values.email,
+                        businessId: businessAccessDialog.businessId,
+                      })
+                    } else {
+                      await assignBusinessOwnerFromList.mutateAsync({
+                        email: values.email,
+                        businessId: businessAccessDialog.businessId,
+                      })
+                    }
+                    toast.success(
+                      businessAccessDialog.role === 'business-staff'
+                        ? 'Business staff assigned.'
+                        : 'Business owner assigned.',
+                    )
+                    setBusinessAccessDialog(null)
+                    assignOwnerForm.reset({ email: '' })
+                  } catch (error) {
+                    if (error instanceof OwnerNotFoundError || error instanceof StaffNotFoundError) {
+                      toast.error('No user account matches that email.')
+                      return
+                    }
+
+                    toast.error(
+                      error instanceof Error
+                        ? error.message
+                        : businessAccessDialog.role === 'business-staff'
+                          ? 'Failed to assign staff.'
+                          : 'Failed to assign business owner.',
+                    )
+                  }
+                })}
+              >
+                <div className="grid gap-3">
+                  <Label htmlFor="assign-owner-email">
+                    {businessAccessDialog?.role === 'business-staff' ? 'Staff Email' : 'Owner Email'}
+                  </Label>
+                  <Input
+                    id="assign-owner-email"
+                    type="email"
+                    className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                    placeholder={
+                      businessAccessDialog?.role === 'business-staff'
+                        ? 'staff@partner.com'
+                        : 'owner@partner.com'
+                    }
+                    {...assignOwnerForm.register('email')}
+                  />
+                  {assignOwnerForm.formState.errors.email ? (
+                    <p className="text-xs text-red-500">{assignOwnerForm.formState.errors.email.message}</p>
                   ) : null}
                 </div>
-              ))}
-            </div>
 
-            {allBusinesses.isLoading ? (
-              <div className="rounded-3xl bg-white p-8 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
-                Loading partner metrics...
-              </div>
-            ) : null}
-
-            {!allBusinesses.isLoading && (allBusinesses.data?.length ?? 0) === 0 ? (
-              <div className="rounded-3xl bg-white p-8 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
-                No partners are available yet.
-              </div>
-            ) : null}
-          </div>
+                <div className="flex justify-end gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-full"
+                    onClick={() => setBusinessAccessDialog(null)}
+                    disabled={assignBusinessOwnerFromList.isPending || assignBusinessStaffFromList.isPending}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    className="rounded-full"
+                    disabled={assignBusinessOwnerFromList.isPending || assignBusinessStaffFromList.isPending}
+                  >
+                    {assignBusinessOwnerFromList.isPending || assignBusinessStaffFromList.isPending
+                      ? 'Saving...'
+                      : businessAccessDialog?.role === 'business-staff'
+                        ? 'Add Staff'
+                        : 'Assign Owner'}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
 
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -1254,14 +1748,14 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">Credit Verification — Recent Orders</h2>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="verification-business" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                <Label htmlFor="verification-business" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/80">
                   Filter Partner
                 </Label>
                 <select
                   id="verification-business"
                   value={verificationBusinessId}
                   onChange={(event) => setVerificationBusinessId(event.target.value)}
-                  className="h-12 min-w-56 rounded-2xl border border-outline-variant/20 bg-white px-4 text-sm text-primary shadow-sm outline-none transition focus:border-primary/30"
+                  className="h-12 min-w-56 rounded-2xl border border-primary-container/20 bg-[#17100d]/72 px-4 text-sm text-on-surface shadow-sm outline-none transition focus:border-primary/30"
                 >
                   <option value="all">All Partners</option>
                   {(allBusinesses.data ?? []).map((business) => (
@@ -1273,11 +1767,11 @@ export function AdminPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
+            <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 shadow-card overflow-hidden">
               <ScrollArea className="h-[520px]">
                 <div className="min-w-[900px]">
                   <table className="w-full text-sm">
-                    <thead className="bg-surface-lowest text-left">
+                    <thead className="bg-[#17100d]/78 text-left">
                       <tr className="border-b border-outline-variant/10">
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Partner</th>
@@ -1294,7 +1788,7 @@ export function AdminPage() {
                           allBusinesses.data?.find((business) => business.id === order.businessId)?.currency ?? 'USD'
 
                         return (
-                          <tr key={order.id} className="border-b border-outline-variant/5 bg-white">
+                          <tr key={order.id} className="border-b border-outline-variant/5 bg-transparent">
                             <td className="px-6 py-4 text-on-surface-variant/85">{formatDate(order.createdAt)}</td>
                             <td className="px-6 py-4 font-semibold text-primary">{order.businessName}</td>
                             <td className="px-6 py-4 font-mono text-xs text-on-surface-variant/85">{order.profileId}</td>
@@ -1322,11 +1816,11 @@ export function AdminPage() {
                   </table>
 
                   {verificationOrders.isLoading ? (
-                    <div className="px-6 py-8 text-on-surface-variant/70">Loading recent orders...</div>
+                    <div className="px-6 py-8 text-on-surface-variant/75">Loading recent orders...</div>
                   ) : null}
 
                   {!verificationOrders.isLoading && (verificationOrders.data?.length ?? 0) === 0 ? (
-                    <div className="px-6 py-8 text-on-surface-variant/70">No orders found for this filter.</div>
+                    <div className="px-6 py-8 text-on-surface-variant/75">No orders found for this filter.</div>
                   ) : null}
                 </div>
               </ScrollArea>
@@ -1346,11 +1840,11 @@ export function AdminPage() {
               </span>
             </div>
 
-            <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
+            <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 shadow-card overflow-hidden">
               <ScrollArea className="h-[620px]">
                 <div className="min-w-[760px]">
                   <table className="w-full text-sm">
-                    <thead className="bg-surface-lowest text-left">
+                    <thead className="bg-[#17100d]/78 text-left">
                       <tr className="border-b border-outline-variant/10">
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Referrer</th>
@@ -1365,7 +1859,7 @@ export function AdminPage() {
                         const referee = referralProfileLabel(referral.refereeId, referral.referee)
 
                         return (
-                        <tr key={referral.id} className="border-b border-outline-variant/5 bg-white">
+                        <tr key={referral.id} className="border-b border-outline-variant/5 bg-transparent">
                           <td className="px-6 py-4 text-on-surface-variant/85">{formatDate(referral.createdAt)}</td>
                           <td className="px-6 py-4">
                             <p className="font-semibold text-primary">{referrer.fullName}</p>
@@ -1417,7 +1911,7 @@ export function AdminPage() {
                                 </Button>
                               </div>
                             ) : (
-                              <span className="text-xs font-medium text-on-surface-variant/60">No action</span>
+                              <span className="text-xs font-medium text-on-surface-variant/70">No action</span>
                             )}
                           </td>
                         </tr>
@@ -1427,11 +1921,11 @@ export function AdminPage() {
                   </table>
 
                   {allReferrals.isLoading ? (
-                    <div className="px-6 py-8 text-on-surface-variant/70">Loading referrals...</div>
+                    <div className="px-6 py-8 text-on-surface-variant/75">Loading referrals...</div>
                   ) : null}
 
                   {!allReferrals.isLoading && (allReferrals.data?.length ?? 0) === 0 ? (
-                    <div className="px-6 py-8 text-on-surface-variant/70">No referrals found.</div>
+                    <div className="px-6 py-8 text-on-surface-variant/75">No referrals found.</div>
                   ) : null}
                 </div>
               </ScrollArea>

@@ -46,7 +46,7 @@ export function BusinessOwnerLayout() {
     )
   }
 
-  if (profile?.role !== 'business-owner') {
+  if (profile?.role !== 'business-owner' && profile?.role !== 'business-staff') {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="absolute right-6 top-6">
@@ -130,7 +130,9 @@ export function BusinessOwnerLayout() {
             </Avatar>
             <div className="flex flex-col overflow-hidden">
               <span className="truncate text-sm font-semibold text-white">{profile?.fullName}</span>
-              <span className="text-xs text-on-surface-variant/70">{t('Commander')}</span>
+              <span className="text-xs text-on-surface-variant/70">
+                {profile?.role === 'business-owner' ? t('Commander') : 'Business Staff'}
+              </span>
             </div>
           </div>
 

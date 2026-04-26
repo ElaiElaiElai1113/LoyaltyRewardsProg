@@ -345,6 +345,7 @@ export function LandingPage() {
                                 </SelectTrigger>
                                 <SelectContent>
                                   <SelectItem value="business-owner">{t('Business Owner')}</SelectItem>
+                                  <SelectItem value="business-staff">Business Staff</SelectItem>
                                   <SelectItem value="platform-admin">{t('Platform Admin')}</SelectItem>
                                 </SelectContent>
                               </Select>

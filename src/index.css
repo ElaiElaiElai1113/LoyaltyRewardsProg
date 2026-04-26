@@ -172,8 +172,34 @@
     border-color: rgba(74, 55, 40, 0.18);
   }
 
+  .admin-light-card textarea,
+  .admin-light-card select {
+    background: #fffefd;
+    color: #2f251f;
+    border-color: rgba(74, 55, 40, 0.18);
+  }
+
   .admin-light-card input::placeholder {
     color: #8b7b70;
+  }
+
+  .admin-light-card textarea::placeholder {
+    color: #8b7b70;
+  }
+
+  .admin-light-card [class*="text-on-surface"] {
+    color: #4b4038 !important;
+  }
+
+  .admin-light-card [class*="bg-surface-lowest"] {
+    background-color: #f4ece3 !important;
+  }
+
+  .admin-light-card button[class*="border-primary-container"],
+  .admin-light-card button[class*="variant-outline"] {
+    background: #fffefd;
+    color: #4b4038;
+    border-color: rgba(74, 55, 40, 0.18);
   }
 }
 

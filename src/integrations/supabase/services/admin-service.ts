@@ -53,7 +53,7 @@ export const adminService = {
         sb.from('businesses').select('*').order('name'),
         sb.from('orders').select('business_id, profile_id, total'),
         sb.from('activities').select('business_id, points').eq('type', 'earned'),
-        sb.from('profiles').select('id, business_id'),
+        sb.from('profiles').select('id, business_id, role, full_name, email'),
         sb.from('reward_balances').select('profile_id, available_credits'),
       ])
 
@@ -95,9 +95,28 @@ export const adminService = {
     }
 
     const businessIdByProfile = new Map<string, string>()
+    const ownerByBusiness = new Map<string, { id: string; fullName: string; email: string }>()
+    const staffCountByBusiness = new Map<string, number>()
     for (const profile of profilesResult.data ?? []) {
       if (typeof profile.id === 'string' && typeof profile.business_id === 'string') {
         businessIdByProfile.set(profile.id, profile.business_id)
+      }
+
+      if (typeof profile.business_id !== 'string') continue
+
+      if (profile.role === 'business-owner') {
+        ownerByBusiness.set(profile.business_id, {
+          id: profile.id as string,
+          fullName: (profile.full_name as string | null) ?? (profile.email as string),
+          email: profile.email as string,
+        })
+      }
+
+      if (profile.role === 'business-staff') {
+        staffCountByBusiness.set(
+          profile.business_id,
+          (staffCountByBusiness.get(profile.business_id) ?? 0) + 1,
+        )
       }
     }
 
@@ -132,6 +151,10 @@ export const adminService = {
         totalRevenue: revenueByBusiness.get(businessId) ?? 0,
         pointsIssued: pointsIssuedByBusiness.get(businessId) ?? 0,
         creditsOutstanding: creditsOutstandingByBusiness.get(businessId) ?? 0,
+        ownerProfileId: (business.ownerProfileId as string | null) ?? ownerByBusiness.get(businessId)?.id ?? null,
+        ownerName: ownerByBusiness.get(businessId)?.fullName ?? null,
+        ownerEmail: ownerByBusiness.get(businessId)?.email ?? null,
+        staffCount: staffCountByBusiness.get(businessId) ?? 0,
       }
     })
   },
@@ -260,6 +283,80 @@ export const adminService = {
     }
 
     return camelCaseRow(data as Record<string, unknown>)
+  },
+
+  async createBusiness(input: {
+    name: string
+    slug: string
+    description?: string
+    logoUrl?: string
+    earnRate: number
+    taxRate: number
+    currency: string
+    active: boolean
+  }) {
+    const sb = requireSupabase()
+
+    const payload = snakeCaseObj({
+      ...input,
+      description: input.description?.trim() ?? '',
+      logoUrl: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
+      currency: input.currency.trim().toUpperCase(),
+      slug: input.slug.trim(),
+      name: input.name.trim(),
+    })
+
+    const { data, error } = await sb
+      .from('businesses')
+      .insert(payload)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw error ?? new Error('Failed to create business.')
+    }
+
+    return camelCaseRow(data as Record<string, unknown>)
+  },
+
+  async lookupUserByEmail(email: string): Promise<string | null> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('lookup_user_by_email', {
+      p_email: email,
+    })
+
+    if (error) {
+      throw error
+    }
+
+    return typeof data === 'string' ? data : null
+  },
+
+  async assignBusinessUser(
+    userId: string,
+    businessId: string,
+    role: 'business-owner' | 'business-staff',
+  ) {
+    const sb = requireSupabase()
+
+    const { error } = await sb.rpc('assign_business_user', {
+      target_user_id: userId,
+      target_role: role,
+      target_business_id: businessId,
+    })
+
+    if (error) {
+      throw error
+    }
+  },
+
+  async assignBusinessOwner(userId: string, businessId: string) {
+    await this.assignBusinessUser(userId, businessId, 'business-owner')
+  },
+
+  async assignBusinessStaff(userId: string, businessId: string) {
+    await this.assignBusinessUser(userId, businessId, 'business-staff')
   },
 
   async adjustRewardsForBusiness(
