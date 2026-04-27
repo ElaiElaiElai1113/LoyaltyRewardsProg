@@ -2,6 +2,7 @@ import { type ReactNode, useEffect, useState } from 'react'
 
 import { AuthContext } from '@/features/auth/auth-context'
 import { authService } from '@/integrations/supabase/services/auth-service'
+import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { supabase } from '@/integrations/supabase/client'
 import { queryClient } from '@/lib/query-client'
@@ -20,6 +21,16 @@ async function createPendingReferralForProfile(profile: Profile) {
   await referralsService.createReferral(referralCode, profile.id, referralBusinessId ?? null)
   sessionStorage.removeItem('referralCode')
   sessionStorage.removeItem('referralBusinessId')
+}
+
+async function createPendingPartnerReferralForProfile(profile: Profile) {
+  const partnerCode = sessionStorage.getItem('partnerReferrerCode')
+  const partnerBusinessId = sessionStorage.getItem('partnerBusinessId')
+  if (!partnerCode || !partnerBusinessId || profile.role !== 'customer') return
+
+  await partnerService.attributePartnerReferral(partnerCode, profile.id, partnerBusinessId)
+  sessionStorage.removeItem('partnerReferrerCode')
+  sessionStorage.removeItem('partnerBusinessId')
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -121,6 +132,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     void createPendingReferralForProfile(profile).catch((error) => {
       console.warn('Pending referral creation skipped:', error)
+    })
+    void createPendingPartnerReferralForProfile(profile).catch((error) => {
+      console.warn('Pending partner referral creation skipped:', error)
     })
   }, [profile])
 

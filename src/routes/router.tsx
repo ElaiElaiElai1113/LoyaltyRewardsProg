@@ -18,6 +18,7 @@ import { ShopPage } from '@/features/shop/pages/shop-page'
 import {
   BusinessDashboardPage,
   MembersPage,
+  PartnersPage,
   ProductsPage,
   PromotionsPage as BusinessPromotionsPage,
   RewardsPage as BusinessRewardsPage,
@@ -213,6 +214,7 @@ const router = createBrowserRouter([
       { path: '/business/rewards', element: <BusinessRewardsPage /> },
       { path: '/business/promotions', element: <BusinessPromotionsPage /> },
       { path: '/business/members', element: <MembersPage /> },
+      { path: '/business/partners', element: <PartnersPage /> },
       { path: '/business/settings', element: <SettingsPage /> },
     ],
   },

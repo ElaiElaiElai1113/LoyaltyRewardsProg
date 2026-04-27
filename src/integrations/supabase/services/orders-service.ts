@@ -1,6 +1,7 @@
 import { createClientRequestId, normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { readCart, clearCart } from '@/lib/mock-store'
 import type { Order, OrderLineItem } from '@/types/domain'
+import { partnerService } from './partner-service'
 import { camelCaseRow, requireSupabase } from './shared'
 
 function mapOrder(orderRow: Record<string, unknown>): Order {
@@ -62,7 +63,12 @@ export const ordersService = {
     return mapOrder(data as Record<string, unknown>)
   },
 
-  async placeOrder(profileId: string, businessId: string, paymentMethod: string): Promise<Order> {
+  async placeOrder(
+    profileId: string,
+    businessId: string,
+    paymentMethod: string,
+    partnerCode?: string | null,
+  ): Promise<Order> {
     const sb = requireSupabase()
     const cartItems = readCart()
 
@@ -105,6 +111,11 @@ export const ordersService = {
 
     if (normalized.businessId !== businessId) {
       throw new Error('Checkout supports one business at a time. Remove other items from your cart first.')
+    }
+
+    const sanitizedPartnerCode = partnerCode?.trim().toUpperCase() ?? ''
+    if (sanitizedPartnerCode) {
+      await partnerService.attributePartnerReferral(sanitizedPartnerCode, profileId, businessId)
     }
 
     const { data, error } = await sb.rpc('place_order', {

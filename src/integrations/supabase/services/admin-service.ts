@@ -297,23 +297,19 @@ export const adminService = {
   }) {
     const sb = requireSupabase()
 
-    const payload = snakeCaseObj({
-      ...input,
-      description: input.description?.trim() ?? '',
-      logoUrl: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
-      currency: input.currency.trim().toUpperCase(),
-      slug: input.slug.trim(),
-      name: input.name.trim(),
+    const { data, error } = await sb.rpc('create_managed_business', {
+      p_name: input.name.trim(),
+      p_slug: input.slug.trim(),
+      p_description: input.description?.trim() ?? '',
+      p_logo_url: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
+      p_earn_rate: input.earnRate,
+      p_tax_rate: input.taxRate,
+      p_currency: input.currency.trim().toUpperCase(),
+      p_active: input.active,
     })
 
-    const { data, error } = await sb
-      .from('businesses')
-      .insert(payload)
-      .select('*')
-      .single()
-
     if (error || !data) {
-      throw error ?? new Error('Failed to create business.')
+      throw new Error(error?.message ?? 'Failed to create business.')
     }
 
     return camelCaseRow(data as Record<string, unknown>)

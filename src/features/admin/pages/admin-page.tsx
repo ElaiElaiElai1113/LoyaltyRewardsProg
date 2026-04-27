@@ -24,6 +24,8 @@ import {
   useAdminAllBusinesses,
   useAdminBusinesses,
   useAdminOverview,
+  useAdminPartnerPerformance,
+  useAdminPartnerReferrals,
   useAdminProducts,
   useAdminUsers,
   useAdminRejectReferral,
@@ -82,6 +84,8 @@ export function AdminPage() {
   const businesses = useAdminBusinesses()
   const allBusinesses = useAdminAllBusinesses()
   const allReferrals = useAllReferrals()
+  const partnerPerformance = useAdminPartnerPerformance()
+  const partnerReferrals = useAdminPartnerReferrals()
   const [rewardBusinessId, setRewardBusinessId] = useState('')
   const [productBusinessId, setProductBusinessId] = useState('')
   const [promotionBusinessId, setPromotionBusinessId] = useState('')
@@ -391,9 +395,9 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">{t('Adjust XP')}</h2>
               </div>
 
-              <div className="admin-light-card rounded-3xl border shadow-sm p-8 space-y-6">
+              <div className="quest-panel-dark rounded-[2rem] p-8 space-y-6">
                 {selectedMember ? (
-                  <div className="rounded-[2rem] border border-primary/10 bg-primary/[0.03] p-6">
+                  <div className="rounded-[2rem] border border-primary-container/15 bg-[#181210] p-6 shadow-[inset_0_0_0_1px_rgba(244,168,79,0.04)]">
                     <div className="flex items-start gap-4">
                       <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-xl text-white shadow-lg">
                         {selectedMember.profile.fullName.charAt(0)}
@@ -403,19 +407,19 @@ export function AdminPage() {
                           <p className="font-serif text-2xl tracking-tight text-primary">
                             {selectedMember.profile.fullName}
                           </p>
-                          <p className="text-sm font-medium text-on-surface-variant/80">
+                          <p className="text-sm font-medium text-on-surface-variant/90">
                             {selectedMember.profile.email}
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border border-secondary-container/20">
+                          <Badge variant="accent" className="border-secondary-container/25 bg-secondary-container/15 text-secondary">
                             <Gift className="size-3 mr-1" />
                             {selectedMember.balance?.points ?? 0} XP
                           </Badge>
-                          <Badge variant="accent" className="bg-success/10 text-success border border-success/20">
+                          <Badge variant="accent" className="border-success/25 bg-success/12 text-success">
                             {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
                           </Badge>
-                          <Badge variant="outline" className="border-outline-variant/20">
+                          <Badge variant="outline" className="border-primary-container/20 bg-[#201815] text-on-surface-variant">
                             {t('Joined')} {formatDate(selectedMember.profile.joinedAt)}
                           </Badge>
                         </div>
@@ -424,7 +428,7 @@ export function AdminPage() {
                             type="button"
                             size="sm"
                             variant="outline"
-                            className="rounded-full border-success/20 bg-success/5 text-success hover:bg-success/10"
+                            className="rounded-full border-success/25 bg-success/10 text-success hover:bg-success/15"
                             disabled={useCredit.isPending}
                             onClick={() =>
                               useCredit.mutate({
@@ -439,27 +443,27 @@ export function AdminPage() {
                       </div>
                     </div>
 
-                    <div className="mt-5 grid gap-4 text-sm text-on-surface-variant/80">
+                    <div className="mt-5 grid gap-4 text-sm text-on-surface-variant/90">
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Phone')}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Phone')}</span>
                         <span>{selectedMember.profile.phone || t('Not provided')}</span>
                       </div>
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Location')}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Location')}</span>
                         <span>{selectedMember.profile.location || t('Not provided')}</span>
                       </div>
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Favorite Order')}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Favorite Order')}</span>
                         <span>{selectedMember.profile.favoriteOrder || t('Not provided')}</span>
                       </div>
                       <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Member ID')}</span>
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member ID')}</span>
                         <span className="break-all">{selectedMember.profile.id}</span>
                       </div>
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-[2rem] border border-dashed border-outline-variant/20 bg-white/70 p-6 text-sm text-on-surface-variant/75">
+                  <div className="rounded-[2rem] border border-dashed border-primary-container/20 bg-[#181210] p-6 text-sm text-on-surface-variant/85">
                     {t('Select a member to view the profile and update XP.')}
                   </div>
                 )}
@@ -491,7 +495,7 @@ export function AdminPage() {
                       id="profileId"
                       list="member-id-options"
                       placeholder={t('Select from the customer list or paste a member id')}
-                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                       {...adjustmentForm.register('profileId')}
                     />
                     <datalist id="member-id-options">
@@ -505,27 +509,27 @@ export function AdminPage() {
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.profileId.message}</p>
                     ) : null}
                     {selectedMember ? (
-                      <p className="text-xs text-on-surface-variant/70">
+                      <p className="text-xs text-on-surface-variant/80">
                         {t('Selected')}: {selectedMember.profile.fullName} - {t('Current balance')}: {selectedMember.balance?.points ?? 0} XP
                       </p>
                     ) : null}
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="delta" className="text-sm font-semibold">{t('XP Adjustment')}</Label>
-                    <Input id="delta" type="number" className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
-                    <p className="text-xs text-on-surface-variant/70">{t('Use a positive number to add XP and a negative number to deduct it.')}</p>
+                    <Input id="delta" type="number" className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
+                    <p className="text-xs text-on-surface-variant/80">{t('Use a positive number to add XP and a negative number to deduct it.')}</p>
                     {adjustmentForm.formState.errors.delta ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
-                    <Input id="reason" placeholder={t('e.g., Service recovery')} className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30" {...adjustmentForm.register('reason')} />
+                    <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
                     {adjustmentForm.formState.errors.reason ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
                     ) : null}
                   </div>
-                  <Button type="submit" size="lg" className="w-full rounded-full h-14 font-semibold" disabled={adjustRewards.isPending}>
+                  <Button type="submit" size="lg" variant="secondary" className="h-14 w-full rounded-full font-semibold" disabled={adjustRewards.isPending}>
                     {adjustRewards.isPending ? t('Processing...') : t('Update XP')}
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
@@ -548,10 +552,10 @@ export function AdminPage() {
                 {customerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className={`admin-light-card group flex flex-col gap-6 rounded-3xl p-6 transition-all hover:shadow-xl hover:scale-[1.01] md:flex-row md:items-center md:justify-between border ${
+                    className={`quest-panel group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
                       selectedProfileId === member.id
-                        ? 'border-primary/30 shadow-lg ring-1 ring-primary/10'
-                        : 'border-outline-variant/5 hover:border-primary/10'
+                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.34)]'
+                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.28)]'
                     }`}
                   >
                     <div className="flex items-center gap-6">
@@ -560,31 +564,35 @@ export function AdminPage() {
                        </div>
                       <div>
                         <p className="font-serif text-2xl tracking-tight text-primary leading-tight">{member.fullName}</p>
-                        <p className="text-sm font-medium text-on-surface-variant/80 mt-1">{member.email}</p>
+                        <p className="mt-1 text-sm font-medium text-on-surface-variant/90">{member.email}</p>
                         <div className="mt-2 flex items-center gap-2">
-                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70 italic">
+                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
                             ID: {member.id}
                           </span>
                           <span className="size-1 rounded-full bg-outline-variant/30"></span>
-                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70 italic">
-                            {member.location}
+                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
+                            {member.location || t('Unknown')}
                           </span>
                         </div>
                       </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-3">
-                      <Badge variant="accent" className="bg-primary/5 text-primary border border-primary/10 font-medium px-3 py-1.5">{member.role}</Badge>
-                      <Badge variant="accent" className="bg-secondary-container/10 text-secondary-container border border-secondary-container/20 font-medium px-3 py-1.5 flex items-center gap-1.5">
+                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-medium text-primary">{member.role}</Badge>
+                      <Badge variant="accent" className="flex items-center gap-1.5 border-secondary-container/25 bg-secondary-container/15 px-3 py-1.5 font-medium text-secondary">
                         <Gift className="size-3" />
                         {balance?.points ?? 0} XP
                       </Badge>
-                      <Badge variant="accent" className="bg-success/10 text-success border border-success/20 font-medium px-3 py-1.5">
+                      <Badge variant="accent" className="border-success/25 bg-success/12 px-3 py-1.5 font-medium text-success">
                         {balance?.availableCredits ?? 0} {t('Reward Credits')}
                       </Badge>
                       <Button
-                        variant={selectedProfileId === member.id ? 'secondary' : 'ghost'}
+                        variant={selectedProfileId === member.id ? 'default' : 'outline'}
                         size="sm"
-                        className="rounded-full hover:bg-primary/5"
+                        className={
+                          selectedProfileId === member.id
+                            ? 'rounded-full'
+                            : 'rounded-full border-primary-container/30 bg-[#18110e]/70 text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary'
+                        }
                         onClick={() => {
                           adjustmentForm.setValue('profileId', member.id, {
                             shouldDirty: true,
@@ -1427,6 +1435,68 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
                   {(allBusinesses.data ?? []).length} partners
                 </span>
+              </div>
+
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Receptionist Codes</p>
+                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{partnerPerformance.data?.length ?? 0}</p>
+                </div>
+                <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Attributed Customers</p>
+                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                    {partnerReferrals.data?.length ?? 0}
+                  </p>
+                </div>
+                <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Partner Credits Earned</p>
+                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                    {partnerPerformance.data?.reduce((sum, entry) => sum + entry.creditsEarned, 0) ?? 0}
+                  </p>
+                </div>
+              </div>
+
+              <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 shadow-card overflow-hidden">
+                <div className="border-b border-outline-variant/10 px-6 py-5">
+                  <h3 className="font-serif text-2xl text-primary">Recent Partner Referrals</h3>
+                  <p className="mt-1 text-sm text-on-surface-variant/75">
+                    Receptionist-level attribution across all businesses.
+                  </p>
+                </div>
+                <div className="divide-y divide-outline-variant/10">
+                  {(partnerReferrals.data ?? []).slice(0, 8).map((referral) => (
+                    <div key={referral.id} className="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
+                      <div>
+                        <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
+                      </div>
+                      <div>
+                        <p className="font-semibold text-primary">{referral.customer.fullName}</p>
+                        <p className="text-sm text-on-surface-variant/80">{referral.customer.email}</p>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Badge
+                          variant="accent"
+                          className={
+                            referral.status === 'credited'
+                              ? 'bg-success/10 text-success border-success/20'
+                              : 'border-primary-container/20 bg-primary-container/12 text-primary'
+                          }
+                        >
+                          {referral.status}
+                        </Badge>
+                        <span className="text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">
+                          {formatDate(referral.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  {partnerReferrals.isLoading ? (
+                    <div className="px-6 py-8 text-on-surface-variant/75">Loading partner referrals...</div>
+                  ) : null}
+                  {!partnerReferrals.isLoading && (partnerReferrals.data?.length ?? 0) === 0 ? (
+                    <div className="px-6 py-8 text-on-surface-variant/75">No partner referrals recorded yet.</div>
+                  ) : null}
+                </div>
               </div>
 
               <div className="grid gap-4 xl:grid-cols-2">

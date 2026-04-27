@@ -4,13 +4,13 @@ import {
   Copy,
   Download,
   Gift,
+  Hotel,
   Package,
   QrCode,
   ShoppingBag,
   Sparkles,
   TrendingUp,
   Users,
-  XCircle,
 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
@@ -22,10 +22,9 @@ import { BusinessMetricCard } from '@/components/business-metric-card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
-  useApproveReferral,
   useBusinessOwnerData,
-  usePendingReferrals,
-  useRejectReferral,
+  usePartnerPerformance,
+  usePartnerReferrals,
   useValidateCreditCode,
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
@@ -41,9 +40,8 @@ export function BusinessDashboardPage() {
   const [redemptionCode, setRedemptionCode] = useState('')
   const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
   const fulfillRedemption = useFulfillRedemption(profile)
-  const pendingReferrals = usePendingReferrals(business?.id)
-  const approveReferral = useApproveReferral(business?.id)
-  const rejectReferral = useRejectReferral(business?.id)
+  const partnerPerformance = usePartnerPerformance(business?.id)
+  const partnerReferrals = usePartnerReferrals(business?.id)
   const validateCreditCode = useValidateCreditCode(business?.id)
 
   if (!metrics) {
@@ -209,6 +207,19 @@ export function BusinessDashboardPage() {
               <ArrowUpRight className="size-8 text-primary/70 group-hover:text-white/70" />
             </div>
           </Link>
+
+          <Link
+            to="/business/partners"
+            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+          >
+            <div className="flex items-center justify-between">
+              <div className="space-y-2">
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Partners</p>
+                <p className="font-serif text-3xl text-primary group-hover:text-white">{partnerPerformance.data?.length ?? 0}</p>
+              </div>
+              <Hotel className="size-8 text-primary/70 group-hover:text-white/70" />
+            </div>
+          </Link>
         </div>
       </div>
 
@@ -219,7 +230,7 @@ export function BusinessDashboardPage() {
             <div className="space-y-2">
               <h2 className="font-serif text-2xl text-primary">{t('Signup Portal')}</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
-                {t('Display this portal at checkout or on signage. New customers scan it, create an account, and appear below as pending invites before their reward credit is added.')}
+                Display this portal at checkout or on signage. New customers scan it to create an account and earn rewards.
               </p>
             </div>
             <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
@@ -259,7 +270,7 @@ export function BusinessDashboardPage() {
           </div>
           <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} {t('signup portal')}</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
-            {t('Approve the invite below to grant the reward credit.')}
+            Customer invite credits remain available for the legacy referral flow.
           </p>
           <Button
             type="button"
@@ -316,76 +327,73 @@ export function BusinessDashboardPage() {
         </form>
       </div>
 
-      {/* Pending Invites */}
+      {/* Partner Referrals */}
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">{t('Pending Invites')}</h2>
-            <p className="text-sm text-on-surface-variant/70">{t('Review new customer reward credit invites')}</p>
+            <h2 className="font-serif text-2xl text-primary">Partner Referrals</h2>
+            <p className="text-sm text-on-surface-variant/70">Monitor receptionist attribution and first-order partner credits.</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-            {pendingReferrals.data?.length ?? 0} {t('pending')}
+            {partnerPerformance.data?.reduce((sum, entry) => sum + entry.creditsEarned, 0) ?? 0} credits earned
           </span>
         </div>
 
-        <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
-          {pendingReferrals.isLoading ? (
+        <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
+          <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+            {(partnerPerformance.data ?? []).slice(0, 4).map((entry) => (
+              <div key={entry.partnerReferrerId} className="flex items-center justify-between p-5">
+                <div>
+                  <p className="font-serif text-xl text-primary">{entry.contactName}</p>
+                </div>
+                <div className="text-right">
+                  <p className="font-serif text-2xl text-primary">{entry.creditsEarned}</p>
+                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-on-surface-variant/70">credits</p>
+                </div>
+              </div>
+            ))}
+            {!partnerPerformance.isLoading && (partnerPerformance.data?.length ?? 0) === 0 ? (
+              <div className="p-12 text-center">
+                <p className="text-on-surface-variant/60 font-medium">No partner contacts yet.</p>
+              </div>
+            ) : null}
+          </div>
+
+          <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+          {partnerReferrals.isLoading ? (
             <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">{t('Loading referrals...')}</p>
+              <p className="text-on-surface-variant/60 font-medium">Loading partner referrals...</p>
             </div>
           ) : null}
 
-          {!pendingReferrals.isLoading && (pendingReferrals.data?.length ?? 0) === 0 ? (
+          {!partnerReferrals.isLoading && (partnerReferrals.data?.length ?? 0) === 0 ? (
             <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">{t('No pending referrals.')}</p>
+              <p className="text-on-surface-variant/60 font-medium">No partner referrals yet.</p>
             </div>
           ) : null}
 
-          {(pendingReferrals.data ?? []).map((referral) => (
+          {(partnerReferrals.data ?? []).slice(0, 6).map((referral) => (
             <div key={referral.id} className="p-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
               <div className="grid flex-1 gap-6 md:grid-cols-2">
                 <div className="space-y-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Referrer')}</p>
-                  <p className="font-serif text-xl text-primary">{referral.referrer.fullName}</p>
-                  <p className="text-sm font-medium text-on-surface-variant/75">{referral.referrer.email}</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Referral Source</p>
+                  <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('New Customer')}</p>
-                  <p className="font-serif text-xl text-primary">{referral.referee.fullName}</p>
-                  <p className="text-sm font-medium text-on-surface-variant/75">{referral.referee.email}</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Attributed Customer</p>
+                  <p className="font-serif text-xl text-primary">{referral.customer.fullName}</p>
+                  <p className="text-sm font-medium text-on-surface-variant/75">{referral.customer.email}</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">
-                  {formatDate(referral.createdAt)}
-                </span>
-                <Button
-                  type="button"
-                  size="sm"
-                  className="rounded-full bg-success/10 text-success hover:bg-success/15"
-                  disabled={approveReferral.isPending || rejectReferral.isPending || !profile?.id}
-                  onClick={() => {
-                    if (!profile?.id) return
-                    approveReferral.mutate({ id: referral.id, approverId: profile.id })
-                  }}
-                >
-                  <CheckCircle className="size-4" />
-                  {t('Approve')}
-                </Button>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
-                  disabled={approveReferral.isPending || rejectReferral.isPending}
-                  onClick={() => rejectReferral.mutate(referral.id)}
-                >
-                  <XCircle className="size-4" />
-                  {t('Reject')}
+                <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">{formatDate(referral.createdAt)}</span>
+                <Button type="button" size="sm" variant="outline" className="rounded-full">
+                  {referral.status}
                 </Button>
               </div>
             </div>
           ))}
+        </div>
         </div>
       </div>
 

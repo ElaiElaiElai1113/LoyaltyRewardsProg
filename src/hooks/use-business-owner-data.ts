@@ -5,11 +5,12 @@ import { adminService } from '@/integrations/supabase/services/admin-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
+import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
 import type { Profile, Redemption } from '@/types/domain'
-import type { RewardAdjustmentFormValues } from '@/types/forms'
+import type { PartnerReferrerDraftFormValues, RewardAdjustmentFormValues } from '@/types/forms'
 import { useAuth } from './use-auth'
 
 export function useBusinessOwnerData() {
@@ -319,6 +320,87 @@ export function useValidateCreditCode(businessId: string | undefined) {
     },
     onError: (error: Error) => {
       toast.error(error.message)
+    },
+  })
+}
+
+export function usePartnerReferrers(businessId?: string) {
+  return useQuery({
+    queryKey: ['partner-referrers', businessId ?? 'all'],
+    queryFn: () => partnerService.getPartnerReferrers(businessId),
+    enabled: Boolean(businessId),
+  })
+}
+
+export function usePartnerReferrals(businessId?: string) {
+  return useQuery({
+    queryKey: ['partner-referrals', businessId ?? 'all'],
+    queryFn: () => partnerService.getPartnerReferrals(businessId),
+    enabled: Boolean(businessId),
+  })
+}
+
+export function usePartnerPerformance(businessId?: string) {
+  return useQuery({
+    queryKey: ['partner-performance', businessId ?? 'all'],
+    queryFn: () => partnerService.getPartnerPerformance(businessId),
+    enabled: Boolean(businessId),
+  })
+}
+
+export function usePartnerCreditLedger(businessId?: string) {
+  return useQuery({
+    queryKey: ['partner-credit-ledger', businessId ?? 'all'],
+    queryFn: () => partnerService.getPartnerCreditLedger(businessId),
+    enabled: Boolean(businessId),
+  })
+}
+
+export function useCreatePartnerReferrer(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: PartnerReferrerDraftFormValues) => partnerService.createPartnerReferrer(values),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['partner-referrers', businessId ?? 'all'] })
+      void queryClient.invalidateQueries({ queryKey: ['partner-referrals', businessId ?? 'all'] })
+      void queryClient.invalidateQueries({ queryKey: ['partner-performance', businessId ?? 'all'] })
+      toast.success('Partner referrer created')
+    },
+    onError: (error: Error) => {
+      toast.error(`Partner creation failed: ${error.message}`)
+    },
+  })
+}
+
+export function useArchivePartnerReferrer(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => partnerService.archivePartnerReferrer(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['partner-referrers', businessId ?? 'all'] })
+      void queryClient.invalidateQueries({ queryKey: ['partner-performance', businessId ?? 'all'] })
+      toast.success('Partner referrer archived')
+    },
+    onError: (error: Error) => {
+      toast.error(`Partner archive failed: ${error.message}`)
+    },
+  })
+}
+
+export function useRedeemPartnerCredit(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (id: string) => partnerService.redeemPartnerCredit(id),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['partner-credit-ledger', businessId ?? 'all'] })
+      void queryClient.invalidateQueries({ queryKey: ['partner-performance', businessId ?? 'all'] })
+      toast.success('Partner credit marked redeemed')
+    },
+    onError: (error: Error) => {
+      toast.error(`Partner credit update failed: ${error.message}`)
     },
   })
 }

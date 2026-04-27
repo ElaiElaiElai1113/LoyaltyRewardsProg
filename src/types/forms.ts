@@ -106,3 +106,18 @@ export const assignBusinessOwnerSchema = z.object({
 })
 
 export type AssignBusinessOwnerFormValues = z.infer<typeof assignBusinessOwnerSchema>
+
+export const partnerReferrerDraftSchema = z.object({
+  businessId: z.string().min(1, 'Select a business'),
+  sourceLabel: z.string().trim().min(2, 'Enter a referral source'),
+  contactEmail: z.union([z.literal(''), z.email('Enter a valid email')]).optional(),
+  notes: z.string().max(240, 'Keep notes under 240 characters').optional(),
+})
+
+export type PartnerReferrerDraftFormValues = z.infer<typeof partnerReferrerDraftSchema>
+
+export const partnerAttributionSchema = z.object({
+  code: z.string().trim().min(4, 'Enter a valid partner code'),
+})
+
+export type PartnerAttributionFormValues = z.infer<typeof partnerAttributionSchema>

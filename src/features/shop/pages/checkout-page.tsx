@@ -23,6 +23,7 @@ export function CheckoutPage() {
   const placeOrder = usePlaceOrder()
 
   const [error, setError] = useState<string | null>(null)
+  const [partnerCode, setPartnerCode] = useState(() => sessionStorage.getItem('partnerReferrerCode') ?? '')
 
   const form = useForm<CheckoutFormValues>({
     resolver: zodResolver(checkoutSchema),
@@ -97,7 +98,12 @@ export function CheckoutPage() {
                   const order = await placeOrder.mutateAsync({
                     businessId,
                     paymentMethod: values.paymentMethod,
+                    partnerCode,
                   })
+                  if (partnerCode.trim()) {
+                    sessionStorage.removeItem('partnerReferrerCode')
+                    sessionStorage.removeItem('partnerBusinessId')
+                  }
                   navigate('/order-confirmation', { state: { orderId: order.id } })
                 } catch (err) {
                   setError(err instanceof Error ? err.message : t('Order failed.'))
@@ -142,6 +148,20 @@ export function CheckoutPage() {
                   <Label>{t('CVC')}</Label>
                   <Input value="•••" disabled />
                 </div>
+              </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="partner-code">Partner Code</Label>
+                <Input
+                  id="partner-code"
+                  value={partnerCode}
+                  placeholder="Optional front-desk or receptionist code"
+                  className="uppercase"
+                  onChange={(event) => setPartnerCode(event.target.value.toUpperCase())}
+                />
+                <p className="text-xs text-on-surface-variant/75">
+                  Add a receptionist or front-desk code if someone from a hotel, hostel, or partner business referred you.
+                </p>
               </div>
 
               {(validationError || error) && (

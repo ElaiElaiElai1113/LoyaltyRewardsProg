@@ -9,6 +9,7 @@ export interface Business {
   taxRate: number // e.g. 0.0875 for 8.75%
   currency: string
   active: boolean
+  logoUrl?: string | null
   ownerProfileId?: string | null
 }
 
@@ -53,6 +54,7 @@ export interface RewardBalance {
 }
 
 export type ReferralStatus = 'pending' | 'approved' | 'rejected'
+export type PartnerReferralStatus = 'attributed' | 'credited' | 'voided'
 
 export interface ReferralWithProfiles {
   id: string
@@ -71,6 +73,69 @@ export interface ReferralWithProfiles {
     fullName: string
     email: string
   }
+}
+
+export interface PartnerReferrer {
+  id: string
+  businessId: string
+  partnerName: string
+  contactName: string
+  contactEmail: string | null
+  code: string
+  active: boolean
+  notes: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface PartnerReferral {
+  id: string
+  partnerReferrerId: string
+  customerProfileId: string
+  sourceBusinessId: string
+  status: PartnerReferralStatus
+  attributedAt: string
+  firstOrderId: string | null
+  creditedAt: string | null
+  createdAt: string
+  partnerReferrer: {
+    partnerName: string
+    contactName: string
+    code: string
+  }
+  customer: {
+    fullName: string
+    email: string
+  }
+  firstOrder: {
+    id: string
+    total: number
+    createdAt: string
+  } | null
+}
+
+export interface PartnerCreditLedgerEntry {
+  id: string
+  partnerReferrerId: string
+  partnerReferralId: string
+  orderId: string
+  creditType: string
+  creditUnits: number
+  details: string
+  createdAt: string
+  redeemedAt: string | null
+}
+
+export interface PartnerPerformanceSummary {
+  partnerReferrerId: string
+  partnerName: string
+  contactName: string
+  code: string
+  active: boolean
+  referralsAttributed: number
+  referralsCredited: number
+  creditsEarned: number
+  creditsRedeemed: number
 }
 
 export interface Reward {

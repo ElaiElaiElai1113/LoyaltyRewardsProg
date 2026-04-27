@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import { adminService } from '@/integrations/supabase/services/admin-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
+import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
@@ -213,6 +214,27 @@ export function useOrdersForVerification(businessId?: string) {
   return useQuery({
     queryKey: ['admin', 'verification', businessId],
     queryFn: () => adminService.getOrdersForVerification(businessId),
+  })
+}
+
+export function useAdminPartnerReferrers() {
+  return useQuery({
+    queryKey: ['admin', 'partner-referrers'],
+    queryFn: () => partnerService.getPartnerReferrers(),
+  })
+}
+
+export function useAdminPartnerReferrals() {
+  return useQuery({
+    queryKey: ['admin', 'partner-referrals'],
+    queryFn: () => partnerService.getPartnerReferrals(),
+  })
+}
+
+export function useAdminPartnerPerformance() {
+  return useQuery({
+    queryKey: ['admin', 'partner-performance'],
+    queryFn: () => partnerService.getPartnerPerformance(),
   })
 }
 

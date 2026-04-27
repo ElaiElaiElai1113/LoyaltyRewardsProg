@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
+import { useBusinesses } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
@@ -36,9 +37,11 @@ export function ReferralRegisterPage() {
   const [searchParams] = useSearchParams()
   const { signUp } = useAuth()
   const { t } = useLanguage()
+  const businesses = useBusinesses()
   const [error, setError] = useState<string | null>(null)
   const [signUpComplete, setSignUpComplete] = useState(false)
   const referrerId = searchParams.get('ref')
+  const partnerCode = searchParams.get('partner')
   const businessId = searchParams.get('business')
 
   const form = useForm<AuthFormValues>({
@@ -47,6 +50,8 @@ export function ReferralRegisterPage() {
   })
 
   const hasReferral = Boolean(referrerId)
+  const hasPartnerReferral = Boolean(partnerCode)
+  const currentBusiness = businesses.data?.find((business) => business.id === businessId) ?? null
 
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
@@ -60,17 +65,39 @@ export function ReferralRegisterPage() {
           </div>
 
           <div className="max-w-4xl space-y-8 py-14">
+            {currentBusiness ? (
+              <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2">
+                {currentBusiness.logoUrl ? (
+                  <img src={currentBusiness.logoUrl} alt={currentBusiness.name} className="size-8 rounded-full object-cover" />
+                ) : (
+                  <div className="flex size-8 items-center justify-center rounded-full bg-white/15 text-xs font-black uppercase">
+                    {currentBusiness.name.slice(0, 1)}
+                  </div>
+                )}
+                <span className="text-sm font-bold uppercase tracking-[0.12em] text-white/90">{currentBusiness.name}</span>
+              </div>
+            ) : null}
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
-              {t('Party Invite')}
+              {hasPartnerReferral ? 'Partner Invite' : t('Party Invite')}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
-              {hasReferral ? t('Create your account to claim the invite.') : t('Create your rewards account.')}
+              {hasPartnerReferral
+                ? `Create your account to keep your ${currentBusiness?.name ?? 'business'} partner referral attached.`
+                : hasReferral
+                  ? t('Create your account to claim the invite.')
+                  : currentBusiness
+                    ? `Join ${currentBusiness.name} Rewards.`
+                    : t('Create your rewards account.')}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
-              {hasReferral
-                ? t('After staff approves the invite, both you and your friend receive a reward credit.')
-                : t('Join the loyalty program to earn XP, track reward credits, and redeem rewards.')}
+              {hasPartnerReferral
+                ? 'Your first paid order will earn partner credit for the receptionist or front-desk contact who sent you.'
+                : hasReferral
+                  ? t('After staff approves the invite, both you and your friend receive a reward credit.')
+                  : currentBusiness
+                    ? `Register once and keep every purchase, reward, and future order linked to ${currentBusiness.name}.`
+                    : t('Join the loyalty program to earn XP, track reward credits, and redeem rewards.')}
             </p>
           </div>
 
@@ -86,7 +113,11 @@ export function ReferralRegisterPage() {
                 <div className="space-y-3">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">{t('Welcome aboard!')}</h2>
                   <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
-                    {t('Your invite status is pending. Staff will review it before reward credits are added.')}
+                    {hasPartnerReferral
+                      ? 'Your partner referral is attached. Place your first order to complete the attribution.'
+                      : currentBusiness
+                        ? `Your ${currentBusiness.name} account is ready. Sign in to start earning.`
+                        : t('Your invite status is pending. Staff will review it before reward credits are added.')}
                   </p>
                 </div>
                 <Button asChild size="lg" className="rounded-full">
@@ -99,6 +130,12 @@ export function ReferralRegisterPage() {
                 onSubmit={form.handleSubmit(async (values) => {
                   try {
                     setError(null)
+                    if (partnerCode) {
+                      sessionStorage.setItem('partnerReferrerCode', partnerCode)
+                      if (businessId) {
+                        sessionStorage.setItem('partnerBusinessId', businessId)
+                      }
+                    }
                     if (referrerId) {
                       sessionStorage.setItem('referralCode', referrerId)
                       if (businessId) {
@@ -129,7 +166,11 @@ export function ReferralRegisterPage() {
                 <div className="space-y-2 text-center">
                   <h2 className="font-serif text-4xl tracking-tight text-primary">{t('Create Account')}</h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
-                    {t('Use a new email address to claim this referral offer.')}
+                    {hasPartnerReferral
+                      ? 'Use a new email address so the partner referral can be linked to your first order.'
+                      : currentBusiness
+                        ? `This signup form is linked to ${currentBusiness.name}.`
+                      : t('Use a new email address to claim this referral offer.')}
                   </p>
                 </div>
 

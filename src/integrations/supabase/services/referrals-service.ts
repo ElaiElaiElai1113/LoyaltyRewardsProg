@@ -28,7 +28,7 @@ type StaffReferralRow = {
 
 type ReferralCreateResult =
   | { status: 'created'; referral: Record<string, unknown> }
-  | { status: 'skipped'; reason: 'duplicate' | 'missing-referrer' | 'self-referral' }
+  | { status: 'skipped'; reason: 'duplicate' | 'missing-referrer' | 'self-referral' | 'cross-business' }
 
 function firstProfile(value: ProfileSummary | ProfileSummary[] | null | undefined): ProfileSummary {
   const profile = Array.isArray(value) ? value[0] : value
@@ -179,7 +179,12 @@ export const referralsService = {
       if (status === 'created') {
         return { status: 'created', referral: { id: referralId } }
       }
-      if (status === 'duplicate' || status === 'missing-referrer' || status === 'self-referral') {
+      if (
+        status === 'duplicate'
+        || status === 'missing-referrer'
+        || status === 'self-referral'
+        || status === 'cross-business'
+      ) {
         return { status: 'skipped', reason: status }
       }
 

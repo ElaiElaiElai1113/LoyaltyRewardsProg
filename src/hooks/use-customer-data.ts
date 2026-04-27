@@ -4,6 +4,7 @@ import { activityService } from '@/integrations/supabase/services/activity-servi
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { cartService } from '@/integrations/supabase/services/cart-service'
 import { ordersService } from '@/integrations/supabase/services/orders-service'
+import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { profileService } from '@/integrations/supabase/services/profile-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
@@ -144,8 +145,15 @@ export function useRemoveFromCart() {
 export function usePlaceOrder(profileId?: string) {
   const queryClient = useQueryClient()
   return useMutation({
-    mutationFn: ({ businessId, paymentMethod }: { businessId: string; paymentMethod: string }) =>
-      ordersService.placeOrder(profileId!, businessId, paymentMethod),
+    mutationFn: ({
+      businessId,
+      paymentMethod,
+      partnerCode,
+    }: {
+      businessId: string
+      paymentMethod: string
+      partnerCode?: string | null
+    }) => ordersService.placeOrder(profileId!, businessId, paymentMethod, partnerCode),
     onSuccess: () => {
       if (!profileId) return
       void queryClient.invalidateQueries({ queryKey: customerKeys.cart })
@@ -153,6 +161,8 @@ export function usePlaceOrder(profileId?: string) {
       void queryClient.invalidateQueries({ queryKey: customerKeys.rewardBalance(profileId) })
       void queryClient.invalidateQueries({ queryKey: customerKeys.activities(profileId) })
       void queryClient.invalidateQueries({ queryKey: ['products'] })
+      void queryClient.invalidateQueries({ queryKey: ['partner-referrals'] })
+      void queryClient.invalidateQueries({ queryKey: ['partner-performance'] })
     },
   })
 }
@@ -195,6 +205,13 @@ export function useRedeemReward(profileId?: string) {
 export function useGenerateCreditCode(profileId?: string) {
   return useMutation({
     mutationFn: () => referralsService.generateCreditCode(profileId!),
+  })
+}
+
+export function useAttributePartnerReferral(profileId?: string) {
+  return useMutation({
+    mutationFn: ({ businessId, code }: { businessId: string; code: string }) =>
+      partnerService.attributePartnerReferral(code, profileId!, businessId),
   })
 }
 

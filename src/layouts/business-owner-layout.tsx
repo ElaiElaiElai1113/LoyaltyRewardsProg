@@ -1,5 +1,6 @@
 import {
   Gift,
+  Hotel,
   LayoutDashboard,
   LogOut,
   Package,
@@ -24,6 +25,7 @@ const navigation = [
   { to: '/business/rewards', label: 'Rewards', icon: Gift },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
+  { to: '/business/partners', label: 'Partners', icon: Hotel },
   { to: '/business/settings', label: 'Settings', icon: Settings },
 ]
 

@@ -66,7 +66,7 @@ export function MembersPage() {
             <h2 className="font-serif text-3xl text-primary">{t('Award XP')}</h2>
           </div>
 
-          <div className="rounded-3xl border border-outline-variant/5 bg-white p-8 shadow-sm">
+          <div className="quest-panel-dark rounded-[2rem] p-8">
             <form
               className="space-y-6"
               onSubmit={form.handleSubmit(async (values) => {
@@ -88,12 +88,12 @@ export function MembersPage() {
                   {t('Customer')}
                 </Label>
                 <div className="relative">
-                  <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant/45" />
+                  <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant/55" />
                   <Input
                     id="profileId"
                     list="business-member-options"
                     placeholder={t('Search by customer ID')}
-                    className="h-12 rounded-2xl border-outline-variant/20 pl-11 focus:border-primary/30"
+                    className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] pl-11 text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                     {...form.register('profileId')}
                   />
                 </div>
@@ -109,7 +109,7 @@ export function MembersPage() {
                 ) : null}
               </div>
 
-              <div className="rounded-3xl border border-outline-variant/10 bg-surface-lowest p-5">
+              <div className="rounded-3xl border border-primary-container/15 bg-[#181210] p-5 shadow-[inset_0_0_0_1px_rgba(244,168,79,0.04)]">
                 {selectedMember ? (
                   <div className="flex items-center gap-4">
                     <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-lg text-white shadow-lg">
@@ -117,16 +117,19 @@ export function MembersPage() {
                     </div>
                     <div className="min-w-0 flex-1">
                       <p className="font-serif text-xl text-primary">{selectedMember.fullName}</p>
-                      <p className="truncate text-sm text-on-surface-variant/75">{selectedMember.email}</p>
+                      <p className="truncate text-sm text-on-surface-variant/85">{selectedMember.email}</p>
                     </div>
-                    <Badge variant="accent" className="rounded-full bg-primary/5 px-4 py-2 text-primary">
+                    <Badge
+                      variant="accent"
+                      className="rounded-full border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
+                    >
                       {formatPoints(selectedMember.points)} XP
                     </Badge>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <p className="font-serif text-xl text-primary">{t('No customer selected')}</p>
-                    <p className="text-sm text-on-surface-variant/75">
+                    <p className="text-sm text-on-surface-variant/85">
                       {t('Choose a customer to preview their current balance before awarding XP.')}
                     </p>
                   </div>
@@ -140,7 +143,7 @@ export function MembersPage() {
                 <Input
                   id="delta"
                   type="number"
-                  className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                  className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary focus-visible:ring-primary-container/25"
                   {...form.register('delta', { valueAsNumber: true })}
                 />
                 {form.formState.errors.delta ? (
@@ -155,7 +158,7 @@ export function MembersPage() {
                 <Input
                   id="reason"
                   placeholder={t('e.g., In-store purchase $12.50')}
-                  className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                  className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                   {...form.register('reason')}
                 />
                 {form.formState.errors.reason ? (
@@ -166,6 +169,7 @@ export function MembersPage() {
               <Button
                 type="submit"
                 size="lg"
+                variant="secondary"
                 className="h-14 w-full rounded-full font-semibold"
                 disabled={awardPoints.isPending}
               >
@@ -185,7 +189,7 @@ export function MembersPage() {
           </div>
 
           {members.isLoading ? (
-            <div className="rounded-3xl border border-outline-variant/5 bg-white p-12 text-center text-on-surface-variant/70 shadow-sm">
+            <div className="quest-panel rounded-[2rem] p-12 text-center text-on-surface-variant/80">
               {t('Loading customers...')}
             </div>
           ) : members.data?.length ? (
@@ -197,10 +201,10 @@ export function MembersPage() {
                   <div
                     key={member.id}
                     className={cn(
-                      'flex flex-col gap-5 rounded-3xl border bg-white p-6 shadow-sm transition-all md:flex-row md:items-center md:justify-between',
+                      'quest-panel flex flex-col gap-5 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between',
                       selected
-                        ? 'border-primary/25 bg-primary/[0.03] shadow-md'
-                        : 'border-outline-variant/5 hover:border-primary/10 hover:shadow-md',
+                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.34)]'
+                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.28)]',
                     )}
                   >
                     <div className="flex items-center gap-5">
@@ -209,8 +213,8 @@ export function MembersPage() {
                       </div>
                       <div>
                         <p className="font-serif text-2xl leading-tight text-primary">{member.fullName}</p>
-                        <p className="mt-1 text-sm font-medium text-on-surface-variant/80">{member.email}</p>
-                        <p className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/65">
+                        <p className="mt-1 text-sm font-medium text-on-surface-variant/90">{member.email}</p>
+                        <p className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">
                           ID: {member.id}
                         </p>
                       </div>
@@ -218,14 +222,18 @@ export function MembersPage() {
                     <div className="flex flex-wrap items-center gap-3">
                       <Badge
                         variant="accent"
-                        className="flex items-center gap-1.5 rounded-full border border-primary/10 bg-primary/5 px-4 py-2 text-primary"
+                        className="flex items-center gap-1.5 rounded-full border border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
                       >
                         <Gift className="size-3" />
                         {formatPoints(member.points)} XP
                       </Badge>
                       <Button
                         variant={selected ? 'default' : 'outline'}
-                        className="rounded-full"
+                        className={cn(
+                          'rounded-full',
+                          !selected &&
+                            'border-primary-container/30 bg-[#18110e]/70 text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary',
+                        )}
                         onClick={() => form.setValue('profileId', member.id, { shouldValidate: true })}
                       >
                         {selected ? t('Selected') : t('Select')}
@@ -236,10 +244,10 @@ export function MembersPage() {
               })}
             </div>
           ) : (
-            <div className="rounded-3xl border border-outline-variant/5 bg-white p-16 text-center shadow-sm">
-              <Users className="mx-auto mb-6 size-16 text-on-surface-variant/20" />
+            <div className="quest-panel rounded-[2rem] p-16 text-center">
+              <Users className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
               <h3 className="mb-2 font-serif text-2xl text-primary">{t('No customers yet')}</h3>
-              <p className="mx-auto max-w-md text-on-surface-variant/70">
+              <p className="mx-auto max-w-md text-on-surface-variant/80">
                 {t("Customers will appear here once they've purchased from your business.")}
               </p>
             </div>

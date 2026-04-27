@@ -107,7 +107,7 @@ export function RewardsPage() {
 
       {/* Add/Edit Reward Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-3xl max-w-lg">
+        <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[#120d0b]/95 text-on-surface shadow-card">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
               {editingId ? t('Edit Reward') : t('New Reward')}
@@ -116,14 +116,24 @@ export function RewardsPage() {
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="reward-title">{t('Title')}</Label>
-              <Input id="reward-title" placeholder="Free bonus item" {...form.register('title')} />
+              <Input
+                id="reward-title"
+                className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                placeholder="Free bonus item"
+                {...form.register('title')}
+              />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="reward-description">{t('Description')}</Label>
-              <Textarea id="reward-description" placeholder="A bonus item, discount, or member-only perk" {...form.register('description')} />
+              <Textarea
+                id="reward-description"
+                className="min-h-28 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                placeholder="A bonus item, discount, or member-only perk"
+                {...form.register('description')}
+              />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
@@ -135,10 +145,10 @@ export function RewardsPage() {
                 name="category"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="rounded-xl h-12">
+                    <SelectTrigger className="h-12 rounded-xl border border-primary-container/15 bg-[#201815] text-primary focus:ring-primary-container/25">
                       <SelectValue placeholder={t('Select a category')} />
                     </SelectTrigger>
-                    <SelectContent>
+                    <SelectContent className="border border-primary-container/20 bg-[#17100d] text-on-surface">
                       <SelectItem value="Drink">{t('Drink')}</SelectItem>
                       <SelectItem value="Pastry">{t('Bites')}</SelectItem>
                       <SelectItem value="Merch">{t('Gear')}</SelectItem>
@@ -156,6 +166,7 @@ export function RewardsPage() {
               <Input
                 id="reward-points"
                 type="number"
+                className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                 placeholder="220"
                 {...form.register('pointsCost', { valueAsNumber: true })}
               />
@@ -165,14 +176,19 @@ export function RewardsPage() {
             </div>
             <div className="grid gap-2">
               <Label htmlFor="reward-highlight">{t('Highlight')}</Label>
-              <Input id="reward-highlight" placeholder="Most popular" {...form.register('highlight')} />
+              <Input
+                id="reward-highlight"
+                className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                placeholder="Most popular"
+                {...form.register('highlight')}
+              />
             </div>
             {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                 {t('Cancel')}
               </Button>
-              <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
+              <Button type="submit" variant="secondary" className="rounded-full" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Reward') : t('Add Vault Reward')}
               </Button>
             </div>
@@ -183,11 +199,11 @@ export function RewardsPage() {
       {/* Rewards Grid */}
       <div className="grid gap-8 sm:grid-cols-2">
         {rewards.length === 0 ? (
-          <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
-            <Gift className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
+          <div className="quest-panel col-span-full rounded-[2rem] p-16 text-center">
+            <Gift className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
             <h3 className="font-serif text-2xl text-primary mb-2">{t('No vault rewards yet')}</h3>
-            <p className="text-on-surface-variant/70 mb-8">{t('Create your first unlockable reward for members.')}</p>
-            <Button className="rounded-full h-12 px-8" onClick={handleOpenForCreate}>
+            <p className="mb-8 text-on-surface-variant/80">{t('Create your first unlockable reward for members.')}</p>
+            <Button variant="secondary" className="h-12 rounded-full px-8" onClick={handleOpenForCreate}>
               <Gift className="size-5 mr-2" />
               {t('Create First Vault Reward')}
             </Button>
@@ -196,12 +212,13 @@ export function RewardsPage() {
           rewards.map((reward) => (
             <div
               key={reward.id}
-              className="group relative overflow-hidden rounded-[2.5rem] bg-white hover:bg-gradient-to-br hover:from-white hover:to-surface-low transition-all duration-300 border border-outline-variant/5 hover:border-primary/10 shadow-sm hover:shadow-lg p-8"
+              className="quest-panel group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.28)]"
             >
+              <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(135deg,rgba(123,216,207,0.10),rgba(244,168,79,0.14),rgba(216,162,58,0.08))]" />
               <div className="flex flex-col gap-6 h-full">
                 <div className="flex justify-between items-start">
-                  <div className="flex flex-col gap-2">
-                    <Badge variant="accent" className="w-fit bg-tertiary/30 text-primary">
+                  <div className="flex flex-col gap-2 relative">
+                    <Badge variant="accent" className="w-fit border-tertiary/30 bg-tertiary/15 text-tertiary">
                       {t(reward.category)}
                     </Badge>
                     {reward.featured && (
@@ -211,17 +228,17 @@ export function RewardsPage() {
                       </span>
                     )}
                   </div>
-                  <div className="flex gap-2">
-                    <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={() => handleEdit(reward)}>
+                  <div className="relative flex gap-2">
+                    <Button variant="ghost" size="icon" className="size-8 rounded-full text-on-surface-variant hover:bg-primary-container/10 hover:text-primary" onClick={() => handleEdit(reward)}>
                       <Edit2 className="size-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="size-8 rounded-full text-error hover:text-error hover:bg-error/10" onClick={() => handleDelete(reward.id)}>
+                    <Button variant="ghost" size="icon" className="size-8 rounded-full text-error hover:bg-error/10 hover:text-error" onClick={() => handleDelete(reward.id)}>
                       <Trash2 className="size-4" />
                     </Button>
                   </div>
                 </div>
 
-                <div className="space-y-4 grow">
+                <div className="grow space-y-4 relative">
                   <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
                     {t(reward.title)}
                   </h3>
@@ -230,12 +247,12 @@ export function RewardsPage() {
                   </p>
                 </div>
 
-                <div className="flex items-end justify-between mt-4">
+                <div className="mt-4 flex items-end justify-between relative">
                   <div className="space-y-1">
                     <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
                       {t('XP Cost')}
                     </span>
-                    <p className="font-serif text-3xl tracking-tight text-primary">
+                    <p className="font-serif text-3xl tracking-tight text-primary-container">
                       {formatPoints(reward.pointsCost)} XP
                     </p>
                   </div>
