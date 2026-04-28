@@ -83,12 +83,12 @@ export function BusinessDashboardPage() {
       <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#18215a,#283593_50%,#c026d3)] px-8 py-12 text-white shadow-2xl">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
-          <p className="quest-kicker-light mb-3">{t('Mission Control')}</p>
+          <p className="quest-kicker-light mb-3">{t('Business Overview')}</p>
           <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">
             {business?.name} {t('Command Center')}
           </h1>
           <p className="mt-4 text-lg text-white/80 font-medium">
-            {t('Track members, quests, reward credits, and reward fulfillment from one arcade operations hub.')}
+            {t('Track members, campaigns, reward credits, and fulfillment from one operations dashboard.')}
           </p>
         </div>
       </div>
@@ -110,26 +110,26 @@ export function BusinessDashboardPage() {
           trendUp
         />
         <BusinessMetricCard
-          title={t('Realm Revenue')}
+          title={t('Business Revenue')}
           value={formatCurrency(metrics.totalRevenue)}
           icon={<TrendingUp className="size-6" />}
           trend="+15%"
           trendUp
         />
         <BusinessMetricCard
-          title={t('Active Quests')}
+          title={t('Active Campaigns')}
           value={metrics.activePromotions.toString()}
           icon={<Sparkles className="size-6" />}
         />
       </div>
 
-      {/* XP Overview */}
+      {/* Points Overview */}
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="quest-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">{t('XP Issued')}</h3>
-              <p className="text-sm text-on-surface-variant/70">{t('Total XP awarded to customers')}</p>
+              <h3 className="font-serif text-2xl text-primary">{t('Points Issued')}</h3>
+              <p className="text-sm text-on-surface-variant/70">{t('Total points awarded to customers')}</p>
             </div>
             <div className="size-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
               <TrendingUp className="size-6" />
@@ -141,8 +141,8 @@ export function BusinessDashboardPage() {
         <div className="quest-panel p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">{t('XP Redeemed')}</h3>
-              <p className="text-sm text-on-surface-variant/70">{t('Total XP spent on rewards')}</p>
+              <h3 className="font-serif text-2xl text-primary">{t('Points Redeemed')}</h3>
+              <p className="text-sm text-on-surface-variant/70">{t('Total points spent on rewards')}</p>
             </div>
             <div className="size-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
               <Gift className="size-6" />
@@ -405,7 +405,7 @@ export function BusinessDashboardPage() {
             <p className="text-sm text-on-surface-variant/70">{t('Manage and fulfill pending reward claims')}</p>
           </div>
           <Link to="/business/rewards" className="text-sm font-semibold text-primary hover:underline">
-            {t('Manage Vault')}
+            {t('Manage Rewards')}
           </Link>
         </div>
 

@@ -337,7 +337,7 @@ const promotions: Promotion[] = [
     id: 'promo-2',
     businessId: 'biz-velvet-brew',
     title: 'Spring pairing menu',
-    description: 'Unlock a bonus 120 points when you pair a pistachio bun with any iced espresso.',
+    description: 'Earn a bonus 120 points when you pair a pistachio bun with any iced espresso.',
     badge: 'Seasonal',
     cta: 'Try the pairing',
     expiresAt: '2026-04-17T23:59:59.000Z',

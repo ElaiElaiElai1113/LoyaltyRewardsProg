@@ -259,7 +259,7 @@ export function useAwardPoints(actor?: Profile | null, businessId?: string) {
       void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
       void queryClient.invalidateQueries({ queryKey: ['activities'] })
       void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
-      toast.success('XP awarded successfully')
+      toast.success('Points awarded successfully')
     },
     onError: (error: Error) => {
       toast.error(`Award failed: ${error.message}`)

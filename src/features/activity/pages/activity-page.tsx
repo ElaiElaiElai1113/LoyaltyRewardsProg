@@ -24,7 +24,7 @@ export function ActivityPage() {
       <div className="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between border-b border-outline-variant/10 pb-12">
         <div className="space-y-4 max-w-2xl">
           <Badge variant="accent" className="bg-tertiary/20 text-primary">
-            {t('Quest History')}
+            {t('Activity History')}
           </Badge>
           <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
             {t('Your Timeline')}
@@ -42,7 +42,7 @@ export function ActivityPage() {
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{rewardBalance.data?.points ?? 0}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">{t('Total XP')}</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-on-surface-variant/80">{t('Total Points')}</span>
              </div>
           </div>
         </div>
@@ -56,10 +56,10 @@ export function ActivityPage() {
           helper={t('Total recorded visits')}
         />
         <MetricCard
-          label={t('XP Earned')}
+          label={t('Points Earned')}
           value={`${earnedThisMonth}`}
           icon={ChartNoAxesColumn}
-          helper={t('Recent XP earned')}
+          helper={t('Recent points earned')}
         />
         <MetricCard
           label={t('Redemptions')}

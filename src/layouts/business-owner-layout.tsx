@@ -20,7 +20,7 @@ import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
-  { to: '/business/dashboard', label: 'Mission Control', icon: LayoutDashboard },
+  { to: '/business/dashboard', label: 'Business Overview', icon: LayoutDashboard },
   { to: '/business/products', label: 'Products', icon: Package },
   { to: '/business/rewards', label: 'Rewards', icon: Gift },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
@@ -93,7 +93,7 @@ export function BusinessOwnerLayout() {
           <div className="flex flex-col overflow-hidden">
             <span className="truncate font-serif text-xl font-black uppercase tracking-[0.1em] text-primary-container">{business.name}</span>
             <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-              {t('Mission Control')}
+              {t('Business Overview')}
             </span>
           </div>
         </div>
@@ -133,7 +133,7 @@ export function BusinessOwnerLayout() {
             <div className="flex flex-col overflow-hidden">
               <span className="truncate text-sm font-semibold text-white">{profile?.fullName}</span>
               <span className="text-xs text-on-surface-variant/70">
-                {profile?.role === 'business-owner' ? t('Commander') : 'Business Staff'}
+                {profile?.role === 'business-owner' ? t('Business Owner') : 'Business Staff'}
               </span>
             </div>
           </div>

@@ -54,26 +54,26 @@ export function RewardsPage() {
       <div className="flex flex-col gap-10 border-b border-primary-container/15 pb-12 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4 max-w-2xl">
           <Badge variant="accent">
-            {t('Reward Vault')}
+            {t('Rewards Catalog')}
           </Badge>
           <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
-            {t('Loot Vault')}
+            {t('Rewards Marketplace')}
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            {t('Spend XP on unlocked perks, rare drops, and partner rewards.')}
+            {t('Use points for perks, reward credits, and offers from participating businesses.')}
           </p>
         </div>
 
         {profile && (
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Your XP')}</span>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Your Points')}</span>
             <div className="glass-panel flex items-center gap-4 px-6 py-4">
               <div className="flex size-10 items-center justify-center rounded border border-secondary-container/40 bg-secondary-container/10">
                 <Gift className="size-5 text-secondary-container" />
               </div>
               <div className="flex flex-col">
                 <span className="font-serif text-2xl font-bold leading-none text-primary-container">{balancePoints}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Available XP')}</span>
+                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Available Points')}</span>
               </div>
             </div>
           </div>

@@ -17,6 +17,149 @@ const languageLabels: Record<Language, string> = {
 }
 
 const spanishTranslations: Record<string, string> = {
+  'Multi-business rewards platform': 'Plataforma de recompensas para múltiples negocios',
+  'Earn across': 'Gana en toda',
+  'the network': 'la red',
+  'Earn points with participating businesses, redeem rewards across the network, and keep every purchase connected to one account.':
+    'Gana puntos en negocios participantes, canjea recompensas en la red y mantén cada compra conectada a una sola cuenta.',
+  'Explore Businesses': 'Explorar negocios',
+  'View Rewards': 'Ver recompensas',
+  'Earn Points': 'Gana puntos',
+  'Collect points automatically when you buy from partner businesses.':
+    'Acumula puntos automáticamente al comprar en negocios aliados.',
+  'Redeem Rewards': 'Canjea recompensas',
+  'Use your points for perks, reward credits, and partner offers.':
+    'Usa tus puntos en beneficios, créditos de recompensa y ofertas de aliados.',
+  'Grow Value': 'Aumenta el valor',
+  'Get more from repeat purchases, referrals, and limited-time promotions.':
+    'Obtén más valor de compras recurrentes, referidos y promociones por tiempo limitado.',
+  'Create your free rewards account and start earning points today.':
+    'Crea tu cuenta gratuita de recompensas y empieza a ganar puntos hoy.',
+  'Network Member': 'Miembro de la red',
+  'Rewards account': 'Cuenta de recompensas',
+  'Earn points, redeem rewards, and stay connected across partner businesses.':
+    'Gana puntos, canjea recompensas y mantente conectado con negocios aliados.',
+  'Business Overview': 'Resumen del negocio',
+  'Platform Operations': 'Operaciones de plataforma',
+  'Member Dashboard': 'Panel de miembro',
+  'Track your points, available rewards, and activity across partner businesses.':
+    'Consulta tus puntos, recompensas disponibles y actividad en negocios aliados.',
+  Tier: 'Nivel',
+  'Next Tier': 'Siguiente nivel',
+  'points until Tier': 'puntos para el nivel',
+  'Points Balance': 'Saldo de puntos',
+  points: 'puntos',
+  'Reward Progress': 'Progreso de recompensa',
+  'points away from your next reward.': 'puntos para tu próxima recompensa.',
+  'Rewards you qualify for': 'Recompensas disponibles',
+  'Referral Invite': 'Invitación de referido',
+  'Your referral invite was approved. Your Reward Credit has been added to your balance.':
+    'Tu invitación de referido fue aprobada. El crédito de recompensa se agregó a tu saldo.',
+  'Your referral invite is pending staff approval. Your Reward Credit will appear after approval.':
+    'Tu invitación de referido está pendiente de aprobación. El crédito aparecerá después de aprobarse.',
+  'Repeat Activity': 'Actividad recurrente',
+  'Visit, scan, or order to keep your rewards activity growing.':
+    'Visita, escanea o pide para seguir aumentando tu actividad de recompensas.',
+  'Partner Offers': 'Ofertas de aliados',
+  'Next Tier Benefit': 'Beneficio del siguiente nivel',
+  'Reach the next tier and qualify for higher-value perks.':
+    'Alcanza el siguiente nivel y califica para beneficios de mayor valor.',
+  'Rewards Catalog': 'Catálogo de recompensas',
+  'Rewards Marketplace': 'Mercado de recompensas',
+  'Use points for perks, reward credits, and offers from participating businesses.':
+    'Usa puntos en beneficios, créditos de recompensa y ofertas de negocios participantes.',
+  'Your Points': 'Tus puntos',
+  'Available Points': 'Puntos disponibles',
+  'Qualification Progress': 'Progreso de calificación',
+  'Points Cost': 'Costo en puntos',
+  'points needed': 'puntos necesarios',
+  'Need More Points': 'Faltan puntos',
+  'Points After': 'Puntos después',
+  'Not Enough Points': 'Puntos insuficientes',
+  'Active Campaigns': 'Campañas activas',
+  'Promotions that turn visits into repeat business.':
+    'Promociones que convierten visitas en clientes recurrentes.',
+  'Browse current offers and earn bonus points on eligible purchases.':
+    'Explora ofertas actuales y gana puntos extra en compras elegibles.',
+  'Earn more points with participating businesses.':
+    'Gana más puntos con negocios participantes.',
+  'Browse current promotions and take advantage of bonus points and special deals.':
+    'Explora promociones actuales y aprovecha puntos extra y ofertas especiales.',
+  'Business:': 'Negocio:',
+  'All Businesses': 'Todos los negocios',
+  'Partner Businesses': 'Negocios aliados',
+  'Shop Businesses': 'Comprar en negocios',
+  'Browse partner businesses, complete purchases, and earn points automatically.':
+    'Explora negocios aliados, completa compras y gana puntos automáticamente.',
+  'View your past purchases and points earned.':
+    'Revisa tus compras anteriores y los puntos ganados.',
+  'points earned': 'puntos ganados',
+  'Activity History': 'Historial de actividad',
+  'Total Points': 'Puntos totales',
+  'Points Earned': 'Puntos ganados',
+  'Recent points earned': 'Puntos recientes ganados',
+  'Member status': 'Estado de miembro',
+  'Join the rewards network to earn points, track reward credits, and redeem rewards.':
+    'Únete a la red de recompensas para ganar puntos, consultar créditos y canjear recompensas.',
+  'Rewards Invitation': 'Invitación de recompensas',
+  'Your referral invite qualified for a reward credit.':
+    'Tu invitación de referido calificó para un crédito de recompensa.',
+  'Join the rewards network.': 'Únete a la red de recompensas.',
+  'Create your rewards account to earn points, track reward credits, and redeem rewards.':
+    'Crea tu cuenta para ganar puntos, consultar créditos y canjear recompensas.',
+  'Your rewards account starts here.': 'Tu cuenta de recompensas empieza aquí.',
+  'Sign up once and keep every visit connected to your points balance.':
+    'Regístrate una vez y mantén cada visita conectada a tu saldo de puntos.',
+  'Create Rewards Account': 'Crear cuenta de recompensas',
+  'Track members, campaigns, reward credits, and fulfillment from one operations dashboard.':
+    'Administra miembros, campañas, créditos de recompensa y entregas desde un solo panel.',
+  'Points Issued': 'Puntos otorgados',
+  'Total points awarded to customers': 'Total de puntos otorgados a clientes',
+  'Points Redeemed': 'Puntos canjeados',
+  'Total points spent on rewards': 'Total de puntos usados en recompensas',
+  'Manage Rewards': 'Gestionar recompensas',
+  Campaigns: 'Campañas',
+  'Create and manage promotions that engage customers and drive repeat purchases.':
+    'Crea y administra promociones que atraen clientes e impulsan compras recurrentes.',
+  'Create Campaign': 'Crear campaña',
+  'Edit Campaign': 'Editar campaña',
+  'New Campaign': 'Nueva campaña',
+  'Update Campaign': 'Actualizar campaña',
+  'No campaigns yet': 'Aún no hay campañas',
+  'Create your first campaign to drive repeat engagement.':
+    'Crea tu primera campaña para impulsar la participación recurrente.',
+  'Create First Campaign': 'Crear primera campaña',
+  'Manage your business information and rewards settings.':
+    'Administra la información de tu negocio y la configuración de recompensas.',
+  'Rewards Program': 'Programa de recompensas',
+  'Points Rate (points per $1)': 'Tasa de puntos (puntos por $1)',
+  'Customers earn this many points for every dollar spent.':
+    'Los clientes ganan esta cantidad de puntos por cada dólar gastado.',
+  'Award Points': 'Otorgar puntos',
+  'Look up a customer, review their balance, and award points for in-store purchases.':
+    'Busca un cliente, revisa su saldo y otorga puntos por compras en tienda.',
+  'Choose a customer to preview their current balance before awarding points.':
+    'Elige un cliente para ver su saldo actual antes de otorgar puntos.',
+  'Points to Award': 'Puntos a otorgar',
+  'Add Reward': 'Agregar recompensa',
+  'Create and manage rewards customers can redeem with points.':
+    'Crea y administra recompensas que los clientes pueden canjear con puntos.',
+  'No rewards yet': 'Aún no hay recompensas',
+  'Create your first redeemable reward for members.':
+    'Crea tu primera recompensa canjeable para miembros.',
+  'Create First Reward': 'Crear primera recompensa',
+  'Adjust Points': 'Ajustar puntos',
+  'Select a member to view the profile and update points.':
+    'Selecciona un miembro para ver el perfil y actualizar puntos.',
+  'Failed to adjust points.': 'No se pudieron ajustar los puntos.',
+  'Points Adjustment': 'Ajuste de puntos',
+  'Use a positive number to add points and a negative number to deduct them.':
+    'Usa un número positivo para agregar puntos y uno negativo para descontarlos.',
+  'Update Points': 'Actualizar puntos',
+  'Business Revenue': 'Ingresos del negocio',
+  'Browse Rewards': 'Explorar recompensas',
+  'Review the details and confirm. Your points will be deducted and your reward will be ready for pick-up.':
+    'Revisa los detalles y confirma. Se descontarán tus puntos y tu recompensa estará lista para recoger.',
   Language: 'Idioma',
   Loading: 'Cargando',
   'Preparing your workspace.': 'Preparando tu espacio.',

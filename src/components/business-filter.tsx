@@ -13,14 +13,14 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-2 quest-kicker">{t('Realm:')}</span>
+      <span className="mr-2 quest-kicker">{t('Business:')}</span>
       <Button
         variant={selected === null ? 'tertiary' : 'ghost'}
         size="sm"
         className={`transition-all ${selected === null ? 'px-8' : 'text-on-surface-variant/85 hover:text-primary-container'}`}
         onClick={() => onChange(null)}
       >
-        {t('All Realms')}
+        {t('All Businesses')}
       </Button>
       {businesses.map((business) => (
         <Button

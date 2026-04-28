@@ -63,7 +63,7 @@ export function RedeemRewardPage() {
             {t('Confirm your next treat.')}
           </h1>
           <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            {t('Review the details and confirm. Your XP will be deducted and your reward will be ready for pick-up.')}
+            {t('Review the details and confirm. Your points will be deducted and your reward will be ready for pick-up.')}
           </p>
         </div>
       </div>

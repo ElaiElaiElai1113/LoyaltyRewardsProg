@@ -32,7 +32,7 @@ export function AdminLayout() {
           <div className="flex flex-col">
             <span className="font-serif text-xl font-black uppercase tracking-[0.12em] text-primary-container">{t('Admin Portal')}</span>
             <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
-              {t('Game Ops')}
+              {t('Platform Operations')}
             </span>
           </div>
         </div>

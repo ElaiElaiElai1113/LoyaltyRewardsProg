@@ -6,7 +6,7 @@ import { useLanguage } from '@/lib/language'
 
 const navigation = [
   { to: '/shop', label: 'Menu' },
-  { to: '/rewards', label: 'Vault' },
+  { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
 ]
 
@@ -24,7 +24,7 @@ export function PublicBrowseLayout() {
               </span>
               <span className="hidden h-6 w-px bg-primary-container/25 md:block" />
               <span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant md:block">
-                Quest Rewards
+                Rewards Network
               </span>
             </NavLink>
 

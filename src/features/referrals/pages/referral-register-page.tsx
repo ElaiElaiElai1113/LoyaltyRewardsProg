@@ -97,7 +97,7 @@ export function ReferralRegisterPage() {
                   ? t('After staff approves the invite, both you and your friend receive a reward credit.')
                   : currentBusiness
                     ? `Register once and keep every purchase, reward, and future order linked to ${currentBusiness.name}.`
-                    : t('Join the loyalty program to earn XP, track reward credits, and redeem rewards.')}
+                    : t('Join the rewards network to earn points, track reward credits, and redeem rewards.')}
             </p>
           </div>
 

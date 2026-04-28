@@ -49,7 +49,7 @@ export function MembersPage() {
         <div className="space-y-4">
           <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Customers')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            {t('Look up a customer, review their balance, and award XP for in-store purchases.')}
+            {t('Look up a customer, review their balance, and award points for in-store purchases.')}
           </p>
         </div>
         <Badge variant="accent" className="w-fit rounded-full bg-primary/5 px-5 py-3 text-primary">
@@ -63,7 +63,7 @@ export function MembersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               {t('Quick Action')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">{t('Award XP')}</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Award Points')}</h2>
           </div>
 
           <div className="quest-panel-dark rounded-[2rem] p-8">
@@ -123,14 +123,14 @@ export function MembersPage() {
                       variant="accent"
                       className="rounded-full border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
                     >
-                      {formatPoints(selectedMember.points)} XP
+                      {formatPoints(selectedMember.points)} {t('points')}
                     </Badge>
                   </div>
                 ) : (
                   <div className="space-y-1">
                     <p className="font-serif text-xl text-primary">{t('No customer selected')}</p>
                     <p className="text-sm text-on-surface-variant/85">
-                      {t('Choose a customer to preview their current balance before awarding XP.')}
+                      {t('Choose a customer to preview their current balance before awarding points.')}
                     </p>
                   </div>
                 )}
@@ -138,7 +138,7 @@ export function MembersPage() {
 
               <div className="grid gap-3">
                 <Label htmlFor="delta" className="text-sm font-semibold">
-                  {t('XP to Award')}
+                  {t('Points to Award')}
                 </Label>
                 <Input
                   id="delta"
@@ -173,7 +173,7 @@ export function MembersPage() {
                 className="h-14 w-full rounded-full font-semibold"
                 disabled={awardPoints.isPending}
               >
-                {awardPoints.isPending ? t('Awarding...') : t('Award XP')}
+                {awardPoints.isPending ? t('Awarding...') : t('Award Points')}
               </Button>
               {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
             </form>
@@ -225,7 +225,7 @@ export function MembersPage() {
                         className="flex items-center gap-1.5 rounded-full border border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
                       >
                         <Gift className="size-3" />
-                        {formatPoints(member.points)} XP
+                        {formatPoints(member.points)} {t('points')}
                       </Badge>
                       <Button
                         variant={selected ? 'default' : 'outline'}

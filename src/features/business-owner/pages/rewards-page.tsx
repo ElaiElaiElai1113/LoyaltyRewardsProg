@@ -94,14 +94,14 @@ export function RewardsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Reward Vault')}</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Rewards Catalog')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            {t('Create and manage vault rewards your customers can unlock with XP.')}
+            {t('Create and manage rewards customers can redeem with points.')}
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Gift className="size-5 mr-2" />
-          {t('Add Vault Reward')}
+          {t('Add Reward')}
         </Button>
       </div>
 
@@ -162,7 +162,7 @@ export function RewardsPage() {
               )}
             </div>
             <div className="grid gap-2">
-              <Label htmlFor="reward-points">{t('XP Cost')}</Label>
+              <Label htmlFor="reward-points">{t('Points Cost')}</Label>
               <Input
                 id="reward-points"
                 type="number"
@@ -189,7 +189,7 @@ export function RewardsPage() {
                 {t('Cancel')}
               </Button>
               <Button type="submit" variant="secondary" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Reward') : t('Add Vault Reward')}
+                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Reward') : t('Add Reward')}
               </Button>
             </div>
           </form>
@@ -201,11 +201,11 @@ export function RewardsPage() {
         {rewards.length === 0 ? (
           <div className="quest-panel col-span-full rounded-[2rem] p-16 text-center">
             <Gift className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
-            <h3 className="font-serif text-2xl text-primary mb-2">{t('No vault rewards yet')}</h3>
-            <p className="mb-8 text-on-surface-variant/80">{t('Create your first unlockable reward for members.')}</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">{t('No rewards yet')}</h3>
+            <p className="mb-8 text-on-surface-variant/80">{t('Create your first redeemable reward for members.')}</p>
             <Button variant="secondary" className="h-12 rounded-full px-8" onClick={handleOpenForCreate}>
               <Gift className="size-5 mr-2" />
-              {t('Create First Vault Reward')}
+              {t('Create First Reward')}
             </Button>
           </div>
         ) : (
@@ -250,10 +250,10 @@ export function RewardsPage() {
                 <div className="mt-4 flex items-end justify-between relative">
                   <div className="space-y-1">
                     <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                      {t('XP Cost')}
+                      {t('Points Cost')}
                     </span>
                     <p className="font-serif text-3xl tracking-tight text-primary-container">
-                      {formatPoints(reward.pointsCost)} XP
+                      {formatPoints(reward.pointsCost)} {t('points')}
                     </p>
                   </div>
 

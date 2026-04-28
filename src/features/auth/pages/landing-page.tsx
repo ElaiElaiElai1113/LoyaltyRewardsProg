@@ -106,29 +106,29 @@ export function LandingPage() {
 
           <div className="relative z-10 space-y-8">
             <Badge variant="accent" className="border-primary-container/35 bg-primary-container/12 px-5 py-2 text-primary-container">
-              {t('Rewards Game')}
+              {t('Multi-business rewards platform')}
             </Badge>
             <div className="max-w-3xl space-y-6">
               <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
                 {t('Medellin Rewards.')}<br />
-                {t('Play every')}<br />
-                {t('visit')}.
+                {t('Earn across')}<br />
+                {t('the network')}.
               </h1>
               <p className="max-w-xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
-                {t('Earn XP on every purchase, unlock reward drops, and climb levels across partner businesses.')}
+                {t('Earn points with participating businesses, redeem rewards across the network, and keep every purchase connected to one account.')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/shop"
                   className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-[0_0_20px_rgba(244,168,79,0.18)] transition hover:bg-primary-fixed"
                 >
-                  {t('Start Quest')}
+                  {t('Explore Businesses')}
                 </Link>
                 <Link
                   to="/rewards"
                   className="inline-flex h-11 items-center rounded border border-primary-container/35 bg-primary-container/8 px-6 text-xs font-bold uppercase tracking-[0.08em] text-primary-container transition hover:bg-primary-container/14"
                 >
-                  {t('Open Vault')}
+                  {t('View Rewards')}
                 </Link>
               </div>
             </div>
@@ -137,18 +137,18 @@ export function LandingPage() {
               {[
                 {
                   icon: Repeat2,
-                  title: t('Level Up'),
-                  body: t('Watch your XP, streaks, and progress build after each visit.'),
+                  title: t('Earn Points'),
+                  body: t('Collect points automatically when you buy from partner businesses.'),
                 },
                 {
                   icon: Gift,
-                  title: t('Unlock'),
-                  body: t('Spend XP on perks, reward credits, and partner rewards.'),
+                  title: t('Redeem Rewards'),
+                  body: t('Use your points for perks, reward credits, and partner offers.'),
                 },
                 {
                   icon: Crown,
-                  title: t('Compete'),
-                  body: t('Keep momentum with quests, referrals, and limited-time bonuses.'),
+                  title: t('Grow Value'),
+                  body: t('Get more from repeat purchases, referrals, and limited-time promotions.'),
                 },
               ].map((item) => (
                 <div
@@ -438,7 +438,7 @@ export function LandingPage() {
                     >
                       <div className="space-y-2">
                         <p className="text-sm font-medium text-on-surface-variant/80">
-                          {t('Create your free rewards account and start earning XP today.')}
+                          {t('Create your free rewards account and start earning points today.')}
                         </p>
                       </div>
 

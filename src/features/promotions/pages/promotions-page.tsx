@@ -11,14 +11,14 @@ export function PromotionsPage() {
     <div className="space-y-12 pb-20">
       <div className="flex flex-col gap-6 border-b border-outline-variant/10 pb-8">
         <Badge variant="accent" className="w-fit bg-secondary-container/10 text-secondary-container">
-          {t('Active Quests')}
+          {t('Active Campaigns')}
         </Badge>
         <div className="max-w-3xl space-y-4">
           <h1 className="font-serif text-5xl leading-[1.1] tracking-tight text-primary md:text-6xl">
-            {t('Bonus quests that make every visit count.')}
+            {t('Promotions that turn visits into repeat business.')}
           </h1>
           <p className="text-xl font-medium leading-relaxed text-on-surface-variant/85">
-            {t('Check out the latest missions and earn bonus XP on your purchases.')}
+            {t('Browse current offers and earn bonus points on eligible purchases.')}
           </p>
         </div>
       </div>
@@ -26,13 +26,13 @@ export function PromotionsPage() {
       <div className="rounded-[3rem] border border-outline-variant/10 bg-surface-low p-8 shadow-card md:p-12">
         <div className="mb-12 max-w-2xl space-y-4">
           <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-            {t('Active Quest Board')}
+            {t('Active Campaigns')}
           </span>
           <h2 className="font-serif text-4xl leading-tight tracking-tight text-primary">
-            {t('Earn more XP with every visit.')}
+            {t('Earn more points with participating businesses.')}
           </h2>
           <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            {t('Browse current promotions and take advantage of bonus XP and special deals.')}
+            {t('Browse current promotions and take advantage of bonus points and special deals.')}
           </p>
         </div>
 

@@ -26,7 +26,7 @@ export function OrdersPage() {
           {t('Your Orders')}
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-          {t('View your past purchases and XP earned.')}
+          {t('View your past purchases and points earned.')}
         </p>
       </div>
 
@@ -69,7 +69,7 @@ export function OrdersPage() {
               </div>
 
               <div className="flex justify-between items-center border-t border-outline-variant/5 pt-3">
-                <span className="text-sm font-bold text-primary">+{order.pointsEarned} {t('XP earned')}</span>
+                <span className="text-sm font-bold text-primary">+{order.pointsEarned} {t('points earned')}</span>
                 <Badge
                   variant={order.pointsStatus === 'pending' ? 'outline' : 'success'}
                   className="text-[0.55rem]"

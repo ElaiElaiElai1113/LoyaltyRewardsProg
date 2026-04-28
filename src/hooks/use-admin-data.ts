@@ -264,7 +264,7 @@ export function useAdjustRewards(actor?: Profile | null) {
       void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
       void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
       void queryClient.invalidateQueries({ queryKey: ['activities'] })
-      toast.success('XP adjusted successfully')
+      toast.success('Points adjusted successfully')
     },
     onError: (error: Error) => {
       toast.error(`Adjustment failed: ${error.message}`)

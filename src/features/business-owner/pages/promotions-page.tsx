@@ -92,14 +92,14 @@ export function PromotionsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Quests')}</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Campaigns')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            {t('Create and manage bonus quests to engage and reward your customers.')}
+            {t('Create and manage promotions that engage customers and drive repeat purchases.')}
           </p>
         </div>
         <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
           <Megaphone className="size-5 mr-2" />
-          {t('Create Quest')}
+          {t('Create Campaign')}
         </Button>
       </div>
 
@@ -108,27 +108,27 @@ export function PromotionsPage() {
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
-              {editingId ? t('Edit Quest') : t('New Quest')}
+              {editingId ? t('Edit Campaign') : t('New Campaign')}
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="promo-title">{t('Title')}</Label>
-              <Input id="promo-title" placeholder="Double XP Weekend" {...form.register('title')} />
+              <Input id="promo-title" placeholder="Double Points Weekend" {...form.register('title')} />
               {form.formState.errors.title && (
                 <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-description">{t('Description')}</Label>
-              <Textarea id="promo-description" placeholder="Earn 2x XP on all purchases this weekend." {...form.register('description')} />
+              <Textarea id="promo-description" placeholder="Earn 2x points on eligible purchases this weekend." {...form.register('description')} />
               {form.formState.errors.description && (
                 <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-badge">{t('Badge Label')}</Label>
-              <Input id="promo-badge" placeholder="2x XP" {...form.register('badge')} />
+              <Input id="promo-badge" placeholder="2x points" {...form.register('badge')} />
               {form.formState.errors.badge && (
                 <p className="text-xs text-red-500">{form.formState.errors.badge.message}</p>
               )}
@@ -153,7 +153,7 @@ export function PromotionsPage() {
                 {t('Cancel')}
               </Button>
               <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Quest') : t('Create Quest')}
+                {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Campaign') : t('Create Campaign')}
               </Button>
             </div>
           </form>
@@ -165,11 +165,11 @@ export function PromotionsPage() {
         {promotions.length === 0 ? (
           <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
             <Megaphone className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">{t('No quests yet')}</h3>
-            <p className="text-on-surface-variant/70 mb-8">{t('Create your first bonus quest to drive engagement.')}</p>
+            <h3 className="font-serif text-2xl text-primary mb-2">{t('No campaigns yet')}</h3>
+            <p className="text-on-surface-variant/70 mb-8">{t('Create your first campaign to drive repeat engagement.')}</p>
             <Button className="rounded-full h-12 px-8" onClick={() => setOpen(true)}>
               <Megaphone className="size-5 mr-2" />
-              {t('Create First Quest')}
+              {t('Create First Campaign')}
             </Button>
           </div>
         ) : (

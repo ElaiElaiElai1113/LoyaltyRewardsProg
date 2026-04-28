@@ -1,4 +1,4 @@
-import { Lock, Sparkles, Trophy, Zap } from 'lucide-react'
+import { CheckCircle, Gift, Lock, Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -26,8 +26,8 @@ export function RewardCard({
   const hasEnoughPoints = balancePoints >= reward.pointsCost
   const canRedeem = hasInventory && (!requirePoints || hasEnoughPoints)
   const pointsRemaining = Math.max(reward.pointsCost - balancePoints, 0)
-  const unlockProgress = requirePoints ? Math.min(100, Math.round((balancePoints / reward.pointsCost) * 100)) : 100
-  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem ? 'Claim' : unlockProgress >= 80 ? 'Almost There' : 'Locked'
+  const qualificationProgress = requirePoints ? Math.min(100, Math.round((balancePoints / reward.pointsCost) * 100)) : 100
+  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem ? 'Redeem' : qualificationProgress >= 80 ? 'Almost There' : 'Need More Points'
   const rarity =
     reward.pointsCost >= 2000
       ? 'Legendary'
@@ -68,7 +68,7 @@ export function RewardCard({
         </div>
 
         <div className="flex size-16 items-center justify-center rounded border border-primary-container/35 bg-primary-container/10 text-primary-container shadow-[0_0_18px_rgba(244,168,79,0.14)]">
-          {canRedeem ? <Trophy className="size-8" /> : <Lock className="size-8" />}
+          {canRedeem ? <Gift className="size-8" /> : <Lock className="size-8" />}
         </div>
 
         <div className="space-y-4 grow">
@@ -83,13 +83,13 @@ export function RewardCard({
         {requirePoints && (
           <div className="space-y-2">
             <div className="flex justify-between text-[0.65rem] font-black uppercase tracking-widest text-on-surface-variant/75">
-              <span>{t('Unlock Meter')}</span>
-              <span>{unlockProgress}%</span>
+              <span>{t('Qualification Progress')}</span>
+              <span>{qualificationProgress}%</span>
             </div>
             <div className="h-2 overflow-hidden bg-primary-container/10">
               <div
                 className="h-full bg-[linear-gradient(90deg,#7bd8cf,#f4a84f,#d8a23a)] transition-all duration-700 shadow-[0_0_12px_rgba(244,168,79,0.42)]"
-                style={{ width: `${unlockProgress}%` }}
+                style={{ width: `${qualificationProgress}%` }}
               />
             </div>
           </div>
@@ -97,12 +97,12 @@ export function RewardCard({
 
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('XP Cost')}</span>
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Points Cost')}</span>
             <p className="font-serif text-3xl font-bold tracking-tight text-primary-container">
               {formatPoints(reward.pointsCost)}
             </p>
             {!canRedeem && hasInventory && requirePoints ? (
-              <p className="text-xs font-bold text-secondary">{formatPoints(pointsRemaining)} {t('XP to unlock')}</p>
+              <p className="text-xs font-bold text-secondary">{formatPoints(pointsRemaining)} {t('points needed')}</p>
             ) : null}
           </div>
 
@@ -116,7 +116,7 @@ export function RewardCard({
               variant={canRedeem ? 'secondary' : 'outline'}
               size="sm"
             >
-              {canRedeem ? <Zap className="size-4" /> : null}
+              {canRedeem ? <CheckCircle className="size-4" /> : null}
               {t(buttonLabel)}
             </Button>
           </div>

@@ -62,16 +62,16 @@ export function PromoPage() {
             ) : null}
             <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
-              {hasPartnerReferral ? 'Partner Perk' : hasReferral ? t('Party Invite') : t('Quest Invitation')}
+              {hasPartnerReferral ? 'Partner Perk' : hasReferral ? t('Referral Invite') : t('Rewards Invitation')}
             </div>
             <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
               {hasPartnerReferral
                 ? `You were invited to ${currentBusiness?.name ?? 'our shop'} by one of our local partners.`
                 : hasReferral
-                  ? t('Your party invite unlocked a reward credit.')
+                  ? t('Your referral invite qualified for a reward credit.')
                   : currentBusiness
                     ? `Join ${currentBusiness.name} Rewards.`
-                    : t('Join the rewards quest.')}
+                    : t('Join the rewards network.')}
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
               {hasPartnerReferral
@@ -79,20 +79,20 @@ export function PromoPage() {
                 : hasReferral
                   ? t('Create your rewards account and, after the invite is approved, both you and your friend get a reward credit.')
                   : currentBusiness
-                    ? `Create your rewards account to start earning XP, unlock Harbor Roast perks, and keep every visit connected to ${currentBusiness.name}.`
-                    : t('Create your rewards account to earn XP, track reward credits, and unlock rewards.')}
+                    ? `Create your rewards account to start earning points, access Harbor Roast perks, and keep every visit connected to ${currentBusiness.name}.`
+                    : t('Create your rewards account to earn points, track reward credits, and redeem rewards.')}
             </p>
           </div>
 
           <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6">
             <p className="font-serif text-3xl leading-tight">
               {hasPartnerReferral
-                ? `Your first order at ${currentBusiness?.name ?? 'this shop'} unlocks partner credit.`
+                ? `Your first order at ${currentBusiness?.name ?? 'this business'} qualifies for partner credit.`
                 : hasReferral
                   ? t('Two reward credits, one party invite.')
                   : currentBusiness
                     ? `${currentBusiness.name} signup portal`
-                    : t('Your first quest starts here.')}
+                    : t('Your rewards account starts here.')}
             </p>
             <p className="mt-4 text-sm font-medium leading-relaxed text-white/75">
               {hasPartnerReferral
@@ -101,7 +101,7 @@ export function PromoPage() {
                   ? t('Your reward credit appears after your signup is reviewed.')
                   : currentBusiness
                     ? `This registration link is tied directly to ${currentBusiness.name}.`
-                    : t('Sign up once and keep every visit connected to your XP balance.')}
+                    : t('Sign up once and keep every visit connected to your points balance.')}
             </p>
           </div>
         </div>
@@ -134,7 +134,7 @@ export function PromoPage() {
               navigate(`/promo/register?${params.toString()}`)
             }}
           >
-            {hasPartnerReferral ? 'Continue with Partner Invite' : hasReferral ? t('Claim Reward Credit') : t('Start Quest')}
+            {hasPartnerReferral ? 'Continue with Partner Invite' : hasReferral ? t('Claim Reward Credit') : t('Create Rewards Account')}
           </Button>
         </div>
       </section>

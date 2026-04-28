@@ -55,29 +55,29 @@ export function RedeemRewardPanel({
       <div className="grid gap-1 overflow-hidden rounded-[2.5rem] bg-surface-lowest border border-outline-variant/5 shadow-card md:grid-cols-3">
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            {t('XP Cost')}
+            {t('Points Cost')}
           </p>
           <p className="font-serif text-4xl text-primary">
-            {formatPoints(reward.pointsCost)} XP
+            {formatPoints(reward.pointsCost)} {t('points')}
           </p>
         </div>
         <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            {t('Your XP')}
+            {t('Your Points')}
           </p>
           <p className="font-serif text-4xl text-primary">
-            {formatPoints(balancePoints)} XP
+            {formatPoints(balancePoints)} {t('points')}
           </p>
         </div>
         <div className="p-10 space-y-2">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
-            {t('XP After')}
+            {t('Points After')}
           </p>
           <p className={cn(
             "font-serif text-4xl",
             canRedeem ? "text-primary/80" : "text-error/80"
           )}>
-            {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))} XP
+            {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))} {t('points')}
           </p>
         </div>
       </div>
@@ -125,7 +125,7 @@ export function RedeemRewardPanel({
             ? t('Processing...')
             : canRedeem
               ? t('Redeem Now')
-              : t('Not Enough XP')}
+              : t('Not Enough Points')}
         </Button>
       </form>
     </div>

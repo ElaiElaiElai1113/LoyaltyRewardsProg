@@ -39,13 +39,13 @@ export function ShopPage() {
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
         <Badge variant="accent">
-          {t('Partner Realms')}
+          {t('Partner Businesses')}
         </Badge>
         <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
-          {t('Shop Realms')}
+          {t('Shop Businesses')}
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-          {t('Browse partner businesses, complete purchases, and earn XP automatically.')}
+          {t('Browse partner businesses, complete purchases, and earn points automatically.')}
         </p>
       </div>
 

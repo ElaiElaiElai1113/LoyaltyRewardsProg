@@ -205,7 +205,7 @@ export function CheckoutPage() {
             </div>
           </div>
           <div className="rounded-xl bg-tertiary/20 p-4 text-sm">
-            <span className="font-bold text-primary">+{estimatedPoints} XP</span>
+            <span className="font-bold text-primary">+{estimatedPoints} {t('points')}</span>
             <span className="text-on-surface-variant/80"> {t('will be earned')}</span>
           </div>
         </div>

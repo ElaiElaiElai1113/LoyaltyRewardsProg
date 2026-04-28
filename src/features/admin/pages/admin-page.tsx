@@ -392,7 +392,7 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Member Profile')}</span>
-                <h2 className="font-serif text-3xl text-primary">{t('Adjust XP')}</h2>
+                <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
               </div>
 
               <div className="quest-panel-dark rounded-[2rem] p-8 space-y-6">
@@ -414,7 +414,7 @@ export function AdminPage() {
                         <div className="flex flex-wrap items-center gap-2">
                           <Badge variant="accent" className="border-secondary-container/25 bg-secondary-container/15 text-secondary">
                             <Gift className="size-3 mr-1" />
-                            {selectedMember.balance?.points ?? 0} XP
+                            {selectedMember.balance?.points ?? 0} {t('points')}
                           </Badge>
                           <Badge variant="accent" className="border-success/25 bg-success/12 text-success">
                             {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
@@ -464,7 +464,7 @@ export function AdminPage() {
                   </div>
                 ) : (
                   <div className="rounded-[2rem] border border-dashed border-primary-container/20 bg-[#181210] p-6 text-sm text-on-surface-variant/85">
-                    {t('Select a member to view the profile and update XP.')}
+                    {t('Select a member to view the profile and update points.')}
                   </div>
                 )}
 
@@ -481,7 +481,7 @@ export function AdminPage() {
                           reason: '',
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : t('Failed to adjust XP.'))
+                        setActionError(error instanceof Error ? error.message : t('Failed to adjust points.'))
                       }
                     },
                     () => {
@@ -510,14 +510,14 @@ export function AdminPage() {
                     ) : null}
                     {selectedMember ? (
                       <p className="text-xs text-on-surface-variant/80">
-                        {t('Selected')}: {selectedMember.profile.fullName} - {t('Current balance')}: {selectedMember.balance?.points ?? 0} XP
+                        {t('Selected')}: {selectedMember.profile.fullName} - {t('Current balance')}: {selectedMember.balance?.points ?? 0} {t('points')}
                       </p>
                     ) : null}
                   </div>
                   <div className="grid gap-4">
-                    <Label htmlFor="delta" className="text-sm font-semibold">{t('XP Adjustment')}</Label>
+                    <Label htmlFor="delta" className="text-sm font-semibold">{t('Points Adjustment')}</Label>
                     <Input id="delta" type="number" className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
-                    <p className="text-xs text-on-surface-variant/80">{t('Use a positive number to add XP and a negative number to deduct it.')}</p>
+                    <p className="text-xs text-on-surface-variant/80">{t('Use a positive number to add points and a negative number to deduct them.')}</p>
                     {adjustmentForm.formState.errors.delta ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
                     ) : null}
@@ -530,7 +530,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
                   <Button type="submit" size="lg" variant="secondary" className="h-14 w-full rounded-full font-semibold" disabled={adjustRewards.isPending}>
-                    {adjustRewards.isPending ? t('Processing...') : t('Update XP')}
+                    {adjustRewards.isPending ? t('Processing...') : t('Update Points')}
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
@@ -580,7 +580,7 @@ export function AdminPage() {
                       <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-medium text-primary">{member.role}</Badge>
                       <Badge variant="accent" className="flex items-center gap-1.5 border-secondary-container/25 bg-secondary-container/15 px-3 py-1.5 font-medium text-secondary">
                         <Gift className="size-3" />
-                        {balance?.points ?? 0} XP
+                        {balance?.points ?? 0} {t('points')}
                       </Badge>
                       <Badge variant="accent" className="border-success/25 bg-success/12 px-3 py-1.5 font-medium text-success">
                         {balance?.availableCredits ?? 0} {t('Reward Credits')}
@@ -755,7 +755,7 @@ export function AdminPage() {
                       ) : null}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="reward-cost">XP Cost</Label>
+                      <Label htmlFor="reward-cost">{t('Points Cost')}</Label>
                       <Input id="reward-cost" type="number" {...rewardForm.register('pointsCost', { valueAsNumber: true })} />
                       {rewardForm.formState.errors.pointsCost ? (
                         <p className="text-xs text-red-500">{rewardForm.formState.errors.pointsCost.message}</p>
@@ -1122,7 +1122,7 @@ export function AdminPage() {
                     <Textarea
                       id="promotion-description"
                       className={adminTextareaClass}
-                      placeholder="Offer a limited-time bundle, perk, or challenge members can unlock this week."
+                      placeholder="Offer a limited-time bundle, perk, or campaign members can redeem this week."
                       {...promotionForm.register('description')}
                     />
                     {promotionForm.formState.errors.description ? (
@@ -1147,7 +1147,7 @@ export function AdminPage() {
                       <Input
                         id="promotion-cta"
                         className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                        placeholder="Unlock Now"
+                        placeholder="Redeem Now"
                         {...promotionForm.register('cta')}
                       />
                       {promotionForm.formState.errors.cta ? (
@@ -1544,7 +1544,7 @@ export function AdminPage() {
                               {business.ownerName || business.ownerEmail || 'Unassigned'}
                             </p>
                             <p className="mt-1 text-on-surface-variant/75">
-                              {business.ownerEmail ?? 'Assign an owner to unlock business access.'}
+                              {business.ownerEmail ?? 'Assign an owner to enable business access.'}
                             </p>
                           </div>
                         </div>
@@ -1603,7 +1603,7 @@ export function AdminPage() {
                         <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
                       </div>
                       <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
-                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">XP Issued</p>
+                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Points Issued')}</p>
                         <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.pointsIssued}</p>
                       </div>
                       <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
@@ -2052,7 +2052,7 @@ export function AdminPage() {
                         <div className="mt-4 pt-4 border-t border-outline-variant/5 flex items-center justify-between">
                            <div className="flex items-center gap-2">
                              <TrendingUp className="size-4 text-secondary" />
-                             <span className="text-sm font-bold text-primary">{redemption.pointsCost} XP</span>
+                             <span className="text-sm font-bold text-primary">{redemption.pointsCost} {t('points')}</span>
                            </div>
                            <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 flex items-center gap-1">
                              {formatDate(redemption.redeemedAt)}
