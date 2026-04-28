@@ -15,7 +15,7 @@ Currently the app only has a single "Catalog" page for points-based rewards with
 - **Multi-tenant via `businessId`** — every product, reward, promotion, and order belongs to a business. One Supabase instance, filtered by business.
 - **Shared points balance** — one unified balance per customer, not per business. Points earned anywhere, spendable anywhere.
 - **Business filter on both tabs** — dropdown or pill selector to filter products/rewards by business (with an "All" option).
-- **Simulated payment** — mock checkout, no real payment processing
+- **Demo checkout** — mock checkout is clearly labeled; no real payment processing
 - **Configurable earn rate** — each business sets its own points-per-dollar rate
 - **Immediate availability, "processing" display** — points added immediately, Activity shows as `pending` with "Processing - available within 24 hours" badge
 - **Cart in separate localStorage** — ephemeral cart state, not mixed with domain data

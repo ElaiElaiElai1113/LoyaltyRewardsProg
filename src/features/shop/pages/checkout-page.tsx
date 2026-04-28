@@ -74,17 +74,25 @@ export function CheckoutPage() {
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
-          {t('Checkout')}
+          {t('Demo Checkout')}
         </Badge>
         <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
-          {t('Checkout')}
+          {t('Demo Checkout')}
         </h1>
+        <p className="text-base font-medium leading-relaxed text-on-surface-variant/80">
+          {t('No real payment will be processed. This checkout creates a demo order for rewards testing.')}
+        </p>
       </div>
 
       <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
         <div className="space-y-8">
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6">
-            <h2 className="font-serif text-3xl text-primary">{t('Payment Method')}</h2>
+            <div className="space-y-2">
+              <h2 className="font-serif text-3xl text-primary">{t('Simulated Payment Method')}</h2>
+              <p className="text-sm font-medium text-on-surface-variant/75">
+                {t('Use the preset demo payment options below. They do not charge a real card.')}
+              </p>
+            </div>
             <form
               className="space-y-6"
               onSubmit={form.handleSubmit(async (values) => {

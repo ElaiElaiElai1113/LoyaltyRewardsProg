@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Archive, Copy, Gift, Hotel, QrCode, UserRoundPlus } from 'lucide-react'
+import { Archive, Copy, Download, Gift, Hotel, QrCode, UserRoundPlus } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -21,6 +21,29 @@ import {
 } from '@/hooks/use-business-owner-data'
 import { useLanguage } from '@/lib/language'
 import { partnerReferrerDraftSchema, type PartnerReferrerDraftFormValues } from '@/types/forms'
+
+function downloadCsv(filename: string, rows: Array<Record<string, string | number | null>>) {
+  if (rows.length === 0) return
+
+  const headers = Object.keys(rows[0])
+  const escapeCell = (value: string | number | null) => {
+    const cell = value === null ? '' : String(value)
+    return `"${cell.replace(/"/g, '""')}"`
+  }
+  const csv = [
+    headers.join(','),
+    ...rows.map((row) => headers.map((header) => escapeCell(row[header])).join(',')),
+  ].join('\n')
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
+  const url = window.URL.createObjectURL(blob)
+  const link = document.createElement('a')
+  link.href = url
+  link.download = filename
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+  window.URL.revokeObjectURL(url)
+}
 
 export function PartnersPage() {
   const { business } = useBusinessOwnerData()
@@ -45,8 +68,44 @@ export function PartnersPage() {
 
   const activeCount = performance.data?.filter((entry) => entry.active).length ?? 0
   const totalCredits = performance.data?.reduce((sum, entry) => sum + entry.creditsEarned, 0) ?? 0
+  const redeemedCredits = performance.data?.reduce((sum, entry) => sum + entry.creditsRedeemed, 0) ?? 0
+  const attributedCount = referrals.data?.length ?? 0
+  const creditedCount = referrals.data?.filter((referral) => referral.status === 'credited').length ?? 0
   const recentReferrals = (referrals.data ?? []).slice(0, 6)
   const unreedeemedCredits = (partnerCredits.data ?? []).filter((entry) => !entry.redeemedAt)
+  const outstandingCredits = unreedeemedCredits.reduce((sum, entry) => sum + entry.creditUnits, 0)
+
+  const handleExportReferrals = () => {
+    downloadCsv(
+      `${business?.slug ?? 'business'}-partner-referrals.csv`,
+      (referrals.data ?? []).map((referral) => ({
+        source: referral.partnerReferrer.contactName,
+        code: referral.partnerReferrer.code,
+        customer: referral.customer.fullName,
+        email: referral.customer.email,
+        status: referral.status,
+        firstOrderTotal: referral.firstOrder?.total ?? null,
+        attributedAt: referral.attributedAt,
+        creditedAt: referral.creditedAt,
+      })),
+    )
+  }
+
+  const handleExportCredits = () => {
+    downloadCsv(
+      `${business?.slug ?? 'business'}-partner-credits.csv`,
+      (partnerCredits.data ?? []).map((entry) => ({
+        partnerReferrerId: entry.partnerReferrerId,
+        partnerReferralId: entry.partnerReferralId,
+        orderId: entry.orderId,
+        creditType: entry.creditType,
+        creditUnits: entry.creditUnits,
+        details: entry.details,
+        createdAt: entry.createdAt,
+        redeemedAt: entry.redeemedAt,
+      })),
+    )
+  }
 
   return (
     <div className="space-y-16">
@@ -54,7 +113,7 @@ export function PartnersPage() {
         <div className="space-y-4">
           <h1 className="font-serif text-5xl tracking-tight text-primary">Partner Referrals</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Track receptionist and front-desk referrals, then reward partners after the first paid order.
+            Track hotel/front-desk referrals and reward partners after first paid orders.
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
@@ -65,6 +124,21 @@ export function PartnersPage() {
             {totalCredits} partner credits earned
           </Badge>
         </div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {[
+          ['Active Contacts', activeCount],
+          ['Attributed Customers', attributedCount],
+          ['Credited Orders', creditedCount],
+          ['Credits Redeemed', redeemedCredits],
+          ['Outstanding Credits', outstandingCredits],
+        ].map(([label, value]) => (
+          <div key={label} className="quest-panel rounded-[2rem] p-5">
+            <p className="quest-kicker">{label}</p>
+            <p className="mt-3 font-serif text-4xl text-primary">{value}</p>
+          </div>
+        ))}
       </div>
 
       <div className="grid gap-10 xl:grid-cols-[420px_1fr]">
@@ -244,7 +318,19 @@ export function PartnersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               Recent Activity
             </span>
-            <h2 className="font-serif text-3xl text-primary">Attributed Customers</h2>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="font-serif text-3xl text-primary">Attributed Customers</h2>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-fit rounded-full"
+                disabled={(referrals.data ?? []).length === 0}
+                onClick={handleExportReferrals}
+              >
+                <Download className="size-4" />
+                Export CSV
+              </Button>
+            </div>
           </div>
 
           <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
@@ -283,7 +369,19 @@ export function PartnersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               Offline Redemption
             </span>
-            <h2 className="font-serif text-3xl text-primary">Outstanding Partner Credits</h2>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <h2 className="font-serif text-3xl text-primary">Outstanding Partner Credits</h2>
+              <Button
+                type="button"
+                variant="outline"
+                className="w-fit rounded-full"
+                disabled={(partnerCredits.data ?? []).length === 0}
+                onClick={handleExportCredits}
+              >
+                <Download className="size-4" />
+                Export CSV
+              </Button>
+            </div>
           </div>
 
           <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">

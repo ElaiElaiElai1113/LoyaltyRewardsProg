@@ -53,6 +53,12 @@ export function BusinessDashboardPage() {
     profile?.referralCode && business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
       : ''
+  const partnerSummaries = partnerPerformance.data ?? []
+  const partnerReferralCount = partnerReferrals.data?.length ?? 0
+  const partnerCreditsEarned = partnerSummaries.reduce((sum, entry) => sum + entry.creditsEarned, 0)
+  const partnerCreditsRedeemed = partnerSummaries.reduce((sum, entry) => sum + entry.creditsRedeemed, 0)
+  const outstandingPartnerCredits = Math.max(partnerCreditsEarned - partnerCreditsRedeemed, 0)
+  const pendingFulfillmentCount = redemptions.filter((redemption) => redemption.status === 'ready').length
 
   const handleDownloadSignupQr = () => {
     const svg = signupQrRef.current?.querySelector('svg')
@@ -99,27 +105,49 @@ export function BusinessDashboardPage() {
           title={t('Members Recruited')}
           value={metrics.totalMembers.toString()}
           icon={<Users className="size-6" />}
-          trend="+12%"
-          trendUp
+          helper={t('Customers with completed orders')}
         />
         <BusinessMetricCard
           title={t('Orders Completed')}
           value={metrics.totalOrders.toString()}
           icon={<ShoppingBag className="size-6" />}
-          trend="+8%"
-          trendUp
+          helper={t('Confirmed order volume')}
         />
         <BusinessMetricCard
           title={t('Business Revenue')}
           value={formatCurrency(metrics.totalRevenue)}
           icon={<TrendingUp className="size-6" />}
-          trend="+15%"
-          trendUp
+          helper={t('Lifetime demo order value')}
         />
         <BusinessMetricCard
           title={t('Active Campaigns')}
           value={metrics.activePromotions.toString()}
           icon={<Sparkles className="size-6" />}
+          helper={t('Promotions currently live')}
+        />
+        <BusinessMetricCard
+          title="Partner Referrals"
+          value={partnerReferralCount.toString()}
+          icon={<Hotel className="size-6" />}
+          helper="Customers attributed to partner contacts"
+        />
+        <BusinessMetricCard
+          title="Partner Credits"
+          value={partnerCreditsEarned.toString()}
+          icon={<Gift className="size-6" />}
+          helper="Credits earned by referral sources"
+        />
+        <BusinessMetricCard
+          title="Outstanding Credits"
+          value={outstandingPartnerCredits.toString()}
+          icon={<QrCode className="size-6" />}
+          helper="Partner credits not yet marked redeemed"
+        />
+        <BusinessMetricCard
+          title={t('Pending Fulfillment')}
+          value={pendingFulfillmentCount.toString()}
+          icon={<CheckCircle className="size-6" />}
+          helper={t('Reward claims ready for staff')}
         />
       </div>
 
@@ -332,10 +360,10 @@ export function BusinessDashboardPage() {
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
             <h2 className="font-serif text-2xl text-primary">Partner Referrals</h2>
-            <p className="text-sm text-on-surface-variant/70">Monitor receptionist attribution and first-order partner credits.</p>
+            <p className="text-sm text-on-surface-variant/70">Track hotel/front-desk referrals and reward partners after first paid orders.</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-            {partnerPerformance.data?.reduce((sum, entry) => sum + entry.creditsEarned, 0) ?? 0} credits earned
+            {partnerCreditsEarned} credits earned
           </span>
         </div>
 

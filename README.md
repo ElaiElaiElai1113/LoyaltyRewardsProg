@@ -2,6 +2,8 @@
 
 React + TypeScript + Vite application for a coffee loyalty and rewards platform with customer and admin flows backed by Supabase.
 
+Checkout is currently a labeled demo flow for rewards testing. No real payment is processed.
+
 ## Local Development
 
 1. Install dependencies:

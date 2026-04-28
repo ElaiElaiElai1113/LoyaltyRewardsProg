@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Crown, Gift, Repeat2 } from 'lucide-react'
+import { Building2, CalendarClock, Gift, Repeat2 } from 'lucide-react'
 import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -115,7 +115,7 @@ export function LandingPage() {
                 {t('the network')}.
               </h1>
               <p className="max-w-xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
-                {t('Earn points with participating businesses, redeem rewards across the network, and keep every purchase connected to one account.')}
+                {t('Earn and redeem rewards across local businesses while owners track loyalty, QR signups, and partner referrals from one platform.')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
@@ -123,6 +123,13 @@ export function LandingPage() {
                   className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-[0_0_20px_rgba(244,168,79,0.18)] transition hover:bg-primary-fixed"
                 >
                   {t('Explore Businesses')}
+                </Link>
+                <Link
+                  to="/for-businesses#book-demo"
+                  className="inline-flex h-11 items-center gap-2 rounded border border-secondary-container bg-secondary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-[#2d1a06] shadow-[0_0_20px_rgba(216,162,58,0.18)] transition hover:bg-secondary-fixed"
+                >
+                  <Building2 className="size-4" />
+                  {t('Book Demo')}
                 </Link>
                 <Link
                   to="/rewards"
@@ -146,9 +153,9 @@ export function LandingPage() {
                   body: t('Use your points for perks, reward credits, and partner offers.'),
                 },
                 {
-                  icon: Crown,
-                  title: t('Grow Value'),
-                  body: t('Get more from repeat purchases, referrals, and limited-time promotions.'),
+                  icon: CalendarClock,
+                  title: t('Book Demo'),
+                  body: t('Businesses can launch QR signups, partner referrals, and reward credit workflows without a custom build.'),
                 },
               ].map((item) => (
                 <div

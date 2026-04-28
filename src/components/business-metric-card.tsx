@@ -1,12 +1,15 @@
+import type { ReactNode } from 'react'
+
 interface BusinessMetricCardProps {
   title: string
   value: string
-  icon: React.ReactNode
+  icon: ReactNode
+  helper?: string
   trend?: string
   trendUp?: boolean
 }
 
-export function BusinessMetricCard({ title, value, icon, trend, trendUp }: BusinessMetricCardProps) {
+export function BusinessMetricCard({ title, value, icon, helper, trend, trendUp }: BusinessMetricCardProps) {
   return (
     <div className="quest-panel relative overflow-hidden p-6 transition-all hover:-translate-y-0.5 hover:shadow-[0_0_0_1px_rgba(244,168,79,0.28),0_0_26px_rgba(244,168,79,0.14)]">
       <div className="hud-scanline" />
@@ -23,6 +26,9 @@ export function BusinessMetricCard({ title, value, icon, trend, trendUp }: Busin
             {trend}
           </p>
         )}
+        {!trend && helper ? (
+          <p className="mt-2 text-xs font-medium text-on-surface-variant/75">{helper}</p>
+        ) : null}
       </div>
     </div>
   )

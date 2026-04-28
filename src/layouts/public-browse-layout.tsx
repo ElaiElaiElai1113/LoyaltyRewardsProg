@@ -8,6 +8,7 @@ const navigation = [
   { to: '/shop', label: 'Menu' },
   { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
+  { to: '/for-businesses', label: 'For Businesses' },
 ]
 
 export function PublicBrowseLayout() {
@@ -49,6 +50,9 @@ export function PublicBrowseLayout() {
 
           <div className="flex items-center gap-3">
             <LanguagePicker className="text-on-surface-variant" compact />
+            <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
+              <NavLink to="/for-businesses#book-demo">{t('Book Demo')}</NavLink>
+            </Button>
             <Button asChild variant="outline" size="sm">
               <NavLink to="/signin">{t('Sign In')}</NavLink>
             </Button>

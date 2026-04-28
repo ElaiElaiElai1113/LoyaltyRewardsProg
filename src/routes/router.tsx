@@ -2,6 +2,7 @@ import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
 import { LandingPage } from '@/features/auth/pages/landing-page'
+import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { ProfilePage } from '@/features/profile/pages/profile-page'
@@ -185,6 +186,7 @@ const router = createBrowserRouter([
       { path: '/shop', element: <ShopPage /> },
       { path: '/rewards', element: <RewardsPage /> },
       { path: '/promotions', element: <PromotionsPage /> },
+      { path: '/for-businesses', element: <ForBusinessesPage /> },
     ],
   },
   {
