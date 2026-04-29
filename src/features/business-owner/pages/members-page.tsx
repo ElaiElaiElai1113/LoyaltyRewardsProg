@@ -66,7 +66,7 @@ export function MembersPage() {
             <h2 className="font-serif text-3xl text-primary">{t('Award Points')}</h2>
           </div>
 
-          <div className="quest-panel-dark rounded-[2rem] p-8">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8">
             <form
               className="space-y-6"
               onSubmit={form.handleSubmit(async (values) => {
@@ -189,7 +189,7 @@ export function MembersPage() {
           </div>
 
           {members.isLoading ? (
-            <div className="quest-panel rounded-[2rem] p-12 text-center text-on-surface-variant/80">
+            <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-12 text-center text-on-surface-variant/80">
               {t('Loading customers...')}
             </div>
           ) : members.data?.length ? (
@@ -201,10 +201,10 @@ export function MembersPage() {
                   <div
                     key={member.id}
                     className={cn(
-                      'quest-panel flex flex-col gap-5 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between',
+                      'rounded-xl border border-[var(--border)] bg-white shadow-sm flex flex-col gap-5 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between',
                       selected
-                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.34)]'
-                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.28)]',
+                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
+                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-sm',
                     )}
                   >
                     <div className="flex items-center gap-5">
@@ -244,7 +244,7 @@ export function MembersPage() {
               })}
             </div>
           ) : (
-            <div className="quest-panel rounded-[2rem] p-16 text-center">
+            <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-16 text-center">
               <Users className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
               <h3 className="mb-2 font-serif text-2xl text-primary">{t('No customers yet')}</h3>
               <p className="mx-auto max-w-md text-on-surface-variant/80">

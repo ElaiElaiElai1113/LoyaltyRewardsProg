@@ -1,4 +1,4 @@
-import { CheckCircle, Gift, Lock, Sparkles } from 'lucide-react'
+import { CheckCircle, Gift, Lock } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -26,94 +26,58 @@ export function RewardCard({
   const hasEnoughPoints = balancePoints >= reward.pointsCost
   const canRedeem = hasInventory && (!requirePoints || hasEnoughPoints)
   const pointsRemaining = Math.max(reward.pointsCost - balancePoints, 0)
-  const qualificationProgress = requirePoints ? Math.min(100, Math.round((balancePoints / reward.pointsCost) * 100)) : 100
-  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem ? 'Redeem' : qualificationProgress >= 80 ? 'Almost There' : 'Need More Points'
-  const rarity =
-    reward.pointsCost >= 2000
-      ? 'Legendary'
-      : reward.pointsCost >= 750
-        ? 'Epic'
-        : reward.pointsCost >= 250
-          ? 'Rare'
-          : 'Common'
-  const rarityClass =
-    rarity === 'Legendary'
-      ? 'rarity-legendary'
-      : rarity === 'Epic'
-        ? 'rarity-epic'
-        : rarity === 'Rare'
-          ? 'rarity-rare'
-          : 'rarity-common'
+  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem ? 'Redeem' : 'Need More Points'
 
   return (
-    <div className="group glass-panel relative overflow-hidden p-1 transition-all duration-300 hover:-translate-y-1 hover:border-primary-container/45 hover:shadow-[0_0_30px_rgba(244,168,79,0.15)]">
-      <div className="hud-scanline" />
-      <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(135deg,rgba(123,216,207,0.12),rgba(244,168,79,0.16),rgba(216,162,58,0.1))]" />
-      <div className="relative flex h-full flex-col gap-6 rounded-md bg-[#17100d]/82 p-7">
+    <div
+      data-tenant={reward.businessId}
+      className="flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm"
+    >
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
-            <Badge variant="accent">
+            <Badge variant="tenant">
               {t(reward.category)}
             </Badge>
             {businessName && (
-              <Badge variant="outline" className="text-[0.55rem] text-on-surface-variant/70">
+              <Badge variant="outline" className="text-[0.7rem] text-[var(--muted-foreground)]">
                 {businessName}
               </Badge>
             )}
           </div>
-            <span className={`flex items-center gap-1.5 rounded px-3 py-1 text-[0.6rem] font-black uppercase tracking-widest ${rarityClass}`}>
-              <Sparkles className="size-3" />
-              {t(rarity)}
-            </span>
         </div>
 
-        <div className="flex size-16 items-center justify-center rounded border border-primary-container/35 bg-primary-container/10 text-primary-container shadow-[0_0_18px_rgba(244,168,79,0.14)]">
-          {canRedeem ? <Gift className="size-8" /> : <Lock className="size-8" />}
+        <div className="flex size-11 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
+          {canRedeem ? <Gift className="size-5" /> : <Lock className="size-5" />}
         </div>
 
-        <div className="space-y-4 grow">
-          <h3 className="font-serif text-3xl font-semibold uppercase tracking-[0.01em] text-on-surface leading-tight">
+        <div className="grow space-y-3">
+          <h3 className="text-xl font-semibold leading-tight text-[var(--foreground)]">
             {t(reward.title)}
           </h3>
-          <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
+          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
             {t(reward.description)}
           </p>
         </div>
 
-        {requirePoints && (
-          <div className="space-y-2">
-            <div className="flex justify-between text-[0.65rem] font-black uppercase tracking-widest text-on-surface-variant/75">
-              <span>{t('Qualification Progress')}</span>
-              <span>{qualificationProgress}%</span>
-            </div>
-            <div className="h-2 overflow-hidden bg-primary-container/10">
-              <div
-                className="h-full bg-[linear-gradient(90deg,#7bd8cf,#f4a84f,#d8a23a)] transition-all duration-700 shadow-[0_0_12px_rgba(244,168,79,0.42)]"
-                style={{ width: `${qualificationProgress}%` }}
-              />
-            </div>
-          </div>
-        )}
-
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Points Cost')}</span>
-            <p className="font-serif text-3xl font-bold tracking-tight text-primary-container">
+            <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Points Cost')}</span>
+            <p className="text-2xl font-semibold text-[var(--tenant-accent)]">
               {formatPoints(reward.pointsCost)}
             </p>
             {!canRedeem && hasInventory && requirePoints ? (
-              <p className="text-xs font-bold text-secondary">{formatPoints(pointsRemaining)} {t('points needed')}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">{formatPoints(pointsRemaining)} {t('points needed')}</p>
             ) : null}
           </div>
 
           <div className="flex flex-col items-end gap-3">
-            <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
+            <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {reward.inventory} {t('left')}
             </span>
             <Button
               onClick={() => onRedeem(reward)}
               disabled={!canRedeem}
-              variant={canRedeem ? 'secondary' : 'outline'}
+              variant={canRedeem ? 'tenant' : 'outline'}
               size="sm"
             >
               {canRedeem ? <CheckCircle className="size-4" /> : null}
@@ -121,7 +85,6 @@ export function RewardCard({
             </Button>
           </div>
         </div>
-      </div>
     </div>
   )
 }

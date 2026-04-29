@@ -51,36 +51,36 @@ export function RewardsPage() {
 
   return (
     <div className="space-y-16 pb-20">
-      <div className="flex flex-col gap-10 border-b border-primary-container/15 pb-12 lg:flex-row lg:items-end lg:justify-between">
+      <div className="flex flex-col gap-8 border-b border-[var(--border)] pb-10 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4 max-w-2xl">
-          <Badge variant="accent">
+          <Badge>
             {t('Rewards Catalog')}
           </Badge>
-          <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
+          <h1 className="text-3xl font-semibold text-[var(--foreground)]">
             {t('Rewards Marketplace')}
           </h1>
-          <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
             {t('Use points for perks, reward credits, and offers from participating businesses.')}
           </p>
         </div>
 
         {profile && (
           <div className="flex flex-col items-start gap-4 lg:items-end">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Your Points')}</span>
-            <div className="glass-panel flex items-center gap-4 px-6 py-4">
-              <div className="flex size-10 items-center justify-center rounded border border-secondary-container/40 bg-secondary-container/10">
-                <Gift className="size-5 text-secondary-container" />
+            <span className="text-sm font-medium text-[var(--muted-foreground)]">{t('Your Points')}</span>
+            <div className="flex items-center gap-4 rounded-xl border border-[var(--border)] bg-white px-6 py-4 shadow-sm">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-[var(--muted)]">
+                <Gift className="size-5 text-[var(--foreground)]" />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif text-2xl font-bold leading-none text-primary-container">{balancePoints}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Available Points')}</span>
+                <span className="text-2xl font-semibold leading-none text-[var(--foreground)]">{balancePoints}</span>
+                <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Available Points')}</span>
               </div>
             </div>
           </div>
         )}
       </div>
 
-      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-primary-container/15 bg-[#120d0b]/82 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
+      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-[var(--border)] bg-[var(--background)] px-5 py-4 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (
           <BusinessFilter
             businesses={businesses.data ?? []}
@@ -89,7 +89,7 @@ export function RewardsPage() {
           />
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 quest-kicker">{t('Item Type:')}</span>
+          <span className="mr-2 text-sm font-medium text-[var(--muted-foreground)]">{t('Item Type:')}</span>
           {filters.map((filter) => (
             <Button
               key={filter}
@@ -98,7 +98,7 @@ export function RewardsPage() {
               className={`rounded-full transition-all ${
                 activeFilter === filter
                   ? 'px-8'
-                  : 'text-on-surface-variant/85 hover:text-primary-container'
+                  : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
               }`}
               onClick={() => setActiveFilter(filter)}
             >

@@ -44,7 +44,7 @@ export function AppShell() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto flex min-h-screen w-full max-w-[1480px] flex-col px-4 py-4 md:px-6 lg:flex-row lg:gap-6 lg:px-8">
-        <aside className="rounded-[2rem] border border-border/80 bg-background/80 p-5 shadow-panel backdrop-blur-sm lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:w-[290px] lg:self-start">
+        <aside className="rounded-[2rem] border border-border/80 bg-background/80 p-5 shadow-panel  lg:sticky lg:top-4 lg:h-[calc(100vh-2rem)] lg:w-[290px] lg:self-start">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
@@ -107,7 +107,7 @@ export function AppShell() {
         </aside>
 
         <div className="mt-4 flex-1 lg:mt-0">
-          <header className="mb-6 flex items-center justify-between rounded-[2rem] border border-border/80 bg-background/70 px-5 py-4 shadow-panel backdrop-blur-sm">
+          <header className="mb-6 flex items-center justify-between rounded-[2rem] border border-border/80 bg-background/70 px-5 py-4 shadow-panel ">
             <div>
               <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
                 Warm, premium member experience

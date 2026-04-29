@@ -17,8 +17,8 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
   const displayCategory = product.category === 'Coffee' ? 'Drinks' : product.category
 
   return (
-    <div className="group glass-panel relative overflow-hidden p-1 transition-all duration-300 hover:-translate-y-1 hover:border-primary-container/45 hover:shadow-[0_0_30px_rgba(244,168,79,0.15)]">
-      <div className="hud-scanline" />
+    <div className="group rounded-xl border border-[var(--border)] bg-white shadow-sm relative overflow-hidden p-1 transition-all duration-300 hover:-translate-y-1 hover:border-primary-container/45 hover:shadow-sm">
+      <div className="hidden" />
       <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(135deg,rgba(123,216,207,0.12),rgba(244,168,79,0.16),rgba(216,162,58,0.1))]" />
       <div className="relative flex h-full flex-col gap-6 rounded-md bg-[#17100d]/82 p-7">
         <div className="flex justify-between items-start">
@@ -33,7 +33,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
           )}
         </div>
 
-        <div className="flex size-16 items-center justify-center rounded border border-primary-container/35 bg-primary-container/10 text-primary-container shadow-[0_0_18px_rgba(244,168,79,0.14)]">
+        <div className="flex size-16 items-center justify-center rounded border border-primary-container/35 bg-primary-container/10 text-primary-container shadow-sm">
           <PackagePlus className="size-8" />
         </div>
 
@@ -48,7 +48,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
 
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
-            <span className="quest-kicker">{t('Cash Price')}</span>
+            <span className="text-sm font-medium text-[var(--muted-foreground)]">{t('Cash Price')}</span>
             <p className="font-serif text-3xl font-bold tracking-tight text-primary-container">
               {formatCurrency(product.price)}
             </p>

@@ -44,6 +44,19 @@ export const rewardDraftSchema = z.object({
 
 export type RewardDraftFormValues = z.infer<typeof rewardDraftSchema>
 
+export const giftCardCatalogItemSchema = z.object({
+  businessId: z.string().min(1, 'Select a business'),
+  title: z.string().trim().min(2, 'Enter a gift card title'),
+  description: z.string().trim().min(8, 'Add a short description'),
+  imageUrl: z.union([z.literal(''), z.url('Enter a valid image URL')]).optional(),
+  pointsCost: z.number().int().min(1, 'Set a points cost'),
+  valueLabel: z.string().trim().min(1, 'Add a value label'),
+  expiryDays: z.number().int().min(1, 'Expiry must be at least 1 day').max(365, 'Maximum 365 days'),
+  isActive: z.boolean(),
+})
+
+export type GiftCardCatalogItemFormValues = z.infer<typeof giftCardCatalogItemSchema>
+
 export const promotionDraftSchema = z.object({
   title: z.string().min(2, 'Enter a promotion title'),
   description: z.string().min(8, 'Add a short description'),

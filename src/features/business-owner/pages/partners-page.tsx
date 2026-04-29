@@ -134,8 +134,8 @@ export function PartnersPage() {
           ['Credits Redeemed', redeemedCredits],
           ['Outstanding Credits', outstandingCredits],
         ].map(([label, value]) => (
-          <div key={label} className="quest-panel rounded-[2rem] p-5">
-            <p className="quest-kicker">{label}</p>
+          <div key={label} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-5">
+            <p className="text-sm font-medium text-[var(--muted-foreground)]">{label}</p>
             <p className="mt-3 font-serif text-4xl text-primary">{value}</p>
           </div>
         ))}
@@ -150,7 +150,7 @@ export function PartnersPage() {
             <h2 className="font-serif text-3xl text-primary">Add Receptionist Code</h2>
           </div>
 
-          <div className="quest-panel-dark rounded-[2rem] p-8">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8">
             <form
               className="space-y-5"
               onSubmit={form.handleSubmit(async (values) => {
@@ -205,7 +205,7 @@ export function PartnersPage() {
             </form>
           </div>
 
-          <div className="quest-panel rounded-[2rem] p-6">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-6">
               <div className="flex items-start gap-4">
                 <div className="flex size-12 items-center justify-center rounded-2xl border border-primary-container/25 bg-primary-container/10 text-primary-container">
                   <Gift className="size-5" />
@@ -238,7 +238,7 @@ export function PartnersPage() {
                     : ''
 
                 return (
-                  <div key={referrer.id} className="quest-panel rounded-[2rem] p-6">
+                  <div key={referrer.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-6">
                     <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                       <div className="flex items-start gap-5">
                         <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-2xl text-white shadow-lg">
@@ -303,7 +303,7 @@ export function PartnersPage() {
               })}
             </div>
           ) : (
-            <div className="quest-panel rounded-[2rem] p-16 text-center">
+            <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-16 text-center">
               <Hotel className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
               <h3 className="mb-2 font-serif text-2xl text-primary">No referral sources yet</h3>
               <p className="text-on-surface-variant/80">Create your first referral source link to start tracking referred purchases.</p>
@@ -333,7 +333,7 @@ export function PartnersPage() {
             </div>
           </div>
 
-          <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
             {recentReferrals.length ? (
               recentReferrals.map((referral) => (
                 <div key={referral.id} className="flex flex-col gap-4 p-6">
@@ -384,7 +384,7 @@ export function PartnersPage() {
             </div>
           </div>
 
-          <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
             {unreedeemedCredits.length ? (
               unreedeemedCredits.map((entry) => {
                 const referral = referrals.data?.find((item) => item.id === entry.partnerReferralId)

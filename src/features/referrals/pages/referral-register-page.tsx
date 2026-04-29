@@ -107,7 +107,7 @@ export function ReferralRegisterPage() {
         </section>
 
         <section className="flex items-center">
-          <div className="w-full quest-panel p-8 md:p-10">
+          <div className="w-full rounded-xl border border-[var(--border)] bg-white shadow-sm p-8 md:p-10">
             {signUpComplete ? (
               <div className="space-y-8 text-center">
                 <div className="space-y-3">

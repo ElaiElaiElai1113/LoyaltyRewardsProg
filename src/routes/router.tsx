@@ -9,6 +9,13 @@ import { ProfilePage } from '@/features/profile/pages/profile-page'
 import { PromotionsPage } from '@/features/promotions/pages/promotions-page'
 import { PromoPage } from '@/features/referrals/pages/promo-page'
 import { ReferralRegisterPage } from '@/features/referrals/pages/referral-register-page'
+import { AdminGiftCardsPage } from '@/features/gift-cards/pages/admin-gift-cards-page'
+import { BusinessGiftCardsPage } from '@/features/gift-cards/pages/business-gift-cards-page'
+import { GiftCardDetailPage } from '@/features/gift-cards/pages/gift-card-detail-page'
+import { GiftCardsPage } from '@/features/gift-cards/pages/gift-cards-page'
+import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card-page'
+import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
+import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
 import { RewardsPage } from '@/features/rewards/pages/rewards-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
@@ -181,6 +188,12 @@ const router = createBrowserRouter([
     element: <ReferralRegisterPage />,
   },
   {
+    element: <PublicBrowseLayout />,
+    children: [
+      { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
+    ],
+  },
+  {
     element: <PublicOrCustomerRoute />,
     children: [
       { path: '/shop', element: <ShopPage /> },
@@ -193,6 +206,9 @@ const router = createBrowserRouter([
     element: <ProtectedCustomerRoute />,
     children: [
       { path: '/dashboard', element: <DashboardPage /> },
+      { path: '/gift-cards', element: <GiftCardsPage /> },
+      { path: '/wallet/gift-cards', element: <WalletGiftCardsPage /> },
+      { path: '/wallet/gift-cards/:id', element: <GiftCardDetailPage /> },
       { path: '/cart', element: <CartPage /> },
       { path: '/checkout', element: <CheckoutPage /> },
       { path: '/order-confirmation', element: <OrderConfirmationPage /> },
@@ -206,6 +222,7 @@ const router = createBrowserRouter([
     element: <ProtectedAdminRoute />,
     children: [
       { path: '/admin', element: <AdminPage /> },
+      { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
     ],
   },
   {
@@ -214,6 +231,8 @@ const router = createBrowserRouter([
       { path: '/business/dashboard', element: <BusinessDashboardPage /> },
       { path: '/business/products', element: <ProductsPage /> },
       { path: '/business/rewards', element: <BusinessRewardsPage /> },
+      { path: '/business/gift-cards', element: <BusinessGiftCardsPage /> },
+      { path: '/business/redemptions', element: <RedemptionsPage /> },
       { path: '/business/promotions', element: <BusinessPromotionsPage /> },
       { path: '/business/members', element: <MembersPage /> },
       { path: '/business/partners', element: <PartnersPage /> },

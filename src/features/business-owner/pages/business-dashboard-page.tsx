@@ -89,7 +89,7 @@ export function BusinessDashboardPage() {
       <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#18215a,#283593_50%,#c026d3)] px-8 py-12 text-white shadow-2xl">
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
-          <p className="quest-kicker-light mb-3">{t('Business Overview')}</p>
+          <p className="text-sm font-medium text-[var(--muted-foreground)] mb-3">{t('Business Overview')}</p>
           <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">
             {business?.name} {t('Command Center')}
           </h1>
@@ -153,7 +153,7 @@ export function BusinessDashboardPage() {
 
       {/* Points Overview */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="quest-panel p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
               <h3 className="font-serif text-2xl text-primary">{t('Points Issued')}</h3>
@@ -166,7 +166,7 @@ export function BusinessDashboardPage() {
           <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
         </div>
 
-        <div className="quest-panel p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
               <h3 className="font-serif text-2xl text-primary">{t('Points Redeemed')}</h3>
@@ -253,7 +253,7 @@ export function BusinessDashboardPage() {
 
       {/* Signup Portal */}
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="quest-panel p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="space-y-2">
               <h2 className="font-serif text-2xl text-primary">{t('Signup Portal')}</h2>
@@ -292,7 +292,7 @@ export function BusinessDashboardPage() {
           </div>
         </div>
 
-        <div className="quest-panel p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
           <div ref={signupQrRef} className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
             {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
           </div>
@@ -321,7 +321,7 @@ export function BusinessDashboardPage() {
         </div>
 
         <form
-          className="quest-panel p-6"
+          className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-6"
           onSubmit={(event: FormEvent<HTMLFormElement>) => {
             event.preventDefault()
             if (!business?.id || redemptionCode.length !== 6) return
@@ -368,7 +368,7 @@ export function BusinessDashboardPage() {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
-          <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
             {(partnerPerformance.data ?? []).slice(0, 4).map((entry) => (
               <div key={entry.partnerReferrerId} className="flex items-center justify-between p-5">
                 <div>
@@ -387,7 +387,7 @@ export function BusinessDashboardPage() {
             ) : null}
           </div>
 
-          <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
           {partnerReferrals.isLoading ? (
             <div className="p-12 text-center">
               <p className="text-on-surface-variant/60 font-medium">Loading partner referrals...</p>
@@ -437,7 +437,7 @@ export function BusinessDashboardPage() {
           </Link>
         </div>
 
-        <div className="quest-panel divide-y divide-outline-variant/10 overflow-hidden">
+        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
           {redemptions.length === 0 ? (
             <div className="p-12 text-center">
               <p className="text-on-surface-variant/60 font-medium">{t('No redemptions yet.')}</p>

@@ -1,5 +1,6 @@
 import {
   Gift,
+  CreditCard,
   Hotel,
   LayoutDashboard,
   LogOut,
@@ -23,6 +24,8 @@ const navigation = [
   { to: '/business/dashboard', label: 'Business Overview', icon: LayoutDashboard },
   { to: '/business/products', label: 'Products', icon: Package },
   { to: '/business/rewards', label: 'Rewards', icon: Gift },
+  { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard, ownerOnly: true },
+  { to: '/business/redemptions', label: 'Redemptions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
   { to: '/business/partners', label: 'Partners', icon: Hotel },
@@ -36,13 +39,13 @@ export function BusinessOwnerLayout() {
 
   if (isBusinessLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-surface">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
         <div className="absolute right-6 top-6">
-          <LanguagePicker className="text-on-surface-variant" />
+          <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
         <div className="text-center space-y-3">
-          <h1 className="font-serif text-3xl text-primary-container">{t('Loading workspace')}</h1>
-          <p className="text-on-surface-variant/80">{t('Fetching your business portal data.')}</p>
+          <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t('Loading workspace')}</h1>
+          <p className="text-[var(--muted-foreground)]">{t('Fetching your business portal data.')}</p>
         </div>
       </div>
     )
@@ -50,13 +53,13 @@ export function BusinessOwnerLayout() {
 
   if (profile?.role !== 'business-owner' && profile?.role !== 'business-staff') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-surface">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
         <div className="absolute right-6 top-6">
-          <LanguagePicker className="text-on-surface-variant" />
+          <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
         <div className="text-center space-y-4">
-          <h1 className="font-serif text-3xl text-primary-container">{t('Access Denied')}</h1>
-          <p className="text-on-surface-variant/80">{t('This area is for business owners only.')}</p>
+          <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t('Access Denied')}</h1>
+          <p className="text-[var(--muted-foreground)]">{t('This area is for business owners only.')}</p>
           <Button onClick={() => (window.location.href = '/dashboard')}>{t('Return Home')}</Button>
         </div>
       </div>
@@ -65,13 +68,13 @@ export function BusinessOwnerLayout() {
 
   if (!business) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-surface">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
         <div className="absolute right-6 top-6">
-          <LanguagePicker className="text-on-surface-variant" />
+          <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
         <div className="text-center space-y-4">
-          <h1 className="font-serif text-3xl text-primary-container">{t('Business Setup Required')}</h1>
-          <p className="text-on-surface-variant/80">
+          <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t('Business Setup Required')}</h1>
+          <p className="text-[var(--muted-foreground)]">
             {error instanceof Error
               ? error.message
               : t('This account does not have a business assigned yet.')}
@@ -84,15 +87,15 @@ export function BusinessOwnerLayout() {
 
   return (
     <div className="flex min-h-screen bg-transparent">
-      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-primary-container/20 bg-[#120d0b]/85 px-5 py-7 text-white shadow-[5px_0_24px_rgba(8,5,3,0.45)] backdrop-blur-2xl">
+      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-[var(--border)] bg-white px-5 py-7">
         {/* Business Logo/Identity */}
         <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded border border-primary-container/50 bg-primary-container/10 text-primary-container shadow-[0_0_18px_rgba(244,168,79,0.16)]">
+          <div className="flex size-12 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)]">
             <Package className="size-6" />
           </div>
           <div className="flex flex-col overflow-hidden">
-            <span className="truncate font-serif text-xl font-black uppercase tracking-[0.1em] text-primary-container">{business.name}</span>
-            <span className="text-[0.6rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant">
+            <span className="truncate text-lg font-semibold text-[var(--foreground)]">{business.name}</span>
+            <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {t('Business Overview')}
             </span>
           </div>
@@ -100,15 +103,17 @@ export function BusinessOwnerLayout() {
 
         {/* Navigation */}
         <nav className="mt-14 flex-1 space-y-2">
-          {navigation.map((item) => (
+          {navigation
+            .filter((item) => !item.ownerOnly || profile?.role === 'business-owner')
+            .map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `group flex items-center justify-between rounded px-5 py-3.5 text-xs font-black uppercase tracking-[0.14em] transition-all ${
+                `group flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'border-r-4 border-primary-container bg-primary-container/10 text-primary-container shadow-[inset_-10px_0_20px_rgba(244,168,79,0.08)]'
-                    : 'text-on-surface-variant/70 hover:bg-primary-container/5 hover:text-primary-container'
+                    ? 'bg-[var(--muted)] text-[var(--foreground)]'
+                    : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                 }`
               }
             >
@@ -122,17 +127,17 @@ export function BusinessOwnerLayout() {
 
         {/* User Section */}
         <div className="mt-auto">
-          <Separator className="bg-outline-variant/10" />
+          <Separator className="bg-[var(--border)]" />
 
           <div className="mt-8 flex items-center gap-4 px-2">
-            <Avatar className="size-12 rounded border border-primary-container/40 ring-2 ring-primary-container/10">
-              <AvatarFallback className="rounded bg-surface-highest text-primary-container font-semibold">
+            <Avatar className="size-12 rounded-lg border border-[var(--border)]">
+              <AvatarFallback className="rounded-lg bg-[var(--muted)] text-[var(--foreground)] font-semibold">
                 {getInitials(profile?.fullName ?? 'BO')}
               </AvatarFallback>
             </Avatar>
             <div className="flex flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-white">{profile?.fullName}</span>
-              <span className="text-xs text-on-surface-variant/70">
+              <span className="truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
+              <span className="text-xs text-[var(--muted-foreground)]">
                 {profile?.role === 'business-owner' ? t('Business Owner') : 'Business Staff'}
               </span>
             </div>
@@ -141,18 +146,18 @@ export function BusinessOwnerLayout() {
           <div className="mt-6 flex flex-col gap-2">
             <LanguagePicker
               compact
-              className="mb-2 w-full justify-between rounded border border-primary-container/15 bg-primary-container/5 px-3 py-2 text-on-surface-variant"
+              className="mb-2 w-full justify-between rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-[var(--muted-foreground)]"
             />
             <Button
               variant="ghost"
-              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container"
+              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
             >
               <Settings className="size-5" />
               {t('Account Settings')}
             </Button>
             <Button
               variant="ghost"
-              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-error"
+              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--destructive)]"
               onClick={() => void signOut()}
             >
               <LogOut className="size-5" />

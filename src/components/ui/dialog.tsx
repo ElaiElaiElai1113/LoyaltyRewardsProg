@@ -14,7 +14,7 @@ function DialogOverlay({
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
     <DialogPrimitive.Overlay
-      className={cn('fixed inset-0 z-50 bg-black/35 backdrop-blur-[2px]', className)}
+      className={cn('fixed inset-0 z-50 bg-black/35 ', className)}
       {...props}
     />
   )
@@ -27,7 +27,7 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
   return (
     <DialogPortal>
-      <DialogOverlay className="bg-primary/20 backdrop-blur-sm" />
+      <DialogOverlay className="bg-primary/20 " />
       <DialogPrimitive.Content
         className={cn(
           'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-surface-lowest p-10 shadow-card outline-none border border-outline-variant/5',

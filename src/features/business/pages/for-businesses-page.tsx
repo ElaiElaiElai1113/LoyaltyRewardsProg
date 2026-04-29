@@ -92,10 +92,10 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <div className="quest-panel-dark overflow-hidden rounded-[2rem] p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm overflow-hidden rounded-[2rem] p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <p className="quest-kicker">Business Command Center</p>
+              <p className="text-sm font-medium text-[var(--muted-foreground)]">Business Command Center</p>
               <h2 className="mt-2 font-serif text-3xl text-primary-container">What owners can manage</h2>
             </div>
             <ShieldCheck className="size-10 text-secondary-container" />
@@ -128,10 +128,10 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <form id="book-demo" className="quest-panel rounded-[2rem] p-8" onSubmit={handleSubmit}>
+        <form id="book-demo" className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8" onSubmit={handleSubmit}>
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
-              <p className="quest-kicker">Book Demo</p>
+              <p className="text-sm font-medium text-[var(--muted-foreground)]">Book Demo</p>
               <h2 className="mt-2 font-serif text-3xl text-primary">See the business portal</h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-on-surface-variant/75">
                 This demo request is saved on this device for now. No payment or backend lead submission is connected.

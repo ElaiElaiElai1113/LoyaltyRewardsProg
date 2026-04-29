@@ -13,11 +13,11 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-2 quest-kicker">{t('Business:')}</span>
+      <span className="mr-2 text-sm font-medium text-[var(--muted-foreground)]">{t('Business:')}</span>
       <Button
         variant={selected === null ? 'tertiary' : 'ghost'}
         size="sm"
-        className={`transition-all ${selected === null ? 'px-8' : 'text-on-surface-variant/85 hover:text-primary-container'}`}
+        className={selected === null ? 'px-8' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
         onClick={() => onChange(null)}
       >
         {t('All Businesses')}
@@ -27,7 +27,7 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
           key={business.id}
           variant={selected === business.id ? 'tertiary' : 'ghost'}
           size="sm"
-          className={`transition-all ${selected === business.id ? 'px-8' : 'text-on-surface-variant/85 hover:text-primary-container'}`}
+          className={selected === business.id ? 'px-8' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
           onClick={() => onChange(business.id)}
         >
           {business.name}

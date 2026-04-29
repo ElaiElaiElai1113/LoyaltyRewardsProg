@@ -199,7 +199,7 @@ export function RewardsPage() {
       {/* Rewards Grid */}
       <div className="grid gap-8 sm:grid-cols-2">
         {rewards.length === 0 ? (
-          <div className="quest-panel col-span-full rounded-[2rem] p-16 text-center">
+          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm col-span-full rounded-[2rem] p-16 text-center">
             <Gift className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
             <h3 className="font-serif text-2xl text-primary mb-2">{t('No rewards yet')}</h3>
             <p className="mb-8 text-on-surface-variant/80">{t('Create your first redeemable reward for members.')}</p>
@@ -212,7 +212,7 @@ export function RewardsPage() {
           rewards.map((reward) => (
             <div
               key={reward.id}
-              className="quest-panel group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.28)]"
+              className="rounded-xl border border-[var(--border)] bg-white shadow-sm group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-sm"
             >
               <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(135deg,rgba(123,216,207,0.10),rgba(244,168,79,0.14),rgba(216,162,58,0.08))]" />
               <div className="flex flex-col gap-6 h-full">

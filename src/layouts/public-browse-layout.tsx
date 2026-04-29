@@ -16,7 +16,7 @@ export function PublicBrowseLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-primary-container/20 bg-[#120d0b]/82 text-white shadow-card backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-primary-container/20 bg-[#120d0b]/82 text-white shadow-card ">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-12">
             <NavLink to="/" className="flex items-center gap-3">
@@ -37,7 +37,7 @@ export function PublicBrowseLayout() {
                   className={({ isActive }) =>
                     `text-xs font-bold uppercase tracking-[0.14em] transition-all ${
                       isActive
-                        ? 'text-primary-container drop-shadow-[0_0_8px_rgba(244,168,79,0.65)]'
+                        ? 'text-primary-container drop-shadow-sm'
                         : 'text-on-surface-variant/70 hover:text-primary-container'
                     }`
                   }

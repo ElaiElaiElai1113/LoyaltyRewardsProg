@@ -190,6 +190,66 @@ export interface Order {
   createdAt: string
 }
 
+export type GiftCardStatus = 'active' | 'redeemed' | 'expired' | 'cancelled'
+
+export interface GiftCardCatalogItem {
+  id: string
+  businessId: string
+  title: string
+  description: string
+  imageUrl: string | null
+  pointsCost: number
+  valueLabel: string
+  expiryDays: number
+  isActive: boolean
+  createdBy: string | null
+  createdAt: string
+  updatedAt: string
+  business?: Pick<Business, 'id' | 'name' | 'logoUrl'>
+}
+
+export interface GiftCard {
+  id: string
+  catalogId: string | null
+  businessId: string
+  customerId: string
+  issuedBy: string | null
+  code: string
+  publicToken: string
+  status: GiftCardStatus
+  pointsSpent: number
+  expiresAt: string
+  redeemedAt: string | null
+  redeemedBy: string | null
+  redeemedAtBusiness: string | null
+  createdAt: string
+  updatedAt: string
+  catalog?: Pick<GiftCardCatalogItem, 'id' | 'title' | 'description' | 'valueLabel' | 'imageUrl'>
+  business?: Pick<Business, 'id' | 'name' | 'logoUrl'>
+  customerFirstName?: string
+}
+
+export interface PublicGiftCard extends GiftCard {
+  businessName: string
+  businessLogoUrl: string | null
+  businessPrimaryColor: string
+  businessAccentColor: string
+  customerFirstName: string
+  title: string
+  description: string
+  valueLabel: string
+  imageUrl: string | null
+}
+
+export interface GiftCardEvent {
+  id: string
+  giftCardId: string
+  eventType: string
+  actorId: string | null
+  metadata: Record<string, unknown>
+  createdAt: string
+}
+
 export interface OrderForVerification {
   id: string
   profileId: string
@@ -216,7 +276,7 @@ export interface Promotion {
 export interface Activity {
   id: string
   profileId: string
-  type: 'earned' | 'redeemed' | 'bonus' | 'adjustment'
+  type: 'earned' | 'redeemed' | 'bonus' | 'adjustment' | 'gift_card_issued' | 'gift_card_redeemed'
   title: string
   description: string
   points: number

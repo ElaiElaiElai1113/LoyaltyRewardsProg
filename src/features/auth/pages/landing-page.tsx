@@ -102,7 +102,7 @@ export function LandingPage() {
         <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-primary-container/20 bg-[#120d0b] px-8 py-10 text-on-surface shadow-card md:px-12 lg:px-14">
           <div className="absolute inset-0 bg-[linear-gradient(rgba(244,168,79,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(244,168,79,0.045)_1px,transparent_1px)] bg-[length:40px_40px]" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(244,168,79,0.22),transparent_28rem),radial-gradient(circle_at_86%_18%,rgba(123,216,207,0.12),transparent_24rem),linear-gradient(145deg,rgba(244,168,79,0.08),transparent_45%)]" />
-          <div className="hud-scanline" />
+          <div className="hidden" />
 
           <div className="relative z-10 space-y-8">
             <Badge variant="accent" className="border-primary-container/35 bg-primary-container/12 px-5 py-2 text-primary-container">
@@ -120,13 +120,13 @@ export function LandingPage() {
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/shop"
-                  className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-[0_0_20px_rgba(244,168,79,0.18)] transition hover:bg-primary-fixed"
+                  className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-sm transition hover:bg-primary-fixed"
                 >
                   {t('Explore Businesses')}
                 </Link>
                 <Link
                   to="/for-businesses#book-demo"
-                  className="inline-flex h-11 items-center gap-2 rounded border border-secondary-container bg-secondary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-[#2d1a06] shadow-[0_0_20px_rgba(216,162,58,0.18)] transition hover:bg-secondary-fixed"
+                  className="inline-flex h-11 items-center gap-2 rounded border border-secondary-container bg-secondary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-[#2d1a06] shadow-sm transition hover:bg-secondary-fixed"
                 >
                   <Building2 className="size-4" />
                   {t('Book Demo')}
@@ -160,7 +160,7 @@ export function LandingPage() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="group rounded-lg border border-primary-container/15 bg-[#1a120e]/72 p-4 backdrop-blur transition-all hover:border-primary-container/35 hover:bg-[#211713]/80"
+                  className="group rounded-lg border border-primary-container/15 bg-[#1a120e]/72 p-4  transition-all hover:border-primary-container/35 hover:bg-[#211713]/80"
                 >
                   <div className="mb-5 flex size-10 items-center justify-center rounded border border-secondary-container/35 bg-secondary-container/10 text-secondary-container transition-all group-hover:bg-secondary-container/15">
                     <item.icon className="size-5" />

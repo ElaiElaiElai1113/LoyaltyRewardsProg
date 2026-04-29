@@ -49,7 +49,7 @@ export function ShopPage() {
         </p>
       </div>
 
-      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-primary-container/15 bg-[#120d0b]/82 px-5 py-4 backdrop-blur-xl md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
+      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-primary-container/15 bg-[#120d0b]/82 px-5 py-4  md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (
           <BusinessFilter
             businesses={businesses.data ?? []}
@@ -58,14 +58,14 @@ export function ShopPage() {
           />
         )}
         <div className="flex flex-wrap items-center gap-3">
-          <span className="mr-2 quest-kicker">{t('Item Type:')}</span>
+          <span className="mr-2 text-sm font-medium text-[var(--muted-foreground)]">{t('Item Type:')}</span>
           {categories.map((cat) => (
             <button
               key={cat.value}
               onClick={() => setSelectedCategory(cat.value)}
               className={`rounded-full px-5 py-2 text-sm font-semibold transition-all ${
                 selectedCategory === cat.value
-                  ? 'bg-secondary-container text-[#2d1a06] shadow-[0_0_16px_rgba(216,162,58,0.16)]'
+                  ? 'bg-secondary-container text-[#2d1a06] shadow-sm'
                   : 'border border-primary-container/20 bg-primary-container/5 text-on-surface-variant/85 hover:bg-primary-container/10 hover:text-primary-container'
               }`}
             >

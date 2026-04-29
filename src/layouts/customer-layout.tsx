@@ -1,5 +1,6 @@
 import {
   Activity,
+  CreditCard,
   Gift,
   LayoutDashboard,
   LogOut,
@@ -21,6 +22,7 @@ const navigation = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/shop', label: 'Shop', icon: ShoppingBag },
   { to: '/rewards', label: 'Rewards', icon: Gift },
+  { to: '/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/promotions', label: 'Promotions', icon: Megaphone },
   { to: '/activity', label: 'History', icon: Activity },
   { to: '/profile', label: 'Profile', icon: UserRound },
@@ -34,15 +36,15 @@ export function CustomerLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent md:pl-64">
-      <header className="sticky top-0 z-50 border-b border-primary-container/25 bg-[#120d0b]/82 text-white shadow-[0_0_20px_rgba(8,5,3,0.45)] backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-6">
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex items-center gap-3">
-              <span className="font-serif text-2xl font-black italic uppercase tracking-[0.2em] text-primary-container">
+              <span className="text-xl font-semibold text-[var(--foreground)]">
                 Medellin Rewards
               </span>
-              <span className="hidden h-6 w-px bg-primary-container/25 md:block" />
-              <span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant md:block">
+              <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
+              <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
                 Rewards Network
               </span>
             </NavLink>
@@ -53,10 +55,10 @@ export function CustomerLayout() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `text-xs font-bold uppercase tracking-[0.14em] transition-all ${
+                    `text-sm font-medium transition-colors ${
                       isActive
-                        ? 'text-primary-container drop-shadow-[0_0_8px_rgba(244,168,79,0.7)]'
-                        : 'text-on-surface-variant/70 hover:text-primary-container'
+                        ? 'text-[var(--foreground)]'
+                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     }`
                   }
                 >
@@ -68,23 +70,23 @@ export function CustomerLayout() {
 
           <div className="flex items-center gap-6">
             <div className="hidden flex-col items-end md:flex">
-              <span className="text-sm font-semibold uppercase tracking-[0.08em] text-white">{profile?.fullName}</span>
-              <span className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-secondary-container">{t('Member')}</span>
+              <span className="text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
+              <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Member')}</span>
             </div>
 
             <div className="flex items-center gap-4">
-              <LanguagePicker className="text-on-surface-variant" compact />
-              <NavLink to="/cart" className="relative rounded p-2 text-on-surface-variant transition-all hover:bg-primary-container/10 hover:text-primary-container">
+              <LanguagePicker className="text-[var(--muted-foreground)]" compact />
+              <NavLink to="/cart" className="relative rounded-lg p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
                 <ShoppingBag className="size-5" />
                 {cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-secondary-container text-[0.6rem] font-bold text-[#241a00]">
+                  <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-[var(--primary)] text-[0.6rem] font-bold text-[var(--primary-foreground)]">
                     {cartCount}
                   </span>
                 )}
               </NavLink>
 
-              <Avatar className="size-10 rounded border border-primary-container/50 ring-2 ring-primary-container/10">
-                <AvatarFallback className="rounded bg-surface-highest font-black text-primary-container">
+              <Avatar className="size-10 rounded-lg border border-[var(--border)]">
+                <AvatarFallback className="rounded-lg bg-[var(--muted)] font-semibold text-[var(--foreground)]">
                   {getInitials(profile?.fullName ?? 'CC')}
                 </AvatarFallback>
               </Avatar>
@@ -92,7 +94,7 @@ export function CustomerLayout() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-on-surface-variant hover:bg-primary-container/10 hover:text-primary-container"
+                className="text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                 onClick={() => void signOut()}
               >
                 <LogOut className="size-5" />
@@ -102,10 +104,10 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100vh-64px)] w-64 flex-col border-r border-primary-container/20 bg-[#120d0b]/82 py-8 text-white shadow-[5px_0_24px_rgba(8,5,3,0.45)] backdrop-blur-2xl md:flex">
+      <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100vh-64px)] w-64 flex-col border-r border-[var(--border)] bg-white py-8 md:flex">
         <div className="px-6 pb-8">
-          <p className="text-[0.65rem] font-black uppercase tracking-[0.18em] text-primary-container">{t('Network Member')}</p>
-          <p className="mt-1 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Rewards account')}</p>
+          <p className="text-sm font-semibold text-[var(--foreground)]">{t('Network Member')}</p>
+          <p className="mt-1 text-xs font-medium text-[var(--muted-foreground)]">{t('Rewards account')}</p>
         </div>
 
         <nav className="flex flex-1 flex-col gap-2">
@@ -114,10 +116,10 @@ export function CustomerLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `flex items-center gap-4 px-6 py-4 text-xs font-black uppercase tracking-[0.16em] transition-all ${
+                `mx-3 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
                   isActive
-                    ? 'border-r-4 border-primary-container bg-primary-container/10 text-primary-container shadow-[inset_-10px_0_20px_rgba(244,168,79,0.08)]'
-                    : 'text-on-surface-variant/65 hover:bg-primary-container/5 hover:text-primary-container'
+                    ? 'bg-[var(--muted)] text-[var(--foreground)]'
+                    : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                 }`
               }
             >
@@ -132,49 +134,50 @@ export function CustomerLayout() {
         <Outlet />
       </main>
 
-      <footer className="border-t border-primary-container/15 bg-[#120d0b]/70 py-12 backdrop-blur">
+      <footer className="border-t border-[var(--border)] bg-white py-12">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
-              <span className="font-serif text-xl font-black uppercase tracking-[0.16em] text-primary-container">Medellin Rewards</span>
-              <p className="mt-4 text-sm leading-relaxed text-on-surface-variant/80">
+              <span className="text-lg font-semibold text-[var(--foreground)]">Medellin Rewards</span>
+              <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
                 {t('Earn points, redeem rewards, and stay connected across partner businesses.')}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-12 sm:grid-cols-3">
               <div className="flex flex-col gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-container/90">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/dashboard" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Dashboard')}</NavLink>
-                  <NavLink to="/shop" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Shop')}</NavLink>
-                  <NavLink to="/rewards" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Rewards')}</NavLink>
-                  <NavLink to="/promotions" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Promotions')}</NavLink>
+                  <NavLink to="/dashboard" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Dashboard')}</NavLink>
+                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Shop')}</NavLink>
+                  <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
+                  <NavLink to="/wallet/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink>
+                  <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-container/90">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
                   {t('Company')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <span className="text-sm text-on-surface-variant/80">{t('About Us')}</span>
-                  <span className="text-sm text-on-surface-variant/80">{t('Contact')}</span>
-                  <span className="text-sm text-on-surface-variant/80">{t('Store Locator')}</span>
+                  <span className="text-sm text-[var(--muted-foreground)]">{t('About Us')}</span>
+                  <span className="text-sm text-[var(--muted-foreground)]">{t('Contact')}</span>
+                  <span className="text-sm text-[var(--muted-foreground)]">{t('Store Locator')}</span>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
-                <span className="text-xs font-bold uppercase tracking-widest text-primary-container/90">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
                   {t('Account')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/profile" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Settings')}</NavLink>
-                  <NavLink to="/orders" className="text-sm text-on-surface-variant/80 transition-colors hover:text-primary-container">{t('Order History')}</NavLink>
+                  <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Settings')}</NavLink>
+                  <NavLink to="/orders" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Order History')}</NavLink>
                 </nav>
               </div>
             </div>
           </div>
-          <div className="mt-12 border-t border-outline-variant/10 pt-8 text-center text-xs text-on-surface-variant/70">
+          <div className="mt-12 border-t border-[var(--border)] pt-8 text-center text-xs text-[var(--muted-foreground)]">
           </div>
         </div>
       </footer>

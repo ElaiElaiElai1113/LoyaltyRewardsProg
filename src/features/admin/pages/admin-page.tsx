@@ -338,7 +338,7 @@ export function AdminPage() {
         <div className="relative">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
             <div className="space-y-4 max-w-2xl">
-              <Badge variant="accent" className="bg-white/10 text-white border border-white/20 backdrop-blur-sm">
+              <Badge variant="accent" className="bg-white/10 text-white border border-white/20 ">
                 {t('Operations Portal')}
               </Badge>
               <h1 className="font-serif text-5xl tracking-tight text-white md:text-7xl leading-[1.1]">
@@ -351,7 +351,7 @@ export function AdminPage() {
 
             {/* Enhanced Overview Cards */}
             <div className="grid grid-cols-2 gap-4 lg:gap-6">
-              <div className="rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-5 text-white border border-white/10 flex items-center gap-4">
+              <div className="rounded-2xl bg-white/10  px-6 py-5 text-white border border-white/10 flex items-center gap-4">
                 <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
                   <Users className="size-6" />
                 </div>
@@ -360,7 +360,7 @@ export function AdminPage() {
                   <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Members')}</span>
                 </div>
               </div>
-              <div className="rounded-2xl bg-white/10 backdrop-blur-sm px-6 py-5 text-white border border-white/10 flex items-center gap-4">
+              <div className="rounded-2xl bg-white/10  px-6 py-5 text-white border border-white/10 flex items-center gap-4">
                 <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
                   <Gift className="size-6" />
                 </div>
@@ -375,7 +375,7 @@ export function AdminPage() {
       </div>
 
       <Tabs defaultValue="members" className="space-y-12">
-        <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4 backdrop-blur-md flex justify-center border-b border-outline-variant/10 shadow-sm">
+        <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4  flex justify-center border-b border-outline-variant/10 shadow-sm">
           <TabsList className="w-full max-w-5xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
             <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Members')}</TabsTrigger>
             <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Rewards')}</TabsTrigger>
@@ -395,7 +395,7 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
               </div>
 
-              <div className="quest-panel-dark rounded-[2rem] p-8 space-y-6">
+              <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8 space-y-6">
                 {selectedMember ? (
                   <div className="rounded-[2rem] border border-primary-container/15 bg-[#181210] p-6 shadow-[inset_0_0_0_1px_rgba(244,168,79,0.04)]">
                     <div className="flex items-start gap-4">
@@ -552,10 +552,10 @@ export function AdminPage() {
                 {customerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className={`quest-panel group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
+                    className={`rounded-xl border border-[var(--border)] bg-white shadow-sm group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
                       selectedProfileId === member.id
-                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.34)]'
-                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-[0_0_0_1px_rgba(244,168,79,0.18),0_20px_40px_rgba(8,5,3,0.28)]'
+                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
+                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-sm'
                     }`}
                   >
                     <div className="flex items-center gap-6">
@@ -1195,7 +1195,7 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">Create Business</h2>
               </div>
 
-              <div className="rounded-3xl border border-primary-container/20 bg-[#120d0b]/78 p-8 shadow-card backdrop-blur-xl space-y-6">
+              <div className="rounded-3xl border border-primary-container/20 bg-[#120d0b]/78 p-8 shadow-card  space-y-6">
                 <div className="rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-5">
                   <p className="text-sm font-semibold text-on-surface">Create a business and assign its owner in one flow.</p>
                   <p className="mt-2 text-sm text-on-surface-variant/80">
@@ -1501,7 +1501,7 @@ export function AdminPage() {
 
               <div className="grid gap-4 xl:grid-cols-2">
                 {(allBusinesses.data ?? []).map((business) => (
-                  <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-7 shadow-card backdrop-blur-xl space-y-7">
+                  <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-7 shadow-card  space-y-7">
                     <div className="flex flex-col gap-5">
                       <div className="flex flex-col gap-5">
                         <div className="flex min-w-0 items-start gap-4">
