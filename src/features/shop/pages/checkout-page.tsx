@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { useBusinesses, useCart, usePlaceOrder, useProducts } from '@/hooks/use-customer-data'
+import { PAYMENTS_ENABLED } from '@/lib/feature-flags'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 import type { CheckoutFormValues } from '@/types/forms'
@@ -69,6 +70,34 @@ export function CheckoutPage() {
   const tax = +(subtotal * taxRate).toFixed(2)
   const total = +(subtotal + tax).toFixed(2)
   const estimatedPoints = Math.floor(total * (business?.earnRate ?? 10))
+
+  if (!PAYMENTS_ENABLED) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center pb-20">
+        <div className="mx-auto max-w-md rounded-[2rem] border border-outline-variant/10 bg-surface-low p-8 text-center shadow-card">
+          <div className="space-y-4">
+            <Badge variant="accent" className="bg-tertiary/20 text-primary">
+              {t('Checkout unavailable')}
+            </Badge>
+            <h1 className="font-serif text-4xl tracking-tight text-primary">
+              {t('Payments coming soon')}
+            </h1>
+            <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
+              {t('Checkout is currently unavailable.')}
+            </p>
+          </div>
+          <Button
+            type="button"
+            size="lg"
+            className="mt-8 h-12 w-full rounded-full font-bold"
+            onClick={() => navigate('/cart')}
+          >
+            {t('Back to cart')}
+          </Button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-16 pb-20">
