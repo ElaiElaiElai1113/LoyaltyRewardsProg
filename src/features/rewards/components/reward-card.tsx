@@ -2,6 +2,8 @@ import { CheckCircle, Gift, Lock } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EarnRedeemGate } from '@/features/membership/components/earn-redeem-gate'
+import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
@@ -22,11 +24,13 @@ export function RewardCard({
   onRedeem,
 }: RewardCardProps) {
   const { t } = useLanguage()
+  const { isActive: isMembershipActive } = useMembership()
   const hasInventory = reward.inventory > 0
   const hasEnoughPoints = balancePoints >= reward.pointsCost
   const canRedeem = hasInventory && (!requirePoints || hasEnoughPoints)
+  const canOpenMembershipGate = hasInventory && !isMembershipActive
   const pointsRemaining = Math.max(reward.pointsCost - balancePoints, 0)
-  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem ? 'Redeem' : 'Need More Points'
+  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem || canOpenMembershipGate ? 'Redeem' : 'Need More Points'
 
   return (
     <div
@@ -74,15 +78,17 @@ export function RewardCard({
             <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {reward.inventory} {t('left')}
             </span>
-            <Button
-              onClick={() => onRedeem(reward)}
-              disabled={!canRedeem}
-              variant={canRedeem ? 'tenant' : 'outline'}
-              size="sm"
-            >
-              {canRedeem ? <CheckCircle className="size-4" /> : null}
-              {t(buttonLabel)}
-            </Button>
+            <EarnRedeemGate action="redeem">
+              <Button
+                onClick={() => onRedeem(reward)}
+                disabled={!canRedeem && !canOpenMembershipGate}
+                variant={canRedeem || canOpenMembershipGate ? 'tenant' : 'outline'}
+                size="sm"
+              >
+                {canRedeem || canOpenMembershipGate ? <CheckCircle className="size-4" /> : null}
+                {t(buttonLabel)}
+              </Button>
+            </EarnRedeemGate>
           </div>
         </div>
     </div>

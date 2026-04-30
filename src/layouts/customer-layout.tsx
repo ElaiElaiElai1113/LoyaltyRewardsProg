@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   LogOut,
   Megaphone,
+  ShieldCheck,
   ShoppingBag,
   UserRound,
 } from 'lucide-react'
@@ -25,6 +26,7 @@ const navigation = [
   { to: '/shop', label: 'Shop', icon: ShoppingBag },
   { to: '/rewards', label: 'Rewards', icon: Gift },
   { to: '/gift-cards', label: 'Gift Cards', icon: CreditCard },
+  { to: '/membership', label: 'Membership', icon: ShieldCheck },
   { to: '/promotions', label: 'Promotions', icon: Megaphone },
   { to: '/activity', label: 'History', icon: Activity },
   { to: '/profile', label: 'Profile', icon: UserRound },

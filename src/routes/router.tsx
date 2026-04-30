@@ -16,6 +16,7 @@ import { GiftCardsPage } from '@/features/gift-cards/pages/gift-cards-page'
 import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card-page'
 import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
 import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
+import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
 import { RewardsPage } from '@/features/rewards/pages/rewards-page'
@@ -214,6 +215,7 @@ const router = createBrowserRouter([
       { path: '/checkout', element: <CheckoutPage /> },
       { path: '/order-confirmation', element: <OrderConfirmationPage /> },
       { path: '/orders', element: <OrdersPage /> },
+      { path: '/membership', element: <MembershipPage /> },
       { path: '/redeem/:rewardId', element: <RedeemRewardPage /> },
       { path: '/activity', element: <ActivityPage /> },
       { path: '/profile', element: <ProfilePage /> },

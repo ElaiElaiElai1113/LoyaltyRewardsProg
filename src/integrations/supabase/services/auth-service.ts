@@ -1,18 +1,48 @@
-import type { Profile, UserRole } from '@/types/domain'
+import type { Membership, Profile, UserRole } from '@/types/domain'
 import type { AuthFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow } from './shared'
+
+function mapMembership(row: Record<string, unknown>): Membership {
+  const mapped = camelCaseRow(row)
+
+  return {
+    id: mapped.id as string,
+    profileId: mapped.profileId as string,
+    status: mapped.status as Membership['status'],
+    currentPeriodStart: mapped.currentPeriodStart as string,
+    currentPeriodEnd: mapped.currentPeriodEnd as string,
+    cancelAtPeriodEnd: mapped.cancelAtPeriodEnd as boolean,
+    priceCents: mapped.priceCents as number,
+    currency: mapped.currency as string,
+    provider: mapped.provider as string,
+    providerSubscriptionId: (mapped.providerSubscriptionId as string | null) ?? null,
+    lastCreditAt: (mapped.lastCreditAt as string | null) ?? null,
+    createdAt: mapped.createdAt as string,
+    updatedAt: mapped.updatedAt as string,
+  }
+}
 
 async function getProfileByUserId(userId: string): Promise<Profile | null> {
   const sb = requireSupabase()
 
-  const { data: row, error } = await sb
-    .from('profiles')
-    .select('*')
-    .eq('id', userId)
-    .single()
+  const [{ data: row, error }, { data: membershipRow }] = await Promise.all([
+    sb
+      .from('profiles')
+      .select('*')
+      .eq('id', userId)
+      .single(),
+    sb
+      .from('memberships')
+      .select('*')
+      .eq('profile_id', userId)
+      .maybeSingle(),
+  ])
 
   if (error || !row) return null
-  return camelCaseRow(row) as unknown as Profile
+  return {
+    ...(camelCaseRow(row) as unknown as Profile),
+    membership: membershipRow ? mapMembership(membershipRow as Record<string, unknown>) : null,
+  }
 }
 
 export const authService = {

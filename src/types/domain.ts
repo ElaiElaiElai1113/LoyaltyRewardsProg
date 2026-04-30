@@ -43,6 +43,7 @@ export interface Profile {
   role: UserRole
   businessId?: string // For business owners - which business they belong to
   referralCode: string
+  membership?: Membership | null
 }
 
 export interface RewardBalance {
@@ -51,6 +52,24 @@ export interface RewardBalance {
   nextRewardPoints: number
   availableCredits: number
   tierProgress: number
+}
+
+export type MembershipStatus = 'active' | 'canceled'
+
+export interface Membership {
+  id: string
+  profileId: string
+  status: MembershipStatus
+  currentPeriodStart: string
+  currentPeriodEnd: string
+  cancelAtPeriodEnd: boolean
+  priceCents: number
+  currency: string
+  provider: string
+  providerSubscriptionId: string | null
+  lastCreditAt: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export type ReferralStatus = 'pending' | 'approved' | 'rejected'

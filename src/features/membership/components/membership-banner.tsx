@@ -1,0 +1,51 @@
+import { X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+
+import { Button } from '@/components/ui/button'
+import { useMembership } from '@/hooks/use-membership'
+import { useLanguage } from '@/lib/language'
+
+const storageKey = 'membership-banner-dismissed'
+
+export function MembershipBanner() {
+  const { t } = useLanguage()
+  const { isActive } = useMembership()
+  const [dismissed, setDismissed] = useState(false)
+
+  useEffect(() => {
+    setDismissed(sessionStorage.getItem(storageKey) === 'true')
+  }, [])
+
+  if (isActive || dismissed) return null
+
+  return (
+    <div className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <p className="text-base font-semibold text-[var(--foreground)]">{t('$10/mo membership, $10 credit instantly')}</p>
+          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
+            {t('Demo mode: subscribe with no real charge to earn points and redeem rewards.')}
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <Button asChild>
+            <Link to="/membership">{t('Subscribe — Demo')}</Link>
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={t('Dismiss membership offer')}
+            onClick={() => {
+              sessionStorage.setItem(storageKey, 'true')
+              setDismissed(true)
+            }}
+          >
+            <X className="size-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { BusinessFilter } from '@/components/business-filter'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Skeleton } from '@/components/ui/skeleton'
+import { MembershipBanner } from '@/features/membership/components/membership-banner'
 import { ProductCard } from '@/features/shop/components/product-card'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
@@ -51,6 +52,8 @@ export function ShopPage() {
           {t('Browse partner businesses, complete purchases, and earn points automatically.')}
         </p>
       </div>
+
+      <MembershipBanner />
 
       <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-[var(--border)] bg-[var(--card)] px-5 py-4 shadow-sm md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (

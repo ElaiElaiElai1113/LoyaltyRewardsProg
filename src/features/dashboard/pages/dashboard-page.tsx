@@ -5,6 +5,7 @@ import { MetricCard } from '@/components/metric-card'
 import { Button } from '@/components/ui/button'
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { useMyGiftCards } from '@/features/gift-cards/hooks/use-gift-cards'
+import { MembershipBanner } from '@/features/membership/components/membership-banner'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { RewardCard } from '@/features/rewards/components/reward-card'
 import {
@@ -14,8 +15,9 @@ import {
   useRewards,
 } from '@/hooks/use-customer-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
-import { formatPoints } from '@/lib/utils'
+import { formatCurrency, formatPoints } from '@/lib/utils'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -26,9 +28,11 @@ export function DashboardPage() {
   const promotions = usePromotions()
   const activities = useActivities(profile?.id)
   const giftCards = useMyGiftCards()
+  const { membership, isActive: isMembershipActive } = useMembership()
 
   const balance = rewardBalance.data
   const points = balance?.points ?? 0
+  const isFrozen = Boolean(membership) && !isMembershipActive
   const featuredRewards = rewards.data?.filter((reward) => reward.featured).slice(0, 2) ?? []
   const activePromotions = promotions.data?.slice(0, 2) ?? []
   const recentActivity = activities.data?.slice(0, 4) ?? []
@@ -58,6 +62,8 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-10 pb-16">
+      <MembershipBanner />
+
       <section className="space-y-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold text-[var(--foreground)]">
@@ -83,8 +89,13 @@ export function DashboardPage() {
             </div>
             <div data-tenant={featuredRewards[0]?.businessId} className="mt-5">
               <span className="inline-flex rounded-md bg-tenant-soft px-2.5 py-1 text-xs font-medium">
-                {balance?.availableCredits ?? 0} {t('reward credits available')}
+                {formatCurrency((balance?.availableCredits ?? 0) / 100)} {t('reward credits available')}
               </span>
+              {isFrozen ? (
+                <span className="ml-2 inline-flex rounded-md border border-[var(--border)] bg-white px-2.5 py-1 text-xs font-medium text-[var(--muted-foreground)]">
+                  {t('Frozen')}
+                </span>
+              ) : null}
             </div>
           </div>
 
@@ -109,9 +120,9 @@ export function DashboardPage() {
       <section className="grid gap-4 md:grid-cols-3">
         <MetricCard
           label={t('Reward Credits')}
-          value={`${balance?.availableCredits ?? 0}`}
+          value={formatCurrency((balance?.availableCredits ?? 0) / 100)}
           icon={Gift}
-          helper={t('Ready to use')}
+          helper={isFrozen ? t('Frozen') : t('Ready to use')}
         />
         <MetricCard
           label={t('Gift Cards')}

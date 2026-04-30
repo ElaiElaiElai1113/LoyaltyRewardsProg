@@ -5,6 +5,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { EarnRedeemGate } from '@/features/membership/components/earn-redeem-gate'
+import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
 import { cn, formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
@@ -24,6 +26,7 @@ export function RedeemRewardPanel({
   onSubmit,
 }: RedeemRewardPanelProps) {
   const { t } = useLanguage()
+  const { isActive: isMembershipActive } = useMembership()
   const form = useForm<RedeemFormValues>({
     resolver: zodResolver(redeemSchema),
     defaultValues: {
@@ -115,18 +118,20 @@ export function RedeemRewardPanel({
           </div>
         </div>
 
-        <Button
-          type="submit"
-          size="lg"
-          className="w-full rounded-full h-16 text-lg font-bold tracking-wide shadow-card"
-          disabled={!canRedeem || isSubmitting}
-        >
-          {isSubmitting
-            ? t('Processing...')
-            : canRedeem
-              ? t('Redeem Now')
-              : t('Not Enough Points')}
-        </Button>
+        <EarnRedeemGate action="redeem">
+          <Button
+            type="submit"
+            size="lg"
+            className="w-full rounded-full h-16 text-lg font-bold tracking-wide shadow-card"
+            disabled={(isMembershipActive && !canRedeem) || isSubmitting}
+          >
+            {isSubmitting
+              ? t('Processing...')
+              : canRedeem || !isMembershipActive
+                ? t('Redeem Now')
+                : t('Not Enough Points')}
+          </Button>
+        </EarnRedeemGate>
       </form>
     </div>
   )

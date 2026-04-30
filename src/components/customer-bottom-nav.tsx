@@ -1,4 +1,4 @@
-import { Gift, LayoutDashboard, ShoppingBag } from 'lucide-react'
+import { Gift, LayoutDashboard, ShieldCheck, ShoppingBag } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
 
 import { useCart } from '@/hooks/use-customer-data'
@@ -9,6 +9,7 @@ const tabs = [
   { to: '/dashboard', label: 'Home', icon: LayoutDashboard, match: ['/dashboard'] },
   { to: '/shop', label: 'Shop', icon: ShoppingBag, match: ['/shop'] },
   { to: '/rewards', label: 'Rewards', icon: Gift, match: ['/rewards', '/redeem'] },
+  { to: '/membership', label: 'Plan', icon: ShieldCheck, match: ['/membership'] },
   { to: '/cart', label: 'Cart', icon: ShoppingBag, match: ['/cart', '/checkout'] },
 ]
 
@@ -20,7 +21,7 @@ export function CustomerBottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-[var(--border)] bg-white/95 px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-lg backdrop-blur md:hidden">
-      <div className="grid grid-cols-4 gap-1">
+      <div className="grid grid-cols-5 gap-1">
         {tabs.map((item) => {
           const isActive = item.match.some((prefix) => pathname.startsWith(prefix))
 

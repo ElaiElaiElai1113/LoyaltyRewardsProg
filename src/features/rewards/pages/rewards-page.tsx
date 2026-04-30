@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dialog'
 import { useAuth } from '@/hooks/use-auth'
 import { useLoginGate } from '@/hooks/use-login-gate'
+import { useMembership } from '@/hooks/use-membership'
 import { useBusinesses, useRedeemReward, useRewardBalance, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import type { Reward } from '@/types/domain'
@@ -30,6 +31,7 @@ export function RewardsPage() {
   const { profile } = useAuth()
   const { t } = useLanguage()
   const requireAuth = useLoginGate()
+  const { isActive: isMembershipActive } = useMembership()
   const rewardBalance = useRewardBalance(profile?.id)
   const businesses = useBusinesses()
   const redeemReward = useRedeemReward(profile?.id)
@@ -81,6 +83,13 @@ export function RewardsPage() {
           </div>
         )}
       </div>
+
+      {!isMembershipActive ? (
+        <div className="rounded-xl border border-[var(--border)] bg-white p-4 text-sm leading-6 text-[var(--muted-foreground)] shadow-sm">
+          <strong className="text-[var(--foreground)]">{t('Membership unlocks redemption.')}</strong>{' '}
+          {t('Catalog browsing stays open. Subscribe in demo mode only when you are ready to redeem.')}
+        </div>
+      ) : null}
 
       <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-[var(--border)] bg-[var(--background)] px-5 py-4 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (

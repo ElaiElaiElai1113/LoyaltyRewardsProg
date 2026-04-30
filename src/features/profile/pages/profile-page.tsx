@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Award, MapPin, Phone, Save } from 'lucide-react'
+import { MapPin, Phone, Save } from 'lucide-react'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { MembershipBadge } from '@/features/membership/components/membership-badge'
 import { useAuth } from '@/hooks/use-auth'
 import { useProfile, useUpdateProfile } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -59,15 +60,7 @@ export function ProfilePage() {
 
         <div className="flex flex-col items-start gap-4 lg:items-end">
           <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Member status')}</span>
-          <div className="rounded-2xl bg-secondary-container px-6 py-4 text-primary shadow-card flex items-center gap-4">
-             <div className="size-10 rounded-full bg-primary flex items-center justify-center">
-                <Award className="size-5 text-white" />
-             </div>
-             <div className="flex flex-col">
-                <span className="font-serif text-2xl leading-none">{t('Active')}</span>
-                <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">{t('Member Status')}</span>
-             </div>
-          </div>
+          <MembershipBadge />
         </div>
       </div>
 
