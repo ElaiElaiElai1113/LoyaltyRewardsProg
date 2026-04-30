@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
+import { CustomerBottomNav } from '@/components/customer-bottom-nav'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -132,11 +133,13 @@ export function CustomerLayout() {
         </nav>
       </aside>
 
-      <main className="w-full flex-1 px-5 py-8 md:ml-64 md:w-[calc(100%-16rem)] md:px-8 lg:px-10">
+      <main className="w-full flex-1 px-5 py-8 pb-20 md:ml-64 md:w-[calc(100%-16rem)] md:px-8 md:pb-8 lg:px-10">
         <div className="mx-auto w-full max-w-[1280px]">
         <Outlet />
         </div>
       </main>
+
+      <CustomerBottomNav />
 
       <footer className="border-t border-[var(--border)] bg-white py-12 md:ml-64">
         <div className="mx-auto max-w-7xl px-6">

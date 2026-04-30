@@ -1,7 +1,10 @@
 import { useState } from 'react'
+import { PackageSearch } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { BusinessFilter } from '@/components/business-filter'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ProductCard } from '@/features/shop/components/product-card'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
@@ -75,20 +78,34 @@ export function ShopPage() {
         </div>
       </div>
 
-      <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((product) => (
-          <ProductCard
-            key={product.id}
-            product={product}
-            onAddToCart={(p) => handleAddToCart(p.id)}
-            isAdding={addToCart.isPending}
-          />
-        ))}
-      </div>
-
-      {filtered.length === 0 && (
-        <div className="text-center py-20">
-          <p className="text-on-surface-variant/60 font-medium">{t('No products found matching your filters.')}</p>
+      {products.isLoading ? (
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+              <Skeleton className="h-48 rounded-2xl" />
+              <Skeleton className="mt-6 h-8 w-3/4" />
+              <Skeleton className="mt-3 h-4 w-full" />
+              <Skeleton className="mt-2 h-4 w-2/3" />
+              <Skeleton className="mt-6 h-11 w-full rounded-full" />
+            </div>
+          ))}
+        </div>
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          icon={<PackageSearch className="size-8" />}
+          title={t('No products yet')}
+          description={t('Products from partner businesses will appear here when they are available.')}
+        />
+      ) : (
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((product) => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAddToCart={(p) => handleAddToCart(p.id)}
+              isAdding={addToCart.isPending}
+            />
+          ))}
         </div>
       )}
     </div>

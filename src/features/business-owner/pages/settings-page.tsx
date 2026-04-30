@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useUpdateBusinessSettings } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useLanguage } from '@/lib/language'
@@ -25,7 +26,15 @@ export function SettingsPage() {
   })
 
   if (!business) {
-    return <div className="text-center py-20">{t('Loading...')}</div>
+    return (
+      <div className="space-y-10">
+        <Skeleton className="h-32 rounded-[2rem]" />
+        <div className="grid gap-10 lg:grid-cols-[360px_1fr]">
+          <Skeleton className="h-64 rounded-3xl" />
+          <Skeleton className="h-96 rounded-3xl" />
+        </div>
+      </div>
+    )
   }
 
   const businessColors =

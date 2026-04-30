@@ -1,4 +1,6 @@
 import { Badge } from '@/components/ui/badge'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { usePromotions } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -36,11 +38,24 @@ export function PromotionsPage() {
           </p>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-2">
-          {(promotions.data ?? []).map((promotion) => (
-            <PromotionCard key={promotion.id} promotion={promotion} />
-          ))}
-        </div>
+        {promotions.isLoading ? (
+          <div className="grid gap-6 xl:grid-cols-2">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="h-52 rounded-2xl" />
+            ))}
+          </div>
+        ) : (promotions.data ?? []).length === 0 ? (
+          <EmptyState
+            title={t('No promotions yet')}
+            description={t('Active promotions from participating businesses will appear here.')}
+          />
+        ) : (
+          <div className="grid gap-6 xl:grid-cols-2">
+            {(promotions.data ?? []).map((promotion) => (
+              <PromotionCard key={promotion.id} promotion={promotion} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )

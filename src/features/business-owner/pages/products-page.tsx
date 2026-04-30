@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -190,11 +191,17 @@ export function ProductsPage() {
       {/* Products Grid */}
       <div className="grid gap-4">
         {products.length === 0 ? (
-          <div className="rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
-            <Package className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">{t('No products yet')}</h3>
-            <p className="text-on-surface-variant/70">{t('Products added via the admin portal will appear here.')}</p>
-          </div>
+          <EmptyState
+            icon={<Package className="size-8" />}
+            title={t('No products yet')}
+            description={t('Create your first product to make it available in the shop.')}
+            action={
+              <Button className="rounded-full" onClick={handleOpenForCreate}>
+                <Plus className="size-4" />
+                {t('Add Product')}
+              </Button>
+            }
+          />
         ) : (
           products.map((product) => (
             <div

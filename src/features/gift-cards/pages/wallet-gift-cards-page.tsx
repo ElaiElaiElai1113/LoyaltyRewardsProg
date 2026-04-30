@@ -3,7 +3,10 @@ import { Gift } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useLanguage } from '@/lib/language'
 import type { GiftCard, GiftCardStatus } from '@/types/domain'
 import { useMyGiftCards } from '../hooks/use-gift-cards'
 
@@ -31,6 +34,7 @@ function GiftCardRow({ card }: { card: GiftCard }) {
 }
 
 export function WalletGiftCardsPage() {
+  const { t } = useLanguage()
   const giftCards = useMyGiftCards()
   const cards = giftCards.data ?? []
 
@@ -61,9 +65,17 @@ export function WalletGiftCardsPage() {
         </TabsList>
         {(['active', 'redeemed', 'expired'] as const).map((status) => (
           <TabsContent key={status} value={status} className="space-y-4">
-            {byStatus(status).map((card) => <GiftCardRow key={card.id} card={card} />)}
+            {giftCards.isLoading
+              ? Array.from({ length: 3 }).map((_, index) => (
+                  <Skeleton key={index} className="h-28 rounded-xl" />
+                ))
+              : byStatus(status).map((card) => <GiftCardRow key={card.id} card={card} />)}
             {!giftCards.isLoading && byStatus(status).length === 0 ? (
-              <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-10 text-center text-on-surface-variant">No {status} gift cards.</div>
+              <EmptyState
+                icon={<Gift className="size-8" />}
+                title={t('No gift cards here')}
+                description={t('Gift cards with this status will appear here.')}
+              />
             ) : null}
           </TabsContent>
         ))}

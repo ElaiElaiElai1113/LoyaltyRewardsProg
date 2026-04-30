@@ -6,9 +6,11 @@ import { useForm, Controller } from 'react-hook-form'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateReward, useDeleteReward, useUpdateReward } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
@@ -19,7 +21,7 @@ import type { Reward } from '@/types/domain'
 import { rewardDraftSchema, type RewardDraftFormValues } from '@/types/forms'
 
 export function RewardsPage() {
-  const { business, rewards } = useBusinessOwnerData()
+  const { business, rewards, isLoading } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
   const createReward = useCreateReward(profile)
@@ -197,18 +199,37 @@ export function RewardsPage() {
       </Dialog>
 
       {/* Rewards Grid */}
-      <div className="grid gap-8 sm:grid-cols-2">
-        {rewards.length === 0 ? (
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm col-span-full rounded-[2rem] p-16 text-center">
-            <Gift className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
-            <h3 className="font-serif text-2xl text-primary mb-2">{t('No rewards yet')}</h3>
-            <p className="mb-8 text-on-surface-variant/80">{t('Create your first redeemable reward for members.')}</p>
-            <Button variant="secondary" className="h-12 rounded-full px-8" onClick={handleOpenForCreate}>
-              <Gift className="size-5 mr-2" />
-              {t('Create First Reward')}
-            </Button>
-          </div>
-        ) : (
+      {isLoading ? (
+        <div className="grid gap-8 sm:grid-cols-2">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <div key={index} className="rounded-[2.5rem] border border-[var(--border)] bg-white p-8 shadow-sm">
+              <div className="flex justify-between">
+                <Skeleton className="h-7 w-24 rounded-full" />
+                <Skeleton className="size-8 rounded-full" />
+              </div>
+              <Skeleton className="mt-12 h-9 w-3/4" />
+              <Skeleton className="mt-4 h-4 w-full" />
+              <Skeleton className="mt-2 h-4 w-2/3" />
+              <Skeleton className="mt-12 h-9 w-40" />
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="grid gap-8 sm:grid-cols-2">
+          {rewards.length === 0 ? (
+            <EmptyState
+              className="col-span-full rounded-[2rem]"
+              icon={<Gift className="size-8" />}
+              title={t('No rewards yet')}
+              description={t('Create your first reward to start earning loyalty.')}
+              action={
+                <Button variant="secondary" className="h-12 rounded-full px-8" onClick={handleOpenForCreate}>
+                  <Gift className="size-5 mr-2" />
+                  {t('Create reward')}
+                </Button>
+              }
+            />
+          ) : (
           rewards.map((reward) => (
             <div
               key={reward.id}
@@ -270,8 +291,9 @@ export function RewardsPage() {
               </div>
             </div>
           ))
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

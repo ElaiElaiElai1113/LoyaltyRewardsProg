@@ -20,7 +20,9 @@ import { toast } from 'sonner'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   useBusinessOwnerData,
   usePartnerPerformance,
@@ -45,7 +47,20 @@ export function BusinessDashboardPage() {
   const validateCreditCode = useValidateCreditCode(business?.id)
 
   if (!metrics) {
-    return <div className="text-center py-20 text-on-surface-variant/60">{t('Loading...')}</div>
+    return (
+      <div className="space-y-10">
+        <Skeleton className="h-48 rounded-[2rem]" />
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, index) => (
+            <Skeleton key={index} className="h-32 rounded-xl" />
+          ))}
+        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Skeleton className="h-52 rounded-xl" />
+          <Skeleton className="h-52 rounded-xl" />
+        </div>
+      </div>
+    )
   }
 
   const businessColors = { primary: 'from-[#7a4a1f] to-[#d8a23a]', light: 'from-primary-container/18 to-secondary-container/14' }
@@ -369,7 +384,17 @@ export function BusinessDashboardPage() {
 
         <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
           <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
-            {(partnerPerformance.data ?? []).slice(0, 4).map((entry) => (
+            {partnerPerformance.isLoading ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="flex items-center justify-between p-5">
+                  <div className="space-y-3">
+                    <Skeleton className="h-6 w-36" />
+                    <Skeleton className="h-3 w-20" />
+                  </div>
+                  <Skeleton className="h-10 w-12" />
+                </div>
+              ))
+            ) : (partnerPerformance.data ?? []).slice(0, 4).map((entry) => (
               <div key={entry.partnerReferrerId} className="flex items-center justify-between p-5">
                 <div>
                   <p className="font-serif text-xl text-primary">{entry.contactName}</p>
@@ -381,23 +406,41 @@ export function BusinessDashboardPage() {
               </div>
             ))}
             {!partnerPerformance.isLoading && (partnerPerformance.data?.length ?? 0) === 0 ? (
-              <div className="p-12 text-center">
-                <p className="text-on-surface-variant/60 font-medium">No partner contacts yet.</p>
-              </div>
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Hotel className="size-8" />}
+                title={t('No partner contacts yet')}
+                description={t('Create partner contacts to track hotel and front-desk referrals.')}
+              />
             ) : null}
           </div>
 
           <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
           {partnerReferrals.isLoading ? (
-            <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">Loading partner referrals...</p>
-            </div>
+            Array.from({ length: 3 }).map((_, index) => (
+              <div key={index} className="p-6">
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="space-y-3">
+                    <Skeleton className="h-3 w-28" />
+                    <Skeleton className="h-7 w-40" />
+                  </div>
+                  <div className="space-y-3">
+                    <Skeleton className="h-3 w-32" />
+                    <Skeleton className="h-7 w-44" />
+                    <Skeleton className="h-4 w-52" />
+                  </div>
+                </div>
+              </div>
+            ))
           ) : null}
 
           {!partnerReferrals.isLoading && (partnerReferrals.data?.length ?? 0) === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">No partner referrals yet.</p>
-            </div>
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Users className="size-8" />}
+                title={t('No partner referrals yet')}
+                description={t('Attributed customers will appear here after referral links are used.')}
+              />
           ) : null}
 
           {(partnerReferrals.data ?? []).slice(0, 6).map((referral) => (
@@ -439,9 +482,17 @@ export function BusinessDashboardPage() {
 
         <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
           {redemptions.length === 0 ? (
-            <div className="p-12 text-center">
-              <p className="text-on-surface-variant/60 font-medium">{t('No redemptions yet.')}</p>
-            </div>
+            <EmptyState
+              className="border-0 shadow-none"
+              icon={<Gift className="size-8" />}
+              title={t('No redemptions yet')}
+              description={t('Reward claims will appear here when customers redeem points.')}
+              action={
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link to="/business/rewards">{t('Manage Rewards')}</Link>
+                </Button>
+              }
+            />
           ) : (
             redemptions.slice(0, 5).map((redemption) => (
               <div key={redemption.id} className="p-6 flex items-center justify-between group hover:bg-surface-low transition-colors">
