@@ -172,7 +172,7 @@ export function PartnersPage() {
                 <Label htmlFor="source-label">Referral Source</Label>
                 <Input
                   id="source-label"
-                  className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary"
+                  className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary"
                   placeholder="Ana - Harbor View Hotel"
                   {...form.register('sourceLabel')}
                 />
@@ -182,7 +182,7 @@ export function PartnersPage() {
                 <Label htmlFor="contact-email">Contact Email</Label>
                 <Input
                   id="contact-email"
-                  className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary"
+                  className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary"
                   placeholder="optional@email.com"
                   {...form.register('contactEmail')}
                 />
@@ -192,7 +192,7 @@ export function PartnersPage() {
                 <Label htmlFor="partner-notes">Notes</Label>
                 <Textarea
                   id="partner-notes"
-                  className="min-h-28 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary"
+                  className="min-h-28 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary"
                   placeholder="Reward terms, front-desk context, or handoff notes"
                   {...form.register('notes')}
                 />
@@ -241,7 +241,7 @@ export function PartnersPage() {
                   <div key={referrer.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-6">
                     <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                       <div className="flex items-start gap-5">
-                        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-2xl text-white shadow-lg">
+                        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-2xl text-white shadow-lg">
                           {referrer.contactName.charAt(0)}
                         </div>
                         <div className="space-y-3">
@@ -267,7 +267,7 @@ export function PartnersPage() {
                       </div>
 
                       <div className="flex flex-col gap-4 xl:items-end">
-                        <div className="rounded-3xl border border-primary-container/15 bg-[#17100d]/80 p-4">
+                        <div className="rounded-3xl border border-primary-container/15 bg-[var(--card)] p-4">
                           {partnerUrl ? <QRCodeSVG value={partnerUrl} size={112} /> : <QrCode className="size-28 text-on-surface-variant/40" />}
                         </div>
                         <div className="flex flex-wrap gap-2">

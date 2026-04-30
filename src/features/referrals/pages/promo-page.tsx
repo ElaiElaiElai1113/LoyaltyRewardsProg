@@ -38,7 +38,7 @@ export function PromoPage() {
 
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
-      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[linear-gradient(135deg,#18215a,#283593_52%,#c026d3)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-4">
           <LanguagePicker className="text-white/80" />
           <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">

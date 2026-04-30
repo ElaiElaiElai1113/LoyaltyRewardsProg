@@ -17,31 +17,28 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
   const displayCategory = product.category === 'Coffee' ? 'Drinks' : product.category
 
   return (
-    <div className="group rounded-xl border border-[var(--border)] bg-white shadow-sm relative overflow-hidden p-1 transition-all duration-300 hover:-translate-y-1 hover:border-primary-container/45 hover:shadow-sm">
-      <div className="hidden" />
-      <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(135deg,rgba(123,216,207,0.12),rgba(244,168,79,0.16),rgba(216,162,58,0.1))]" />
-      <div className="relative flex h-full flex-col gap-6 rounded-md bg-[#17100d]/82 p-7">
+    <div className="group flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm transition-colors hover:bg-[var(--muted)]/40">
         <div className="flex justify-between items-start">
-          <Badge variant="accent">
+          <Badge>
               {t(displayCategory)}
           </Badge>
           {product.featured && (
-            <span className="flex items-center gap-1.5 rounded border border-secondary-container/60 bg-secondary-container/15 px-3 py-1 text-[0.6rem] font-black uppercase tracking-widest text-secondary-container">
+            <span className="flex items-center gap-1.5 rounded-md bg-[var(--muted)] px-2.5 py-1 text-xs font-medium text-[var(--foreground)]">
               <Sparkles className="size-3" />
               {t('Bonus Drop')}
             </span>
           )}
         </div>
 
-        <div className="flex size-16 items-center justify-center rounded border border-primary-container/35 bg-primary-container/10 text-primary-container shadow-sm">
-          <PackagePlus className="size-8" />
+        <div className="flex size-11 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
+          <PackagePlus className="size-5" />
         </div>
 
-        <div className="space-y-4 grow">
-          <h3 className="font-serif text-3xl font-semibold uppercase tracking-[0.01em] text-on-surface leading-tight">
+        <div className="grow space-y-3">
+          <h3 className="text-xl font-semibold leading-tight text-[var(--foreground)]">
             {t(product.title)}
           </h3>
-          <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
+          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
             {t(product.description)}
           </p>
         </div>
@@ -49,13 +46,13 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
         <div className="flex items-end justify-between mt-4">
           <div className="space-y-1">
             <span className="text-sm font-medium text-[var(--muted-foreground)]">{t('Cash Price')}</span>
-            <p className="font-serif text-3xl font-bold tracking-tight text-primary-container">
+            <p className="text-2xl font-semibold text-[var(--foreground)]">
               {formatCurrency(product.price)}
             </p>
           </div>
 
           <div className="flex flex-col items-end gap-3">
-            <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
+            <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {product.inventory} {t('in stock')}
             </span>
             <Button
@@ -68,7 +65,6 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
             </Button>
           </div>
         </div>
-      </div>
     </div>
   )
 }

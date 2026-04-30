@@ -333,7 +333,7 @@ export function AdminPage() {
   return (
     <div className="space-y-16 pb-20">
       {/* Enhanced Header with Gradient Accent */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-[#4b3621] to-[#33210d] px-8 py-12 shadow-2xl">
+      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-[var(--muted)] to-[var(--card)] px-8 py-12 shadow-2xl">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
         <div className="relative">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -397,9 +397,9 @@ export function AdminPage() {
 
               <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8 space-y-6">
                 {selectedMember ? (
-                  <div className="rounded-[2rem] border border-primary-container/15 bg-[#181210] p-6 shadow-[inset_0_0_0_1px_rgba(244,168,79,0.04)]">
+                  <div className="rounded-[2rem] border border-primary-container/15 bg-[var(--muted)] p-6 shadow-sm">
                     <div className="flex items-start gap-4">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-xl text-white shadow-lg">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-xl text-white shadow-lg">
                         {selectedMember.profile.fullName.charAt(0)}
                       </div>
                       <div className="space-y-2">
@@ -419,7 +419,7 @@ export function AdminPage() {
                           <Badge variant="accent" className="border-success/25 bg-success/12 text-success">
                             {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
                           </Badge>
-                          <Badge variant="outline" className="border-primary-container/20 bg-[#201815] text-on-surface-variant">
+                          <Badge variant="outline" className="border-primary-container/20 bg-[var(--card)] text-on-surface-variant">
                             {t('Joined')} {formatDate(selectedMember.profile.joinedAt)}
                           </Badge>
                         </div>
@@ -463,7 +463,7 @@ export function AdminPage() {
                     </div>
                   </div>
                 ) : (
-                  <div className="rounded-[2rem] border border-dashed border-primary-container/20 bg-[#181210] p-6 text-sm text-on-surface-variant/85">
+                  <div className="rounded-[2rem] border border-dashed border-primary-container/20 bg-[var(--muted)] p-6 text-sm text-on-surface-variant/85">
                     {t('Select a member to view the profile and update points.')}
                   </div>
                 )}
@@ -495,7 +495,7 @@ export function AdminPage() {
                       id="profileId"
                       list="member-id-options"
                       placeholder={t('Select from the customer list or paste a member id')}
-                      className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                      className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                       {...adjustmentForm.register('profileId')}
                     />
                     <datalist id="member-id-options">
@@ -516,7 +516,7 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="delta" className="text-sm font-semibold">{t('Points Adjustment')}</Label>
-                    <Input id="delta" type="number" className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
+                    <Input id="delta" type="number" className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
                     <p className="text-xs text-on-surface-variant/80">{t('Use a positive number to add points and a negative number to deduct them.')}</p>
                     {adjustmentForm.formState.errors.delta ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
@@ -524,7 +524,7 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-4">
                     <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
-                    <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
+                    <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
                     {adjustmentForm.formState.errors.reason ? (
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
                     ) : null}
@@ -555,11 +555,11 @@ export function AdminPage() {
                     className={`rounded-xl border border-[var(--border)] bg-white shadow-sm group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
                       selectedProfileId === member.id
                         ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
-                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-sm'
+                        : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm'
                     }`}
                   >
                     <div className="flex items-center gap-6">
-                       <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] flex items-center justify-center font-serif text-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
+                       <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] flex items-center justify-center font-serif text-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
                           {member.fullName.charAt(0)}
                        </div>
                       <div>
@@ -591,7 +591,7 @@ export function AdminPage() {
                         className={
                           selectedProfileId === member.id
                             ? 'rounded-full'
-                            : 'rounded-full border-primary-container/30 bg-[#18110e]/70 text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary'
+                            : 'rounded-full border-primary-container/30 bg-[var(--card)] text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary'
                         }
                         onClick={() => {
                           adjustmentForm.setValue('profileId', member.id, {
@@ -1195,7 +1195,7 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">Create Business</h2>
               </div>
 
-              <div className="rounded-3xl border border-primary-container/20 bg-[#120d0b]/78 p-8 shadow-card  space-y-6">
+              <div className="rounded-3xl border border-primary-container/20 bg-[var(--card)] p-8 shadow-card  space-y-6">
                 <div className="rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-5">
                   <p className="text-sm font-semibold text-on-surface">Create a business and assign its owner in one flow.</p>
                   <p className="mt-2 text-sm text-on-surface-variant/80">
@@ -1365,7 +1365,7 @@ export function AdminPage() {
                       ) : null}
                     </div>
 
-                    <label className="flex items-center gap-3 rounded-2xl border border-primary-container/20 bg-[#17100d]/70 px-4 py-3 text-sm font-semibold text-on-surface">
+                    <label className="flex items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 py-3 text-sm font-semibold text-on-surface">
                       <input
                         type="checkbox"
                         className="size-4 rounded border-outline-variant/30"
@@ -1438,17 +1438,17 @@ export function AdminPage() {
               </div>
 
               <div className="grid gap-4 md:grid-cols-3">
-                <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                   <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Receptionist Codes</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{partnerPerformance.data?.length ?? 0}</p>
                 </div>
-                <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                   <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Attributed Customers</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                     {partnerReferrals.data?.length ?? 0}
                   </p>
                 </div>
-                <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                   <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Partner Credits Earned</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                     {partnerPerformance.data?.reduce((sum, entry) => sum + entry.creditsEarned, 0) ?? 0}
@@ -1456,7 +1456,7 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 shadow-card overflow-hidden">
+              <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
                 <div className="border-b border-outline-variant/10 px-6 py-5">
                   <h3 className="font-serif text-2xl text-primary">Recent Partner Referrals</h3>
                   <p className="mt-1 text-sm text-on-surface-variant/75">
@@ -1501,7 +1501,7 @@ export function AdminPage() {
 
               <div className="grid gap-4 xl:grid-cols-2">
                 {(allBusinesses.data ?? []).map((business) => (
-                  <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-7 shadow-card  space-y-7">
+                  <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-7 shadow-card  space-y-7">
                     <div className="flex flex-col gap-5">
                       <div className="flex flex-col gap-5">
                         <div className="flex min-w-0 items-start gap-4">
@@ -1538,7 +1538,7 @@ export function AdminPage() {
                             <span>{business.currency}</span>
                             <span>{business.slug}</span>
                           </div>
-                          <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/64 p-4 text-sm">
+                          <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-4 text-sm">
                             <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Owner</p>
                             <p className="mt-2 font-semibold text-primary">
                               {business.ownerName || business.ownerEmail || 'Unassigned'}
@@ -1594,19 +1594,19 @@ export function AdminPage() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-4">
-                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Customers</p>
                         <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.totalMembers}</p>
                       </div>
-                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Revenue</p>
                         <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
                       </div>
-                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Points Issued')}</p>
                         <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.pointsIssued}</p>
                       </div>
-                      <div className="rounded-2xl border border-primary-container/16 bg-[#17100d]/72 p-5">
+                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
                         <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Staff Accounts</p>
                         <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.staffCount}</p>
                       </div>
@@ -1690,13 +1690,13 @@ export function AdminPage() {
               </div>
 
               {allBusinesses.isLoading ? (
-                <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-8 shadow-card text-on-surface-variant/75">
+                <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-8 shadow-card text-on-surface-variant/75">
                   Loading partner metrics...
                 </div>
               ) : null}
 
               {!allBusinesses.isLoading && (allBusinesses.data?.length ?? 0) === 0 ? (
-                <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 p-8 shadow-card text-on-surface-variant/75">
+                <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-8 shadow-card text-on-surface-variant/75">
                   No partners are available yet.
                 </div>
               ) : null}
@@ -1711,7 +1711,7 @@ export function AdminPage() {
               }
             }}
           >
-            <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[#120d0b]/95 text-on-surface shadow-card">
+            <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
               <DialogHeader>
                 <DialogTitle className="font-serif text-2xl text-primary">
                   {businessAccessDialog?.role === 'business-staff' ? 'Add Staff' : 'Assign Owner'}
@@ -1825,7 +1825,7 @@ export function AdminPage() {
                   id="verification-business"
                   value={verificationBusinessId}
                   onChange={(event) => setVerificationBusinessId(event.target.value)}
-                  className="h-12 min-w-56 rounded-2xl border border-primary-container/20 bg-[#17100d]/72 px-4 text-sm text-on-surface shadow-sm outline-none transition focus:border-primary/30"
+                  className="h-12 min-w-56 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm text-on-surface shadow-sm outline-none transition focus:border-primary/30"
                 >
                   <option value="all">All Partners</option>
                   {(allBusinesses.data ?? []).map((business) => (
@@ -1837,11 +1837,11 @@ export function AdminPage() {
               </div>
             </div>
 
-            <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 shadow-card overflow-hidden">
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
               <ScrollArea className="h-[520px]">
                 <div className="min-w-[900px]">
                   <table className="w-full text-sm">
-                    <thead className="bg-[#17100d]/78 text-left">
+                    <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Partner</th>
@@ -1910,11 +1910,11 @@ export function AdminPage() {
               </span>
             </div>
 
-            <div className="rounded-3xl border border-primary-container/18 bg-[#120d0b]/78 shadow-card overflow-hidden">
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
               <ScrollArea className="h-[620px]">
                 <div className="min-w-[760px]">
                   <table className="w-full text-sm">
-                    <thead className="bg-[#17100d]/78 text-left">
+                    <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Referrer</th>

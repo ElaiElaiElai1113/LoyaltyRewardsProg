@@ -99,9 +99,9 @@ export function LandingPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-        <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-primary-container/20 bg-[#120d0b] px-8 py-10 text-on-surface shadow-card md:px-12 lg:px-14">
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(244,168,79,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(244,168,79,0.045)_1px,transparent_1px)] bg-[length:40px_40px]" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_10%,rgba(244,168,79,0.22),transparent_28rem),radial-gradient(circle_at_86%_18%,rgba(123,216,207,0.12),transparent_24rem),linear-gradient(145deg,rgba(244,168,79,0.08),transparent_45%)]" />
+        <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-primary-container/20 bg-[var(--card)] px-8 py-10 text-on-surface shadow-card md:px-12 lg:px-14">
+          <div className="absolute inset-0 bg-[var(--muted)] bg-[length:40px_40px]" />
+          <div className="absolute inset-0 bg-[var(--muted)]" />
           <div className="hidden" />
 
           <div className="relative z-10 space-y-8">
@@ -126,7 +126,7 @@ export function LandingPage() {
                 </Link>
                 <Link
                   to="/for-businesses#book-demo"
-                  className="inline-flex h-11 items-center gap-2 rounded border border-secondary-container bg-secondary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-[#2d1a06] shadow-sm transition hover:bg-secondary-fixed"
+                  className="inline-flex h-11 items-center gap-2 rounded border border-[var(--border)] bg-white px-6 text-xs font-semibold text-[var(--foreground)] shadow-sm transition-colors hover:bg-[var(--muted)]"
                 >
                   <Building2 className="size-4" />
                   {t('Book Demo')}

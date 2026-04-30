@@ -86,8 +86,8 @@ export function BusinessDashboardPage() {
   return (
     <div className="space-y-16">
       {/* Welcome Section */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-[linear-gradient(135deg,#18215a,#283593_50%,#c026d3)] px-8 py-12 text-white shadow-2xl">
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px)] bg-[length:36px_36px] opacity-25"></div>
+      <div className="relative overflow-hidden rounded-[2rem] bg-[var(--muted)] px-8 py-12 text-white shadow-2xl">
+        <div className="absolute inset-0 bg-[var(--muted)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
           <p className="text-sm font-medium text-[var(--muted-foreground)] mb-3">{t('Business Overview')}</p>
           <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">

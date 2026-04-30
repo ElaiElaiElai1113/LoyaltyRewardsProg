@@ -107,7 +107,7 @@ export function RewardsPage() {
 
       {/* Add/Edit Reward Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[#120d0b]/95 text-on-surface shadow-card">
+        <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
               {editingId ? t('Edit Reward') : t('New Reward')}
@@ -118,7 +118,7 @@ export function RewardsPage() {
               <Label htmlFor="reward-title">{t('Title')}</Label>
               <Input
                 id="reward-title"
-                className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                 placeholder="Free bonus item"
                 {...form.register('title')}
               />
@@ -130,7 +130,7 @@ export function RewardsPage() {
               <Label htmlFor="reward-description">{t('Description')}</Label>
               <Textarea
                 id="reward-description"
-                className="min-h-28 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                className="min-h-28 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                 placeholder="A bonus item, discount, or member-only perk"
                 {...form.register('description')}
               />
@@ -145,10 +145,10 @@ export function RewardsPage() {
                 name="category"
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="h-12 rounded-xl border border-primary-container/15 bg-[#201815] text-primary focus:ring-primary-container/25">
+                    <SelectTrigger className="h-12 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary focus:ring-primary-container/25">
                       <SelectValue placeholder={t('Select a category')} />
                     </SelectTrigger>
-                    <SelectContent className="border border-primary-container/20 bg-[#17100d] text-on-surface">
+                    <SelectContent className="border border-primary-container/20 bg-[var(--card)] text-on-surface">
                       <SelectItem value="Drink">{t('Drink')}</SelectItem>
                       <SelectItem value="Pastry">{t('Bites')}</SelectItem>
                       <SelectItem value="Merch">{t('Gear')}</SelectItem>
@@ -166,7 +166,7 @@ export function RewardsPage() {
               <Input
                 id="reward-points"
                 type="number"
-                className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                 placeholder="220"
                 {...form.register('pointsCost', { valueAsNumber: true })}
               />
@@ -178,7 +178,7 @@ export function RewardsPage() {
               <Label htmlFor="reward-highlight">{t('Highlight')}</Label>
               <Input
                 id="reward-highlight"
-                className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                 placeholder="Most popular"
                 {...form.register('highlight')}
               />
@@ -212,9 +212,9 @@ export function RewardsPage() {
           rewards.map((reward) => (
             <div
               key={reward.id}
-              className="rounded-xl border border-[var(--border)] bg-white shadow-sm group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-sm"
+              className="rounded-xl border border-[var(--border)] bg-white shadow-sm group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm"
             >
-              <div className="absolute inset-x-0 top-0 h-24 bg-[linear-gradient(135deg,rgba(123,216,207,0.10),rgba(244,168,79,0.14),rgba(216,162,58,0.08))]" />
+              <div className="absolute inset-x-0 top-0 h-24 bg-[var(--muted)]" />
               <div className="flex flex-col gap-6 h-full">
                 <div className="flex justify-between items-start">
                   <div className="flex flex-col gap-2 relative">

@@ -87,7 +87,7 @@ export function AppShell() {
             ))}
           </nav>
 
-          <div className="mt-6 rounded-[1.6rem] bg-[linear-gradient(135deg,rgba(198,144,94,0.16),rgba(100,124,95,0.12))] p-4">
+          <div className="mt-6 rounded-[1.6rem] bg-[var(--muted)] p-4">
             <p className="text-sm font-medium text-foreground">Built for repeat customers.</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
               The data and services support multi-location and multi-brand reward programs.

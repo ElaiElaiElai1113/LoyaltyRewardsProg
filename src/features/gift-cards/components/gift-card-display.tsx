@@ -29,41 +29,41 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
   }
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm overflow-hidden p-1">
-      <div className="grid gap-8 rounded-md bg-[#17100d]/90 p-6 md:grid-cols-[280px,1fr] md:p-8">
-        <div className="rounded border border-primary-container/20 bg-[#fff8ef] p-4 text-primary">
+    <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm md:p-8">
+      <div className="grid gap-8 md:grid-cols-[280px,1fr]">
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--muted)] p-4 text-[var(--foreground)]">
           <QRCodeSVG value={publicUrl} size={248} className="h-auto w-full" />
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="space-y-3">
-              <Badge variant={isActive ? 'accent' : 'outline'}>{giftCard.status}</Badge>
-              <h1 className="font-serif text-4xl font-bold uppercase tracking-[0.02em] text-primary-container">
+              <Badge variant={isActive ? 'default' : 'outline'}>{giftCard.status}</Badge>
+              <h1 className="text-3xl font-semibold text-[var(--foreground)]">
                 {displayTitle}
               </h1>
-              {displayBusiness ? <p className="text-on-surface-variant">{displayBusiness}</p> : null}
+              {displayBusiness ? <p className="text-[var(--muted-foreground)]">{displayBusiness}</p> : null}
             </div>
             {displayValue ? (
-              <div className="rounded border border-secondary-container/35 bg-secondary-container/10 px-5 py-3 text-secondary-container">
-                <span className="text-xs font-black uppercase tracking-widest">Value</span>
-                <p className="font-serif text-2xl font-bold">{displayValue}</p>
+              <div className="rounded-lg bg-[var(--muted)] px-5 py-3 text-[var(--foreground)]">
+                <span className="text-xs font-medium text-[var(--muted-foreground)]">Value</span>
+                <p className="text-2xl font-semibold">{displayValue}</p>
               </div>
             ) : null}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Code</p>
-              <p className="mt-1 font-mono text-lg font-bold text-on-surface">{giftCard.code}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">Code</p>
+              <p className="mt-1 font-mono text-lg font-semibold text-[var(--foreground)]">{giftCard.code}</p>
             </div>
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Expires</p>
-              <p className="mt-1 text-sm font-bold text-on-surface">{formatDate(giftCard.expiresAt)}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">Expires</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatDate(giftCard.expiresAt)}</p>
             </div>
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Points Spent</p>
-              <p className="mt-1 text-sm font-bold text-on-surface">{giftCard.pointsSpent}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">Points Spent</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{giftCard.pointsSpent}</p>
             </div>
           </div>
 

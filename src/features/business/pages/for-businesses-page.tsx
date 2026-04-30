@@ -102,7 +102,7 @@ export function ForBusinessesPage() {
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {outcomes.map((item) => (
-              <div key={item.title} className="rounded border border-primary-container/15 bg-[#17100d]/70 p-5">
+              <div key={item.title} className="rounded border border-primary-container/15 bg-[var(--muted)] p-5">
                 <item.icon className="mb-5 size-7 text-secondary-container" />
                 <h3 className="font-serif text-xl text-primary-container">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-surface-variant/80">{item.body}</p>

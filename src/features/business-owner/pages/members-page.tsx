@@ -93,7 +93,7 @@ export function MembersPage() {
                     id="profileId"
                     list="business-member-options"
                     placeholder={t('Search by customer ID')}
-                    className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] pl-11 text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                    className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] pl-11 text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                     {...form.register('profileId')}
                   />
                 </div>
@@ -109,10 +109,10 @@ export function MembersPage() {
                 ) : null}
               </div>
 
-              <div className="rounded-3xl border border-primary-container/15 bg-[#181210] p-5 shadow-[inset_0_0_0_1px_rgba(244,168,79,0.04)]">
+              <div className="rounded-3xl border border-primary-container/15 bg-[var(--muted)] p-5 shadow-sm">
                 {selectedMember ? (
                   <div className="flex items-center gap-4">
-                    <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-lg text-white shadow-lg">
+                    <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-lg text-white shadow-lg">
                       {getInitials(selectedMember.fullName)}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -143,7 +143,7 @@ export function MembersPage() {
                 <Input
                   id="delta"
                   type="number"
-                  className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary focus-visible:ring-primary-container/25"
+                  className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary focus-visible:ring-primary-container/25"
                   {...form.register('delta', { valueAsNumber: true })}
                 />
                 {form.formState.errors.delta ? (
@@ -158,7 +158,7 @@ export function MembersPage() {
                 <Input
                   id="reason"
                   placeholder={t('e.g., In-store purchase $12.50')}
-                  className="h-12 rounded-2xl border border-primary-container/15 bg-[#201815] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                  className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                   {...form.register('reason')}
                 />
                 {form.formState.errors.reason ? (
@@ -204,11 +204,11 @@ export function MembersPage() {
                       'rounded-xl border border-[var(--border)] bg-white shadow-sm flex flex-col gap-5 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between',
                       selected
                         ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
-                        : 'hover:border-primary-container/35 hover:bg-[#1a1310] hover:shadow-sm',
+                        : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm',
                     )}
                   >
                     <div className="flex items-center gap-5">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[#4b3621] font-serif text-lg text-white shadow-lg">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-lg text-white shadow-lg">
                         {getInitials(member.fullName)}
                       </div>
                       <div>
@@ -232,7 +232,7 @@ export function MembersPage() {
                         className={cn(
                           'rounded-full',
                           !selected &&
-                            'border-primary-container/30 bg-[#18110e]/70 text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary',
+                            'border-primary-container/30 bg-[var(--card)] text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary',
                         )}
                         onClick={() => form.setValue('profileId', member.id, { shouldValidate: true })}
                       >

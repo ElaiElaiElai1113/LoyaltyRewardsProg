@@ -30,13 +30,13 @@ function DialogContent({
       <DialogOverlay className="bg-primary/20 " />
       <DialogPrimitive.Content
         className={cn(
-          'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-surface-lowest p-10 shadow-card outline-none border border-outline-variant/5',
+          'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-10 text-[var(--foreground)] shadow-lg outline-none',
           className,
         )}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-3 text-on-surface-variant/80 transition-all hover:bg-surface-low hover:text-primary">
+        <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-3 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
           <X className="size-5" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
@@ -59,7 +59,7 @@ function DialogTitle({
 }: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn('font-serif text-2xl tracking-[-0.03em] text-foreground', className)}
+      className={cn('text-2xl font-semibold text-[var(--foreground)]', className)}
       {...props}
     />
   )
