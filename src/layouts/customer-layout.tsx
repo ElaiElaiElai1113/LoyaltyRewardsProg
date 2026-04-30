@@ -11,6 +11,7 @@ import {
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
@@ -35,7 +36,7 @@ export function CustomerLayout() {
   const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
   return (
-    <div className="flex min-h-screen flex-col bg-transparent md:pl-64">
+    <div className="flex min-h-screen flex-col bg-transparent">
       <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-6">
           <div className="flex items-center gap-12">
@@ -76,6 +77,7 @@ export function CustomerLayout() {
 
             <div className="flex items-center gap-4">
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
+              <ThemeToggle />
               <NavLink to="/cart" className="relative rounded-lg p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
                 <ShoppingBag className="size-5" />
                 {cartCount > 0 && (
@@ -104,7 +106,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <aside className="fixed left-0 top-16 z-40 hidden h-[calc(100vh-64px)] w-64 flex-col border-r border-[var(--border)] bg-white py-8 md:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[var(--border)] bg-white pb-8 pt-24 md:flex">
         <div className="px-6 pb-8">
           <p className="text-sm font-semibold text-[var(--foreground)]">{t('Network Member')}</p>
           <p className="mt-1 text-xs font-medium text-[var(--muted-foreground)]">{t('Rewards account')}</p>
@@ -130,11 +132,13 @@ export function CustomerLayout() {
         </nav>
       </aside>
 
-      <main className="mx-auto w-full max-w-[1280px] flex-1 px-5 py-8 md:px-8 lg:px-10">
+      <main className="w-full flex-1 px-5 py-8 md:ml-64 md:w-[calc(100%-16rem)] md:px-8 lg:px-10">
+        <div className="mx-auto w-full max-w-[1280px]">
         <Outlet />
+        </div>
       </main>
 
-      <footer className="border-t border-[var(--border)] bg-white py-12">
+      <footer className="border-t border-[var(--border)] bg-white py-12 md:ml-64">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">

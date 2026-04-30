@@ -8,6 +8,7 @@ import {
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
@@ -80,6 +81,7 @@ export function AdminLayout() {
               compact
               className="mb-2 w-full justify-between rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-[var(--muted-foreground)]"
             />
+            <ThemeToggle />
             <Button
               variant="ghost"
               className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"

@@ -87,6 +87,49 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --background: #0C0A09;
+  --foreground: #FAFAF9;
+  --card: #1C1917;
+  --card-foreground: #FAFAF9;
+  --muted: #292524;
+  --muted-foreground: #A8A29E;
+  --border: #44403C;
+  --input: #44403C;
+  --primary: #FAFAF9;
+  --primary-foreground: #1C1917;
+  --secondary: #292524;
+  --secondary-foreground: #FAFAF9;
+  --accent: #292524;
+  --accent-foreground: #FAFAF9;
+  --destructive: #F87171;
+  --destructive-foreground: #1C1917;
+  --success: #4ADE80;
+  --ring: #FAFAF9;
+
+  --tenant-accent: var(--primary);
+  --tenant-accent-foreground: var(--primary-foreground);
+  --tenant-accent-soft: var(--muted);
+
+  --surface: var(--background);
+  --surface-container-low: var(--muted);
+  --surface-container-lowest: var(--card);
+  --surface-container-highest: #44403C;
+  --primary-container: var(--primary);
+  --primary-fixed: #E7E5E4;
+  --on-primary: var(--primary-foreground);
+  --secondary-container: var(--secondary);
+  --secondary-fixed: #44403C;
+  --tertiary: var(--muted-foreground);
+  --on-surface: var(--foreground);
+  --on-surface-variant: var(--muted-foreground);
+  --outline-variant: var(--border);
+  --error: var(--destructive);
+
+  color-scheme: dark;
 }
 
 @layer utilities {
@@ -149,4 +192,24 @@ textarea {
 
 ::selection {
   background: #E7E5E4;
+}
+
+:root[data-theme="dark"] ::selection {
+  background: #44403C;
+}
+
+:root[data-theme="dark"] .bg-white {
+  background-color: var(--card) !important;
+}
+
+:root[data-theme="dark"] .text-white {
+  color: var(--foreground) !important;
+}
+
+:root[data-theme="dark"] .border-stone-200 {
+  border-color: var(--border) !important;
+}
+
+:root[data-theme="dark"] .shadow-sm {
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.35);
 }

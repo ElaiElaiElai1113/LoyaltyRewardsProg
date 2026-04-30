@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
 
@@ -16,15 +17,15 @@ export function PublicBrowseLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-primary-container/20 bg-[#120d0b]/82 text-white shadow-card ">
+      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-12">
             <NavLink to="/" className="flex items-center gap-3">
-              <span className="font-serif text-2xl font-black italic uppercase tracking-[0.2em] text-primary-container">
+              <span className="text-xl font-semibold text-[var(--foreground)]">
                 Medellin Rewards
               </span>
-              <span className="hidden h-6 w-px bg-primary-container/25 md:block" />
-              <span className="hidden text-xs font-bold uppercase tracking-[0.18em] text-on-surface-variant md:block">
+              <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
+              <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
                 Rewards Network
               </span>
             </NavLink>
@@ -35,10 +36,10 @@ export function PublicBrowseLayout() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `text-xs font-bold uppercase tracking-[0.14em] transition-all ${
+                    `text-sm font-medium transition-colors ${
                       isActive
-                        ? 'text-primary-container drop-shadow-sm'
-                        : 'text-on-surface-variant/70 hover:text-primary-container'
+                        ? 'text-[var(--foreground)]'
+                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     }`
                   }
                 >
@@ -49,7 +50,8 @@ export function PublicBrowseLayout() {
           </div>
 
           <div className="flex items-center gap-3">
-            <LanguagePicker className="text-on-surface-variant" compact />
+            <LanguagePicker className="text-[var(--muted-foreground)]" compact />
+            <ThemeToggle />
             <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
               <NavLink to="/for-businesses#book-demo">{t('Book Demo')}</NavLink>
             </Button>
