@@ -5,8 +5,10 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import {
   useAwardPoints,
   useBusinessMembers,
@@ -189,8 +191,20 @@ export function MembersPage() {
           </div>
 
           {members.isLoading ? (
-            <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-12 text-center text-on-surface-variant/80">
-              {t('Loading customers...')}
+            <div className="grid gap-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="flex flex-col gap-5 rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center gap-5">
+                    <Skeleton className="size-14 rounded-2xl" />
+                    <div className="space-y-3">
+                      <Skeleton className="h-7 w-44" />
+                      <Skeleton className="h-4 w-56" />
+                      <Skeleton className="h-3 w-32" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-10 w-28 rounded-full" />
+                </div>
+              ))}
             </div>
           ) : members.data?.length ? (
             <div className="grid gap-4">
@@ -244,13 +258,12 @@ export function MembersPage() {
               })}
             </div>
           ) : (
-            <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-16 text-center">
-              <Users className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
-              <h3 className="mb-2 font-serif text-2xl text-primary">{t('No customers yet')}</h3>
-              <p className="mx-auto max-w-md text-on-surface-variant/80">
-                {t("Customers will appear here once they've purchased from your business.")}
-              </p>
-            </div>
+            <EmptyState
+              className="rounded-[2rem]"
+              icon={<Users className="size-8" />}
+              title={t('No customers yet')}
+              description={t("Customers will appear here once they've purchased from your business.")}
+            />
           )}
         </div>
       </div>

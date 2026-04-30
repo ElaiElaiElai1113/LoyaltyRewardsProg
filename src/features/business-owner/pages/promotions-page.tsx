@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
@@ -163,15 +164,18 @@ export function PromotionsPage() {
       {/* Promotions Grid */}
       <div className="grid gap-6 sm:grid-cols-2">
         {promotions.length === 0 ? (
-          <div className="col-span-full rounded-3xl bg-white border border-outline-variant/5 p-16 text-center">
-            <Megaphone className="size-16 text-on-surface-variant/20 mx-auto mb-6" />
-            <h3 className="font-serif text-2xl text-primary mb-2">{t('No campaigns yet')}</h3>
-            <p className="text-on-surface-variant/70 mb-8">{t('Create your first campaign to drive repeat engagement.')}</p>
-            <Button className="rounded-full h-12 px-8" onClick={() => setOpen(true)}>
-              <Megaphone className="size-5 mr-2" />
-              {t('Create First Campaign')}
-            </Button>
-          </div>
+          <EmptyState
+            className="col-span-full"
+            icon={<Megaphone className="size-8" />}
+            title={t('No campaigns yet')}
+            description={t('Create your first campaign to drive repeat engagement.')}
+            action={
+              <Button className="h-12 rounded-full px-8" onClick={handleOpenForCreate}>
+                <Megaphone className="size-5 mr-2" />
+                {t('Create Campaign')}
+              </Button>
+            }
+          />
         ) : (
           promotions.map((promotion) => {
             const active = isActive(promotion.expiresAt)

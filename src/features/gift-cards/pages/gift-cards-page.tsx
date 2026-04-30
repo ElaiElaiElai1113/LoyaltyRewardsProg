@@ -4,6 +4,9 @@ import { Gift } from 'lucide-react'
 
 import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
+import { useLanguage } from '@/lib/language'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useRewardBalance } from '@/hooks/use-customer-data'
 import type { GiftCardCatalogItem } from '@/types/domain'
@@ -14,6 +17,7 @@ import { useGiftCardCatalog, useIssueGiftCard } from '../hooks/use-gift-cards'
 export function GiftCardsPage() {
   const navigate = useNavigate()
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<GiftCardCatalogItem | null>(null)
   const businesses = useBusinesses()
@@ -54,21 +58,31 @@ export function GiftCardsPage() {
         <BusinessFilter businesses={businesses.data ?? []} selected={selectedBusiness} onChange={setSelectedBusiness} />
       ) : null}
 
-      <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        {(catalog.data ?? []).map((item) => (
-          <GiftCardTile
-            key={item.id}
-            item={item}
-            balancePoints={balancePoints}
-            businessName={item.business?.name}
-            onSelect={setSelectedItem}
-          />
-        ))}
-      </div>
-
-      {!catalog.isLoading && (catalog.data ?? []).length === 0 ? (
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-12 text-center text-on-surface-variant">No gift cards are available yet.</div>
-      ) : null}
+      {catalog.isLoading ? (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, index) => (
+            <Skeleton key={index} className="h-64 rounded-xl" />
+          ))}
+        </div>
+      ) : (catalog.data ?? []).length === 0 ? (
+        <EmptyState
+          icon={<Gift className="size-8" />}
+          title={t('No gift cards yet')}
+          description={t('Gift cards from partner businesses will appear here when they are available.')}
+        />
+      ) : (
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          {(catalog.data ?? []).map((item) => (
+            <GiftCardTile
+              key={item.id}
+              item={item}
+              balancePoints={balancePoints}
+              businessName={item.business?.name}
+              onSelect={setSelectedItem}
+            />
+          ))}
+        </div>
+      )}
 
       <IssueConfirmationDialog
         item={selectedItem}

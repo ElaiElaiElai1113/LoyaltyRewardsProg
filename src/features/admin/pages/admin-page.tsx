@@ -10,9 +10,11 @@ import { RewardCard } from '@/features/rewards/components/reward-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -606,6 +608,13 @@ export function AdminPage() {
                     </div>
                   </div>
                 ))}
+                {customerMembers.length === 0 ? (
+                  <EmptyState
+                    icon={<Users className="size-8" />}
+                    title={t('No customers yet')}
+                    description={t('Customer accounts will appear here after signup.')}
+                  />
+                ) : null}
               </div>
             </div>
           </div>
@@ -663,6 +672,14 @@ export function AdminPage() {
                     </Button>
                   </div>
                 ))}
+                {!rewards.isLoading && (rewards.data ?? []).length === 0 ? (
+                  <EmptyState
+                    className="col-span-full"
+                    icon={<Gift className="size-8" />}
+                    title={t('No rewards yet')}
+                    description={t('Create a reward for the selected partner.')}
+                  />
+                ) : null}
               </div>
               {!rewardBusinessId ? (
                 <div className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
@@ -864,6 +881,13 @@ export function AdminPage() {
                     </div>
                   </div>
                 ))}
+                {!adminProducts.isLoading && (adminProducts.data ?? []).length === 0 ? (
+                  <EmptyState
+                    icon={<Store className="size-8" />}
+                    title={t('No products yet')}
+                    description={t('Create a product for the selected partner.')}
+                  />
+                ) : null}
               </div>
               {!productBusinessId ? (
                 <div className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
@@ -1048,6 +1072,13 @@ export function AdminPage() {
                     </Button>
                   </div>
                 ))}
+                {!promotions.isLoading && (promotions.data ?? []).length === 0 ? (
+                  <EmptyState
+                    icon={<TrendingUp className="size-8" />}
+                    title={t('No promotions yet')}
+                    description={t('Create a promotion for the selected partner.')}
+                  />
+                ) : null}
               </div>
               {!promotionBusinessId ? (
                 <div className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
@@ -1491,10 +1522,20 @@ export function AdminPage() {
                     </div>
                   ))}
                   {partnerReferrals.isLoading ? (
-                    <div className="px-6 py-8 text-on-surface-variant/75">Loading partner referrals...</div>
+                    Array.from({ length: 4 }).map((_, index) => (
+                      <div key={index} className="px-6 py-5">
+                        <Skeleton className="h-5 w-48" />
+                        <Skeleton className="mt-3 h-4 w-64" />
+                      </div>
+                    ))
                   ) : null}
                   {!partnerReferrals.isLoading && (partnerReferrals.data?.length ?? 0) === 0 ? (
-                    <div className="px-6 py-8 text-on-surface-variant/75">No partner referrals recorded yet.</div>
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<Users className="size-8" />}
+                      title={t('No partner referrals yet')}
+                      description={t('Partner referral records will appear here after attribution.')}
+                    />
                   ) : null}
                 </div>
               </div>
@@ -1690,15 +1731,19 @@ export function AdminPage() {
               </div>
 
               {allBusinesses.isLoading ? (
-                <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-8 shadow-card text-on-surface-variant/75">
-                  Loading partner metrics...
+                <div className="grid gap-6 md:grid-cols-2">
+                  {Array.from({ length: 4 }).map((_, index) => (
+                    <Skeleton key={index} className="h-40 rounded-3xl" />
+                  ))}
                 </div>
               ) : null}
 
               {!allBusinesses.isLoading && (allBusinesses.data?.length ?? 0) === 0 ? (
-                <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-8 shadow-card text-on-surface-variant/75">
-                  No partners are available yet.
-                </div>
+                <EmptyState
+                  icon={<Store className="size-8" />}
+                  title={t('No partners yet')}
+                  description={t('Create a partner business before assigning owners or reviewing metrics.')}
+                />
               ) : null}
             </div>
           </div>
@@ -1886,11 +1931,20 @@ export function AdminPage() {
                   </table>
 
                   {verificationOrders.isLoading ? (
-                    <div className="px-6 py-8 text-on-surface-variant/75">Loading recent orders...</div>
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
                   ) : null}
 
                   {!verificationOrders.isLoading && (verificationOrders.data?.length ?? 0) === 0 ? (
-                    <div className="px-6 py-8 text-on-surface-variant/75">No orders found for this filter.</div>
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<Activity className="size-8" />}
+                      title={t('No orders found')}
+                      description={t('Orders matching this filter will appear here.')}
+                    />
                   ) : null}
                 </div>
               </ScrollArea>
@@ -1991,11 +2045,20 @@ export function AdminPage() {
                   </table>
 
                   {allReferrals.isLoading ? (
-                    <div className="px-6 py-8 text-on-surface-variant/75">Loading referrals...</div>
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
                   ) : null}
 
                   {!allReferrals.isLoading && (allReferrals.data?.length ?? 0) === 0 ? (
-                    <div className="px-6 py-8 text-on-surface-variant/75">No referrals found.</div>
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<Users className="size-8" />}
+                      title={t('No referrals found')}
+                      description={t('Customer referral records will appear here.')}
+                    />
                   ) : null}
                 </div>
               </ScrollArea>
@@ -2061,10 +2124,12 @@ export function AdminPage() {
                       </div>
                     ))}
                     {(overview.data?.redemptions?.length ?? 0) === 0 && (
-                      <div className="text-center py-12">
-                        <Gift className="size-12 text-on-surface-variant/20 mx-auto mb-4" />
-                        <p className="text-on-surface-variant/60 font-medium">No redemptions yet</p>
-                      </div>
+                      <EmptyState
+                        className="border-0 shadow-none"
+                        icon={<Gift className="size-8" />}
+                        title={t('No redemptions yet')}
+                        description={t('Reward fulfillment requests will appear here.')}
+                      />
                     )}
                   </div>
                 </ScrollArea>
@@ -2102,6 +2167,14 @@ export function AdminPage() {
                         </div>
                       </div>
                     ))}
+                    {(overview.data?.adminLogs?.length ?? 0) === 0 ? (
+                      <EmptyState
+                        className="border-0 shadow-none"
+                        icon={<Activity className="size-8" />}
+                        title={t('No admin logs yet')}
+                        description={t('Administrative changes will appear here.')}
+                      />
+                    ) : null}
                   </div>
                 </ScrollArea>
               </div>

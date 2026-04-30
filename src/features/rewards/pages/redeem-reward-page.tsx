@@ -2,6 +2,7 @@ import { Navigate, useNavigate, useParams } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import { useRedeemReward, useReward, useRewardBalance } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -28,7 +29,10 @@ export function RedeemRewardPage() {
           {t('Redeem Reward')}
         </Badge>
         <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card">
-          <p className="text-lg font-medium text-on-surface-variant/85">{t('Loading reward details...')}</p>
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="mt-6 h-12 w-3/4" />
+          <Skeleton className="mt-4 h-5 w-full" />
+          <Skeleton className="mt-10 h-40 rounded-[2rem]" />
         </div>
       </div>
     )

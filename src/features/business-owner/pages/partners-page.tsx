@@ -1,13 +1,15 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Archive, Copy, Download, Gift, Hotel, QrCode, UserRoundPlus } from 'lucide-react'
+import { Archive, Copy, Download, Gift, Hotel, QrCode, UserRoundPlus, Users } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import {
   useArchivePartnerReferrer,
@@ -228,7 +230,25 @@ export function PartnersPage() {
             <h2 className="font-serif text-3xl text-primary">Partner Contacts</h2>
           </div>
 
-          {(referrers.data ?? []).length ? (
+          {referrers.isLoading ? (
+            <div className="grid gap-5">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+                  <div className="flex gap-5">
+                    <Skeleton className="size-16 rounded-2xl" />
+                    <div className="flex-1 space-y-3">
+                      <Skeleton className="h-8 w-48" />
+                      <Skeleton className="h-3 w-24" />
+                      <div className="flex gap-2">
+                        <Skeleton className="h-7 w-24 rounded-full" />
+                        <Skeleton className="h-7 w-24 rounded-full" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (referrers.data ?? []).length ? (
             <div className="grid gap-5">
               {(referrers.data ?? []).map((referrer) => {
                 const stats = performance.data?.find((entry) => entry.partnerReferrerId === referrer.id)
@@ -303,11 +323,12 @@ export function PartnersPage() {
               })}
             </div>
           ) : (
-            <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-16 text-center">
-              <Hotel className="mx-auto mb-6 size-16 text-on-surface-variant/30" />
-              <h3 className="mb-2 font-serif text-2xl text-primary">No referral sources yet</h3>
-              <p className="text-on-surface-variant/80">Create your first referral source link to start tracking referred purchases.</p>
-            </div>
+            <EmptyState
+              className="rounded-[2rem]"
+              icon={<Hotel className="size-8" />}
+              title={t('No referral sources yet')}
+              description={t('Create your first referral source link to start tracking referred purchases.')}
+            />
           )}
         </div>
       </div>
@@ -334,7 +355,15 @@ export function PartnersPage() {
           </div>
 
           <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
-            {recentReferrals.length ? (
+            {referrals.isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="p-6">
+                  <Skeleton className="h-7 w-44" />
+                  <Skeleton className="mt-3 h-4 w-56" />
+                  <Skeleton className="mt-5 h-4 w-32" />
+                </div>
+              ))
+            ) : recentReferrals.length ? (
               recentReferrals.map((referral) => (
                 <div key={referral.id} className="flex flex-col gap-4 p-6">
                   <div className="flex items-center justify-between gap-4">
@@ -359,7 +388,12 @@ export function PartnersPage() {
                 </div>
               ))
             ) : (
-              <div className="p-12 text-center text-on-surface-variant/70">No partner referrals yet.</div>
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Users className="size-8" />}
+                title={t('No partner referrals yet')}
+                description={t('Attributed customers will appear here after referral links are used.')}
+              />
             )}
           </div>
         </div>
@@ -385,7 +419,14 @@ export function PartnersPage() {
           </div>
 
           <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
-            {unreedeemedCredits.length ? (
+            {partnerCredits.isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="p-6">
+                  <Skeleton className="h-7 w-44" />
+                  <Skeleton className="mt-3 h-4 w-32" />
+                </div>
+              ))
+            ) : unreedeemedCredits.length ? (
               unreedeemedCredits.map((entry) => {
                 const referral = referrals.data?.find((item) => item.id === entry.partnerReferralId)
                 return (
@@ -410,7 +451,12 @@ export function PartnersPage() {
                 )
               })
             ) : (
-              <div className="p-12 text-center text-on-surface-variant/70">No outstanding partner credits.</div>
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Gift className="size-8" />}
+                title={t('No outstanding partner credits')}
+                description={t('Redeemable partner credits will appear here once referrals earn credits.')}
+              />
             )}
           </div>
         </div>

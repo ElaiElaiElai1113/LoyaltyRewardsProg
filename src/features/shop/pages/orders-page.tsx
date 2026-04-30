@@ -2,6 +2,8 @@ import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useOrders } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -30,13 +32,22 @@ export function OrdersPage() {
         </p>
       </div>
 
-      {(orders.data ?? []).length === 0 ? (
-        <div className="text-center py-20 space-y-6">
-          <p className="text-on-surface-variant/60 font-medium text-lg">{t('No orders yet.')}</p>
-          <Button asChild variant="default" size="lg" className="rounded-full">
-            <Link to="/shop">{t('Start Shopping')}</Link>
-          </Button>
+      {orders.isLoading ? (
+        <div className="space-y-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} className="h-44 rounded-2xl" />
+          ))}
         </div>
+      ) : (orders.data ?? []).length === 0 ? (
+        <EmptyState
+          title={t('No orders yet')}
+          description={t('Your purchases and points earned will appear here.')}
+          action={
+            <Button asChild variant="default" size="lg" className="rounded-full">
+              <Link to="/shop">{t('Start Shopping')}</Link>
+            </Button>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {(orders.data ?? []).map((order) => (

@@ -1,6 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
+import { Skeleton } from '@/components/ui/skeleton'
 import { GiftCardDisplay } from '../components/gift-card-display'
 import { useGiftCard } from '../hooks/use-gift-cards'
 
@@ -11,7 +12,7 @@ export function GiftCardDetailPage() {
   const publicUrl = card && typeof window !== 'undefined' ? `${window.location.origin}/g/${card.publicToken}` : ''
 
   if (giftCard.isLoading) {
-    return <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-10 text-on-surface-variant">Loading gift card...</div>
+    return <Skeleton className="h-96 rounded-xl" />
   }
 
   if (!card) {

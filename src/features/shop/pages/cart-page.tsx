@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom'
+import { ShoppingBag } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { EmptyState } from '@/components/ui/empty-state'
+import { Skeleton } from '@/components/ui/skeleton'
 import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { CartItemRow } from '@/features/shop/components/cart-item-row'
 import { useBusinesses, useCart, useProducts, useRemoveFromCart, useUpdateCartItem } from '@/hooks/use-customer-data'
@@ -61,13 +64,26 @@ export function CartPage() {
         </h1>
       </div>
 
-      {resolvedItems.length === 0 ? (
-        <div className="text-center py-20 space-y-6">
-          <p className="text-on-surface-variant/60 font-medium text-lg">{t('Your cart is empty.')}</p>
-          <Button asChild variant="default" size="lg" className="rounded-full">
-            <Link to="/shop">{t('Browse Products')}</Link>
-          </Button>
+      {cart.isLoading || products.isLoading ? (
+        <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
+          <div className="space-y-4">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <Skeleton key={index} className="h-32 rounded-2xl" />
+            ))}
+          </div>
+          <Skeleton className="h-80 rounded-[2rem]" />
         </div>
+      ) : resolvedItems.length === 0 ? (
+        <EmptyState
+          icon={<ShoppingBag className="size-8" />}
+          title={t('Your cart is empty')}
+          description={t('Add items from the shop before checking out.')}
+          action={
+            <Button asChild variant="default" size="lg" className="rounded-full">
+              <Link to="/shop">{t('Browse Products')}</Link>
+            </Button>
+          }
+        />
       ) : (
         <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
           <div className="space-y-4">

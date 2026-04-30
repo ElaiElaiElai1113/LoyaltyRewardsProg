@@ -1,6 +1,7 @@
 import { CircleDollarSign, Gift, ShieldCheck, Sparkles } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
+import { EmptyState } from '@/components/ui/empty-state'
 import { useLanguage } from '@/lib/language'
 import { formatDate, formatPoints, formatTime } from '@/lib/utils'
 import type { Activity } from '@/types/domain'
@@ -24,6 +25,16 @@ function getIcon(type: Activity['type']) {
 
 export function ActivityList({ items }: ActivityListProps) {
   const { t } = useLanguage()
+
+  if (items.length === 0) {
+    return (
+      <EmptyState
+        icon={<Gift className="size-8" />}
+        title={t('No activity yet')}
+        description={t('Points, redemptions, and account activity will appear here.')}
+      />
+    )
+  }
 
   return (
     <div className="space-y-3">
