@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { CartItemRow } from '@/features/shop/components/cart-item-row'
 import { useBusinesses, useCart, useProducts, useRemoveFromCart, useUpdateCartItem } from '@/hooks/use-customer-data'
+import { PAYMENTS_ENABLED } from '@/lib/feature-flags'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 
@@ -104,14 +105,23 @@ export function CartPage() {
             {cartValidationError ? (
               <p className="text-sm font-semibold text-red-500">{cartValidationError}</p>
             ) : null}
+            {!PAYMENTS_ENABLED ? (
+              <p className="text-sm font-semibold text-on-surface-variant">
+                {t('Checkout is currently unavailable.')}
+              </p>
+            ) : null}
             <Button
-              asChild={!cartValidationError}
+              asChild={!cartValidationError && PAYMENTS_ENABLED}
               variant="default"
               size="lg"
               className="w-full rounded-full h-14"
-              disabled={Boolean(cartValidationError)}
+              disabled={Boolean(cartValidationError) || !PAYMENTS_ENABLED}
             >
-              {cartValidationError ? <span>{t('Checkout unavailable')}</span> : <Link to="/checkout">{t('Proceed to Checkout')}</Link>}
+              {cartValidationError || !PAYMENTS_ENABLED ? (
+                <span>{t('Checkout unavailable')}</span>
+              ) : (
+                <Link to="/checkout">{t('Proceed to Checkout')}</Link>
+              )}
             </Button>
           </div>
         </div>

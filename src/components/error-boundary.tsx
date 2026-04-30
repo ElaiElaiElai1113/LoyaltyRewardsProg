@@ -38,7 +38,7 @@ class ErrorBoundaryFallback extends Component<Props & ErrorBoundaryContent, Stat
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-bold text-white hover:bg-primary/90 transition-colors"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-bold text-[var(--primary-foreground)] hover:bg-primary/90 transition-colors"
             >
               {this.props.action}
             </button>

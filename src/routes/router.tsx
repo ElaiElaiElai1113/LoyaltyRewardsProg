@@ -16,6 +16,7 @@ import { GiftCardsPage } from '@/features/gift-cards/pages/gift-cards-page'
 import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card-page'
 import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
 import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
+import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
 import { RewardsPage } from '@/features/rewards/pages/rewards-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
@@ -241,7 +242,7 @@ const router = createBrowserRouter([
   },
   {
     path: '*',
-    element: <Navigate replace to="/" />,
+    element: <NotFoundPage />,
   },
 ])
 
