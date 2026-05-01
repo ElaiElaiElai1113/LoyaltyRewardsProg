@@ -13,11 +13,11 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
 
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <span className="mr-2 text-sm font-medium text-[var(--muted-foreground)]">{t('Business:')}</span>
+      <span className="mr-2 text-sm font-medium text-muted-foreground">{t('Business:')}</span>
       <Button
         variant={selected === null ? 'tertiary' : 'ghost'}
         size="sm"
-        className={selected === null ? 'px-8' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
+        className={selected === null ? 'px-8' : 'text-muted-foreground hover:text-foreground'}
         onClick={() => onChange(null)}
       >
         {t('All Businesses')}
@@ -27,7 +27,7 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
           key={business.id}
           variant={selected === business.id ? 'tertiary' : 'ghost'}
           size="sm"
-          className={selected === business.id ? 'px-8' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
+          className={selected === business.id ? 'px-8' : 'text-muted-foreground hover:text-foreground'}
           onClick={() => onChange(business.id)}
         >
           {business.name}

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import { Card } from '@/components/ui/card'
+
 interface BusinessMetricCardProps {
   title: string
   value: string
@@ -11,24 +13,24 @@ interface BusinessMetricCardProps {
 
 export function BusinessMetricCard({ title, value, icon, helper, trend, trendUp }: BusinessMetricCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-medium text-[var(--muted-foreground)]">{title}</span>
-        <div className="rounded-lg bg-[var(--muted)] p-2.5 text-[var(--foreground)]">
+    <Card featured className="p-6">
+      <div className="mb-4 flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">{title}</span>
+        <div className="rounded-lg bg-muted p-2.5 text-foreground">
           {icon}
         </div>
       </div>
       <div className="space-y-1">
-        <p className="text-4xl font-semibold leading-none text-[var(--foreground)]">{value}</p>
+        <p className="font-display text-4xl font-semibold leading-none text-foreground tabular-nums">{value}</p>
         {trend && (
           <p className={`text-xs font-medium ${trendUp ? 'text-success' : 'text-error'}`}>
             {trend}
           </p>
         )}
         {!trend && helper ? (
-          <p className="mt-2 text-xs font-medium text-[var(--muted-foreground)]">{helper}</p>
+          <p className="mt-2 text-xs font-medium text-muted-foreground">{helper}</p>
         ) : null}
       </div>
-    </div>
+    </Card>
   )
 }

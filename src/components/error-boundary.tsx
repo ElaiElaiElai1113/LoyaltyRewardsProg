@@ -32,13 +32,13 @@ class ErrorBoundaryFallback extends Component<Props & ErrorBoundaryContent, Stat
       return (
         <div className="min-h-screen flex items-center justify-center bg-surface px-4">
           <div className="text-center space-y-6 max-w-md">
-            <h1 className="font-serif text-4xl text-primary">{this.props.title}</h1>
-            <p className="text-on-surface-variant/70">
+            <h1 className="font-display text-4xl text-primary">{this.props.title}</h1>
+            <p className="text-muted-foreground">
               {this.props.message}
             </p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-bold text-[var(--primary-foreground)] hover:bg-primary/90 transition-colors"
+              className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-8 py-3 text-sm font-bold text-primary-foreground transition-colors duration-200 hover:bg-primary-fixed"
             >
               {this.props.action}
             </button>

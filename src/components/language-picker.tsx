@@ -19,7 +19,7 @@ export function LanguagePicker({ className, compact = false }: LanguagePickerPro
         <SelectTrigger
           aria-label={t('Language')}
           className={cn(
-            'h-10 min-w-0 border-primary-container/25 bg-primary-container/8 text-xs font-bold uppercase tracking-[0.08em] text-current shadow-none focus-visible:ring-primary-container/40',
+            'h-10 min-w-0 border-border bg-card/90 text-xs font-semibold uppercase tracking-[0.08em] text-current shadow-none focus-visible:ring-ring/40',
             compact ? 'w-[5.25rem] px-3' : 'w-[8.75rem] max-w-full',
           )}
         >

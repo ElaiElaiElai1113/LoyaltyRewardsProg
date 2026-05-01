@@ -1,7 +1,6 @@
 import { ArrowRight } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 
 interface PageHeaderProps {
@@ -20,18 +19,19 @@ export function PageHeader({
   actionTo,
 }: PageHeaderProps) {
   return (
-    <div className="mb-12 flex flex-col gap-6 border-b border-primary-container/15 pb-10 md:flex-row md:items-end md:justify-between">
+    <div className="mb-12 flex flex-col gap-7 pb-10 md:flex-row md:items-end md:justify-between">
       <div className="space-y-4">
         {eyebrow ? (
-          <Badge variant="accent" className="w-fit">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[var(--accent-gold)]">
             {eyebrow}
-          </Badge>
+          </p>
         ) : null}
         <div className="space-y-3">
-          <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-6xl max-w-3xl leading-[1.05]">
+          <h1 className="font-display max-w-3xl text-[clamp(2.75rem,7vw,5.75rem)] font-semibold leading-[0.96] tracking-[-0.03em] text-foreground">
             {title}
           </h1>
-          <p className="max-w-xl text-lg leading-relaxed text-on-surface-variant/85 font-medium">
+          <div className="h-px w-24 bg-[var(--accent-gold)]" aria-hidden="true" />
+          <p className="max-w-xl text-lg font-medium leading-relaxed text-muted-foreground">
             {description}
           </p>
         </div>
