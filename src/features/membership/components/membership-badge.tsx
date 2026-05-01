@@ -11,12 +11,12 @@ export function MembershipBadge() {
   const isFrozen = Boolean(membership) && !isActive
 
   return (
-    <div className="rounded-2xl bg-secondary-container px-6 py-4 text-primary shadow-card flex items-center gap-4">
-      <div className="size-10 rounded-full bg-primary flex items-center justify-center">
-        <Award className="size-5 text-white" />
+    <div className="flex items-center gap-4 rounded-2xl border border-border bg-card px-6 py-4 text-primary shadow-card">
+      <div className="flex size-10 items-center justify-center rounded-full bg-primary">
+        <Award className="size-5 text-primary-foreground" />
       </div>
       <div className="flex flex-col gap-1">
-        <span className="font-serif text-2xl leading-none">
+        <span className="font-display text-2xl italic leading-none">
           {isLoading ? t('Checking') : isActive ? t('Active') : isFrozen ? t('Frozen') : t('Not active')}
         </span>
         <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-primary/80">

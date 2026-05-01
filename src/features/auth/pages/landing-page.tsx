@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Badge } from '@/components/ui/badge'
 import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +14,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
+import heroUrl from '@/assets/hero.png'
 
 const defaultValues: AuthFormValues = {
   fullName: '',
@@ -97,43 +97,44 @@ export function LandingPage() {
   }
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
+    <div className="relative min-h-screen overflow-hidden bg-background px-4 py-4 md:px-8 lg:px-10">
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-        <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-primary-container/20 bg-[var(--card)] px-8 py-10 text-on-surface shadow-card md:px-12 lg:px-14">
-          <div className="absolute inset-0 bg-[var(--muted)] bg-[length:40px_40px]" />
-          <div className="absolute inset-0 bg-[var(--muted)]" />
-          <div className="hidden" />
+        <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[var(--radius-2xl)] border border-border bg-card px-8 py-10 text-foreground shadow-card md:px-12 lg:px-14">
+          <img src={heroUrl} alt="" className="absolute inset-0 size-full object-cover opacity-20 mix-blend-multiply" />
+          <div className="absolute inset-0 bg-card/85" />
 
           <div className="relative z-10 space-y-8">
-            <Badge variant="accent" className="border-primary-container/35 bg-primary-container/12 px-5 py-2 text-primary-container">
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--accent-gold)]">
               {t('Multi-business rewards platform')}
-            </Badge>
+            </p>
             <div className="max-w-3xl space-y-6">
-              <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
-                <span className="text-brand-gold">{t('Medellin Rewards.')}</span><br />
+              <h1 className="font-display text-[clamp(3rem,9vw,7.5rem)] font-semibold leading-[0.9] tracking-[-0.04em] text-foreground">
+                <span>{t('Medellin')}</span>{' '}
+                <span className="italic text-[var(--accent-gold)]">{t('Rewards')}</span><br />
                 {t('Earn across')}<br />
                 {t('the network')}.
               </h1>
-              <p className="max-w-xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
+              <div className="h-px w-28 bg-[var(--accent-gold)]" aria-hidden="true" />
+              <p className="max-w-xl text-base font-medium leading-relaxed text-muted-foreground md:text-lg">
                 {t('Earn and redeem rewards across local businesses while owners track loyalty, QR signups, and partner referrals from one platform.')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/shop"
-                  className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-sm transition hover:bg-primary-fixed"
+                  className="inline-flex h-11 cursor-pointer items-center rounded-lg border border-primary bg-primary px-6 text-xs font-bold uppercase tracking-[0.08em] text-primary-foreground shadow-card transition-colors duration-200 hover:bg-primary-fixed"
                 >
                   {t('Explore Businesses')}
                 </Link>
                 <Link
                   to="/for-businesses#book-demo"
-                  className="inline-flex h-11 items-center gap-2 rounded border border-[var(--border)] bg-white px-6 text-xs font-semibold text-[var(--foreground)] shadow-sm transition-colors hover:bg-[var(--muted)]"
+                  className="inline-flex h-11 cursor-pointer items-center gap-2 rounded-lg border border-border bg-card px-6 text-xs font-semibold text-foreground shadow-card transition-colors duration-200 hover:bg-muted"
                 >
                   <Building2 className="size-4" />
                   {t('Book Demo')}
                 </Link>
                 <Link
                   to="/rewards"
-                  className="inline-flex h-11 items-center rounded border border-primary-container/35 bg-primary-container/8 px-6 text-xs font-bold uppercase tracking-[0.08em] text-primary-container transition hover:bg-primary-container/14"
+                  className="inline-flex h-11 cursor-pointer items-center rounded-lg border border-border bg-muted px-6 text-xs font-bold uppercase tracking-[0.08em] text-foreground transition-colors duration-200 hover:bg-[var(--accent-gold-soft)]"
                 >
                   {t('View Rewards')}
                 </Link>
@@ -160,28 +161,28 @@ export function LandingPage() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="group rounded-lg border border-primary-container/15 bg-[#1a120e]/72 p-4  transition-all hover:border-primary-container/35 hover:bg-[#211713]/80"
+                  className="group rounded-2xl border border-border bg-card/90 p-4 shadow-card transition-colors duration-200 hover:border-[var(--accent-gold)] hover:bg-muted"
                 >
-                  <div className="mb-5 flex size-10 items-center justify-center rounded border border-secondary-container/35 bg-secondary-container/10 text-secondary-container transition-all group-hover:bg-secondary-container/15">
+                  <div className="mb-5 flex size-10 items-center justify-center rounded-lg border border-border bg-muted text-[var(--accent-gold)] transition-colors duration-200 group-hover:bg-[var(--accent-gold-soft)]">
                     <item.icon className="size-5" />
                   </div>
                   <div>
-                    <h2 className="font-serif text-lg font-semibold uppercase tracking-[0.03em] text-primary">
+                    <h2 className="font-display text-xl font-semibold text-foreground">
                       {item.title}
                     </h2>
-                    <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">{item.body}</p>
+                    <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{item.body}</p>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {error ? <p className="relative z-10 mt-8 text-sm font-bold text-red-300">{error}</p> : null}
+          {error ? <p className="relative z-10 mt-8 text-sm font-bold text-error">{error}</p> : null}
         </section>
 
         <section className="flex min-h-[42rem] flex-col justify-center py-4">
           <div className="mb-6 flex justify-end">
-            <LanguagePicker className="text-on-surface-variant" />
+            <LanguagePicker className="text-muted-foreground" />
           </div>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-7">
             <div className="flex justify-center">
@@ -194,15 +195,15 @@ export function LandingPage() {
             <TabsContent value="signin" className="outline-none">
               <div className="space-y-7">
                 <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">
+                  <h2 className="font-display text-4xl tracking-tight text-foreground">
                     {t('Welcome Back')}
                   </h2>
-                  <p className="text-sm font-medium text-on-surface-variant/80">
+                  <p className="text-sm font-medium text-muted-foreground">
                     {t('Sign in to check your balance and redeem rewards.')}
                   </p>
                 </div>
 
-                <div className="mx-auto min-h-[25.5rem] max-w-md rounded-[1.5rem] border border-outline-variant/20 bg-surface-low p-8">
+                <div className="mx-auto min-h-[25.5rem] max-w-md rounded-2xl border border-border bg-card p-8 shadow-card">
                   {showForgotPassword ? (
                     <form
                       className="space-y-6"
@@ -233,10 +234,10 @@ export function LandingPage() {
                       })}
                     >
                       <div className="space-y-2 text-center">
-                        <h3 className="font-serif text-3xl tracking-tight text-primary">
+                        <h3 className="font-display text-3xl tracking-tight text-foreground">
                           {t('Reset Password')}
                         </h3>
-                        <p className="text-sm font-medium text-on-surface-variant/80">
+                        <p className="text-sm font-medium text-muted-foreground">
                           {t("Enter your email and we'll send you a reset link.")}
                         </p>
                       </div>
@@ -246,7 +247,7 @@ export function LandingPage() {
                         <Input id="reset-email" placeholder="your@email.com" {...resetForm.register('email')} />
                       </div>
 
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
+                      {error ? <p className="text-center text-sm font-bold text-error">{error}</p> : null}
 
                       <Button
                         type="submit"
@@ -266,7 +267,7 @@ export function LandingPage() {
 
                       <button
                         type="button"
-                        className="block w-full text-center text-sm font-medium text-on-surface-variant/75 transition hover:text-primary"
+                        className="block w-full cursor-pointer text-center text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
                         onClick={() => {
                           setError(null)
                           setShowForgotPassword(false)
@@ -312,7 +313,7 @@ export function LandingPage() {
                         <Label htmlFor="signin-email">{t('Email Address')}</Label>
                         <Input id="signin-email" placeholder="your@email.com" {...signInForm.register('email')} />
                         {signInForm.formState.errors.email ? (
-                          <p className="text-xs font-bold text-red-500">
+                          <p className="text-xs font-bold text-error">
                             {signInForm.formState.errors.email.message}
                           </p>
                         ) : null}
@@ -322,13 +323,13 @@ export function LandingPage() {
                         <Label htmlFor="signin-password">{t('Password')}</Label>
                         <Input id="signin-password" type="password" placeholder="••••••••" {...signInForm.register('password')} />
                         {signInForm.formState.errors.password ? (
-                          <p className="text-xs font-bold text-red-500">
+                          <p className="text-xs font-bold text-error">
                             {signInForm.formState.errors.password.message}
                           </p>
                         ) : null}
                         <button
                           type="button"
-                          className="text-left text-sm font-medium text-on-surface-variant/75 transition hover:text-primary"
+                          className="cursor-pointer text-left text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
                           onClick={() => {
                             setError(null)
                             resetForm.setValue('email', signInForm.getValues('email'))
@@ -361,7 +362,7 @@ export function LandingPage() {
                         </div>
                       ) : null}
 
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
+                      {error ? <p className="text-center text-sm font-bold text-error">{error}</p> : null}
 
                       <Button
                         type="submit"
@@ -381,7 +382,7 @@ export function LandingPage() {
 
                       <button
                         type="button"
-                        className="block w-full text-center text-sm font-medium text-on-surface-variant/60 transition hover:text-primary"
+                        className="block w-full cursor-pointer text-center text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
                         onClick={toggleStaffLogin}
                       >
                         {showStaffLogin ? t('Customer login <-') : t('Staff login ->')}
@@ -395,27 +396,27 @@ export function LandingPage() {
             <TabsContent value="signup" className="outline-none">
               <div className="space-y-7">
                 <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">
+                  <h2 className="font-display text-4xl tracking-tight text-foreground">
                     {t('Create Account')}
                   </h2>
-                  <p className="text-sm font-medium text-on-surface-variant/80">
+                  <p className="text-sm font-medium text-muted-foreground">
                     {t('Join the rewards program and start earning.')}
                   </p>
                 </div>
 
-                <div className="mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-low p-8">
+                <div className="mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center rounded-2xl border border-border bg-card p-8 shadow-card">
                   {signUpComplete ? (
                     <div className="space-y-6 text-center">
                       <div className="space-y-3">
-                        <h3 className="font-serif text-3xl tracking-tight text-primary">{t('Welcome aboard!')}</h3>
-                        <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
+                        <h3 className="font-display text-3xl tracking-tight text-foreground">{t('Welcome aboard!')}</h3>
+                        <p className="text-sm font-medium leading-relaxed text-muted-foreground">
                           {t('Check your email to verify your account, then sign in to start earning rewards.')}
                         </p>
                       </div>
 
                       <button
                         type="button"
-                        className="text-sm font-bold text-primary transition hover:text-primary/80"
+                        className="cursor-pointer text-sm font-bold text-primary transition-colors duration-200 hover:text-[var(--accent-gold)]"
                         onClick={() => {
                           setSignUpComplete(false)
                           setActiveTab('signin')
@@ -444,7 +445,7 @@ export function LandingPage() {
                       })}
                     >
                       <div className="space-y-2">
-                        <p className="text-sm font-medium text-on-surface-variant/80">
+                        <p className="text-sm font-medium text-muted-foreground">
                           {t('Create your free rewards account and start earning points today.')}
                         </p>
                       </div>
@@ -464,7 +465,7 @@ export function LandingPage() {
                         <Input id="signup-password" type="password" placeholder="••••••••" {...signUpForm.register('password')} />
                       </div>
 
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
+                      {error ? <p className="text-center text-sm font-bold text-error">{error}</p> : null}
 
                       <Button
                         type="submit"

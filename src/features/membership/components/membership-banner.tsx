@@ -20,11 +20,11 @@ export function MembershipBanner() {
   if (isActive || dismissed) return null
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-border border-t-2 border-t-[var(--accent-gold)] bg-card p-5 shadow-card">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
-          <p className="text-base font-semibold text-[var(--foreground)]">{t('$10/mo membership, $10 credit instantly')}</p>
-          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
+          <p className="font-display text-xl font-semibold italic text-foreground">{t('$10/mo membership, $10 credit instantly')}</p>
+          <p className="text-sm leading-6 text-muted-foreground">
             {t('Demo mode: subscribe with no real charge to earn points and redeem rewards.')}
           </p>
         </div>

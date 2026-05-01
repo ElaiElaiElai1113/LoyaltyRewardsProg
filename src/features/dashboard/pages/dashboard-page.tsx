@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 
 import { MetricCard } from '@/components/metric-card'
 import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { useMyGiftCards } from '@/features/gift-cards/hooks/use-gift-cards'
 import { MembershipBanner } from '@/features/membership/components/membership-banner'
@@ -66,24 +67,24 @@ export function DashboardPage() {
 
       <section className="space-y-6">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold text-[var(--foreground)]">
+          <h1 className="font-display text-4xl font-semibold tracking-[-0.02em] text-foreground">
             {t('Welcome back,')} {firstName}
           </h1>
-          <p className="max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
+          <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
             {t('Track your balance, rewards, and recent activity across partner businesses.')}
           </p>
         </div>
 
         <div className="grid gap-4 lg:grid-cols-[1fr_2fr]">
-          <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+          <Card featured className="p-6">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Total Points')}</p>
-                <p className="mt-3 text-4xl font-semibold tracking-normal text-[var(--foreground)]">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">{t('Total Points')}</p>
+                <p className="font-display mt-3 text-5xl font-semibold tracking-[-0.02em] text-foreground tabular-nums">
                   {formatPoints(points)}
                 </p>
               </div>
-              <div className="flex size-11 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
+              <div className="flex size-11 items-center justify-center rounded-lg bg-muted text-[var(--accent-gold)]">
                 <Ticket className="size-5" />
               </div>
             </div>
@@ -92,25 +93,25 @@ export function DashboardPage() {
                 {formatCurrency((balance?.availableCredits ?? 0) / 100)} {t('reward credits available')}
               </span>
               {isFrozen ? (
-                <span className="ml-2 inline-flex rounded-md border border-[var(--border)] bg-white px-2.5 py-1 text-xs font-medium text-[var(--muted-foreground)]">
+                <span className="ml-2 inline-flex rounded-md border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted-foreground">
                   {t('Frozen')}
                 </span>
               ) : null}
             </div>
-          </div>
+          </Card>
 
           <div className="grid gap-4 md:grid-cols-3">
             {quickActions.map((action) => (
               <Link
                 key={action.to}
                 to={action.to}
-                className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm transition-colors hover:bg-[var(--muted)]"
+                className="cursor-pointer rounded-2xl border border-border bg-card p-5 shadow-card transition-colors duration-200 hover:bg-muted"
               >
-                <div className="flex size-10 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-foreground">
                   <action.icon className="size-5" />
                 </div>
-                <h2 className="mt-4 text-base font-semibold text-[var(--foreground)]">{action.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{action.description}</p>
+                <h2 className="font-display mt-4 text-xl font-semibold text-foreground">{action.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{action.description}</p>
               </Link>
             ))}
           </div>
@@ -142,8 +143,8 @@ export function DashboardPage() {
         <section className="space-y-5">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Featured')}</p>
-              <h2 className="text-2xl font-semibold text-[var(--foreground)]">{t('Featured Rewards')}</h2>
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-gold)]">{t('Featured')}</p>
+              <h2 className="font-display text-3xl font-semibold text-foreground">{t('Featured Rewards')}</h2>
             </div>
             <Button asChild variant="ghost">
               <Link to="/rewards">{t('Full Catalog')}</Link>
@@ -163,8 +164,8 @@ export function DashboardPage() {
 
         <section className="space-y-5">
           <div>
-            <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Limited Time')}</p>
-            <h2 className="text-2xl font-semibold text-[var(--foreground)]">{t('Promotions')}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-gold)]">{t('Limited Time')}</p>
+            <h2 className="font-display text-3xl font-semibold text-foreground">{t('Promotions')}</h2>
           </div>
           <div className="space-y-4">
             {activePromotions.map((promotion) => (
@@ -177,14 +178,14 @@ export function DashboardPage() {
       <section className="space-y-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Activity')}</p>
-            <h2 className="text-2xl font-semibold text-[var(--foreground)]">{t('Recent Activity')}</h2>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--accent-gold)]">{t('Activity')}</p>
+            <h2 className="font-display text-3xl font-semibold text-foreground">{t('Recent Activity')}</h2>
           </div>
           <Button asChild variant="ghost">
             <Link to="/activity">{t('History')}</Link>
           </Button>
         </div>
-        <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white p-2 shadow-sm">
+        <div className="overflow-hidden rounded-2xl border border-border bg-card p-2 shadow-card">
           <ActivityList items={recentActivity} />
         </div>
       </section>
