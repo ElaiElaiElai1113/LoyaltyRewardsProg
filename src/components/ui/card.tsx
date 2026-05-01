@@ -2,12 +2,17 @@ import * as React from 'react'
 
 import { cn } from '@/lib/utils'
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+type CardProps = React.HTMLAttributes<HTMLDivElement> & {
+  featured?: boolean
+}
+
+const Card = React.forwardRef<HTMLDivElement, CardProps>(
+  ({ className, featured = false, ...props }, ref) => (
     <div
       ref={ref}
       className={cn(
-        'rounded-xl border border-stone-200 bg-white text-[var(--card-foreground)] shadow-sm',
+        'rounded-2xl border border-border bg-card text-card-foreground shadow-card',
+        featured && 'border-t-2 border-t-[var(--accent-gold)]',
         className,
       )}
       {...props}
@@ -25,7 +30,7 @@ CardHeader.displayName = 'CardHeader'
 
 const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
   ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn('text-xl font-semibold text-[var(--foreground)]', className)} {...props} />
+    <h3 ref={ref} className={cn('font-display text-2xl font-semibold text-foreground', className)} {...props} />
   ),
 )
 CardTitle.displayName = 'CardTitle'
@@ -34,7 +39,7 @@ const CardDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm leading-6 text-on-surface-variant', className)} {...props} />
+  <p ref={ref} className={cn('text-sm leading-6 text-muted-foreground', className)} {...props} />
 ))
 CardDescription.displayName = 'CardDescription'
 

@@ -14,7 +14,7 @@ function DialogOverlay({
 }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
   return (
     <DialogPrimitive.Overlay
-      className={cn('fixed inset-0 z-50 bg-black/35 ', className)}
+      className={cn('fixed inset-0 z-50 bg-foreground/35', className)}
       {...props}
     />
   )
@@ -27,16 +27,16 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
   return (
     <DialogPortal>
-      <DialogOverlay className="bg-primary/20 " />
+      <DialogOverlay className="bg-primary/20" />
       <DialogPrimitive.Content
         className={cn(
-          'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-10 text-[var(--foreground)] shadow-lg outline-none',
+          'fixed left-1/2 top-1/2 z-50 w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-border bg-card p-10 text-foreground shadow-card outline-none',
           className,
         )}
         {...props}
       >
         {children}
-        <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-3 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
+        <DialogPrimitive.Close className="absolute right-6 top-6 cursor-pointer rounded-full p-3 text-muted-foreground transition-colors duration-200 hover:bg-muted hover:text-foreground">
           <X className="size-5" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
@@ -59,7 +59,7 @@ function DialogTitle({
 }: React.ComponentProps<typeof DialogPrimitive.Title>) {
   return (
     <DialogPrimitive.Title
-      className={cn('text-2xl font-semibold text-[var(--foreground)]', className)}
+      className={cn('font-display text-3xl font-semibold text-foreground', className)}
       {...props}
     />
   )

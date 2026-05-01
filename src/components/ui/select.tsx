@@ -15,14 +15,14 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        'flex h-12 w-full items-center justify-between rounded-lg border border-[var(--border)] bg-[var(--card)] px-4 text-left text-sm text-[var(--foreground)] shadow-sm outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30',
+        'flex h-11 w-full cursor-pointer items-center justify-between rounded-lg border border-border bg-card px-4 text-left text-sm text-foreground shadow-card outline-none transition-colors duration-200 placeholder:text-muted-foreground focus-visible:ring-2 focus-visible:ring-ring/30',
         className,
       )}
       {...props}
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="size-4 text-[var(--muted-foreground)]" />
+        <ChevronDown className="size-4 text-muted-foreground" />
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )
@@ -38,7 +38,7 @@ function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          'z-[9999] max-h-72 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-lg border border-[var(--border)] bg-[var(--card)] p-1 text-[var(--foreground)] shadow-lg',
+          'z-[9999] max-h-72 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-lg border border-border bg-card p-1 text-foreground shadow-card',
           position === 'popper' && 'translate-y-1',
           className,
         )}
@@ -61,7 +61,7 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        'relative flex w-full cursor-default select-none items-center rounded-md py-2.5 pl-9 pr-3 text-sm outline-none transition-colors focus:bg-[var(--muted)] focus:text-[var(--foreground)] data-[highlighted]:bg-[var(--muted)] data-[highlighted]:text-[var(--foreground)] data-[state=checked]:text-[var(--foreground)]',
+        'relative flex w-full cursor-pointer select-none items-center rounded-md py-2.5 pl-9 pr-3 text-sm outline-none transition-colors duration-200 focus:bg-muted focus:text-foreground data-[highlighted]:bg-muted data-[highlighted]:text-foreground data-[state=checked]:text-foreground',
         className,
       )}
       {...props}
