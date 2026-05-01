@@ -110,7 +110,7 @@ export function LandingPage() {
             </Badge>
             <div className="max-w-3xl space-y-6">
               <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
-                {t('Medellin Rewards.')}<br />
+                <span className="text-brand-gold">{t('Medellin Rewards.')}</span><br />
                 {t('Earn across')}<br />
                 {t('the network')}.
               </h1>

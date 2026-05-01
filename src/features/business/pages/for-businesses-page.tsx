@@ -78,7 +78,7 @@ export function ForBusinessesPage() {
               Loyalty, referrals, and partner growth in one rewards network.
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
-              Medellin Rewards helps cafes, venues, and local operators turn repeat visits, QR signups,
+              <span className="font-semibold text-brand-gold">Medellin Rewards</span> helps cafes, venues, and local operators turn repeat visits, QR signups,
               reward credits, and hotel/front-desk referrals into measurable customer growth.
             </p>
           </div>

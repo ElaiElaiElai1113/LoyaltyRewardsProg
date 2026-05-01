@@ -133,6 +133,14 @@
 }
 
 @layer utilities {
+  .text-brand-gold {
+    color: #B88A2A;
+  }
+
+  :root[data-theme="dark"] .text-brand-gold {
+    color: #F4C86A;
+  }
+
   .bg-tenant {
     background-color: var(--tenant-accent);
     color: var(--tenant-accent-foreground);

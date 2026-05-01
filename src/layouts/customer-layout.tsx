@@ -44,7 +44,7 @@ export function CustomerLayout() {
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-6">
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex items-center gap-3">
-              <span className="text-xl font-semibold text-[var(--foreground)]">
+              <span className="text-xl font-semibold text-brand-gold">
                 Medellin Rewards
               </span>
               <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
@@ -147,7 +147,7 @@ export function CustomerLayout() {
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
-              <span className="text-lg font-semibold text-[var(--foreground)]">Medellin Rewards</span>
+              <span className="text-lg font-semibold text-brand-gold">Medellin Rewards</span>
               <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
                 {t('Earn points, redeem rewards, and stay connected across partner businesses.')}
               </p>
