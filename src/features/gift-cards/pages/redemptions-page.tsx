@@ -79,7 +79,7 @@ export function RedemptionsPage() {
     <div className="space-y-8">
       <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Gift Card Redemptions</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">Gift Card Redemptions</h1>
           <p className="mt-2 max-w-3xl text-on-surface-variant">
             Scan, upload, or enter a code to validate a single-use gift card for {business?.name ?? 'this business'}.
           </p>
@@ -125,7 +125,7 @@ export function RedemptionsPage() {
             {selectedCard ? (
               <div className="space-y-5">
                 <div className="rounded border border-primary-container/20 bg-surface-low p-5">
-                  <h3 className="font-serif text-3xl text-primary-container">{selectedCard.catalog?.title ?? 'Gift card'}</h3>
+                  <h3 className="font-display text-3xl text-primary-container">{selectedCard.catalog?.title ?? 'Gift card'}</h3>
                   <div className="mt-4 grid gap-4 sm:grid-cols-2">
                     <div>
                       <p className="text-xs uppercase tracking-widest text-on-surface-variant">Customer</p>

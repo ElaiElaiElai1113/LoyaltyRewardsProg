@@ -47,7 +47,7 @@ export function RedeemRewardPanel({
       </div>
 
       <div className="space-y-4">
-        <h2 className="font-serif text-5xl tracking-tight text-primary">
+        <h2 className="font-display text-5xl tracking-tight text-primary">
           {t(reward.title)}
         </h2>
         <p className="max-w-2xl text-xl font-medium leading-relaxed text-on-surface-variant/85">
@@ -60,7 +60,7 @@ export function RedeemRewardPanel({
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
             {t('Points Cost')}
           </p>
-          <p className="font-serif text-4xl text-primary">
+          <p className="font-display text-4xl text-primary">
             {formatPoints(reward.pointsCost)} {t('points')}
           </p>
         </div>
@@ -68,7 +68,7 @@ export function RedeemRewardPanel({
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
             {t('Your Points')}
           </p>
-          <p className="font-serif text-4xl text-primary">
+          <p className="font-display text-4xl text-primary">
             {formatPoints(balancePoints)} {t('points')}
           </p>
         </div>
@@ -77,7 +77,7 @@ export function RedeemRewardPanel({
             {t('Points After')}
           </p>
           <p className={cn(
-            "font-serif text-4xl",
+            "font-display text-4xl",
             canRedeem ? "text-primary/80" : "text-error/80"
           )}>
             {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))} {t('points')}
@@ -101,7 +101,7 @@ export function RedeemRewardPanel({
               <option value="Later today" />
             </datalist>
             {form.formState.errors.pickupWindow ? (
-              <p className="text-xs font-bold text-red-500">{form.formState.errors.pickupWindow.message}</p>
+              <p className="text-xs font-bold text-error">{form.formState.errors.pickupWindow.message}</p>
             ) : null}
           </div>
 
@@ -113,7 +113,7 @@ export function RedeemRewardPanel({
               {...form.register('notes')}
             />
             {form.formState.errors.notes ? (
-              <p className="text-xs font-bold text-red-500">{form.formState.errors.notes.message}</p>
+              <p className="text-xs font-bold text-error">{form.formState.errors.notes.message}</p>
             ) : null}
           </div>
         </div>

@@ -50,7 +50,7 @@ export function AppShell() {
               <p className="text-xs uppercase tracking-[0.2em] text-brand-gold">
                 Medellin Rewards
               </p>
-              <h1 className="mt-1 font-serif text-3xl tracking-[-0.04em] text-foreground">
+              <h1 className="mt-1 font-display text-3xl tracking-[-0.04em] text-foreground">
                 Rewards
               </h1>
             </div>

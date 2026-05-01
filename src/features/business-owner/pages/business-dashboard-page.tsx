@@ -63,7 +63,7 @@ export function BusinessDashboardPage() {
     )
   }
 
-  const businessColors = { primary: 'from-[#7a4a1f] to-[#d8a23a]', light: 'from-primary-container/18 to-secondary-container/14' }
+  const businessColors = { primary: 'from-primary to-[var(--accent-gold)]', light: 'from-primary-container/18 to-secondary-container/14' }
   const signupQrUrl =
     profile?.referralCode && business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
@@ -101,14 +101,14 @@ export function BusinessDashboardPage() {
   return (
     <div className="space-y-16">
       {/* Welcome Section */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-[var(--muted)] px-8 py-12 text-white shadow-2xl">
+      <div className="relative overflow-hidden rounded-[2rem] bg-[var(--muted)] px-8 py-12 text-primary-foreground shadow-2xl">
         <div className="absolute inset-0 bg-[var(--muted)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
           <p className="text-sm font-medium text-[var(--muted-foreground)] mb-3">{t('Business Overview')}</p>
-          <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">
+          <h1 className="font-display text-4xl tracking-tight text-primary-foreground md:text-6xl leading-[1.1]">
             {business?.name} {t('Command Center')}
           </h1>
-          <p className="mt-4 text-lg text-white/80 font-medium">
+          <p className="mt-4 text-lg text-primary-foreground/80 font-medium">
             {t('Track members, campaigns, reward credits, and fulfillment from one operations dashboard.')}
           </p>
         </div>
@@ -168,99 +168,99 @@ export function BusinessDashboardPage() {
 
       {/* Points Overview */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">{t('Points Issued')}</h3>
+              <h3 className="font-display text-2xl text-primary">{t('Points Issued')}</h3>
               <p className="text-sm text-on-surface-variant/70">{t('Total points awarded to customers')}</p>
             </div>
             <div className="size-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
               <TrendingUp className="size-6" />
             </div>
           </div>
-          <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
+          <p className="font-display text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
-              <h3 className="font-serif text-2xl text-primary">{t('Points Redeemed')}</h3>
+              <h3 className="font-display text-2xl text-primary">{t('Points Redeemed')}</h3>
               <p className="text-sm text-on-surface-variant/70">{t('Total points spent on rewards')}</p>
             </div>
             <div className="size-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
               <Gift className="size-6" />
             </div>
           </div>
-          <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsRedeemed)}</p>
+          <p className="font-display text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsRedeemed)}</p>
         </div>
       </div>
 
       {/* Quick Actions */}
       <div>
-        <h2 className="font-serif text-2xl text-primary mb-6">{t('Command Shortcuts')}</h2>
+        <h2 className="font-display text-2xl text-primary mb-6">{t('Command Shortcuts')}</h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link
             to="/business/products"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-colors`}
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Products')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{products.length}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-primary-foreground">{t('Products')}</p>
+                <p className="font-display text-3xl text-primary group-hover:text-primary-foreground">{products.length}</p>
               </div>
-              <Package className="size-8 text-primary/70 group-hover:text-white/70" />
+              <Package className="size-8 text-primary/70 group-hover:text-primary-foreground/70" />
             </div>
           </Link>
 
           <Link
             to="/business/rewards"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-colors`}
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Rewards')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{rewards.length}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-primary-foreground">{t('Rewards')}</p>
+                <p className="font-display text-3xl text-primary group-hover:text-primary-foreground">{rewards.length}</p>
               </div>
-              <Gift className="size-8 text-primary/70 group-hover:text-white/70" />
+              <Gift className="size-8 text-primary/70 group-hover:text-primary-foreground/70" />
             </div>
           </Link>
 
           <Link
             to="/business/promotions"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-colors`}
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Promotions')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{promotions.length}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-primary-foreground">{t('Promotions')}</p>
+                <p className="font-display text-3xl text-primary group-hover:text-primary-foreground">{promotions.length}</p>
               </div>
-              <Sparkles className="size-8 text-primary/70 group-hover:text-white/70" />
+              <Sparkles className="size-8 text-primary/70 group-hover:text-primary-foreground/70" />
             </div>
           </Link>
 
           <Link
             to="/business/settings"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-colors`}
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Settings')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{t('Manage')}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-primary-foreground">{t('Settings')}</p>
+                <p className="font-display text-3xl text-primary group-hover:text-primary-foreground">{t('Manage')}</p>
               </div>
-              <ArrowUpRight className="size-8 text-primary/70 group-hover:text-white/70" />
+              <ArrowUpRight className="size-8 text-primary/70 group-hover:text-primary-foreground/70" />
             </div>
           </Link>
 
           <Link
             to="/business/partners"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-colors`}
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Partners</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{partnerPerformance.data?.length ?? 0}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-primary-foreground">Partners</p>
+                <p className="font-display text-3xl text-primary group-hover:text-primary-foreground">{partnerPerformance.data?.length ?? 0}</p>
               </div>
-              <Hotel className="size-8 text-primary/70 group-hover:text-white/70" />
+              <Hotel className="size-8 text-primary/70 group-hover:text-primary-foreground/70" />
             </div>
           </Link>
         </div>
@@ -268,10 +268,10 @@ export function BusinessDashboardPage() {
 
       {/* Signup Portal */}
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="space-y-2">
-              <h2 className="font-serif text-2xl text-primary">{t('Signup Portal')}</h2>
+              <h2 className="font-display text-2xl text-primary">{t('Signup Portal')}</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
                 Display this portal at checkout or on signage. New customers scan it to create an account and earn rewards.
               </p>
@@ -307,7 +307,7 @@ export function BusinessDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card p-8">
           <div ref={signupQrRef} className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
             {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
           </div>
@@ -331,12 +331,12 @@ export function BusinessDashboardPage() {
         {/* Reward Credit Redemption Validation */}
         <div>
           <div className="mb-6 space-y-1">
-          <h2 className="font-serif text-2xl text-primary">{t('Reward Credit Scanner')}</h2>
+          <h2 className="font-display text-2xl text-primary">{t('Reward Credit Scanner')}</h2>
           <p className="text-sm text-on-surface-variant/70">{t("Enter the customer's 6-digit reward credit code")}</p>
         </div>
 
         <form
-          className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-6"
+          className="rounded-xl border border-[var(--border)] bg-card shadow-card p-6"
           onSubmit={(event: FormEvent<HTMLFormElement>) => {
             event.preventDefault()
             if (!business?.id || redemptionCode.length !== 6) return
@@ -374,7 +374,7 @@ export function BusinessDashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">Partner Referrals</h2>
+            <h2 className="font-display text-2xl text-primary">Partner Referrals</h2>
             <p className="text-sm text-on-surface-variant/70">Track hotel/front-desk referrals and reward partners after first paid orders.</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
@@ -383,7 +383,7 @@ export function BusinessDashboardPage() {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card divide-y divide-outline-variant/10 overflow-hidden">
             {partnerPerformance.isLoading ? (
               Array.from({ length: 4 }).map((_, index) => (
                 <div key={index} className="flex items-center justify-between p-5">
@@ -397,10 +397,10 @@ export function BusinessDashboardPage() {
             ) : (partnerPerformance.data ?? []).slice(0, 4).map((entry) => (
               <div key={entry.partnerReferrerId} className="flex items-center justify-between p-5">
                 <div>
-                  <p className="font-serif text-xl text-primary">{entry.contactName}</p>
+                  <p className="font-display text-xl text-primary">{entry.contactName}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-serif text-2xl text-primary">{entry.creditsEarned}</p>
+                  <p className="font-display text-2xl text-primary">{entry.creditsEarned}</p>
                   <p className="text-[0.65rem] uppercase tracking-[0.18em] text-on-surface-variant/70">credits</p>
                 </div>
               </div>
@@ -415,7 +415,7 @@ export function BusinessDashboardPage() {
             ) : null}
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card divide-y divide-outline-variant/10 overflow-hidden">
           {partnerReferrals.isLoading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="p-6">
@@ -448,11 +448,11 @@ export function BusinessDashboardPage() {
               <div className="grid flex-1 gap-6 md:grid-cols-2">
                 <div className="space-y-1">
                   <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Referral Source</p>
-                  <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
+                  <p className="font-display text-xl text-primary">{referral.partnerReferrer.contactName}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Attributed Customer</p>
-                  <p className="font-serif text-xl text-primary">{referral.customer.fullName}</p>
+                  <p className="font-display text-xl text-primary">{referral.customer.fullName}</p>
                   <p className="text-sm font-medium text-on-surface-variant/75">{referral.customer.email}</p>
                 </div>
               </div>
@@ -472,7 +472,7 @@ export function BusinessDashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">{t('Fulfillment Queue')}</h2>
+            <h2 className="font-display text-2xl text-primary">{t('Fulfillment Queue')}</h2>
             <p className="text-sm text-on-surface-variant/70">{t('Manage and fulfill pending reward claims')}</p>
           </div>
           <Link to="/business/rewards" className="text-sm font-semibold text-primary hover:underline">
@@ -480,7 +480,7 @@ export function BusinessDashboardPage() {
           </Link>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card divide-y divide-outline-variant/10 overflow-hidden">
           {redemptions.length === 0 ? (
             <EmptyState
               className="border-0 shadow-none"
@@ -515,7 +515,7 @@ export function BusinessDashboardPage() {
                    <div className={`px-3 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest ${
                     redemption.status === 'ready' 
                       ? 'bg-amber-100 text-amber-700' 
-                      : 'bg-green-100 text-green-700'
+                      : 'bg-muted text-success'
                   }`}>
                     {redemption.status}
                   </div>

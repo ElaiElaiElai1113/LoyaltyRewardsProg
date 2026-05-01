@@ -42,14 +42,14 @@ export function ActivityList({ items }: ActivityListProps) {
         const Icon = getIcon(item.type)
 
         return (
-          <div key={item.id} className="group relative flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between bg-surface-low rounded-2xl transition-all hover:bg-surface-highest/40">
+          <div key={item.id} className="group relative flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between bg-surface-low rounded-2xl transition-colors hover:bg-surface-highest/40">
             <div className="flex items-center gap-6">
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-surface-lowest text-primary shadow-sm group-hover:shadow-md transition-all">
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-surface-lowest text-primary shadow-card group-hover:shadow-md transition-colors">
                 <Icon className="size-6" />
               </div>
               <div className="space-y-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="font-serif text-xl tracking-tight text-primary leading-tight">{t(item.title)}</h3>
+                  <h3 className="font-display text-xl tracking-tight text-primary leading-tight">{t(item.title)}</h3>
                   <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full">
                     {item.points >= 0 ? `+${formatPoints(item.points)} ${t('points')}` : `${formatPoints(item.points)} ${t('points')}`}
                   </Badge>

@@ -45,7 +45,7 @@ export function RedeemRewardPage() {
           {t('Redeem Reward')}
         </Badge>
         <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card space-y-4">
-          <p className="text-lg font-medium text-red-500">
+          <p className="text-lg font-medium text-error">
             {reward.error instanceof Error ? reward.error.message : t('Reward not found.')}
           </p>
           <Button onClick={() => navigate('/rewards')} className="rounded-full">
@@ -63,7 +63,7 @@ export function RedeemRewardPage() {
           {t('Redeem Reward')}
         </Badge>
         <div className="space-y-2">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">
+          <h1 className="font-display text-5xl tracking-tight text-primary">
             {t('Confirm your next treat.')}
           </h1>
           <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">

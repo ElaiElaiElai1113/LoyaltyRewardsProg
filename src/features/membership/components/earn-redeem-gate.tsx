@@ -48,24 +48,24 @@ export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="overflow-hidden p-0 sm:max-w-[34rem]">
-          <div className="border-b border-[var(--border)] bg-[var(--foreground)] px-8 py-7 text-white">
+          <div className="border-b border-[var(--border)] bg-[var(--foreground)] px-8 py-7 text-primary-foreground">
             <div className="flex items-start justify-between gap-6">
               <div className="space-y-4">
-                <Badge className="bg-white/12 text-white">
+                <Badge className="bg-card/90 text-primary-foreground">
                   {t('Demo mode - no real charge')}
                 </Badge>
                 <DialogHeader className="mb-0 gap-3">
-                  <DialogTitle className="text-3xl font-semibold leading-tight text-white">
+                  <DialogTitle className="text-3xl font-semibold leading-tight text-primary-foreground">
                     {action === 'earn' ? t('Unlock points on this order') : t('Unlock reward redemption')}
                   </DialogTitle>
-                  <DialogDescription className="text-sm leading-6 text-white/75">
+                  <DialogDescription className="text-sm leading-6 text-primary-foreground/75">
                     {isGuest
                       ? t('Create an account or sign in first, then subscribe in demo mode to unlock this action.')
                       : t('Subscribe in demo mode to start earning and redeeming while keeping the catalog open to browse.')}
                   </DialogDescription>
                 </DialogHeader>
               </div>
-              <div className="hidden size-14 shrink-0 items-center justify-center rounded-xl bg-white/12 sm:flex">
+              <div className="hidden size-14 shrink-0 items-center justify-center rounded-xl bg-card/90 sm:flex">
                 <Sparkles className="size-7" />
               </div>
             </div>
@@ -73,15 +73,15 @@ export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
 
           <div className="space-y-6 px-8 py-7">
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-card p-4 shadow-card">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Monthly')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{formatCurrency(10)}</p>
               </div>
-              <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-card p-4 shadow-card">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Instant credit')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{formatCurrency(10)}</p>
               </div>
-              <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-card p-4 shadow-card">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Payment')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{t('Mock')}</p>
               </div>

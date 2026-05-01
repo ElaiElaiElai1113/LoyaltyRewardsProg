@@ -45,7 +45,7 @@ export function BusinessGiftCardsPage() {
   })
 
   if (profile?.role !== 'business-owner') {
-    return <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-10 text-on-surface-variant">Only business owners can curate gift cards.</div>
+    return <div className="rounded-xl border border-[var(--border)] bg-card shadow-card p-10 text-on-surface-variant">Only business owners can curate gift cards.</div>
   }
 
   function openForCreate() {
@@ -91,7 +91,7 @@ export function BusinessGiftCardsPage() {
     <div className="space-y-12">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Gift Card Catalog</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">Gift Card Catalog</h1>
           <p className="text-lg text-on-surface-variant/85">Create and manage gift cards customers can buy with points.</p>
         </div>
         <Button className="h-14 rounded-full px-8" onClick={openForCreate}>
@@ -109,12 +109,12 @@ export function BusinessGiftCardsPage() {
             <div className="grid gap-2">
               <Label htmlFor="gift-card-title">Title</Label>
               <Input id="gift-card-title" {...form.register('title')} />
-              {form.formState.errors.title ? <p className="text-xs text-red-500">{form.formState.errors.title.message}</p> : null}
+              {form.formState.errors.title ? <p className="text-xs text-error">{form.formState.errors.title.message}</p> : null}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="gift-card-description">Description</Label>
               <Textarea id="gift-card-description" {...form.register('description')} />
-              {form.formState.errors.description ? <p className="text-xs text-red-500">{form.formState.errors.description.message}</p> : null}
+              {form.formState.errors.description ? <p className="text-xs text-error">{form.formState.errors.description.message}</p> : null}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="gift-card-image">Image URL</Label>
@@ -150,7 +150,7 @@ export function BusinessGiftCardsPage() {
 
       <div className="grid gap-8 sm:grid-cols-2">
         {(catalog.data ?? []).map((item) => (
-          <div key={item.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-7">
+          <div key={item.id} className="rounded-xl border border-[var(--border)] bg-card shadow-card p-7">
             <div className="flex items-start justify-between gap-4">
               <Badge variant={item.isActive ? 'accent' : 'outline'}>{item.isActive ? 'Active' : 'Inactive'}</Badge>
               <div className="flex gap-2">
@@ -162,7 +162,7 @@ export function BusinessGiftCardsPage() {
                 </Button>
               </div>
             </div>
-            <h3 className="mt-5 font-serif text-3xl text-primary-container">{item.title}</h3>
+            <h3 className="mt-5 font-display text-3xl text-primary-container">{item.title}</h3>
             <p className="mt-3 text-sm text-on-surface-variant">{item.description}</p>
             <div className="mt-6 flex justify-between text-sm font-bold text-on-surface">
               <span>{item.pointsCost} points</span>

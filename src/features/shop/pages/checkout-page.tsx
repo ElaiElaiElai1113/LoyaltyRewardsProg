@@ -79,7 +79,7 @@ export function CheckoutPage() {
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
           {t('Demo Checkout')}
         </Badge>
-        <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
+        <h1 className="font-display text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
           {t('Demo Checkout')}
         </h1>
         <p className="text-base font-medium leading-relaxed text-on-surface-variant/80">
@@ -91,7 +91,7 @@ export function CheckoutPage() {
         <div className="space-y-8">
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6">
             <div className="space-y-2">
-              <h2 className="font-serif text-3xl text-primary">{t('Simulated Payment Method')}</h2>
+              <h2 className="font-display text-3xl text-primary">{t('Simulated Payment Method')}</h2>
               <p className="text-sm font-medium text-on-surface-variant/75">
                 {t('Use the preset demo payment options below. They do not charge a real card.')}
               </p>
@@ -133,7 +133,7 @@ export function CheckoutPage() {
                       key={option.value}
                       type="button"
                       onClick={() => form.setValue('paymentMethod', option.value as 'visa' | 'mastercard' | 'applepay')}
-                      className={`rounded-2xl border p-4 text-sm font-medium transition-all ${
+                      className={`cursor-pointer rounded-2xl border p-4 text-sm font-medium transition-colors ${
                         selectedPaymentMethod === option.value
                           ? 'border-primary bg-primary/5 text-primary'
                           : 'border-outline-variant/20 text-on-surface-variant hover:border-outline-variant/40'
@@ -176,7 +176,7 @@ export function CheckoutPage() {
               </div>
 
               {(validationError || error) && (
-                <p className="text-sm font-bold text-red-500 text-center">{validationError ?? error}</p>
+                <p className="text-center text-sm font-bold text-error">{validationError ?? error}</p>
               )}
 
               <EarnRedeemGate action="earn">
@@ -194,7 +194,7 @@ export function CheckoutPage() {
         </div>
 
         <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6 h-fit sticky top-32">
-          <h2 className="font-serif text-2xl text-primary">{t('Order Summary')}</h2>
+          <h2 className="font-display text-2xl text-primary">{t('Order Summary')}</h2>
           <div className="space-y-3">
             {resolvedItems.map(({ product, quantity }) => (
               <div key={product.id} className="flex justify-between text-sm">

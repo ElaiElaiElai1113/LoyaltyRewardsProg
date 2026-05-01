@@ -71,7 +71,7 @@ export function RewardsPage() {
         {profile && (
           <div className="flex flex-col items-start gap-4 lg:items-end">
             <span className="text-sm font-medium text-[var(--muted-foreground)]">{t('Your Points')}</span>
-            <div className="flex items-center gap-4 rounded-xl border border-[var(--border)] bg-white px-6 py-4 shadow-sm">
+            <div className="flex items-center gap-4 rounded-xl border border-[var(--border)] bg-card px-6 py-4 shadow-card">
               <div className="flex size-10 items-center justify-center rounded-lg bg-[var(--muted)]">
                 <Gift className="size-5 text-[var(--foreground)]" />
               </div>
@@ -85,7 +85,7 @@ export function RewardsPage() {
       </div>
 
       {!isMembershipActive ? (
-        <div className="rounded-xl border border-[var(--border)] bg-white p-4 text-sm leading-6 text-[var(--muted-foreground)] shadow-sm">
+        <div className="rounded-xl border border-[var(--border)] bg-card p-4 text-sm leading-6 text-[var(--muted-foreground)] shadow-card">
           <strong className="text-[var(--foreground)]">{t('Membership unlocks redemption.')}</strong>{' '}
           {t('Catalog browsing stays open. Subscribe in demo mode only when you are ready to redeem.')}
         </div>
@@ -106,7 +106,7 @@ export function RewardsPage() {
               key={filter}
               variant={activeFilter === filter ? 'tertiary' : 'ghost'}
               size="sm"
-              className={`rounded-full transition-all ${
+              className={`rounded-full transition-colors ${
                 activeFilter === filter
                   ? 'px-8'
                   : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
@@ -122,7 +122,7 @@ export function RewardsPage() {
       {rewards.isLoading ? (
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-card p-6 shadow-card">
               <Skeleton className="h-7 w-24 rounded-full" />
               <Skeleton className="mt-8 h-9 w-3/4" />
               <Skeleton className="mt-4 h-4 w-full" />

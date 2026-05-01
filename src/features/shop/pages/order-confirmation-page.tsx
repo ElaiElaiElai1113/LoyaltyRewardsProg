@@ -33,7 +33,7 @@ export function OrderConfirmationPage() {
         <Badge variant="accent" className="bg-success/10 text-success">
           {t('Order Confirmed')}
         </Badge>
-        <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
+        <h1 className="font-display text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
           {t('Thank you!')}
         </h1>
         <p className="text-lg text-on-surface-variant/85 font-medium max-w-xl mx-auto">
@@ -43,7 +43,7 @@ export function OrderConfirmationPage() {
 
       <div className="mx-auto max-w-2xl rounded-[2rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card space-y-8">
         <div className="space-y-4">
-          <h2 className="font-serif text-3xl text-primary">{t('Order Details')}</h2>
+          <h2 className="font-display text-3xl text-primary">{t('Order Details')}</h2>
           {order.data.items.map((item) => (
             <div key={item.productId} className="flex justify-between text-sm">
               <span className="text-on-surface-variant">{t(item.productTitle)} x{item.quantity}</span>
@@ -59,7 +59,7 @@ export function OrderConfirmationPage() {
         </div>
 
         <div className="rounded-xl bg-tertiary/20 p-6 text-center space-y-2">
-          <p className="font-serif text-3xl text-primary">+{order.data.pointsEarned} {t('points')}</p>
+          <p className="font-display text-3xl text-primary">+{order.data.pointsEarned} {t('points')}</p>
           <p className="text-sm text-on-surface-variant/80">{t('Processing - available within 24 hours')}</p>
         </div>
 

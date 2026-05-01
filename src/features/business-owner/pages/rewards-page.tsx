@@ -96,7 +96,7 @@ export function RewardsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Rewards Catalog')}</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">{t('Rewards Catalog')}</h1>
           <p className="text-lg text-on-surface-variant/85">
             {t('Create and manage rewards customers can redeem with points.')}
           </p>
@@ -111,7 +111,7 @@ export function RewardsPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl text-primary">
+            <DialogTitle className="font-display text-2xl text-primary">
               {editingId ? t('Edit Reward') : t('New Reward')}
             </DialogTitle>
           </DialogHeader>
@@ -125,7 +125,7 @@ export function RewardsPage() {
                 {...form.register('title')}
               />
               {form.formState.errors.title && (
-                <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -137,7 +137,7 @@ export function RewardsPage() {
                 {...form.register('description')}
               />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -160,7 +160,7 @@ export function RewardsPage() {
                 )}
               />
               {form.formState.errors.category && (
-                <p className="text-xs text-red-500">{form.formState.errors.category.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.category.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -173,7 +173,7 @@ export function RewardsPage() {
                 {...form.register('pointsCost', { valueAsNumber: true })}
               />
               {form.formState.errors.pointsCost && (
-                <p className="text-xs text-red-500">{form.formState.errors.pointsCost.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.pointsCost.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -185,7 +185,7 @@ export function RewardsPage() {
                 {...form.register('highlight')}
               />
             </div>
-            {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
+            {error && <p className="text-sm font-bold text-error text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                 {t('Cancel')}
@@ -202,7 +202,7 @@ export function RewardsPage() {
       {isLoading ? (
         <div className="grid gap-8 sm:grid-cols-2">
           {Array.from({ length: 4 }).map((_, index) => (
-            <div key={index} className="rounded-[2.5rem] border border-[var(--border)] bg-white p-8 shadow-sm">
+            <div key={index} className="rounded-[2.5rem] border border-[var(--border)] bg-card p-8 shadow-card">
               <div className="flex justify-between">
                 <Skeleton className="h-7 w-24 rounded-full" />
                 <Skeleton className="size-8 rounded-full" />
@@ -233,7 +233,7 @@ export function RewardsPage() {
           rewards.map((reward) => (
             <div
               key={reward.id}
-              className="rounded-xl border border-[var(--border)] bg-white shadow-sm group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm"
+              className="rounded-xl border border-[var(--border)] bg-card shadow-card group relative overflow-hidden rounded-[2.5rem] p-8 transition-colors duration-300  hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-card"
             >
               <div className="absolute inset-x-0 top-0 h-24 bg-[var(--muted)]" />
               <div className="flex flex-col gap-6 h-full">
@@ -260,7 +260,7 @@ export function RewardsPage() {
                 </div>
 
                 <div className="grow space-y-4 relative">
-                  <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
+                  <h3 className="font-display text-3xl tracking-tight text-primary leading-tight">
                     {t(reward.title)}
                   </h3>
                   <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
@@ -273,7 +273,7 @@ export function RewardsPage() {
                     <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
                       {t('Points Cost')}
                     </span>
-                    <p className="font-serif text-3xl tracking-tight text-primary-container">
+                    <p className="font-display text-3xl tracking-tight text-primary-container">
                       {formatPoints(reward.pointsCost)} {t('points')}
                     </p>
                   </div>

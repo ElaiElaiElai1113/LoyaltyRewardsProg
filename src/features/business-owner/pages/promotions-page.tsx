@@ -93,7 +93,7 @@ export function PromotionsPage() {
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Campaigns')}</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">{t('Campaigns')}</h1>
           <p className="text-lg text-on-surface-variant/85">
             {t('Create and manage promotions that engage customers and drive repeat purchases.')}
           </p>
@@ -108,7 +108,7 @@ export function PromotionsPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl text-primary">
+            <DialogTitle className="font-display text-2xl text-primary">
               {editingId ? t('Edit Campaign') : t('New Campaign')}
             </DialogTitle>
           </DialogHeader>
@@ -117,38 +117,38 @@ export function PromotionsPage() {
               <Label htmlFor="promo-title">{t('Title')}</Label>
               <Input id="promo-title" placeholder="Double Points Weekend" {...form.register('title')} />
               {form.formState.errors.title && (
-                <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-description">{t('Description')}</Label>
               <Textarea id="promo-description" placeholder="Earn 2x points on eligible purchases this weekend." {...form.register('description')} />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-badge">{t('Badge Label')}</Label>
               <Input id="promo-badge" placeholder="2x points" {...form.register('badge')} />
               {form.formState.errors.badge && (
-                <p className="text-xs text-red-500">{form.formState.errors.badge.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.badge.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-cta">{t('Call to Action')}</Label>
               <Input id="promo-cta" placeholder="Shop now and earn double" {...form.register('cta')} />
               {form.formState.errors.cta && (
-                <p className="text-xs text-red-500">{form.formState.errors.cta.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.cta.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-audience">{t('Audience')}</Label>
               <Input id="promo-audience" placeholder="All members" {...form.register('audience')} />
               {form.formState.errors.audience && (
-                <p className="text-xs text-red-500">{form.formState.errors.audience.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.audience.message}</p>
               )}
             </div>
-            {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
+            {error && <p className="text-sm font-bold text-error text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                 {t('Cancel')}
@@ -183,11 +183,11 @@ export function PromotionsPage() {
             return (
               <div
                 key={promotion.id}
-                className={`group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br transition-all duration-300 ${
+                className={`group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br transition-colors duration-300 ${
                   active
                     ? 'from-white to-surface-low hover:from-surface-lowest hover:to-surface-low'
                     : 'from-surface-lowest to-surface-low opacity-60'
-                } border border-outline-variant/5 hover:border-primary/10 shadow-sm hover:shadow-lg p-8`}
+                } border border-outline-variant/5 hover:border-primary/10 shadow-card hover:shadow-card p-8`}
               >
                 <div className="flex flex-col gap-6">
                   <div className="flex justify-between items-start">
@@ -216,7 +216,7 @@ export function PromotionsPage() {
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
+                    <h3 className="font-display text-3xl tracking-tight text-primary leading-tight">
                       {t(promotion.title)}
                     </h3>
                     <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium italic">
@@ -231,7 +231,7 @@ export function PromotionsPage() {
                         {t(promotion.audience)}
                       </p>
                     </div>
-                    <div className="size-8 rounded-full bg-surface-low flex items-center justify-center text-primary shadow-sm">
+                    <div className="size-8 rounded-full bg-surface-low flex items-center justify-center text-primary shadow-card">
                       <Sparkles className="size-4" />
                     </div>
                   </div>

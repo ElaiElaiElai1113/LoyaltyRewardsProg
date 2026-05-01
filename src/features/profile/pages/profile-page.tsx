@@ -50,7 +50,7 @@ export function ProfilePage() {
           <Badge variant="accent" className="bg-tertiary/20 text-primary">
             {t('Account Settings')}
           </Badge>
-          <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
+          <h1 className="font-display text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
             {t('Your Profile')}
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
@@ -68,7 +68,7 @@ export function ProfilePage() {
         <div className="space-y-8">
            <div className="space-y-2 pb-4 border-b border-outline-variant/5">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Quick Info')}</span>
-            <h2 className="font-serif text-3xl text-primary">{t('Contact Details')}</h2>
+            <h2 className="font-display text-3xl text-primary">{t('Contact Details')}</h2>
           </div>
           <div className="grid gap-6">
             <MetricCard
@@ -89,7 +89,7 @@ export function ProfilePage() {
         <div className="space-y-8">
           <div className="space-y-2 pb-4 border-b border-outline-variant/5">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Preferences')}</span>
-            <h2 className="font-serif text-3xl text-primary">{t('Edit Profile')}</h2>
+            <h2 className="font-display text-3xl text-primary">{t('Edit Profile')}</h2>
           </div>
           <div className="rounded-3xl bg-surface-low p-10 border border-outline-variant/10">
             <form

@@ -38,10 +38,10 @@ export function PromoPage() {
 
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
-      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-primary-foreground shadow-card md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-4">
-          <LanguagePicker className="text-white/80" />
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
+          <LanguagePicker className="text-primary-foreground/80" />
+          <div className="flex size-12 items-center justify-center rounded-2xl bg-card/90">
             <Sparkles className="size-6" />
           </div>
         </div>
@@ -49,22 +49,22 @@ export function PromoPage() {
         <div className="grid gap-12 py-16 lg:grid-cols-[1fr_320px] lg:items-end">
           <div className="max-w-4xl space-y-8">
             {currentBusiness ? (
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2">
+              <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card/90 px-4 py-2">
                 {currentBusiness.logoUrl ? (
                   <img src={currentBusiness.logoUrl} alt={currentBusiness.name} className="size-8 rounded-full object-cover" />
                 ) : (
-                  <div className="flex size-8 items-center justify-center rounded-full bg-white/15 text-xs font-black uppercase">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-card/90 text-xs font-black uppercase">
                     {currentBusiness.name.slice(0, 1)}
                   </div>
                 )}
-                <span className="text-sm font-bold uppercase tracking-[0.12em] text-white/90">{currentBusiness.name}</span>
+                <span className="text-sm font-bold uppercase tracking-[0.12em] text-primary-foreground/90">{currentBusiness.name}</span>
               </div>
             ) : null}
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/90 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
               {hasPartnerReferral ? 'Partner Perk' : hasReferral ? t('Referral Invite') : t('Rewards Invitation')}
             </div>
-            <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
+            <h1 className="font-display text-5xl leading-[0.98] tracking-tight md:text-8xl">
               {hasPartnerReferral
                 ? `You were invited to ${currentBusiness?.name ?? 'our shop'} by one of our local partners.`
                 : hasReferral
@@ -73,7 +73,7 @@ export function PromoPage() {
                     ? `Join ${currentBusiness.name} Rewards.`
                     : t('Join the rewards network.')}
             </h1>
-            <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
+            <p className="max-w-2xl text-lg font-medium leading-relaxed text-primary-foreground/85 md:text-xl">
               {hasPartnerReferral
                 ? 'Create your rewards account or continue to checkout. Your first paid order will be credited to the partner who referred you.'
                 : hasReferral
@@ -84,8 +84,8 @@ export function PromoPage() {
             </p>
           </div>
 
-          <div className="rounded-[2rem] border border-white/15 bg-white/10 p-6">
-            <p className="font-serif text-3xl leading-tight">
+          <div className="rounded-[2rem] border border-border bg-card/90 p-6">
+            <p className="font-display text-3xl leading-tight">
               {hasPartnerReferral
                 ? `Your first order at ${currentBusiness?.name ?? 'this business'} qualifies for partner credit.`
                 : hasReferral
@@ -94,7 +94,7 @@ export function PromoPage() {
                     ? `${currentBusiness.name} signup portal`
                     : t('Your rewards account starts here.')}
             </p>
-            <p className="mt-4 text-sm font-medium leading-relaxed text-white/75">
+            <p className="mt-4 text-sm font-medium leading-relaxed text-primary-foreground/75">
               {hasPartnerReferral
                 ? 'Use this link when you sign up or check out so we can attribute your first order to the right front-desk partner.'
                 : hasReferral
@@ -106,8 +106,8 @@ export function PromoPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm font-medium text-white/70">
+        <div className="flex flex-col gap-4 border-t border-border pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm font-medium text-primary-foreground/70">
             {hasReferral ? t('Ready to claim the invitation?') : t('Ready to start earning?')}
           </p>
           <Button

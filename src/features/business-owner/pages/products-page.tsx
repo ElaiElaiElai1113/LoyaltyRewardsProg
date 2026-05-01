@@ -93,15 +93,15 @@ export function ProductsPage() {
 
   const businessColors =
     business?.slug === 'velvet-brew'
-      ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
-      : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
+      ? { primary: 'from-primary to-[var(--accent-gold)]', light: 'from-primary/10 to-[var(--accent-gold)]/10' }
+      : { primary: 'from-primary to-muted', light: 'from-primary/10 to-muted' }
 
   return (
     <div className="space-y-16">
       {/* Header */}
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Products')}</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">{t('Products')}</h1>
           <p className="text-lg text-on-surface-variant/85">
             {t('View and manage your product catalog and inventory.')}
           </p>
@@ -116,7 +116,7 @@ export function ProductsPage() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="rounded-3xl max-w-lg">
           <DialogHeader>
-            <DialogTitle className="font-serif text-2xl text-primary">
+            <DialogTitle className="font-display text-2xl text-primary">
               {editingId ? t('Edit Product') : t('New Product')}
             </DialogTitle>
           </DialogHeader>
@@ -125,14 +125,14 @@ export function ProductsPage() {
               <Label htmlFor="product-title">{t('Title')}</Label>
               <Input id="product-title" placeholder="Nitro Cold Brew" {...form.register('title')} />
               {form.formState.errors.title && (
-                <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.title.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="product-description">{t('Description')}</Label>
               <Textarea id="product-description" placeholder="Our signature nitro brew..." {...form.register('description')} />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.description.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -155,7 +155,7 @@ export function ProductsPage() {
                 )}
               />
               {form.formState.errors.category && (
-                <p className="text-xs text-red-500">{form.formState.errors.category.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.category.message}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -168,14 +168,14 @@ export function ProductsPage() {
                 {...form.register('price', { valueAsNumber: true })}
               />
               {form.formState.errors.price && (
-                <p className="text-xs text-red-500">{form.formState.errors.price.message}</p>
+                <p className="text-xs text-error">{form.formState.errors.price.message}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="product-highlight">{t('Highlight')}</Label>
               <Input id="product-highlight" placeholder="Special Roast" {...form.register('highlight')} />
             </div>
-            {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
+            {error && <p className="text-sm font-bold text-error text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                 {t('Cancel')}
@@ -206,16 +206,16 @@ export function ProductsPage() {
           products.map((product) => (
             <div
               key={product.id}
-              className="group flex items-center justify-between rounded-3xl bg-white hover:bg-surface-low p-6 border border-outline-variant/5 hover:border-primary/10 transition-all hover:shadow-lg"
+              className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/5 hover:border-primary/10 transition-colors hover:shadow-card"
             >
               <div className="flex items-center gap-4">
                 <div
-                  className={`size-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold ${businessColors.primary}`}
+                  className={`size-14 rounded-2xl flex items-center justify-center text-primary-foreground text-lg font-bold ${businessColors.primary}`}
                 >
                   {product.title.charAt(0)}
                 </div>
                 <div className="space-y-1">
-                  <p className="font-serif text-xl text-primary">{product.title}</p>
+                  <p className="font-display text-xl text-primary">{product.title}</p>
                   <div className="flex items-center gap-3 text-sm text-on-surface-variant/70">
                     <span>{t(product.category)}</span>
                     <span className="size-1 rounded-full bg-outline-variant/30"></span>
@@ -231,7 +231,7 @@ export function ProductsPage() {
               </div>
               <div className="flex items-center gap-6">
                 <div className="text-right">
-                  <p className="font-serif text-2xl text-primary">{formatCurrency(product.price)}</p>
+                  <p className="font-display text-2xl text-primary">{formatCurrency(product.price)}</p>
                   {product.highlight && (
                     <p className="text-xs text-on-surface-variant/60 mt-1">{product.highlight}</p>
                   )}

@@ -113,7 +113,7 @@ export function PartnersPage() {
     <div className="space-y-16">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Partner Referrals</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">Partner Referrals</h1>
           <p className="text-lg text-on-surface-variant/85">
             Track hotel/front-desk referrals and reward partners after first paid orders.
           </p>
@@ -136,9 +136,9 @@ export function PartnersPage() {
           ['Credits Redeemed', redeemedCredits],
           ['Outstanding Credits', outstandingCredits],
         ].map(([label, value]) => (
-          <div key={label} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-5">
+          <div key={label} className="rounded-xl border border-[var(--border)] bg-card shadow-card rounded-[2rem] p-5">
             <p className="text-sm font-medium text-[var(--muted-foreground)]">{label}</p>
-            <p className="mt-3 font-serif text-4xl text-primary">{value}</p>
+            <p className="mt-3 font-display text-4xl text-primary">{value}</p>
           </div>
         ))}
       </div>
@@ -149,10 +149,10 @@ export function PartnersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               Partner Setup
             </span>
-            <h2 className="font-serif text-3xl text-primary">Add Receptionist Code</h2>
+            <h2 className="font-display text-3xl text-primary">Add Receptionist Code</h2>
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card rounded-[2rem] p-8">
             <form
               className="space-y-5"
               onSubmit={form.handleSubmit(async (values) => {
@@ -207,13 +207,13 @@ export function PartnersPage() {
             </form>
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-6">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card rounded-[2rem] p-6">
               <div className="flex items-start gap-4">
                 <div className="flex size-12 items-center justify-center rounded-2xl border border-primary-container/25 bg-primary-container/10 text-primary-container">
                   <Gift className="size-5" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-serif text-2xl text-primary">Partner Credit Rule</h3>
+                  <h3 className="font-display text-2xl text-primary">Partner Credit Rule</h3>
                   <p className="text-sm leading-relaxed text-on-surface-variant/80">
                     Each referral source earns 1 partner credit after the referred customer places their first paid order.
                   </p>
@@ -227,13 +227,13 @@ export function PartnersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               Active Directory
             </span>
-            <h2 className="font-serif text-3xl text-primary">Partner Contacts</h2>
+            <h2 className="font-display text-3xl text-primary">Partner Contacts</h2>
           </div>
 
           {referrers.isLoading ? (
             <div className="grid gap-5">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+                <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-card p-6 shadow-card">
                   <div className="flex gap-5">
                     <Skeleton className="size-16 rounded-2xl" />
                     <div className="flex-1 space-y-3">
@@ -258,15 +258,15 @@ export function PartnersPage() {
                     : ''
 
                 return (
-                  <div key={referrer.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-6">
+                  <div key={referrer.id} className="rounded-xl border border-[var(--border)] bg-card shadow-card rounded-[2rem] p-6">
                     <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                       <div className="flex items-start gap-5">
-                        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-2xl text-white shadow-lg">
+                        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-display text-2xl text-primary-foreground shadow-card">
                           {referrer.contactName.charAt(0)}
                         </div>
                         <div className="space-y-3">
                           <div>
-                            <p className="font-serif text-3xl leading-tight text-primary">{referrer.contactName}</p>
+                            <p className="font-display text-3xl leading-tight text-primary">{referrer.contactName}</p>
                             <p className="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">{referrer.code}</p>
                           </div>
                           <div className="flex flex-wrap gap-2">
@@ -308,7 +308,7 @@ export function PartnersPage() {
                             <Button
                               type="button"
                               variant="outline"
-                              className="rounded-full border-red-300 text-red-400 hover:bg-red-500/10"
+                              className="rounded-full border-border text-error hover:bg-muted0/10"
                               onClick={() => archivePartnerReferrer.mutate(referrer.id)}
                             >
                               <Archive className="size-4" />
@@ -340,7 +340,7 @@ export function PartnersPage() {
               Recent Activity
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="font-serif text-3xl text-primary">Attributed Customers</h2>
+              <h2 className="font-display text-3xl text-primary">Attributed Customers</h2>
               <Button
                 type="button"
                 variant="outline"
@@ -354,7 +354,7 @@ export function PartnersPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card divide-y divide-outline-variant/10 overflow-hidden">
             {referrals.isLoading ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <div key={index} className="p-6">
@@ -368,7 +368,7 @@ export function PartnersPage() {
                 <div key={referral.id} className="flex flex-col gap-4 p-6">
                   <div className="flex items-center justify-between gap-4">
                     <div>
-                      <p className="font-serif text-2xl text-primary">{referral.customer.fullName}</p>
+                      <p className="font-display text-2xl text-primary">{referral.customer.fullName}</p>
                       <p className="text-sm text-on-surface-variant/80">{referral.customer.email}</p>
                     </div>
                     <Badge
@@ -404,7 +404,7 @@ export function PartnersPage() {
               Offline Redemption
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="font-serif text-3xl text-primary">Outstanding Partner Credits</h2>
+              <h2 className="font-display text-3xl text-primary">Outstanding Partner Credits</h2>
               <Button
                 type="button"
                 variant="outline"
@@ -418,7 +418,7 @@ export function PartnersPage() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card divide-y divide-outline-variant/10 overflow-hidden">
             {partnerCredits.isLoading ? (
               Array.from({ length: 3 }).map((_, index) => (
                 <div key={index} className="p-6">
@@ -432,7 +432,7 @@ export function PartnersPage() {
                 return (
                   <div key={entry.id} className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                     <div>
-                      <p className="font-serif text-2xl text-primary">
+                      <p className="font-display text-2xl text-primary">
                         {referral?.partnerReferrer.contactName ?? 'Referral Source'}
                       </p>
                       <p className="mt-2 text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">

@@ -45,7 +45,7 @@ export function ShopPage() {
         <Badge variant="accent">
           {t('Partner Businesses')}
         </Badge>
-        <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
+        <h1 className="font-display text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl leading-[1.05]">
           {t('Shop Businesses')}
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
@@ -55,7 +55,7 @@ export function ShopPage() {
 
       <MembershipBanner />
 
-      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-[var(--border)] bg-[var(--card)] px-5 py-4 shadow-sm md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
+      <div className="sticky top-20 z-40 -mx-5 space-y-3 border-y border-[var(--border)] bg-[var(--card)] px-5 py-4 shadow-card md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
         {(businesses.data ?? []).length > 1 && (
           <BusinessFilter
             businesses={businesses.data ?? []}
@@ -69,10 +69,10 @@ export function ShopPage() {
             <button
               key={cat.value}
               onClick={() => setSelectedCategory(cat.value)}
-              className={`rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
+              className={`cursor-pointer rounded-full px-5 py-2 text-sm font-semibold transition-colors ${
                 selectedCategory === cat.value
                   ? 'bg-[var(--primary)] text-[var(--primary-foreground)]'
-                  : 'border border-[var(--border)] bg-white text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                  : 'border border-[var(--border)] bg-card text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
               }`}
             >
               {t(cat.label)}
@@ -84,7 +84,7 @@ export function ShopPage() {
       {products.isLoading ? (
         <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-card p-6 shadow-card">
               <Skeleton className="h-48 rounded-2xl" />
               <Skeleton className="mt-6 h-8 w-3/4" />
               <Skeleton className="mt-3 h-4 w-full" />

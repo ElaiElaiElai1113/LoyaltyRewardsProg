@@ -16,7 +16,7 @@ export function PromotionsPage() {
           {t('Active Campaigns')}
         </Badge>
         <div className="max-w-3xl space-y-4">
-          <h1 className="font-serif text-5xl leading-[1.1] tracking-tight text-primary md:text-6xl">
+          <h1 className="font-display text-5xl leading-[1.1] tracking-tight text-primary md:text-6xl">
             {t('Promotions that turn visits into repeat business.')}
           </h1>
           <p className="text-xl font-medium leading-relaxed text-on-surface-variant/85">
@@ -30,7 +30,7 @@ export function PromotionsPage() {
           <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
             {t('Active Campaigns')}
           </span>
-          <h2 className="font-serif text-4xl leading-tight tracking-tight text-primary">
+          <h2 className="font-display text-4xl leading-tight tracking-tight text-primary">
             {t('Earn more points with participating businesses.')}
           </h2>
           <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">

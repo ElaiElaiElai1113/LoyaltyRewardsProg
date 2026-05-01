@@ -13,7 +13,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
   const { t } = useLanguage()
 
   return (
-    <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
+    <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-colors duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-start">
           <Badge variant="accent" className="bg-secondary-container/30 text-secondary">
@@ -26,7 +26,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
         </div>
 
         <div className="space-y-4">
-          <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
+          <h3 className="font-display text-3xl tracking-tight text-primary leading-tight">
             {t(promotion.title)}
           </h3>
           <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium italic">
@@ -39,7 +39,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
             <p className="text-sm font-bold text-primary">{t(promotion.cta)}</p>
             <p className="text-[0.65rem] uppercase tracking-wider text-primary/80 font-medium">{t(promotion.audience)}</p>
           </div>
-          <div className="size-8 rounded-full bg-surface-lowest flex items-center justify-center text-primary shadow-sm">
+          <div className="size-8 rounded-full bg-surface-lowest flex items-center justify-center text-primary shadow-card">
             <Sparkles className="size-4" />
           </div>
         </div>

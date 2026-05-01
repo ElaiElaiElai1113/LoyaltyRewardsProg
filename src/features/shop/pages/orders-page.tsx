@@ -24,7 +24,7 @@ export function OrdersPage() {
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
           {t('Order History')}
         </Badge>
-        <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
+        <h1 className="font-display text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
           {t('Your Orders')}
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
@@ -53,17 +53,17 @@ export function OrdersPage() {
           {(orders.data ?? []).map((order) => (
             <div
               key={order.id}
-              className="rounded-2xl bg-surface-low p-6 border border-outline-variant/5 shadow-sm space-y-4"
+              className="rounded-2xl bg-surface-low p-6 border border-outline-variant/5 shadow-card space-y-4"
             >
               <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                  <p className="font-serif text-xl text-primary">{getBusinessName(order.businessId)}</p>
+                  <p className="font-display text-xl text-primary">{getBusinessName(order.businessId)}</p>
                   <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75">
                     {formatDate(order.createdAt)}
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="font-serif text-2xl text-primary">{formatCurrency(order.total)}</p>
+                  <p className="font-display text-2xl text-primary">{formatCurrency(order.total)}</p>
                   <Badge variant="accent" className="bg-success/10 text-success border-none text-[0.55rem]">
                     {order.status}
                   </Badge>

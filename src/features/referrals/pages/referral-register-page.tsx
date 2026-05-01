@@ -56,32 +56,32 @@ export function ReferralRegisterPage() {
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl gap-10 lg:grid-cols-[1fr_480px]">
-        <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+        <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-primary-foreground shadow-card md:px-14 md:py-16">
           <div className="flex items-center justify-between gap-4">
-            <LanguagePicker className="text-white/80" />
-            <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
+            <LanguagePicker className="text-primary-foreground/80" />
+            <div className="flex size-12 items-center justify-center rounded-2xl bg-card/90">
               <Sparkles className="size-6" />
             </div>
           </div>
 
           <div className="max-w-4xl space-y-8 py-14">
             {currentBusiness ? (
-              <div className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/10 px-4 py-2">
+              <div className="inline-flex items-center gap-3 rounded-full border border-border bg-card/90 px-4 py-2">
                 {currentBusiness.logoUrl ? (
                   <img src={currentBusiness.logoUrl} alt={currentBusiness.name} className="size-8 rounded-full object-cover" />
                 ) : (
-                  <div className="flex size-8 items-center justify-center rounded-full bg-white/15 text-xs font-black uppercase">
+                  <div className="flex size-8 items-center justify-center rounded-full bg-card/90 text-xs font-black uppercase">
                     {currentBusiness.name.slice(0, 1)}
                   </div>
                 )}
-                <span className="text-sm font-bold uppercase tracking-[0.12em] text-white/90">{currentBusiness.name}</span>
+                <span className="text-sm font-bold uppercase tracking-[0.12em] text-primary-foreground/90">{currentBusiness.name}</span>
               </div>
             ) : null}
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/90 px-4 py-2 text-sm font-bold text-secondary-container">
               <Gift className="size-4" />
               {hasPartnerReferral ? 'Partner Invite' : t('Party Invite')}
             </div>
-            <h1 className="font-serif text-5xl leading-[0.98] tracking-tight md:text-8xl">
+            <h1 className="font-display text-5xl leading-[0.98] tracking-tight md:text-8xl">
               {hasPartnerReferral
                 ? `Create your account to keep your ${currentBusiness?.name ?? 'business'} partner referral attached.`
                 : hasReferral
@@ -90,7 +90,7 @@ export function ReferralRegisterPage() {
                     ? `Join ${currentBusiness.name} Rewards.`
                     : t('Create your rewards account.')}
             </h1>
-            <p className="max-w-2xl text-lg font-medium leading-relaxed text-white/85 md:text-xl">
+            <p className="max-w-2xl text-lg font-medium leading-relaxed text-primary-foreground/85 md:text-xl">
               {hasPartnerReferral
                 ? 'Your first paid order will earn partner credit for the receptionist or front-desk contact who sent you.'
                 : hasReferral
@@ -101,17 +101,17 @@ export function ReferralRegisterPage() {
             </p>
           </div>
 
-          <Link to="/signin" className="text-sm font-bold text-white/75 transition hover:text-white">
+          <Link to="/signin" className="text-sm font-bold text-primary-foreground/75 transition hover:text-primary-foreground">
             {t('Already have an account? Sign in')}
           </Link>
         </section>
 
         <section className="flex items-center">
-          <div className="w-full rounded-xl border border-[var(--border)] bg-white shadow-sm p-8 md:p-10">
+          <div className="w-full rounded-xl border border-[var(--border)] bg-card shadow-card p-8 md:p-10">
             {signUpComplete ? (
               <div className="space-y-8 text-center">
                 <div className="space-y-3">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">{t('Welcome aboard!')}</h2>
+                  <h2 className="font-display text-4xl tracking-tight text-primary">{t('Welcome aboard!')}</h2>
                   <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
                     {hasPartnerReferral
                       ? 'Your partner referral is attached. Place your first order to complete the attribution.'
@@ -164,7 +164,7 @@ export function ReferralRegisterPage() {
                 })}
               >
                 <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">{t('Create Account')}</h2>
+                  <h2 className="font-display text-4xl tracking-tight text-primary">{t('Create Account')}</h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
                     {hasPartnerReferral
                       ? 'Use a new email address so the partner referral can be linked to your first order.'
@@ -194,7 +194,7 @@ export function ReferralRegisterPage() {
                   />
                 </div>
 
-                {error ? <p className="text-center text-sm font-bold text-red-500">{error}</p> : null}
+                {error ? <p className="text-center text-sm font-bold text-error">{error}</p> : null}
 
                 <Button
                   type="submit"

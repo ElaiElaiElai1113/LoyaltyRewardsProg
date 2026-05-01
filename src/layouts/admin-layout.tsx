@@ -27,13 +27,15 @@ export function AdminLayout() {
 
   return (
     <div className="flex min-h-screen bg-transparent">
-      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-[var(--border)] bg-white px-5 py-7">
+      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-[var(--border)] bg-card px-5 py-7">
         <div className="flex items-center gap-4">
           <div className="flex size-12 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)]">
             <ShieldCheck className="size-6" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-semibold text-[var(--foreground)]">{t('Admin Portal')}</span>
+            <span className="font-display text-2xl font-semibold italic text-foreground">Medellin Rewards</span>
+            <span className="mt-1 h-px w-16 bg-[var(--accent-gold)]" />
+            <span className="text-sm font-semibold text-[var(--foreground)]">{t('Admin Portal')}</span>
             <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {t('Platform Operations')}
             </span>
@@ -46,7 +48,7 @@ export function AdminLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `group flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
+                `group flex cursor-pointer items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-[var(--muted)] text-[var(--foreground)]'
                     : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
@@ -79,7 +81,7 @@ export function AdminLayout() {
           <div className="mt-6 flex flex-col gap-2">
             <LanguagePicker
               compact
-              className="mb-2 w-full justify-between rounded-lg border border-[var(--border)] bg-white px-3 py-2 text-[var(--muted-foreground)]"
+              className="mb-2 w-full justify-between rounded-lg border border-[var(--border)] bg-card px-3 py-2 text-[var(--muted-foreground)]"
             />
             <ThemeToggle />
             <Button

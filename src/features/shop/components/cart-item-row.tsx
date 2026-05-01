@@ -18,7 +18,7 @@ export function CartItemRow({ product, quantity, onUpdateQuantity, onRemove }: C
   return (
     <div className="flex items-center gap-6 rounded-2xl bg-surface-lowest p-6 border border-outline-variant/5">
       <div className="flex-1 min-w-0">
-        <h3 className="font-serif text-xl tracking-tight text-primary leading-tight truncate">
+        <h3 className="font-display text-xl tracking-tight text-primary leading-tight truncate">
           {t(product.title)}
         </h3>
         <p className="text-sm text-on-surface-variant/80">{formatCurrency(product.price)} {t('each')}</p>
@@ -44,14 +44,14 @@ export function CartItemRow({ product, quantity, onUpdateQuantity, onRemove }: C
         </Button>
       </div>
 
-      <p className="font-serif text-xl text-primary w-24 text-right">
+      <p className="font-display text-xl text-primary w-24 text-right">
         {formatCurrency(product.price * quantity)}
       </p>
 
       <Button
         variant="ghost"
         size="icon"
-        className="size-10 rounded-full text-on-surface-variant/60 hover:text-red-500"
+        className="size-10 rounded-full text-on-surface-variant/60 hover:text-error"
         onClick={() => onRemove(product.id)}
       >
         <Trash2 className="size-4" />

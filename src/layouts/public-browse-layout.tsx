@@ -17,14 +17,14 @@ export function PublicBrowseLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
+      <header className="sticky inset-x-4 top-4 z-50 mx-4 rounded-2xl border border-border bg-card/90 shadow-card backdrop-blur">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-12">
-            <NavLink to="/" className="flex items-center gap-3">
-              <span className="text-xl font-semibold text-brand-gold">
+            <NavLink to="/" className="flex cursor-pointer items-center gap-3">
+              <span className="font-display text-2xl font-semibold italic text-foreground">
                 Medellin Rewards
               </span>
-              <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
+              <span className="hidden h-px w-10 bg-[var(--accent-gold)] md:block" />
               <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
                 Rewards Network
               </span>
@@ -36,7 +36,7 @@ export function PublicBrowseLayout() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `text-sm font-medium transition-colors ${
+                    `cursor-pointer text-sm font-medium transition-colors ${
                       isActive
                         ? 'text-[var(--foreground)]'
                         : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'

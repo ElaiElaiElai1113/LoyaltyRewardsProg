@@ -57,7 +57,7 @@ function RouteLoading() {
         <LanguagePicker className="text-on-surface-variant" />
       </div>
       <div className="text-center space-y-3">
-        <h1 className="font-serif text-3xl text-primary">{t('Loading')}</h1>
+        <h1 className="font-display text-3xl text-primary">{t('Loading')}</h1>
         <p className="text-on-surface-variant/80">{t('Preparing your workspace.')}</p>
       </div>
     </div>

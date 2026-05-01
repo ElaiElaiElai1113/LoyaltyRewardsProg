@@ -40,14 +40,14 @@ export function CustomerLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
+      <header className="sticky inset-x-4 top-4 z-50 mx-4 rounded-2xl border border-border bg-card/90 shadow-card backdrop-blur">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-6">
           <div className="flex items-center gap-12">
-            <NavLink to="/dashboard" className="flex items-center gap-3">
-              <span className="text-xl font-semibold text-brand-gold">
+            <NavLink to="/dashboard" className="flex cursor-pointer items-center gap-3">
+              <span className="font-display text-2xl font-semibold italic text-foreground">
                 Medellin Rewards
               </span>
-              <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
+              <span className="hidden h-px w-10 bg-[var(--accent-gold)] md:block" />
               <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
                 Rewards Network
               </span>
@@ -59,7 +59,7 @@ export function CustomerLayout() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `text-sm font-medium transition-colors ${
+                    `cursor-pointer text-sm font-medium transition-colors ${
                       isActive
                         ? 'text-[var(--foreground)]'
                         : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
@@ -81,7 +81,7 @@ export function CustomerLayout() {
             <div className="flex items-center gap-4">
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
-              <NavLink to="/cart" className="relative rounded-lg p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
+              <NavLink to="/cart" className="relative cursor-pointer rounded-lg p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
                 <ShoppingBag className="size-5" />
                 {cartCount > 0 && (
                   <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-[var(--primary)] text-[0.6rem] font-bold text-[var(--primary-foreground)]">
@@ -109,7 +109,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[var(--border)] bg-white pb-8 pt-24 md:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[var(--border)] bg-card pb-8 pt-24 md:flex">
         <div className="px-6 pb-8">
           <p className="text-sm font-semibold text-[var(--foreground)]">{t('Network Member')}</p>
           <p className="mt-1 text-xs font-medium text-[var(--muted-foreground)]">{t('Rewards account')}</p>
@@ -121,7 +121,7 @@ export function CustomerLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `mx-3 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
+                `mx-3 flex cursor-pointer items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
                   isActive
                     ? 'bg-[var(--muted)] text-[var(--foreground)]'
                     : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
@@ -143,11 +143,12 @@ export function CustomerLayout() {
 
       <CustomerBottomNav />
 
-      <footer className="border-t border-[var(--border)] bg-white py-12 md:ml-64">
+      <footer className="border-t border-[var(--border)] bg-card py-12 md:ml-64">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
-              <span className="text-lg font-semibold text-brand-gold">Medellin Rewards</span>
+              <span className="font-display text-2xl font-semibold italic text-foreground">Medellin Rewards</span>
+              <span className="mt-3 block h-px w-16 bg-[var(--accent-gold)]" />
               <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
                 {t('Earn points, redeem rewards, and stay connected across partner businesses.')}
               </p>

@@ -29,7 +29,7 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm md:p-8">
+    <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-card p-6 shadow-card md:p-8">
       <div className="grid gap-8 md:grid-cols-[280px,1fr]">
         <div className="rounded-lg border border-[var(--border)] bg-[var(--muted)] p-4 text-[var(--foreground)]">
           <QRCodeSVG value={publicUrl} size={248} className="h-auto w-full" />

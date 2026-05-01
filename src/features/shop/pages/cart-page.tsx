@@ -59,7 +59,7 @@ export function CartPage() {
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
           {t('Shopping Cart')}
         </Badge>
-        <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
+        <h1 className="font-display text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
           {t('Your Cart')}
         </h1>
       </div>
@@ -99,7 +99,7 @@ export function CartPage() {
           </div>
 
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6 h-fit sticky top-32">
-            <h2 className="font-serif text-3xl text-primary">{t('Order Summary')}</h2>
+            <h2 className="font-display text-3xl text-primary">{t('Order Summary')}</h2>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-on-surface-variant">
                 <span>{t('Subtotal')}</span>
@@ -119,7 +119,7 @@ export function CartPage() {
               <span className="text-on-surface-variant/80"> {t('earned from this order')}</span>
             </div>
             {cartValidationError ? (
-              <p className="text-sm font-semibold text-red-500">{cartValidationError}</p>
+              <p className="text-sm font-semibold text-error">{cartValidationError}</p>
             ) : null}
             {!PAYMENTS_ENABLED ? (
               <p className="text-sm font-semibold text-on-surface-variant">

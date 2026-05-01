@@ -74,7 +74,7 @@ export function ForBusinessesPage() {
             Local-business growth platform
           </Badge>
           <div className="space-y-6">
-            <h1 className="font-serif text-5xl font-black uppercase leading-[0.98] tracking-[0.02em] text-primary-container md:text-7xl">
+            <h1 className="font-display text-5xl font-black uppercase leading-[0.98] tracking-[0.02em] text-primary-container md:text-7xl">
               Loyalty, referrals, and partner growth in one rewards network.
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
@@ -92,11 +92,11 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm overflow-hidden rounded-[2rem] p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card overflow-hidden rounded-[2rem] p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-[var(--muted-foreground)]">Business Command Center</p>
-              <h2 className="mt-2 font-serif text-3xl text-primary-container">What owners can manage</h2>
+              <h2 className="mt-2 font-display text-3xl text-primary-container">What owners can manage</h2>
             </div>
             <ShieldCheck className="size-10 text-secondary-container" />
           </div>
@@ -104,7 +104,7 @@ export function ForBusinessesPage() {
             {outcomes.map((item) => (
               <div key={item.title} className="rounded border border-primary-container/15 bg-[var(--muted)] p-5">
                 <item.icon className="mb-5 size-7 text-secondary-container" />
-                <h3 className="font-serif text-xl text-primary-container">{item.title}</h3>
+                <h3 className="font-display text-xl text-primary-container">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-surface-variant/80">{item.body}</p>
               </div>
             ))}
@@ -115,7 +115,7 @@ export function ForBusinessesPage() {
       <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div className="space-y-6">
           <Badge variant="accent" className="w-fit">Why businesses use it</Badge>
-          <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">
+          <h2 className="font-display text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">
             Turn local relationships into tracked revenue.
           </h2>
           <div className="grid gap-3">
@@ -128,11 +128,11 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <form id="book-demo" className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8" onSubmit={handleSubmit}>
+        <form id="book-demo" className="rounded-xl border border-[var(--border)] bg-card shadow-card rounded-[2rem] p-8" onSubmit={handleSubmit}>
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-medium text-[var(--muted-foreground)]">Book Demo</p>
-              <h2 className="mt-2 font-serif text-3xl text-primary">See the business portal</h2>
+              <h2 className="mt-2 font-display text-3xl text-primary">See the business portal</h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-on-surface-variant/75">
                 This demo request is saved on this device for now. No payment or backend lead submission is connected.
               </p>

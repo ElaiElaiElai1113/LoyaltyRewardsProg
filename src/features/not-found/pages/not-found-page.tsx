@@ -9,7 +9,7 @@ export function NotFoundPage() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center py-20">
       <div className="mx-auto max-w-xl space-y-6 text-center">
-        <h1 className="font-serif text-5xl tracking-tight text-primary md:text-6xl">
+        <h1 className="font-display text-5xl tracking-tight text-primary md:text-6xl">
           {t('Page not found')}
         </h1>
         <p className="text-base font-medium leading-relaxed text-on-surface-variant/80">

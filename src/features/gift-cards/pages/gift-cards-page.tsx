@@ -38,18 +38,18 @@ export function GiftCardsPage() {
       <div className="flex flex-col gap-8 border-b border-primary-container/15 pb-10 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl space-y-4">
           <Badge variant="accent">Gift Cards</Badge>
-          <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl">
+          <h1 className="font-display text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl">
             Gift Card Catalog
           </h1>
           <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">
             Spend loyalty points on single-use gift cards from partner businesses.
           </p>
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm flex items-center gap-4 px-6 py-4">
+        <div className="rounded-xl border border-[var(--border)] bg-card shadow-card flex items-center gap-4 px-6 py-4">
           <Gift className="size-6 text-secondary-container" />
           <div>
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Available Points</p>
-            <p className="font-serif text-3xl text-primary-container">{balancePoints}</p>
+            <p className="font-display text-3xl text-primary-container">{balancePoints}</p>
           </div>
         </div>
       </div>

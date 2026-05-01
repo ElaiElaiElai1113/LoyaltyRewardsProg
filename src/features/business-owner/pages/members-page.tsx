@@ -49,7 +49,7 @@ export function MembersPage() {
     <div className="space-y-16">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Customers')}</h1>
+          <h1 className="font-display text-5xl tracking-tight text-primary">{t('Customers')}</h1>
           <p className="text-lg text-on-surface-variant/85">
             {t('Look up a customer, review their balance, and award points for in-store purchases.')}
           </p>
@@ -65,10 +65,10 @@ export function MembersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               {t('Quick Action')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">{t('Award Points')}</h2>
+            <h2 className="font-display text-3xl text-primary">{t('Award Points')}</h2>
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8">
+          <div className="rounded-xl border border-[var(--border)] bg-card shadow-card rounded-[2rem] p-8">
             <form
               className="space-y-6"
               onSubmit={form.handleSubmit(async (values) => {
@@ -107,18 +107,18 @@ export function MembersPage() {
                   ))}
                 </datalist>
                 {form.formState.errors.profileId ? (
-                  <p className="text-xs text-red-500">{form.formState.errors.profileId.message}</p>
+                  <p className="text-xs text-error">{form.formState.errors.profileId.message}</p>
                 ) : null}
               </div>
 
-              <div className="rounded-3xl border border-primary-container/15 bg-[var(--muted)] p-5 shadow-sm">
+              <div className="rounded-3xl border border-primary-container/15 bg-[var(--muted)] p-5 shadow-card">
                 {selectedMember ? (
                   <div className="flex items-center gap-4">
-                    <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-lg text-white shadow-lg">
+                    <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-display text-lg text-primary-foreground shadow-card">
                       {getInitials(selectedMember.fullName)}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-serif text-xl text-primary">{selectedMember.fullName}</p>
+                      <p className="font-display text-xl text-primary">{selectedMember.fullName}</p>
                       <p className="truncate text-sm text-on-surface-variant/85">{selectedMember.email}</p>
                     </div>
                     <Badge
@@ -130,7 +130,7 @@ export function MembersPage() {
                   </div>
                 ) : (
                   <div className="space-y-1">
-                    <p className="font-serif text-xl text-primary">{t('No customer selected')}</p>
+                    <p className="font-display text-xl text-primary">{t('No customer selected')}</p>
                     <p className="text-sm text-on-surface-variant/85">
                       {t('Choose a customer to preview their current balance before awarding points.')}
                     </p>
@@ -149,7 +149,7 @@ export function MembersPage() {
                   {...form.register('delta', { valueAsNumber: true })}
                 />
                 {form.formState.errors.delta ? (
-                  <p className="text-xs text-red-500">{form.formState.errors.delta.message}</p>
+                  <p className="text-xs text-error">{form.formState.errors.delta.message}</p>
                 ) : null}
               </div>
 
@@ -164,7 +164,7 @@ export function MembersPage() {
                   {...form.register('reason')}
                 />
                 {form.formState.errors.reason ? (
-                  <p className="text-xs text-red-500">{form.formState.errors.reason.message}</p>
+                  <p className="text-xs text-error">{form.formState.errors.reason.message}</p>
                 ) : null}
               </div>
 
@@ -177,7 +177,7 @@ export function MembersPage() {
               >
                 {awardPoints.isPending ? t('Awarding...') : t('Award Points')}
               </Button>
-              {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
+              {actionError ? <p className="text-sm font-bold text-error">{actionError}</p> : null}
             </form>
           </div>
         </div>
@@ -187,13 +187,13 @@ export function MembersPage() {
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               {t('Customer Base')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">{t('Your Customers')}</h2>
+            <h2 className="font-display text-3xl text-primary">{t('Your Customers')}</h2>
           </div>
 
           {members.isLoading ? (
             <div className="grid gap-4">
               {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="flex flex-col gap-5 rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
+                <div key={index} className="flex flex-col gap-5 rounded-[2rem] border border-[var(--border)] bg-card p-6 shadow-card md:flex-row md:items-center md:justify-between">
                   <div className="flex items-center gap-5">
                     <Skeleton className="size-14 rounded-2xl" />
                     <div className="space-y-3">
@@ -215,18 +215,18 @@ export function MembersPage() {
                   <div
                     key={member.id}
                     className={cn(
-                      'rounded-xl border border-[var(--border)] bg-white shadow-sm flex flex-col gap-5 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between',
+                      'rounded-xl border border-[var(--border)] bg-card shadow-card flex flex-col gap-5 rounded-[2rem] p-6 transition-colors md:flex-row md:items-center md:justify-between',
                       selected
-                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
-                        : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm',
+                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-card'
+                        : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-card',
                     )}
                   >
                     <div className="flex items-center gap-5">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-lg text-white shadow-lg">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-display text-lg text-primary-foreground shadow-card">
                         {getInitials(member.fullName)}
                       </div>
                       <div>
-                        <p className="font-serif text-2xl leading-tight text-primary">{member.fullName}</p>
+                        <p className="font-display text-2xl leading-tight text-primary">{member.fullName}</p>
                         <p className="mt-1 text-sm font-medium text-on-surface-variant/90">{member.email}</p>
                         <p className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">
                           ID: {member.id}

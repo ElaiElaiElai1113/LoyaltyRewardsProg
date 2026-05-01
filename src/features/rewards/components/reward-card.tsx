@@ -35,7 +35,7 @@ export function RewardCard({
   return (
     <div
       data-tenant={reward.businessId}
-      className="flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm"
+      className="flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-card p-4 shadow-card"
     >
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
