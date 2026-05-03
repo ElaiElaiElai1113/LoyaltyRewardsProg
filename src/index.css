@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme inline {
@@ -34,50 +34,53 @@
   --color-transparent: transparent;
   --color-current: currentColor;
 
-  --font-sans: "Plus Jakarta Sans", sans-serif;
+  --font-sans: "Manrope", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
 
-  --radius-xl: 0.75rem;
-  --radius-lg: 0.5rem;
-  --radius-md: 0.375rem;
+  --radius-xl: 1rem;
+  --radius-lg: 0.875rem;
+  --radius-md: 0.625rem;
   --radius-full: 9999px;
 
-  --shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-card: 0 24px 60px -34px rgb(103 72 21 / 0.25);
+  --shadow-panel: 0 30px 80px -40px rgb(91 62 18 / 0.22);
+  --shadow-soft: 0 18px 40px -28px rgb(122 90 30 / 0.22);
 }
 
 :root {
-  --background: #FAFAF9;
-  --foreground: #1C1917;
-  --card: #FFFFFF;
-  --card-foreground: #1C1917;
-  --muted: #F5F5F4;
-  --muted-foreground: #57534E;
-  --border: #E7E5E4;
-  --input: #E7E5E4;
-  --primary: #1C1917;
-  --primary-foreground: #FAFAF9;
-  --secondary: #F5F5F4;
-  --secondary-foreground: #1C1917;
-  --accent: #F5F5F4;
-  --accent-foreground: #1C1917;
-  --destructive: #B91C1C;
+  --background: #fbf5eb;
+  --foreground: #2c2016;
+  --card: #fffaf2;
+  --card-foreground: #2c2016;
+  --muted: #f3e7d1;
+  --muted-foreground: #76614a;
+  --border: #e6d6b7;
+  --input: #f9f0df;
+  --primary: #b78a2b;
+  --primary-foreground: #fff9ef;
+  --secondary: #f7edd9;
+  --secondary-foreground: #3e2d1f;
+  --accent: #f8edd7;
+  --accent-foreground: #3e2d1f;
+  --destructive: #b84030;
   --destructive-foreground: #FFFFFF;
-  --success: #15803D;
-  --ring: #1C1917;
+  --success: #577d4a;
+  --ring: #c89d45;
 
   --tenant-accent: var(--primary);
   --tenant-accent-foreground: var(--primary-foreground);
-  --tenant-accent-soft: var(--muted);
+  --tenant-accent-soft: #f7e6bc;
 
   --surface: var(--background);
-  --surface-container-low: var(--muted);
-  --surface-container-lowest: var(--card);
-  --surface-container-highest: #E7E5E4;
-  --primary-container: var(--primary);
-  --primary-fixed: #292524;
+  --surface-container-low: #f8f0e0;
+  --surface-container-lowest: #fffdf8;
+  --surface-container-highest: #eadcc2;
+  --primary-container: #8f6822;
+  --primary-fixed: #6f4e1d;
   --on-primary: var(--primary-foreground);
-  --secondary-container: var(--secondary);
-  --secondary-fixed: #E7E5E4;
-  --tertiary: var(--muted-foreground);
+  --secondary-container: #d8b26b;
+  --secondary-fixed: #e6cf9b;
+  --tertiary: #8e6b44;
   --on-surface: var(--foreground);
   --on-surface-variant: var(--muted-foreground);
   --outline-variant: var(--border);
@@ -91,38 +94,38 @@
 }
 
 :root[data-theme="dark"] {
-  --background: #0C0A09;
-  --foreground: #FAFAF9;
-  --card: #1C1917;
-  --card-foreground: #FAFAF9;
-  --muted: #292524;
-  --muted-foreground: #A8A29E;
-  --border: #44403C;
-  --input: #44403C;
-  --primary: #FAFAF9;
-  --primary-foreground: #1C1917;
-  --secondary: #292524;
-  --secondary-foreground: #FAFAF9;
-  --accent: #292524;
-  --accent-foreground: #FAFAF9;
-  --destructive: #F87171;
-  --destructive-foreground: #1C1917;
-  --success: #4ADE80;
-  --ring: #FAFAF9;
+  --background: #1c130d;
+  --foreground: #f8eedc;
+  --card: #2a1c14;
+  --card-foreground: #f8eedc;
+  --muted: #3a291d;
+  --muted-foreground: #d4bf9f;
+  --border: #5c432c;
+  --input: #382719;
+  --primary: #ddb866;
+  --primary-foreground: #22160d;
+  --secondary: #342317;
+  --secondary-foreground: #f8eedc;
+  --accent: #3d2a1a;
+  --accent-foreground: #f8eedc;
+  --destructive: #f28a74;
+  --destructive-foreground: #2a1c14;
+  --success: #97c882;
+  --ring: #ddb866;
 
   --tenant-accent: var(--primary);
   --tenant-accent-foreground: var(--primary-foreground);
-  --tenant-accent-soft: var(--muted);
+  --tenant-accent-soft: #4a331e;
 
   --surface: var(--background);
-  --surface-container-low: var(--muted);
-  --surface-container-lowest: var(--card);
-  --surface-container-highest: #44403C;
-  --primary-container: var(--primary);
-  --primary-fixed: #E7E5E4;
+  --surface-container-low: #2f2016;
+  --surface-container-lowest: #24170f;
+  --surface-container-highest: #4b3522;
+  --primary-container: #c89d45;
+  --primary-fixed: #efd59f;
   --on-primary: var(--primary-foreground);
   --secondary-container: var(--secondary);
-  --secondary-fixed: #44403C;
+  --secondary-fixed: #5c432c;
   --tertiary: var(--muted-foreground);
   --on-surface: var(--foreground);
   --on-surface-variant: var(--muted-foreground);
@@ -141,6 +144,21 @@
   .bg-tenant-soft {
     background-color: var(--tenant-accent-soft);
     color: var(--foreground);
+  }
+
+  .gold-frame {
+    background:
+      radial-gradient(circle at top left, rgb(233 198 119 / 0.18), transparent 34%),
+      linear-gradient(180deg, rgb(255 253 247 / 0.96), rgb(250 242 226 / 0.9));
+    border: 1px solid rgb(183 138 43 / 0.18);
+    box-shadow: var(--shadow-card);
+  }
+
+  .gold-wash {
+    background:
+      radial-gradient(circle at top left, rgb(238 205 129 / 0.22), transparent 28%),
+      radial-gradient(circle at bottom right, rgb(169 112 39 / 0.12), transparent 32%),
+      linear-gradient(180deg, rgb(255 251 245 / 0.92), rgb(248 239 223 / 0.86));
   }
 }
 
@@ -168,8 +186,10 @@ html {
 body {
   min-height: 100vh;
   margin: 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--background);
+  font-family: "Manrope", sans-serif;
+  background:
+    radial-gradient(circle at top, rgb(239 208 141 / 0.16), transparent 28%),
+    linear-gradient(180deg, #fffaf3 0%, var(--background) 18%, #f7ecda 100%);
   color: var(--foreground);
   overflow-x: hidden;
 }
@@ -191,11 +211,11 @@ textarea {
 }
 
 ::selection {
-  background: #E7E5E4;
+  background: rgb(218 186 110 / 0.45);
 }
 
 :root[data-theme="dark"] ::selection {
-  background: #44403C;
+  background: rgb(221 184 102 / 0.35);
 }
 
 :root[data-theme="dark"] .bg-white {
@@ -211,5 +231,5 @@ textarea {
 }
 
 :root[data-theme="dark"] .shadow-sm {
-  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+  box-shadow: 0 18px 40px -28px rgb(0 0 0 / 0.52);
 }

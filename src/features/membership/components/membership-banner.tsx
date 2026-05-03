@@ -1,5 +1,5 @@
 import { X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import { Button } from '@/components/ui/button'
@@ -11,11 +11,9 @@ const storageKey = 'membership-banner-dismissed'
 export function MembershipBanner() {
   const { t } = useLanguage()
   const { isActive } = useMembership()
-  const [dismissed, setDismissed] = useState(false)
-
-  useEffect(() => {
-    setDismissed(sessionStorage.getItem(storageKey) === 'true')
-  }, [])
+  const [dismissed, setDismissed] = useState(() => (
+    typeof window !== 'undefined' && sessionStorage.getItem(storageKey) === 'true'
+  ))
 
   if (isActive || dismissed) return null
 

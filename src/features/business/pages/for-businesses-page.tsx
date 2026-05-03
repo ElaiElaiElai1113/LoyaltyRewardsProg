@@ -70,16 +70,17 @@ export function ForBusinessesPage() {
     <div className="space-y-20 pb-20">
       <section className="grid min-h-[calc(100vh-9rem)] gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div className="space-y-8">
-          <Badge variant="accent" className="w-fit border-secondary-container/30 bg-secondary-container/15 text-secondary-container">
-            Local-business growth platform
+          <Badge variant="accent" className="w-fit">
+            Warm-growth loyalty house
           </Badge>
           <div className="space-y-6">
-            <h1 className="font-serif text-5xl font-black uppercase leading-[0.98] tracking-[0.02em] text-primary-container md:text-7xl">
-              Loyalty, referrals, and partner growth in one rewards network.
+            <h1 className="font-serif text-5xl font-semibold leading-[0.92] tracking-[0.01em] text-primary-container md:text-7xl">
+              Turn every visit into a ritual people want to return to.
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
-              Medellin Rewards helps cafes, venues, and local operators turn repeat visits, QR signups,
-              reward credits, and hotel/front-desk referrals into measurable customer growth.
+              Medellin Rewards helps cafes, venues, and local operators create a loyalty experience
+              that feels elevated for guests and measurable for owners, from QR signups to reward
+              credits and partner referrals.
             </p>
           </div>
           <div className="flex flex-wrap gap-4">
@@ -90,21 +91,28 @@ export function ForBusinessesPage() {
               <Link to="/shop">View Customer Experience</Link>
             </Button>
           </div>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {proofPoints.slice(0, 4).map((point) => (
+              <div key={point} className="gold-frame rounded-[1.5rem] px-5 py-4 text-sm font-medium text-on-surface-variant">
+                {point}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm overflow-hidden rounded-[2rem] p-8">
+        <div className="gold-wash overflow-hidden rounded-[2.25rem] p-8">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-[var(--muted-foreground)]">Business Command Center</p>
-              <h2 className="mt-2 font-serif text-3xl text-primary-container">What owners can manage</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--primary-container)]">Business atelier</p>
+              <h2 className="mt-2 font-serif text-4xl text-primary-container">What owners can shape</h2>
             </div>
             <ShieldCheck className="size-10 text-secondary-container" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {outcomes.map((item) => (
-              <div key={item.title} className="rounded border border-primary-container/15 bg-[var(--muted)] p-5">
+              <div key={item.title} className="rounded-[1.6rem] border border-primary-container/12 bg-[rgb(255_251_245_/_0.72)] p-5 backdrop-blur">
                 <item.icon className="mb-5 size-7 text-secondary-container" />
-                <h3 className="font-serif text-xl text-primary-container">{item.title}</h3>
+                <h3 className="font-serif text-2xl text-primary-container">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-surface-variant/80">{item.body}</p>
               </div>
             ))}
@@ -114,9 +122,9 @@ export function ForBusinessesPage() {
 
       <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div className="space-y-6">
-          <Badge variant="accent" className="w-fit">Why businesses use it</Badge>
-          <h2 className="font-serif text-4xl font-semibold uppercase tracking-[0.03em] text-primary-container">
-            Turn local relationships into tracked revenue.
+          <Badge variant="accent" className="w-fit">Why owners choose it</Badge>
+          <h2 className="font-serif text-5xl font-semibold tracking-[0.02em] text-primary-container">
+            Make loyalty feel intimate, while keeping the numbers clear.
           </h2>
           <div className="grid gap-3">
             {proofPoints.map((point) => (
@@ -128,11 +136,11 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <form id="book-demo" className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8" onSubmit={handleSubmit}>
+        <form id="book-demo" className="gold-frame rounded-[2rem] p-8" onSubmit={handleSubmit}>
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
-              <p className="text-sm font-medium text-[var(--muted-foreground)]">Book Demo</p>
-              <h2 className="mt-2 font-serif text-3xl text-primary">See the business portal</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--primary-container)]">Book Demo</p>
+              <h2 className="mt-2 font-serif text-4xl text-primary">See the business experience</h2>
               <p className="mt-3 max-w-xl text-sm leading-relaxed text-on-surface-variant/75">
                 This demo request is saved on this device for now. No payment or backend lead submission is connected.
               </p>
@@ -171,7 +179,7 @@ export function ForBusinessesPage() {
             {submitted ? (
               <p className="text-sm font-bold text-success">Demo request saved. We can connect this to a lead backend later.</p>
             ) : (
-              <p className="text-sm text-on-surface-variant/75">Best for cafes, venues, hotels, and local partner networks.</p>
+              <p className="text-sm text-on-surface-variant/75">Best for cafes, venues, hotels, and partner-led hospitality brands.</p>
             )}
             <Button type="submit" className="rounded-full">Request Demo</Button>
           </div>

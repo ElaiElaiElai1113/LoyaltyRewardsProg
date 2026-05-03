@@ -17,16 +17,19 @@ export function PublicBrowseLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
+      <header className="sticky top-0 z-50 border-b border-[var(--border)]/70 bg-[rgb(255_249_240_/_0.82)] backdrop-blur-xl">
+        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-12">
-            <NavLink to="/" className="flex items-center gap-3">
+            <NavLink to="/" className="flex items-center gap-4">
+              <span className="flex size-11 items-center justify-center rounded-full border border-[var(--primary)]/25 bg-[var(--tenant-accent-soft)] font-serif text-xl font-semibold tracking-[0.12em] text-[var(--primary-container)] shadow-soft">
+                MR
+              </span>
               <span className="text-xl font-semibold text-[var(--foreground)]">
                 Medellin Rewards
               </span>
               <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
-              <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
-                Rewards Network
+              <span className="hidden text-xs font-semibold uppercase tracking-[0.22em] text-[var(--primary-container)] md:block">
+                Golden Circle
               </span>
             </NavLink>
 
@@ -36,9 +39,9 @@ export function PublicBrowseLayout() {
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `text-sm font-medium transition-colors ${
+                    `rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? 'text-[var(--foreground)]'
+                        ? 'bg-[var(--tenant-accent-soft)] text-[var(--primary-container)]'
                         : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     }`
                   }
