@@ -98,44 +98,44 @@ export function LandingPage() {
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(230,193,111,0.18),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(143,104,34,0.12),transparent_32%)]" />
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-        <section className="relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[1.5rem] border border-primary-container/20 bg-[var(--card)] px-8 py-10 text-on-surface shadow-card md:px-12 lg:px-14">
-          <div className="absolute inset-0 bg-[var(--muted)] bg-[length:40px_40px]" />
-          <div className="absolute inset-0 bg-[var(--muted)]" />
+        <section className="gold-wash relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[2rem] px-8 py-10 text-on-surface shadow-panel md:px-12 lg:px-14">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.6),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(183,138,43,0.12),transparent_26%)]" />
           <div className="hidden" />
 
           <div className="relative z-10 space-y-8">
-            <Badge variant="accent" className="border-primary-container/35 bg-primary-container/12 px-5 py-2 text-primary-container">
-              {t('Multi-business rewards platform')}
+            <Badge variant="accent" className="w-fit px-5 py-2 text-primary-container">
+              {t('Golden rewards circle')}
             </Badge>
             <div className="max-w-3xl space-y-6">
-              <h1 className="font-serif text-5xl font-black uppercase leading-[0.94] tracking-[0.01em] text-primary md:text-6xl xl:text-[5.25rem]">
-                {t('Medellin Rewards.')}<br />
-                {t('Earn across')}<br />
-                {t('the network')}.
+              <h1 className="font-serif text-5xl font-semibold leading-[0.88] tracking-[0.01em] text-primary-container md:text-6xl xl:text-[5.3rem]">
+                {t('A rewards ritual')}<br />
+                {t('worth coming')}<br />
+                {t('back for')}.
               </h1>
-              <p className="max-w-xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
-                {t('Earn and redeem rewards across local businesses while owners track loyalty, QR signups, and partner referrals from one platform.')}
+              <p className="max-w-2xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
+                {t('Discover local favorites, collect beautiful little wins, and redeem perks across the Medellin Rewards circle with a member experience that feels warm, premium, and personal.')}
               </p>
               <div className="flex flex-wrap gap-4">
                 <Link
                   to="/shop"
-                  className="inline-flex h-11 items-center rounded border border-primary-container bg-primary-container px-6 text-xs font-bold uppercase tracking-[0.08em] text-on-primary shadow-sm transition hover:bg-primary-fixed"
+                  className="inline-flex h-11 items-center rounded-full bg-primary px-6 text-xs font-bold uppercase tracking-[0.12em] text-on-primary shadow-soft transition hover:-translate-y-0.5 hover:bg-primary-container"
                 >
-                  {t('Explore Businesses')}
+                  {t('Explore the circle')}
                 </Link>
                 <Link
                   to="/for-businesses#book-demo"
-                  className="inline-flex h-11 items-center gap-2 rounded border border-[var(--border)] bg-white px-6 text-xs font-semibold text-[var(--foreground)] shadow-sm transition-colors hover:bg-[var(--muted)]"
+                  className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--primary)]/20 bg-[rgb(255_251_245_/_0.85)] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--foreground)] shadow-soft transition-colors hover:bg-[var(--muted)]"
                 >
                   <Building2 className="size-4" />
-                  {t('Book Demo')}
+                  {t('For businesses')}
                 </Link>
                 <Link
                   to="/rewards"
-                  className="inline-flex h-11 items-center rounded border border-primary-container/35 bg-primary-container/8 px-6 text-xs font-bold uppercase tracking-[0.08em] text-primary-container transition hover:bg-primary-container/14"
+                  className="inline-flex h-11 items-center rounded-full border border-primary-container/20 bg-[var(--tenant-accent-soft)] px-6 text-xs font-bold uppercase tracking-[0.12em] text-primary-container transition hover:bg-primary-container/14"
                 >
-                  {t('View Rewards')}
+                  {t('View rewards')}
                 </Link>
               </div>
             </div>
@@ -144,32 +144,32 @@ export function LandingPage() {
               {[
                 {
                   icon: Repeat2,
-                  title: t('Earn Points'),
-                  body: t('Collect points automatically when you buy from partner businesses.'),
+                  title: t('Collect Golden Moments'),
+                  body: t('Earn points naturally each time you order from the partner circle.'),
                 },
                 {
                   icon: Gift,
-                  title: t('Redeem Rewards'),
-                  body: t('Use your points for perks, reward credits, and partner offers.'),
+                  title: t('Trade Them for Delights'),
+                  body: t('Turn points into indulgent perks, credit, and limited offers.'),
                 },
                 {
                   icon: CalendarClock,
-                  title: t('Book Demo'),
-                  body: t('Businesses can launch QR signups, partner referrals, and reward credit workflows without a custom build.'),
+                  title: t('Grow with Grace'),
+                  body: t('Businesses can launch QR signups, referrals, and credit flows without losing warmth.'),
                 },
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="group rounded-lg border border-primary-container/15 bg-[#1a120e]/72 p-4  transition-all hover:border-primary-container/35 hover:bg-[#211713]/80"
+                  className="group rounded-[1.5rem] border border-primary-container/12 bg-[rgb(255_250_243_/_0.74)] p-5 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary-container/25 hover:bg-[rgb(255_252_248_/_0.9)]"
                 >
-                  <div className="mb-5 flex size-10 items-center justify-center rounded border border-secondary-container/35 bg-secondary-container/10 text-secondary-container transition-all group-hover:bg-secondary-container/15">
+                  <div className="mb-5 flex size-11 items-center justify-center rounded-full border border-secondary-container/30 bg-secondary-container/12 text-secondary-container transition-all group-hover:bg-secondary-container/20">
                     <item.icon className="size-5" />
                   </div>
                   <div>
-                    <h2 className="font-serif text-lg font-semibold uppercase tracking-[0.03em] text-primary">
+                    <h2 className="font-serif text-2xl leading-none tracking-[0.02em] text-primary-container">
                       {item.title}
                     </h2>
-                    <p className="mt-2 text-xs leading-relaxed text-on-surface-variant">{item.body}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">{item.body}</p>
                   </div>
                 </div>
               ))}
@@ -194,15 +194,15 @@ export function LandingPage() {
             <TabsContent value="signin" className="outline-none">
               <div className="space-y-7">
                 <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">
+                  <h2 className="font-serif text-5xl tracking-tight text-primary-container">
                     {t('Welcome Back')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
-                    {t('Sign in to check your balance and redeem rewards.')}
+                    {t('Step back into your rewards ritual.')}
                   </p>
                 </div>
 
-                <div className="mx-auto min-h-[25.5rem] max-w-md rounded-[1.5rem] border border-outline-variant/20 bg-surface-low p-8">
+                <div className="gold-frame mx-auto min-h-[25.5rem] max-w-md rounded-[1.75rem] p-8">
                   {showForgotPassword ? (
                     <form
                       className="space-y-6"
@@ -233,7 +233,7 @@ export function LandingPage() {
                       })}
                     >
                       <div className="space-y-2 text-center">
-                        <h3 className="font-serif text-3xl tracking-tight text-primary">
+                        <h3 className="font-serif text-4xl tracking-tight text-primary">
                           {t('Reset Password')}
                         </h3>
                         <p className="text-sm font-medium text-on-surface-variant/80">
@@ -251,7 +251,7 @@ export function LandingPage() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="h-12 w-full font-bold tracking-wide"
+                        className="h-12 w-full font-bold tracking-[0.12em] uppercase"
                         disabled={resetForm.formState.isSubmitting}
                       >
                         {resetForm.formState.isSubmitting ? (
@@ -264,12 +264,12 @@ export function LandingPage() {
                         )}
                       </Button>
 
-                      <button
-                        type="button"
-                        className="block w-full text-center text-sm font-medium text-on-surface-variant/75 transition hover:text-primary"
-                        onClick={() => {
-                          setError(null)
-                          setShowForgotPassword(false)
+                        <button
+                          type="button"
+                          className="block w-full text-center text-sm font-medium text-on-surface-variant/75 transition hover:text-primary"
+                          onClick={() => {
+                            setError(null)
+                            setShowForgotPassword(false)
                         }}
                       >
                         {t('Back to sign in')}
@@ -347,7 +347,7 @@ export function LandingPage() {
                             name="role"
                             render={({ field }) => (
                               <Select value={field.value} onValueChange={field.onChange}>
-                                <SelectTrigger id="signin-role" className="rounded-xl h-12">
+                                <SelectTrigger id="signin-role" className="h-12">
                                   <SelectValue placeholder={t('Select a staff role')} />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -366,7 +366,7 @@ export function LandingPage() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="h-12 w-full font-bold tracking-wide"
+                        className="h-12 w-full font-bold tracking-[0.12em] uppercase"
                         disabled={signInForm.formState.isSubmitting}
                       >
                         {signInForm.formState.isSubmitting ? (
@@ -395,19 +395,19 @@ export function LandingPage() {
             <TabsContent value="signup" className="outline-none">
               <div className="space-y-7">
                 <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-primary">
+                  <h2 className="font-serif text-5xl tracking-tight text-primary-container">
                     {t('Create Account')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
-                    {t('Join the rewards program and start earning.')}
+                    {t('Join the circle and start collecting delights.')}
                   </p>
                 </div>
 
-                <div className="mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center rounded-[1.5rem] border border-outline-variant/20 bg-surface-low p-8">
+                <div className="gold-frame mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center rounded-[1.75rem] p-8">
                   {signUpComplete ? (
                     <div className="space-y-6 text-center">
                       <div className="space-y-3">
-                        <h3 className="font-serif text-3xl tracking-tight text-primary">{t('Welcome aboard!')}</h3>
+                        <h3 className="font-serif text-4xl tracking-tight text-primary">{t('Welcome aboard!')}</h3>
                         <p className="text-sm font-medium leading-relaxed text-on-surface-variant/80">
                           {t('Check your email to verify your account, then sign in to start earning rewards.')}
                         </p>
@@ -445,7 +445,7 @@ export function LandingPage() {
                     >
                       <div className="space-y-2">
                         <p className="text-sm font-medium text-on-surface-variant/80">
-                          {t('Create your free rewards account and start earning points today.')}
+                          {t('Create your free account to earn points, unlock perks, and move through the circle with ease.')}
                         </p>
                       </div>
 
@@ -469,7 +469,7 @@ export function LandingPage() {
                       <Button
                         type="submit"
                         size="lg"
-                        className="h-12 w-full font-bold tracking-wide"
+                        className="h-12 w-full font-bold tracking-[0.12em] uppercase"
                         disabled={signUpForm.formState.isSubmitting}
                       >
                         {signUpForm.formState.isSubmitting ? (
