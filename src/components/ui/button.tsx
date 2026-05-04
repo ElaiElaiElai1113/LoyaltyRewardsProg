@@ -5,16 +5,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-semibold transition-colors duration-200 disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
+  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
   {
     variants: {
       variant: {
-        default: 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-stone-800',
+        default: 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)]',
         tenant: 'bg-tenant transition-opacity hover:opacity-90',
-        secondary: 'border border-[var(--border)] bg-white text-[var(--foreground)] hover:bg-[var(--muted)]',
-        outline: 'border border-[var(--border)] bg-white text-[var(--foreground)] hover:bg-[var(--muted)]',
+        secondary: 'border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--muted)]',
+        outline: 'border border-[var(--primary)]/20 bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--primary)]/45 hover:bg-[var(--muted)]',
         ghost: 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]',
-        tertiary: 'border border-[var(--border)] bg-white text-[var(--foreground)] hover:bg-[var(--muted)]',
+        tertiary: 'border border-[var(--primary)]/15 bg-[var(--tenant-accent-soft)] text-[var(--primary-container)] hover:border-[var(--primary)]/30 hover:bg-[var(--muted)]',
       },
       size: {
         default: 'h-10 px-4 py-2',
