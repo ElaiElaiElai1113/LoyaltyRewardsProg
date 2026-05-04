@@ -194,7 +194,9 @@ export function PromotionsPage() {
                     <Badge
                       variant="accent"
                       className={`${
-                        active ? 'bg-secondary-container/30 text-secondary' : 'bg-outline-variant/10'
+                        active
+                          ? 'border-primary/25 bg-primary text-primary-foreground'
+                          : 'border-outline-variant/25 bg-muted text-muted-foreground'
                       }`}
                     >
                       {t(promotion.badge)}

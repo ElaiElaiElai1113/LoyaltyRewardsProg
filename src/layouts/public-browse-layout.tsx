@@ -41,7 +41,7 @@ export function PublicBrowseLayout() {
                   className={({ isActive }) =>
                     `rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                       isActive
-                        ? 'bg-[var(--tenant-accent-soft)] text-[var(--primary-container)]'
+                        ? 'bg-primary text-primary-foreground'
                         : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     }`
                   }
