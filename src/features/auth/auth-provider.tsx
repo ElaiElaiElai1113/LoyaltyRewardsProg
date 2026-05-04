@@ -102,6 +102,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       if (!nextSession) {
+        authService.clearPendingSignInRole()
         queryClient.clear()
         syncSession(null)
         finishLoading()
@@ -112,6 +113,25 @@ export function AuthProvider({ children }: AuthProviderProps) {
         void authService
           .getProfileForUserId(nextSession.user.id)
           .then((sessionProfile) => {
+            if (!sessionProfile) {
+              handleResolvedProfile(null)
+              return
+            }
+
+            const pendingRole = authService.getPendingSignInRole()
+            if (pendingRole && !authService.isProfileAllowedForRole(sessionProfile, pendingRole)) {
+              void authService.signOut().finally(() => {
+                queryClient.clear()
+                syncSession(null)
+                finishLoading()
+              })
+              return
+            }
+
+            if (pendingRole) {
+              authService.clearPendingSignInRole()
+            }
+
             handleResolvedProfile(sessionProfile)
           })
           .catch((error) => {
