@@ -1,7 +1,9 @@
-import { Navigate, RouterProvider, createBrowserRouter } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
 import { LandingPage } from '@/features/auth/pages/landing-page'
+import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
@@ -42,8 +44,10 @@ import { CustomerLayout } from '@/layouts/customer-layout'
 import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
 import { useLanguage } from '@/lib/language'
 
+const portalAccessErrorKey = 'portalAccessError'
+
 function getHomePathForRole(role: string) {
-  if (role === 'platform-admin') return '/admin'
+  if (role === 'platform-admin') return '/admin/portal'
   if (role === 'business-owner' || role === 'business-staff') return '/business/dashboard'
   return '/dashboard'
 }
@@ -65,18 +69,23 @@ function RouteLoading() {
 }
 
 function LandingRoute() {
-  const { profile, isLoading } = useAuth()
+  const { profile, isLoading, signOut } = useAuth()
+
+  useEffect(() => {
+    if (!profile) return
+    if (profile.role === 'customer') return
+
+    sessionStorage.setItem(portalAccessErrorKey, 'This sign-in page is for customer accounts only.')
+    void signOut()
+  }, [profile, signOut])
 
   if (isLoading) {
     return <RouteLoading />
   }
 
   if (profile) {
-    if (profile.role === 'platform-admin') {
-      return <Navigate replace to="/admin" />
-    }
-    if (profile.role === 'business-owner' || profile.role === 'business-staff') {
-      return <Navigate replace to="/business/dashboard" />
+    if (profile.role !== 'customer') {
+      return <RouteLoading />
     }
     return <Navigate replace to="/dashboard" />
   }
@@ -93,7 +102,7 @@ function RootRoute() {
 
   if (profile) {
     if (profile.role === 'platform-admin') {
-      return <Navigate replace to="/admin" />
+      return <Navigate replace to="/admin/portal" />
     }
     if (profile.role === 'business-owner' || profile.role === 'business-staff') {
       return <Navigate replace to="/business/dashboard" />
@@ -130,7 +139,7 @@ function PublicOrCustomerRoute() {
   }
 
   if (profile && profile.role === 'platform-admin') {
-    return <Navigate replace to="/admin" />
+    return <Navigate replace to="/admin/portal" />
   }
 
   if (profile && (profile.role === 'business-owner' || profile.role === 'business-staff')) {
@@ -146,13 +155,19 @@ function PublicOrCustomerRoute() {
 
 function ProtectedAdminRoute() {
   const { profile, isLoading } = useAuth()
+  const location = useLocation()
 
   if (isLoading) {
     return <RouteLoading />
   }
 
   if (!profile || profile.role !== 'platform-admin') {
-    return <Navigate replace to={profile ? getHomePathForRole(profile.role) : '/'} />
+    return (
+      <Navigate
+        replace
+        to={profile ? getHomePathForRole(profile.role) : `/admin?redirect=${encodeURIComponent(location.pathname)}`}
+      />
+    )
   }
 
   return <AdminLayout />
@@ -160,16 +175,73 @@ function ProtectedAdminRoute() {
 
 function ProtectedBusinessOwnerRoute() {
   const { profile, isLoading } = useAuth()
+  const location = useLocation()
 
   if (isLoading) {
     return <RouteLoading />
   }
 
   if (!profile || (profile.role !== 'business-owner' && profile.role !== 'business-staff')) {
-    return <Navigate replace to={profile ? getHomePathForRole(profile.role) : '/'} />
+    return (
+      <Navigate
+        replace
+        to={profile ? getHomePathForRole(profile.role) : `/business?redirect=${encodeURIComponent(location.pathname)}`}
+      />
+    )
   }
 
   return <BusinessOwnerLayout />
+}
+
+function AdminEntryRoute() {
+  const { profile, isLoading, signOut } = useAuth()
+
+  useEffect(() => {
+    if (!profile || profile.role === 'platform-admin') return
+
+    sessionStorage.setItem(portalAccessErrorKey, 'This account does not have access to the admin portal.')
+    void signOut()
+  }, [profile, signOut])
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  if (!profile) {
+    return <StaffLoginPage portal="admin" />
+  }
+
+  if (profile.role !== 'platform-admin') {
+    return <RouteLoading />
+  }
+
+  return <Navigate replace to="/admin/portal" />
+}
+
+function BusinessEntryRoute() {
+  const { profile, isLoading, signOut } = useAuth()
+
+  useEffect(() => {
+    if (!profile) return
+    if (profile.role === 'business-owner' || profile.role === 'business-staff') return
+
+    sessionStorage.setItem(portalAccessErrorKey, 'This account does not have access to the business portal.')
+    void signOut()
+  }, [profile, signOut])
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  if (!profile) {
+    return <StaffLoginPage portal="business" />
+  }
+
+  if (profile.role === 'business-owner' || profile.role === 'business-staff') {
+    return <Navigate replace to="/business/dashboard" />
+  }
+
+  return <RouteLoading />
 }
 
 const router = createBrowserRouter([
@@ -180,6 +252,14 @@ const router = createBrowserRouter([
   {
     path: '/signin',
     element: <LandingRoute />,
+  },
+  {
+    path: '/business',
+    element: <BusinessEntryRoute />,
+  },
+  {
+    path: '/admin',
+    element: <AdminEntryRoute />,
   },
   {
     path: '/promo',
@@ -224,7 +304,7 @@ const router = createBrowserRouter([
   {
     element: <ProtectedAdminRoute />,
     children: [
-      { path: '/admin', element: <AdminPage /> },
+      { path: '/admin/portal', element: <AdminPage /> },
       { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
     ],
   },

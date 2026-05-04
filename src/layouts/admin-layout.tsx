@@ -17,7 +17,7 @@ import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
-  { to: '/admin', label: 'Operations', icon: LayoutDashboard },
+  { to: '/admin/portal', label: 'Operations', icon: LayoutDashboard },
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: CreditCard },
 ]
 
