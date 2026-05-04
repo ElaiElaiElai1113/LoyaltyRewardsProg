@@ -20,10 +20,7 @@ export function PublicBrowseLayout() {
       <header className="sticky top-0 z-50 border-b border-[var(--border)]/70 bg-card/90 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-12">
-            <NavLink to="/" className="flex items-center gap-4">
-              <span className="flex size-11 items-center justify-center rounded-full border border-[var(--primary)]/25 bg-[var(--tenant-accent-soft)] font-serif text-xl font-semibold tracking-[0.12em] text-[var(--primary-container)] shadow-soft">
-                MR
-              </span>
+            <NavLink to="/" className="flex items-center gap-3">
               <span className="text-xl font-semibold text-[var(--foreground)]">
                 Medellin Rewards
               </span>

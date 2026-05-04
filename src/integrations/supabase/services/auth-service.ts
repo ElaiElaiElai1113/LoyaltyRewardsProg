@@ -2,6 +2,8 @@ import type { Membership, Profile, UserRole } from '@/types/domain'
 import type { AuthFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow } from './shared'
 
+let pendingSignInRole: AuthFormValues['role'] | null = null
+
 function mapMembership(row: Record<string, unknown>): Membership {
   const mapped = camelCaseRow(row)
 
@@ -45,6 +47,21 @@ async function getProfileByUserId(userId: string): Promise<Profile | null> {
   }
 }
 
+function profileMatchesRequestedRole(
+  profile: Profile,
+  requestedRole: AuthFormValues['role'],
+) {
+  if (requestedRole === 'customer') {
+    return profile.role === 'customer'
+  }
+
+  if (requestedRole === 'platform-admin') {
+    return profile.role === 'platform-admin'
+  }
+
+  return profile.role === 'business-owner' || profile.role === 'business-staff'
+}
+
 export const authService = {
   async getProfileForUserId(userId: string): Promise<Profile | null> {
     return getProfileByUserId(userId)
@@ -62,6 +79,7 @@ export const authService = {
   async signIn(input: AuthFormValues): Promise<Profile> {
     const sb = requireSupabase()
     const email = input.email.trim().toLowerCase()
+    pendingSignInRole = input.role
 
     const { data, error: authError } = await sb.auth.signInWithPassword({
       email,
@@ -69,11 +87,13 @@ export const authService = {
     })
 
     if (authError) {
+      pendingSignInRole = null
       throw new Error(authError.message)
     }
 
     const userId = data.user?.id
     if (!userId) {
+      pendingSignInRole = null
       throw new Error('Sign-in succeeded but the session user could not be loaded.')
     }
 
@@ -83,7 +103,27 @@ export const authService = {
       throw new Error('Profile not found. Try creating an account first.')
     }
 
-    if (profile.role !== input.role) {
+    const isBusinessPortalSignIn =
+      input.role === 'business-owner' || input.role === 'business-staff'
+    const isAllowedBusinessRole =
+      profile.role === 'business-owner' || profile.role === 'business-staff'
+
+    if (isBusinessPortalSignIn && !isAllowedBusinessRole) {
+      await sb.auth.signOut()
+      throw new Error('This account does not have access to the business portal.')
+    }
+
+    if (input.role === 'platform-admin' && profile.role !== 'platform-admin') {
+      await sb.auth.signOut()
+      throw new Error('This account does not have access to the admin portal.')
+    }
+
+    if (input.role === 'customer' && profile.role !== 'customer') {
+      await sb.auth.signOut()
+      throw new Error('This sign-in page is for customer accounts only.')
+    }
+
+    if (!isBusinessPortalSignIn && profile.role !== input.role) {
       await sb.auth.signOut()
       throw new Error(`This account is a ${profile.role}, not a ${input.role}.`)
     }
@@ -151,5 +191,17 @@ export const authService = {
   async signOut(): Promise<void> {
     const sb = requireSupabase()
     await sb.auth.signOut()
+  },
+
+  getPendingSignInRole(): AuthFormValues['role'] | null {
+    return pendingSignInRole
+  },
+
+  clearPendingSignInRole() {
+    pendingSignInRole = null
+  },
+
+  isProfileAllowedForRole(profile: Profile, requestedRole: AuthFormValues['role']) {
+    return profileMatchesRequestedRole(profile, requestedRole)
   },
 }
