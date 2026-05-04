@@ -17,7 +17,7 @@ export function PublicBrowseLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)]/70 bg-[rgb(255_249_240_/_0.82)] backdrop-blur-xl">
+      <header className="sticky top-0 z-50 border-b border-[var(--border)]/70 bg-card/90 backdrop-blur-xl">
         <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
           <div className="flex items-center gap-12">
             <NavLink to="/" className="flex items-center gap-4">

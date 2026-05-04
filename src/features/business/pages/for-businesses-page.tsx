@@ -106,12 +106,12 @@ export function ForBusinessesPage() {
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--primary-container)]">Business atelier</p>
               <h2 className="mt-2 font-serif text-4xl text-primary-container">What owners can shape</h2>
             </div>
-            <ShieldCheck className="size-10 text-secondary-container" />
+            <ShieldCheck className="size-10 text-primary" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {outcomes.map((item) => (
               <div key={item.title} className="rounded-[1.6rem] border border-primary-container/12 bg-[rgb(255_251_245_/_0.72)] p-5 backdrop-blur">
-                <item.icon className="mb-5 size-7 text-secondary-container" />
+                <item.icon className="mb-5 size-7 text-primary" />
                 <h3 className="font-serif text-2xl text-primary-container">{item.title}</h3>
                 <p className="mt-2 text-sm leading-relaxed text-on-surface-variant/80">{item.body}</p>
               </div>

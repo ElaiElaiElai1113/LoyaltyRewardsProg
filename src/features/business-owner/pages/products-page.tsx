@@ -93,8 +93,8 @@ export function ProductsPage() {
 
   const businessColors =
     business?.slug === 'velvet-brew'
-      ? { primary: 'from-[#8B4513] to-[#654321]', light: 'from-[#8B4513]/10 to-[#654321]/10' }
-      : { primary: 'from-[#5B2C6F] to-[#4A235A]', light: 'from-[#5B2C6F]/10 to-[#4A235A]/10' }
+      ? { primary: 'from-primary to-primary-container', light: 'from-primary/10 to-primary-container/10' }
+      : { primary: 'from-tertiary to-primary-container', light: 'from-tertiary/10 to-primary-container/10' }
 
   return (
     <div className="space-y-16">
@@ -206,11 +206,11 @@ export function ProductsPage() {
           products.map((product) => (
             <div
               key={product.id}
-              className="group flex items-center justify-between rounded-3xl bg-white hover:bg-surface-low p-6 border border-outline-variant/5 hover:border-primary/10 transition-all hover:shadow-lg"
+              className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg"
             >
               <div className="flex items-center gap-4">
                 <div
-                  className={`size-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold ${businessColors.primary}`}
+                  className={`size-14 rounded-2xl flex items-center justify-center text-primary-foreground text-lg font-bold ${businessColors.primary}`}
                 >
                   {product.title.charAt(0)}
                 </div>

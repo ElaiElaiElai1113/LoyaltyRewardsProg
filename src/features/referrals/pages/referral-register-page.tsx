@@ -56,7 +56,7 @@ export function ReferralRegisterPage() {
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] max-w-7xl gap-10 lg:grid-cols-[1fr_480px]">
-        <section className="flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+        <section className="warm-hero flex min-h-[32rem] flex-col justify-between overflow-hidden rounded-[2.5rem] px-8 py-12 shadow-card md:px-14 md:py-16">
           <div className="flex items-center justify-between gap-4">
             <LanguagePicker className="text-white/80" />
             <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
@@ -77,7 +77,7 @@ export function ReferralRegisterPage() {
                 <span className="text-sm font-bold uppercase tracking-[0.12em] text-white/90">{currentBusiness.name}</span>
               </div>
             ) : null}
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-white">
               <Gift className="size-4" />
               {hasPartnerReferral ? 'Partner Invite' : t('Party Invite')}
             </div>
@@ -107,7 +107,7 @@ export function ReferralRegisterPage() {
         </section>
 
         <section className="flex items-center">
-          <div className="w-full rounded-xl border border-[var(--border)] bg-white shadow-sm p-8 md:p-10">
+          <div className="w-full rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8 md:p-10">
             {signUpComplete ? (
               <div className="space-y-8 text-center">
                 <div className="space-y-3">

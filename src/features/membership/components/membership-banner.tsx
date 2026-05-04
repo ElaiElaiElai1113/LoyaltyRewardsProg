@@ -18,7 +18,7 @@ export function MembershipBanner() {
   if (isActive || dismissed) return null
 
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[var(--border)] bg-card p-5 text-card-foreground shadow-sm">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="space-y-1">
           <p className="text-base font-semibold text-[var(--foreground)]">{t('$10/mo membership, $10 credit instantly')}</p>

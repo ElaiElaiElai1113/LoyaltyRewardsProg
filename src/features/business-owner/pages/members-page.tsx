@@ -114,7 +114,7 @@ export function MembersPage() {
               <div className="rounded-3xl border border-primary-container/15 bg-[var(--muted)] p-5 shadow-sm">
                 {selectedMember ? (
                   <div className="flex items-center gap-4">
-                    <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-lg text-white shadow-lg">
+                    <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-lg text-primary-foreground shadow-lg">
                       {getInitials(selectedMember.fullName)}
                     </div>
                     <div className="min-w-0 flex-1">
@@ -222,7 +222,7 @@ export function MembersPage() {
                     )}
                   >
                     <div className="flex items-center gap-5">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-lg text-white shadow-lg">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-lg text-primary-foreground shadow-lg">
                         {getInitials(member.fullName)}
                       </div>
                       <div>

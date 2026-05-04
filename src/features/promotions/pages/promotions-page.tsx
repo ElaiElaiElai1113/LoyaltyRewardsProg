@@ -12,7 +12,7 @@ export function PromotionsPage() {
   return (
     <div className="space-y-12 pb-20">
       <div className="flex flex-col gap-6 border-b border-outline-variant/10 pb-8">
-        <Badge variant="accent" className="w-fit bg-secondary-container/10 text-secondary-container">
+        <Badge variant="accent" className="w-fit bg-secondary-container/15 text-foreground">
           {t('Active Campaigns')}
         </Badge>
         <div className="max-w-3xl space-y-4">

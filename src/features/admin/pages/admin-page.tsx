@@ -141,8 +141,8 @@ export function AdminPage() {
 
   const bizColorClass = (bizId: string) => {
     return bizId === currentBusinessId
-      ? 'bg-gradient-to-br from-[#8B4513] to-[#654321]'
-      : 'bg-gradient-to-br from-[#5B2C6F] to-[#4A235A]'
+      ? 'bg-gradient-to-br from-primary to-primary-container'
+      : 'bg-gradient-to-br from-tertiary to-primary-container'
   }
   const adminNativeSelectClass =
     'h-12 rounded-2xl border border-outline-variant/20 bg-surface-highest px-4 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
@@ -335,7 +335,7 @@ export function AdminPage() {
   return (
     <div className="space-y-16 pb-20">
       {/* Enhanced Header with Gradient Accent */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-primary via-[var(--muted)] to-[var(--card)] px-8 py-12 shadow-2xl">
+      <div className="warm-hero relative overflow-hidden rounded-[2rem] px-8 py-12 shadow-2xl">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
         <div className="relative">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -377,15 +377,15 @@ export function AdminPage() {
       </div>
 
       <Tabs defaultValue="members" className="space-y-12">
-        <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4  flex justify-center border-b border-outline-variant/10 shadow-sm">
+        <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4  flex justify-center border-b border-outline-variant/20 shadow-sm">
           <TabsList className="w-full max-w-5xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
-            <TabsTrigger value="members" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Members')}</TabsTrigger>
-            <TabsTrigger value="catalog" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Rewards')}</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Products')}</TabsTrigger>
-            <TabsTrigger value="promotions" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Promotions')}</TabsTrigger>
-            <TabsTrigger value="partners" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Partners')}</TabsTrigger>
-            <TabsTrigger value="referrals" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Referrals')}</TabsTrigger>
-            <TabsTrigger value="activity" className="rounded-xl data-[state=active]:bg-white data-[state=active]:text-[#332820] data-[state=active]:shadow-md">{t('Activity')}</TabsTrigger>
+            <TabsTrigger value="members" className="rounded-xl">{t('Members')}</TabsTrigger>
+            <TabsTrigger value="catalog" className="rounded-xl">{t('Rewards')}</TabsTrigger>
+            <TabsTrigger value="products" className="rounded-xl">{t('Products')}</TabsTrigger>
+            <TabsTrigger value="promotions" className="rounded-xl">{t('Promotions')}</TabsTrigger>
+            <TabsTrigger value="partners" className="rounded-xl">{t('Partners')}</TabsTrigger>
+            <TabsTrigger value="referrals" className="rounded-xl">{t('Referrals')}</TabsTrigger>
+            <TabsTrigger value="activity" className="rounded-xl">{t('Activity')}</TabsTrigger>
           </TabsList>
         </div>
 
@@ -397,11 +397,11 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
               </div>
 
-              <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8 space-y-6">
+              <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm rounded-[2rem] p-8 space-y-6">
                 {selectedMember ? (
                   <div className="rounded-[2rem] border border-primary-container/15 bg-[var(--muted)] p-6 shadow-sm">
                     <div className="flex items-start gap-4">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] font-serif text-xl text-white shadow-lg">
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-xl text-primary-foreground shadow-lg">
                         {selectedMember.profile.fullName.charAt(0)}
                       </div>
                       <div className="space-y-2">
@@ -554,14 +554,14 @@ export function AdminPage() {
                 {customerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className={`rounded-xl border border-[var(--border)] bg-white shadow-sm group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
+                    className={`rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
                       selectedProfileId === member.id
                         ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
                         : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm'
                     }`}
                   >
                     <div className="flex items-center gap-6">
-                       <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-[var(--muted)] flex items-center justify-center font-serif text-2xl text-white shadow-lg group-hover:scale-110 transition-transform">
+                       <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center font-serif text-2xl text-primary-foreground shadow-lg group-hover:scale-110 transition-transform">
                           {member.fullName.charAt(0)}
                        </div>
                       <div>
@@ -682,7 +682,7 @@ export function AdminPage() {
                 ) : null}
               </div>
               {!rewardBusinessId ? (
-                <div className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
+                <div className="rounded-3xl bg-card p-6 border border-outline-variant/20 shadow-sm text-on-surface-variant">
                   No partner is available for reward management yet.
                 </div>
               ) : null}
@@ -840,10 +840,10 @@ export function AdminPage() {
                 {(adminProducts.data ?? []).map((product) => (
                   <div
                     key={product.id}
-                    className="group flex items-center justify-between rounded-3xl bg-white hover:bg-surface-low p-6 border border-outline-variant/5 hover:border-primary/10 transition-all hover:shadow-lg"
+                    className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg"
                   >
                     <div className="flex items-center gap-4">
-                      <div className={`size-14 rounded-2xl flex items-center justify-center text-white text-lg font-bold ${
+                      <div className={`size-14 rounded-2xl flex items-center justify-center text-primary-foreground text-lg font-bold ${
                         bizColorClass(product.businessId)
                       }`}>
                         {product.title.charAt(0)}
@@ -890,7 +890,7 @@ export function AdminPage() {
                 ) : null}
               </div>
               {!productBusinessId ? (
-                <div className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
+                <div className="rounded-3xl bg-card p-6 border border-outline-variant/20 shadow-sm text-on-surface-variant">
                   No partner is available for product management yet.
                 </div>
               ) : null}
@@ -1081,7 +1081,7 @@ export function AdminPage() {
                 ) : null}
               </div>
               {!promotionBusinessId ? (
-                <div className="rounded-3xl bg-white p-6 border border-outline-variant/5 shadow-sm text-on-surface-variant/70">
+                <div className="rounded-3xl bg-card p-6 border border-outline-variant/20 shadow-sm text-on-surface-variant">
                   No partner is available for promotion management yet.
                 </div>
               ) : null}
@@ -1553,7 +1553,7 @@ export function AdminPage() {
                             className="size-16 shrink-0 rounded-2xl object-cover border border-outline-variant/10"
                           />
                         ) : (
-                          <div className={`size-16 shrink-0 rounded-2xl flex items-center justify-center text-white shadow-lg ${bizColorClass(business.id)}`}>
+                          <div className={`size-16 shrink-0 rounded-2xl flex items-center justify-center text-primary-foreground shadow-lg ${bizColorClass(business.id)}`}>
                             <Store className="size-7" />
                           </div>
                         )}
@@ -2073,7 +2073,7 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Fulfillment</span>
                 <h2 className="font-serif text-3xl text-primary">Fulfillment Queue</h2>
               </div>
-              <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
+              <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
                   <div className="space-y-2 p-4">
                     {(overview.data?.redemptions ?? []).map((redemption) => (
@@ -2141,7 +2141,7 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Audit Log</span>
                 <h2 className="font-serif text-3xl text-primary">Admin Logs</h2>
               </div>
-               <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm overflow-hidden">
+               <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
                   <div className="space-y-2 p-4">
                     {(overview.data?.adminLogs ?? []).map((log) => (
