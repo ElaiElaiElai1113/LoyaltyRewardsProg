@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Building2, CalendarClock, Gift, Repeat2 } from 'lucide-react'
 import { useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
@@ -9,12 +9,13 @@ import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
+
+const portalAccessErrorKey = 'portalAccessError'
 
 const defaultValues: AuthFormValues = {
   fullName: '',
@@ -47,8 +48,15 @@ export function LandingPage() {
   const { signIn, signUp } = useAuth()
   const { t } = useLanguage()
   const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
-  const [error, setError] = useState<string | null>(null)
-  const [showStaffLogin, setShowStaffLogin] = useState(false)
+  const [error, setError] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+
+    const storedError = sessionStorage.getItem(portalAccessErrorKey)
+    if (storedError) {
+      sessionStorage.removeItem(portalAccessErrorKey)
+    }
+    return storedError
+  })
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null)
   const [signUpComplete, setSignUpComplete] = useState(false)
@@ -79,21 +87,6 @@ export function LandingPage() {
     if (nextTab === 'signin') {
       setSignUpComplete(false)
     }
-  }
-
-  const toggleStaffLogin = () => {
-    setShowStaffLogin((current) => {
-      const next = !current
-      if (next) {
-        const currentRole = signInForm.getValues('role')
-        if (currentRole === 'customer') {
-          signInForm.setValue('role', 'business-owner', { shouldDirty: true })
-        }
-      } else {
-        signInForm.setValue('role', 'customer', { shouldDirty: true })
-      }
-      return next
-    })
   }
 
   return (
@@ -264,12 +257,12 @@ export function LandingPage() {
                         )}
                       </Button>
 
-                        <button
-                          type="button"
-                          className="block w-full text-center text-sm font-medium text-on-surface-variant/75 transition hover:text-primary"
-                          onClick={() => {
-                            setError(null)
-                            setShowForgotPassword(false)
+                      <button
+                        type="button"
+                        className="block w-full text-center text-sm font-medium text-on-surface-variant/75 transition hover:text-primary"
+                        onClick={() => {
+                          setError(null)
+                          setShowForgotPassword(false)
                         }}
                       >
                         {t('Back to sign in')}
@@ -283,10 +276,7 @@ export function LandingPage() {
                           try {
                             setError(null)
                             setResetSuccessMessage(null)
-                            await signIn({
-                              ...values,
-                              role: showStaffLogin ? values.role : 'customer',
-                            })
+                            await signIn({ ...values, role: 'customer' })
                             const redirect = searchParams.get('redirect')
                             if (redirect) {
                               navigate(redirect)
@@ -339,28 +329,6 @@ export function LandingPage() {
                         </button>
                       </div>
 
-                      {showStaffLogin ? (
-                        <div className="grid gap-3">
-                          <Label htmlFor="signin-role">{t('Staff Role')}</Label>
-                          <Controller
-                            control={signInForm.control}
-                            name="role"
-                            render={({ field }) => (
-                              <Select value={field.value} onValueChange={field.onChange}>
-                                <SelectTrigger id="signin-role" className="h-12">
-                                  <SelectValue placeholder={t('Select a staff role')} />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="business-owner">{t('Business Owner')}</SelectItem>
-                                  <SelectItem value="business-staff">Business Staff</SelectItem>
-                                  <SelectItem value="platform-admin">{t('Platform Admin')}</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            )}
-                          />
-                        </div>
-                      ) : null}
-
                       {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
 
                       <Button
@@ -379,13 +347,6 @@ export function LandingPage() {
                         )}
                       </Button>
 
-                      <button
-                        type="button"
-                        className="block w-full text-center text-sm font-medium text-on-surface-variant/60 transition hover:text-primary"
-                        onClick={toggleStaffLogin}
-                      >
-                        {showStaffLogin ? t('Customer login <-') : t('Staff login ->')}
-                      </button>
                     </form>
                   )}
                 </div>

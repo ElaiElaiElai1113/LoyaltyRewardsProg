@@ -25,7 +25,7 @@ const memberNavigation = [
   { to: '/profile', label: 'Profile', icon: UserRound },
 ]
 
-const adminNavigation = [{ to: '/admin', label: 'Admin Portal', icon: ShieldCheck }]
+const adminNavigation = [{ to: '/admin/portal', label: 'Admin Portal', icon: ShieldCheck }]
 
 function navClassName({ isActive }: { isActive: boolean }) {
   return isActive
@@ -117,7 +117,7 @@ export function AppShell() {
               </p>
             </div>
             <Button asChild variant="secondary" size="sm">
-              <NavLink to={profile?.role === 'platform-admin' ? '/admin' : '/rewards'}>
+              <NavLink to={profile?.role === 'platform-admin' ? '/admin/portal' : '/rewards'}>
                 <Settings2 className="size-4" />
                 {profile?.role === 'platform-admin' ? 'Staff tools' : 'Browse rewards'}
               </NavLink>
