@@ -16,7 +16,7 @@ export function GiftCardDetailPage() {
   }
 
   if (!card) {
-    return <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-10 text-on-surface-variant">Gift card not found.</div>
+    return <div className="rounded-xl border border-[var(--border)] bg-card shadow-sm p-10 text-on-surface-variant">Gift card not found.</div>
   }
 
   return (

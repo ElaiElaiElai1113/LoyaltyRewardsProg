@@ -38,7 +38,7 @@ export function ActivityPage() {
           <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Loyalty Status')}</span>
           <div className="rounded-2xl bg-surface-low px-6 py-4 text-primary shadow-sm flex items-center gap-4 border border-outline-variant/10">
              <div className="size-10 rounded-full bg-primary flex items-center justify-center">
-                <Wallet className="size-5 text-secondary-container" />
+                <Wallet className="size-5 text-primary" />
              </div>
              <div className="flex flex-col">
                 <span className="font-serif text-2xl leading-none">{rewardBalance.data?.points ?? 0}</span>

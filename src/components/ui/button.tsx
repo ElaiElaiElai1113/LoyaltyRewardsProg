@@ -14,7 +14,7 @@ const buttonVariants = cva(
         secondary: 'border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--muted)]',
         outline: 'border border-[var(--primary)]/20 bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--primary)]/45 hover:bg-[var(--muted)]',
         ghost: 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]',
-        tertiary: 'border border-[var(--primary)]/15 bg-[var(--tenant-accent-soft)] text-[var(--primary-container)] hover:border-[var(--primary)]/30 hover:bg-[var(--muted)]',
+        tertiary: 'border border-[var(--primary)]/20 bg-[var(--tenant-accent-soft)] text-[var(--foreground)] hover:border-[var(--primary)]/40 hover:bg-[var(--muted)]',
       },
       size: {
         default: 'h-10 px-4 py-2',

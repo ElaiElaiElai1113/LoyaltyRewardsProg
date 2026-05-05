@@ -11,7 +11,7 @@ interface MetricCardProps {
 
 export function MetricCard({ label, value, icon: Icon, helper }: MetricCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-[var(--border)] bg-card p-6 text-card-foreground shadow-sm">
       <div className="flex items-center justify-between mb-4">
         <span className="text-sm font-medium text-[var(--muted-foreground)]">{label}</span>
         <div className="rounded-lg bg-[var(--muted)] p-2.5 text-[var(--foreground)]">

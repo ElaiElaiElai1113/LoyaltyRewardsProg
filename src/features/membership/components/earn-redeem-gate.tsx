@@ -48,7 +48,7 @@ export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="overflow-hidden p-0 sm:max-w-[34rem]">
-          <div className="border-b border-[var(--border)] bg-[var(--foreground)] px-8 py-7 text-white">
+          <div className="border-b border-[var(--border)] warm-hero px-8 py-7">
             <div className="flex items-start justify-between gap-6">
               <div className="space-y-4">
                 <Badge className="bg-white/12 text-white">
@@ -73,15 +73,15 @@ export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
 
           <div className="space-y-6 px-8 py-7">
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Monthly')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{formatCurrency(10)}</p>
               </div>
-              <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Instant credit')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{formatCurrency(10)}</p>
               </div>
-              <div className="rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm">
+              <div className="rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Payment')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{t('Mock')}</p>
               </div>

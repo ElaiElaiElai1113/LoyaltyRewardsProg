@@ -63,7 +63,7 @@ export function BusinessDashboardPage() {
     )
   }
 
-  const businessColors = { primary: 'from-[#7a4a1f] to-[#d8a23a]', light: 'from-primary-container/18 to-secondary-container/14' }
+  const businessColors = { primary: 'from-primary to-primary-container', light: 'from-primary/14 to-secondary-container/14' }
   const signupQrUrl =
     profile?.referralCode && business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
@@ -101,7 +101,7 @@ export function BusinessDashboardPage() {
   return (
     <div className="space-y-16">
       {/* Welcome Section */}
-      <div className="relative overflow-hidden rounded-[2rem] bg-[var(--muted)] px-8 py-12 text-white shadow-2xl">
+      <div className="warm-hero-muted relative overflow-hidden rounded-[2rem] px-8 py-12 shadow-2xl">
         <div className="absolute inset-0 bg-[var(--muted)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
           <p className="text-sm font-medium text-[var(--muted-foreground)] mb-3">{t('Business Overview')}</p>
@@ -168,7 +168,7 @@ export function BusinessDashboardPage() {
 
       {/* Points Overview */}
       <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
               <h3 className="font-serif text-2xl text-primary">{t('Points Issued')}</h3>
@@ -181,7 +181,7 @@ export function BusinessDashboardPage() {
           <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8">
           <div className="flex items-center justify-between mb-6">
             <div className="space-y-1">
               <h3 className="font-serif text-2xl text-primary">{t('Points Redeemed')}</h3>
@@ -268,7 +268,7 @@ export function BusinessDashboardPage() {
 
       {/* Signup Portal */}
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8">
           <div className="mb-6 flex items-start justify-between gap-4">
             <div className="space-y-2">
               <h2 className="font-serif text-2xl text-primary">{t('Signup Portal')}</h2>
@@ -307,7 +307,7 @@ export function BusinessDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-8">
+        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8">
           <div ref={signupQrRef} className="mx-auto flex size-56 items-center justify-center rounded-3xl bg-surface-lowest p-4">
             {signupQrUrl ? <QRCodeSVG value={signupQrUrl} size={184} /> : <QrCode className="size-16 text-on-surface-variant/30" />}
           </div>
@@ -336,7 +336,7 @@ export function BusinessDashboardPage() {
         </div>
 
         <form
-          className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-6"
+          className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-6"
           onSubmit={(event: FormEvent<HTMLFormElement>) => {
             event.preventDefault()
             if (!business?.id || redemptionCode.length !== 6) return
@@ -383,7 +383,7 @@ export function BusinessDashboardPage() {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[360px_1fr]">
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
             {partnerPerformance.isLoading ? (
               Array.from({ length: 4 }).map((_, index) => (
                 <div key={index} className="flex items-center justify-between p-5">
@@ -415,7 +415,7 @@ export function BusinessDashboardPage() {
             ) : null}
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+          <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
           {partnerReferrals.isLoading ? (
             Array.from({ length: 3 }).map((_, index) => (
               <div key={index} className="p-6">
@@ -480,7 +480,7 @@ export function BusinessDashboardPage() {
           </Link>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
           {redemptions.length === 0 ? (
             <EmptyState
               className="border-0 shadow-none"

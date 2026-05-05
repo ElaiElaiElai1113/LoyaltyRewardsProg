@@ -22,7 +22,7 @@ export function MembershipPage() {
         </p>
       </div>
 
-      <section className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+      <section className="rounded-xl border border-[var(--border)] bg-card p-6 text-card-foreground shadow-sm">
         <div className="grid gap-8 md:grid-cols-[1fr_260px] md:items-start">
           <div className="space-y-6">
             <div className="flex items-center gap-3">

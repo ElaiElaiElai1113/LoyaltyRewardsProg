@@ -16,7 +16,7 @@ export function GiftCardTile({ item, balancePoints = 0, businessName, onSelect }
   const hasEnoughPoints = balancePoints >= item.pointsCost
 
   return (
-    <div className="group flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm transition-colors hover:bg-[var(--muted)]/40">
+    <div className="group flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm transition-colors hover:bg-[var(--muted)]/40">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-wrap gap-2">
             <Badge>{item.valueLabel}</Badge>

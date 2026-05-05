@@ -39,8 +39,8 @@ export function SettingsPage() {
 
   const businessColors =
     business.slug === 'velvet-brew'
-      ? { primary: 'from-[#8B4513] to-[#654321]' }
-      : { primary: 'from-[#5B2C6F] to-[#4A235A]' }
+      ? { primary: 'from-primary to-primary-container' }
+      : { primary: 'from-tertiary to-primary-container' }
 
   const handleSubmit = form.handleSubmit(async (values) => {
     await updateSettings.mutateAsync({ businessId: business.id, values })
@@ -69,10 +69,10 @@ export function SettingsPage() {
               <h2 className="font-serif text-2xl text-primary">{t('Details')}</h2>
             </div>
 
-            <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
+            <div className="rounded-3xl bg-card text-card-foreground border border-outline-variant/20 shadow-sm p-8 space-y-6">
               <div className="flex items-center gap-4">
                 <div
-                  className={`size-20 rounded-2xl flex items-center justify-center text-white text-3xl font-bold bg-gradient-to-br ${businessColors.primary}`}
+                  className={`size-20 rounded-2xl flex items-center justify-center text-primary-foreground text-3xl font-bold bg-gradient-to-br ${businessColors.primary}`}
                 >
                   {business.name.charAt(0)}
                 </div>
@@ -119,7 +119,7 @@ export function SettingsPage() {
               <h2 className="font-serif text-2xl text-primary">{t('Settings')}</h2>
             </div>
 
-            <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8 space-y-6">
+            <div className="rounded-3xl bg-card text-card-foreground border border-outline-variant/20 shadow-sm p-8 space-y-6">
               <div className="space-y-4">
                 <div className="grid gap-2">
                   <Label htmlFor="earn-rate" className="flex items-center gap-2">
@@ -163,7 +163,7 @@ export function SettingsPage() {
             </div>
 
             {/* Status Toggle */}
-            <div className="rounded-3xl bg-white border border-outline-variant/5 shadow-sm p-8">
+            <div className="rounded-3xl bg-card text-card-foreground border border-outline-variant/20 shadow-sm p-8">
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="font-serif text-xl text-primary">{t('Business Status')}</h3>

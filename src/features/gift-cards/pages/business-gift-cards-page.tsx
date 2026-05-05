@@ -45,7 +45,7 @@ export function BusinessGiftCardsPage() {
   })
 
   if (profile?.role !== 'business-owner') {
-    return <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-10 text-on-surface-variant">Only business owners can curate gift cards.</div>
+    return <div className="rounded-xl border border-[var(--border)] bg-card shadow-sm p-10 text-on-surface-variant">Only business owners can curate gift cards.</div>
   }
 
   function openForCreate() {

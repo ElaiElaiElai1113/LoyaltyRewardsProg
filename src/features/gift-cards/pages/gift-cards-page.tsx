@@ -46,7 +46,7 @@ export function GiftCardsPage() {
           </p>
         </div>
         <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm flex items-center gap-4 px-6 py-4">
-          <Gift className="size-6 text-secondary-container" />
+          <Gift className="size-6 text-primary" />
           <div>
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Available Points</p>
             <p className="font-serif text-3xl text-primary-container">{balancePoints}</p>
