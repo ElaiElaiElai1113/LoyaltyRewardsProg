@@ -16,18 +16,19 @@ export function PublicGiftCardPage() {
   }
 
   if (!card) {
-    return <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm p-10 text-on-surface-variant">Gift card not found.</div>
+    return <div className="rounded-xl border border-[var(--border)] bg-card shadow-sm p-10 text-on-surface-variant">Gift card not found.</div>
   }
 
   return (
     <div className="space-y-8 py-10">
       <div
-        className="rounded border p-8 text-white"
+        className="relative overflow-hidden rounded border p-8 text-white shadow-card"
         style={{ background: `linear-gradient(135deg, ${card.businessPrimaryColor}, ${card.businessAccentColor})` }}
       >
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+        <div className="absolute inset-0 bg-black/25" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <Badge variant="outline" className="border-white/35 text-white">{card.status}</Badge>
+            <Badge variant="outline" className="border-white/35 bg-black/20 text-white">{card.status}</Badge>
             <h1 className="mt-4 font-serif text-5xl font-bold uppercase tracking-[0.02em]">{card.businessName}</h1>
             <p className="mt-2 text-white/80">{card.customerFirstName}'s gift card</p>
           </div>

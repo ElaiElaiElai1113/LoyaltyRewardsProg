@@ -93,47 +93,47 @@ export function LandingPage() {
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(230,193,111,0.18),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(143,104,34,0.12),transparent_32%)]" />
       <div className="mx-auto grid min-h-[calc(100vh-2rem)] max-w-7xl items-center gap-8 lg:grid-cols-[1.08fr_0.92fr]">
-        <section className="gold-wash relative flex h-full max-h-[calc(100vh-2rem)] min-h-[42rem] flex-col justify-between overflow-hidden rounded-[2rem] px-8 py-10 text-on-surface shadow-panel md:px-12 lg:px-14">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.6),transparent_22%),radial-gradient(circle_at_bottom_right,rgba(183,138,43,0.12),transparent_26%)]" />
+        <section className="warm-hero relative flex h-full min-h-[42rem] flex-col justify-between overflow-hidden rounded-[2rem] px-8 pb-14 pt-10 shadow-panel md:px-12 md:pb-16 lg:px-14">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,239,197,0.18),transparent_24%),radial-gradient(circle_at_bottom_right,rgba(255,204,102,0.1),transparent_28%)]" />
           <div className="hidden" />
 
           <div className="relative z-10 space-y-8">
-            <Badge variant="accent" className="w-fit px-5 py-2 text-primary-container">
+            <Badge variant="accent" className="w-fit border-white/20 bg-white/10 px-5 py-2 text-white">
               {t('Golden rewards circle')}
             </Badge>
             <div className="max-w-3xl space-y-6">
-              <h1 className="font-serif text-5xl font-semibold leading-[0.88] tracking-[0.01em] text-primary-container md:text-6xl xl:text-[5.3rem]">
+              <h1 className="font-serif text-5xl font-semibold leading-[0.88] tracking-[0.01em] text-[#ffe8b4] md:text-6xl xl:text-[5.3rem]">
                 {t('A rewards ritual')}<br />
                 {t('worth coming')}<br />
                 {t('back for')}.
               </h1>
-              <p className="max-w-2xl text-base font-medium leading-relaxed text-on-surface-variant md:text-lg">
+              <p className="max-w-2xl text-base font-medium leading-relaxed text-[#f8dfb2] md:text-lg">
                 {t('Discover local favorites, collect beautiful little wins, and redeem perks across the Medellin Rewards circle with a member experience that feels warm, premium, and personal.')}
               </p>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap items-center gap-4">
                 <Link
                   to="/shop"
-                  className="inline-flex h-11 items-center rounded-full bg-primary px-6 text-xs font-bold uppercase tracking-[0.12em] text-on-primary shadow-soft transition hover:-translate-y-0.5 hover:bg-primary-container"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#f3c96f] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#21160c] shadow-soft transition hover:-translate-y-0.5 hover:bg-[#ffd987]"
                 >
                   {t('Explore the circle')}
                 </Link>
                 <Link
                   to="/for-businesses#book-demo"
-                  className="inline-flex h-11 items-center gap-2 rounded-full border border-[var(--primary)]/20 bg-[rgb(255_251_245_/_0.85)] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--foreground)] shadow-soft transition-colors hover:bg-[var(--muted)]"
+                  className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-white/18"
                 >
                   <Building2 className="size-4" />
                   {t('For businesses')}
                 </Link>
                 <Link
                   to="/rewards"
-                  className="inline-flex h-11 items-center rounded-full border border-primary-container/20 bg-[var(--tenant-accent-soft)] px-6 text-xs font-bold uppercase tracking-[0.12em] text-primary-container transition hover:bg-primary-container/14"
+                  className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#f3c96f]/30 bg-[#4d3216] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#ffe8b4] transition hover:-translate-y-0.5 hover:bg-[#5f3d19]"
                 >
                   {t('View rewards')}
                 </Link>
               </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="grid gap-4 pb-2 sm:grid-cols-3 lg:gap-5">
               {[
                 {
                   icon: Repeat2,
@@ -153,16 +153,16 @@ export function LandingPage() {
               ].map((item) => (
                 <div
                   key={item.title}
-                  className="group rounded-[1.5rem] border border-primary-container/12 bg-[rgb(255_250_243_/_0.74)] p-5 backdrop-blur transition-all hover:-translate-y-0.5 hover:border-primary-container/25 hover:bg-[rgb(255_252_248_/_0.9)]"
+                  className="group rounded-[1.5rem] border border-white/16 bg-[#3a2717]/88 p-5 text-white shadow-soft backdrop-blur transition-all hover:-translate-y-0.5 hover:border-[#f3c96f]/35 hover:bg-[#422c19]/94 md:p-6"
                 >
-                  <div className="mb-5 flex size-11 items-center justify-center rounded-full border border-secondary-container/30 bg-secondary-container/12 text-secondary-container transition-all group-hover:bg-secondary-container/20">
+                  <div className="mb-5 flex size-11 items-center justify-center rounded-full border border-[#f3c96f]/35 bg-[#f3c96f]/12 text-[#f3c96f] transition-all group-hover:bg-[#f3c96f]/18">
                     <item.icon className="size-5" />
                   </div>
                   <div>
-                    <h2 className="font-serif text-2xl leading-none tracking-[0.02em] text-primary-container">
+                    <h2 className="font-serif text-2xl leading-none tracking-[0.02em] text-[#ffe8b4]">
                       {item.title}
                     </h2>
-                    <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">{item.body}</p>
+                    <p className="mt-3 text-sm leading-relaxed text-[#e9c996]">{item.body}</p>
                   </div>
                 </div>
               ))}
@@ -176,18 +176,18 @@ export function LandingPage() {
           <div className="mb-6 flex justify-end">
             <LanguagePicker className="text-on-surface-variant" />
           </div>
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-7">
+          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-5">
             <div className="flex justify-center">
-              <TabsList className="w-full max-w-md">
-                <TabsTrigger value="signin">{t('Sign In')}</TabsTrigger>
-                <TabsTrigger value="signup">{t('Register')}</TabsTrigger>
+              <TabsList className="grid w-full max-w-md grid-cols-2">
+                <TabsTrigger value="signin" className="min-w-0 px-4">{t('Sign In')}</TabsTrigger>
+                <TabsTrigger value="signup" className="min-w-0 px-4">{t('Register')}</TabsTrigger>
               </TabsList>
             </div>
 
             <TabsContent value="signin" className="outline-none">
-              <div className="space-y-7">
-                <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-5xl tracking-tight text-primary-container">
+              <div className="space-y-5">
+                <div className="space-y-1.5 text-center">
+                  <h2 className="font-serif text-4xl tracking-tight text-primary-container md:text-5xl">
                     {t('Welcome Back')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">
@@ -354,9 +354,9 @@ export function LandingPage() {
             </TabsContent>
 
             <TabsContent value="signup" className="outline-none">
-              <div className="space-y-7">
-                <div className="space-y-2 text-center">
-                  <h2 className="font-serif text-5xl tracking-tight text-primary-container">
+              <div className="space-y-5">
+                <div className="space-y-1.5 text-center">
+                  <h2 className="font-serif text-4xl tracking-tight text-primary-container md:text-5xl">
                     {t('Create Account')}
                   </h2>
                   <p className="text-sm font-medium text-on-surface-variant/80">

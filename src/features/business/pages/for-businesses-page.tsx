@@ -152,20 +152,20 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <div className="gold-wash overflow-hidden rounded-[2.25rem] p-8">
+        <div className="warm-hero-muted overflow-hidden rounded-[2.25rem] p-8 shadow-panel">
           <div className="mb-8 flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--primary-container)]">Business atelier</p>
-              <h2 className="mt-2 font-serif text-4xl text-primary-container">What owners can shape</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#f3c96f]">Business atelier</p>
+              <h2 className="mt-2 font-serif text-4xl text-[#ffe8b4]">What owners can shape</h2>
             </div>
-            <ShieldCheck className="size-10 text-secondary-container" />
+            <ShieldCheck className="size-10 text-[#f3c96f]" />
           </div>
           <div className="grid gap-4 sm:grid-cols-2">
             {outcomes.map((item) => (
-              <div key={item.title} className="rounded-[1.6rem] border border-primary-container/12 bg-[rgb(255_251_245_/_0.72)] p-5 backdrop-blur">
-                <item.icon className="mb-5 size-7 text-secondary-container" />
-                <h3 className="font-serif text-2xl text-primary-container">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-on-surface-variant/80">{item.body}</p>
+              <div key={item.title} className="rounded-[1.6rem] border border-white/16 bg-[#3a2717]/88 p-5 text-white shadow-soft backdrop-blur transition-all hover:border-[#f3c96f]/35 hover:bg-[#422c19]/94">
+                <item.icon className="mb-5 size-7 text-[#f3c96f]" />
+                <h3 className="font-serif text-2xl text-[#ffe8b4]">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-[#e9c996]">{item.body}</p>
               </div>
             ))}
           </div>

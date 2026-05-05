@@ -27,7 +27,7 @@ function TabsTrigger({
   return (
     <TabsPrimitive.Trigger
       className={cn(
-        'inline-flex min-w-32 items-center justify-center rounded-full px-8 py-2.5 text-sm font-bold uppercase tracking-widest text-on-surface-variant transition-all hover:text-primary-container data-[state=active]:bg-primary-container data-[state=active]:text-on-primary data-[state=active]:shadow-soft',
+        'inline-flex min-w-32 items-center justify-center rounded-full px-8 py-2.5 text-sm font-bold uppercase tracking-widest text-on-surface-variant transition-all hover:text-foreground data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-soft',
         className,
       )}
       {...props}

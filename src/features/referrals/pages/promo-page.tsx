@@ -38,7 +38,7 @@ export function PromoPage() {
 
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">
-      <section className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] bg-[var(--muted)] px-8 py-12 text-white shadow-card md:px-14 md:py-16">
+      <section className="warm-hero mx-auto flex min-h-[calc(100vh-4rem)] max-w-6xl flex-col justify-between overflow-hidden rounded-[2.5rem] px-8 py-12 shadow-card md:px-14 md:py-16">
         <div className="flex items-center justify-between gap-4">
           <LanguagePicker className="text-white/80" />
           <div className="flex size-12 items-center justify-center rounded-2xl bg-white/10">
@@ -60,7 +60,7 @@ export function PromoPage() {
                 <span className="text-sm font-bold uppercase tracking-[0.12em] text-white/90">{currentBusiness.name}</span>
               </div>
             ) : null}
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-secondary-container">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm font-bold text-white">
               <Gift className="size-4" />
               {hasPartnerReferral ? 'Partner Perk' : hasReferral ? t('Referral Invite') : t('Rewards Invitation')}
             </div>

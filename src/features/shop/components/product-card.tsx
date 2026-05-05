@@ -17,7 +17,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
   const displayCategory = product.category === 'Coffee' ? 'Drinks' : product.category
 
   return (
-    <div className="group flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-white p-4 shadow-sm transition-colors hover:bg-[var(--muted)]/40">
+    <div className="group flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm transition-colors hover:bg-[var(--muted)]/40">
         <div className="flex justify-between items-start">
           <Badge>
               {t(displayCategory)}

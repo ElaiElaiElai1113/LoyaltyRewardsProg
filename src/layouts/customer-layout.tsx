@@ -40,7 +40,7 @@ export function CustomerLayout() {
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-white">
+      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-card/95 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-6">
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex items-center gap-3">
@@ -109,7 +109,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[var(--border)] bg-white pb-8 pt-24 md:flex">
+      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[var(--border)] bg-card pb-8 pt-24 md:flex">
         <div className="px-6 pb-8">
           <p className="text-sm font-semibold text-[var(--foreground)]">{t('Network Member')}</p>
           <p className="mt-1 text-xs font-medium text-[var(--muted-foreground)]">{t('Rewards account')}</p>
@@ -143,7 +143,7 @@ export function CustomerLayout() {
 
       <CustomerBottomNav />
 
-      <footer className="border-t border-[var(--border)] bg-white py-12 md:ml-64">
+      <footer className="border-t border-[var(--border)] bg-card py-12 md:ml-64">
         <div className="mx-auto max-w-7xl px-6">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">

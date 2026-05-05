@@ -16,7 +16,7 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
     <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
       <div className="flex flex-col gap-6">
         <div className="flex justify-between items-start">
-          <Badge variant="accent" className="bg-secondary-container/30 text-secondary">
+          <Badge variant="accent" className="border-primary/25 bg-primary text-primary-foreground">
             {t(promotion.badge)}
           </Badge>
           <div className="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">

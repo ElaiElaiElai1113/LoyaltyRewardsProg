@@ -17,7 +17,7 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
       <Button
         variant={selected === null ? 'tertiary' : 'ghost'}
         size="sm"
-        className={selected === null ? 'px-8' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
+        className={selected === null ? 'bg-primary px-8 text-primary-foreground hover:bg-primary-container hover:text-primary-foreground' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
         onClick={() => onChange(null)}
       >
         {t('All Businesses')}
@@ -27,7 +27,7 @@ export function BusinessFilter({ businesses, selected, onChange }: BusinessFilte
           key={business.id}
           variant={selected === business.id ? 'tertiary' : 'ghost'}
           size="sm"
-          className={selected === business.id ? 'px-8' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
+          className={selected === business.id ? 'bg-primary px-8 text-primary-foreground hover:bg-primary-container hover:text-primary-foreground' : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'}
           onClick={() => onChange(business.id)}
         >
           {business.name}
