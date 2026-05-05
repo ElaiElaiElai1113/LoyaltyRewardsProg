@@ -40,7 +40,7 @@ export function BusinessOwnerLayout() {
 
   if (isBusinessLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
+      <div className="soft-luxe-shell flex min-h-screen items-center justify-center">
         <div className="absolute right-6 top-6">
           <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
@@ -54,7 +54,7 @@ export function BusinessOwnerLayout() {
 
   if (profile?.role !== 'business-owner' && profile?.role !== 'business-staff') {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
+      <div className="soft-luxe-shell flex min-h-screen items-center justify-center">
         <div className="absolute right-6 top-6">
           <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
@@ -69,7 +69,7 @@ export function BusinessOwnerLayout() {
 
   if (!business) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
+      <div className="soft-luxe-shell flex min-h-screen items-center justify-center">
         <div className="absolute right-6 top-6">
           <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
@@ -87,11 +87,11 @@ export function BusinessOwnerLayout() {
   }
 
   return (
-    <div className="flex min-h-screen bg-transparent">
-      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-[var(--border)] bg-card px-5 py-7">
+    <div className="soft-luxe-shell flex min-h-screen">
+      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-primary/15 bg-card/92 px-5 py-7 shadow-soft backdrop-blur-xl">
         {/* Business Logo/Identity */}
         <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)]">
+          <div className="luxe-art flex size-12 items-center justify-center rounded-[1rem]">
             <Package className="size-6" />
           </div>
           <div className="flex flex-col overflow-hidden">
@@ -111,9 +111,9 @@ export function BusinessOwnerLayout() {
               key={item.to}
               to={item.to}
               className={({ isActive }) =>
-                `group flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
+                `group flex items-center justify-between rounded-[1rem] px-3 py-3 text-sm font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[var(--muted)] text-[var(--foreground)]'
+                    ? 'bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
                     : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                 }`
               }

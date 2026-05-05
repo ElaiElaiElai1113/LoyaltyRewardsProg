@@ -125,11 +125,41 @@ export function LandingPage() {
                   {t('For businesses')}
                 </Link>
                 <Link
-                  to="/rewards"
+                  to="/shop"
                   className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#f3c96f]/30 bg-[#4d3216] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#ffe8b4] transition hover:-translate-y-0.5 hover:bg-[#5f3d19]"
                 >
-                  {t('View rewards')}
+                  {t('View menu')}
                 </Link>
+              </div>
+            </div>
+
+            <div className="rounded-[1.75rem] border border-[var(--champagne)]/35 bg-[var(--cream)]/96 p-6 text-[var(--foreground)] shadow-soft backdrop-blur md:p-8">
+              <div className="max-w-2xl space-y-2">
+                <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-primary">
+                  {t('Featured rewards circle')}
+                </p>
+                <h2 className="font-serif text-4xl font-semibold leading-none text-primary-container md:text-5xl">
+                  {t('A few reasons to linger')}
+                </h2>
+                <p className="text-sm font-medium leading-6 text-on-surface-variant/85">
+                  {t('Soft little moments that make browsing feel personal before anyone signs in.')}
+                </p>
+              </div>
+
+              <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-5">
+                {[
+                  { icon: Gift, title: t('Golden gift cards'), body: t('Credit that feels pretty enough to send and simple enough to claim.') },
+                  { icon: Repeat2, title: t('Bonus drops'), body: t('Limited perks give shoppers a gentle reason to check back more often.') },
+                  { icon: CalendarClock, title: t('Ritual reminders'), body: t('Warm rewards, repeat visits, and a circle that feels curated instead of transactional.') },
+                ].map((item) => (
+                  <div key={item.title} className="luxe-card rounded-[1.35rem] p-5 sm:p-6">
+                    <div className="luxe-art mb-5 flex size-12 items-center justify-center rounded-[1rem]">
+                      <item.icon className="size-6" />
+                    </div>
+                    <h2 className="font-serif text-[1.85rem] leading-[0.95] text-primary-container">{item.title}</h2>
+                    <p className="mt-4 text-sm font-semibold leading-6 text-[var(--muted-foreground)]">{item.body}</p>
+                  </div>
+                ))}
               </div>
             </div>
 

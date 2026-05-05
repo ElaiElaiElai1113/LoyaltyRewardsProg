@@ -1,7 +1,6 @@
 import {
   Activity,
   CreditCard,
-  Gift,
   LayoutDashboard,
   LogOut,
   Megaphone,
@@ -24,7 +23,6 @@ import { getInitials } from '@/lib/utils'
 const navigation = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/shop', label: 'Shop', icon: ShoppingBag },
-  { to: '/rewards', label: 'Rewards', icon: Gift },
   { to: '/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/membership', label: 'Membership', icon: ShieldCheck },
   { to: '/promotions', label: 'Promotions', icon: Megaphone },
@@ -41,7 +39,7 @@ export function CustomerLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
       <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-card/95 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-[1600px] items-center justify-between px-5 md:px-6">
+        <div className="mx-auto flex h-16 w-full items-center justify-between px-5 md:px-6 2xl:px-10">
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex items-center gap-3">
               <span className="text-xl font-semibold text-[var(--foreground)]">
@@ -135,8 +133,8 @@ export function CustomerLayout() {
         </nav>
       </aside>
 
-      <main className="w-full flex-1 px-5 py-8 pb-20 md:ml-64 md:w-[calc(100%-16rem)] md:px-8 md:pb-8 lg:px-10">
-        <div className="mx-auto w-full max-w-[1280px]">
+      <main className="w-full flex-1 px-5 py-8 pb-20 md:ml-64 md:w-[calc(100%-16rem)] md:px-8 md:pb-8 lg:px-10 2xl:px-12">
+        <div className="mx-auto w-full">
         <Outlet />
         </div>
       </main>
@@ -144,7 +142,7 @@ export function CustomerLayout() {
       <CustomerBottomNav />
 
       <footer className="border-t border-[var(--border)] bg-card py-12 md:ml-64">
-        <div className="mx-auto max-w-7xl px-6">
+        <div className="mx-auto w-full px-6 2xl:px-10">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
               <span className="text-lg font-semibold text-[var(--foreground)]">Medellin Rewards</span>
@@ -160,7 +158,6 @@ export function CustomerLayout() {
                 <nav className="flex flex-col gap-2">
                   <NavLink to="/dashboard" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Dashboard')}</NavLink>
                   <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Shop')}</NavLink>
-                  <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
                   <NavLink to="/wallet/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink>
                   <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
                 </nav>

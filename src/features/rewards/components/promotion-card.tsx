@@ -13,13 +13,16 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
   const { t } = useLanguage()
 
   return (
-    <div className="group relative overflow-hidden rounded-[2.5rem] bg-surface-low hover:bg-surface-highest/40 transition-all duration-300 border border-transparent hover:border-outline-variant/10 shadow-card p-8">
+    <div className="compact-catalog-card group relative overflow-hidden p-8 transition-all duration-300 hover:-translate-y-1 hover:border-primary/30">
       <div className="flex flex-col gap-6">
-        <div className="flex justify-between items-start">
-          <Badge variant="accent" className="border-primary/25 bg-primary text-primary-foreground">
+        <div className="flex items-start justify-between gap-4">
+          <Badge
+            variant="accent"
+            className="border-[var(--champagne)]/70 bg-[var(--champagne)] text-[var(--espresso)] shadow-soft"
+          >
             {t(promotion.badge)}
           </Badge>
-          <div className="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
+          <div className="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest text-[var(--champagne)]">
             <CalendarDays className="size-3" />
             {t('Expires')} {formatDate(promotion.expiresAt)}
           </div>
@@ -34,12 +37,12 @@ export function PromotionCard({ promotion }: PromotionCardProps) {
           </p>
         </div>
 
-        <div className="mt-4 rounded-xl bg-tertiary/20 p-5 flex items-center justify-between group-hover:bg-tertiary/30 transition-colors">
+        <div className="mt-4 flex items-center justify-between rounded-xl bg-muted p-5 transition-colors group-hover:bg-blush/70">
           <div className="space-y-1">
-            <p className="text-sm font-bold text-primary">{t(promotion.cta)}</p>
-            <p className="text-[0.65rem] uppercase tracking-wider text-primary/80 font-medium">{t(promotion.audience)}</p>
+            <p className="text-sm font-bold text-[var(--champagne)]">{t(promotion.cta)}</p>
+            <p className="text-[0.65rem] font-bold uppercase tracking-wider text-[var(--cream)]/85">{t(promotion.audience)}</p>
           </div>
-          <div className="size-8 rounded-full bg-surface-lowest flex items-center justify-center text-primary shadow-sm">
+          <div className="flex size-8 items-center justify-center rounded-full bg-[var(--espresso)] text-[var(--champagne)] shadow-sm">
             <Sparkles className="size-4" />
           </div>
         </div>

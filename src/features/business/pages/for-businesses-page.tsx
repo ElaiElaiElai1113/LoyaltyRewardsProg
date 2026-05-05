@@ -119,14 +119,16 @@ export function ForBusinessesPage() {
   const savings = competitorCost - totalRewardsProgramCost
 
   return (
-    <div className="space-y-20 pb-20">
-      <section className="grid min-h-[calc(100vh-9rem)] gap-10 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
-        <div className="space-y-8">
+    <div className="ornate-page relative isolate w-full overflow-hidden rounded-[2rem] px-4 py-8 pb-20 sm:px-6 lg:px-8">
+      <div className="space-y-16 sm:space-y-20">
+      <section className="relative z-10 grid min-h-[calc(100vh-9rem)] gap-8 xl:grid-cols-[1.02fr_0.98fr] xl:items-center">
+        <span className="botanical-corner -left-20 top-16 hidden lg:block" />
+        <div className="animate-soft-reveal space-y-8">
           <Badge variant="accent" className="w-fit">
             Warm-growth loyalty house
           </Badge>
           <div className="space-y-6">
-            <h1 className="font-serif text-5xl font-semibold leading-[0.92] tracking-[0.01em] text-primary-container md:text-7xl">
+            <h1 className="font-serif text-[clamp(3rem,7vw,7.5rem)] font-semibold leading-[0.92] tracking-[0.01em] text-primary-container">
               Turn every visit into a ritual people want to return to.
             </h1>
             <p className="max-w-2xl text-lg font-medium leading-relaxed text-on-surface-variant/85">
@@ -145,34 +147,35 @@ export function ForBusinessesPage() {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {proofPoints.slice(0, 4).map((point) => (
-              <div key={point} className="gold-frame rounded-[1.5rem] px-5 py-4 text-sm font-medium text-on-surface-variant">
+              <div key={point} className="ornate-frame rounded-[1.5rem] px-5 py-4 text-sm font-medium text-on-surface-variant">
                 {point}
               </div>
             ))}
           </div>
         </div>
 
-        <div className="warm-hero-muted overflow-hidden rounded-[2.25rem] p-8 shadow-panel">
-          <div className="mb-8 flex items-center justify-between">
+        <div className="ornate-frame animate-soft-reveal overflow-hidden rounded-[2.25rem] p-8">
+          <div className="absolute -right-10 -top-10 size-36 rounded-full bg-primary/12 blur-2xl" />
+          <div className="relative mb-8 flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#f3c96f]">Business atelier</p>
-              <h2 className="mt-2 font-serif text-4xl text-[#ffe8b4]">What owners can shape</h2>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary">Business atelier</p>
+              <h2 className="mt-2 font-serif text-4xl text-primary-container">What owners can shape</h2>
             </div>
-            <ShieldCheck className="size-10 text-[#f3c96f]" />
+            <ShieldCheck className="size-10 text-primary" />
           </div>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="relative grid gap-4 sm:grid-cols-2">
             {outcomes.map((item) => (
-              <div key={item.title} className="rounded-[1.6rem] border border-white/16 bg-[#3a2717]/88 p-5 text-white shadow-soft backdrop-blur transition-all hover:border-[#f3c96f]/35 hover:bg-[#422c19]/94">
-                <item.icon className="mb-5 size-7 text-[#f3c96f]" />
-                <h3 className="font-serif text-2xl text-[#ffe8b4]">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-[#e9c996]">{item.body}</p>
+              <div key={item.title} className="compact-catalog-card p-5 transition-all hover:-translate-y-1 hover:border-primary/35">
+                <item.icon className="mb-5 size-7 text-primary" />
+                <h3 className="font-serif text-2xl text-primary-container">{item.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-on-surface-variant/80">{item.body}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      <section className="relative z-10 grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div className="space-y-6">
           <Badge variant="accent" className="w-fit">Why owners choose it</Badge>
           <h2 className="font-serif text-5xl font-semibold tracking-[0.02em] text-primary-container">
@@ -188,7 +191,7 @@ export function ForBusinessesPage() {
           </div>
         </div>
 
-        <form id="book-demo" className="gold-frame rounded-[2rem] p-8" onSubmit={handleSubmit}>
+        <form id="book-demo" className="ornate-frame rounded-[2rem] p-8" onSubmit={handleSubmit}>
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--primary-container)]">Book Demo</p>
@@ -238,7 +241,7 @@ export function ForBusinessesPage() {
         </form>
       </section>
 
-      <section className="space-y-8">
+      <section className="relative z-10 space-y-8">
         <div className="max-w-3xl space-y-4">
           <Badge variant="accent" className="w-fit">Cost calculator</Badge>
           <h2 className="font-serif text-5xl font-semibold tracking-[0.02em] text-primary-container">
@@ -251,7 +254,7 @@ export function ForBusinessesPage() {
         </div>
 
         <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-          <div className="gold-frame rounded-[2rem] p-8">
+          <div className="ornate-frame rounded-[2rem] p-8">
             <div className="flex items-start justify-between gap-4">
               <div className="space-y-2">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
@@ -339,7 +342,7 @@ export function ForBusinessesPage() {
             </div>
           </div>
 
-          <div className="gold-wash rounded-[2rem] p-8">
+          <div className="ornate-frame rounded-[2rem] p-8">
             <div className="space-y-2">
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
                 Side-by-side comparison
@@ -440,6 +443,7 @@ export function ForBusinessesPage() {
           </div>
         </div>
       </section>
+      </div>
     </div>
   )
 }

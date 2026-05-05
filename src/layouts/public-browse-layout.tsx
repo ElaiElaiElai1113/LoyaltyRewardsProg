@@ -7,7 +7,6 @@ import { useLanguage } from '@/lib/language'
 
 const navigation = [
   { to: '/shop', label: 'Menu' },
-  { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
   { to: '/for-businesses', label: 'For Businesses' },
 ]
@@ -16,29 +15,29 @@ export function PublicBrowseLayout() {
   const { t } = useLanguage()
 
   return (
-    <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)]/70 bg-card/90 backdrop-blur-xl">
-        <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
-          <div className="flex items-center gap-12">
-            <NavLink to="/" className="flex items-center gap-3">
-              <span className="text-xl font-semibold text-[var(--foreground)]">
+    <div className="soft-luxe-shell flex min-h-screen flex-col">
+      <header className="sticky top-0 z-50 border-b border-primary/15 bg-card/88 shadow-soft backdrop-blur-xl">
+        <div className="mx-auto flex min-h-16 w-full flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:px-8 2xl:px-12">
+          <div className="flex min-w-0 flex-1 items-center gap-5 xl:gap-10">
+            <NavLink to="/" className="flex min-w-0 shrink-0 items-center gap-3">
+              <span className="truncate font-serif text-xl font-semibold text-primary-container sm:text-2xl">
                 Medellin Rewards
               </span>
-              <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
-              <span className="hidden text-xs font-semibold uppercase tracking-[0.22em] text-[var(--primary-container)] md:block">
+              <span className="hidden h-6 w-px bg-[var(--border)] xl:block" />
+              <span className="hidden text-xs font-semibold uppercase tracking-[0.22em] text-[var(--primary-container)] xl:block">
                 Golden Circle
               </span>
             </NavLink>
 
-            <nav className="hidden items-center gap-5 md:flex">
+            <nav className="hidden min-w-0 flex-wrap items-center gap-2 lg:flex xl:gap-5">
               {navigation.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+                    `rounded-full px-3 py-2 text-xs font-bold transition-colors xl:text-sm ${
                       isActive
-                        ? 'bg-primary text-primary-foreground'
+                        ? 'luxe-chip-active'
                         : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
                     }`
                   }
@@ -49,9 +48,11 @@ export function PublicBrowseLayout() {
             </nav>
           </div>
 
-          <div className="flex items-center gap-3">
-            <LanguagePicker className="text-[var(--muted-foreground)]" compact />
-            <ThemeToggle />
+          <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+            <LanguagePicker className="hidden text-[var(--muted-foreground)] sm:inline-flex" compact />
+            <div className="hidden sm:block">
+              <ThemeToggle />
+            </div>
             <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
               <NavLink to="/for-businesses#book-demo">{t('Book Demo')}</NavLink>
             </Button>
@@ -63,7 +64,7 @@ export function PublicBrowseLayout() {
       </header>
 
       <main className="flex-1">
-        <div className="mx-auto w-full max-w-7xl px-6 py-10">
+        <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-10 lg:px-8 2xl:px-12">
           <Outlet />
         </div>
       </main>

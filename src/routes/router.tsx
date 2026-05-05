@@ -21,7 +21,6 @@ import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-car
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
-import { RewardsPage } from '@/features/rewards/pages/rewards-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
 import { CheckoutPage } from '@/features/shop/pages/checkout-page'
 import { OrderConfirmationPage } from '@/features/shop/pages/order-confirmation-page'
@@ -279,7 +278,7 @@ const router = createBrowserRouter([
     element: <PublicOrCustomerRoute />,
     children: [
       { path: '/shop', element: <ShopPage /> },
-      { path: '/rewards', element: <RewardsPage /> },
+      { path: '/rewards', element: <Navigate replace to="/shop" /> },
       { path: '/promotions', element: <PromotionsPage /> },
       { path: '/for-businesses', element: <ForBusinessesPage /> },
     ],
