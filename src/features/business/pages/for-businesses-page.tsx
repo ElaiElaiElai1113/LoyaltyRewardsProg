@@ -296,14 +296,14 @@ export function ForBusinessesPage() {
               </div>
             </div>
 
-            <div className="mt-8 rounded-[1.6rem] border border-primary-container/12 bg-[rgb(255_251_245_/_0.74)] p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
+            <div className="mt-8 rounded-[1.6rem] border border-[#d8b56d]/35 bg-[#fff8eb] p-6 text-[#3a2615] shadow-soft">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#9b6b21]">
                 Your actual cost through us
               </p>
-              <p className="mt-3 font-serif text-5xl leading-none text-primary">
+              <p className="mt-3 font-serif text-5xl leading-none text-[#c9891f]">
                 {formatCurrency(hardCostProgramTotal)}
               </p>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-on-surface-variant/80">
+              <p className="mt-3 max-w-xl text-sm leading-6 text-[#6c5238]">
                 To generate {formatCurrency(targetRevenue)} in customer spend, the customer earns
                 {` ${formatCurrency(hardCostRewardsValue)} in rewards. `}
                 Your hard-cost exposure on fulfilling those rewards is {formatCurrency(hardCostFulfillmentCost)},
@@ -391,47 +391,47 @@ export function ForBusinessesPage() {
             </div>
 
             <div className="mt-8 grid gap-5 lg:grid-cols-2">
-              <div className="rounded-[1.75rem] border border-[rgb(191_73_48_/_0.14)] bg-[rgb(255_248_245_/_0.82)] p-6">
+              <div className="rounded-[1.75rem] border border-[#d19a8a]/40 bg-[#fff6f2] p-6 text-[#3b2119] shadow-soft">
                 <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#ab4b31]">
                   Other platform
                 </p>
                 <h4 className="mt-3 font-serif text-3xl text-[#7a2f1f]">
                   {formatCurrency(competitorCost)}
                 </h4>
-                <p className="mt-3 text-sm leading-6 text-on-surface-variant/80">
+                <p className="mt-3 text-sm leading-6 text-[#704536]">
                   {formatPercent(competitorCommissionPercent)} commission on {formatCurrency(targetRevenue)}
                   means that cash leaves the business immediately.
                 </p>
               </div>
 
-              <div className="rounded-[1.75rem] border border-primary-container/14 bg-[rgb(255_252_247_/_0.84)] p-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
+              <div className="rounded-[1.75rem] border border-[#d8b56d]/35 bg-[#fffaf0] p-6 text-[#3a2615] shadow-soft">
+                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#9b6b21]">
                   Medellin Rewards
                 </p>
-                <h4 className="mt-3 font-serif text-3xl text-primary">
+                <h4 className="mt-3 font-serif text-3xl text-[#c9891f]">
                   {formatCurrency(totalRewardsProgramCost)}
                 </h4>
-                <p className="mt-3 text-sm leading-6 text-on-surface-variant/80">
+                <p className="mt-3 text-sm leading-6 text-[#6c5238]">
                   {formatPercent(rewardsPercent)} rewards creates {formatCurrency(rewardsValue)} in customer value,
                   and we charge only on that reward amount, not on the full sale.
                 </p>
               </div>
             </div>
 
-            <div className="mt-6 rounded-[1.75rem] border border-secondary-container/20 bg-[rgb(255_251_243_/_0.78)] p-6">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
+            <div className="mt-6 rounded-[1.75rem] border border-[#d8b56d]/35 bg-[#fff8eb] p-6 text-[#3a2615] shadow-soft">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#9b6b21]">
                 Difference
               </p>
               <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <p className="font-serif text-5xl leading-none text-primary">
+                  <p className="font-serif text-5xl leading-none text-[#c9891f]">
                     {formatCurrency(Math.max(savings, 0))}
                   </p>
-                  <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
+                  <p className="mt-2 text-sm leading-6 text-[#6c5238]">
                     Saved versus paying a {formatPercent(competitorCommissionPercent)} cash commission channel.
                   </p>
                 </div>
-                <p className="max-w-md text-sm leading-6 text-on-surface-variant/80">
+                <p className="max-w-md text-sm leading-6 text-[#6c5238]">
                   Example: {formatCurrency(targetRevenue)} in restaurant spend can cost {formatCurrency(competitorCost)}
                   on a marketplace, versus about {formatCurrency(totalRewardsProgramCost)} here.
                 </p>
