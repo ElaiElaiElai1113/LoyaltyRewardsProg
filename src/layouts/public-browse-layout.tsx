@@ -7,6 +7,7 @@ import { useLanguage } from '@/lib/language'
 
 const navigation = [
   { to: '/shop', label: 'Menu' },
+  { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
   { to: '/for-businesses', label: 'For Businesses' },
 ]

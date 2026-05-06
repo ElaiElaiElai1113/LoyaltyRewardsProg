@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Building2, CalendarClock, Gift, Repeat2 } from 'lucide-react'
+import { CalendarClock, Gift, Repeat2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -99,36 +99,36 @@ export function LandingPage() {
 
           <div className="relative z-10 space-y-8">
             <Badge variant="accent" className="w-fit border-white/20 bg-white/10 px-5 py-2 text-white">
-              {t('Golden rewards circle')}
+              {t("The world's highest paying Rewards Program!")}
             </Badge>
             <div className="max-w-3xl space-y-6">
               <h1 className="font-serif text-5xl font-semibold leading-[0.88] tracking-[0.01em] text-[#ffe8b4] md:text-6xl xl:text-[5.3rem]">
-                {t('A rewards ritual')}<br />
-                {t('worth coming')}<br />
-                {t('back for')}.
+                {t('Free vacations')}<br />
+                {t('can start with')}<br />
+                {t('everyday spending')}.
               </h1>
               <p className="max-w-2xl text-base font-medium leading-relaxed text-[#f8dfb2] md:text-lg">
-                {t('Discover local favorites, collect beautiful little wins, and redeem perks across the Medellin Rewards circle with a member experience that feels warm, premium, and personal.')}
+                {t('Imagine going on a free vacation every year - just by earning Rewards doing things you already do. Medellin Rewards pays you a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.')}
               </p>
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   to="/shop"
                   className="inline-flex min-h-11 items-center justify-center rounded-full bg-[#f3c96f] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#21160c] shadow-soft transition hover:-translate-y-0.5 hover:bg-[#ffd987]"
                 >
-                  {t('Explore the circle')}
+                  {t('Start earning')}
                 </Link>
                 <Link
-                  to="/for-businesses#book-demo"
+                  to="/rewards"
                   className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full border border-white/25 bg-white/10 px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-white/18"
                 >
-                  <Building2 className="size-4" />
-                  {t('For businesses')}
+                  <Gift className="size-4" />
+                  {t('View rewards')}
                 </Link>
                 <Link
-                  to="/shop"
+                  to="/membership"
                   className="inline-flex min-h-11 items-center justify-center rounded-full border border-[#f3c96f]/30 bg-[#4d3216] px-7 py-3 text-xs font-bold uppercase tracking-[0.12em] text-[#ffe8b4] transition hover:-translate-y-0.5 hover:bg-[#5f3d19]"
                 >
-                  {t('View menu')}
+                  {t('Early adopter offer')}
                 </Link>
               </div>
             </div>
@@ -139,18 +139,18 @@ export function LandingPage() {
                   {t('Featured rewards circle')}
                 </p>
                 <h2 className="font-serif text-4xl font-semibold leading-none text-primary-container md:text-5xl">
-                  {t('A few reasons to linger')}
+                  {t('Earn from what you already do')}
                 </h2>
                 <p className="text-sm font-medium leading-6 text-on-surface-variant/85">
-                  {t('Soft little moments that make browsing feel personal before anyone signs in.')}
+                  {t('The video will explain the program in a simple way, then members can explore where their everyday spending turns into Rewards.')}
                 </p>
               </div>
 
               <div className="mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(100%,14rem),1fr))] gap-5">
                 {[
-                  { icon: Gift, title: t('Golden gift cards'), body: t('Credit that feels pretty enough to send and simple enough to claim.') },
-                  { icon: Repeat2, title: t('Bonus drops'), body: t('Limited perks give shoppers a gentle reason to check back more often.') },
-                  { icon: CalendarClock, title: t('Ritual reminders'), body: t('Warm rewards, repeat visits, and a circle that feels curated instead of transactional.') },
+                  { icon: Gift, title: t('20% to 100% back'), body: t('Earn a minimum of 20% and up to 100% in Rewards when you spend within the network.') },
+                  { icon: Repeat2, title: t('Founder lifetime bonus'), body: t('Early adopters receive 100% back in Rewards on their monthly subscription - for life.') },
+                  { icon: CalendarClock, title: t('More ways to earn'), body: t('Members will earn from everyday spending now, with lower Rewards on big purchases planned for the future.') },
                 ].map((item) => (
                   <div key={item.title} className="luxe-card rounded-[1.35rem] p-5 sm:p-6">
                     <div className="luxe-art mb-5 flex size-12 items-center justify-center rounded-[1rem]">

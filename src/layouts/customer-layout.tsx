@@ -1,12 +1,6 @@
 import {
-  Activity,
-  CreditCard,
-  LayoutDashboard,
   LogOut,
-  Megaphone,
-  ShieldCheck,
   ShoppingBag,
-  UserRound,
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
@@ -21,13 +15,10 @@ import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const navigation = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/shop', label: 'Shop', icon: ShoppingBag },
-  { to: '/gift-cards', label: 'Gift Cards', icon: CreditCard },
-  { to: '/membership', label: 'Membership', icon: ShieldCheck },
-  { to: '/promotions', label: 'Promotions', icon: Megaphone },
-  { to: '/activity', label: 'History', icon: Activity },
-  { to: '/profile', label: 'Profile', icon: UserRound },
+  { to: '/shop', label: 'Menu' },
+  { to: '/rewards', label: 'Rewards' },
+  { to: '/promotions', label: 'Promotions' },
+  { to: '/for-businesses', label: 'For Businesses' },
 ]
 
 export function CustomerLayout() {
@@ -51,13 +42,13 @@ export function CustomerLayout() {
               </span>
             </NavLink>
 
-            <nav className="hidden items-center gap-5 lg:flex">
+            <nav className="hidden items-center gap-3 xl:gap-5 lg:flex">
               {navigation.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
                   className={({ isActive }) =>
-                    `text-sm font-medium transition-colors ${
+                    `text-xs font-medium transition-colors xl:text-sm ${
                       isActive
                         ? 'text-[var(--foreground)]'
                         : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
@@ -107,33 +98,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col border-r border-[var(--border)] bg-card pb-8 pt-24 md:flex">
-        <div className="px-6 pb-8">
-          <p className="text-sm font-semibold text-[var(--foreground)]">{t('Network Member')}</p>
-          <p className="mt-1 text-xs font-medium text-[var(--muted-foreground)]">{t('Rewards account')}</p>
-        </div>
-
-        <nav className="flex flex-1 flex-col gap-2">
-          {navigation.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `mx-3 flex items-center gap-3 rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-[var(--muted)] text-[var(--foreground)]'
-                    : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
-                }`
-              }
-            >
-              <item.icon className="size-5" />
-              {t(item.label)}
-            </NavLink>
-          ))}
-        </nav>
-      </aside>
-
-      <main className="w-full flex-1 px-5 py-8 pb-20 md:ml-64 md:w-[calc(100%-16rem)] md:px-8 md:pb-8 lg:px-10 2xl:px-12">
+      <main className="w-full flex-1 px-5 py-8 pb-20 md:px-8 md:pb-8 lg:px-10 2xl:px-12">
         <div className="mx-auto w-full">
         <Outlet />
         </div>
@@ -141,7 +106,7 @@ export function CustomerLayout() {
 
       <CustomerBottomNav />
 
-      <footer className="border-t border-[var(--border)] bg-card py-12 md:ml-64">
+      <footer className="border-t border-[var(--border)] bg-card py-12">
         <div className="mx-auto w-full px-6 2xl:px-10">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
@@ -156,10 +121,10 @@ export function CustomerLayout() {
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/dashboard" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Dashboard')}</NavLink>
-                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Shop')}</NavLink>
-                  <NavLink to="/wallet/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink>
+                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Menu')}</NavLink>
+                  <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
                   <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
+                  <NavLink to="/for-businesses" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('For Businesses')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">

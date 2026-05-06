@@ -66,7 +66,6 @@ export function RewardCard({
 
         <div className="luxe-art relative min-h-32 overflow-hidden rounded-[1.15rem] p-4 shadow-soft">
           <div className="absolute -left-8 -top-10 size-32 rounded-full bg-[var(--blush)]/20 blur-2xl transition-transform duration-500 group-hover:scale-125" />
-          <div className="absolute bottom-5 right-5 h-16 w-24 rounded-[999px] border border-[var(--champagne)]/30 bg-[var(--cream)]/10" />
           <div className="relative flex h-full items-end justify-between">
             <div>
               <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-[var(--champagne)]/80">
@@ -91,8 +90,13 @@ export function RewardCard({
           </p>
         </div>
 
-        <div className="flex items-end justify-between mt-4">
-          <div className="space-y-1">
+        <div className="mt-4 grid gap-3">
+          <span className="justify-self-end text-xs font-medium text-[var(--muted-foreground)]">
+            {reward.inventory} {t('left')}
+          </span>
+
+          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="min-w-24 space-y-1">
             <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Points Cost')}</span>
             <p className="text-2xl font-semibold text-[var(--tenant-accent)]">
               {formatPoints(reward.pointsCost)}
@@ -102,10 +106,7 @@ export function RewardCard({
             ) : null}
           </div>
 
-          <div className="flex flex-col items-end gap-3">
-            <span className="text-xs font-medium text-[var(--muted-foreground)]">
-              {reward.inventory} {t('left')}
-            </span>
+          <div className="shrink-0">
             <EarnRedeemGate action="redeem">
               <Button
                 onClick={() => onRedeem(reward)}
@@ -117,6 +118,7 @@ export function RewardCard({
                 {t(buttonLabel)}
               </Button>
             </EarnRedeemGate>
+          </div>
           </div>
         </div>
     </div>
