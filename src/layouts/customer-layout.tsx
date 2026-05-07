@@ -14,13 +14,6 @@ import { useCart } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
-const navigation = [
-  { to: '/shop', label: 'Menu' },
-  { to: '/rewards', label: 'Rewards' },
-  { to: '/promotions', label: 'Promotions' },
-  { to: '/for-businesses', label: 'For Businesses' },
-]
-
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
@@ -41,24 +34,6 @@ export function CustomerLayout() {
                 Rewards Network
               </span>
             </NavLink>
-
-            <nav className="hidden items-center gap-3 xl:gap-5 lg:flex">
-              {navigation.map((item) => (
-                <NavLink
-                  key={item.to}
-                  to={item.to}
-                  className={({ isActive }) =>
-                    `text-xs font-medium transition-colors xl:text-sm ${
-                      isActive
-                        ? 'text-[var(--foreground)]'
-                        : 'text-[var(--muted-foreground)] hover:text-[var(--foreground)]'
-                    }`
-                  }
-                >
-                  {t(item.label)}
-                </NavLink>
-              ))}
-            </nav>
           </div>
 
           <div className="flex items-center gap-6">
@@ -124,7 +99,7 @@ export function CustomerLayout() {
                   <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Menu')}</NavLink>
                   <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
                   <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
-                  <NavLink to="/for-businesses" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('For Businesses')}</NavLink>
+                  <NavLink to="/business" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('For Businesses')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">

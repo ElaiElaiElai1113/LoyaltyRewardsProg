@@ -9,7 +9,7 @@ const navigation = [
   { to: '/shop', label: 'Menu' },
   { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
-  { to: '/for-businesses', label: 'For Businesses' },
+  { to: '/business', label: 'For Businesses' },
 ]
 
 export function PublicBrowseLayout() {
@@ -55,7 +55,7 @@ export function PublicBrowseLayout() {
               <ThemeToggle />
             </div>
             <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
-              <NavLink to="/for-businesses#book-demo">{t('Book Demo')}</NavLink>
+              <NavLink to="/business#book-demo">{t('Book Demo')}</NavLink>
             </Button>
             <Button asChild variant="outline" size="sm">
               <NavLink to="/signin">{t('Sign In')}</NavLink>

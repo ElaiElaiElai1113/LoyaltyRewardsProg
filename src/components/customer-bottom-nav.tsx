@@ -8,7 +8,7 @@ const tabs = [
   { to: '/shop', label: 'Menu', icon: ShoppingBag, match: ['/shop'] },
   { to: '/rewards', label: 'Rewards', icon: Gift, match: ['/rewards', '/redeem'] },
   { to: '/promotions', label: 'Promos', icon: Megaphone, match: ['/promotions'] },
-  { to: '/for-businesses', label: 'Business', icon: Building2, match: ['/for-businesses'] },
+  { to: '/business', label: 'Business', icon: Building2, match: ['/business'] },
 ]
 
 export function CustomerBottomNav() {
