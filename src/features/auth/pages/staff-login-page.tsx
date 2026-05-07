@@ -79,10 +79,10 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
         </div>
 
         <div className="space-y-2 text-center">
-          <h2 className="font-serif text-4xl tracking-tight text-[var(--champagne)] md:text-5xl">
+          <h2 className="font-serif text-4xl tracking-tight text-[var(--foreground)] md:text-5xl">
             {isAdminPortal ? 'Staff Access' : 'Business Access'}
           </h2>
-          <p className="text-sm font-medium text-[var(--champagne)]/80">
+          <p className="text-sm font-semibold text-[var(--muted-foreground)]">
             {isAdminPortal ? 'Sign in to manage platform operations.' : 'Sign in to manage your business workspace.'}
           </p>
         </div>
