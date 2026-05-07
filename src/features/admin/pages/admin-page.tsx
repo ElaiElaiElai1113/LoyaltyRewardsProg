@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -333,17 +333,17 @@ export function AdminPage() {
   }
 
   return (
-    <div className="space-y-16 pb-20">
+    <div className="min-w-0 space-y-10 pb-20 xl:space-y-16">
       {/* Enhanced Header with Gradient Accent */}
-      <div className="warm-hero relative overflow-hidden rounded-[2rem] px-8 py-12 shadow-2xl">
+      <div className="warm-hero-muted relative min-w-0 overflow-hidden rounded-[2rem] px-5 py-8 shadow-2xl sm:px-6 xl:px-8 xl:py-12">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
         <div className="relative">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-4 max-w-2xl">
+          <div className="flex min-w-0 flex-col gap-6 2xl:flex-row 2xl:items-end 2xl:justify-between">
+            <div className="max-w-2xl min-w-0 space-y-4">
               <Badge variant="accent" className="bg-white/10 text-white border border-white/20 ">
                 {t('Operations Portal')}
               </Badge>
-              <h1 className="font-serif text-5xl tracking-tight text-white md:text-7xl leading-[1.1]">
+              <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] tracking-tight text-white leading-[1.1]">
                 {t('Admin Dashboard')}
               </h1>
               <p className="text-lg leading-relaxed text-white/80 font-medium">
@@ -352,8 +352,8 @@ export function AdminPage() {
             </div>
 
             {/* Enhanced Overview Cards */}
-            <div className="grid grid-cols-2 gap-4 lg:gap-6">
-              <div className="rounded-2xl bg-white/10  px-6 py-5 text-white border border-white/10 flex items-center gap-4">
+            <div className="grid w-full min-w-0 gap-3 sm:grid-cols-2 2xl:w-auto 2xl:gap-4">
+              <div className="min-w-0 rounded-2xl bg-white/10 px-4 py-4 text-white border border-white/10 flex items-center gap-3 xl:px-6 xl:py-5 xl:gap-4">
                 <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
                   <Users className="size-6" />
                 </div>
@@ -362,7 +362,7 @@ export function AdminPage() {
                   <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Members')}</span>
                 </div>
               </div>
-              <div className="rounded-2xl bg-white/10  px-6 py-5 text-white border border-white/10 flex items-center gap-4">
+              <div className="min-w-0 rounded-2xl bg-white/10 px-4 py-4 text-white border border-white/10 flex items-center gap-3 xl:px-6 xl:py-5 xl:gap-4">
                 <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
                   <Gift className="size-6" />
                 </div>
@@ -376,49 +376,63 @@ export function AdminPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="members" className="space-y-12">
-        <div className="sticky top-0 z-40 -mx-10 bg-surface/95 px-10 py-4  flex justify-center border-b border-outline-variant/20 shadow-sm">
-          <TabsList className="w-full max-w-5xl bg-surface-low p-1.5 rounded-2xl border border-outline-variant/10">
-            <TabsTrigger value="members" className="rounded-xl">{t('Members')}</TabsTrigger>
-            <TabsTrigger value="catalog" className="rounded-xl">{t('Rewards')}</TabsTrigger>
-            <TabsTrigger value="products" className="rounded-xl">{t('Products')}</TabsTrigger>
-            <TabsTrigger value="promotions" className="rounded-xl">{t('Promotions')}</TabsTrigger>
-            <TabsTrigger value="partners" className="rounded-xl">{t('Partners')}</TabsTrigger>
-            <TabsTrigger value="referrals" className="rounded-xl">{t('Referrals')}</TabsTrigger>
-            <TabsTrigger value="activity" className="rounded-xl">{t('Activity')}</TabsTrigger>
+      <Tabs defaultValue="members" className="min-w-0 space-y-12">
+        <div className="fixed left-3 top-24 z-50 w-14 xl:left-4 xl:w-64">
+          <TabsList className="flex h-auto w-full flex-col items-stretch gap-1 rounded-[1rem] border-0 bg-transparent p-0 shadow-none backdrop-blur-none">
+            <TabsTrigger value="members" title={t('Members')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Users className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Members')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="catalog" title={t('Rewards')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Gift className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Rewards')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="products" title={t('Products')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Package className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Products')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="promotions" title={t('Promotions')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Sparkles className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Promotions')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="partners" title={t('Partners')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Hotel className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Partners')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="referrals" title={t('Referrals')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <TrendingUp className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Referrals')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="activity" title={t('Activity')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Activity className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Activity')}</span>
+            </TabsTrigger>
           </TabsList>
         </div>
 
         <TabsContent value="members" className="space-y-12 outline-none">
-          <div className="grid gap-16 xl:grid-cols-[450px_1fr]">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-[420px_minmax(0,1fr)]">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Member Profile')}</span>
                 <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
               </div>
 
-              <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm rounded-[2rem] p-8 space-y-6">
+              <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm rounded-[2rem] p-5 space-y-6 xl:p-8">
                 {selectedMember ? (
-                  <div className="rounded-[2rem] border border-primary-container/15 bg-[var(--muted)] p-6 shadow-sm">
-                    <div className="flex items-start gap-4">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-xl text-primary-foreground shadow-lg">
+                  <div className="rounded-[2rem] border border-primary-container/15 bg-[var(--muted)] p-5 shadow-sm sm:p-6">
+                    <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start">
+                      <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-xl text-primary-foreground shadow-lg">
                         {selectedMember.profile.fullName.charAt(0)}
                       </div>
-                      <div className="space-y-2">
+                      <div className="min-w-0 space-y-2">
                         <div>
                           <p className="font-serif text-2xl tracking-tight text-primary">
                             {selectedMember.profile.fullName}
                           </p>
-                          <p className="text-sm font-medium text-on-surface-variant/90">
+                          <p className="break-all text-sm font-medium text-on-surface-variant/90">
                             {selectedMember.profile.email}
                           </p>
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
-                          <Badge variant="accent" className="border-secondary-container/25 bg-secondary-container/15 text-secondary">
+                          <Badge variant="accent" className="border-primary/25 bg-primary/12 text-primary">
                             <Gift className="size-3 mr-1" />
                             {selectedMember.balance?.points ?? 0} {t('points')}
                           </Badge>
-                          <Badge variant="accent" className="border-success/25 bg-success/12 text-success">
+                          <Badge variant="accent" className="border-primary-container/25 bg-primary-container/15 text-primary">
                             {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
                           </Badge>
                           <Badge variant="outline" className="border-primary-container/20 bg-[var(--card)] text-on-surface-variant">
@@ -540,7 +554,7 @@ export function AdminPage() {
             </div>
 
             <div className="space-y-8">
-              <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
+              <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Active Members')}</span>
                   <h2 className="font-serif text-3xl text-primary">{t('Members')}</h2>
@@ -550,25 +564,25 @@ export function AdminPage() {
                 </span>
               </div>
 
-              <div className="grid gap-4 pointer-events-auto">
+              <div className="grid min-w-0 gap-4 pointer-events-auto">
                 {customerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
-                    className={`rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm group flex flex-col gap-6 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between ${
+                    className={`rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm group flex min-w-0 flex-col gap-5 rounded-[2rem] p-5 transition-all sm:p-6 xl:flex-row xl:items-center xl:justify-between ${
                       selectedProfileId === member.id
                         ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
                         : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm'
                     }`}
                   >
-                    <div className="flex items-center gap-6">
-                       <div className="size-16 rounded-2xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center font-serif text-2xl text-primary-foreground shadow-lg group-hover:scale-110 transition-transform">
+                    <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
+                       <div className="size-14 shrink-0 rounded-2xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center font-serif text-2xl text-primary-foreground shadow-lg transition-transform group-hover:scale-105 sm:size-16">
                           {member.fullName.charAt(0)}
                        </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="font-serif text-2xl tracking-tight text-primary leading-tight">{member.fullName}</p>
-                        <p className="mt-1 text-sm font-medium text-on-surface-variant/90">{member.email}</p>
-                        <div className="mt-2 flex items-center gap-2">
-                          <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
+                        <p className="mt-1 break-all text-sm font-medium text-on-surface-variant/90">{member.email}</p>
+                        <div className="mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                          <span className="break-all text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
                             ID: {member.id}
                           </span>
                           <span className="size-1 rounded-full bg-outline-variant/30"></span>
@@ -578,13 +592,13 @@ export function AdminPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-medium text-primary">{member.role}</Badge>
-                      <Badge variant="accent" className="flex items-center gap-1.5 border-secondary-container/25 bg-secondary-container/15 px-3 py-1.5 font-medium text-secondary">
+                    <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 xl:w-auto xl:justify-end">
+                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-semibold text-primary">{member.role}</Badge>
+                      <Badge variant="accent" className="flex items-center gap-1.5 border-primary/25 bg-primary/12 px-3 py-1.5 font-semibold text-primary">
                         <Gift className="size-3" />
                         {balance?.points ?? 0} {t('points')}
                       </Badge>
-                      <Badge variant="accent" className="border-success/25 bg-success/12 px-3 py-1.5 font-medium text-success">
+                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/15 px-3 py-1.5 font-semibold text-primary">
                         {balance?.availableCredits ?? 0} {t('Reward Credits')}
                       </Badge>
                       <Button
@@ -621,7 +635,7 @@ export function AdminPage() {
         </TabsContent>
 
         <TabsContent value="catalog" className="space-y-12 outline-none">
-          <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-[minmax(0,1fr)_420px]">
             <div className="space-y-8">
               <div className="space-y-4 pb-4 border-b border-outline-variant/10">
                 <div className="space-y-2">
@@ -807,7 +821,7 @@ export function AdminPage() {
         </TabsContent>
 
         <TabsContent value="products" className="space-y-12 outline-none">
-          <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-[minmax(0,1fr)_420px]">
             <div className="space-y-8">
               <div className="space-y-4 pb-4 border-b border-outline-variant/10">
                 <div className="space-y-2">
@@ -1025,7 +1039,7 @@ export function AdminPage() {
         </TabsContent>
 
         <TabsContent value="promotions" className="space-y-12 outline-none">
-          <div className="grid gap-16 xl:grid-cols-[1fr_450px]">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-[minmax(0,1fr)_420px]">
             <div className="space-y-8">
               <div className="space-y-4 pb-4 border-b border-outline-variant/10">
                 <div className="space-y-2">
@@ -1219,7 +1233,7 @@ export function AdminPage() {
         </TabsContent>
 
         <TabsContent value="partners" className="space-y-12 outline-none">
-          <div className="grid gap-8 xl:grid-cols-[420px_1fr]">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-[420px_minmax(0,1fr)]">
             <div className="space-y-6">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Setup</span>
@@ -1540,7 +1554,7 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="grid gap-4 xl:grid-cols-2">
+              <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
                 {(allBusinesses.data ?? []).map((business) => (
                   <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-7 shadow-card  space-y-7">
                     <div className="flex flex-col gap-5">
@@ -2067,7 +2081,7 @@ export function AdminPage() {
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-12 outline-none">
-          <div className="grid gap-16 xl:grid-cols-2">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-2">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Fulfillment</span>

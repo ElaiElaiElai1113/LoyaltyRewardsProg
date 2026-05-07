@@ -1,4 +1,4 @@
-import { CheckCircle, Gift, Lock } from 'lucide-react'
+import { CheckCircle, Coffee, Cookie, Lock, Shirt, Sparkles, Ticket } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -31,11 +31,19 @@ export function RewardCard({
   const canOpenMembershipGate = hasInventory && !isMembershipActive
   const pointsRemaining = Math.max(reward.pointsCost - balancePoints, 0)
   const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem || canOpenMembershipGate ? 'Redeem' : 'Need More Points'
+  const CategoryIcon =
+    reward.category === 'Drink'
+      ? Coffee
+      : reward.category === 'Pastry'
+        ? Cookie
+        : reward.category === 'Merch'
+          ? Shirt
+          : Ticket
 
   return (
     <div
       data-tenant={reward.businessId}
-      className="flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm"
+      className="compact-catalog-card group flex h-full flex-col gap-4 p-4 text-card-foreground transition-all duration-300 hover:-translate-y-1 hover:border-primary/35 hover:shadow-card"
     >
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
@@ -47,24 +55,48 @@ export function RewardCard({
                 {businessName}
               </Badge>
             )}
+            {reward.featured ? (
+              <Badge variant="accent" className="gap-1 text-[0.62rem]">
+                <Sparkles className="size-3" />
+                Featured
+              </Badge>
+            ) : null}
           </div>
         </div>
 
-        <div className="flex size-11 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
-          {canRedeem ? <Gift className="size-5" /> : <Lock className="size-5" />}
+        <div className="luxe-art relative min-h-32 overflow-hidden rounded-[1.15rem] p-4 shadow-soft">
+          <div className="absolute -left-8 -top-10 size-32 rounded-full bg-[var(--blush)]/20 blur-2xl transition-transform duration-500 group-hover:scale-125" />
+          <div className="relative flex h-full items-end justify-between">
+            <div>
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-[var(--champagne)]/80">
+                {canRedeem ? t('Ready to redeem') : t('Unlock the treat')}
+              </p>
+              <p className="mt-2 font-serif text-3xl leading-none text-[var(--cream)]">
+                {formatPoints(reward.pointsCost)}
+              </p>
+            </div>
+            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)]">
+              {canRedeem ? <CategoryIcon className="size-7" /> : <Lock className="size-7" />}
+            </div>
+          </div>
         </div>
 
         <div className="grow space-y-3">
-          <h3 className="text-xl font-semibold leading-tight text-[var(--foreground)]">
+          <h3 className="text-lg font-bold leading-tight text-[var(--foreground)]">
             {t(reward.title)}
           </h3>
-          <p className="text-sm leading-6 text-[var(--muted-foreground)]">
+          <p className="line-clamp-2 text-sm leading-5 text-[var(--muted-foreground)]">
             {t(reward.description)}
           </p>
         </div>
 
-        <div className="flex items-end justify-between mt-4">
-          <div className="space-y-1">
+        <div className="mt-4 grid gap-3">
+          <span className="justify-self-end text-xs font-medium text-[var(--muted-foreground)]">
+            {reward.inventory} {t('left')}
+          </span>
+
+          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="min-w-24 space-y-1">
             <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Points Cost')}</span>
             <p className="text-2xl font-semibold text-[var(--tenant-accent)]">
               {formatPoints(reward.pointsCost)}
@@ -74,10 +106,7 @@ export function RewardCard({
             ) : null}
           </div>
 
-          <div className="flex flex-col items-end gap-3">
-            <span className="text-xs font-medium text-[var(--muted-foreground)]">
-              {reward.inventory} {t('left')}
-            </span>
+          <div className="shrink-0">
             <EarnRedeemGate action="redeem">
               <Button
                 onClick={() => onRedeem(reward)}
@@ -89,6 +118,7 @@ export function RewardCard({
                 {t(buttonLabel)}
               </Button>
             </EarnRedeemGate>
+          </div>
           </div>
         </div>
     </div>

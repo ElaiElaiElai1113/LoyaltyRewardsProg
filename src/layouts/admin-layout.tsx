@@ -5,7 +5,7 @@ import {
   Settings,
   ShieldCheck,
 } from 'lucide-react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -24,15 +24,17 @@ const navigation = [
 export function AdminLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
+  const location = useLocation()
+  const isAdminPortal = location.pathname === '/admin/portal'
 
   return (
-    <div className="flex min-h-screen bg-transparent">
-      <aside className="fixed inset-y-0 left-0 flex w-72 flex-col border-r border-[var(--border)] bg-card px-5 py-7">
-        <div className="flex items-center gap-4">
-          <div className="flex size-12 items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--muted)] text-[var(--foreground)]">
-            <ShieldCheck className="size-6" />
+    <div className="soft-luxe-shell flex min-h-screen">
+      <aside className="fixed inset-y-0 left-0 flex w-20 flex-col overflow-hidden border-r border-primary/15 bg-card/92 px-3 py-4 shadow-soft backdrop-blur-xl xl:w-72 xl:px-4">
+        <div className="flex items-center justify-center gap-3 xl:justify-start">
+          <div className="luxe-art flex size-10 items-center justify-center rounded-[0.9rem]">
+            <ShieldCheck className="size-5" />
           </div>
-          <div className="flex flex-col">
+          <div className="hidden flex-col xl:flex">
             <span className="text-lg font-semibold text-[var(--foreground)]">{t('Admin Portal')}</span>
             <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {t('Platform Operations')}
@@ -40,69 +42,80 @@ export function AdminLayout() {
           </div>
         </div>
 
-        <nav className="mt-14 flex-1 space-y-2">
-          {navigation.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) =>
-                `group flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-[var(--muted)] text-[var(--foreground)]'
-                    : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
-                }`
-              }
-            >
-              <div className="flex items-center gap-3">
-                <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
-                {t(item.label)}
-              </div>
-            </NavLink>
-          ))}
-        </nav>
+        {isAdminPortal ? (
+          <div className="flex-1" />
+        ) : (
+          <nav className="mt-7 grid flex-1 content-start gap-1">
+            {navigation.map((item) => (
+              <NavLink
+                key={item.to}
+                title={t(item.label)}
+                to={item.to}
+                className={({ isActive }) =>
+                  `group flex items-center justify-center rounded-[0.9rem] px-3 text-sm font-semibold transition-colors xl:justify-between ${
+                    isActive
+                      ? 'bg-[var(--muted)] py-2 text-[var(--foreground)] shadow-soft'
+                      : 'py-2 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                  }`
+                }
+              >
+                <div className="flex items-center gap-3">
+                  <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
+                  <span className="hidden xl:inline">{t(item.label)}</span>
+                </div>
+              </NavLink>
+            ))}
+          </nav>
+        )}
 
-        <div className="mt-auto">
+        <div className="mt-4 shrink-0">
           <Separator className="bg-[var(--border)]" />
 
-          <div className="mt-8 flex items-center gap-4 px-2">
-            <Avatar className="size-12 rounded-lg border border-[var(--border)]">
+          <div className="mt-3 flex items-center justify-center gap-3 px-2 xl:justify-start">
+            <Avatar className="size-9 rounded-lg border border-[var(--border)]">
               <AvatarFallback className="rounded-lg bg-[var(--muted)] text-[var(--foreground)] font-semibold">
                 {getInitials(profile?.fullName ?? 'AD')}
               </AvatarFallback>
             </Avatar>
-            <div className="flex flex-col overflow-hidden">
+            <div className="hidden flex-col overflow-hidden xl:flex">
               <span className="truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
               <span className="text-xs text-[var(--muted-foreground)]">{t('Operations Lead')}</span>
             </div>
           </div>
 
-          <div className="mt-6 flex flex-col gap-2">
+          <div className="mt-3 flex flex-col gap-2">
             <LanguagePicker
               compact
-              className="mb-2 w-full justify-between rounded-lg border border-[var(--border)] bg-card px-3 py-2 text-[var(--muted-foreground)]"
+              className="hidden w-full justify-between rounded-lg border border-[var(--border)] bg-card px-3 py-2 text-[var(--muted-foreground)] xl:inline-flex"
             />
-            <ThemeToggle />
-            <Button
-              variant="ghost"
-              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
-            >
-              <Settings className="size-5" />
-              {t('Settings')}
-            </Button>
-            <Button
-              variant="ghost"
-              className="h-auto justify-start gap-3 whitespace-normal px-3 py-3 text-left text-sm font-semibold normal-case tracking-normal text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--destructive)]"
-              onClick={() => void signOut()}
-            >
-              <LogOut className="size-5" />
-              {t('Sign out')}
-            </Button>
+            <div className="flex flex-col items-center justify-center gap-1 xl:flex-row xl:gap-2">
+              <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                title={t('Settings')}
+                aria-label={t('Settings')}
+              >
+                <Settings className="size-4" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--destructive)]"
+                onClick={() => void signOut()}
+                title={t('Sign out')}
+                aria-label={t('Sign out')}
+              >
+                <LogOut className="size-4" />
+              </Button>
+            </div>
           </div>
         </div>
       </aside>
 
-      <main className="ml-72 min-h-screen flex-1">
-        <div className="mx-auto w-full max-w-7xl px-10 py-12">
+      <main className="ml-20 min-h-screen min-w-0 flex-1 xl:ml-72">
+        <div className="mx-auto w-full max-w-7xl min-w-0 px-4 py-8 sm:px-6 lg:px-8 xl:px-10 xl:py-12">
           <Outlet />
         </div>
       </main>

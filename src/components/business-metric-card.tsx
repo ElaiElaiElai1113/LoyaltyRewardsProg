@@ -11,15 +11,15 @@ interface BusinessMetricCardProps {
 
 export function BusinessMetricCard({ title, value, icon, helper, trend, trendUp }: BusinessMetricCardProps) {
   return (
-    <div className="rounded-xl border border-[var(--border)] bg-card p-6 text-card-foreground shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+    <div className="luxe-card animate-card-stagger rounded-[1.25rem] p-5 text-card-foreground xl:rounded-[1.5rem] xl:p-6">
+      <div className="mb-4 flex items-start justify-between gap-3">
         <span className="text-sm font-medium text-[var(--muted-foreground)]">{title}</span>
-        <div className="rounded-lg bg-[var(--muted)] p-2.5 text-[var(--foreground)]">
+        <div className="luxe-art shrink-0 rounded-[0.9rem] p-2.5">
           {icon}
         </div>
       </div>
       <div className="space-y-1">
-        <p className="text-4xl font-semibold leading-none text-[var(--foreground)]">{value}</p>
+        <p className="font-serif text-4xl font-semibold leading-none text-primary-container">{value}</p>
         {trend && (
           <p className={`text-xs font-medium ${trendUp ? 'text-success' : 'text-error'}`}>
             {trend}

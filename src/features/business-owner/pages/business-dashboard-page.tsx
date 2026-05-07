@@ -50,7 +50,7 @@ export function BusinessDashboardPage() {
     return (
       <div className="space-y-10">
         <Skeleton className="h-48 rounded-[2rem]" />
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {Array.from({ length: 8 }).map((_, index) => (
             <Skeleton key={index} className="h-32 rounded-xl" />
           ))}
@@ -99,13 +99,13 @@ export function BusinessDashboardPage() {
   }
 
   return (
-    <div className="space-y-16">
+      <div className="space-y-10 xl:space-y-16">
       {/* Welcome Section */}
-      <div className="warm-hero-muted relative overflow-hidden rounded-[2rem] px-8 py-12 shadow-2xl">
+      <div className="warm-hero-muted relative overflow-hidden rounded-[2rem] px-6 py-8 shadow-2xl xl:px-8 xl:py-12">
         <div className="absolute inset-0 bg-[var(--muted)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
           <p className="text-sm font-medium text-[var(--muted-foreground)] mb-3">{t('Business Overview')}</p>
-          <h1 className="font-serif text-4xl tracking-tight text-white md:text-6xl leading-[1.1]">
+          <h1 className="font-serif text-[clamp(2.6rem,5vw,4rem)] tracking-tight text-white leading-[1.1]">
             {business?.name} {t('Command Center')}
           </h1>
           <p className="mt-4 text-lg text-white/80 font-medium">
@@ -115,7 +115,7 @@ export function BusinessDashboardPage() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <BusinessMetricCard
           title={t('Members Recruited')}
           value={metrics.totalMembers.toString()}
@@ -198,7 +198,7 @@ export function BusinessDashboardPage() {
       {/* Quick Actions */}
       <div>
         <h2 className="font-serif text-2xl text-primary mb-6">{t('Command Shortcuts')}</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Link
             to="/business/products"
             className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
