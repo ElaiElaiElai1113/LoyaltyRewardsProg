@@ -91,7 +91,7 @@ function LandingRoute() {
     return <Navigate replace to="/dashboard" />
   }
 
-  return <HomePage />
+  return <LandingPage />
 }
 
 function RootRoute() {
@@ -111,7 +111,7 @@ function RootRoute() {
     return <Navigate replace to="/dashboard" />
   }
 
-  return <LandingPage />
+  return <HomePage />
 }
 
 function ProtectedCustomerRoute() {
