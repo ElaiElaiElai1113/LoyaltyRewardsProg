@@ -5,6 +5,7 @@ import { AdminPage } from '@/features/admin/pages/admin-page'
 import { LandingPage } from '@/features/auth/pages/landing-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
+import { HomePage } from '@/features/home/pages/home-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
 import { ProfilePage } from '@/features/profile/pages/profile-page'
@@ -110,7 +111,7 @@ function RootRoute() {
     return <Navigate replace to="/dashboard" />
   }
 
-  return <LandingPage />
+  return <HomePage />
 }
 
 function ProtectedCustomerRoute() {
