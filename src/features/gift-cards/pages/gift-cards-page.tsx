@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Gift } from 'lucide-react'
+import { Gift, Sparkles } from 'lucide-react'
 
 import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
+import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLanguage } from '@/lib/language'
 import { useAuth } from '@/hooks/use-auth'
@@ -25,6 +26,7 @@ export function GiftCardsPage() {
   const balance = useRewardBalance(profile?.id)
   const issueGiftCard = useIssueGiftCard(profile?.id)
   const balancePoints = balance.data?.points ?? 0
+  const featuredCards = (catalog.data ?? []).slice(0, 5)
 
   async function handleIssue() {
     if (!selectedItem) return
@@ -35,7 +37,7 @@ export function GiftCardsPage() {
 
   return (
     <div className="space-y-12 pb-20">
-      <div className="flex flex-col gap-8 border-b border-primary-container/15 pb-10 lg:flex-row lg:items-end lg:justify-between">
+      <div className="animate-soft-reveal flex flex-col gap-8 border-b border-primary-container/15 pb-10 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-2xl space-y-4">
           <Badge variant="accent">Gift Cards</Badge>
           <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl">
@@ -45,17 +47,53 @@ export function GiftCardsPage() {
             Spend loyalty points on single-use gift cards from partner businesses.
           </p>
         </div>
-        <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm flex items-center gap-4 px-6 py-4">
-          <Gift className="size-6 text-primary" />
+        <div className="luxe-card flex items-center gap-4 rounded-[1.5rem] px-6 py-4">
+          <div className="luxe-art flex size-12 items-center justify-center rounded-[1rem]">
+            <Gift className="size-6" />
+          </div>
           <div>
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Available Points</p>
-            <p className="font-serif text-3xl text-primary-container">{balancePoints}</p>
+            <p className="animate-soft-reveal font-serif text-4xl text-primary-container">{balancePoints}</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="luxe-card relative overflow-hidden rounded-[2rem] p-6 md:p-8">
+        <div className="absolute right-8 top-8 h-24 w-40 rotate-6 rounded-[1.5rem] border border-primary/20 bg-blush/60" />
+        <div className="absolute bottom-6 right-28 h-20 w-32 -rotate-6 rounded-[1.25rem] border border-primary/20 bg-card shadow-soft" />
+        <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+          <div className="max-w-2xl">
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-primary">Giftable moments</p>
+            <h2 className="mt-3 font-serif text-4xl leading-none text-primary-container md:text-5xl">
+              Pretty little credits that feel easy to send.
+            </h2>
+          </div>
+          <div className="animate-float-soft flex size-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft">
+            <Sparkles className="size-9" />
           </div>
         </div>
       </div>
 
       {(businesses.data ?? []).length > 1 ? (
         <BusinessFilter businesses={businesses.data ?? []} selected={selectedBusiness} onChange={setSelectedBusiness} />
+      ) : null}
+
+      {featuredCards.length > 0 ? (
+        <LuxeCarousel
+          eyebrow="Gift card circle"
+          title="Featured gift cards"
+          description="A warm showcase for credits that feel personal, pretty, and quick to claim."
+        >
+          {featuredCards.map((item) => (
+            <GiftCardTile
+              key={item.id}
+              item={item}
+              balancePoints={balancePoints}
+              businessName={item.business?.name}
+              onSelect={setSelectedItem}
+            />
+          ))}
+        </LuxeCarousel>
       ) : null}
 
       {catalog.isLoading ? (

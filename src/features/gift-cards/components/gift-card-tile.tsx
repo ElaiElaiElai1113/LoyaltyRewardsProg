@@ -16,18 +16,29 @@ export function GiftCardTile({ item, balancePoints = 0, businessName, onSelect }
   const hasEnoughPoints = balancePoints >= item.pointsCost
 
   return (
-    <div className="group flex h-full flex-col gap-5 rounded-xl border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm transition-colors hover:bg-[var(--muted)]/40">
+    <div className="luxe-card group flex h-full flex-col gap-5 rounded-[1.75rem] p-4 text-card-foreground transition-all duration-300 hover:-translate-y-1 hover:border-primary/35">
         <div className="flex items-start justify-between gap-4">
           <div className="flex flex-wrap gap-2">
             <Badge>{item.valueLabel}</Badge>
             {businessName ? <Badge variant="outline">{businessName}</Badge> : null}
           </div>
-          <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
+          <div className="flex size-11 shrink-0 items-center justify-center rounded-[1rem] bg-[var(--muted)] text-[var(--foreground)] shadow-soft">
             {hasEnoughPoints ? <Gift className="size-5" /> : <Lock className="size-5" />}
           </div>
         </div>
 
-        {item.imageUrl ? <img src={item.imageUrl} alt="" className="aspect-[16/9] w-full rounded-lg object-cover" /> : null}
+        {item.imageUrl ? (
+          <img src={item.imageUrl} alt="" className="aspect-[16/9] w-full rounded-[1.35rem] object-cover shadow-soft" />
+        ) : (
+          <div className="luxe-art relative aspect-[16/9] overflow-hidden rounded-[1.35rem] p-5 shadow-soft">
+            <div className="absolute left-5 top-5 h-16 w-24 rotate-[-8deg] rounded-xl border border-[var(--champagne)]/35 bg-[var(--cream)]/12" />
+            <div className="absolute bottom-5 right-6 h-20 w-32 rotate-6 rounded-2xl border border-[var(--champagne)]/35 bg-[var(--cream)]/12" />
+            <div className="animate-float-soft absolute right-8 top-8 flex size-14 items-center justify-center rounded-full bg-[var(--champagne)] text-[var(--espresso)]">
+              <Gift className="size-7" />
+            </div>
+            <p className="absolute bottom-5 left-5 font-serif text-3xl text-[var(--cream)]">{item.valueLabel}</p>
+          </div>
+        )}
 
         <div className="grow space-y-3">
           <h3 className="text-xl font-semibold leading-tight text-[var(--foreground)]">

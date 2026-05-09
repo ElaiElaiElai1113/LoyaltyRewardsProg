@@ -2,6 +2,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 type Theme = 'light' | 'dark'
 
@@ -16,7 +17,7 @@ function applyTheme(theme: Theme) {
   document.documentElement.dataset.theme = theme
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ className }: { className?: string }) {
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export function ThemeToggle() {
       type="button"
       variant="ghost"
       size="icon"
+      className={cn(className)}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}

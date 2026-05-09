@@ -110,7 +110,7 @@ function RootRoute() {
     return <Navigate replace to="/dashboard" />
   }
 
-  return <Navigate replace to="/shop" />
+  return <LandingPage />
 }
 
 function ProtectedCustomerRoute() {
@@ -185,7 +185,7 @@ function ProtectedBusinessOwnerRoute() {
     return (
       <Navigate
         replace
-        to={profile ? getHomePathForRole(profile.role) : `/business?redirect=${encodeURIComponent(location.pathname)}`}
+        to={profile ? getHomePathForRole(profile.role) : `/business/login?redirect=${encodeURIComponent(location.pathname)}`}
       />
     )
   }
@@ -254,7 +254,7 @@ const router = createBrowserRouter([
     element: <LandingRoute />,
   },
   {
-    path: '/business',
+    path: '/business/login',
     element: <BusinessEntryRoute />,
   },
   {
@@ -281,7 +281,8 @@ const router = createBrowserRouter([
       { path: '/shop', element: <ShopPage /> },
       { path: '/rewards', element: <RewardsPage /> },
       { path: '/promotions', element: <PromotionsPage /> },
-      { path: '/for-businesses', element: <ForBusinessesPage /> },
+      { path: '/business', element: <ForBusinessesPage /> },
+      { path: '/for-businesses', element: <Navigate replace to="/business" /> },
     ],
   },
   {

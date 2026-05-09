@@ -9,12 +9,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)]',
-        tenant: 'bg-tenant transition-opacity hover:opacity-90',
-        secondary: 'border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--muted)]',
-        outline: 'border border-[var(--primary)]/20 bg-[var(--card)] text-[var(--foreground)] hover:border-[var(--primary)]/45 hover:bg-[var(--muted)]',
+        default: 'gold-sweep bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)]',
+        tenant: 'gold-sweep bg-tenant shadow-soft transition hover:-translate-y-0.5 hover:opacity-95',
+        secondary: 'border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-soft hover:-translate-y-0.5 hover:border-primary/30 hover:bg-[var(--muted)]',
+        outline: 'border border-[var(--primary)]/25 bg-[var(--card)] text-[var(--foreground)] hover:-translate-y-0.5 hover:border-[var(--primary)]/50 hover:bg-[var(--muted)]',
         ghost: 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]',
-        tertiary: 'border border-[var(--primary)]/20 bg-[var(--tenant-accent-soft)] text-[var(--foreground)] hover:border-[var(--primary)]/40 hover:bg-[var(--muted)]',
+        tertiary: 'border border-[var(--primary)]/20 bg-[var(--tenant-accent-soft)] text-[var(--foreground)] shadow-soft hover:-translate-y-0.5 hover:border-[var(--primary)]/40 hover:bg-[var(--muted)]',
       },
       size: {
         default: 'h-10 px-4 py-2',

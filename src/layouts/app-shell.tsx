@@ -1,11 +1,11 @@
 import {
   Activity,
-  Gift,
   Home,
   LogOut,
   Megaphone,
   Settings2,
   ShieldCheck,
+  ShoppingBag,
   UserRound,
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
@@ -19,7 +19,7 @@ import { getInitials } from '@/lib/utils'
 
 const memberNavigation = [
   { to: '/dashboard', label: 'Dashboard', icon: Home },
-  { to: '/rewards', label: 'Rewards', icon: Gift },
+  { to: '/shop', label: 'Menu', icon: ShoppingBag },
   { to: '/promotions', label: 'Promotions', icon: Megaphone },
   { to: '/activity', label: 'Activity', icon: Activity },
   { to: '/profile', label: 'Profile', icon: UserRound },
@@ -51,11 +51,11 @@ export function AppShell() {
                 Medellin Rewards
               </p>
               <h1 className="mt-1 font-serif text-3xl tracking-[-0.04em] text-foreground">
-                Rewards
+                Menu
               </h1>
             </div>
             <div className="rounded-full bg-secondary/80 p-3 text-primary">
-              <Gift className="size-5" />
+              <ShoppingBag className="size-5" />
             </div>
           </div>
 
@@ -117,9 +117,9 @@ export function AppShell() {
               </p>
             </div>
             <Button asChild variant="secondary" size="sm">
-              <NavLink to={profile?.role === 'platform-admin' ? '/admin/portal' : '/rewards'}>
+              <NavLink to={profile?.role === 'platform-admin' ? '/admin/portal' : '/shop'}>
                 <Settings2 className="size-4" />
-                {profile?.role === 'platform-admin' ? 'Staff tools' : 'Browse rewards'}
+                {profile?.role === 'platform-admin' ? 'Staff tools' : 'Browse menu'}
               </NavLink>
             </Button>
           </header>
