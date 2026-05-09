@@ -27,6 +27,10 @@ async function callMembershipRpc(name: 'mock_subscribe' | 'mock_renew' | 'mock_c
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
 
   if (error || !row) {
+    if (error?.message.includes(name) && error.message.includes('schema cache')) {
+      throw new Error('Demo membership setup is not active on this database yet. Ask an admin to apply the latest Supabase membership migration.')
+    }
+
     throw new Error(error?.message ?? 'Membership update failed.')
   }
 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useOrders } from '@/hooks/use-customer-data'
@@ -33,10 +34,17 @@ export function OrdersPage() {
       </div>
 
       {orders.isLoading ? (
-        <div className="space-y-4">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Skeleton key={index} className="h-44 rounded-2xl" />
-          ))}
+        <div className="space-y-6">
+          <LoadingState
+            className="py-2"
+            title={t('Loading')}
+            description={t('Loading your order history.')}
+          />
+          <div className="space-y-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="h-44 rounded-2xl" />
+            ))}
+          </div>
         </div>
       ) : (orders.data ?? []).length === 0 ? (
         <EmptyState

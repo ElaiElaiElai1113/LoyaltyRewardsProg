@@ -124,6 +124,7 @@ export function RedeemRewardPanel({
             size="lg"
             className="w-full rounded-full h-16 text-lg font-bold tracking-wide shadow-card"
             disabled={(isMembershipActive && !canRedeem) || isSubmitting}
+            isLoading={Boolean(isSubmitting)}
           >
             {isSubmitting
               ? t('Processing...')

@@ -28,7 +28,7 @@ export function IssueConfirmationDialog({
         </DialogHeader>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button type="button" variant="secondary" disabled={!item || isSubmitting} onClick={onConfirm}>
+          <Button type="button" variant="secondary" disabled={!item || isSubmitting} isLoading={isSubmitting} onClick={onConfirm}>
             {isSubmitting ? 'Issuing...' : 'Confirm'}
           </Button>
         </DialogFooter>

@@ -6,6 +6,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { LanguagePicker } from '@/components/language-picker'
+import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -170,7 +171,8 @@ export function LandingPage() {
         </section>
 
         <section className="flex min-h-0 flex-col justify-center py-4">
-          <div className="mb-6 flex justify-end">
+          <div className="mb-6 flex justify-end gap-2">
+            <ThemeToggle className="rounded-full border border-[var(--champagne)]/24 bg-[var(--espresso)]/35 text-[var(--champagne)] hover:bg-[var(--espresso)]/55 hover:text-[var(--cream)]" />
             <LanguagePicker className="text-on-surface-variant" />
           </div>
           <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-5">

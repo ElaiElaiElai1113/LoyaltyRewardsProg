@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { BusinessFilter } from '@/components/business-filter'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MembershipBanner } from '@/features/membership/components/membership-banner'
 import { ProductCard } from '@/features/shop/components/product-card'
@@ -145,16 +146,23 @@ export function ShopPage() {
       </div>
 
       {products.isLoading ? (
-        <div className="relative z-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
-              <Skeleton className="h-48 rounded-2xl" />
-              <Skeleton className="mt-6 h-8 w-3/4" />
-              <Skeleton className="mt-3 h-4 w-full" />
-              <Skeleton className="mt-2 h-4 w-2/3" />
-              <Skeleton className="mt-6 h-11 w-full rounded-full" />
-            </div>
-          ))}
+        <div className="relative z-10 space-y-6">
+          <LoadingState
+            className="py-2"
+            title={t('Loading')}
+            description={t('Preparing your catalog.')}
+          />
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+                <Skeleton className="h-48 rounded-2xl" />
+                <Skeleton className="mt-6 h-8 w-3/4" />
+                <Skeleton className="mt-3 h-4 w-full" />
+                <Skeleton className="mt-2 h-4 w-2/3" />
+                <Skeleton className="mt-6 h-11 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
         </div>
       ) : filtered.length === 0 ? (
         <EmptyState
