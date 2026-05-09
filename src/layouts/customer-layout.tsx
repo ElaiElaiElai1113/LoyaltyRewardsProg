@@ -31,7 +31,7 @@ export function CustomerLayout() {
               </span>
               <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
               <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
-                Rewards Network
+                Home
               </span>
             </NavLink>
           </div>

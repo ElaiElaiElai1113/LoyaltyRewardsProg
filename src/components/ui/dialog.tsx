@@ -30,7 +30,7 @@ function DialogContent({
       <DialogOverlay />
       <DialogPrimitive.Content
         className={cn(
-          'luxe-card animate-soft-reveal fixed left-1/2 top-1/2 z-50 max-h-[calc(100svh-2rem)] w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 !overflow-y-auto overscroll-contain rounded-[1.75rem] p-10 text-[var(--foreground)] outline-none',
+          'luxe-card !fixed left-1/2 top-1/2 z-50 max-h-[calc(100svh-2rem)] w-[min(92vw,40rem)] -translate-x-1/2 -translate-y-1/2 !overflow-y-auto overscroll-contain rounded-[1.75rem] p-10 text-[var(--foreground)] outline-none',
           className,
         )}
         {...props}
