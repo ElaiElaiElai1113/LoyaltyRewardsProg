@@ -109,13 +109,13 @@ export function RewardsPage() {
 
       {/* Add/Edit Reward Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
+        <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[var(--card)] p-6 text-on-surface shadow-card sm:p-8">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
               {editingId ? t('Edit Reward') : t('New Reward')}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6 pt-2">
+          <form onSubmit={handleSubmit} className="space-y-5 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="reward-title">{t('Title')}</Label>
               <Input
@@ -233,12 +233,12 @@ export function RewardsPage() {
           rewards.map((reward) => (
             <div
               key={reward.id}
-              className="rounded-xl border border-[var(--border)] bg-white shadow-sm group relative overflow-hidden rounded-[2.5rem] p-8 transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm"
+              className="group relative overflow-hidden rounded-[2.5rem] border border-[var(--border)] bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm"
             >
               <div className="absolute inset-x-0 top-0 h-24 bg-[var(--muted)]" />
-              <div className="flex flex-col gap-6 h-full">
-                <div className="flex justify-between items-start">
-                  <div className="flex flex-col gap-2 relative">
+              <div className="relative flex h-full flex-col">
+                <div className="flex min-h-10 items-start justify-between gap-4">
+                  <div className="flex flex-col gap-2">
                     <Badge variant="accent" className="w-fit border-tertiary/30 bg-tertiary/15 text-tertiary">
                       {t(reward.category)}
                     </Badge>
@@ -249,7 +249,7 @@ export function RewardsPage() {
                       </span>
                     )}
                   </div>
-                  <div className="relative flex gap-2">
+                  <div className="flex shrink-0 gap-2">
                     <Button variant="ghost" size="icon" className="size-8 rounded-full text-on-surface-variant hover:bg-primary-container/10 hover:text-primary" onClick={() => handleEdit(reward)}>
                       <Edit2 className="size-4" />
                     </Button>
@@ -259,7 +259,7 @@ export function RewardsPage() {
                   </div>
                 </div>
 
-                <div className="grow space-y-4 relative">
+                <div className="mt-7 grow space-y-4">
                   <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
                     {t(reward.title)}
                   </h3>
@@ -268,7 +268,7 @@ export function RewardsPage() {
                   </p>
                 </div>
 
-                <div className="mt-4 flex items-end justify-between relative">
+                <div className="mt-8 flex items-end justify-between gap-6 border-t border-primary-container/10 pt-6">
                   <div className="space-y-1">
                     <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
                       {t('Points Cost')}

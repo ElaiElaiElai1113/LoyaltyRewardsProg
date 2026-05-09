@@ -185,6 +185,7 @@ export function CheckoutPage() {
                   size="lg"
                   className="w-full rounded-full h-16 text-lg font-bold shadow-card"
                   disabled={placeOrder.isPending || Boolean(validationError)}
+                  isLoading={placeOrder.isPending}
                 >
                   {placeOrder.isPending ? t('Placing Order...') : `${t('Place order')} ${formatCurrency(total)}`}
                 </Button>

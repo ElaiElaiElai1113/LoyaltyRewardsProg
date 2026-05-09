@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   Dialog,
@@ -167,16 +168,23 @@ export function RewardsPage() {
       </div>
 
       {rewards.isLoading ? (
-        <div className="relative z-10 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
-              <Skeleton className="h-7 w-24 rounded-full" />
-              <Skeleton className="mt-8 h-9 w-3/4" />
-              <Skeleton className="mt-4 h-4 w-full" />
-              <Skeleton className="mt-2 h-4 w-2/3" />
-              <Skeleton className="mt-8 h-11 w-full rounded-full" />
-            </div>
-          ))}
+        <div className="relative z-10 space-y-6">
+          <LoadingState
+            className="py-2"
+            title={t('Loading')}
+            description={t('Preparing available rewards.')}
+          />
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm">
+                <Skeleton className="h-7 w-24 rounded-full" />
+                <Skeleton className="mt-8 h-9 w-3/4" />
+                <Skeleton className="mt-4 h-4 w-full" />
+                <Skeleton className="mt-2 h-4 w-2/3" />
+                <Skeleton className="mt-8 h-11 w-full rounded-full" />
+              </div>
+            ))}
+          </div>
         </div>
       ) : filteredRewards.length === 0 ? (
         <EmptyState

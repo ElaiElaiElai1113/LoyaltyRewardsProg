@@ -114,13 +114,13 @@ export function ProductsPage() {
 
       {/* Add/Edit Product Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="rounded-3xl max-w-lg">
+        <DialogContent className="max-w-lg rounded-3xl p-6 sm:p-8">
           <DialogHeader>
             <DialogTitle className="font-serif text-2xl text-primary">
               {editingId ? t('Edit Product') : t('New Product')}
             </DialogTitle>
           </DialogHeader>
-          <form onSubmit={handleSubmit} className="space-y-6 pt-2">
+          <form onSubmit={handleSubmit} className="space-y-5 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="product-title">{t('Title')}</Label>
               <Input id="product-title" placeholder="Nitro Cold Brew" {...form.register('title')} />

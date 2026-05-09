@@ -28,7 +28,7 @@ export function RedemptionConfirmationDialog({
         </DialogHeader>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
-          <Button type="button" variant="secondary" disabled={!giftCard || isSubmitting} onClick={onConfirm}>
+          <Button type="button" variant="secondary" disabled={!giftCard || isSubmitting} isLoading={isSubmitting} onClick={onConfirm}>
             {isSubmitting ? 'Redeeming...' : 'Redeem'}
           </Button>
         </DialogFooter>

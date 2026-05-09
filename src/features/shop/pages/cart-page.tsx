@@ -4,6 +4,7 @@ import { ShoppingBag } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { CartItemRow } from '@/features/shop/components/cart-item-row'
@@ -65,13 +66,20 @@ export function CartPage() {
       </div>
 
       {cart.isLoading || products.isLoading ? (
-        <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
-          <div className="space-y-4">
-            {Array.from({ length: 3 }).map((_, index) => (
-              <Skeleton key={index} className="h-32 rounded-2xl" />
-            ))}
+        <div className="space-y-6">
+          <LoadingState
+            className="py-2"
+            title={t('Loading')}
+            description={t('Checking your cart.')}
+          />
+          <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
+            <div className="space-y-4">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <Skeleton key={index} className="h-32 rounded-2xl" />
+              ))}
+            </div>
+            <Skeleton className="h-80 rounded-[2rem]" />
           </div>
-          <Skeleton className="h-80 rounded-[2rem]" />
         </div>
       ) : resolvedItems.length === 0 ? (
         <EmptyState

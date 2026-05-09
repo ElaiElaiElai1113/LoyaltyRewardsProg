@@ -6,6 +6,7 @@ import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLanguage } from '@/lib/language'
 import { useAuth } from '@/hooks/use-auth'
@@ -97,10 +98,17 @@ export function GiftCardsPage() {
       ) : null}
 
       {catalog.isLoading ? (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 6 }).map((_, index) => (
-            <Skeleton key={index} className="h-64 rounded-xl" />
-          ))}
+        <div className="space-y-6">
+          <LoadingState
+            className="py-2"
+            title={t('Loading')}
+            description={t('Preparing gift cards.')}
+          />
+          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <Skeleton key={index} className="h-64 rounded-xl" />
+            ))}
+          </div>
         </div>
       ) : (catalog.data ?? []).length === 0 ? (
         <EmptyState

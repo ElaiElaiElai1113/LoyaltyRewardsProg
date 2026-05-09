@@ -42,6 +42,7 @@ import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
+import { LoadingState } from '@/components/ui/loading-state'
 import { useLanguage } from '@/lib/language'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -60,10 +61,7 @@ function RouteLoading() {
       <div className="absolute right-6 top-6">
         <LanguagePicker className="text-on-surface-variant" />
       </div>
-      <div className="text-center space-y-3">
-        <h1 className="font-serif text-3xl text-primary">{t('Loading')}</h1>
-        <p className="text-on-surface-variant/80">{t('Preparing your workspace.')}</p>
-      </div>
+      <LoadingState title={t('Loading')} description={t('Preparing your workspace.')} />
     </div>
   )
 }
