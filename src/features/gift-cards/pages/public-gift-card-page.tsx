@@ -1,6 +1,7 @@
 import { useParams } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { GiftCardDisplay } from '../components/gift-card-display'
 import { usePublicGiftCard } from '../hooks/use-gift-cards'
@@ -12,7 +13,12 @@ export function PublicGiftCardPage() {
   const publicUrl = publicToken && typeof window !== 'undefined' ? `${window.location.origin}/g/${publicToken}` : ''
 
   if (giftCard.isLoading) {
-    return <Skeleton className="h-96 rounded-xl" />
+    return (
+      <div className="space-y-6 py-10">
+        <LoadingState title="Loading" description="Preparing this gift card." />
+        <Skeleton className="h-96 rounded-xl" />
+      </div>
+    )
   }
 
   if (!card) {

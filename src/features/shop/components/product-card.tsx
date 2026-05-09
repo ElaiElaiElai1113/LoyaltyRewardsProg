@@ -78,10 +78,11 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
             <Button
               onClick={() => onAddToCart(product)}
               disabled={product.inventory <= 0 || isAdding}
+              isLoading={isAdding}
               variant={product.featured ? 'default' : 'secondary'}
               size="sm"
             >
-              <PackagePlus className="size-4" />
+              {!isAdding ? <PackagePlus className="size-4" /> : null}
               {isAdding ? t('Adding...') : t('Add to Cart')}
             </Button>
           </div>

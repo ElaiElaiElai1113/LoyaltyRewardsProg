@@ -4,6 +4,7 @@ import { Gift } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useLanguage } from '@/lib/language'
@@ -65,11 +66,20 @@ export function WalletGiftCardsPage() {
         </TabsList>
         {(['active', 'redeemed', 'expired'] as const).map((status) => (
           <TabsContent key={status} value={status} className="space-y-4">
-            {giftCards.isLoading
-              ? Array.from({ length: 3 }).map((_, index) => (
+            {giftCards.isLoading ? (
+              <>
+                <LoadingState
+                  className="py-2"
+                  title={t('Loading')}
+                  description={t('Opening your gift card wallet.')}
+                />
+                {Array.from({ length: 3 }).map((_, index) => (
                   <Skeleton key={index} className="h-28 rounded-xl" />
-                ))
-              : byStatus(status).map((card) => <GiftCardRow key={card.id} card={card} />)}
+                ))}
+              </>
+            ) : (
+              byStatus(status).map((card) => <GiftCardRow key={card.id} card={card} />)
+            )}
             {!giftCards.isLoading && byStatus(status).length === 0 ? (
               <EmptyState
                 icon={<Gift className="size-8" />}

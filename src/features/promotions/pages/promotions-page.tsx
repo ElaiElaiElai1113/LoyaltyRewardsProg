@@ -1,5 +1,6 @@
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { usePromotions } from '@/hooks/use-customer-data'
@@ -41,10 +42,17 @@ export function PromotionsPage() {
         </div>
 
         {promotions.isLoading ? (
-          <div className="grid gap-6 lg:grid-cols-2">
-            {Array.from({ length: 4 }).map((_, index) => (
-              <Skeleton key={index} className="h-52 rounded-2xl" />
-            ))}
+          <div className="space-y-6">
+            <LoadingState
+              className="py-2"
+              title={t('Loading')}
+              description={t('Checking active promotions.')}
+            />
+            <div className="grid gap-6 lg:grid-cols-2">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <Skeleton key={index} className="h-52 rounded-2xl" />
+              ))}
+            </div>
           </div>
         ) : (promotions.data ?? []).length === 0 ? (
           <EmptyState

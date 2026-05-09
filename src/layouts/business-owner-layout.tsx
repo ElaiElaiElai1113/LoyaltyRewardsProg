@@ -15,6 +15,7 @@ import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { LoadingState } from '@/components/ui/loading-state'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
@@ -44,10 +45,10 @@ export function BusinessOwnerLayout() {
         <div className="absolute right-6 top-6">
           <LanguagePicker className="text-[var(--muted-foreground)]" />
         </div>
-        <div className="text-center space-y-3">
-          <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t('Loading workspace')}</h1>
-          <p className="text-[var(--muted-foreground)]">{t('Fetching your business portal data.')}</p>
-        </div>
+        <LoadingState
+          title={t('Loading workspace')}
+          description={t('Fetching your business portal data.')}
+        />
       </div>
     )
   }
