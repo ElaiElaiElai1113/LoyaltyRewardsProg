@@ -187,7 +187,7 @@ export function JoinRewardsPage() {
 
                 <div className="grid gap-3">
                   <Label htmlFor="join-password" className={joinLabelClass}>Password</Label>
-                  <Input id="join-password" className={joinInputClass} type="password" placeholder="••••••••" {...form.register('password')} />
+                  <Input id="join-password" className={joinInputClass} type="password" placeholder="Password" {...form.register('password')} />
                   {form.formState.errors.password ? (
                     <p className="text-xs font-bold text-error">{form.formState.errors.password.message}</p>
                   ) : null}

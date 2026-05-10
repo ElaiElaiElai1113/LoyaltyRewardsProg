@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CalendarClock, Gift, Repeat2 } from 'lucide-react'
+import { CalendarClock, Gift, Repeat2, Sparkles } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -139,10 +139,11 @@ export function LandingPage() {
                   {t('View rewards')}
                 </Link>
                 <Link
-                  to="/membership"
-                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[var(--blush)]/45 bg-[var(--espresso)]/35 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--cream)] transition hover:-translate-y-0.5 hover:bg-[var(--espresso)]/55"
+                  to="/ambassadors"
+                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[var(--blush)]/45 bg-[var(--espresso)]/35 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--cream)] transition hover:-translate-y-0.5 hover:bg-[var(--espresso)]/55"
                 >
-                  {t('Early adopter offer')}
+                  <Sparkles className="size-4" />
+                  {t('Become an ambassador')}
                 </Link>
               </div>
             </div>
@@ -163,7 +164,7 @@ export function LandingPage() {
               <div className="mt-4 grid grid-cols-[repeat(auto-fit,minmax(min(100%,8.75rem),1fr))] gap-2.5">
                 {[
                   { icon: Gift, title: t('20% to 100% back'), body: t('Earn a minimum of 20% and up to 100% in Rewards when you spend within the network.') },
-                  { icon: Repeat2, title: t('Founder lifetime bonus'), body: t('Early adopters receive 100% back in Rewards on their monthly subscription - for life.') },
+                  { icon: Repeat2, title: t('Member bonus'), body: t('Keep rewards connected across visits, referrals, and participating local businesses.') },
                   { icon: CalendarClock, title: t('More ways to earn'), body: t('Members will earn from everyday spending now, with lower Rewards on big purchases planned for the future.') },
                 ].map((item) => (
                   <div key={item.title} className="rounded-[0.9rem] border border-[var(--champagne)]/24 bg-[var(--espresso)]/34 p-3 transition hover:-translate-y-0.5 hover:border-[var(--champagne)]/55 hover:bg-[var(--espresso)]/52">
