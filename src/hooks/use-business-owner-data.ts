@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { adminService } from '@/integrations/supabase/services/admin-service'
+import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
@@ -9,7 +10,7 @@ import { partnerService } from '@/integrations/supabase/services/partner-service
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
-import type { Profile, Redemption } from '@/types/domain'
+import type { AmbassadorLeadStatus, Profile, Redemption } from '@/types/domain'
 import type { PartnerReferrerDraftFormValues, RewardAdjustmentFormValues } from '@/types/forms'
 import { useAuth } from './use-auth'
 
@@ -401,6 +402,30 @@ export function useRedeemPartnerCredit(businessId?: string) {
     },
     onError: (error: Error) => {
       toast.error(`Partner credit update failed: ${error.message}`)
+    },
+  })
+}
+
+export function useAmbassadorLeads(businessId?: string) {
+  return useQuery({
+    queryKey: ['ambassador-leads', businessId ?? 'all'],
+    queryFn: () => ambassadorService.getLeads(businessId),
+    enabled: Boolean(businessId),
+  })
+}
+
+export function useUpdateBusinessAmbassadorLeadStatus(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: AmbassadorLeadStatus }) =>
+      ambassadorService.updateLeadStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['ambassador-leads', businessId ?? 'all'] })
+      toast.success('Ambassador lead updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Ambassador lead update failed: ${error.message}`)
     },
   })
 }

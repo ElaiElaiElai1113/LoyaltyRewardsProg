@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
+import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
 import { LandingPage } from '@/features/auth/pages/landing-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
@@ -18,6 +19,7 @@ import { GiftCardsPage } from '@/features/gift-cards/pages/gift-cards-page'
 import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card-page'
 import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
 import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
+import { JoinRewardsPage } from '@/features/join/pages/join-rewards-page'
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
@@ -266,6 +268,14 @@ const router = createBrowserRouter([
   {
     path: '/promo/register',
     element: <ReferralRegisterPage />,
+  },
+  {
+    path: '/ambassadors',
+    element: <AmbassadorsPage />,
+  },
+  {
+    path: '/join',
+    element: <JoinRewardsPage />,
   },
   {
     element: <PublicBrowseLayout />,

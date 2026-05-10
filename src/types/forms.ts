@@ -134,3 +134,25 @@ export const partnerAttributionSchema = z.object({
 })
 
 export type PartnerAttributionFormValues = z.infer<typeof partnerAttributionSchema>
+
+export const ambassadorLeadSchema = z
+  .object({
+    fullName: z.string().trim().min(2, 'Enter your full name'),
+    email: z.email('Enter a valid email'),
+    phone: z.string().trim().optional(),
+    city: z.string().trim().min(2, 'Enter your city or location'),
+    instagram: z.string().trim().optional(),
+    tiktok: z.string().trim().optional(),
+    otherSocial: z.string().trim().optional(),
+    notes: z.string().trim().max(300, 'Keep notes under 300 characters').optional(),
+    marketingConsent: z.boolean().refine((value) => value, 'Contact consent is required'),
+  })
+  .refine(
+    (values) => Boolean(values.instagram || values.tiktok || values.otherSocial),
+    {
+      message: 'Add at least one social link or handle',
+      path: ['instagram'],
+    },
+  )
+
+export type AmbassadorLeadFormValues = z.infer<typeof ambassadorLeadSchema>

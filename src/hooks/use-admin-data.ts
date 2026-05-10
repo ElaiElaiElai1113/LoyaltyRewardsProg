@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { adminService } from '@/integrations/supabase/services/admin-service'
+import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
@@ -18,6 +19,7 @@ import type {
   RewardDraftFormValues,
 } from '@/types/forms'
 import type { Profile } from '@/types/domain'
+import type { AmbassadorLeadStatus } from '@/types/domain'
 
 const adminKeys = {
   users: ['admin-users'] as const,
@@ -235,6 +237,30 @@ export function useAdminPartnerPerformance() {
   return useQuery({
     queryKey: ['admin', 'partner-performance'],
     queryFn: () => partnerService.getPartnerPerformance(),
+  })
+}
+
+export function useAdminAmbassadorLeads() {
+  return useQuery({
+    queryKey: ['admin', 'ambassador-leads'],
+    queryFn: () => ambassadorService.getLeads(),
+  })
+}
+
+export function useUpdateAmbassadorLeadStatus(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: AmbassadorLeadStatus }) =>
+      ambassadorService.updateLeadStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'ambassador-leads'] })
+      void queryClient.invalidateQueries({ queryKey: ['ambassador-leads', businessId ?? 'all'] })
+      toast.success('Ambassador lead updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Ambassador lead update failed: ${error.message}`)
+    },
   })
 }
 

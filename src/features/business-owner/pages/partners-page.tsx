@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Archive, Copy, Download, Gift, Hotel, QrCode, UserRoundPlus, Users } from 'lucide-react'
+import { Archive, Copy, Download, Gift, Hotel, Megaphone, QrCode, UserRoundPlus, Users } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -13,6 +13,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import {
   useArchivePartnerReferrer,
+  useAmbassadorLeads,
   useBusinessOwnerData,
   useCreatePartnerReferrer,
   usePartnerCreditLedger,
@@ -20,6 +21,7 @@ import {
   usePartnerReferrals,
   usePartnerReferrers,
   useRedeemPartnerCredit,
+  useUpdateBusinessAmbassadorLeadStatus,
 } from '@/hooks/use-business-owner-data'
 import { useLanguage } from '@/lib/language'
 import { partnerReferrerDraftSchema, type PartnerReferrerDraftFormValues } from '@/types/forms'
@@ -54,9 +56,11 @@ export function PartnersPage() {
   const referrals = usePartnerReferrals(business?.id)
   const performance = usePartnerPerformance(business?.id)
   const partnerCredits = usePartnerCreditLedger(business?.id)
+  const ambassadorLeads = useAmbassadorLeads(business?.id)
   const createPartnerReferrer = useCreatePartnerReferrer(business?.id)
   const archivePartnerReferrer = useArchivePartnerReferrer(business?.id)
   const redeemPartnerCredit = useRedeemPartnerCredit(business?.id)
+  const updateAmbassadorLeadStatus = useUpdateBusinessAmbassadorLeadStatus(business?.id)
 
   const form = useForm<PartnerReferrerDraftFormValues>({
     resolver: zodResolver(partnerReferrerDraftSchema),
@@ -76,6 +80,11 @@ export function PartnersPage() {
   const recentReferrals = (referrals.data ?? []).slice(0, 6)
   const unreedeemedCredits = (partnerCredits.data ?? []).filter((entry) => !entry.redeemedAt)
   const outstandingCredits = unreedeemedCredits.reduce((sum, entry) => sum + entry.creditUnits, 0)
+  const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
+  const ambassadorUrl =
+    business?.id && typeof window !== 'undefined'
+      ? `${window.location.origin}/ambassadors?business=${business.id}`
+      : ''
 
   const handleExportReferrals = () => {
     downloadCsv(
@@ -141,6 +150,112 @@ export function PartnersPage() {
             <p className="mt-3 font-serif text-4xl text-primary">{value}</p>
           </div>
         ))}
+      </div>
+
+      <div className="grid gap-8 xl:grid-cols-[380px_1fr]">
+        <div className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-7 shadow-card">
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 items-center justify-center rounded-2xl border border-primary-container/25 bg-primary-container/10 text-primary">
+              <Megaphone className="size-5" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="font-serif text-3xl text-primary">Ambassador Page</h2>
+              <p className="text-sm leading-6 text-on-surface-variant/80">
+                Share this public link with local creators and promoters. Submitted requests appear here for follow-up.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-3xl border border-primary-container/15 bg-[var(--card)] p-4">
+            {ambassadorUrl ? <QRCodeSVG value={ambassadorUrl} size={132} /> : <QrCode className="size-32 text-on-surface-variant/40" />}
+          </div>
+
+          <div className="mt-6 flex flex-wrap gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="rounded-full"
+              disabled={!ambassadorUrl}
+              onClick={async () => {
+                if (!ambassadorUrl) return
+                await navigator.clipboard.writeText(ambassadorUrl)
+                toast.success('Ambassador lead link copied')
+              }}
+            >
+              <Copy className="size-4" />
+              Copy Link
+            </Button>
+          </div>
+        </div>
+
+        <div className="rounded-[2rem] border border-[var(--border)] bg-white shadow-sm">
+          <div className="flex flex-col gap-3 border-b border-outline-variant/10 p-6 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Lead Follow-up</p>
+              <h2 className="mt-1 font-serif text-3xl text-primary">Ambassador Leads</h2>
+            </div>
+            <Badge variant="accent" className="w-fit border-primary-container/25 bg-primary-container/12 text-primary">
+              {(ambassadorLeads.data ?? []).length} requests
+            </Badge>
+          </div>
+
+          <div className="divide-y divide-outline-variant/10">
+            {ambassadorLeads.isLoading ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="p-6">
+                  <Skeleton className="h-7 w-48" />
+                  <Skeleton className="mt-3 h-4 w-64" />
+                </div>
+              ))
+            ) : (ambassadorLeads.data ?? []).length ? (
+              (ambassadorLeads.data ?? []).slice(0, 6).map((lead) => (
+                <div key={lead.id} className="flex flex-col gap-4 p-6 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="min-w-0">
+                    <p className="font-serif text-2xl text-primary">{lead.fullName}</p>
+                    <p className="mt-1 text-sm text-on-surface-variant/80">{lead.email}</p>
+                    <p className="mt-2 text-xs uppercase tracking-[0.16em] text-on-surface-variant/65">
+                      {lead.city} · {new Date(lead.createdAt).toLocaleDateString()}
+                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      {Object.entries(lead.socialLinks)
+                        .filter(([, value]) => Boolean(value))
+                        .map(([key, value]) => (
+                          <Badge key={key} variant="accent" className="max-w-full border-primary-container/20 bg-primary-container/10 text-primary">
+                            <span className="truncate">{key}: {value}</span>
+                          </Badge>
+                        ))}
+                    </div>
+                    {lead.notes ? <p className="mt-3 text-sm leading-6 text-on-surface-variant/80">{lead.notes}</p> : null}
+                  </div>
+                  <select
+                    className="h-11 rounded-2xl border border-outline-variant/20 bg-surface-highest px-4 text-sm font-medium text-on-surface shadow-sm outline-none"
+                    value={lead.status}
+                    disabled={updateAmbassadorLeadStatus.isPending}
+                    onChange={(event) => {
+                      updateAmbassadorLeadStatus.mutate({
+                        id: lead.id,
+                        status: event.target.value as typeof ambassadorStatusOptions[number],
+                      })
+                    }}
+                  >
+                    {ambassadorStatusOptions.map((status) => (
+                      <option key={status} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ))
+            ) : (
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Megaphone className="size-8" />}
+                title={t('No ambassador leads yet')}
+                description={t('Share the ambassador link to collect creator and promoter requests.')}
+              />
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="grid gap-10 xl:grid-cols-[420px_1fr]">

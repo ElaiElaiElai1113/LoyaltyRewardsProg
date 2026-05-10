@@ -25,6 +25,11 @@ const defaultValues: AuthFormValues = {
   role: 'customer',
 }
 
+const authPanelTitleClass = 'font-serif text-4xl tracking-tight text-[var(--foreground)] md:text-5xl'
+const authPanelCopyClass = 'text-sm font-semibold text-[var(--on-surface-variant)]'
+const authInputClass =
+  'border-[var(--champagne)]/38 bg-[var(--espresso)]/58 text-[var(--cream)] placeholder:text-[var(--cream)]/62 focus-visible:ring-[var(--champagne)]/32'
+
 function LoadingSpinner() {
   return (
     <svg
@@ -101,7 +106,7 @@ export function LandingPage() {
           <div className="hidden" />
 
           <div className="relative z-10 space-y-4">
-            <Badge variant="accent" className="w-fit border-[var(--blush)]/30 bg-[var(--espresso)]/75 px-4 py-1.5 text-[var(--cream)]">
+            <Badge variant="default" className="w-fit border-[var(--champagne)]/55 bg-[linear-gradient(90deg,var(--cream),var(--champagne))] px-4 py-1.5 text-[var(--espresso)] shadow-soft">
               {t("The world's highest paying Rewards Program!")}
             </Badge>
             <div className="max-w-3xl space-y-3">
@@ -115,10 +120,16 @@ export function LandingPage() {
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <Link
-                  to="/shop"
+                  to="/join"
                   className="inline-flex min-h-10 items-center justify-center rounded-full border border-[var(--champagne)]/45 bg-[var(--champagne)] px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--espresso)] shadow-soft transition hover:-translate-y-0.5 hover:bg-[var(--cream)]"
                 >
-                  {t('Start earning')}
+                  {t('Join Rewards Club')}
+                </Link>
+                <Link
+                  to="/shop"
+                  className="inline-flex min-h-10 items-center justify-center rounded-full border border-[var(--blush)]/45 bg-[var(--espresso)]/35 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--cream)] shadow-soft transition hover:-translate-y-0.5 hover:bg-[var(--espresso)]/55"
+                >
+                  {t('Browse shops')}
                 </Link>
                 <Link
                   to="/rewards"
@@ -186,10 +197,10 @@ export function LandingPage() {
             <TabsContent value="signin" className="outline-none">
               <div className="space-y-5">
                 <div className="space-y-1.5 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-[var(--champagne)] md:text-5xl">
+                  <h2 className={authPanelTitleClass}>
                     {t('Welcome Back')}
                   </h2>
-                  <p className="text-sm font-medium text-[var(--champagne)]/80">
+                  <p className={authPanelCopyClass}>
                     {t('Step back into your rewards ritual.')}
                   </p>
                 </div>
@@ -238,7 +249,7 @@ export function LandingPage() {
 
                       <div className="grid gap-3">
                         <Label htmlFor="reset-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="reset-email" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" placeholder="your@email.com" {...resetForm.register('email')} />
+                        <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
                       </div>
 
                       {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
@@ -302,7 +313,7 @@ export function LandingPage() {
 
                       <div className="grid gap-3">
                         <Label htmlFor="signin-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="signin-email" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" placeholder="your@email.com" {...signInForm.register('email')} />
+                        <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
                         {signInForm.formState.errors.email ? (
                           <p className="text-xs font-bold text-red-500">
                             {signInForm.formState.errors.email.message}
@@ -312,7 +323,7 @@ export function LandingPage() {
 
                       <div className="grid gap-3">
                         <Label htmlFor="signin-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                        <Input id="signin-password" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" type="password" placeholder="••••••••" {...signInForm.register('password')} />
+                        <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
                         {signInForm.formState.errors.password ? (
                           <p className="text-xs font-bold text-red-500">
                             {signInForm.formState.errors.password.message}
@@ -359,10 +370,10 @@ export function LandingPage() {
             <TabsContent value="signup" className="outline-none">
               <div className="space-y-5">
                 <div className="space-y-1.5 text-center">
-                  <h2 className="font-serif text-4xl tracking-tight text-[var(--champagne)] md:text-5xl">
+                  <h2 className={authPanelTitleClass}>
                     {t('Create Account')}
                   </h2>
-                  <p className="text-sm font-medium text-[var(--champagne)]/80">
+                  <p className={authPanelCopyClass}>
                     {t('Join the circle and start collecting delights.')}
                   </p>
                 </div>
@@ -418,17 +429,17 @@ export function LandingPage() {
 
                       <div className="grid gap-3">
                         <Label htmlFor="signup-name" className="text-[var(--champagne)]">{t('Full Name')}</Label>
-                        <Input id="signup-name" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" placeholder={t('Your name')} {...signUpForm.register('fullName')} />
+                        <Input id="signup-name" className={authInputClass} placeholder={t('Your name')} {...signUpForm.register('fullName')} />
                       </div>
 
                       <div className="grid gap-3">
                         <Label htmlFor="signup-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="signup-email" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" placeholder="your@email.com" {...signUpForm.register('email')} />
+                        <Input id="signup-email" className={authInputClass} placeholder="your@email.com" {...signUpForm.register('email')} />
                       </div>
 
                       <div className="grid gap-3">
                         <Label htmlFor="signup-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                        <Input id="signup-password" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" type="password" placeholder="••••••••" {...signUpForm.register('password')} />
+                        <Input id="signup-password" className={authInputClass} type="password" placeholder="Password" {...signUpForm.register('password')} />
                       </div>
 
                       {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}

@@ -74,6 +74,27 @@ export interface Membership {
 
 export type ReferralStatus = 'pending' | 'approved' | 'rejected'
 export type PartnerReferralStatus = 'attributed' | 'credited' | 'voided'
+export type AmbassadorLeadStatus = 'new' | 'contacted' | 'converted' | 'archived'
+
+export interface AmbassadorLead {
+  id: string
+  fullName: string
+  email: string
+  phone: string | null
+  city: string
+  socialLinks: {
+    instagram?: string
+    tiktok?: string
+    other?: string
+  }
+  notes: string
+  businessId: string | null
+  source: string
+  status: AmbassadorLeadStatus
+  marketingConsentAt: string
+  createdAt: string
+  updatedAt: string
+}
 
 export interface ReferralWithProfiles {
   id: string

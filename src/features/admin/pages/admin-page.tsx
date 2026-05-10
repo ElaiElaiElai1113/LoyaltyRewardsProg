@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel, Megaphone } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -22,6 +22,7 @@ import {
   StaffNotFoundError,
   useAdjustRewards,
   useAllReferrals,
+  useAdminAmbassadorLeads,
   useAdminApproveReferral,
   useAdminAllBusinesses,
   useAdminBusinesses,
@@ -42,6 +43,7 @@ import {
   useDeleteReward,
   useFulfillRedemption,
   useOrdersForVerification,
+  useUpdateAmbassadorLeadStatus,
   useUpdateBusiness,
   useUseCredit,
 } from '@/hooks/use-admin-data'
@@ -88,6 +90,7 @@ export function AdminPage() {
   const allReferrals = useAllReferrals()
   const partnerPerformance = useAdminPartnerPerformance()
   const partnerReferrals = useAdminPartnerReferrals()
+  const ambassadorLeads = useAdminAmbassadorLeads()
   const [rewardBusinessId, setRewardBusinessId] = useState('')
   const [productBusinessId, setProductBusinessId] = useState('')
   const [promotionBusinessId, setPromotionBusinessId] = useState('')
@@ -126,6 +129,7 @@ export function AdminPage() {
   const useCredit = useUseCredit()
   const approveReferral = useAdminApproveReferral()
   const rejectReferral = useAdminRejectReferral()
+  const updateAmbassadorLeadStatus = useUpdateAmbassadorLeadStatus()
   const verificationOrders = useOrdersForVerification(
     verificationBusinessId === 'all' ? undefined : verificationBusinessId,
   )
@@ -305,6 +309,7 @@ export function AdminPage() {
       email: fallback.email || member?.email || profileId,
     }
   }
+  const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
 
   if (profile?.role !== 'platform-admin') {
     return (
@@ -393,6 +398,9 @@ export function AdminPage() {
             </TabsTrigger>
             <TabsTrigger value="partners" title={t('Partners')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
               <Hotel className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Partners')}</span>
+            </TabsTrigger>
+            <TabsTrigger value="ambassadors" title="Ambassadors" className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Megaphone className="size-5 xl:mr-3" /><span className="hidden xl:inline">Ambassadors</span>
             </TabsTrigger>
             <TabsTrigger value="referrals" title={t('Referrals')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
               <TrendingUp className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Referrals')}</span>
@@ -1958,6 +1966,119 @@ export function AdminPage() {
                       icon={<Activity className="size-8" />}
                       title={t('No orders found')}
                       description={t('Orders matching this filter will appear here.')}
+                    />
+                  ) : null}
+                </div>
+              </ScrollArea>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="ambassadors" className="space-y-12 outline-none">
+          <div className="space-y-8">
+            <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
+              <div>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Lead Generation</span>
+                <h2 className="font-serif text-3xl text-primary">Ambassador Leads</h2>
+              </div>
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                {(ambassadorLeads.data ?? []).length} requests
+              </span>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-4">
+              {ambassadorStatusOptions.map((status) => (
+                <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{status}</p>
+                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                    {(ambassadorLeads.data ?? []).filter((lead) => lead.status === status).length}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
+              <ScrollArea className="h-[680px]">
+                <div className="min-w-[980px]">
+                  <table className="w-full text-sm">
+                    <thead className="bg-[var(--muted)] text-left">
+                      <tr className="border-b border-outline-variant/10">
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Lead</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Socials</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Partner</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Note</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(ambassadorLeads.data ?? []).map((lead) => {
+                        const socialEntries = Object.entries(lead.socialLinks).filter(([, value]) => Boolean(value))
+
+                        return (
+                          <tr key={lead.id} className="border-b border-outline-variant/5 bg-transparent align-top">
+                            <td className="px-6 py-5">
+                              <p className="font-serif text-xl text-primary">{lead.fullName}</p>
+                              <p className="mt-1 text-sm text-on-surface-variant/80">{lead.email}</p>
+                              {lead.phone ? <p className="text-xs text-on-surface-variant/70">{lead.phone}</p> : null}
+                              <p className="mt-2 text-xs uppercase tracking-[0.16em] text-on-surface-variant/65">
+                                {lead.city} · {formatDate(lead.createdAt)}
+                              </p>
+                            </td>
+                            <td className="px-6 py-5">
+                              <div className="space-y-2">
+                                {socialEntries.map(([key, value]) => (
+                                  <p key={key} className="max-w-[16rem] break-words text-xs font-semibold text-primary">
+                                    <span className="uppercase tracking-[0.14em] text-on-surface-variant/65">{key}: </span>
+                                    {value}
+                                  </p>
+                                ))}
+                              </div>
+                            </td>
+                            <td className="px-6 py-5 text-on-surface-variant/85">
+                              {lead.businessId ? businessNameById.get(lead.businessId) ?? 'Unknown partner' : 'Platform-wide'}
+                            </td>
+                            <td className="px-6 py-5">
+                              <p className="max-w-xs text-sm leading-6 text-on-surface-variant/80">{lead.notes || 'No note'}</p>
+                            </td>
+                            <td className="px-6 py-5">
+                              <select
+                                className={adminNativeSelectClass}
+                                value={lead.status}
+                                disabled={updateAmbassadorLeadStatus.isPending}
+                                onChange={(event) => {
+                                  updateAmbassadorLeadStatus.mutate({
+                                    id: lead.id,
+                                    status: event.target.value as typeof ambassadorStatusOptions[number],
+                                  })
+                                }}
+                              >
+                                {ambassadorStatusOptions.map((status) => (
+                                  <option key={status} value={status}>
+                                    {status}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+
+                  {ambassadorLeads.isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
+                  ) : null}
+
+                  {!ambassadorLeads.isLoading && (ambassadorLeads.data?.length ?? 0) === 0 ? (
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<Megaphone className="size-8" />}
+                      title="No ambassador leads yet"
+                      description="Public ambassador requests will appear here after people submit the form."
                     />
                   ) : null}
                 </div>
