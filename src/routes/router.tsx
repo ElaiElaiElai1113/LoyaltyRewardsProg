@@ -94,22 +94,6 @@ function LandingRoute() {
 }
 
 function RootRoute() {
-  const { profile, isLoading } = useAuth()
-
-  if (isLoading) {
-    return <RouteLoading />
-  }
-
-  if (profile) {
-    if (profile.role === 'platform-admin') {
-      return <Navigate replace to="/admin/portal" />
-    }
-    if (profile.role === 'business-owner' || profile.role === 'business-staff') {
-      return <Navigate replace to="/business/dashboard" />
-    }
-    return <Navigate replace to="/dashboard" />
-  }
-
   return <LandingPage />
 }
 
