@@ -1,6 +1,12 @@
-create type public.membership_status as enum ('active', 'canceled');
+do $$
+begin
+  create type public.membership_status as enum ('active', 'canceled');
+exception
+  when duplicate_object then null;
+end;
+$$;
 
-create table public.memberships (
+create table if not exists public.memberships (
   id uuid primary key default gen_random_uuid(),
   profile_id uuid not null references public.profiles(id) on delete cascade unique,
   status public.membership_status not null default 'active',
@@ -17,20 +23,24 @@ create table public.memberships (
   constraint memberships_profile_matches_auth check (profile_id = auth.uid())
 );
 
+drop trigger if exists set_memberships_updated_at on public.memberships;
 create trigger set_memberships_updated_at
   before update on public.memberships
   for each row execute function public.handle_updated_at();
 
 alter table public.memberships enable row level security;
 
+drop policy if exists "Users can view own membership" on public.memberships;
 create policy "Users can view own membership"
   on public.memberships for select
   using (profile_id = auth.uid());
 
+drop policy if exists "Users can create own membership" on public.memberships;
 create policy "Users can create own membership"
   on public.memberships for insert
   with check (profile_id = auth.uid());
 
+drop policy if exists "Users can update own membership" on public.memberships;
 create policy "Users can update own membership"
   on public.memberships for update
   using (profile_id = auth.uid())

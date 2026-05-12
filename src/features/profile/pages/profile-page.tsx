@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { MapPin, Phone, Save } from 'lucide-react'
-import { useEffect } from 'react'
+import { IdCard, MapPin, Phone, Save, Upload } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { MetricCard } from '@/components/metric-card'
@@ -10,15 +10,23 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { MembershipBadge } from '@/features/membership/components/membership-badge'
 import { useAuth } from '@/hooks/use-auth'
-import { useProfile, useUpdateProfile } from '@/hooks/use-customer-data'
+import { useProfile, useSubmitMemberVerification, useUpdateProfile } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
-import { profileSchema, type ProfileFormValues } from '@/types/forms'
+import {
+  memberVerificationSchema,
+  profileSchema,
+  type MemberVerificationFormValues,
+  type ProfileFormValues,
+} from '@/types/forms'
 
 export function ProfilePage() {
   const { profile: sessionProfile, syncProfile } = useAuth()
   const { t } = useLanguage()
   const profile = useProfile(sessionProfile?.id)
   const updateProfile = useUpdateProfile(sessionProfile?.id)
+  const submitVerification = useSubmitMemberVerification(sessionProfile?.id)
+  const [verificationDocument, setVerificationDocument] = useState<File | null>(null)
+  const [verificationError, setVerificationError] = useState<string | null>(null)
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -27,6 +35,13 @@ export function ProfilePage() {
       phone: '',
       location: '',
       favoriteOrder: '',
+    },
+  })
+
+  const verificationForm = useForm<MemberVerificationFormValues>({
+    resolver: zodResolver(memberVerificationSchema),
+    defaultValues: {
+      verificationIdNumber: '',
     },
   })
 
@@ -42,6 +57,9 @@ export function ProfilePage() {
       favoriteOrder: profile.data.favoriteOrder,
     })
   }, [form, profile.data])
+
+  const verificationStatus = profile.data?.verificationStatus ?? 'not_submitted'
+  const canSubmitVerification = ['not_submitted', 'pending_document', 'rejected', 'submitted'].includes(verificationStatus)
 
   return (
     <div className="space-y-16 pb-20">
@@ -83,6 +101,97 @@ export function ProfilePage() {
               icon={MapPin}
               helper={t('Default shop location')}
             />
+          </div>
+
+          <div className="rounded-3xl border border-outline-variant/10 bg-surface-low p-6">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <IdCard className="size-5" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="font-serif text-2xl text-primary">ID Verification</h2>
+                <Badge
+                  variant="accent"
+                  className={
+                    verificationStatus === 'verified'
+                      ? 'border-success/20 bg-success/10 text-success'
+                      : verificationStatus === 'rejected'
+                        ? 'border-red-200 bg-red-50 text-red-600'
+                        : 'border-warning/20 bg-warning/10 text-warning'
+                  }
+                >
+                  {verificationStatus === 'verified'
+                    ? 'Verified'
+                    : verificationStatus === 'rejected'
+                      ? 'Rejected'
+                      : verificationStatus === 'submitted'
+                        ? 'Submitted'
+                        : 'Required'}
+                </Badge>
+                {profile.data?.verificationRejectionReason ? (
+                  <p className="text-sm font-medium leading-6 text-red-600">
+                    {profile.data.verificationRejectionReason}
+                  </p>
+                ) : (
+                  <p className="text-sm font-medium leading-6 text-on-surface-variant/80">
+                    Verified ID is required before earning points, redeeming rewards, or using reward credits.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {canSubmitVerification && verificationStatus !== 'verified' ? (
+              <form
+                className="mt-6 grid gap-4"
+                onSubmit={verificationForm.handleSubmit(async (values) => {
+                  try {
+                    setVerificationError(null)
+                    if (!verificationDocument) {
+                      setVerificationError('Upload a photo or PDF of your ID for account verification.')
+                      return
+                    }
+
+                    const updatedProfile = await submitVerification.mutateAsync({
+                      ...values,
+                      verificationDocument,
+                    })
+                    syncProfile(updatedProfile)
+                    verificationForm.reset({ verificationIdNumber: '' })
+                    setVerificationDocument(null)
+                  } catch (error) {
+                    setVerificationError(error instanceof Error ? error.message : 'Unable to submit verification.')
+                  }
+                })}
+              >
+                <div className="grid gap-3">
+                  <Label htmlFor="verification-id">Verification ID number</Label>
+                  <Input
+                    id="verification-id"
+                    placeholder="ID number"
+                    {...verificationForm.register('verificationIdNumber')}
+                  />
+                  {verificationForm.formState.errors.verificationIdNumber ? (
+                    <p className="text-xs font-bold text-red-500">
+                      {verificationForm.formState.errors.verificationIdNumber.message}
+                    </p>
+                  ) : null}
+                </div>
+                <div className="grid gap-3">
+                  <Label htmlFor="verification-document">Photo or PDF of ID</Label>
+                  <Input
+                    id="verification-document"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,application/pdf"
+                    onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
+                  />
+                </div>
+                {verificationError ? <p className="text-sm font-bold text-red-500">{verificationError}</p> : null}
+                <Button type="submit" disabled={submitVerification.isPending}>
+                  <Upload className="size-4" />
+                  {submitVerification.isPending ? 'Submitting...' : 'Submit ID'}
+                </Button>
+              </form>
+            ) : null}
           </div>
         </div>
 

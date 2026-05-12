@@ -2,7 +2,7 @@ import { createClientRequestId, normalizeCheckoutItems } from '@/features/critic
 import { readCart, clearCart } from '@/lib/mock-store'
 import type { Order, OrderLineItem } from '@/types/domain'
 import { partnerService } from './partner-service'
-import { camelCaseRow, requireSupabase } from './shared'
+import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 function mapOrder(orderRow: Record<string, unknown>): Order {
   const o = camelCaseRow(orderRow)
@@ -127,7 +127,7 @@ export const ordersService = {
 
     const orderRow = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
     if (error || !orderRow) {
-      throw new Error(error?.message ?? 'Failed to create order.')
+      throw new Error(friendlySupabaseError(error, 'Failed to create order.'))
     }
 
     clearCart()

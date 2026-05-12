@@ -43,6 +43,15 @@ export interface Profile {
   role: UserRole
   businessId?: string // For business owners - which business they belong to
   referralCode: string
+  verificationIdNumber?: string | null
+  verificationDocumentPath?: string | null
+  verificationDocumentFilename?: string | null
+  verificationDocumentUrl?: string | null
+  verificationSubmittedAt?: string | null
+  verificationStatus?: 'not_submitted' | 'pending_document' | 'submitted' | 'verified' | 'rejected'
+  verificationReviewedAt?: string | null
+  verificationReviewedBy?: string | null
+  verificationRejectionReason?: string | null
   membership?: Membership | null
 }
 

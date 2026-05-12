@@ -264,6 +264,29 @@ export function useUpdateAmbassadorLeadStatus(businessId?: string) {
   })
 }
 
+export function useReviewMemberVerification() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      profileId,
+      status,
+      reason,
+    }: {
+      profileId: string
+      status: 'verified' | 'rejected'
+      reason?: string
+    }) => adminService.reviewMemberVerification(profileId, status, reason),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      toast.success('Member verification updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Verification review failed: ${error.message}`)
+    },
+  })
+}
+
 export function useUpdateBusinessSettings() {
   const queryClient = useQueryClient()
   return useMutation({

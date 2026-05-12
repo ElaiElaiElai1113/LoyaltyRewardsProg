@@ -3,7 +3,7 @@ import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'reac
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
 import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
-import { LandingPage } from '@/features/auth/pages/landing-page'
+import { AuthPage, LandingPage } from '@/features/auth/pages/landing-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
@@ -90,7 +90,7 @@ function LandingRoute() {
     return <Navigate replace to="/dashboard" />
   }
 
-  return <LandingPage />
+  return <AuthPage />
 }
 
 function RootRoute() {

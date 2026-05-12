@@ -10,13 +10,15 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
-import { authSchema, type AuthFormValues } from '@/types/forms'
+import { validateVerificationDocument } from '@/lib/member-verification'
+import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 
-const defaultValues: AuthFormValues = {
+const defaultValues: MemberSignUpFormValues = {
   fullName: '',
   email: '',
   password: '',
   role: 'customer',
+  verificationIdNumber: '',
 }
 
 const benefits = [
@@ -50,10 +52,12 @@ function homePathForRole(role: string) {
 export function JoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const [signUpComplete, setSignUpComplete] = useState(false)
+  const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [verificationDocument, setVerificationDocument] = useState<File | null>(null)
 
-  const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+  const form = useForm<MemberSignUpFormValues>({
+    resolver: zodResolver(memberSignUpSchema),
     defaultValues,
   })
 
@@ -122,6 +126,11 @@ export function JoinRewardsPage() {
                   <p className="mx-auto max-w-md text-sm font-medium leading-6 text-[var(--espresso)]/72">
                     Your account request is saved. Check your email if verification is required, then sign in to start earning.
                   </p>
+                  {signUpWarning ? (
+                    <p className="mx-auto max-w-md text-sm font-bold leading-6 text-warning">
+                      {signUpWarning}
+                    </p>
+                  ) : null}
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <Button asChild className="rounded-full bg-[var(--espresso)] text-[var(--cream)] hover:bg-[var(--rose-brown)]">
@@ -138,8 +147,17 @@ export function JoinRewardsPage() {
                 onSubmit={form.handleSubmit(async (values) => {
                   try {
                     setError(null)
-                    await signUp({ ...values, role: 'customer' })
+                    const documentFile = verificationDocument
+                    const documentError = validateVerificationDocument(documentFile)
+                    if (documentError || !documentFile) {
+                      setError(documentError ?? 'Upload a photo or PDF of your ID for account verification.')
+                      return
+                    }
+
+                    const result = await signUp({ ...values, role: 'customer', verificationDocument: documentFile })
+                    setSignUpWarning(result.warning ?? null)
                     form.reset(defaultValues)
+                    setVerificationDocument(null)
                     setSignUpComplete(true)
                   } catch (submissionError) {
                     if (
@@ -147,6 +165,7 @@ export function JoinRewardsPage() {
                       submissionError.message.includes('profile could not be loaded')
                     ) {
                       form.reset(defaultValues)
+                      setVerificationDocument(null)
                       setSignUpComplete(true)
                       return
                     }
@@ -191,6 +210,33 @@ export function JoinRewardsPage() {
                   {form.formState.errors.password ? (
                     <p className="text-xs font-bold text-error">{form.formState.errors.password.message}</p>
                   ) : null}
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="join-verification-id" className={joinLabelClass}>Verification ID number</Label>
+                  <Input
+                    id="join-verification-id"
+                    className={joinInputClass}
+                    placeholder="ID number"
+                    {...form.register('verificationIdNumber')}
+                  />
+                  {form.formState.errors.verificationIdNumber ? (
+                    <p className="text-xs font-bold text-error">{form.formState.errors.verificationIdNumber.message}</p>
+                  ) : null}
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="join-verification-document" className={joinLabelClass}>Photo or PDF of ID</Label>
+                  <Input
+                    id="join-verification-document"
+                    className={joinInputClass}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,application/pdf"
+                    onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
+                  />
+                  <p className="text-xs font-medium leading-5 text-[var(--espresso)]/62">
+                    Used by admins to verify one member account per person.
+                  </p>
                 </div>
 
                 {error ? (

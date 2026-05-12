@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel, Megaphone } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel, Megaphone, ExternalLink, IdCard } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -43,6 +43,7 @@ import {
   useDeleteReward,
   useFulfillRedemption,
   useOrdersForVerification,
+  useReviewMemberVerification,
   useUpdateAmbassadorLeadStatus,
   useUpdateBusiness,
   useUseCredit,
@@ -102,6 +103,7 @@ export function AdminPage() {
   const [verificationBusinessId, setVerificationBusinessId] = useState('all')
   const [createBusinessError, setCreateBusinessError] = useState<string | null>(null)
   const [partnerActionError, setPartnerActionError] = useState<string | null>(null)
+  const [verificationRejectionReason, setVerificationRejectionReason] = useState('')
   const [businessAccessDialog, setBusinessAccessDialog] = useState<{
     businessId: string
     role: 'business-owner' | 'business-staff'
@@ -130,6 +132,7 @@ export function AdminPage() {
   const approveReferral = useAdminApproveReferral()
   const rejectReferral = useAdminRejectReferral()
   const updateAmbassadorLeadStatus = useUpdateAmbassadorLeadStatus()
+  const reviewMemberVerification = useReviewMemberVerification()
   const verificationOrders = useOrdersForVerification(
     verificationBusinessId === 'all' ? undefined : verificationBusinessId,
   )
@@ -484,6 +487,87 @@ export function AdminPage() {
                         <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member ID')}</span>
                         <span className="break-all">{selectedMember.profile.id}</span>
                       </div>
+                      <div className="grid gap-2">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Verification ID</span>
+                        <span className="break-all">{selectedMember.profile.verificationIdNumber || t('Not provided')}</span>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge
+                            variant="accent"
+                            className={
+                              selectedMember.profile.verificationDocumentPath
+                                ? 'border-success/25 bg-success/10 text-success'
+                                : 'border-warning/25 bg-warning/10 text-warning'
+                            }
+                          >
+                            <IdCard className="mr-1 size-3" />
+                            {selectedMember.profile.verificationStatus === 'submitted'
+                              ? 'ID submitted'
+                              : selectedMember.profile.verificationStatus === 'verified'
+                                ? 'Verified'
+                                : selectedMember.profile.verificationStatus === 'rejected'
+                                  ? 'Rejected'
+                                  : 'ID missing'}
+                          </Badge>
+                          {selectedMember.profile.verificationDocumentUrl ? (
+                            <Button asChild size="sm" variant="outline" className="rounded-full">
+                              <a href={selectedMember.profile.verificationDocumentUrl} target="_blank" rel="noreferrer">
+                                <ExternalLink className="size-4" />
+                                View ID
+                              </a>
+                            </Button>
+                          ) : null}
+                        </div>
+                        {selectedMember.profile.verificationRejectionReason ? (
+                          <p className="text-sm font-semibold leading-6 text-red-600">
+                            {selectedMember.profile.verificationRejectionReason}
+                          </p>
+                        ) : null}
+                        {selectedMember.profile.verificationDocumentPath ? (
+                          <div className="grid gap-3 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-4">
+                            <div className="flex flex-wrap gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="rounded-full bg-success/10 text-success hover:bg-success/15"
+                                disabled={reviewMemberVerification.isPending}
+                                onClick={() => {
+                                  reviewMemberVerification.mutate({
+                                    profileId: selectedMember.profile.id,
+                                    status: 'verified',
+                                  })
+                                  setVerificationRejectionReason('')
+                                }}
+                              >
+                                <CheckCircle className="size-4" />
+                                Verify ID
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                                disabled={reviewMemberVerification.isPending || !verificationRejectionReason.trim()}
+                                onClick={() => {
+                                  reviewMemberVerification.mutate({
+                                    profileId: selectedMember.profile.id,
+                                    status: 'rejected',
+                                    reason: verificationRejectionReason,
+                                  })
+                                  setVerificationRejectionReason('')
+                                }}
+                              >
+                                Reject ID
+                              </Button>
+                            </div>
+                            <Textarea
+                              value={verificationRejectionReason}
+                              onChange={(event) => setVerificationRejectionReason(event.target.value)}
+                              placeholder="Reason required when rejecting an ID"
+                              className="min-h-20"
+                            />
+                          </div>
+                        ) : null}
+                      </div>
                     </div>
                   </div>
                 ) : (
@@ -602,6 +686,29 @@ export function AdminPage() {
                     </div>
                     <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 xl:w-auto xl:justify-end">
                       <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-semibold text-primary">{member.role}</Badge>
+                      <Badge
+                        variant="accent"
+                        className={
+                          member.verificationDocumentPath
+                            ? 'border-success/25 bg-success/10 px-3 py-1.5 font-semibold text-success'
+                            : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
+                        }
+                      >
+                        <IdCard className="size-3" />
+                        {member.verificationDocumentPath ? 'ID submitted' : 'ID missing'}
+                      </Badge>
+                      <Badge
+                        variant="accent"
+                        className={
+                          member.verificationStatus === 'verified'
+                            ? 'border-success/25 bg-success/10 px-3 py-1.5 font-semibold text-success'
+                            : member.verificationStatus === 'rejected'
+                              ? 'border-red-200 bg-red-50 px-3 py-1.5 font-semibold text-red-600'
+                              : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
+                        }
+                      >
+                        {member.verificationStatus ?? 'not_submitted'}
+                      </Badge>
                       <Badge variant="accent" className="flex items-center gap-1.5 border-primary/25 bg-primary/12 px-3 py-1.5 font-semibold text-primary">
                         <Gift className="size-3" />
                         {balance?.points ?? 0} {t('points')}

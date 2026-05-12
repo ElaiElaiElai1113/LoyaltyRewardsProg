@@ -1,7 +1,7 @@
 import { createClientRequestId, isPickupWindow } from '@/features/critical-flows/critical-flow'
 import type { Redemption, Reward } from '@/types/domain'
 import type { RedeemFormValues, RewardDraftFormValues } from '@/types/forms'
-import { camelCaseRow, requireSupabase, snakeCaseObj } from './shared'
+import { camelCaseRow, friendlySupabaseError, requireSupabase, snakeCaseObj } from './shared'
 
 interface RedeemInput extends RedeemFormValues {
   profileId: string
@@ -54,7 +54,7 @@ export const rewardsService = {
 
     const redemptionRow = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
     if (error || !redemptionRow) {
-      throw new Error(error?.message ?? 'Failed to create redemption.')
+      throw new Error(friendlySupabaseError(error, 'Failed to create redemption.'))
     }
 
     const mapped = camelCaseRow(redemptionRow)

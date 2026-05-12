@@ -1,5 +1,5 @@
 import type { GiftCard, PublicGiftCard } from '@/types/domain'
-import { camelCaseRow, requireSupabase } from './shared'
+import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 function mapGiftCard(row: Record<string, unknown>): GiftCard {
   const mapped = camelCaseRow(row)
@@ -88,7 +88,7 @@ export const giftCardsService = {
     })
 
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
-    if (error || !row) throw new Error(error?.message ?? 'Failed to issue gift card.')
+    if (error || !row) throw new Error(friendlySupabaseError(error, 'Failed to issue gift card.'))
 
     return this.getGiftCardById(row.id as string).then((giftCard) => {
       if (!giftCard) throw new Error('Issued gift card could not be loaded.')
@@ -105,7 +105,7 @@ export const giftCardsService = {
     })
 
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
-    if (error || !row) throw new Error(error?.message ?? 'Failed to redeem gift card.')
+    if (error || !row) throw new Error(friendlySupabaseError(error, 'Failed to redeem gift card.'))
 
     return this.getGiftCardById(row.id as string).then((giftCard) => {
       if (!giftCard) throw new Error('Redeemed gift card could not be loaded.')
