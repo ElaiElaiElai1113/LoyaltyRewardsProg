@@ -259,6 +259,8 @@ const spanishTranslations: Record<string, string> = {
   'Browse rewards': 'Ver recompensas',
   'Earn 20% to 100% back': 'Gana de 20% a 100% de vuelta',
   'Redeem through Medellin Rewards': 'Canjea con Medellin Rewards',
+  'Rewards are offer-based, not cash payouts. Your verified member account keeps reward value connected to you.':
+    'Las recompensas se basan en ofertas, no en pagos en efectivo. Tu cuenta verificada mantiene el valor de recompensas conectado contigo.',
   'Rewards are offer-based, not cash payouts. Businesses choose offers they can afford.':
     'Las recompensas se basan en ofertas, no en pagos en efectivo. Los negocios eligen ofertas que pueden sostener.',
   'Join free, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.':
@@ -278,11 +280,16 @@ const spanishTranslations: Record<string, string> = {
     'Compra localmente y acumula recompensas en compras elegibles.',
   'Claim member offers through a simple rewards flow.':
     'Reclama ofertas de miembro con un flujo de recompensas simple.',
+  'Verified member account': 'Cuenta de miembro verificada',
+  'One account per person helps protect your reward value.':
+    'Una cuenta por persona ayuda a proteger el valor de tus recompensas.',
   'Businesses control their offers': 'Los negocios controlan sus ofertas',
   'Owners choose rewards that make sense for their margins.':
     'Los dueños eligen recompensas que tienen sentido para sus márgenes.',
   'Example rewards': 'Ejemplos de recompensas',
   'Example rewards members could unlock.': 'Ejemplos de recompensas que los miembros podrían desbloquear.',
+  'These examples show how the value can feel to a member. Live offers depend on the rewards available in Medellin Rewards.':
+    'Estos ejemplos muestran cómo se puede sentir el valor para un miembro. Las ofertas reales dependen de las recompensas disponibles en Medellin Rewards.',
   'These examples show how the value can feel to a member. Live offers depend on participating businesses and the rewards they choose to launch.':
     'Estos ejemplos muestran cómo se puede sentir el valor para un miembro. Las ofertas reales dependen de los negocios participantes y de las recompensas que decidan lanzar.',
   'Example drink reward': 'Ejemplo de recompensa de bebida',
@@ -301,6 +308,8 @@ const spanishTranslations: Record<string, string> = {
   'How it works': 'Cómo funciona',
   'Join, shop, and redeem without learning a complicated points system.':
     'Únete, compra y canjea sin aprender un sistema complicado de puntos.',
+  'Create your free account once and keep your rewards connected in one place.':
+    'Crea tu cuenta gratis una vez y mantén tus recompensas conectadas en un solo lugar.',
   'Sign up once from the website, a business QR code, or a partner link.':
     'Regístrate una vez desde el sitio web, un código QR de un negocio o un enlace de aliado.',
   'Shop and earn': 'Compra y gana',
@@ -329,16 +338,29 @@ const spanishTranslations: Record<string, string> = {
   'Example: when a member earns $250 in reward value, a business with 25% hard cost may only feel $62.50 in real product cost.':
     'Ejemplo: cuando un miembro gana $250 en valor de recompensa, un negocio con 25% de costo directo puede sentir solo $62.50 en costo real de producto.',
   'Why it works': 'Por qué funciona',
+  'Why join': 'Por qué unirse',
+  'Clear rewards, simple redemption, one member account.':
+    'Recompensas claras, canje simple y una sola cuenta de miembro.',
+  'Medellin Rewards is built so members can understand the value, keep rewards organized, and redeem without a complicated points system.':
+    'Medellin Rewards está diseñado para que los miembros entiendan el valor, mantengan sus recompensas organizadas y canjeen sin un sistema complicado de puntos.',
   'Clear value for members, controlled cost for businesses.':
     'Valor claro para miembros, costo controlado para negocios.',
   'Medellin Rewards is built to make rewards feel valuable without forcing businesses into cash-style payouts they cannot sustain.':
     'Medellin Rewards está diseñado para que las recompensas se sientan valiosas sin obligar a los negocios a pagos tipo efectivo que no puedan sostener.',
   'Rewards are not cash payouts': 'Las recompensas no son pagos en efectivo',
+  'Rewards are member perks and offers you redeem through Medellin Rewards.':
+    'Las recompensas son beneficios y ofertas para miembros que canjeas con Medellin Rewards.',
   'Members see useful value, while businesses can fulfill rewards through offers and experiences.':
     'Los miembros ven valor útil, mientras los negocios pueden cumplir recompensas mediante ofertas y experiencias.',
+  'Your rewards stay connected': 'Tus recompensas se mantienen conectadas',
+  'Your member account keeps eligible rewards together across participating locations.':
+    'Tu cuenta de miembro mantiene juntas las recompensas elegibles en ubicaciones participantes.',
   'Businesses choose what they can afford': 'Los negocios eligen lo que pueden sostener',
   'Each offer can match the business model, margins, and real product cost.':
     'Cada oferta puede ajustarse al modelo del negocio, sus márgenes y el costo real del producto.',
+  'Redemptions stay simple': 'Los canjes se mantienen simples',
+  'Claim a reward when you are ready and follow the redemption steps in your account.':
+    'Reclama una recompensa cuando estés listo y sigue los pasos de canje en tu cuenta.',
   'Staff validation keeps redemptions simple': 'La validación del personal simplifica los canjes',
   'Members claim rewards and staff confirm them through the redemption flow.':
     'Los miembros reclaman recompensas y el personal las confirma mediante el flujo de canje.',
@@ -346,6 +368,8 @@ const spanishTranslations: Record<string, string> = {
   'One verified member account per person helps protect the program for everyone.':
     'Una cuenta verificada por persona ayuda a proteger el programa para todos.',
   'Ready to join the rewards circle?': '¿Listo para unirte al círculo de recompensas?',
+  'Create your free member account, browse available rewards, and keep your reward value connected in one place.':
+    'Crea tu cuenta de miembro gratis, explora recompensas disponibles y mantén el valor de tus recompensas conectado en un solo lugar.',
   'Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.':
     'Empieza como miembro, explora negocios participantes o agenda una demo para lanzar recompensas en tu propio negocio.',
   'Free vacations': 'Vacaciones gratis',

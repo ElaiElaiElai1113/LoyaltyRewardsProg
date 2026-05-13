@@ -77,7 +77,7 @@ const howItWorks = [
   {
     icon: QrCode,
     title: 'Join free',
-    body: 'Sign up once from the website, a business QR code, or a partner link.',
+    body: 'Create your free account once and keep your rewards connected in one place.',
   },
   {
     icon: TicketPercent,
@@ -89,13 +89,6 @@ const howItWorks = [
     title: 'Redeem rewards',
     body: 'Use your rewards through Medellin Rewards when you are ready to claim an offer.',
   },
-]
-
-const businessProof = [
-  'QR signup links for checkout, tables, events, and partner desks',
-  'Reward offers that give customers a clear reason to come back',
-  'Simple staff validation when members redeem in-store',
-  'Cost calculator that shows the real business impact before launch',
 ]
 
 const proofStrip = [
@@ -116,8 +109,8 @@ const proofStrip = [
   },
   {
     icon: BadgeCheck,
-    title: 'Businesses control their offers',
-    body: 'Owners choose rewards that make sense for their margins.',
+    title: 'Verified member account',
+    body: 'One account per person helps protect your reward value.',
   },
 ]
 
@@ -145,15 +138,15 @@ const exampleRewards = [
 const trustPoints = [
   {
     title: 'Rewards are not cash payouts',
-    body: 'Members see useful value, while businesses can fulfill rewards through offers and experiences.',
+    body: 'Rewards are member perks and offers you redeem through Medellin Rewards.',
   },
   {
-    title: 'Businesses choose what they can afford',
-    body: 'Each offer can match the business model, margins, and real product cost.',
+    title: 'Your rewards stay connected',
+    body: 'Your member account keeps eligible rewards together across participating locations.',
   },
   {
-    title: 'Staff validation keeps redemptions simple',
-    body: 'Members claim rewards and staff confirm them through the redemption flow.',
+    title: 'Redemptions stay simple',
+    body: 'Claim a reward when you are ready and follow the redemption steps in your account.',
   },
   {
     title: 'ID verification protects reward value',
@@ -192,9 +185,8 @@ export function LandingPage() {
           <nav className="hidden items-center gap-2 rounded-full bg-[#efe6d8] px-3 py-2 lg:flex">
             {[
               { href: '#how-it-works', label: 'How it works' },
-              { href: '#for-businesses', label: 'For businesses' },
               { href: '#example-rewards', label: 'Rewards' },
-              { href: '#ambassadors', label: 'Ambassadors' },
+              { href: '#why-join', label: 'Why join' },
             ].map((item) => (
               <a
                 key={item.href}
@@ -246,9 +238,6 @@ export function LandingPage() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="rounded-full border-[#d9b365]/48 bg-[#fff4dd]/6 text-[#fff7ea] hover:bg-[#fff4dd]/14 hover:text-[#fff7ea]">
-                <Link to="/business">{t('For Businesses')}</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-[#d9b365]/48 bg-[#fff4dd]/6 text-[#fff7ea] hover:bg-[#fff4dd]/14 hover:text-[#fff7ea]">
                 <Link to="/rewards">{t('Browse rewards')}</Link>
               </Button>
             </div>
@@ -259,7 +248,7 @@ export function LandingPage() {
               <span className={valuePillClass}>{t('Redeem through Medellin Rewards')}</span>
             </div>
             <p className="max-w-[42rem] text-sm font-semibold leading-6 text-[#e9d8bf]">
-              {t('Rewards are offer-based, not cash payouts. Businesses choose offers they can afford.')}
+              {t('Rewards are offer-based, not cash payouts. Your verified member account keeps reward value connected to you.')}
             </p>
           </div>
 
@@ -301,7 +290,7 @@ export function LandingPage() {
               </h2>
             </div>
             <p className="max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
-              {t('These examples show how the value can feel to a member. Live offers depend on participating businesses and the rewards they choose to launch.')}
+              {t('These examples show how the value can feel to a member. Live offers depend on the rewards available in Medellin Rewards.')}
             </p>
           </div>
 
@@ -361,73 +350,15 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section id="for-businesses" className="bg-[#fffdf8] px-4 py-16 text-[#21140d] sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <div className="space-y-5">
-            <Badge className="w-fit border-[#d9b365]/45 bg-[#5e3327] text-[#fff7ea]">{t('For businesses')}</Badge>
-            <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
-              {t('Turn first-time customers into repeat visits with rewards you control.')}
-            </h2>
-            <p className="text-base font-semibold leading-7 text-[#6f4f3d]">
-              {t('Businesses can launch QR signup links, encourage repeat visits, let staff validate redemptions, and use the calculator to understand the real cost before choosing an offer.')}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
-                <Link to="/business#book-demo">{t('Book Business Demo')}</Link>
-              </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-[#9c6a22]/35 bg-[#fffaf4] text-[#21140d] hover:bg-[#efe6d8]">
-                <Link to="/business">{t('See calculator')}</Link>
-              </Button>
-            </div>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {businessProof.map((point) => (
-              <div key={point} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-5">
-                <BadgeCheck className="mb-4 size-6 text-[#9c6a22]" />
-                <p className="text-sm font-bold leading-6 text-[#21140d]">{t(point)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="rewards" className="bg-[linear-gradient(135deg,#21140d,#3b2417)] px-4 py-16 text-[#fff7ea] sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-center">
-            <div className="space-y-5">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f2c978]">{t('Reward example')}</p>
-              <h2 className="font-serif text-5xl font-semibold leading-none">
-                {t('Members see clear value. Businesses stay in control of cost.')}
-              </h2>
-              <p className="max-w-2xl text-sm font-semibold leading-7 text-[#e9d8bf]">
-                {t('Example: when a member earns $250 in reward value, a business with 25% hard cost may only feel $62.50 in real product cost.')}
-              </p>
-            </div>
-            <div className="grid gap-3 rounded-[1rem] border border-[#d9b365]/32 bg-[#fff4dd]/10 p-5">
-              {[
-                ['Customer spend', '$1,000'],
-                ['Reward value customers see', '$250'],
-                ['Example real business cost', '$62.50'],
-              ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between gap-4 rounded-[0.8rem] bg-[#180f0a]/70 p-4">
-                  <span className="text-sm font-bold text-[#e9d8bf]">{t(label)}</span>
-                  <span className="font-serif text-3xl text-[#f2c978]">{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="bg-[#fffdf8] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+      <section id="why-join" className="bg-[#fffdf8] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Why it works')}</p>
             <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
-              {t('Clear value for members, controlled cost for businesses.')}
+              {t('Clear rewards, simple redemption, one member account.')}
             </h2>
             <p className="max-w-xl text-base font-semibold leading-7 text-[#6f4f3d]">
-              {t('Medellin Rewards is built to make rewards feel valuable without forcing businesses into cash-style payouts they cannot sustain.')}
+              {t('Medellin Rewards is built so members can understand the value, keep rewards organized, and redeem without a complicated points system.')}
             </p>
           </div>
 
@@ -443,14 +374,14 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section id="ambassadors" className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+      <section className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">
           <UsersRound className="mx-auto mb-5 size-10 text-[#9c6a22]" />
           <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
             {t('Ready to join the rewards circle?')}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
-            {t('Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.')}
+            {t('Create your free member account, browse available rewards, and keep your reward value connected in one place.')}
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
@@ -574,13 +505,6 @@ export function AuthPage() {
                 >
                   <Gift className="size-4" />
                   {t('View rewards')}
-                </Link>
-                <Link
-                  to="/ambassadors"
-                  className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-[var(--blush)]/45 bg-[var(--espresso)]/35 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--cream)] transition hover:-translate-y-0.5 hover:bg-[var(--espresso)]/55"
-                >
-                  <Sparkles className="size-4" />
-                  {t('Become an ambassador')}
                 </Link>
               </div>
             </div>
