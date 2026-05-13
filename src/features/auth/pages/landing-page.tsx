@@ -6,7 +6,6 @@ import {
   Gift,
   QrCode,
   Repeat2,
-  Sparkles,
   Store,
   TicketPercent,
   UsersRound,
@@ -19,15 +18,18 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import heroImage from '@/assets/hero.png'
 import { Badge } from '@/components/ui/badge'
 import { LanguagePicker } from '@/components/language-picker'
+import { Skeleton } from '@/components/ui/skeleton'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
+import { useRewards } from '@/hooks/use-customer-data'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
 import { validateVerificationDocument } from '@/lib/member-verification'
+import { formatPoints } from '@/lib/utils'
 import { authSchema, memberSignUpSchema, type AuthFormValues, type MemberSignUpFormValues } from '@/types/forms'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -54,6 +56,13 @@ const authInputClass =
 
 const valuePillClass =
   'max-w-full rounded-full border border-[#d9b365]/38 bg-[#fff4dd]/12 px-4 py-2 text-center text-xs font-bold uppercase leading-4 tracking-[0.14em] text-[#fff4dd]'
+
+const legalLinks = [
+  { to: '/terms', label: 'Terms' },
+  { to: '/privacy', label: 'Privacy' },
+  { to: '/reward-terms', label: 'Reward Terms' },
+  { to: '/verification-policy', label: 'Verification Policy' },
+]
 
 const landingFeatures = [
   {
@@ -114,27 +123,6 @@ const proofStrip = [
   },
 ]
 
-const exampleRewards = [
-  {
-    icon: Store,
-    label: 'Example drink reward',
-    title: 'Coffee or drink perk',
-    body: 'A member shops locally, earns rewards, and redeems for a simple cafe-style perk.',
-  },
-  {
-    icon: Gift,
-    label: 'Example food reward',
-    title: 'Pastry or meal offer',
-    body: 'Everyday purchases can build toward small offers members understand right away.',
-  },
-  {
-    icon: Sparkles,
-    label: 'Example bigger reward',
-    title: 'Travel-style value',
-    body: 'Consistent local spending can build toward bigger rewards over time.',
-  },
-]
-
 const trustPoints = [
   {
     title: 'Rewards are not cash payouts',
@@ -174,6 +162,10 @@ function LoadingSpinner() {
 
 export function LandingPage() {
   const { t } = useLanguage()
+  const rewards = useRewards()
+  const availableRewards = rewards.data ?? []
+  const featuredRewards = availableRewards.filter((reward) => reward.featured)
+  const previewRewards = (featuredRewards.length > 0 ? featuredRewards : availableRewards).slice(0, 3)
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#fffaf4] pb-24 text-[#21140d] sm:pb-0">
@@ -284,35 +276,57 @@ export function LandingPage() {
         <div className="mx-auto max-w-7xl space-y-8">
           <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
             <div className="space-y-4">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Example rewards')}</p>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Available rewards')}</p>
               <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
-                {t('Example rewards members could unlock.')}
+                {t('Real rewards members can browse now.')}
               </h2>
             </div>
             <p className="max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
-              {t('These examples show how the value can feel to a member. Live offers depend on the rewards available in Medellin Rewards.')}
+              {t('Browse current member rewards before joining. Your account must be verified before reward actions unlock.')}
             </p>
           </div>
 
-          <div className="grid gap-5 md:grid-cols-3">
-            {exampleRewards.map((reward) => (
-              <div key={reward.title} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
-                <div className="mb-6 flex items-center justify-between gap-4">
-                  <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/24 text-[#5c3718]">
-                    <reward.icon className="size-6" />
-                  </div>
-                  <span className="rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#6f4f3d]">
-                    {t(reward.label)}
-                  </span>
+          {rewards.isLoading ? (
+            <div className="grid gap-5 md:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
+                  <Skeleton className="h-12 w-12 rounded-[1rem]" />
+                  <Skeleton className="mt-6 h-8 w-3/4" />
+                  <Skeleton className="mt-4 h-4 w-full" />
+                  <Skeleton className="mt-2 h-4 w-2/3" />
+                  <Skeleton className="mt-6 h-9 w-full rounded-full" />
                 </div>
-                <h3 className="font-serif text-3xl leading-none text-[#21140d]">{t(reward.title)}</h3>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(reward.body)}</p>
-                <p className="mt-5 rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#5c3718]">
-                  {t('Shop locally -> earn rewards -> redeem value')}
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : previewRewards.length === 0 ? (
+            <div className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 text-center shadow-soft">
+              <Gift className="mx-auto size-10 text-[#9c6a22]" />
+              <h3 className="mt-4 font-serif text-3xl leading-none text-[#21140d]">{t('Rewards are being added.')}</h3>
+              <p className="mx-auto mt-3 max-w-xl text-sm font-semibold leading-6 text-[#6f4f3d]">
+                {t('Check back soon for live member rewards from Medellin Rewards.')}
+              </p>
+            </div>
+          ) : (
+            <div className="grid gap-5 md:grid-cols-3">
+              {previewRewards.map((reward) => (
+                <div key={reward.id} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
+                  <div className="mb-6 flex items-center justify-between gap-4">
+                    <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/24 text-[#5c3718]">
+                      <Gift className="size-6" />
+                    </div>
+                    <span className="rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#6f4f3d]">
+                      {t(reward.category)}
+                    </span>
+                  </div>
+                  <h3 className="font-serif text-3xl leading-none text-[#21140d]">{t(reward.title)}</h3>
+                  <p className="mt-3 line-clamp-2 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(reward.description)}</p>
+                  <p className="mt-5 rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#5c3718]">
+                    {formatPoints(reward.pointsCost)} {t('points to redeem')}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-3">
             <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
@@ -393,6 +407,19 @@ export function LandingPage() {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-[#ead8bd] bg-[#fffdf8] px-4 py-8 text-[#6f4f3d] sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col justify-between gap-4 text-sm font-semibold md:flex-row md:items-center">
+          <span className="font-serif text-xl font-bold text-[#21140d]">Medellin Rewards</span>
+          <nav className="flex flex-wrap gap-4">
+            {legalLinks.map((link) => (
+              <Link key={link.to} to={link.to} className="transition hover:text-[#21140d]">
+                {t(link.label)}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      </footer>
 
       <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-[#d8b98c]/55 bg-[#fffdf8]/96 px-3 py-3 shadow-[0_-18px_42px_-30px_rgb(122_73_38_/_0.38)] backdrop-blur sm:hidden">
         <div className="mx-auto grid w-full max-w-md grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">

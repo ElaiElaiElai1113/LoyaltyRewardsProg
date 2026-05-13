@@ -287,6 +287,14 @@ const spanishTranslations: Record<string, string> = {
   'Owners choose rewards that make sense for their margins.':
     'Los dueños eligen recompensas que tienen sentido para sus márgenes.',
   'Example rewards': 'Ejemplos de recompensas',
+  'Available rewards': 'Recompensas disponibles',
+  'Real rewards members can browse now.': 'Recompensas reales que los miembros pueden explorar ahora.',
+  'Browse current member rewards before joining. Your account must be verified before reward actions unlock.':
+    'Explora recompensas actuales antes de unirte. Tu cuenta debe estar verificada antes de desbloquear acciones de recompensas.',
+  'Rewards are being added.': 'Se estan agregando recompensas.',
+  'Check back soon for live member rewards from Medellin Rewards.':
+    'Vuelve pronto para ver recompensas reales para miembros de Medellin Rewards.',
+  'points to redeem': 'puntos para canjear',
   'Example rewards members could unlock.': 'Ejemplos de recompensas que los miembros podrían desbloquear.',
   'These examples show how the value can feel to a member. Live offers depend on the rewards available in Medellin Rewards.':
     'Estos ejemplos muestran cómo se puede sentir el valor para un miembro. Las ofertas reales dependen de las recompensas disponibles en Medellin Rewards.',
@@ -367,11 +375,90 @@ const spanishTranslations: Record<string, string> = {
   'ID verification protects reward value': 'La verificación de ID protege el valor de las recompensas',
   'One verified member account per person helps protect the program for everyone.':
     'Una cuenta verificada por persona ayuda a proteger el programa para todos.',
+  'ID verified': 'ID verificado',
+  'Reward actions are unlocked for this member account.':
+    'Las acciones de recompensas estan desbloqueadas para esta cuenta de miembro.',
+  'Your ID is submitted': 'Tu ID fue enviado',
+  'Reward actions stay locked until admin approval.':
+    'Las acciones de recompensas permanecen bloqueadas hasta la aprobacion del administrador.',
+  'ID verification needs another look': 'La verificacion de ID necesita otra revision',
+  'Your submission was not approved. Update your ID details to request another review.':
+    'Tu envio no fue aprobado. Actualiza los datos de tu ID para pedir otra revision.',
+  'Resubmit in profile': 'Reenviar en perfil',
+  'Finish ID verification': 'Termina la verificacion de ID',
+  'Upload your ID in profile before earning points, redeeming rewards, issuing gift cards, or activating reward credits.':
+    'Sube tu ID en el perfil antes de ganar puntos, canjear recompensas, emitir tarjetas de regalo o activar creditos de recompensa.',
+  'Verify in profile': 'Verificar en perfil',
+  'Verify ID': 'Verificar ID',
+  'ID verification required': 'Se requiere verificacion de ID',
+  Issue: 'Emitir',
+  'Verify ID to place order': 'Verifica tu ID para hacer el pedido',
+  'ID verification is required before placing demo orders that earn rewards.':
+    'Se requiere verificacion de ID antes de hacer pedidos demo que generan recompensas.',
+  'Verify ID to redeem': 'Verifica tu ID para canjear',
+  'Verify ID to renew': 'Verifica tu ID para renovar',
+  'Verify ID to subscribe': 'Verifica tu ID para suscribirte',
+  'Demo mode - no real charge.': 'Modo demo - sin cargo real.',
+  'Renew now - Demo': 'Renovar ahora - Demo',
+  'Resubscribe - Demo': 'Resuscribirse - Demo',
+  'Subscribe - Demo': 'Suscribirse - Demo',
   'Ready to join the rewards circle?': '¿Listo para unirte al círculo de recompensas?',
   'Create your free member account, browse available rewards, and keep your reward value connected in one place.':
     'Crea tu cuenta de miembro gratis, explora recompensas disponibles y mantén el valor de tus recompensas conectado en un solo lugar.',
   'Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.':
     'Empieza como miembro, explora negocios participantes o agenda una demo para lanzar recompensas en tu propio negocio.',
+  Terms: 'Terminos',
+  Privacy: 'Privacidad',
+  'Reward Terms': 'Terminos de recompensas',
+  'Verification Policy': 'Politica de verificacion',
+  Legal: 'Legal',
+  'Customer trust': 'Confianza del cliente',
+  'Terms of Use': 'Terminos de uso',
+  'Plain-language placeholder terms for Medellin Rewards members. These should be reviewed by a qualified legal professional before launch.':
+    'Terminos provisionales en lenguaje claro para miembros de Medellin Rewards. Deben ser revisados por un profesional legal calificado antes del lanzamiento.',
+  'Member accounts': 'Cuentas de miembro',
+  'Members are responsible for keeping account details accurate and secure. One member account should represent one real person.':
+    'Los miembros son responsables de mantener sus datos de cuenta correctos y seguros. Una cuenta de miembro debe representar a una persona real.',
+  'Rewards are offer-based': 'Las recompensas se basan en ofertas',
+  'Rewards are not cash payouts. Available rewards, point costs, eligibility, and redemption steps may change as the program evolves.':
+    'Las recompensas no son pagos en efectivo. Las recompensas disponibles, costos en puntos, elegibilidad y pasos de canje pueden cambiar mientras el programa evoluciona.',
+  'Program access': 'Acceso al programa',
+  'Reward actions may require sign-in, active account status, and completed ID verification before earning or redeeming value.':
+    'Las acciones de recompensas pueden requerir inicio de sesion, cuenta activa y verificacion de ID completada antes de ganar o canjear valor.',
+  'Privacy Policy': 'Politica de privacidad',
+  'Plain-language placeholder privacy notes for Medellin Rewards. Replace with reviewed legal copy before launch.':
+    'Notas provisionales de privacidad en lenguaje claro para Medellin Rewards. Reemplazalas con texto legal revisado antes del lanzamiento.',
+  'Information we collect': 'Informacion que recopilamos',
+  'The app may collect account details, contact details, activity, reward history, and ID verification submissions needed to operate the program.':
+    'La app puede recopilar datos de cuenta, contacto, actividad, historial de recompensas y envios de verificacion de ID necesarios para operar el programa.',
+  'How information is used': 'Como se usa la informacion',
+  'Information is used to manage accounts, review verification, protect reward value, support redemptions, and improve the member experience.':
+    'La informacion se usa para administrar cuentas, revisar verificaciones, proteger el valor de recompensas, apoyar canjes y mejorar la experiencia del miembro.',
+  'Support contact': 'Contacto de soporte',
+  'For privacy questions, members can contact support@medellinrewards.com.':
+    'Para preguntas de privacidad, los miembros pueden contactar a support@medellinrewards.com.',
+  'Plain-language placeholder reward terms explaining how Medellin Rewards value works for members.':
+    'Terminos provisionales de recompensas en lenguaje claro que explican como funciona el valor de Medellin Rewards para miembros.',
+  'No cash payout promise': 'Sin promesa de pago en efectivo',
+  'Rewards represent offers, perks, credits, or experiences available through Medellin Rewards. They are not a promise of cash payment.':
+    'Las recompensas representan ofertas, beneficios, creditos o experiencias disponibles con Medellin Rewards. No son una promesa de pago en efectivo.',
+  'Reward availability': 'Disponibilidad de recompensas',
+  'Rewards may have inventory, expiration, eligibility, location, point cost, or verification requirements before they can be claimed.':
+    'Las recompensas pueden tener inventario, vencimiento, elegibilidad, ubicacion, costo en puntos o requisitos de verificacion antes de reclamarse.',
+  'Redemption review': 'Revision de canje',
+  'Some reward actions may be validated by staff or administrators to keep the program fair and prevent duplicate or invalid claims.':
+    'Algunas acciones de recompensas pueden ser validadas por personal o administradores para mantener el programa justo y prevenir reclamos duplicados o invalidos.',
+  'Plain-language placeholder notes about why member verification is required before reward actions unlock.':
+    'Notas provisionales en lenguaje claro sobre por que se requiere verificacion de miembros antes de desbloquear acciones de recompensas.',
+  'Why verification is required': 'Por que se requiere verificacion',
+  'Verification helps support one member account per person and protects reward value for legitimate members.':
+    'La verificacion ayuda a mantener una cuenta por persona y protege el valor de recompensas para miembros legitimos.',
+  'How review works': 'Como funciona la revision',
+  'Admins review submitted ID details. Reward actions may stay locked while a submission is pending or if more information is needed.':
+    'Los administradores revisan los datos de ID enviados. Las acciones de recompensas pueden permanecer bloqueadas mientras una solicitud esta pendiente o si se necesita mas informacion.',
+  'How ID information is used': 'Como se usa la informacion de ID',
+  'ID information should be used only for member verification and account protection. Members can contact support@medellinrewards.com with questions.':
+    'La informacion de ID debe usarse solo para verificacion de miembros y proteccion de cuenta. Los miembros pueden contactar a support@medellinrewards.com si tienen preguntas.',
   'Free vacations': 'Vacaciones gratis',
   'can start with': 'pueden empezar con',
   'everyday spending': 'compras diarias',

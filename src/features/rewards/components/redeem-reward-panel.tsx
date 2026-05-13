@@ -16,6 +16,7 @@ interface RedeemRewardPanelProps {
   reward: Reward
   balancePoints: number
   isSubmitting?: boolean
+  actionLocked?: boolean
   onSubmit: (values: RedeemFormValues) => Promise<void> | void
 }
 
@@ -23,6 +24,7 @@ export function RedeemRewardPanel({
   reward,
   balancePoints,
   isSubmitting,
+  actionLocked = false,
   onSubmit,
 }: RedeemRewardPanelProps) {
   const { t } = useLanguage()
@@ -118,21 +120,32 @@ export function RedeemRewardPanel({
           </div>
         </div>
 
-        <EarnRedeemGate action="redeem">
+        {actionLocked ? (
           <Button
             type="submit"
             size="lg"
             className="h-12 w-full rounded-full px-8 text-sm font-bold tracking-wide shadow-card lg:w-auto"
-            disabled={(isMembershipActive && !canRedeem) || isSubmitting}
-            isLoading={Boolean(isSubmitting)}
+            disabled
           >
-            {isSubmitting
-              ? t('Processing...')
-              : canRedeem || !isMembershipActive
-                ? t('Redeem Now')
-                : t('Not Enough Points')}
+            {t('Verify ID to redeem')}
           </Button>
-        </EarnRedeemGate>
+        ) : (
+          <EarnRedeemGate action="redeem">
+            <Button
+              type="submit"
+              size="lg"
+              className="h-12 w-full rounded-full px-8 text-sm font-bold tracking-wide shadow-card lg:w-auto"
+              disabled={(isMembershipActive && !canRedeem) || isSubmitting}
+              isLoading={Boolean(isSubmitting)}
+            >
+              {isSubmitting
+                ? t('Processing...')
+                : canRedeem || !isMembershipActive
+                  ? t('Redeem Now')
+                  : t('Not Enough Points')}
+            </Button>
+          </EarnRedeemGate>
+        )}
       </form>
     </div>
   )

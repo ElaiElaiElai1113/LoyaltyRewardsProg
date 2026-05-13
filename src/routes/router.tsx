@@ -20,6 +20,7 @@ import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card
 import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
 import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
 import { JoinRewardsPage } from '@/features/join/pages/join-rewards-page'
+import { LegalPage } from '@/features/legal/pages/legal-page'
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
@@ -260,6 +261,22 @@ const router = createBrowserRouter([
   {
     path: '/join',
     element: <JoinRewardsPage />,
+  },
+  {
+    path: '/terms',
+    element: <LegalPage kind="terms" />,
+  },
+  {
+    path: '/privacy',
+    element: <LegalPage kind="privacy" />,
+  },
+  {
+    path: '/reward-terms',
+    element: <LegalPage kind="reward-terms" />,
+  },
+  {
+    path: '/verification-policy',
+    element: <LegalPage kind="verification-policy" />,
   },
   {
     element: <PublicBrowseLayout />,

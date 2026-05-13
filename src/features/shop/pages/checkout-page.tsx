@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { EarnRedeemGate } from '@/features/membership/components/earn-redeem-gate'
+import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useCart, usePlaceOrder, useProducts } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -72,6 +73,8 @@ export function CheckoutPage() {
   const tax = +(subtotal * taxRate).toFixed(2)
   const total = +(subtotal + tax).toFixed(2)
   const estimatedPoints = Math.floor(total * (business?.earnRate ?? 10))
+  const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
+  const rewardActionsLocked = verificationStatus !== 'verified'
 
   return (
     <div className="space-y-16 pb-20">
@@ -89,6 +92,10 @@ export function CheckoutPage() {
 
       <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
         <div className="space-y-8">
+          <VerificationStatusNotice
+            status={verificationStatus}
+            rejectionReason={profile?.verificationRejectionReason}
+          />
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6">
             <div className="space-y-2">
               <h2 className="font-serif text-3xl text-primary">{t('Simulated Payment Method')}</h2>
@@ -101,6 +108,10 @@ export function CheckoutPage() {
               onSubmit={form.handleSubmit(async (values) => {
                 if (validationError) {
                   setError(validationError)
+                  return
+                }
+                if (rewardActionsLocked) {
+                  setError('ID verification is required before placing demo orders that earn rewards.')
                   return
                 }
 
@@ -184,10 +195,14 @@ export function CheckoutPage() {
                   type="submit"
                   size="lg"
                   className="w-full rounded-full h-16 text-lg font-bold shadow-card"
-                  disabled={placeOrder.isPending || Boolean(validationError)}
+                  disabled={placeOrder.isPending || Boolean(validationError) || rewardActionsLocked}
                   isLoading={placeOrder.isPending}
                 >
-                  {placeOrder.isPending ? t('Placing Order...') : `${t('Place order')} ${formatCurrency(total)}`}
+                  {rewardActionsLocked
+                    ? t('Verify ID to place order')
+                    : placeOrder.isPending
+                      ? t('Placing Order...')
+                      : `${t('Place order')} ${formatCurrency(total)}`}
                 </Button>
               </EarnRedeemGate>
             </form>

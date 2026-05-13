@@ -10,6 +10,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
+import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useAuth } from '@/hooks/use-auth'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useMembership } from '@/hooks/use-membership'
@@ -43,12 +44,20 @@ export function RewardsPage() {
     activeFilter === 'All' ? true : reward.category === activeFilter,
   )
   const featuredRewards = filteredRewards.filter((reward) => reward.featured).slice(0, 5)
+  const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
+  const rewardActionsLocked = Boolean(profile) && verificationStatus !== 'verified'
 
   const getBusinessName = (businessId: string) =>
     businesses.data?.find((b) => b.id === businessId)?.name ?? ''
 
   const handleRedeem = (reward: Reward) => {
-    requireAuth(() => setSelectedReward(reward))
+    requireAuth(() => {
+      if (rewardActionsLocked) {
+        navigate('/profile')
+        return
+      }
+      setSelectedReward(reward)
+    })
   }
 
   return (
@@ -90,6 +99,13 @@ export function RewardsPage() {
           {t('Catalog browsing stays open. Subscribe in demo mode only when you are ready to redeem.')}
         </div>
       ) : null}
+      {profile ? (
+        <VerificationStatusNotice
+          status={verificationStatus}
+          rejectionReason={profile.verificationRejectionReason}
+          compact
+        />
+      ) : null}
 
       <div className="relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
@@ -128,6 +144,7 @@ export function RewardsPage() {
               balancePoints={balancePoints}
               businessName={getBusinessName(reward.businessId)}
               requirePoints={Boolean(profile)}
+              actionLocked={rewardActionsLocked}
               onRedeem={handleRedeem}
             />
           ))}
@@ -196,6 +213,7 @@ export function RewardsPage() {
               balancePoints={balancePoints}
               businessName={getBusinessName(reward.businessId)}
               requirePoints={Boolean(profile)}
+              actionLocked={rewardActionsLocked}
               onRedeem={handleRedeem}
             />
           ))}

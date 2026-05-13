@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { useMyGiftCards } from '@/features/gift-cards/hooks/use-gift-cards'
 import { MembershipBanner } from '@/features/membership/components/membership-banner'
+import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { RewardCard } from '@/features/rewards/components/reward-card'
 import {
@@ -38,6 +39,8 @@ export function DashboardPage() {
   const recentActivity = activities.data?.slice(0, 4) ?? []
   const activeGiftCardCount = giftCards.data?.filter((card) => card.status === 'active').length ?? 0
   const firstName = profile?.fullName?.split(' ')[0] ?? t('Member')
+  const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
+  const rewardActionsLocked = verificationStatus !== 'verified'
 
   const quickActions = [
     {
@@ -63,6 +66,10 @@ export function DashboardPage() {
   return (
     <div className="space-y-10 pb-16">
       <MembershipBanner />
+      <VerificationStatusNotice
+        status={verificationStatus}
+        rejectionReason={profile?.verificationRejectionReason}
+      />
 
       <section className="space-y-6">
         <div className="space-y-2">
@@ -155,7 +162,14 @@ export function DashboardPage() {
                 key={reward.id}
                 reward={reward}
                 balancePoints={points}
-                onRedeem={(selectedReward) => navigate(`/redeem/${selectedReward.id}`)}
+                actionLocked={rewardActionsLocked}
+                onRedeem={(selectedReward) => {
+                  if (rewardActionsLocked) {
+                    navigate('/profile')
+                    return
+                  }
+                  navigate(`/redeem/${selectedReward.id}`)
+                }}
               />
             ))}
           </div>
