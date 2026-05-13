@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { validateVerificationDocument } from '@/lib/member-verification'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 
@@ -51,6 +52,7 @@ function homePathForRole(role: string) {
 
 export function JoinRewardsPage() {
   const { profile, signUp } = useAuth()
+  const { t } = useLanguage()
   const [signUpComplete, setSignUpComplete] = useState(false)
   const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -66,65 +68,64 @@ export function JoinRewardsPage() {
   }
 
   return (
-    <main className="relative isolate min-h-screen overflow-hidden bg-surface px-4 py-6 sm:px-6 lg:px-8">
+    <main className="relative isolate min-h-screen overflow-x-hidden bg-surface px-4 py-6 sm:px-6 lg:px-8">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--rose-brown)_16%,transparent),transparent_30%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--champagne)_28%,transparent),transparent_32%)]" />
-      <div className="relative mx-auto grid min-h-[calc(100svh-3rem)] max-w-7xl gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] lg:items-stretch">
-        <section className="relative overflow-hidden rounded-[1.75rem] bg-[linear-gradient(145deg,var(--espresso)_0%,color-mix(in_srgb,var(--espresso)_74%,var(--rose-brown))_62%,color-mix(in_srgb,var(--espresso)_58%,var(--rose-brown))_100%)] px-6 py-7 text-[var(--cream)] shadow-panel sm:px-8 lg:px-10">
+      <div className="relative mx-auto grid min-h-[calc(100svh-3rem)] w-full min-w-0 max-w-7xl grid-cols-[minmax(0,1fr)] gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(360px,460px)] lg:items-stretch">
+        <section className="relative w-full min-w-0 max-w-full overflow-hidden rounded-[1.75rem] bg-[linear-gradient(145deg,var(--espresso)_0%,color-mix(in_srgb,var(--espresso)_74%,var(--rose-brown))_62%,color-mix(in_srgb,var(--espresso)_58%,var(--rose-brown))_100%)] px-4 py-7 text-[var(--cream)] shadow-panel sm:px-8 lg:px-10">
           <img src={heroImage} alt="" className="absolute inset-0 size-full object-cover opacity-18 mix-blend-screen" />
           <div className="absolute inset-0 bg-[var(--espresso)]/35" />
           <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
 
-          <div className="relative z-10 flex h-full flex-col justify-between gap-8">
-            <div className="flex items-center justify-between gap-4">
+          <div className="relative z-10 flex h-full min-w-0 flex-col justify-between gap-8">
+            <div className="flex min-w-0 items-center justify-between gap-4">
               <Badge className="border-[var(--champagne)]/30 bg-white/10 text-[var(--cream)]">
-                Join the Rewards Club
+                {t('Join the Rewards Club')}
               </Badge>
               <Link to="/signin" className="text-sm font-bold text-[var(--cream)]/72 transition hover:text-[var(--cream)]">
-                Sign in
+                {t('Sign in')}
               </Link>
             </div>
 
-            <div className="max-w-3xl space-y-5">
-              <h1 className="font-serif text-[clamp(3rem,7vw,6.8rem)] font-semibold leading-[0.92] tracking-[0.01em]">
-                Rewards for the places you already enjoy.
+            <div className="min-w-0 max-w-3xl space-y-5">
+              <h1 className="max-w-full text-wrap break-words font-serif text-[clamp(2.35rem,9.7vw,3rem)] font-semibold leading-[0.94] tracking-[0.01em] sm:text-[clamp(3rem,7vw,6.8rem)] sm:leading-[0.92]">
+                {t('Rewards for the places you already enjoy.')}
               </h1>
-              <p className="max-w-2xl text-base font-medium leading-7 text-[var(--cream)]/84 sm:text-lg">
-                Create a free member account to earn points, discover local perks, redeem rewards,
-                and keep every visit connected to your rewards balance.
+              <p className="max-w-2xl break-words text-base font-medium leading-7 text-[var(--cream)]/84 sm:text-lg">
+                {t('Create your free account, verify once, and keep rewards connected across participating businesses.')}
               </p>
               <div className="flex flex-wrap gap-3">
-                <Button asChild size="lg" className="rounded-full bg-[var(--champagne)] text-[var(--espresso)] hover:bg-[var(--cream)]">
-                  <a href="#join-form">Create free account</a>
+                <Button asChild size="lg" className="min-w-0 rounded-full bg-[var(--champagne)] px-5 text-[var(--espresso)] hover:bg-[var(--cream)]">
+                  <a href="#join-form">{t('Create free account')}</a>
                 </Button>
-                <Button asChild variant="outline" size="lg" className="rounded-full border-[var(--champagne)]/40 bg-white/5 text-[var(--cream)] hover:bg-white/10">
-                  <Link to="/rewards">Browse rewards</Link>
+                <Button asChild variant="outline" size="lg" className="min-w-0 rounded-full border-[var(--champagne)]/40 bg-white/5 px-5 text-[var(--cream)] hover:bg-white/10">
+                  <Link to="/rewards">{t('Browse rewards')}</Link>
                 </Button>
               </div>
             </div>
 
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)] gap-3 md:grid-cols-3">
               {benefits.map((benefit) => (
-                <div key={benefit.title} className="rounded-[1rem] border border-white/12 bg-white/10 p-4 backdrop-blur">
+                <div key={benefit.title} className="min-w-0 rounded-[1rem] border border-white/12 bg-white/10 p-4 backdrop-blur">
                   <benefit.icon className="size-5 text-[var(--champagne)]" />
-                  <h2 className="mt-3 font-serif text-xl leading-tight text-[var(--cream)]">{benefit.title}</h2>
-                  <p className="mt-2 text-xs font-medium leading-5 text-[var(--cream)]/74">{benefit.body}</p>
+                  <h2 className="mt-3 font-serif text-xl leading-tight text-[var(--cream)]">{t(benefit.title)}</h2>
+                  <p className="mt-2 break-words text-xs font-medium leading-5 text-[var(--cream)]/74">{t(benefit.body)}</p>
                 </div>
               ))}
             </div>
           </div>
         </section>
 
-        <section id="join-form" className="flex items-center">
-          <div className="w-full rounded-[1.75rem] border border-[var(--primary)]/22 bg-[linear-gradient(145deg,#fff8ec_0%,#f6dfc7_100%)] p-6 text-[var(--espresso)] shadow-panel sm:p-8">
+        <section id="join-form" className="flex w-full min-w-0 max-w-full items-center">
+          <div className="w-full min-w-0 rounded-[1.75rem] border border-[var(--primary)]/22 bg-[linear-gradient(145deg,#fff8ec_0%,#f6dfc7_100%)] p-6 text-[var(--espresso)] shadow-panel sm:p-8">
             {signUpComplete ? (
               <div className="space-y-7 py-8 text-center">
                 <div className="mx-auto flex size-16 items-center justify-center rounded-[1.35rem] bg-[var(--primary)]/12 text-[var(--primary)]">
                   <BadgeCheck className="size-8" />
                 </div>
                 <div className="space-y-3">
-                  <h2 className="font-serif text-4xl leading-tight text-[var(--espresso)]">Welcome to the Rewards Club.</h2>
+                  <h2 className="font-serif text-4xl leading-tight text-[var(--espresso)]">{t('Welcome to the Rewards Club.')}</h2>
                   <p className="mx-auto max-w-md text-sm font-medium leading-6 text-[var(--espresso)]/72">
-                    Your account request is saved. Check your email if verification is required, then sign in to start earning.
+                    {t('Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.')}
                   </p>
                   {signUpWarning ? (
                     <p className="mx-auto max-w-md text-sm font-bold leading-6 text-warning">
@@ -134,10 +135,10 @@ export function JoinRewardsPage() {
                 </div>
                 <div className="flex flex-col gap-3 sm:flex-row sm:justify-center">
                   <Button asChild className="rounded-full bg-[var(--espresso)] text-[var(--cream)] hover:bg-[var(--rose-brown)]">
-                    <Link to="/signin">Go to sign in</Link>
+                    <Link to="/signin">{t('Go to sign in')}</Link>
                   </Button>
                   <Button asChild variant="outline" className="rounded-full border-[var(--espresso)]/20 bg-[var(--cream)]/40 text-[var(--espresso)] hover:bg-[var(--cream)]/70">
-                    <Link to="/rewards">View rewards</Link>
+                    <Link to="/rewards">{t('View rewards')}</Link>
                   </Button>
                 </div>
               </div>
@@ -150,7 +151,7 @@ export function JoinRewardsPage() {
                     const documentFile = verificationDocument
                     const documentError = validateVerificationDocument(documentFile)
                     if (documentError || !documentFile) {
-                      setError(documentError ?? 'Upload a photo or PDF of your ID for account verification.')
+                      setError(t(documentError ?? 'Upload a photo or PDF of your ID for account verification.'))
                       return
                     }
 
@@ -172,8 +173,8 @@ export function JoinRewardsPage() {
 
                     setError(
                       submissionError instanceof Error
-                        ? submissionError.message
-                        : 'Unable to create the account.',
+                        ? t(submissionError.message)
+                        : t('Unable to create the account.'),
                     )
                   }
                 })}
@@ -182,51 +183,67 @@ export function JoinRewardsPage() {
                   <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-[var(--primary)]/12 text-[var(--primary)]">
                     <Sparkles className="size-6" />
                   </div>
-                  <h2 className="font-serif text-3xl text-[var(--espresso)]">Create your free account</h2>
+                  <h2 className="font-serif text-3xl text-[var(--espresso)]">{t('Create your free account')}</h2>
                   <p className="text-sm font-medium leading-6 text-[var(--espresso)]/72">
-                    Join once and keep your rewards connected across the network.
+                    {t('Join once and keep your rewards connected across the network.')}
                   </p>
                 </div>
 
+                <div className="rounded-[1.25rem] border border-[var(--primary)]/18 bg-[var(--cream)]/55 p-4">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex size-10 items-center justify-center rounded-[0.85rem] bg-[var(--primary)]/12 text-[var(--primary)]">
+                      <BadgeCheck className="size-5" />
+                    </div>
+                    <h3 className="font-serif text-2xl leading-none text-[var(--espresso)]">
+                      {t('Why we verify members')}
+                    </h3>
+                  </div>
+                  <div className="grid gap-2 text-xs font-semibold leading-5 text-[var(--espresso)]/70">
+                    <p>{t('One account per person keeps rewards fair across the network.')}</p>
+                    <p>{t('Verification protects reward value before members earn or redeem.')}</p>
+                    <p>{t('Admins review submissions, and your ID is used only for verification.')}</p>
+                  </div>
+                </div>
+
                 <div className="grid gap-3">
-                  <Label htmlFor="join-name" className={joinLabelClass}>Full name</Label>
-                  <Input id="join-name" className={joinInputClass} placeholder="Your name" {...form.register('fullName')} />
+                  <Label htmlFor="join-name" className={joinLabelClass}>{t('Full name')}</Label>
+                  <Input id="join-name" className={joinInputClass} placeholder={t('Your name')} {...form.register('fullName')} />
                   {form.formState.errors.fullName ? (
-                    <p className="text-xs font-bold text-error">{form.formState.errors.fullName.message}</p>
+                    <p className="text-xs font-bold text-error">{t(form.formState.errors.fullName.message ?? '')}</p>
                   ) : null}
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="join-email" className={joinLabelClass}>Email address</Label>
+                  <Label htmlFor="join-email" className={joinLabelClass}>{t('Email address')}</Label>
                   <Input id="join-email" className={joinInputClass} type="email" placeholder="your@email.com" {...form.register('email')} />
                   {form.formState.errors.email ? (
-                    <p className="text-xs font-bold text-error">{form.formState.errors.email.message}</p>
+                    <p className="text-xs font-bold text-error">{t(form.formState.errors.email.message ?? '')}</p>
                   ) : null}
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="join-password" className={joinLabelClass}>Password</Label>
-                  <Input id="join-password" className={joinInputClass} type="password" placeholder="Password" {...form.register('password')} />
+                  <Label htmlFor="join-password" className={joinLabelClass}>{t('Password')}</Label>
+                  <Input id="join-password" className={joinInputClass} type="password" placeholder={t('Password')} {...form.register('password')} />
                   {form.formState.errors.password ? (
-                    <p className="text-xs font-bold text-error">{form.formState.errors.password.message}</p>
+                    <p className="text-xs font-bold text-error">{t(form.formState.errors.password.message ?? '')}</p>
                   ) : null}
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="join-verification-id" className={joinLabelClass}>Verification ID number</Label>
+                  <Label htmlFor="join-verification-id" className={joinLabelClass}>{t('Verification ID number')}</Label>
                   <Input
                     id="join-verification-id"
                     className={joinInputClass}
-                    placeholder="ID number"
+                    placeholder={t('ID number')}
                     {...form.register('verificationIdNumber')}
                   />
                   {form.formState.errors.verificationIdNumber ? (
-                    <p className="text-xs font-bold text-error">{form.formState.errors.verificationIdNumber.message}</p>
+                    <p className="text-xs font-bold text-error">{t(form.formState.errors.verificationIdNumber.message ?? '')}</p>
                   ) : null}
                 </div>
 
                 <div className="grid gap-3">
-                  <Label htmlFor="join-verification-document" className={joinLabelClass}>Photo or PDF of ID</Label>
+                  <Label htmlFor="join-verification-document" className={joinLabelClass}>{t('Photo or PDF of ID')}</Label>
                   <Input
                     id="join-verification-document"
                     className={joinInputClass}
@@ -235,13 +252,13 @@ export function JoinRewardsPage() {
                     onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
                   />
                   <p className="text-xs font-medium leading-5 text-[var(--espresso)]/62">
-                    Used by admins to verify one member account per person.
+                    {t('Used only to verify one member account per person before rewards can be earned or redeemed.')}
                   </p>
                 </div>
 
                 {error ? (
                   <div className="rounded-[1rem] border border-error/20 bg-error/10 p-4 text-sm font-bold text-error">
-                    {error}
+                    {t(error)}
                   </div>
                 ) : null}
 
@@ -252,11 +269,15 @@ export function JoinRewardsPage() {
                   isLoading={form.formState.isSubmitting}
                 >
                   <Gift className="size-4" />
-                  Join the Rewards Club
+                  {t('Join the Rewards Club')}
                 </Button>
 
+                <p className="rounded-[1rem] border border-[var(--primary)]/16 bg-[var(--cream)]/45 p-3 text-center text-xs font-semibold leading-5 text-[var(--espresso)]/68">
+                  {t('After signup, your account may need admin approval before reward actions unlock.')}
+                </p>
+
                 <p className="text-center text-xs font-medium text-[var(--espresso)]/62">
-                  Already a member? <Link to="/signin" className="font-bold text-[var(--primary)] hover:underline">Sign in</Link>
+                  {t('Already a member?')} <Link to="/signin" className="font-bold text-[var(--primary)] hover:underline">{t('Sign in')}</Link>
                 </p>
               </form>
             )}

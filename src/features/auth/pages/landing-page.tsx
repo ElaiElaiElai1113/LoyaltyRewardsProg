@@ -4,8 +4,6 @@ import {
   BadgeCheck,
   CalendarClock,
   Gift,
-  Handshake,
-  Play,
   QrCode,
   Repeat2,
   Sparkles,
@@ -55,49 +53,112 @@ const authInputClass =
   'border-[var(--champagne)]/38 bg-[var(--espresso)]/58 text-[var(--cream)] placeholder:text-[var(--cream)]/62 focus-visible:ring-[var(--champagne)]/32'
 
 const valuePillClass =
-  'rounded-full border border-[var(--champagne)]/28 bg-[var(--cream)]/8 px-4 py-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--cream)]/86'
+  'max-w-full rounded-full border border-[#d9b365]/38 bg-[#fff4dd]/12 px-4 py-2 text-center text-xs font-bold uppercase leading-4 tracking-[0.14em] text-[#fff4dd]'
 
 const landingFeatures = [
   {
     icon: WalletCards,
-    title: 'Members earn rewards',
-    body: 'Customers collect reward value from everyday spending at participating businesses.',
+    title: 'Join free',
+    body: 'Create your member account and keep your rewards connected in one place.',
   },
   {
     icon: Store,
-    title: 'Businesses get repeat visits',
-    body: 'Owners create reward offers, invite customers with QR links, and keep redemption simple for staff.',
+    title: 'Shop at participating businesses',
+    body: 'Spend with local businesses in the Medellin Rewards network and earn rewards as you go.',
   },
   {
-    icon: Handshake,
-    title: 'Ambassadors share the network',
-    body: 'Partners and promoters send customers through tracked links and help the circle grow.',
+    icon: Gift,
+    title: 'Redeem your rewards',
+    body: 'Use your rewards for member perks and offers, with bigger travel-style rewards possible over time.',
   },
 ]
 
 const howItWorks = [
   {
     icon: QrCode,
-    title: 'Scan or join',
-    body: 'A customer joins from a QR code, partner link, or the public rewards page.',
+    title: 'Join free',
+    body: 'Sign up once from the website, a business QR code, or a partner link.',
   },
   {
     icon: TicketPercent,
     title: 'Shop and earn',
-    body: 'Every qualifying purchase builds reward value tied to the customer account.',
+    body: 'Spend at participating local businesses and collect rewards on eligible purchases.',
   },
   {
     icon: Gift,
-    title: 'Redeem in-store',
-    body: 'Members claim rewards and staff validate them with simple redemption tools.',
+    title: 'Redeem rewards',
+    body: 'Use your rewards through Medellin Rewards when you are ready to claim an offer.',
   },
 ]
 
 const businessProof = [
-  'QR signup portals for checkout, tables, events, and partner desks',
-  'Reward credits staff can validate in-store',
-  'Partner referral links with owner reporting',
-  'Food-cost calculator that shows real business impact',
+  'QR signup links for checkout, tables, events, and partner desks',
+  'Reward offers that give customers a clear reason to come back',
+  'Simple staff validation when members redeem in-store',
+  'Cost calculator that shows the real business impact before launch',
+]
+
+const proofStrip = [
+  {
+    icon: WalletCards,
+    title: 'Free member account',
+    body: 'Join once and keep your rewards connected.',
+  },
+  {
+    icon: Store,
+    title: 'Earn at participating businesses',
+    body: 'Shop locally and collect rewards on eligible purchases.',
+  },
+  {
+    icon: Gift,
+    title: 'Redeem through Medellin Rewards',
+    body: 'Claim member offers through a simple rewards flow.',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Businesses control their offers',
+    body: 'Owners choose rewards that make sense for their margins.',
+  },
+]
+
+const exampleRewards = [
+  {
+    icon: Store,
+    label: 'Example drink reward',
+    title: 'Coffee or drink perk',
+    body: 'A member shops locally, earns rewards, and redeems for a simple cafe-style perk.',
+  },
+  {
+    icon: Gift,
+    label: 'Example food reward',
+    title: 'Pastry or meal offer',
+    body: 'Everyday purchases can build toward small offers members understand right away.',
+  },
+  {
+    icon: Sparkles,
+    label: 'Example bigger reward',
+    title: 'Travel-style value',
+    body: 'Consistent local spending can build toward bigger rewards over time.',
+  },
+]
+
+const trustPoints = [
+  {
+    title: 'Rewards are not cash payouts',
+    body: 'Members see useful value, while businesses can fulfill rewards through offers and experiences.',
+  },
+  {
+    title: 'Businesses choose what they can afford',
+    body: 'Each offer can match the business model, margins, and real product cost.',
+  },
+  {
+    title: 'Staff validation keeps redemptions simple',
+    body: 'Members claim rewards and staff confirm them through the redemption flow.',
+  },
+  {
+    title: 'ID verification protects reward value',
+    body: 'One verified member account per person helps protect the program for everyone.',
+  },
 ]
 
 function LoadingSpinner() {
@@ -122,175 +183,235 @@ export function LandingPage() {
   const { t } = useLanguage()
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f6f4ef] text-[#15110d]">
-      <header className="sticky top-0 z-50 px-4 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-[0.8rem] bg-white/92 px-5 py-3 shadow-soft">
-          <Link to="/" className="min-w-0 font-serif text-xl font-bold text-[var(--espresso)] sm:text-2xl">
+    <main className="min-h-screen overflow-x-hidden bg-[#fffaf4] pb-24 text-[#21140d] sm:pb-0">
+      <header className="sticky top-0 z-50 px-3 py-4 backdrop-blur sm:px-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-[0.8rem] border border-[#ead8bd] bg-[#fffdf8]/96 px-4 py-3 shadow-soft sm:px-5">
+          <Link to="/" className="min-w-0 truncate font-serif text-xl font-bold text-[#21140d] sm:text-2xl">
             Medellin Rewards
           </Link>
-          <nav className="hidden items-center gap-2 rounded-full bg-[#f3f1ed] px-3 py-2 lg:flex">
+          <nav className="hidden items-center gap-2 rounded-full bg-[#efe6d8] px-3 py-2 lg:flex">
             {[
               { href: '#how-it-works', label: 'How it works' },
               { href: '#for-businesses', label: 'For businesses' },
-              { href: '#rewards', label: 'Rewards' },
+              { href: '#example-rewards', label: 'Rewards' },
               { href: '#ambassadors', label: 'Ambassadors' },
             ].map((item) => (
               <a
                 key={item.href}
                 href={item.href}
-                className="rounded-full px-4 py-2 text-sm font-bold text-[var(--primary-container)] transition hover:bg-white"
+                className="rounded-full px-4 py-2 text-sm font-bold text-[#3b2618] transition hover:bg-[#fffaf4] hover:text-[#21140d]"
               >
                 {t(item.label)}
               </a>
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Button asChild variant="ghost" size="sm" className="hidden rounded-full text-[var(--espresso)] sm:inline-flex">
+            <Button asChild variant="ghost" size="sm" className="hidden rounded-full text-[#21140d] hover:bg-[#efe6d8] sm:inline-flex">
               <Link to="/signin">{t('Sign In')}</Link>
             </Button>
-            <Button asChild size="sm" className="shrink-0 rounded-full bg-[var(--espresso)] text-[var(--cream)] hover:bg-[var(--rose-brown)]">
+            <Button asChild size="sm" className="hidden shrink-0 rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327] sm:inline-flex">
               <Link to="/join">{t('Join free')}</Link>
             </Button>
           </div>
         </div>
       </header>
 
-      <section className="relative isolate overflow-hidden bg-[var(--espresso)] px-4 py-10 text-[var(--cream)] sm:px-6 lg:px-8">
-        <img src={heroImage} alt="" className="absolute inset-0 -z-20 size-full object-cover opacity-20 mix-blend-screen" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(105deg,var(--espresso)_0%,color-mix(in_srgb,var(--espresso)_88%,var(--rose-brown))_52%,color-mix(in_srgb,var(--espresso)_65%,transparent)_100%)]" />
-        <div className="absolute right-0 top-0 hidden h-36 w-36 rounded-bl-[4.5rem] bg-[var(--champagne)]/62 lg:block" />
+      <section className="relative isolate overflow-hidden bg-[#21140d] px-4 py-8 text-[#fff7ea] sm:px-6 lg:px-8">
+        <img src={heroImage} alt="" className="absolute inset-0 -z-20 size-full object-cover opacity-24 saturate-75" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(105deg,rgb(33_20_13/.96)_0%,rgb(43_27_18/.94)_54%,rgb(33_20_13/.86)_100%)]" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-28 bg-[linear-gradient(180deg,transparent,rgb(33_20_13/.92))]" />
+        <div className="absolute right-0 top-0 hidden h-36 w-36 rounded-bl-[4.5rem] bg-[#d9b365]/68 lg:block" />
 
-        <div className="relative mx-auto flex min-h-[calc(100svh-9rem)] max-w-7xl min-w-0 flex-col justify-center">
-          <div className="max-w-[62rem] min-w-0 space-y-6">
-            <Badge className="w-fit max-w-full whitespace-normal border-[var(--champagne)]/40 bg-[var(--cream)] px-5 py-2 text-[var(--espresso)] shadow-soft">
-              {t("The world's highest paying Rewards Program!")}
+        <div className="relative mx-auto flex max-w-7xl min-w-0 flex-col justify-center">
+          <div className="w-full max-w-[22rem] min-w-0 space-y-6 sm:max-w-[62rem]">
+            <Badge className="w-fit max-w-full justify-center whitespace-normal border-[#d9b365]/50 bg-[#fff7ea] px-5 py-2 text-center leading-5 text-[#21140d] shadow-soft">
+              {t('Free to join. Earn when you shop locally.')}
             </Badge>
             <div className="space-y-4">
-              <h1 className="max-w-full text-wrap font-serif text-[clamp(2.85rem,6vw,5.9rem)] font-semibold leading-[0.94] text-[var(--cream)]">
-                <span className="block xl:inline">{t('Free vacations')}</span>{' '}
-                <span className="block text-[var(--champagne)] xl:inline">{t('can start with')}</span>{' '}
-                <span className="block xl:inline">{t('everyday spending')}.</span>
+              <h1 className="max-w-full text-wrap font-serif text-[clamp(2.55rem,11vw,5.9rem)] font-semibold leading-[0.94] text-[#fff7ea] sm:text-[clamp(2.85rem,6vw,5.9rem)]">
+                <span className="block xl:inline">{t('Earn rewards')}</span>{' '}
+                <span className="block text-[#f2c978] xl:inline">{t('every time')}</span>{' '}
+                <span className="block xl:inline">{t('you shop locally')}.</span>
               </h1>
-              <p className="max-w-[46rem] text-base font-semibold leading-8 text-[var(--cream)]/86 sm:text-lg">
-                {t('Imagine going on a free vacation every year - just by earning Rewards doing things you already do. Medellin Rewards pays you a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.')}
+              <p className="max-w-full text-base font-semibold leading-8 text-[#f6ead8] sm:max-w-[46rem] sm:text-lg">
+                {t('Join free, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.')}
               </p>
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full bg-[var(--champagne)] text-[var(--espresso)] hover:bg-[var(--cream)]">
+              <Button asChild size="lg" className="rounded-full bg-[#f2c978] text-[#21140d] hover:bg-[#fff7ea]">
                 <Link to="/join">
                   {t('Join Rewards Club')}
                   <ArrowRight className="size-4" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-[var(--champagne)]/35 bg-transparent text-[var(--cream)] hover:bg-[var(--cream)]/10 hover:text-[var(--cream)]">
+              <Button asChild variant="outline" size="lg" className="rounded-full border-[#d9b365]/48 bg-[#fff4dd]/6 text-[#fff7ea] hover:bg-[#fff4dd]/14 hover:text-[#fff7ea]">
                 <Link to="/business">{t('For Businesses')}</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-[var(--champagne)]/35 bg-transparent text-[var(--cream)] hover:bg-[var(--cream)]/10 hover:text-[var(--cream)]">
-                <a href="#how-it-works">
-                  <Play className="size-4" />
-                  {t('How it works')}
-                </a>
+              <Button asChild variant="outline" size="lg" className="rounded-full border-[#d9b365]/48 bg-[#fff4dd]/6 text-[#fff7ea] hover:bg-[#fff4dd]/14 hover:text-[#fff7ea]">
+                <Link to="/rewards">{t('Browse rewards')}</Link>
               </Button>
             </div>
 
             <div className="flex flex-wrap gap-3">
               <span className={valuePillClass}>{t('Free to join')}</span>
               <span className={valuePillClass}>{t('Earn 20% to 100% back')}</span>
-              <span className={valuePillClass}>{t('Redeem at local businesses')}</span>
+              <span className={valuePillClass}>{t('Redeem through Medellin Rewards')}</span>
             </div>
+            <p className="max-w-[42rem] text-sm font-semibold leading-6 text-[#e9d8bf]">
+              {t('Rewards are offer-based, not cash payouts. Businesses choose offers they can afford.')}
+            </p>
           </div>
 
-          <div className="mt-8 grid max-w-5xl gap-4 md:grid-cols-3">
+          <div className="mt-8 grid w-full max-w-[22rem] gap-4 sm:max-w-5xl md:grid-cols-3">
             {landingFeatures.map((feature) => (
-              <div key={feature.title} className="rounded-[1rem] border border-[var(--champagne)]/22 bg-[var(--espresso)]/58 p-5 shadow-soft backdrop-blur">
-                <div className="mb-4 flex size-10 items-center justify-center rounded-[0.8rem] bg-[var(--champagne)]/16 text-[var(--champagne)]">
+              <div key={feature.title} className="rounded-[1rem] border border-[#d9b365]/32 bg-[#180f0a]/72 p-5 shadow-soft backdrop-blur">
+                <div className="mb-4 flex size-10 items-center justify-center rounded-[0.8rem] bg-[#f2c978]/18 text-[#f2c978]">
                   <feature.icon className="size-5" />
                 </div>
-                <h2 className="font-serif text-2xl leading-none text-[var(--cream)]">{t(feature.title)}</h2>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[var(--cream)]/72">{t(feature.body)}</p>
+                <h2 className="font-serif text-2xl leading-none text-[#fff7ea]">{t(feature.title)}</h2>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#e9d8bf]">{t(feature.body)}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="px-4 py-14 sm:px-6 lg:px-8">
+      <section className="bg-[#fffdf8] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {proofStrip.map((item) => (
+            <div key={item.title} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-5 shadow-soft">
+              <div className="mb-4 flex size-10 items-center justify-center rounded-[0.8rem] bg-[#f2c978]/24 text-[#5c3718]">
+                <item.icon className="size-5" />
+              </div>
+              <h2 className="font-serif text-2xl leading-none text-[#21140d]">{t(item.title)}</h2>
+              <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(item.body)}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="example-rewards" className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-8">
+          <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
+            <div className="space-y-4">
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Example rewards')}</p>
+              <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
+                {t('Example rewards members could unlock.')}
+              </h2>
+            </div>
+            <p className="max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
+              {t('These examples show how the value can feel to a member. Live offers depend on participating businesses and the rewards they choose to launch.')}
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-3">
+            {exampleRewards.map((reward) => (
+              <div key={reward.title} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
+                <div className="mb-6 flex items-center justify-between gap-4">
+                  <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/24 text-[#5c3718]">
+                    <reward.icon className="size-6" />
+                  </div>
+                  <span className="rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#6f4f3d]">
+                    {t(reward.label)}
+                  </span>
+                </div>
+                <h3 className="font-serif text-3xl leading-none text-[#21140d]">{t(reward.title)}</h3>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(reward.body)}</p>
+                <p className="mt-5 rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#5c3718]">
+                  {t('Shop locally -> earn rewards -> redeem value')}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex flex-wrap gap-3">
+            <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
+              <Link to="/join">{t('Join Rewards Club')}</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="rounded-full border-[#9c6a22]/35 bg-[#fffdf8] text-[#21140d] hover:bg-[#efe6d8]">
+              <Link to="/rewards">{t('Browse rewards')}</Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl space-y-9">
           <div className="mx-auto max-w-3xl text-center">
-            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--primary)]">{t('How it works')}</p>
-            <h2 className="mt-3 font-serif text-5xl font-semibold leading-none text-[var(--espresso)]">
-              {t('A simple rewards loop for customers and local businesses.')}
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('How it works')}</p>
+            <h2 className="mt-3 font-serif text-5xl font-semibold leading-none text-[#21140d]">
+              {t('Join, shop, and redeem without learning a complicated points system.')}
             </h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {howItWorks.map((step, index) => (
-              <div key={step.title} className="rounded-[1.25rem] border border-[var(--primary)]/18 bg-white p-7 shadow-soft">
+              <div key={step.title} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-7 shadow-soft">
                 <div className="mb-6 flex items-center justify-between">
-                  <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[var(--champagne)]/28 text-[var(--primary-container)]">
+                  <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/28 text-[#5c3718]">
                     <step.icon className="size-6" />
                   </div>
-                  <span className="font-serif text-5xl leading-none text-[var(--champagne-strong)]">{index + 1}</span>
+                  <span className="font-serif text-5xl leading-none text-[#b67718]">{index + 1}</span>
                 </div>
-                <h3 className="font-serif text-3xl text-[var(--espresso)]">{t(step.title)}</h3>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[var(--muted-foreground)]">{t(step.body)}</p>
+                <h3 className="font-serif text-3xl text-[#21140d]">{t(step.title)}</h3>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(step.body)}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="for-businesses" className="bg-white px-4 py-16 sm:px-6 lg:px-8">
+      <section id="for-businesses" className="bg-[#fffdf8] px-4 py-16 text-[#21140d] sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <div className="space-y-5">
-            <Badge variant="accent" className="w-fit">{t('For businesses')}</Badge>
-            <h2 className="font-serif text-5xl font-semibold leading-none text-[var(--espresso)]">
-              {t('Bring customers back without making rewards feel like cash payouts.')}
+            <Badge className="w-fit border-[#d9b365]/45 bg-[#5e3327] text-[#fff7ea]">{t('For businesses')}</Badge>
+            <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
+              {t('Turn first-time customers into repeat visits with rewards you control.')}
             </h2>
-            <p className="text-base font-semibold leading-7 text-[var(--muted-foreground)]">
-              {t('Owners can launch QR signup links, track referrals, validate reward credits, and understand the real food-cost impact before choosing an offer.')}
+            <p className="text-base font-semibold leading-7 text-[#6f4f3d]">
+              {t('Businesses can launch QR signup links, encourage repeat visits, let staff validate redemptions, and use the calculator to understand the real cost before choosing an offer.')}
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full bg-[var(--espresso)] text-[var(--cream)] hover:bg-[var(--rose-brown)]">
+              <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
                 <Link to="/business#book-demo">{t('Book Business Demo')}</Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full">
+              <Button asChild variant="outline" size="lg" className="rounded-full border-[#9c6a22]/35 bg-[#fffaf4] text-[#21140d] hover:bg-[#efe6d8]">
                 <Link to="/business">{t('See calculator')}</Link>
               </Button>
             </div>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             {businessProof.map((point) => (
-              <div key={point} className="rounded-[1rem] border border-[var(--primary)]/16 bg-[var(--surface-container-lowest)] p-5">
-                <BadgeCheck className="mb-4 size-6 text-[var(--primary)]" />
-                <p className="text-sm font-bold leading-6 text-[var(--espresso)]">{t(point)}</p>
+              <div key={point} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-5">
+                <BadgeCheck className="mb-4 size-6 text-[#9c6a22]" />
+                <p className="text-sm font-bold leading-6 text-[#21140d]">{t(point)}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="rewards" className="bg-[linear-gradient(135deg,var(--espresso),color-mix(in_srgb,var(--espresso)_78%,var(--rose-brown)))] px-4 py-16 text-[var(--cream)] sm:px-6 lg:px-8">
+      <section id="rewards" className="bg-[linear-gradient(135deg,#21140d,#3b2417)] px-4 py-16 text-[#fff7ea] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr] lg:items-center">
             <div className="space-y-5">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[var(--champagne)]">{t('Reward example')}</p>
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#f2c978]">{t('Reward example')}</p>
               <h2 className="font-serif text-5xl font-semibold leading-none">
-                {t('Customers see more value. Businesses manage the real cost.')}
+                {t('Members see clear value. Businesses stay in control of cost.')}
               </h2>
-              <p className="max-w-2xl text-sm font-semibold leading-7 text-[var(--cream)]/76">
-                {t('Example: when a customer earns $250 in reward value, a business with 25% food cost may only feel $62.50 in real product cost.')}
+              <p className="max-w-2xl text-sm font-semibold leading-7 text-[#e9d8bf]">
+                {t('Example: when a member earns $250 in reward value, a business with 25% hard cost may only feel $62.50 in real product cost.')}
               </p>
             </div>
-            <div className="grid gap-3 rounded-[1rem] border border-[var(--champagne)]/24 bg-[var(--cream)]/8 p-5">
+            <div className="grid gap-3 rounded-[1rem] border border-[#d9b365]/32 bg-[#fff4dd]/10 p-5">
               {[
                 ['Customer spend', '$1,000'],
                 ['Reward value customers see', '$250'],
                 ['Example real business cost', '$62.50'],
               ].map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between gap-4 rounded-[0.8rem] bg-[var(--espresso)]/48 p-4">
-                  <span className="text-sm font-bold text-[var(--cream)]/74">{t(label)}</span>
-                  <span className="font-serif text-3xl text-[var(--champagne)]">{value}</span>
+                <div key={label} className="flex items-center justify-between gap-4 rounded-[0.8rem] bg-[#180f0a]/70 p-4">
+                  <span className="text-sm font-bold text-[#e9d8bf]">{t(label)}</span>
+                  <span className="font-serif text-3xl text-[#f2c978]">{value}</span>
                 </div>
               ))}
             </div>
@@ -298,25 +419,66 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section id="ambassadors" className="px-4 py-14 sm:px-6 lg:px-8">
+      <section className="bg-[#fffdf8] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+          <div className="space-y-4">
+            <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Why it works')}</p>
+            <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
+              {t('Clear value for members, controlled cost for businesses.')}
+            </h2>
+            <p className="max-w-xl text-base font-semibold leading-7 text-[#6f4f3d]">
+              {t('Medellin Rewards is built to make rewards feel valuable without forcing businesses into cash-style payouts they cannot sustain.')}
+            </p>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            {trustPoints.map((point) => (
+              <div key={point.title} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-5 shadow-soft">
+                <BadgeCheck className="mb-4 size-6 text-[#9c6a22]" />
+                <h3 className="font-serif text-2xl leading-none text-[#21140d]">{t(point.title)}</h3>
+                <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(point.body)}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="ambassadors" className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">
-          <UsersRound className="mx-auto mb-5 size-10 text-[var(--primary)]" />
-          <h2 className="font-serif text-5xl font-semibold leading-none text-[var(--espresso)]">
+          <UsersRound className="mx-auto mb-5 size-10 text-[#9c6a22]" />
+          <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
             {t('Ready to join the rewards circle?')}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[var(--muted-foreground)]">
+          <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
             {t('Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.')}
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" className="rounded-full bg-[var(--espresso)] text-[var(--cream)] hover:bg-[var(--rose-brown)]">
+            <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
               <Link to="/join">{t('Join Rewards Club')}</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="rounded-full">
-              <Link to="/ambassadors">{t('Become an ambassador')}</Link>
+            <Button asChild variant="outline" size="lg" className="rounded-full border-[#9c6a22]/35 bg-[#fffdf8] text-[#21140d] hover:bg-[#efe6d8]">
+              <Link to="/rewards">{t('Browse rewards')}</Link>
             </Button>
           </div>
         </div>
       </section>
+
+      <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-[#d8b98c]/55 bg-[#fffdf8]/96 px-3 py-3 shadow-[0_-18px_42px_-30px_rgb(122_73_38_/_0.38)] backdrop-blur sm:hidden">
+        <div className="mx-auto grid w-full max-w-md grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">
+          <Link
+            to="/join"
+            className="flex h-9 min-w-0 items-center justify-center rounded-full bg-[#21140d] px-2 text-center text-[0.7rem] font-bold text-[#fff7ea] transition hover:bg-[#5e3327]"
+          >
+            {t('Join free')}
+          </Link>
+          <Link
+            to="/rewards"
+            className="flex h-9 min-w-0 items-center justify-center rounded-full border border-[#9c6a22]/35 bg-[#fffaf4] px-2 text-center text-[0.7rem] font-bold text-[#21140d] transition hover:bg-[#efe6d8]"
+          >
+            {t('Browse rewards')}
+          </Link>
+        </div>
+      </div>
     </main>
   )
 }
@@ -454,7 +616,7 @@ export function AuthPage() {
             </div>
           </div>
 
-          {error ? <p className="relative z-10 mt-8 text-sm font-bold text-red-300">{error}</p> : null}
+          {error ? <p className="relative z-10 mt-8 text-sm font-bold text-red-300">{t(error)}</p> : null}
         </section>
 
         <section className="flex min-h-0 flex-col justify-center py-4">
@@ -528,7 +690,7 @@ export function AuthPage() {
                         <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
                       </div>
 
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
+                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
 
                       <Button
                         type="submit"
@@ -592,7 +754,7 @@ export function AuthPage() {
                         <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
                         {signInForm.formState.errors.email ? (
                           <p className="text-xs font-bold text-red-500">
-                            {signInForm.formState.errors.email.message}
+                            {t(signInForm.formState.errors.email.message ?? '')}
                           </p>
                         ) : null}
                       </div>
@@ -602,7 +764,7 @@ export function AuthPage() {
                         <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
                         {signInForm.formState.errors.password ? (
                           <p className="text-xs font-bold text-red-500">
-                            {signInForm.formState.errors.password.message}
+                            {t(signInForm.formState.errors.password.message ?? '')}
                           </p>
                         ) : null}
                         <button
@@ -618,7 +780,7 @@ export function AuthPage() {
                         </button>
                       </div>
 
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
+                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
 
                       <Button
                         type="submit"
@@ -663,7 +825,7 @@ export function AuthPage() {
                       <div className="space-y-3">
                         <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">{t('Welcome aboard!')}</h3>
                         <p className="text-sm font-medium leading-relaxed text-[var(--cream)]/76">
-                          {t('Check your email to verify your account, then sign in to start earning rewards.')}
+                          {t('Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.')}
                         </p>
                         {signUpWarning ? (
                           <p className="text-sm font-bold leading-relaxed text-[var(--champagne)]">
@@ -743,22 +905,22 @@ export function AuthPage() {
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signup-verification-id" className="text-[var(--champagne)]">Verification ID number</Label>
+                        <Label htmlFor="signup-verification-id" className="text-[var(--champagne)]">{t('Verification ID number')}</Label>
                         <Input
                           id="signup-verification-id"
                           className={authInputClass}
-                          placeholder="ID number"
+                          placeholder={t('ID number')}
                           {...signUpForm.register('verificationIdNumber')}
                         />
                         {signUpForm.formState.errors.verificationIdNumber ? (
                           <p className="text-xs font-bold text-red-500">
-                            {signUpForm.formState.errors.verificationIdNumber.message}
+                            {t(signUpForm.formState.errors.verificationIdNumber.message ?? '')}
                           </p>
                         ) : null}
                       </div>
 
                       <div className="grid gap-3">
-                        <Label htmlFor="signup-verification-document" className="text-[var(--champagne)]">Photo or PDF of ID</Label>
+                        <Label htmlFor="signup-verification-document" className="text-[var(--champagne)]">{t('Photo or PDF of ID')}</Label>
                         <Input
                           id="signup-verification-document"
                           className={authInputClass}
@@ -767,11 +929,11 @@ export function AuthPage() {
                           onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
                         />
                         <p className="text-xs font-medium leading-5 text-[var(--cream)]/66">
-                          Used by admins to verify one member account per person.
+                          {t('Used by admins to verify one member account per person.')}
                         </p>
                       </div>
 
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{error}</p> : null}
+                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
 
                       <Button
                         type="submit"

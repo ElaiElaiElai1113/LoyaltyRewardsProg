@@ -245,8 +245,184 @@ const spanishTranslations: Record<string, string> = {
   'Join the rewards program and start earning.':
     'Únete al programa de recompensas y empieza a ganar.',
   'Welcome aboard!': '¡Bienvenido!',
-  'Check your email to verify your account, then sign in to start earning rewards.':
-    'Revisa tu correo para verificar tu cuenta, luego inicia sesión para empezar a ganar recompensas.',
+  'Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.':
+    'Tu solicitud de cuenta se guardó. Revisa tu correo si se requiere confirmación, luego inicia sesión. Las acciones de recompensas pueden permanecer bloqueadas hasta la aprobación del administrador.',
+  'Join free': 'Únete gratis',
+  'Free to join': 'Gratis para unirse',
+  'Free to join. Earn when you shop locally.': 'Gratis para unirse. Gana cuando compras localmente.',
+  'Earn rewards': 'Gana recompensas',
+  'every time': 'cada vez',
+  'you shop locally': 'que compras localmente',
+  'Join Rewards Club': 'Únete al Club de Recompensas',
+  'For Businesses': 'Para negocios',
+  'For businesses': 'Para negocios',
+  'Browse rewards': 'Ver recompensas',
+  'Earn 20% to 100% back': 'Gana de 20% a 100% de vuelta',
+  'Redeem through Medellin Rewards': 'Canjea con Medellin Rewards',
+  'Rewards are offer-based, not cash payouts. Businesses choose offers they can afford.':
+    'Las recompensas se basan en ofertas, no en pagos en efectivo. Los negocios eligen ofertas que pueden sostener.',
+  'Join free, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.':
+    'Únete gratis, compra en negocios participantes y acumula recompensas que puedes canjear con Medellin Rewards. Tus compras diarias pueden ayudarte a conseguir beneficios más grandes, incluso recompensas tipo viaje con el tiempo.',
+  'Create your member account and keep your rewards connected in one place.':
+    'Crea tu cuenta de miembro y mantén tus recompensas conectadas en un solo lugar.',
+  'Shop at participating businesses': 'Compra en negocios participantes',
+  'Spend with local businesses in the Medellin Rewards network and earn rewards as you go.':
+    'Compra en negocios locales de la red Medellin Rewards y gana recompensas mientras avanzas.',
+  'Redeem your rewards': 'Canjea tus recompensas',
+  'Use your rewards for member perks and offers, with bigger travel-style rewards possible over time.':
+    'Usa tus recompensas para beneficios y ofertas de miembro, con recompensas tipo viaje más grandes posibles con el tiempo.',
+  'Free member account': 'Cuenta de miembro gratis',
+  'Join once and keep your rewards connected.': 'Únete una vez y mantén tus recompensas conectadas.',
+  'Earn at participating businesses': 'Gana en negocios participantes',
+  'Shop locally and collect rewards on eligible purchases.':
+    'Compra localmente y acumula recompensas en compras elegibles.',
+  'Claim member offers through a simple rewards flow.':
+    'Reclama ofertas de miembro con un flujo de recompensas simple.',
+  'Businesses control their offers': 'Los negocios controlan sus ofertas',
+  'Owners choose rewards that make sense for their margins.':
+    'Los dueños eligen recompensas que tienen sentido para sus márgenes.',
+  'Example rewards': 'Ejemplos de recompensas',
+  'Example rewards members could unlock.': 'Ejemplos de recompensas que los miembros podrían desbloquear.',
+  'These examples show how the value can feel to a member. Live offers depend on participating businesses and the rewards they choose to launch.':
+    'Estos ejemplos muestran cómo se puede sentir el valor para un miembro. Las ofertas reales dependen de los negocios participantes y de las recompensas que decidan lanzar.',
+  'Example drink reward': 'Ejemplo de recompensa de bebida',
+  'Coffee or drink perk': 'Beneficio de café o bebida',
+  'A member shops locally, earns rewards, and redeems for a simple cafe-style perk.':
+    'Un miembro compra localmente, gana recompensas y las canjea por un beneficio simple tipo cafetería.',
+  'Example food reward': 'Ejemplo de recompensa de comida',
+  'Pastry or meal offer': 'Oferta de pastel o comida',
+  'Everyday purchases can build toward small offers members understand right away.':
+    'Las compras diarias pueden acumularse para ofertas pequeñas que los miembros entienden de inmediato.',
+  'Example bigger reward': 'Ejemplo de recompensa mayor',
+  'Travel-style value': 'Valor tipo viaje',
+  'Consistent local spending can build toward bigger rewards over time.':
+    'Comprar localmente de forma constante puede acumular valor para recompensas más grandes con el tiempo.',
+  'Shop locally -> earn rewards -> redeem value': 'Compra localmente -> gana recompensas -> canjea valor',
+  'How it works': 'Cómo funciona',
+  'Join, shop, and redeem without learning a complicated points system.':
+    'Únete, compra y canjea sin aprender un sistema complicado de puntos.',
+  'Sign up once from the website, a business QR code, or a partner link.':
+    'Regístrate una vez desde el sitio web, un código QR de un negocio o un enlace de aliado.',
+  'Shop and earn': 'Compra y gana',
+  'Spend at participating local businesses and collect rewards on eligible purchases.':
+    'Compra en negocios locales participantes y acumula recompensas en compras elegibles.',
+  'Redeem rewards': 'Canjea recompensas',
+  'Use your rewards through Medellin Rewards when you are ready to claim an offer.':
+    'Usa tus recompensas con Medellin Rewards cuando estés listo para reclamar una oferta.',
+  'Turn first-time customers into repeat visits with rewards you control.':
+    'Convierte clientes nuevos en visitas repetidas con recompensas que tú controlas.',
+  'Businesses can launch QR signup links, encourage repeat visits, let staff validate redemptions, and use the calculator to understand the real cost before choosing an offer.':
+    'Los negocios pueden lanzar enlaces QR de registro, incentivar visitas repetidas, permitir que el personal valide canjes y usar la calculadora para entender el costo real antes de elegir una oferta.',
+  'Book Business Demo': 'Agendar demo para negocios',
+  'See calculator': 'Ver calculadora',
+  'QR signup links for checkout, tables, events, and partner desks':
+    'Enlaces QR de registro para caja, mesas, eventos y puntos de aliados',
+  'Reward offers that give customers a clear reason to come back':
+    'Ofertas de recompensa que dan a los clientes una razón clara para volver',
+  'Simple staff validation when members redeem in-store':
+    'Validación simple por el personal cuando los miembros canjean en tienda',
+  'Cost calculator that shows the real business impact before launch':
+    'Calculadora de costos que muestra el impacto real antes del lanzamiento',
+  'Reward example': 'Ejemplo de recompensa',
+  'Members see clear value. Businesses stay in control of cost.':
+    'Los miembros ven valor claro. Los negocios mantienen control del costo.',
+  'Example: when a member earns $250 in reward value, a business with 25% hard cost may only feel $62.50 in real product cost.':
+    'Ejemplo: cuando un miembro gana $250 en valor de recompensa, un negocio con 25% de costo directo puede sentir solo $62.50 en costo real de producto.',
+  'Why it works': 'Por qué funciona',
+  'Clear value for members, controlled cost for businesses.':
+    'Valor claro para miembros, costo controlado para negocios.',
+  'Medellin Rewards is built to make rewards feel valuable without forcing businesses into cash-style payouts they cannot sustain.':
+    'Medellin Rewards está diseñado para que las recompensas se sientan valiosas sin obligar a los negocios a pagos tipo efectivo que no puedan sostener.',
+  'Rewards are not cash payouts': 'Las recompensas no son pagos en efectivo',
+  'Members see useful value, while businesses can fulfill rewards through offers and experiences.':
+    'Los miembros ven valor útil, mientras los negocios pueden cumplir recompensas mediante ofertas y experiencias.',
+  'Businesses choose what they can afford': 'Los negocios eligen lo que pueden sostener',
+  'Each offer can match the business model, margins, and real product cost.':
+    'Cada oferta puede ajustarse al modelo del negocio, sus márgenes y el costo real del producto.',
+  'Staff validation keeps redemptions simple': 'La validación del personal simplifica los canjes',
+  'Members claim rewards and staff confirm them through the redemption flow.':
+    'Los miembros reclaman recompensas y el personal las confirma mediante el flujo de canje.',
+  'ID verification protects reward value': 'La verificación de ID protege el valor de las recompensas',
+  'One verified member account per person helps protect the program for everyone.':
+    'Una cuenta verificada por persona ayuda a proteger el programa para todos.',
+  'Ready to join the rewards circle?': '¿Listo para unirte al círculo de recompensas?',
+  'Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.':
+    'Empieza como miembro, explora negocios participantes o agenda una demo para lanzar recompensas en tu propio negocio.',
+  'Free vacations': 'Vacaciones gratis',
+  'can start with': 'pueden empezar con',
+  'everyday spending': 'compras diarias',
+  'Imagine going on a free vacation every year - just by earning Rewards doing things you already do. Medellin Rewards pays you a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.':
+    'Imagina tomar vacaciones gratis cada año solo por ganar recompensas haciendo cosas que ya haces. Medellin Rewards te da un mínimo de 20% y hasta 100% en recompensas cada vez que compras en negocios de nuestra red.',
+  'Browse shops': 'Ver tiendas',
+  'View rewards': 'Ver recompensas',
+  'Become an ambassador': 'Conviértete en embajador',
+  'Featured rewards circle': 'Círculo de recompensas destacado',
+  'Earn from what you already do': 'Gana con lo que ya haces',
+  'The video will explain the program in a simple way, then members can explore where their everyday spending turns into Rewards.':
+    'El video explicará el programa de forma simple, luego los miembros pueden explorar dónde sus compras diarias se convierten en recompensas.',
+  '20% to 100% back': '20% a 100% de vuelta',
+  'Earn a minimum of 20% and up to 100% in Rewards when you spend within the network.':
+    'Gana un mínimo de 20% y hasta 100% en recompensas cuando compras dentro de la red.',
+  'Member bonus': 'Bono de miembro',
+  'Keep rewards connected across visits, referrals, and participating local businesses.':
+    'Mantén tus recompensas conectadas entre visitas, referidos y negocios locales participantes.',
+  'More ways to earn': 'Más formas de ganar',
+  'Members will earn from everyday spending now, with lower Rewards on big purchases planned for the future.':
+    'Los miembros ganarán por compras diarias ahora, con recompensas menores en compras grandes previstas para el futuro.',
+  'Step back into your rewards ritual.': 'Vuelve a tu ritual de recompensas.',
+  'Join the circle and start collecting delights.': 'Únete al círculo y empieza a acumular beneficios.',
+  'Create your free account to earn points, unlock perks, and move through the circle with ease.':
+    'Crea tu cuenta gratis para ganar puntos, desbloquear beneficios y avanzar por el círculo con facilidad.',
+  'Join the Rewards Club': 'Únete al Club de Recompensas',
+  'Sign in': 'Iniciar sesión',
+  'Rewards for the places you already enjoy.': 'Recompensas para los lugares que ya disfrutas.',
+  'Create your free account, verify once, and keep rewards connected across participating businesses.':
+    'Crea tu cuenta gratis, verifícate una vez y mantén tus recompensas conectadas entre negocios participantes.',
+  'Create free account': 'Crear cuenta gratis',
+  'Collect points and credits when you shop with participating local businesses.':
+    'Acumula puntos y créditos cuando compras en negocios locales participantes.',
+  'Unlock perks': 'Desbloquea beneficios',
+  'Find member offers, rewards, gift cards, and promotions in one place.':
+    'Encuentra ofertas de miembro, recompensas, tarjetas de regalo y promociones en un solo lugar.',
+  'Share invites': 'Comparte invitaciones',
+  'Invite friends and track rewards as the network grows around you.':
+    'Invita amigos y sigue tus recompensas mientras la red crece a tu alrededor.',
+  'Welcome to the Rewards Club.': 'Bienvenido al Club de Recompensas.',
+  'Go to sign in': 'Ir a iniciar sesión',
+  'Upload a photo or PDF of your ID for account verification.':
+    'Sube una foto o PDF de tu ID para verificar la cuenta.',
+  'Create your free account': 'Crea tu cuenta gratis',
+  'Join once and keep your rewards connected across the network.':
+    'Únete una vez y mantén tus recompensas conectadas en toda la red.',
+  'Why we verify members': 'Por qué verificamos a los miembros',
+  'One account per person keeps rewards fair across the network.':
+    'Una cuenta por persona mantiene las recompensas justas en toda la red.',
+  'Verification protects reward value before members earn or redeem.':
+    'La verificación protege el valor de las recompensas antes de que los miembros ganen o canjeen.',
+  'Admins review submissions, and your ID is used only for verification.':
+    'Los administradores revisan los envíos y tu ID se usa solo para verificación.',
+  'Full name': 'Nombre completo',
+  'Email address': 'Correo electrónico',
+  'Verification ID number': 'Número de ID de verificación',
+  'ID number': 'Número de ID',
+  'Photo or PDF of ID': 'Foto o PDF del ID',
+  'Used only to verify one member account per person before rewards can be earned or redeemed.':
+    'Se usa solo para verificar una cuenta de miembro por persona antes de que se puedan ganar o canjear recompensas.',
+  'After signup, your account may need admin approval before reward actions unlock.':
+    'Después del registro, tu cuenta puede necesitar aprobación administrativa antes de desbloquear acciones de recompensas.',
+  'Already a member?': '¿Ya eres miembro?',
+  'Used by admins to verify one member account per person.':
+    'Usado por administradores para verificar una cuenta de miembro por persona.',
+  'Enter a valid email': 'Ingresa un correo válido',
+  'Use at least 5 characters': 'Usa al menos 5 caracteres',
+  'Enter your full name': 'Ingresa tu nombre completo',
+  'Enter the ID number shown on your verification document':
+    'Ingresa el número de ID que aparece en tu documento de verificación',
+  'Keep the ID number under 80 characters':
+    'Mantén el número de ID por debajo de 80 caracteres',
+  'Enter your full name to create an account.': 'Ingresa tu nombre completo para crear una cuenta.',
+  'Enter the ID number shown on your verification document.':
+    'Ingresa el número de ID que aparece en tu documento de verificación.',
   'Go to sign in ->': 'Ir a iniciar sesión ->',
   'Create your free rewards account and start earning XP today.':
     'Crea tu cuenta gratuita de recompensas y empieza a ganar XP hoy.',
@@ -363,7 +539,6 @@ const spanishTranslations: Record<string, string> = {
   'Already have an account? Sign in': '¿Ya tienes una cuenta? Inicia sesión',
   'Your invite status is pending. Staff will review it before reward credits are added.':
     'Tu invitación está pendiente. El personal la revisará antes de agregar los créditos de recompensa.',
-  'Go to sign in': 'Ir a iniciar sesión',
   'Use a new email address to claim this referral offer.':
     'Usa un correo nuevo para reclamar esta oferta de referido.',
   'Share this QR to give a friend and yourself a reward credit.':
