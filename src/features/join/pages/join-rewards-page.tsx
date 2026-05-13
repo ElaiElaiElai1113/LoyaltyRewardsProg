@@ -91,11 +91,11 @@ export function JoinRewardsPage() {
                 {t('Rewards for the places you already enjoy.')}
               </h1>
               <p className="max-w-2xl break-words text-base font-medium leading-7 text-[var(--cream)]/84 sm:text-lg">
-                {t('Create your free account, verify once, and keep rewards connected across participating businesses.')}
+                {t('Create your account, verify once, and activate your member subscription to keep rewards connected across participating businesses.')}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild size="lg" className="min-w-0 rounded-full bg-[var(--champagne)] px-5 text-[var(--espresso)] hover:bg-[var(--cream)]">
-                  <a href="#join-form">{t('Create free account')}</a>
+                  <a href="#join-form">{t('Create account')}</a>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="min-w-0 rounded-full border-[var(--champagne)]/40 bg-white/5 px-5 text-[var(--cream)] hover:bg-white/10">
                   <Link to="/rewards">{t('Browse rewards')}</Link>
@@ -183,9 +183,9 @@ export function JoinRewardsPage() {
                   <div className="mx-auto flex size-12 items-center justify-center rounded-2xl bg-[var(--primary)]/12 text-[var(--primary)]">
                     <Sparkles className="size-6" />
                   </div>
-                  <h2 className="font-serif text-3xl text-[var(--espresso)]">{t('Create your free account')}</h2>
+                  <h2 className="font-serif text-3xl text-[var(--espresso)]">{t('Create your member account')}</h2>
                   <p className="text-sm font-medium leading-6 text-[var(--espresso)]/72">
-                    {t('Join once and keep your rewards connected across the network.')}
+                    {t('Membership is subscription-based. Create your account first, then activate membership when your account is ready.')}
                   </p>
                 </div>
 

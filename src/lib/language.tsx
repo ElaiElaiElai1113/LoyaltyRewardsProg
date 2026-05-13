@@ -33,8 +33,8 @@ const spanishTranslations: Record<string, string> = {
   'Grow Value': 'Aumenta el valor',
   'Get more from repeat purchases, referrals, and limited-time promotions.':
     'Obtén más valor de compras recurrentes, referidos y promociones por tiempo limitado.',
-  'Create your free rewards account and start earning points today.':
-    'Crea tu cuenta gratuita de recompensas y empieza a ganar puntos hoy.',
+  'Create your member account and start earning points after your membership is active.':
+    'Crea tu cuenta de miembro y empieza a ganar puntos cuando tu membresia este activa.',
   'Network Member': 'Miembro de la red',
   'Rewards account': 'Cuenta de recompensas',
   'Earn points, redeem rewards, and stay connected across partner businesses.':
@@ -247,9 +247,10 @@ const spanishTranslations: Record<string, string> = {
   'Welcome aboard!': '¡Bienvenido!',
   'Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.':
     'Tu solicitud de cuenta se guardó. Revisa tu correo si se requiere confirmación, luego inicia sesión. Las acciones de recompensas pueden permanecer bloqueadas hasta la aprobación del administrador.',
-  'Join free': 'Únete gratis',
-  'Free to join': 'Gratis para unirse',
-  'Free to join. Earn when you shop locally.': 'Gratis para unirse. Gana cuando compras localmente.',
+  'Join now': 'Unete ahora',
+  'Subscribe to join': 'Suscribete para unirte',
+  'Membership required': 'Membresia requerida',
+  'Membership required. Earn when you shop locally.': 'Membresia requerida. Gana cuando compras localmente.',
   'Earn rewards': 'Gana recompensas',
   'every time': 'cada vez',
   'you shop locally': 'que compras localmente',
@@ -263,8 +264,10 @@ const spanishTranslations: Record<string, string> = {
     'Las recompensas se basan en ofertas, no en pagos en efectivo. Tu cuenta verificada mantiene el valor de recompensas conectado contigo.',
   'Rewards are offer-based, not cash payouts. Businesses choose offers they can afford.':
     'Las recompensas se basan en ofertas, no en pagos en efectivo. Los negocios eligen ofertas que pueden sostener.',
-  'Join free, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.':
-    'Únete gratis, compra en negocios participantes y acumula recompensas que puedes canjear con Medellin Rewards. Tus compras diarias pueden ayudarte a conseguir beneficios más grandes, incluso recompensas tipo viaje con el tiempo.',
+  'Subscribe as a member, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.':
+    'Suscribete como miembro, compra en negocios participantes y acumula recompensas que puedes canjear con Medellin Rewards. Tus compras diarias pueden ayudarte a conseguir beneficios mas grandes, incluso recompensas tipo viaje con el tiempo.',
+  'Create your member account, activate your subscription, and keep your rewards connected in one place.':
+    'Crea tu cuenta de miembro, activa tu suscripcion y manten tus recompensas conectadas en un solo lugar.',
   'Create your member account and keep your rewards connected in one place.':
     'Crea tu cuenta de miembro y mantén tus recompensas conectadas en un solo lugar.',
   'Shop at participating businesses': 'Compra en negocios participantes',
@@ -273,8 +276,9 @@ const spanishTranslations: Record<string, string> = {
   'Redeem your rewards': 'Canjea tus recompensas',
   'Use your rewards for member perks and offers, with bigger travel-style rewards possible over time.':
     'Usa tus recompensas para beneficios y ofertas de miembro, con recompensas tipo viaje más grandes posibles con el tiempo.',
-  'Free member account': 'Cuenta de miembro gratis',
-  'Join once and keep your rewards connected.': 'Únete una vez y mantén tus recompensas conectadas.',
+  'Member subscription': 'Suscripcion de miembro',
+  'Start a member subscription and keep your rewards connected.':
+    'Activa una suscripcion de miembro y manten tus recompensas conectadas.',
   'Earn at participating businesses': 'Gana en negocios participantes',
   'Shop locally and collect rewards on eligible purchases.':
     'Compra localmente y acumula recompensas en compras elegibles.',
@@ -316,8 +320,8 @@ const spanishTranslations: Record<string, string> = {
   'How it works': 'Cómo funciona',
   'Join, shop, and redeem without learning a complicated points system.':
     'Únete, compra y canjea sin aprender un sistema complicado de puntos.',
-  'Create your free account once and keep your rewards connected in one place.':
-    'Crea tu cuenta gratis una vez y mantén tus recompensas conectadas en un solo lugar.',
+  'Create your account, verify once, and activate your membership before reward actions unlock.':
+    'Crea tu cuenta, verificate una vez y activa tu membresia antes de desbloquear acciones de recompensas.',
   'Sign up once from the website, a business QR code, or a partner link.':
     'Regístrate una vez desde el sitio web, un código QR de un negocio o un enlace de aliado.',
   'Shop and earn': 'Compra y gana',
@@ -403,8 +407,8 @@ const spanishTranslations: Record<string, string> = {
   'Resubscribe - Demo': 'Resuscribirse - Demo',
   'Subscribe - Demo': 'Suscribirse - Demo',
   'Ready to join the rewards circle?': '¿Listo para unirte al círculo de recompensas?',
-  'Create your free member account, browse available rewards, and keep your reward value connected in one place.':
-    'Crea tu cuenta de miembro gratis, explora recompensas disponibles y mantén el valor de tus recompensas conectado en un solo lugar.',
+  'Create your member account, activate your subscription, browse available rewards, and keep your reward value connected in one place.':
+    'Crea tu cuenta de miembro, activa tu suscripcion, explora recompensas disponibles y manten el valor de tus recompensas conectado en un solo lugar.',
   'Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.':
     'Empieza como miembro, explora negocios participantes o agenda una demo para lanzar recompensas en tu propio negocio.',
   Terms: 'Terminos',
@@ -425,6 +429,9 @@ const spanishTranslations: Record<string, string> = {
   'Program access': 'Acceso al programa',
   'Reward actions may require sign-in, active account status, and completed ID verification before earning or redeeming value.':
     'Las acciones de recompensas pueden requerir inicio de sesion, cuenta activa y verificacion de ID completada antes de ganar o canjear valor.',
+  'Membership subscription': 'Suscripcion de miembro',
+  'Joining Medellin Rewards requires an active paid membership subscription. Reward actions may require sign-in, active subscription status, and completed ID verification before earning or redeeming value.':
+    'Unirse a Medellin Rewards requiere una suscripcion de membresia pagada y activa. Las acciones de recompensas pueden requerir inicio de sesion, suscripcion activa y verificacion de ID completada antes de ganar o canjear valor.',
   'Privacy Policy': 'Politica de privacidad',
   'Plain-language placeholder privacy notes for Medellin Rewards. Replace with reviewed legal copy before launch.':
     'Notas provisionales de privacidad en lenguaje claro para Medellin Rewards. Reemplazalas con texto legal revisado antes del lanzamiento.',
@@ -459,11 +466,11 @@ const spanishTranslations: Record<string, string> = {
   'How ID information is used': 'Como se usa la informacion de ID',
   'ID information should be used only for member verification and account protection. Members can contact support@medellinrewards.com with questions.':
     'La informacion de ID debe usarse solo para verificacion de miembros y proteccion de cuenta. Los miembros pueden contactar a support@medellinrewards.com si tienen preguntas.',
-  'Free vacations': 'Vacaciones gratis',
+  'Travel-style rewards': 'Recompensas tipo viaje',
   'can start with': 'pueden empezar con',
   'everyday spending': 'compras diarias',
-  'Imagine going on a free vacation every year - just by earning Rewards doing things you already do. Medellin Rewards pays you a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.':
-    'Imagina tomar vacaciones gratis cada año solo por ganar recompensas haciendo cosas que ya haces. Medellin Rewards te da un mínimo de 20% y hasta 100% en recompensas cada vez que compras en negocios de nuestra red.',
+  'Imagine using rewards toward travel-style perks over time by earning Rewards on things you already do. Medellin Rewards offers a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.':
+    'Imagina usar recompensas para beneficios tipo viaje con el tiempo al ganar Rewards en cosas que ya haces. Medellin Rewards ofrece un minimo de 20% y hasta 100% en recompensas cada vez que compras en negocios de nuestra red.',
   'Browse shops': 'Ver tiendas',
   'View rewards': 'Ver recompensas',
   'Become an ambassador': 'Conviértete en embajador',
@@ -482,14 +489,14 @@ const spanishTranslations: Record<string, string> = {
     'Los miembros ganarán por compras diarias ahora, con recompensas menores en compras grandes previstas para el futuro.',
   'Step back into your rewards ritual.': 'Vuelve a tu ritual de recompensas.',
   'Join the circle and start collecting delights.': 'Únete al círculo y empieza a acumular beneficios.',
-  'Create your free account to earn points, unlock perks, and move through the circle with ease.':
-    'Crea tu cuenta gratis para ganar puntos, desbloquear beneficios y avanzar por el círculo con facilidad.',
+  'Create your account, verify once, and activate your membership to earn points, unlock perks, and move through the circle with ease.':
+    'Crea tu cuenta, verificate una vez y activa tu membresia para ganar puntos, desbloquear beneficios y avanzar por el circulo con facilidad.',
   'Join the Rewards Club': 'Únete al Club de Recompensas',
   'Sign in': 'Iniciar sesión',
   'Rewards for the places you already enjoy.': 'Recompensas para los lugares que ya disfrutas.',
-  'Create your free account, verify once, and keep rewards connected across participating businesses.':
-    'Crea tu cuenta gratis, verifícate una vez y mantén tus recompensas conectadas entre negocios participantes.',
-  'Create free account': 'Crear cuenta gratis',
+  'Create your account, verify once, and activate your member subscription to keep rewards connected across participating businesses.':
+    'Crea tu cuenta, verificate una vez y activa tu suscripcion de miembro para mantener tus recompensas conectadas entre negocios participantes.',
+  'Create account': 'Crear cuenta',
   'Collect points and credits when you shop with participating local businesses.':
     'Acumula puntos y créditos cuando compras en negocios locales participantes.',
   'Unlock perks': 'Desbloquea beneficios',
@@ -502,9 +509,9 @@ const spanishTranslations: Record<string, string> = {
   'Go to sign in': 'Ir a iniciar sesión',
   'Upload a photo or PDF of your ID for account verification.':
     'Sube una foto o PDF de tu ID para verificar la cuenta.',
-  'Create your free account': 'Crea tu cuenta gratis',
-  'Join once and keep your rewards connected across the network.':
-    'Únete una vez y mantén tus recompensas conectadas en toda la red.',
+  'Create your member account': 'Crea tu cuenta de miembro',
+  'Membership is subscription-based. Create your account first, then activate membership when your account is ready.':
+    'La membresia funciona por suscripcion. Crea tu cuenta primero y luego activa la membresia cuando tu cuenta este lista.',
   'Why we verify members': 'Por qué verificamos a los miembros',
   'One account per person keeps rewards fair across the network.':
     'Una cuenta por persona mantiene las recompensas justas en toda la red.',
@@ -535,8 +542,8 @@ const spanishTranslations: Record<string, string> = {
   'Enter the ID number shown on your verification document.':
     'Ingresa el número de ID que aparece en tu documento de verificación.',
   'Go to sign in ->': 'Ir a iniciar sesión ->',
-  'Create your free rewards account and start earning XP today.':
-    'Crea tu cuenta gratuita de recompensas y empieza a ganar XP hoy.',
+  'Create your member account and start earning XP after your membership is active.':
+    'Crea tu cuenta de miembro y empieza a ganar XP cuando tu membresia este activa.',
   'Full Name': 'Nombre completo',
   'Your name': 'Tu nombre',
   'Creating account...': 'Creando cuenta...',

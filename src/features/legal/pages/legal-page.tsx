@@ -20,8 +20,8 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
         body: 'Rewards are not cash payouts. Available rewards, point costs, eligibility, and redemption steps may change as the program evolves.',
       },
       {
-        title: 'Program access',
-        body: 'Reward actions may require sign-in, active account status, and completed ID verification before earning or redeeming value.',
+        title: 'Membership subscription',
+        body: 'Joining Medellin Rewards requires an active paid membership subscription. Reward actions may require sign-in, active subscription status, and completed ID verification before earning or redeeming value.',
       },
     ],
   },

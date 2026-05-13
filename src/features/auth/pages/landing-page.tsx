@@ -67,8 +67,8 @@ const legalLinks = [
 const landingFeatures = [
   {
     icon: WalletCards,
-    title: 'Join free',
-    body: 'Create your member account and keep your rewards connected in one place.',
+    title: 'Subscribe to join',
+    body: 'Create your member account, activate your subscription, and keep your rewards connected in one place.',
   },
   {
     icon: Store,
@@ -85,8 +85,8 @@ const landingFeatures = [
 const howItWorks = [
   {
     icon: QrCode,
-    title: 'Join free',
-    body: 'Create your free account once and keep your rewards connected in one place.',
+    title: 'Subscribe to join',
+    body: 'Create your account, verify once, and activate your membership before reward actions unlock.',
   },
   {
     icon: TicketPercent,
@@ -103,8 +103,8 @@ const howItWorks = [
 const proofStrip = [
   {
     icon: WalletCards,
-    title: 'Free member account',
-    body: 'Join once and keep your rewards connected.',
+    title: 'Member subscription',
+    body: 'Start a member subscription and keep your rewards connected.',
   },
   {
     icon: Store,
@@ -194,7 +194,7 @@ export function LandingPage() {
               <Link to="/signin">{t('Sign In')}</Link>
             </Button>
             <Button asChild size="sm" className="hidden shrink-0 rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327] sm:inline-flex">
-              <Link to="/join">{t('Join free')}</Link>
+              <Link to="/join">{t('Join now')}</Link>
             </Button>
           </div>
         </div>
@@ -209,7 +209,7 @@ export function LandingPage() {
         <div className="relative mx-auto flex max-w-7xl min-w-0 flex-col justify-center">
           <div className="w-full max-w-[22rem] min-w-0 space-y-6 sm:max-w-[62rem]">
             <Badge className="w-fit max-w-full justify-center whitespace-normal border-[#d9b365]/50 bg-[#fff7ea] px-5 py-2 text-center leading-5 text-[#21140d] shadow-soft">
-              {t('Free to join. Earn when you shop locally.')}
+              {t('Membership required. Earn when you shop locally.')}
             </Badge>
             <div className="space-y-4">
               <h1 className="max-w-full text-wrap font-serif text-[clamp(2.55rem,11vw,5.9rem)] font-semibold leading-[0.94] text-[#fff7ea] sm:text-[clamp(2.85rem,6vw,5.9rem)]">
@@ -218,7 +218,7 @@ export function LandingPage() {
                 <span className="block xl:inline">{t('you shop locally')}.</span>
               </h1>
               <p className="max-w-full text-base font-semibold leading-8 text-[#f6ead8] sm:max-w-[46rem] sm:text-lg">
-                {t('Join free, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.')}
+                {t('Subscribe as a member, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.')}
               </p>
             </div>
 
@@ -235,7 +235,7 @@ export function LandingPage() {
             </div>
 
             <div className="flex flex-wrap gap-3">
-              <span className={valuePillClass}>{t('Free to join')}</span>
+              <span className={valuePillClass}>{t('Member subscription')}</span>
               <span className={valuePillClass}>{t('Earn 20% to 100% back')}</span>
               <span className={valuePillClass}>{t('Redeem through Medellin Rewards')}</span>
             </div>
@@ -395,7 +395,7 @@ export function LandingPage() {
             {t('Ready to join the rewards circle?')}
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
-            {t('Create your free member account, browse available rewards, and keep your reward value connected in one place.')}
+            {t('Create your member account, activate your subscription, browse available rewards, and keep your reward value connected in one place.')}
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
@@ -427,7 +427,7 @@ export function LandingPage() {
             to="/join"
             className="flex h-9 min-w-0 items-center justify-center rounded-full bg-[#21140d] px-2 text-center text-[0.7rem] font-bold text-[#fff7ea] transition hover:bg-[#5e3327]"
           >
-            {t('Join free')}
+            {t('Join now')}
           </Link>
           <Link
             to="/rewards"
@@ -506,12 +506,12 @@ export function AuthPage() {
             </Badge>
             <div className="max-w-3xl space-y-3">
               <h1 className="font-serif text-[clamp(2.35rem,4.4vw,4rem)] font-semibold leading-[0.92] tracking-[0.01em] text-[var(--cream)]">
-                {t('Free vacations')}<br />
+                {t('Travel-style rewards')}<br />
                 <span className="text-[var(--champagne)]">{t('can start with')}</span><br />
                 {t('everyday spending')}.
               </h1>
               <p className="max-w-2xl text-sm font-medium leading-6 text-[var(--cream)]/88">
-                {t('Imagine going on a free vacation every year - just by earning Rewards doing things you already do. Medellin Rewards pays you a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.')}
+                {t('Imagine using rewards toward travel-style perks over time by earning Rewards on things you already do. Medellin Rewards offers a minimum of 20% and up to 100% in Rewards every time you spend at businesses within our network.')}
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <Link
@@ -836,7 +836,7 @@ export function AuthPage() {
                     >
                       <div className="space-y-2">
                         <p className="text-sm font-medium text-[var(--cream)]/76">
-                          {t('Create your free account to earn points, unlock perks, and move through the circle with ease.')}
+                          {t('Create your account, verify once, and activate your membership to earn points, unlock perks, and move through the circle with ease.')}
                         </p>
                       </div>
 
