@@ -41,7 +41,7 @@ In Supabase Dashboard -> Authentication -> Users, create these users:
 | Email | Password | app_metadata |
 |-------|----------|-------------|
 | `ava@example.com` | `demo1234` | `{ "role": "customer" }` |
-| `admin@loyaltyplatform.co` | `demo1234` | `{ "role": "platform-admin" }` |
+| `admin@medellinrewards.com` | `demo1234` | `{ "role": "platform-admin" }` |
 | `owner@velvetbrew.co` | `demo1234` | `{ "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }` |
 | `owner@mysticcoffee.co` | `demo1234` | `{ "role": "business-owner", "business_id": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22" }` |
 

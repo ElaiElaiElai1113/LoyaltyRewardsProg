@@ -17,7 +17,7 @@ insert into public.businesses (id, name, slug, description, earn_rate, tax_rate,
 --    app_metadata: { "role": "customer" }
 --
 -- 2. Platform Admin
---    Email: admin@loyaltyplatform.co  Password: demo1234
+--    Email: admin@medellinrewards.com  Password: demo1234
 --    app_metadata: { "role": "platform-admin" }
 --
 -- 3. Velvet Brew Owner

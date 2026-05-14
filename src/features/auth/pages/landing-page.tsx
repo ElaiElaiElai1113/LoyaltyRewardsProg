@@ -15,7 +15,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
-import heroImage from '@/assets/hero.png'
+import heroImage from '@/assets/medellinrewards-hero.webp'
 import { Badge } from '@/components/ui/badge'
 import { LanguagePicker } from '@/components/language-picker'
 import { Skeleton } from '@/components/ui/skeleton'
@@ -54,9 +54,6 @@ const authPanelCopyClass = 'text-sm font-semibold text-[var(--on-surface-variant
 const authInputClass =
   'border-[var(--champagne)]/38 bg-[var(--espresso)]/58 text-[var(--cream)] placeholder:text-[var(--cream)]/62 focus-visible:ring-[var(--champagne)]/32'
 
-const valuePillClass =
-  'max-w-full rounded-full border border-[#d9b365]/38 bg-[#fff4dd]/12 px-4 py-2 text-center text-xs font-bold uppercase leading-4 tracking-[0.14em] text-[#fff4dd]'
-
 const legalLinks = [
   { to: '/terms', label: 'Terms' },
   { to: '/privacy', label: 'Privacy' },
@@ -66,19 +63,19 @@ const legalLinks = [
 
 const landingFeatures = [
   {
-    icon: WalletCards,
-    title: 'Subscribe to join',
-    body: 'Create your member account, activate your subscription, and keep your rewards connected in one place.',
-  },
-  {
     icon: Store,
-    title: 'Shop at participating businesses',
-    body: 'Spend with local businesses in the Medellin Rewards network and earn rewards as you go.',
+    title: 'Earn across the network',
+    body: 'Shop with participating local businesses and keep eligible reward value connected to one account.',
   },
   {
     icon: Gift,
-    title: 'Redeem your rewards',
-    body: 'Use your rewards for member perks and offers, with bigger travel-style rewards possible over time.',
+    title: 'Redeem member perks',
+    body: 'Use rewards for offers, gift-card value, experiences, and bigger travel-style perks over time.',
+  },
+  {
+    icon: BadgeCheck,
+    title: 'Verified account protection',
+    body: 'One verified member account per person helps protect reward value across the network.',
   },
 ]
 
@@ -104,33 +101,33 @@ const proofStrip = [
   {
     icon: WalletCards,
     title: 'Member subscription',
-    body: 'Start a member subscription and keep your rewards connected.',
+    body: 'Join once and keep rewards, gift cards, and member activity connected.',
   },
   {
     icon: Store,
-    title: 'Earn at participating businesses',
-    body: 'Shop locally and collect rewards on eligible purchases.',
+    title: 'Participating local businesses',
+    body: 'Earn from eligible spending with businesses in the Medellin Rewards network.',
   },
   {
     icon: Gift,
-    title: 'Redeem through Medellin Rewards',
-    body: 'Claim member offers through a simple rewards flow.',
+    title: 'Member perks and experiences',
+    body: 'Redeem offers chosen by businesses, from everyday perks to bigger rewards over time.',
   },
   {
     icon: BadgeCheck,
     title: 'Verified member account',
-    body: 'One account per person helps protect your reward value.',
+    body: 'Verification helps keep redemption value fair and protected for real members.',
   },
 ]
 
 const trustPoints = [
   {
     title: 'Rewards are not cash payouts',
-    body: 'Rewards are member perks and offers you redeem through Medellin Rewards.',
+    body: 'Rewards are perks, credits, gift-card value, and experiences you redeem through Medellin Rewards.',
   },
   {
     title: 'Your rewards stay connected',
-    body: 'Your member account keeps eligible rewards together across participating locations.',
+    body: 'Your member account keeps eligible value organized across participating businesses.',
   },
   {
     title: 'Redemptions stay simple',
@@ -169,8 +166,8 @@ export function LandingPage() {
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#fffaf4] pb-24 text-[#21140d] sm:pb-0">
-      <header className="sticky top-0 z-50 px-3 py-4 backdrop-blur sm:px-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-[0.8rem] border border-[#ead8bd] bg-[#fffdf8]/96 px-4 py-3 shadow-soft sm:px-5">
+      <header className="sticky top-0 z-50 px-3 py-3 backdrop-blur sm:px-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-[0.8rem] border border-[#ead8bd] bg-[#fffdf8]/95 px-4 py-3 shadow-soft sm:px-5">
           <Link to="/" className="min-w-0 truncate font-serif text-xl font-bold text-[#21140d] sm:text-2xl">
             Medellin Rewards
           </Link>
@@ -194,104 +191,92 @@ export function LandingPage() {
               <Link to="/signin">{t('Sign In')}</Link>
             </Button>
             <Button asChild size="sm" className="hidden shrink-0 rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327] sm:inline-flex">
-              <Link to="/join">{t('Join now')}</Link>
+              <Link to="/join">{t('Join Medellin Rewards')}</Link>
             </Button>
           </div>
         </div>
       </header>
 
-      <section className="relative isolate overflow-hidden bg-[#21140d] px-4 py-8 text-[#fff7ea] sm:px-6 lg:px-8">
-        <img src={heroImage} alt="" className="absolute inset-0 -z-20 size-full object-cover opacity-24 saturate-75" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(105deg,rgb(33_20_13/.96)_0%,rgb(43_27_18/.94)_54%,rgb(33_20_13/.86)_100%)]" />
-        <div className="absolute inset-x-0 bottom-0 -z-10 h-28 bg-[linear-gradient(180deg,transparent,rgb(33_20_13/.92))]" />
-        <div className="absolute right-0 top-0 hidden h-36 w-36 rounded-bl-[4.5rem] bg-[#d9b365]/68 lg:block" />
+      <section className="relative isolate -mt-20 flex min-h-[calc(100svh-4.5rem)] items-end overflow-hidden bg-[#21140d] px-4 pb-7 pt-24 text-[#fff7ea] sm:min-h-[calc(100svh-7.5rem)] sm:px-6 sm:pb-12 sm:pt-32 lg:px-8">
+        <img src={heroImage} alt="" className="absolute inset-0 -z-30 size-full object-cover" />
+        <div className="absolute inset-0 -z-20 bg-[linear-gradient(90deg,rgb(22_13_8/.96)_0%,rgb(22_13_8/.88)_42%,rgb(22_13_8/.42)_78%,rgb(22_13_8/.18)_100%)] sm:bg-[linear-gradient(90deg,rgb(22_13_8/.94)_0%,rgb(22_13_8/.84)_34%,rgb(22_13_8/.34)_67%,rgb(22_13_8/.1)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(22_13_8/.58)_0%,transparent_30%,rgb(22_13_8/.78)_100%)] sm:bg-[linear-gradient(180deg,rgb(22_13_8/.52)_0%,transparent_38%,rgb(22_13_8/.72)_100%)]" />
 
-        <div className="relative mx-auto flex max-w-7xl min-w-0 flex-col justify-center">
-          <div className="w-full max-w-[22rem] min-w-0 space-y-6 sm:max-w-[62rem]">
-            <Badge className="w-fit max-w-full justify-center whitespace-normal border-[#d9b365]/50 bg-[#fff7ea] px-5 py-2 text-center leading-5 text-[#21140d] shadow-soft">
-              {t('Membership required. Earn when you shop locally.')}
+        <div className="mx-auto grid w-full max-w-7xl gap-5 sm:gap-8 lg:grid-cols-[minmax(0,0.94fr)_minmax(20rem,0.58fr)] lg:items-end">
+          <div className="max-w-4xl space-y-5 sm:space-y-7">
+            <Badge className="w-fit max-w-full justify-center whitespace-normal border-[#f2c978]/55 bg-[#fff7ea] px-3.5 py-1.5 text-center text-[0.62rem] font-extrabold uppercase leading-4 tracking-[0.1em] text-[#21140d] shadow-soft sm:px-5 sm:py-2 sm:text-xs sm:leading-5 sm:tracking-[0.12em]">
+              {t('One membership for participating local businesses')}
             </Badge>
-            <div className="space-y-4">
-              <h1 className="max-w-full text-wrap font-serif text-[clamp(2.55rem,11vw,5.9rem)] font-semibold leading-[0.94] text-[#fff7ea] sm:text-[clamp(2.85rem,6vw,5.9rem)]">
-                <span className="block xl:inline">{t('Earn rewards')}</span>{' '}
-                <span className="block text-[#f2c978] xl:inline">{t('every time')}</span>{' '}
-                <span className="block xl:inline">{t('you shop locally')}.</span>
+            <div className="space-y-4 sm:space-y-5">
+              <h1 className="max-w-4xl text-wrap font-serif text-[clamp(2.55rem,12vw,3.8rem)] font-semibold leading-[0.92] text-[#fff7ea] sm:text-[clamp(4rem,7vw,7.5rem)] sm:leading-[0.88]">
+                {t('Earn rewards every time you shop locally.')}
               </h1>
-              <p className="max-w-full text-base font-semibold leading-8 text-[#f6ead8] sm:max-w-[46rem] sm:text-lg">
-                {t('Subscribe as a member, shop at participating businesses, and collect rewards you can redeem through Medellin Rewards. Everyday shopping can build toward bigger perks, including travel-style rewards over time.')}
+              <p className="max-w-2xl text-sm font-semibold leading-6 text-[#f6ead8] sm:text-xl sm:leading-8">
+                {t('Join Medellin Rewards to earn member value with participating local businesses, track rewards in one account, and redeem perks when you are ready.')}
               </p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full bg-[#f2c978] text-[#21140d] hover:bg-[#fff7ea]">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Button asChild size="lg" className="h-auto min-h-12 w-full rounded-full bg-[#f2c978] px-4 py-3 text-sm font-extrabold leading-tight text-[#21140d] shadow-soft hover:bg-[#fff7ea] sm:h-[3.25rem] sm:w-auto sm:px-6 sm:py-0 sm:text-base">
                 <Link to="/join">
-                  {t('Join Rewards Club')}
-                  <ArrowRight className="size-4" />
+                  {t('Join Medellin Rewards')}
+                  <ArrowRight className="size-5" />
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="rounded-full border-[#d9b365]/48 bg-[#fff4dd]/6 text-[#fff7ea] hover:bg-[#fff4dd]/14 hover:text-[#fff7ea]">
-                <Link to="/rewards">{t('Browse rewards')}</Link>
+              <Button asChild variant="outline" size="lg" className="h-auto min-h-12 w-full rounded-full border-[#f2c978]/55 bg-[#fff4dd]/8 px-4 py-3 text-sm font-extrabold leading-tight text-[#fff7ea] hover:bg-[#fff4dd]/16 hover:text-[#fff7ea] sm:h-[3.25rem] sm:w-auto sm:px-6 sm:py-0 sm:text-base">
+                <Link to="/rewards">{t('Browse Rewards')}</Link>
               </Button>
             </div>
-
-            <div className="flex flex-wrap gap-3">
-              <span className={valuePillClass}>{t('Member subscription')}</span>
-              <span className={valuePillClass}>{t('Earn 20% to 100% back')}</span>
-              <span className={valuePillClass}>{t('Redeem through Medellin Rewards')}</span>
-            </div>
-            <p className="max-w-[42rem] text-sm font-semibold leading-6 text-[#e9d8bf]">
-              {t('Rewards are offer-based, not cash payouts. Your verified member account keeps reward value connected to you.')}
-            </p>
           </div>
 
-          <div className="mt-8 grid w-full max-w-[22rem] gap-4 sm:max-w-5xl md:grid-cols-3">
+          <div className="grid gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-1">
             {landingFeatures.map((feature) => (
-              <div key={feature.title} className="rounded-[1rem] border border-[#d9b365]/32 bg-[#180f0a]/72 p-5 shadow-soft backdrop-blur">
-                <div className="mb-4 flex size-10 items-center justify-center rounded-[0.8rem] bg-[#f2c978]/18 text-[#f2c978]">
+              <div key={feature.title} className="grid grid-cols-[2.25rem_minmax(0,1fr)] gap-x-3 gap-y-1 rounded-[0.9rem] border border-[#f2c978]/28 bg-[#120b07]/62 p-3 shadow-soft backdrop-blur-md sm:block sm:rounded-[1rem] sm:p-5">
+                <div className="row-span-2 flex size-9 items-center justify-center rounded-[0.7rem] bg-[#f2c978]/18 text-[#f2c978] sm:mb-4 sm:size-10 sm:rounded-[0.8rem]">
                   <feature.icon className="size-5" />
                 </div>
-                <h2 className="font-serif text-2xl leading-none text-[#fff7ea]">{t(feature.title)}</h2>
-                <p className="mt-3 text-sm font-semibold leading-6 text-[#e9d8bf]">{t(feature.body)}</p>
+                <h2 className="font-serif text-xl leading-none text-[#fff7ea] sm:text-2xl">{t(feature.title)}</h2>
+                <p className="line-clamp-2 text-xs font-semibold leading-5 text-[#ead9c2] sm:mt-3 sm:text-sm sm:leading-6">{t(feature.body)}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#fffdf8] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="bg-[#fffdf8] px-4 py-10 text-[#21140d] sm:px-6 sm:py-12 lg:px-8">
+        <div className="mx-auto grid max-w-7xl gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {proofStrip.map((item) => (
-            <div key={item.title} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-5 shadow-soft">
-              <div className="mb-4 flex size-10 items-center justify-center rounded-[0.8rem] bg-[#f2c978]/24 text-[#5c3718]">
+            <div key={item.title} className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-3 gap-y-1 rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-4 shadow-soft sm:block sm:rounded-[1.25rem] sm:p-6">
+              <div className="row-span-2 flex size-11 items-center justify-center rounded-[0.8rem] bg-[#f2c978]/24 text-[#5c3718] sm:mb-5 sm:size-12 sm:rounded-[0.9rem]">
                 <item.icon className="size-5" />
               </div>
-              <h2 className="font-serif text-2xl leading-none text-[#21140d]">{t(item.title)}</h2>
-              <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(item.body)}</p>
+              <h2 className="font-serif text-2xl leading-none text-[#21140d] sm:text-3xl">{t(item.title)}</h2>
+              <p className="text-sm font-semibold leading-6 text-[#6f4f3d] sm:mt-3">{t(item.body)}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="example-rewards" className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl space-y-8">
+      <section id="example-rewards" className="bg-[#fffaf4] px-4 py-12 text-[#21140d] sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-7xl space-y-7 sm:space-y-9">
           <div className="grid gap-6 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
             <div className="space-y-4">
-              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Available rewards')}</p>
-              <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
-                {t('Real rewards members can browse now.')}
+              <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Member rewards marketplace')}</p>
+              <h2 className="font-serif text-[clamp(2.45rem,10vw,5.75rem)] font-semibold leading-none text-[#21140d]">
+                {t('Browse perks from the network before you join.')}
               </h2>
             </div>
-            <p className="max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
-              {t('Browse current member rewards before joining. Your account must be verified before reward actions unlock.')}
+            <p className="max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d] sm:text-lg sm:leading-8">
+              {t('See current member rewards, gift-card value, and partner offers. Your account must be verified before reward actions unlock.')}
             </p>
           </div>
 
           {rewards.isLoading ? (
             <div className="grid gap-5 md:grid-cols-3">
               {Array.from({ length: 3 }).map((_, index) => (
-                <div key={index} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
-                  <Skeleton className="h-12 w-12 rounded-[1rem]" />
-                  <Skeleton className="mt-6 h-8 w-3/4" />
+                <div key={index} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-5 shadow-soft sm:rounded-[1.5rem] sm:p-7">
+                  <Skeleton className="h-14 w-14 rounded-[1rem]" />
+                  <Skeleton className="mt-7 h-9 w-3/4" />
                   <Skeleton className="mt-4 h-4 w-full" />
                   <Skeleton className="mt-2 h-4 w-2/3" />
                   <Skeleton className="mt-6 h-9 w-full rounded-full" />
@@ -299,28 +284,29 @@ export function LandingPage() {
               ))}
             </div>
           ) : previewRewards.length === 0 ? (
-            <div className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 text-center shadow-soft">
-              <Gift className="mx-auto size-10 text-[#9c6a22]" />
-              <h3 className="mt-4 font-serif text-3xl leading-none text-[#21140d]">{t('Rewards are being added.')}</h3>
-              <p className="mx-auto mt-3 max-w-xl text-sm font-semibold leading-6 text-[#6f4f3d]">
-                {t('Check back soon for live member rewards from Medellin Rewards.')}
+            <div className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 text-center shadow-soft sm:rounded-[1.5rem] sm:p-10">
+              <Gift className="mx-auto size-12 text-[#9c6a22]" />
+              <h3 className="mt-5 font-serif text-3xl leading-none text-[#21140d] sm:text-4xl">{t('New rewards are being added.')}</h3>
+              <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
+                {t('Participating businesses can add member perks, gift-card value, and experiences as the network grows.')}
               </p>
             </div>
           ) : (
             <div className="grid gap-5 md:grid-cols-3">
               {previewRewards.map((reward) => (
-                <div key={reward.id} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
-                  <div className="mb-6 flex items-center justify-between gap-4">
-                    <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/24 text-[#5c3718]">
+                <div key={reward.id} className="flex min-h-[16.5rem] flex-col rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-5 shadow-soft transition hover:-translate-y-1 hover:shadow-card sm:min-h-[19rem] sm:rounded-[1.5rem] sm:p-7">
+                  <div className="mb-5 flex items-center justify-between gap-4 sm:mb-7">
+                    <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/24 text-[#5c3718] sm:size-14">
                       <Gift className="size-6" />
                     </div>
                     <span className="rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-3 py-1 text-[0.68rem] font-bold uppercase tracking-[0.14em] text-[#6f4f3d]">
                       {t(reward.category)}
                     </span>
                   </div>
-                  <h3 className="font-serif text-3xl leading-none text-[#21140d]">{t(reward.title)}</h3>
-                  <p className="mt-3 line-clamp-2 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(reward.description)}</p>
-                  <p className="mt-5 rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#5c3718]">
+                  <p className="mb-3 text-xs font-extrabold uppercase tracking-[0.18em] text-[#9c6a22]">{t('Featured member reward')}</p>
+                  <h3 className="font-serif text-3xl leading-none text-[#21140d] sm:text-4xl">{t(reward.title)}</h3>
+                  <p className="mt-4 line-clamp-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(reward.description)}</p>
+                  <p className="mt-auto rounded-full border border-[#d8b98c]/55 bg-[#fffaf4] px-4 py-2 text-xs font-bold uppercase tracking-[0.12em] text-[#5c3718]">
                     {formatPoints(reward.pointsCost)} {t('points to redeem')}
                   </p>
                 </div>
@@ -328,35 +314,35 @@ export function LandingPage() {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
-              <Link to="/join">{t('Join Rewards Club')}</Link>
+              <Link to="/join">{t('Join Medellin Rewards')}</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full border-[#9c6a22]/35 bg-[#fffdf8] text-[#21140d] hover:bg-[#efe6d8]">
-              <Link to="/rewards">{t('Browse rewards')}</Link>
+              <Link to="/rewards">{t('Browse Rewards')}</Link>
             </Button>
           </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+      <section id="how-it-works" className="bg-[#fffdf8] px-4 py-12 text-[#21140d] sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto max-w-7xl space-y-9">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('How it works')}</p>
-            <h2 className="mt-3 font-serif text-5xl font-semibold leading-none text-[#21140d]">
+            <h2 className="mt-3 font-serif text-[clamp(2.45rem,10vw,5.25rem)] font-semibold leading-none text-[#21140d]">
               {t('Join, shop, and redeem without learning a complicated points system.')}
             </h2>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {howItWorks.map((step, index) => (
-              <div key={step.title} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-7 shadow-soft">
-                <div className="mb-6 flex items-center justify-between">
-                  <div className="flex size-12 items-center justify-center rounded-[1rem] bg-[#f2c978]/28 text-[#5c3718]">
+              <div key={step.title} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-5 shadow-soft sm:p-7">
+                <div className="mb-5 flex items-center justify-between sm:mb-6">
+                  <div className="flex size-11 items-center justify-center rounded-[0.9rem] bg-[#f2c978]/28 text-[#5c3718] sm:size-12 sm:rounded-[1rem]">
                     <step.icon className="size-6" />
                   </div>
-                  <span className="font-serif text-5xl leading-none text-[#b67718]">{index + 1}</span>
+                  <span className="font-serif text-4xl leading-none text-[#b67718] sm:text-5xl">{index + 1}</span>
                 </div>
-                <h3 className="font-serif text-3xl text-[#21140d]">{t(step.title)}</h3>
+                <h3 className="font-serif text-3xl leading-none text-[#21140d]">{t(step.title)}</h3>
                 <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(step.body)}</p>
               </div>
             ))}
@@ -364,21 +350,21 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section id="why-join" className="bg-[#fffdf8] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+      <section id="why-join" className="bg-[#fffaf4] px-4 py-12 text-[#21140d] sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
           <div className="space-y-4">
             <p className="text-sm font-bold uppercase tracking-[0.2em] text-[#9c6a22]">{t('Why it works')}</p>
-            <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
+            <h2 className="font-serif text-[clamp(2.45rem,10vw,5.25rem)] font-semibold leading-none text-[#21140d]">
               {t('Clear rewards, simple redemption, one member account.')}
             </h2>
-            <p className="max-w-xl text-base font-semibold leading-7 text-[#6f4f3d]">
-              {t('Medellin Rewards is built so members can understand the value, keep rewards organized, and redeem without a complicated points system.')}
+            <p className="max-w-xl text-base font-semibold leading-7 text-[#6f4f3d] sm:text-lg sm:leading-8">
+              {t('Medellin Rewards helps members understand value, keep rewards organized, and redeem perks across participating businesses.')}
             </p>
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
             {trustPoints.map((point) => (
-              <div key={point.title} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-5 shadow-soft">
+              <div key={point.title} className="rounded-[1rem] border border-[#d8b98c]/50 bg-[#fffaf4] p-4 shadow-soft sm:p-5">
                 <BadgeCheck className="mb-4 size-6 text-[#9c6a22]" />
                 <h3 className="font-serif text-2xl leading-none text-[#21140d]">{t(point.title)}</h3>
                 <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(point.body)}</p>
@@ -388,21 +374,21 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="bg-[#fffaf4] px-4 py-14 text-[#21140d] sm:px-6 lg:px-8">
+      <section className="bg-[#21140d] px-4 py-12 text-[#fff7ea] sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto max-w-5xl text-center">
-          <UsersRound className="mx-auto mb-5 size-10 text-[#9c6a22]" />
-          <h2 className="font-serif text-5xl font-semibold leading-none text-[#21140d]">
-            {t('Ready to join the rewards circle?')}
+          <UsersRound className="mx-auto mb-5 size-10 text-[#f2c978]" />
+          <h2 className="font-serif text-[clamp(2.45rem,10vw,5.25rem)] font-semibold leading-none text-[#fff7ea]">
+            {t('Ready to join Medellin Rewards?')}
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[#6f4f3d]">
-            {t('Create your member account, activate your subscription, browse available rewards, and keep your reward value connected in one place.')}
+          <p className="mx-auto mt-4 max-w-2xl text-base font-semibold leading-7 text-[#ead9c2]">
+            {t('Create your member account, activate your subscription, browse available rewards, and keep your reward value connected across the network.')}
           </p>
-          <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <Button asChild size="lg" className="rounded-full bg-[#21140d] text-[#fff7ea] hover:bg-[#5e3327]">
-              <Link to="/join">{t('Join Rewards Club')}</Link>
+          <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row sm:flex-wrap">
+            <Button asChild size="lg" className="rounded-full bg-[#f2c978] text-[#21140d] hover:bg-[#fff7ea]">
+              <Link to="/join">{t('Join Medellin Rewards')}</Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="rounded-full border-[#9c6a22]/35 bg-[#fffdf8] text-[#21140d] hover:bg-[#efe6d8]">
-              <Link to="/rewards">{t('Browse rewards')}</Link>
+            <Button asChild variant="outline" size="lg" className="rounded-full border-[#f2c978]/45 bg-[#fff4dd]/8 text-[#fff7ea] hover:bg-[#fff4dd]/16 hover:text-[#fff7ea]">
+              <Link to="/rewards">{t('Browse Rewards')}</Link>
             </Button>
           </div>
         </div>
@@ -422,18 +408,18 @@ export function LandingPage() {
       </footer>
 
       <div className="fixed inset-x-0 bottom-0 z-[70] border-t border-[#d8b98c]/55 bg-[#fffdf8]/96 px-3 py-3 shadow-[0_-18px_42px_-30px_rgb(122_73_38_/_0.38)] backdrop-blur sm:hidden">
-        <div className="mx-auto grid w-full max-w-md grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-2">
+        <div className="mx-auto grid w-full max-w-md grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] gap-2">
           <Link
             to="/join"
-            className="flex h-9 min-w-0 items-center justify-center rounded-full bg-[#21140d] px-2 text-center text-[0.7rem] font-bold text-[#fff7ea] transition hover:bg-[#5e3327]"
+            className="flex min-h-11 min-w-0 items-center justify-center rounded-full bg-[#21140d] px-2.5 py-2 text-center text-[0.68rem] font-bold leading-tight text-[#fff7ea] transition hover:bg-[#5e3327]"
           >
-            {t('Join now')}
+            {t('Join Medellin Rewards')}
           </Link>
           <Link
             to="/rewards"
-            className="flex h-9 min-w-0 items-center justify-center rounded-full border border-[#9c6a22]/35 bg-[#fffaf4] px-2 text-center text-[0.7rem] font-bold text-[#21140d] transition hover:bg-[#efe6d8]"
+            className="flex min-h-11 min-w-0 items-center justify-center rounded-full border border-[#9c6a22]/35 bg-[#fffaf4] px-2.5 py-2 text-center text-[0.68rem] font-bold leading-tight text-[#21140d] transition hover:bg-[#efe6d8]"
           >
-            {t('Browse rewards')}
+            {t('Browse Rewards')}
           </Link>
         </div>
       </div>

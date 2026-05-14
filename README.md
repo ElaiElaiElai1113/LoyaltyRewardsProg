@@ -1,6 +1,6 @@
-# Loyalty Rewards Program
+# Medellin Rewards
 
-React + TypeScript + Vite application for a coffee loyalty and rewards platform with customer and admin flows backed by Supabase.
+React + TypeScript + Vite application for the Medellin Rewards member, business, and admin platform backed by Supabase.
 
 Checkout is currently a labeled demo flow for rewards testing. No real payment is processed.
 

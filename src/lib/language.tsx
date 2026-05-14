@@ -248,6 +248,11 @@ const spanishTranslations: Record<string, string> = {
   'Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.':
     'Tu solicitud de cuenta se guardó. Revisa tu correo si se requiere confirmación, luego inicia sesión. Las acciones de recompensas pueden permanecer bloqueadas hasta la aprobación del administrador.',
   'Join now': 'Unete ahora',
+  'Join Medellin Rewards': 'Unete a Medellin Rewards',
+  'One membership for participating local businesses': 'Una membresia para negocios locales participantes',
+  'Earn rewards every time you shop locally.': 'Gana recompensas cada vez que compras localmente.',
+  'Join Medellin Rewards to earn member value with participating local businesses, track rewards in one account, and redeem perks when you are ready.':
+    'Unete a Medellin Rewards para ganar valor de miembro con negocios locales participantes, seguir tus recompensas en una cuenta y canjear beneficios cuando estes listo.',
   'Subscribe to join': 'Suscribete para unirte',
   'Membership required': 'Membresia requerida',
   'Membership required. Earn when you shop locally.': 'Membresia requerida. Gana cuando compras localmente.',
@@ -255,6 +260,15 @@ const spanishTranslations: Record<string, string> = {
   'every time': 'cada vez',
   'you shop locally': 'que compras localmente',
   'Join Rewards Club': 'Únete al Club de Recompensas',
+  'Earn across the network': 'Gana en toda la red',
+  'Shop with participating local businesses and keep eligible reward value connected to one account.':
+    'Compra en negocios locales participantes y manten el valor elegible de recompensas conectado a una cuenta.',
+  'Redeem member perks': 'Canjea beneficios de miembro',
+  'Use rewards for offers, gift-card value, experiences, and bigger travel-style perks over time.':
+    'Usa recompensas para ofertas, valor en tarjetas de regalo, experiencias y beneficios tipo viaje mas grandes con el tiempo.',
+  'Verified account protection': 'Proteccion de cuenta verificada',
+  'One verified member account per person helps protect reward value across the network.':
+    'Una cuenta verificada por persona ayuda a proteger el valor de recompensas en toda la red.',
   'For Businesses': 'Para negocios',
   'For businesses': 'Para negocios',
   'Browse rewards': 'Ver recompensas',
@@ -279,25 +293,43 @@ const spanishTranslations: Record<string, string> = {
   'Member subscription': 'Suscripcion de miembro',
   'Start a member subscription and keep your rewards connected.':
     'Activa una suscripcion de miembro y manten tus recompensas conectadas.',
+  'Join once and keep rewards, gift cards, and member activity connected.':
+    'Unete una vez y manten recompensas, tarjetas de regalo y actividad de miembro conectadas.',
   'Earn at participating businesses': 'Gana en negocios participantes',
+  'Participating local businesses': 'Negocios locales participantes',
+  'Earn from eligible spending with businesses in the Medellin Rewards network.':
+    'Gana por compras elegibles con negocios de la red Medellin Rewards.',
   'Shop locally and collect rewards on eligible purchases.':
     'Compra localmente y acumula recompensas en compras elegibles.',
+  'Member perks and experiences': 'Beneficios y experiencias de miembro',
+  'Redeem offers chosen by businesses, from everyday perks to bigger rewards over time.':
+    'Canjea ofertas elegidas por negocios, desde beneficios cotidianos hasta recompensas mas grandes con el tiempo.',
   'Claim member offers through a simple rewards flow.':
     'Reclama ofertas de miembro con un flujo de recompensas simple.',
   'Verified member account': 'Cuenta de miembro verificada',
   'One account per person helps protect your reward value.':
     'Una cuenta por persona ayuda a proteger el valor de tus recompensas.',
+  'Verification helps keep redemption value fair and protected for real members.':
+    'La verificacion ayuda a mantener el valor de canje justo y protegido para miembros reales.',
   'Businesses control their offers': 'Los negocios controlan sus ofertas',
   'Owners choose rewards that make sense for their margins.':
     'Los dueños eligen recompensas que tienen sentido para sus márgenes.',
   'Example rewards': 'Ejemplos de recompensas',
   'Available rewards': 'Recompensas disponibles',
+  'Member rewards marketplace': 'Mercado de recompensas para miembros',
+  'Browse perks from the network before you join.': 'Explora beneficios de la red antes de unirte.',
+  'See current member rewards, gift-card value, and partner offers. Your account must be verified before reward actions unlock.':
+    'Ve recompensas actuales, valor en tarjetas de regalo y ofertas de aliados. Tu cuenta debe estar verificada antes de desbloquear acciones de recompensas.',
   'Real rewards members can browse now.': 'Recompensas reales que los miembros pueden explorar ahora.',
   'Browse current member rewards before joining. Your account must be verified before reward actions unlock.':
     'Explora recompensas actuales antes de unirte. Tu cuenta debe estar verificada antes de desbloquear acciones de recompensas.',
   'Rewards are being added.': 'Se estan agregando recompensas.',
+  'New rewards are being added.': 'Se estan agregando nuevas recompensas.',
+  'Participating businesses can add member perks, gift-card value, and experiences as the network grows.':
+    'Los negocios participantes pueden agregar beneficios de miembro, valor en tarjetas de regalo y experiencias mientras crece la red.',
   'Check back soon for live member rewards from Medellin Rewards.':
     'Vuelve pronto para ver recompensas reales para miembros de Medellin Rewards.',
+  'Featured member reward': 'Recompensa destacada para miembros',
   'points to redeem': 'puntos para canjear',
   'Example rewards members could unlock.': 'Ejemplos de recompensas que los miembros podrían desbloquear.',
   'These examples show how the value can feel to a member. Live offers depend on the rewards available in Medellin Rewards.':
@@ -355,6 +387,8 @@ const spanishTranslations: Record<string, string> = {
     'Recompensas claras, canje simple y una sola cuenta de miembro.',
   'Medellin Rewards is built so members can understand the value, keep rewards organized, and redeem without a complicated points system.':
     'Medellin Rewards está diseñado para que los miembros entiendan el valor, mantengan sus recompensas organizadas y canjeen sin un sistema complicado de puntos.',
+  'Medellin Rewards helps members understand value, keep rewards organized, and redeem perks across participating businesses.':
+    'Medellin Rewards ayuda a los miembros a entender el valor, organizar recompensas y canjear beneficios en negocios participantes.',
   'Clear value for members, controlled cost for businesses.':
     'Valor claro para miembros, costo controlado para negocios.',
   'Medellin Rewards is built to make rewards feel valuable without forcing businesses into cash-style payouts they cannot sustain.':
@@ -362,11 +396,15 @@ const spanishTranslations: Record<string, string> = {
   'Rewards are not cash payouts': 'Las recompensas no son pagos en efectivo',
   'Rewards are member perks and offers you redeem through Medellin Rewards.':
     'Las recompensas son beneficios y ofertas para miembros que canjeas con Medellin Rewards.',
+  'Rewards are perks, credits, gift-card value, and experiences you redeem through Medellin Rewards.':
+    'Las recompensas son beneficios, creditos, valor en tarjetas de regalo y experiencias que canjeas con Medellin Rewards.',
   'Members see useful value, while businesses can fulfill rewards through offers and experiences.':
     'Los miembros ven valor útil, mientras los negocios pueden cumplir recompensas mediante ofertas y experiencias.',
   'Your rewards stay connected': 'Tus recompensas se mantienen conectadas',
   'Your member account keeps eligible rewards together across participating locations.':
     'Tu cuenta de miembro mantiene juntas las recompensas elegibles en ubicaciones participantes.',
+  'Your member account keeps eligible value organized across participating businesses.':
+    'Tu cuenta de miembro mantiene el valor elegible organizado en negocios participantes.',
   'Businesses choose what they can afford': 'Los negocios eligen lo que pueden sostener',
   'Each offer can match the business model, margins, and real product cost.':
     'Cada oferta puede ajustarse al modelo del negocio, sus márgenes y el costo real del producto.',
@@ -407,8 +445,11 @@ const spanishTranslations: Record<string, string> = {
   'Resubscribe - Demo': 'Resuscribirse - Demo',
   'Subscribe - Demo': 'Suscribirse - Demo',
   'Ready to join the rewards circle?': '¿Listo para unirte al círculo de recompensas?',
+  'Ready to join Medellin Rewards?': 'Listo para unirte a Medellin Rewards?',
   'Create your member account, activate your subscription, browse available rewards, and keep your reward value connected in one place.':
     'Crea tu cuenta de miembro, activa tu suscripcion, explora recompensas disponibles y manten el valor de tus recompensas conectado en un solo lugar.',
+  'Create your member account, activate your subscription, browse available rewards, and keep your reward value connected across the network.':
+    'Crea tu cuenta de miembro, activa tu suscripcion, explora recompensas disponibles y manten tu valor de recompensas conectado en toda la red.',
   'Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.':
     'Empieza como miembro, explora negocios participantes o agenda una demo para lanzar recompensas en tu propio negocio.',
   Terms: 'Terminos',
@@ -1056,7 +1097,7 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'en'
-  return window.localStorage.getItem('coffee-loyalty-language') === 'es' ? 'es' : 'en'
+  return window.localStorage.getItem('medellinrewards-language') === 'es' ? 'es' : 'en'
 }
 
 function applyValues(text: string, values?: TranslationValues) {
@@ -1072,7 +1113,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = language
-    window.localStorage.setItem('coffee-loyalty-language', language)
+    window.localStorage.setItem('medellinrewards-language', language)
   }, [language])
 
   const value = useMemo<LanguageContextValue>(

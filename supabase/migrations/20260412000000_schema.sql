@@ -1,5 +1,5 @@
 -- ============================================================
--- Loyalty Rewards Platform - Database Schema
+-- Medellin Rewards - Database Schema
 -- Multi-tenant SaaS with RLS for data isolation
 -- ============================================================
 
