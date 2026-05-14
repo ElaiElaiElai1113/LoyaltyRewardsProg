@@ -25,18 +25,18 @@ const defaultValues: MemberSignUpFormValues = {
 const benefits = [
   {
     icon: WalletCards,
-    title: 'Earn rewards',
-    body: 'Collect points and credits when you shop with participating local businesses.',
+    title: 'Earn 20-100% back',
+    body: 'Spend at participating businesses and earn reward points based on each offer.',
   },
   {
     icon: TicketPercent,
-    title: 'Unlock perks',
-    body: 'Find member offers, rewards, gift cards, and promotions in one place.',
+    title: 'Every visit counts',
+    body: 'Coffee, meals, services, and local shopping can all turn into points.',
   },
   {
     icon: HeartHandshake,
-    title: 'Share invites',
-    body: 'Invite friends and track rewards as the network grows around you.',
+    title: 'Redeem locally',
+    body: 'Use your reward points for partner perks, credits, gift cards, and offers.',
   },
 ]
 
@@ -82,7 +82,7 @@ export function JoinRewardsPage() {
           <div className="relative z-10 flex h-full min-w-0 flex-col justify-between gap-8">
             <div className="flex min-w-0 items-center justify-between gap-4">
               <Badge className="border-[#f2c978]/36 bg-[#fff7ea]/10 px-3 py-1 text-[0.68rem] font-extrabold uppercase tracking-[0.1em] text-[#fff7ea]">
-                {t('Join the Rewards Club')}
+                {t('Reward points club')}
               </Badge>
               <Link to="/signin" className="rounded-full px-3 py-2 text-sm font-bold text-[#fff7ea]/72 transition hover:bg-[#fff7ea]/10 hover:text-[#fff7ea]">
                 {t('Sign in')}
@@ -92,18 +92,18 @@ export function JoinRewardsPage() {
             <div className="min-w-0 max-w-3xl space-y-5">
               <p className="flex w-fit items-center gap-2 rounded-full border border-[#84a092]/34 bg-[#84a092]/16 px-3 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-[#d8ede4]">
                 <ShieldCheck className="size-4" />
-                {t('Verified member access')}
+                {t('20-100% back in reward points')}
               </p>
               <h1 className="max-w-3xl text-wrap break-words font-serif text-[clamp(2.55rem,9.2vw,4rem)] font-semibold leading-[0.9] sm:text-[clamp(4rem,7vw,6.6rem)]">
-                {t('Rewards for the places you already enjoy.')}
+                {t('Spend $X locally. Get 20-100% back in reward points.')}
               </h1>
               <p className="max-w-xl break-words text-base font-semibold leading-7 text-[#fff7ea]/84 sm:text-lg">
-                {t('Create your account, verify once, and keep rewards connected across participating businesses.')}
+                {t('Create your account, verify once, and turn eligible purchases into reward points across participating businesses.')}
               </p>
               <div className="flex flex-wrap gap-3">
                 <Button asChild size="lg" className="min-w-0 rounded-full bg-[#f2c978] px-5 text-[#21140d] hover:bg-[#fff7ea]">
                   <a href="#join-form">
-                    {t('Create account')}
+                    {t('Start earning points')}
                     <ArrowRight className="size-4" />
                   </a>
                 </Button>
@@ -202,7 +202,7 @@ export function JoinRewardsPage() {
                     </div>
                   </div>
                   <p className="text-sm font-medium leading-6 text-[#6f4f3d]">
-                    {t('Membership is subscription-based. Create your account first, then activate membership when your account is ready.')}
+                    {t('Create your account first. Once approved, eligible spending can earn 20-100% back as reward points.')}
                   </p>
                 </div>
 
@@ -282,7 +282,7 @@ export function JoinRewardsPage() {
                   isLoading={form.formState.isSubmitting}
                 >
                   <Gift className="size-4" />
-                  {t('Join the Rewards Club')}
+                  {t('Join and earn points')}
                 </Button>
 
                 <p className="rounded-xl border border-[#ddb886] bg-[#fffaf2] p-3 text-center text-xs font-semibold leading-5 text-[#6f4f3d]">

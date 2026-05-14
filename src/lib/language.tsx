@@ -533,7 +533,23 @@ const spanishTranslations: Record<string, string> = {
   'Create your account, verify once, and activate your membership to earn points, unlock perks, and move through the circle with ease.':
     'Crea tu cuenta, verificate una vez y activa tu membresia para ganar puntos, desbloquear beneficios y avanzar por el circulo con facilidad.',
   'Join the Rewards Club': 'Únete al Club de Recompensas',
+  'Reward points club': 'Club de puntos de recompensa',
   'Sign in': 'Iniciar sesión',
+  '20-100% back in reward points': '20-100% de vuelta en puntos de recompensa',
+  'Spend $X locally. Get 20-100% back in reward points.':
+    'Gasta $X localmente. Recibe 20-100% de vuelta en puntos de recompensa.',
+  'Create your account, verify once, and turn eligible purchases into reward points across participating businesses.':
+    'Crea tu cuenta, verificate una vez y convierte compras elegibles en puntos de recompensa en negocios participantes.',
+  'Start earning points': 'Empieza a ganar puntos',
+  'Earn 20-100% back': 'Gana 20-100% de vuelta',
+  'Spend at participating businesses and earn reward points based on each offer.':
+    'Compra en negocios participantes y gana puntos de recompensa segun cada oferta.',
+  'Every visit counts': 'Cada visita cuenta',
+  'Coffee, meals, services, and local shopping can all turn into points.':
+    'Cafe, comidas, servicios y compras locales pueden convertirse en puntos.',
+  'Redeem locally': 'Canjea localmente',
+  'Use your reward points for partner perks, credits, gift cards, and offers.':
+    'Usa tus puntos de recompensa para beneficios, creditos, tarjetas de regalo y ofertas de socios.',
   'Rewards for the places you already enjoy.': 'Recompensas para los lugares que ya disfrutas.',
   'Create your account, verify once, and activate your member subscription to keep rewards connected across participating businesses.':
     'Crea tu cuenta, verificate una vez y activa tu suscripcion de miembro para mantener tus recompensas conectadas entre negocios participantes.',
@@ -551,6 +567,39 @@ const spanishTranslations: Record<string, string> = {
   'Upload a photo or PDF of your ID for account verification.':
     'Sube una foto o PDF de tu ID para verificar la cuenta.',
   'Create your member account': 'Crea tu cuenta de miembro',
+  'Create your account first. Once approved, eligible spending can earn 20-100% back as reward points.':
+    'Crea tu cuenta primero. Una vez aprobada, tus compras elegibles pueden ganar 20-100% de vuelta como puntos de recompensa.',
+  'Join and earn points': 'Unete y gana puntos',
+  'Early adopter list': 'Lista de primeros usuarios',
+  'A note before we launch.': 'Una nota antes del lanzamiento.',
+  'We are building Medellin Rewards for people who want more value from the places they already visit.':
+    'Estamos creando Medellin Rewards para personas que quieren mas valor de los lugares que ya visitan.',
+  'When we start, members will be able to spend with participating local businesses and earn 20-100% back as reward points, depending on the offer.':
+    'Cuando empecemos, los miembros podran comprar en negocios locales participantes y ganar 20-100% de vuelta como puntos de recompensa, segun la oferta.',
+  'Join the early adopter list and we will send you the first invite when the program opens.':
+    'Unete a la lista de primeros usuarios y te enviaremos la primera invitacion cuando el programa abra.',
+  'Back in reward points': 'De vuelta en puntos',
+  'First launch invite': 'Primera invitacion',
+  'Partner perks and offers': 'Beneficios y ofertas',
+  "You're on the early list.": 'Estas en la lista inicial.',
+  'We saved your details. We will reach out when Medellin Rewards is ready for early adopters.':
+    'Guardamos tus datos. Te contactaremos cuando Medellin Rewards este listo para primeros usuarios.',
+  'Back to home': 'Volver al inicio',
+  'Get notified': 'Recibe avisos',
+  'Become an early adopter': 'Se un primer usuario',
+  'Leave your email, WhatsApp, or both. We will only use this to send launch updates and early access details.':
+    'Deja tu email, WhatsApp o ambos. Solo lo usaremos para enviar novedades del lanzamiento y detalles de acceso temprano.',
+  Name: 'Nombre',
+  'WhatsApp number': 'Numero de WhatsApp',
+  'Anything we should know?': 'Algo que debamos saber?',
+  Optional: 'Opcional',
+  'I agree to be contacted about Medellin Rewards launch updates and early access.':
+    'Acepto que me contacten sobre novedades del lanzamiento y acceso temprano de Medellin Rewards.',
+  'Unable to join the early access list.': 'No se pudo unir a la lista de acceso temprano.',
+  'Join early access': 'Unirse al acceso temprano',
+  'Prefer the full member signup?': 'Prefieres el registro completo?',
+  'Go to member signup': 'Ir al registro de miembro',
+  'Add an email or WhatsApp number': 'Agrega un email o numero de WhatsApp',
   'Membership is subscription-based. Create your account first, then activate membership when your account is ready.':
     'La membresia funciona por suscripcion. Crea tu cuenta primero y luego activa la membresia cuando tu cuenta este lista.',
   'Why we verify members': 'Por qué verificamos a los miembros',

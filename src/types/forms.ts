@@ -163,6 +163,24 @@ export const partnerAttributionSchema = z.object({
 
 export type PartnerAttributionFormValues = z.infer<typeof partnerAttributionSchema>
 
+export const earlyAccessLeadSchema = z
+  .object({
+    fullName: z.string().trim().max(80, 'Keep your name under 80 characters').optional(),
+    email: z.union([z.literal(''), z.email('Enter a valid email')]),
+    whatsapp: z.string().trim().max(40, 'Keep WhatsApp under 40 characters').optional(),
+    notes: z.string().trim().max(240, 'Keep notes under 240 characters').optional(),
+    marketingConsent: z.boolean().refine((value) => value, 'Contact consent is required'),
+  })
+  .refine(
+    (values) => Boolean(values.email.trim() || values.whatsapp?.trim()),
+    {
+      message: 'Add an email or WhatsApp number',
+      path: ['email'],
+    },
+  )
+
+export type EarlyAccessLeadFormValues = z.infer<typeof earlyAccessLeadSchema>
+
 export const ambassadorLeadSchema = z
   .object({
     fullName: z.string().trim().min(2, 'Enter your full name'),

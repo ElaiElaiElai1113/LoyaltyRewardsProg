@@ -8,6 +8,7 @@ import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
+import { EarlyAccessPage } from '@/features/early-access/pages/early-access-page'
 import { ProfilePage } from '@/features/profile/pages/profile-page'
 import { PromotionsPage } from '@/features/promotions/pages/promotions-page'
 import { PromoPage } from '@/features/referrals/pages/promo-page'
@@ -261,6 +262,18 @@ const router = createBrowserRouter([
   {
     path: '/join',
     element: <JoinRewardsPage />,
+  },
+  {
+    path: '/early-access',
+    element: <EarlyAccessPage />,
+  },
+  {
+    path: '/joinusearly',
+    element: <Navigate replace to="/early-access" />,
+  },
+  {
+    path: '/join-us-early',
+    element: <Navigate replace to="/early-access" />,
   },
   {
     path: '/terms',

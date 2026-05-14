@@ -84,6 +84,20 @@ export interface Membership {
 export type ReferralStatus = 'pending' | 'approved' | 'rejected'
 export type PartnerReferralStatus = 'attributed' | 'credited' | 'voided'
 export type AmbassadorLeadStatus = 'new' | 'contacted' | 'converted' | 'archived'
+export type EarlyAccessLeadStatus = 'new' | 'contacted' | 'invited' | 'archived'
+
+export interface EarlyAccessLead {
+  id: string
+  fullName: string | null
+  email: string | null
+  whatsapp: string | null
+  notes: string
+  source: string
+  status: EarlyAccessLeadStatus
+  marketingConsentAt: string
+  createdAt: string
+  updatedAt: string
+}
 
 export interface AmbassadorLead {
   id: string
