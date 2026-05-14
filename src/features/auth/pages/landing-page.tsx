@@ -380,7 +380,7 @@ export function LandingPage() {
       </section>
 
       {/* Founder letter */}
-      <section className="bg-[#fffdf8] px-4 py-12 text-[#21140d] sm:px-6 sm:py-16 lg:px-8">
+      <section id="founder-letter" className="bg-[#fffdf8] px-4 py-12 text-[#21140d] sm:px-6 sm:py-16 lg:px-8">
         <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,0.7fr)_minmax(0,1fr)] lg:items-center">
           <div className="relative overflow-hidden rounded-[1.25rem] border border-[#d8b98c]/55 bg-[#efe6d8] shadow-soft">
             {/* TODO: replace with real founder photo at src/assets/founder-medellin.webp */}

@@ -129,7 +129,7 @@ export function AmbassadorsPage() {
           </div>
         </section>
 
-        <section className="flex min-h-0 items-stretch">
+        <section id="ambassador-form" className="flex min-h-0 items-stretch">
           <div className="h-full min-h-0 w-full overflow-hidden rounded-[1.4rem] border border-[#d8a36a]/30 bg-[linear-gradient(145deg,var(--card)_0%,#fff7ef_58%,#f7e2cf_100%)] p-3 text-card-foreground shadow-card sm:p-4 lg:rounded-[1.6rem] lg:p-5 xl:p-6">
             {isSubmitted ? (
               <div className="flex h-full flex-col items-center justify-center gap-5 text-center">
