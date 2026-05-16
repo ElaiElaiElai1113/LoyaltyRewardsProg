@@ -5,6 +5,7 @@ import { AdminPage } from '@/features/admin/pages/admin-page'
 import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
 import { AuthPage, LandingPage } from '@/features/auth/pages/landing-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
+import { CostCalculatorPage } from '@/features/business/pages/cost-calculator-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
@@ -295,6 +296,8 @@ const router = createBrowserRouter([
     element: <PublicBrowseLayout />,
     children: [
       { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
+      { path: '/cost-calculator', element: <CostCalculatorPage /> },
+      { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
     ],
   },
   {
