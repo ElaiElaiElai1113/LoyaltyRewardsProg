@@ -251,7 +251,7 @@ export function LandingPage() {
         <div className="mx-auto grid w-full max-w-7xl gap-6 sm:gap-10 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.55fr)] lg:items-end">
           <div className="max-w-3xl space-y-6 sm:space-y-8">
             <Badge className="w-fit max-w-full justify-center whitespace-normal border-[#f2c978]/55 bg-[#fff7ea] px-3.5 py-1.5 text-center text-[0.62rem] font-extrabold uppercase leading-4 tracking-[0.1em] text-[#21140d] shadow-soft sm:px-5 sm:py-2 sm:text-xs sm:leading-5 sm:tracking-[0.12em]">
-              {t('Membership for English-speaking expats in Medellín')}
+              {t('Membership rewards program in Medellín')}
             </Badge>
             <div className="space-y-4 sm:space-y-5">
               <h1 className="text-wrap font-serif text-[clamp(2.1rem,8.5vw,3.4rem)] font-semibold leading-[0.96] text-[#fff7ea] sm:text-[clamp(3.25rem,6.4vw,6.25rem)] sm:leading-[0.9]">
@@ -398,7 +398,7 @@ export function LandingPage() {
                 {t('[Paragraph 1 — who I am, why I’m in Medellín, how long I’ve been here, what I do day-to-day.]')}
               </p>
               <p>
-                {t('[Paragraph 2 — the gap I kept noticing: expats overpaying or stuck on the same five places, and great local businesses staying invisible to people who would happily become regulars.]')}
+                {t('[Paragraph 2 — the gap I kept noticing: members overpaying or stuck on the same five places, and great local businesses staying invisible to people who would happily become regulars.]')}
               </p>
               <p>
                 {t('[Paragraph 3 — what this program is and isn’t. It is a paid membership that returns real value when you spend in-network. It is not a punch card, not a referral scheme, not a cash-back app.]')}
