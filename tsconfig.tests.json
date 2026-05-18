@@ -10,5 +10,5 @@
     "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src/features/critical-flows/**/*.ts", "tests/**/*.ts"]
+  "include": ["src/features/critical-flows/**/*.ts", "src/features/early-access/**/*.ts", "tests/**/*.ts"]
 }
