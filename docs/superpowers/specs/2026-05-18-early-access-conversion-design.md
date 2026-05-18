@@ -16,7 +16,7 @@ No extra spending. Just real money back to help you do more of what you love.
 As an early adopter, you’ll get exclusive benefits before anyone else.
 Ready to earn more?
 Let’s make this happen together.
-Medellin Rewards Team"
+Medellin Rewards Team
 ```
 
 ## Goals

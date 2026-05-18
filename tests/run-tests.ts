@@ -67,7 +67,7 @@ runTest('early access content preserves the approved conversion copy', () => {
     'As an early adopter, you’ll get exclusive benefits before anyone else.',
     'Ready to earn more?',
     'Let’s make this happen together.',
-    'Medellin Rewards Team"',
+    'Medellin Rewards Team',
   ])
 })
 
