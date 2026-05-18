@@ -15,7 +15,6 @@ That’s why we’re building Medellin Rewards: the highest-paying rewards progr
 No extra spending. Just real money back to help you do more of what you love.
 As an early adopter, you’ll get exclusive benefits before anyone else.
 Ready to earn more?
-[Subscribe button: Enter your WhatsApp number and/or email]
 Let’s make this happen together.
 Medellin Rewards Team"
 ```

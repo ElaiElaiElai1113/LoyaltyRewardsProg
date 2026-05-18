@@ -94,14 +94,11 @@ export function EarlyAccessPage() {
                 <p className="font-serif text-[clamp(2.2rem,7vw,4.2rem)] font-semibold leading-[0.9] text-[#fff7ea]">
                   {earlyAccessMessageLines[5]}
                 </p>
-                <p className="text-sm font-extrabold uppercase leading-6 tracking-[0.12em] text-[#f2c978]">
-                  {earlyAccessMessageLines[6]}
-                </p>
               </div>
 
               <div className="space-y-1 text-sm font-bold leading-6 text-[#ead9c2] sm:text-base">
+                <p>{earlyAccessMessageLines[6]}</p>
                 <p>{earlyAccessMessageLines[7]}</p>
-                <p>{earlyAccessMessageLines[8]}</p>
               </div>
             </div>
 
