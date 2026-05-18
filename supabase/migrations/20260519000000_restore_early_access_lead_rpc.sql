@@ -26,11 +26,6 @@ create unique index if not exists idx_early_access_leads_whatsapp_unique
   on public.early_access_leads (whatsapp)
   where whatsapp is not null;
 
-drop trigger if exists set_early_access_leads_updated_at on public.early_access_leads;
-create trigger set_early_access_leads_updated_at
-  before update on public.early_access_leads
-  for each row execute function public.handle_updated_at();
-
 alter table public.early_access_leads enable row level security;
 
 create or replace function public.jwt_role()
@@ -124,3 +119,5 @@ $$;
 
 revoke all on function public.create_early_access_lead(text, text, text, text, boolean, text) from public;
 grant execute on function public.create_early_access_lead(text, text, text, text, boolean, text) to anon, authenticated;
+
+notify pgrst, 'reload schema';

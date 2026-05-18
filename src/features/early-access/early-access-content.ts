@@ -6,10 +6,12 @@ export const earlyAccessMessageLines = [
   'As an early adopter, you’ll get exclusive benefits before anyone else.',
   'Ready to earn more?',
   'Let’s make this happen together.',
-  'Medellin Rewards Team',
+  'Medellín Rewards Team',
 ] as const
 
 export const earlyAccessSubscribeButtonLabel = 'Subscribe'
+
+export const earlyAccessSubscribePrompt = 'Enter your WhatsApp number and/or email'
 
 export const earlyAccessSubscribeFields = [
   {

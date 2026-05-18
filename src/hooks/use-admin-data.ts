@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { adminService } from '@/integrations/supabase/services/admin-service'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
+import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
@@ -19,7 +20,7 @@ import type {
   RewardDraftFormValues,
 } from '@/types/forms'
 import type { Profile } from '@/types/domain'
-import type { AmbassadorLeadStatus } from '@/types/domain'
+import type { AmbassadorLeadStatus, EarlyAccessLeadStatus } from '@/types/domain'
 
 const adminKeys = {
   users: ['admin-users'] as const,
@@ -247,6 +248,13 @@ export function useAdminAmbassadorLeads() {
   })
 }
 
+export function useAdminEarlyAccessLeads() {
+  return useQuery({
+    queryKey: ['admin', 'early-access-leads'],
+    queryFn: () => earlyAccessService.getLeads(),
+  })
+}
+
 export function useUpdateAmbassadorLeadStatus(businessId?: string) {
   const queryClient = useQueryClient()
 
@@ -260,6 +268,22 @@ export function useUpdateAmbassadorLeadStatus(businessId?: string) {
     },
     onError: (error: Error) => {
       toast.error(`Ambassador lead update failed: ${error.message}`)
+    },
+  })
+}
+
+export function useUpdateEarlyAccessLeadStatus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: EarlyAccessLeadStatus }) =>
+      earlyAccessService.updateLeadStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'early-access-leads'] })
+      toast.success('Early access lead updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Early access lead update failed: ${error.message}`)
     },
   })
 }

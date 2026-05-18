@@ -526,3 +526,112 @@ textarea {
 :root[data-theme="dark"] .border-stone-200 {
   border-color: var(--border) !important;
 }
+
+/* App-wide neutral mode: removes the branded color scheme across the project. */
+:root,
+:root[data-theme="dark"] {
+  --espresso: #111111;
+  --espresso-soft: #222222;
+  --champagne: #f5f5f5;
+  --champagne-strong: #d4d4d4;
+  --blush: #eeeeee;
+  --blush-foreground: #111111;
+  --rose-brown: #737373;
+  --cream: #ffffff;
+
+  --background: #ffffff;
+  --foreground: #111111;
+  --card: #ffffff;
+  --card-foreground: #111111;
+  --muted: #f2f2f2;
+  --muted-foreground: #525252;
+  --border: #d4d4d4;
+  --input: #ffffff;
+  --primary: #111111;
+  --primary-foreground: #ffffff;
+  --secondary: #eeeeee;
+  --secondary-foreground: #111111;
+  --accent: #eeeeee;
+  --accent-foreground: #111111;
+  --destructive: #111111;
+  --destructive-foreground: #ffffff;
+  --success: #111111;
+  --warning: #111111;
+  --ring: #111111;
+
+  --tenant-accent: #111111;
+  --tenant-accent-foreground: #ffffff;
+  --tenant-accent-soft: #eeeeee;
+
+  --surface: #ffffff;
+  --surface-container-low: #f7f7f7;
+  --surface-container-lowest: #ffffff;
+  --surface-container-highest: #e5e5e5;
+  --primary-container: #111111;
+  --primary-fixed: #111111;
+  --on-primary: #ffffff;
+  --secondary-container: #e5e5e5;
+  --secondary-fixed: #d4d4d4;
+  --tertiary: #525252;
+  --on-surface: #111111;
+  --on-surface-variant: #525252;
+  --outline-variant: #d4d4d4;
+  --error: #111111;
+
+  --shadow-card: none;
+  --shadow-panel: none;
+  --shadow-soft: none;
+  --shadow-luxe: none;
+
+  color-scheme: light;
+}
+
+body {
+  background: #ffffff;
+}
+
+#root {
+  filter: grayscale(1);
+}
+
+.warm-hero,
+.warm-hero-muted,
+.gold-frame,
+.gold-wash,
+.soft-luxe-shell,
+.luxe-card,
+.luxe-art,
+.ornate-page,
+.ornate-frame,
+.social-photo-panel,
+.social-photo-panel-alt,
+.compact-catalog-card {
+  background: #ffffff !important;
+  border-color: #d4d4d4 !important;
+  box-shadow: none !important;
+  color: #111111 !important;
+}
+
+.luxe-card::before,
+.gold-sweep::after,
+.ornate-page::before,
+.ornate-page::after,
+.ornate-frame::before,
+.botanical-corner {
+  display: none !important;
+}
+
+.luxe-chip-active,
+.luxe-chip-muted,
+.bg-tenant,
+.bg-tenant-soft {
+  background: #111111 !important;
+  border-color: #111111 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+::selection,
+:root[data-theme="dark"] ::selection {
+  background: #d4d4d4;
+}
