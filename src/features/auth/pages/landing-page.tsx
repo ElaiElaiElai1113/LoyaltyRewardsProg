@@ -20,7 +20,7 @@ import {
   landingAgreementLabel,
   landingBody,
   landingBusinessNote,
-  landingFaqQuestions,
+  landingFaqItems,
   landingJoinButtonLabel,
   landingLogo,
   landingOfferLines,
@@ -164,10 +164,18 @@ export function LandingPage() {
         <div className="mx-auto grid max-w-7xl gap-6 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:grid-cols-[0.4fr_1fr] md:p-8">
           <h2 className="text-5xl font-black leading-none sm:text-6xl">{t('FAQ')}</h2>
           <div className="grid gap-3">
-            {landingFaqQuestions.map((question) => (
-              <div key={question} className="rounded-2xl border border-neutral-200 bg-neutral-50 p-5">
-                <p className="text-xl font-black leading-snug sm:text-2xl">{t(question)}</p>
-              </div>
+            {landingFaqItems.map((item) => (
+              <details key={item.question} className="group rounded-2xl border border-neutral-200 bg-neutral-50 p-5">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
+                  <span className="text-xl font-black leading-snug sm:text-2xl">{t(item.question)}</span>
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-black text-2xl font-black leading-none text-white transition group-open:rotate-45">
+                    +
+                  </span>
+                </summary>
+                <p className="mt-4 max-w-3xl text-base font-semibold leading-7 text-neutral-700 sm:text-lg">
+                  {t(item.answer)}
+                </p>
+              </details>
             ))}
           </div>
         </div>

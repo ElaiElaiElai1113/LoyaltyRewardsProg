@@ -28,5 +28,28 @@ export const landingFaqQuestions = [
   'Can rewards be exchanged for money?',
 ] as const
 
+export const landingFaqItems = [
+  {
+    question: landingFaqQuestions[0],
+    answer:
+      'You can use rewards with participating businesses inside the Medellin Rewards platform as new partners are added.',
+  },
+  {
+    question: landingFaqQuestions[1],
+    answer:
+      'Each member should use one rewards account so rewards, bonuses, and account activity stay connected correctly.',
+  },
+  {
+    question: landingFaqQuestions[2],
+    answer:
+      'Reward transfers are not available in the first version. Transfer options may be reviewed as the program grows.',
+  },
+  {
+    question: landingFaqQuestions[3],
+    answer:
+      'Rewards are program credits for eligible offers and purchases. They are not automatically exchangeable for cash.',
+  },
+] as const
+
 export const landingBusinessNote =
   'Businesses can receive a private link with a presentation and sign up process.'

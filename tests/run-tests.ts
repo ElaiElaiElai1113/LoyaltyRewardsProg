@@ -234,3 +234,27 @@ runTest('landing page content follows the approved member-facing wording', () =>
     'Can rewards be exchanged for money?',
   ])
 })
+
+runTest('landing page FAQs are clickable and include answers', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+  const landingContent = readFileSync('src/features/auth/landing-content.ts', 'utf8')
+
+  assert.match(landingPage, /<details/)
+  assert.match(landingPage, /<summary/)
+  assert.match(landingPage, /landingFaqItems\.map/)
+  assert.doesNotMatch(landingPage, /landingFaqQuestions\.map/)
+  assert.match(landingContent, /export const landingFaqItems/)
+  assert.match(landingContent, /answer:/)
+})
+
+runTest('member signup page uses simplified neutral layout', () => {
+  const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
+
+  assert.match(joinPage, /bg-white/)
+  assert.match(joinPage, /border-neutral-200/)
+  assert.doesNotMatch(joinPage, /heroImage/)
+  assert.doesNotMatch(joinPage, /Spend \$X locally/)
+  assert.doesNotMatch(joinPage, /Why we verify members/)
+  assert.doesNotMatch(joinPage, /bg-\[#24150e\]/)
+  assert.doesNotMatch(joinPage, /#f2c978/)
+})
