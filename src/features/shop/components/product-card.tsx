@@ -38,17 +38,17 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
           )}
         </div>
 
-        <div className="relative min-h-32 overflow-hidden rounded-[1.15rem] border border-neutral-200 bg-neutral-100 p-4 shadow-sm">
-          <div className="absolute -right-8 -top-8 size-28 rounded-full bg-white/70 blur-2xl transition-transform duration-500 group-hover:scale-125" />
-          <div className="absolute bottom-4 right-5 h-16 w-24 rounded-[999px] border border-neutral-300 bg-white/70" />
+        <div className="luxe-art relative min-h-32 overflow-hidden rounded-[1.15rem] p-4 shadow-soft">
+          <div className="absolute -right-8 -top-8 size-28 rounded-full bg-[var(--champagne)]/20 blur-2xl transition-transform duration-500 group-hover:scale-125" />
+          <div className="absolute bottom-4 right-5 h-16 w-24 rounded-[999px] border border-[var(--champagne)]/30 bg-[var(--cream)]/10" />
           <div className="relative flex h-full items-end justify-between">
             <div>
-              <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-neutral-600">
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-[var(--champagne)]/80">
                 {t('Curated pick')}
               </p>
-              <p className="mt-2 font-serif text-2xl leading-none text-black">{formatCurrency(product.price)}</p>
+              <p className="mt-2 font-serif text-2xl leading-none text-[var(--cream)]">{formatCurrency(product.price)}</p>
             </div>
-            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-neutral-300 bg-white text-black shadow-sm">
+            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)] shadow-soft">
               <CategoryIcon className="size-7" />
             </div>
           </div>

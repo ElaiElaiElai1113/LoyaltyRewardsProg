@@ -49,7 +49,7 @@ export function EarlyAccessPage() {
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white text-neutral-950">
+    <main className="early-access-neutral min-h-screen overflow-x-hidden bg-white text-neutral-950">
       <div className="mx-auto flex min-h-screen max-w-5xl items-center px-5 py-10 sm:px-8 lg:px-12">
         <section className="w-full space-y-7">
           <p className="text-6xl font-semibold leading-none sm:text-7xl lg:text-8xl">
@@ -94,7 +94,7 @@ export function EarlyAccessPage() {
       </div>
 
       <Dialog open={leadModalOpen} onOpenChange={setLeadModalOpen}>
-        <DialogContent className="max-w-lg rounded-3xl border border-neutral-200 bg-white p-6 text-black shadow-xl sm:p-8">
+        <DialogContent className="early-access-neutral max-w-lg rounded-3xl border border-neutral-200 bg-white p-6 text-black shadow-xl sm:p-8">
           <form
             className="space-y-5"
             onSubmit={leadForm.handleSubmit(async (values) => {

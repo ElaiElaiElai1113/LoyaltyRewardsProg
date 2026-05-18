@@ -347,40 +347,40 @@ export function AdminPage() {
 
   return (
     <div className="min-w-0 space-y-10 pb-20 xl:space-y-16">
-      <div className="relative min-w-0 overflow-hidden rounded-[2rem] border border-neutral-200 bg-neutral-50 px-5 py-8 shadow-sm sm:px-6 xl:px-8 xl:py-12">
-        <div className="absolute inset-0 bg-[linear-gradient(135deg,rgb(255_255_255/.96),rgb(245_245_245/.72))]"></div>
+      <div className="warm-hero-muted relative min-w-0 overflow-hidden rounded-[2rem] px-5 py-8 shadow-card sm:px-6 xl:px-8 xl:py-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--champagne)_22%,transparent),transparent_34%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--rose-brown)_24%,transparent),transparent_32%)]"></div>
         <div className="relative">
           <div className="flex min-w-0 flex-col gap-6 2xl:flex-row 2xl:items-end 2xl:justify-between">
             <div className="max-w-2xl min-w-0 space-y-4">
-              <Badge variant="outline" className="border-neutral-300 bg-white text-black">
+              <Badge variant="outline" className="border-[var(--champagne)]/35 bg-[var(--cream)]/12 text-[var(--champagne)]">
                 {t('Operations Portal')}
               </Badge>
-              <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] tracking-tight text-black leading-[1.1]">
+              <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] tracking-tight text-[var(--cream)] leading-[1.1]">
                 {t('Admin Dashboard')}
               </h1>
-              <p className="text-lg leading-relaxed text-neutral-700 font-medium">
+              <p className="text-lg leading-relaxed text-[var(--cream)]/78 font-medium">
                 {t('Manage members, rewards, promotions, and monitor activity across the platform.')}
               </p>
             </div>
 
             {/* Enhanced Overview Cards */}
             <div className="grid w-full min-w-0 gap-3 sm:grid-cols-2 2xl:w-auto 2xl:gap-4">
-              <div className="min-w-0 rounded-2xl bg-white px-4 py-4 text-black border border-neutral-200 flex items-center gap-3 shadow-sm xl:px-6 xl:py-5 xl:gap-4">
-                <div className="size-12 rounded-xl bg-black text-white flex items-center justify-center">
+              <div className="min-w-0 rounded-2xl bg-[var(--cream)]/12 px-4 py-4 text-[var(--cream)] border border-[var(--champagne)]/20 flex items-center gap-3 shadow-soft xl:px-6 xl:py-5 xl:gap-4">
+                <div className="size-12 rounded-xl bg-[var(--champagne)] text-[var(--espresso)] flex items-center justify-center">
                   <Users className="size-6" />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif text-3xl leading-none">{(users.data ?? []).length}</span>
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-neutral-600">{t('Members')}</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-[var(--champagne)]">{t('Members')}</span>
                 </div>
               </div>
-              <div className="min-w-0 rounded-2xl bg-white px-4 py-4 text-black border border-neutral-200 flex items-center gap-3 shadow-sm xl:px-6 xl:py-5 xl:gap-4">
-                <div className="size-12 rounded-xl bg-black text-white flex items-center justify-center">
+              <div className="min-w-0 rounded-2xl bg-[var(--cream)]/12 px-4 py-4 text-[var(--cream)] border border-[var(--champagne)]/20 flex items-center gap-3 shadow-soft xl:px-6 xl:py-5 xl:gap-4">
+                <div className="size-12 rounded-xl bg-[var(--champagne)] text-[var(--espresso)] flex items-center justify-center">
                   <Gift className="size-6" />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif text-3xl leading-none">{(allRewards.data ?? []).length}</span>
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-neutral-600">{t('Rewards')}</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-[var(--champagne)]">{t('Rewards')}</span>
                 </div>
               </div>
             </div>

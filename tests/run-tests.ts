@@ -131,18 +131,20 @@ runTest('ambassador content keeps first-version offer and form language scoped',
   assert.equal(ambassadorPrimaryCta, 'Submit VIP creator request')
 })
 
-runTest('global CSS includes an app-wide neutral color override', () => {
+runTest('global CSS restores the brand theme outside early access', () => {
   const css = readFileSync('src/index.css', 'utf8')
 
-  assert.match(css, /--background:\s*#ffffff/)
-  assert.match(css, /--foreground:\s*#111111/)
-  assert.match(css, /filter:\s*grayscale\(1\)/)
-  assert.match(css, /\.warm-hero,\s*\n\s*\.warm-hero-muted,\s*\n\s*\.gold-frame,/)
+  assert.match(css, /--background:\s*#fbefe2/)
+  assert.match(css, /--foreground:\s*#24190f/)
+  assert.match(css, /--champagne:\s*#f2c978/)
+  assert.doesNotMatch(css, /#root\s*\{[^}]*filter:\s*grayscale\(1\)/)
+  assert.doesNotMatch(css, /App-wide neutral mode/)
+  assert.match(css, /\.early-access-neutral/)
 })
 
-runTest('admin portal header uses visible neutral contrast', () => {
+runTest('admin portal header uses the restored warm theme', () => {
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
-  const headerStart = adminPage.indexOf("rounded-[2rem] border border-neutral-200 bg-neutral-50")
+  const headerStart = adminPage.indexOf('warm-hero-muted relative min-w-0')
   const tabsStart = adminPage.indexOf('<Tabs defaultValue="members"')
 
   assert.ok(headerStart > -1)
@@ -150,10 +152,11 @@ runTest('admin portal header uses visible neutral contrast', () => {
 
   const headerMarkup = adminPage.slice(headerStart, tabsStart)
 
-  assert.match(headerMarkup, /text-black/)
-  assert.match(headerMarkup, /text-neutral-700/)
-  assert.doesNotMatch(headerMarkup, /text-white\//)
-  assert.doesNotMatch(headerMarkup, /bg-white\/10/)
+  assert.match(headerMarkup, /text-\[var\(--cream\)\]/)
+  assert.match(headerMarkup, /text-\[var\(--champagne\)\]/)
+  assert.match(headerMarkup, /bg-\[var\(--cream\)\]\/12/)
+  assert.doesNotMatch(headerMarkup, /border-neutral-200/)
+  assert.doesNotMatch(headerMarkup, /bg-neutral-50/)
 })
 
 runTest('admin portal exposes early access lead workflow', () => {
@@ -170,7 +173,7 @@ runTest('admin portal exposes early access lead workflow', () => {
   assert.match(adminHooks, /useUpdateEarlyAccessLeadStatus/)
 })
 
-runTest('reward cards keep visible neutral contrast', () => {
+runTest('reward cards use branded luxe artwork', () => {
   const cardFiles = [
     'src/features/rewards/components/reward-card.tsx',
     'src/features/shop/components/product-card.tsx',
@@ -180,22 +183,22 @@ runTest('reward cards keep visible neutral contrast', () => {
   for (const file of cardFiles) {
     const card = readFileSync(file, 'utf8')
 
-    assert.match(card, /bg-neutral-100/)
-    assert.match(card, /text-black/)
-    assert.doesNotMatch(card, /text-\[var\(--cream\)\]/)
-    assert.doesNotMatch(card, /text-\[var\(--champagne\)\]/)
+    assert.match(card, /luxe-art/)
+    assert.match(card, /text-\[var\(--cream\)\]/)
+    assert.match(card, /--champagne/)
+    assert.doesNotMatch(card, /bg-neutral-100/)
   }
 })
 
-runTest('promotion cards avoid overlapping admin badges and keep neutral contrast', () => {
+runTest('promotion cards avoid overlapping admin badges and use branded contrast', () => {
   const promotionCard = readFileSync('src/features/rewards/components/promotion-card.tsx', 'utf8')
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
 
   assert.match(promotionCard, /businessName\?: string/)
-  assert.match(promotionCard, /bg-neutral-100/)
-  assert.match(promotionCard, /text-black/)
-  assert.doesNotMatch(promotionCard, /text-\[var\(--champagne\)\]/)
-  assert.doesNotMatch(promotionCard, /bg-\[var\(--espresso-soft\)\]/)
+  assert.match(promotionCard, /text-\[var\(--champagne\)\]/)
+  assert.match(promotionCard, /bg-\[var\(--espresso-soft\)\]/)
+  assert.match(promotionCard, /hover:border-primary\/30/)
+  assert.doesNotMatch(promotionCard, /bg-neutral-100/)
   assert.match(adminPage, /businessName=\{businessNameById\.get\(promotion\.businessId\) \?\? 'Unknown partner'\}/)
   assert.doesNotMatch(adminPage, /absolute top-4 left-4 border-outline-variant\/20 bg-white\/90/)
 })
@@ -247,16 +250,16 @@ runTest('landing page FAQs are clickable and include answers', () => {
   assert.match(landingContent, /answer:/)
 })
 
-runTest('member signup page uses simplified neutral layout', () => {
+runTest('member signup page uses simplified branded layout', () => {
   const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
 
-  assert.match(joinPage, /bg-white/)
-  assert.match(joinPage, /border-neutral-200/)
+  assert.match(joinPage, /soft-luxe-shell/)
+  assert.match(joinPage, /gold-frame/)
+  assert.match(joinPage, /luxe-card/)
   assert.doesNotMatch(joinPage, /heroImage/)
   assert.doesNotMatch(joinPage, /Spend \$X locally/)
   assert.doesNotMatch(joinPage, /Why we verify members/)
   assert.doesNotMatch(joinPage, /bg-\[#24150e\]/)
-  assert.doesNotMatch(joinPage, /#f2c978/)
 })
 
 runTest('landing join buttons go to member signup', () => {
@@ -270,6 +273,7 @@ runTest('landing join buttons go to member signup', () => {
 runTest('early access CTA opens a lead capture modal', () => {
   const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
 
+  assert.match(earlyAccessPage, /early-access-neutral/)
   assert.match(earlyAccessPage, /Dialog open=\{leadModalOpen\}/)
   assert.match(earlyAccessPage, /earlyAccessModalSchema/)
   assert.match(earlyAccessPage, /earlyAccessService\.createLead/)

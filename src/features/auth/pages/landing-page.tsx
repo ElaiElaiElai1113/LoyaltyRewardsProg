@@ -72,31 +72,31 @@ export function LandingPage() {
   const { t } = useLanguage()
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-white pb-16 text-black">
+    <main className="soft-luxe-shell min-h-screen overflow-x-hidden pb-16 text-[var(--foreground)]">
       <header className="sticky top-0 z-50 px-3 py-3 backdrop-blur sm:px-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-white/95 px-4 py-3 shadow-sm sm:px-5">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)]/95 px-4 py-3 shadow-soft sm:px-5">
           <Link to="/" className="min-w-0 truncate text-xl font-black sm:text-2xl">
             {landingLogo}
           </Link>
-          <nav className="hidden items-center gap-1 rounded-full bg-neutral-100 px-2 py-1.5 lg:flex">
-            <a href="#rewards" className="rounded-full px-4 py-2 text-sm font-bold text-neutral-700 transition hover:bg-white hover:text-black">
+          <nav className="hidden items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-1.5 lg:flex">
+            <a href="#rewards" className="rounded-full px-4 py-2 text-sm font-bold text-[var(--muted-foreground)] transition hover:bg-[var(--card)] hover:text-[var(--foreground)]">
               {t('Rewards')}
             </a>
-            <a href="#offer" className="rounded-full px-4 py-2 text-sm font-bold text-neutral-700 transition hover:bg-white hover:text-black">
+            <a href="#offer" className="rounded-full px-4 py-2 text-sm font-bold text-[var(--muted-foreground)] transition hover:bg-[var(--card)] hover:text-[var(--foreground)]">
               {t('Offer')}
             </a>
-            <a href="#faq" className="rounded-full px-4 py-2 text-sm font-bold text-neutral-700 transition hover:bg-white hover:text-black">
+            <a href="#faq" className="rounded-full px-4 py-2 text-sm font-bold text-[var(--muted-foreground)] transition hover:bg-[var(--card)] hover:text-[var(--foreground)]">
               {t('FAQ')}
             </a>
           </nav>
           <div className="flex items-center gap-2">
-            <LanguagePicker compact className="hidden text-black sm:flex" />
-            <Link to="/signin" className="hidden rounded-full px-4 py-2 text-sm font-bold text-black transition hover:bg-neutral-100 sm:inline-flex">
+            <LanguagePicker compact className="hidden text-[var(--foreground)] sm:flex" />
+            <Link to="/signin" className="hidden rounded-full px-4 py-2 text-sm font-bold text-[var(--foreground)] transition hover:bg-[var(--muted)] sm:inline-flex">
               {t('Sign In')}
             </Link>
             <Link
               to="/join"
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-black px-5 text-sm font-bold text-white transition hover:bg-neutral-700"
+              className="inline-flex min-h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-soft transition hover:bg-primary-container"
             >
               {t(landingJoinButtonLabel)}
             </Link>
@@ -107,7 +107,7 @@ export function LandingPage() {
       <section className="px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-12 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.55fr)] lg:items-end">
           <div className="max-w-4xl space-y-7">
-            <Badge className="w-fit max-w-full justify-center whitespace-normal border-neutral-300 bg-white px-4 py-2 text-center text-xs font-extrabold uppercase leading-5 text-black shadow-sm">
+            <Badge className="w-fit max-w-full justify-center whitespace-normal border-primary/20 bg-[var(--card)] px-4 py-2 text-center text-xs font-extrabold uppercase leading-5 text-primary shadow-soft">
               {t(landingLogo)}
             </Badge>
             <div className="space-y-5">
@@ -121,25 +121,25 @@ export function LandingPage() {
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link
                 to="/join"
-                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-black px-8 text-base font-extrabold text-white shadow-sm transition hover:bg-neutral-700"
+                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 text-base font-extrabold text-primary-foreground shadow-soft transition hover:bg-primary-container"
               >
                 {t(landingJoinButtonLabel)}
                 <ArrowRight className="size-5" aria-hidden="true" />
               </Link>
               <Link
                 to="/reward-terms"
-                className="inline-flex min-h-14 items-center justify-center rounded-full border border-black bg-white px-8 text-base font-extrabold text-black transition hover:bg-neutral-100"
+                className="inline-flex min-h-14 items-center justify-center rounded-full border border-primary/35 bg-[var(--card)] px-8 text-base font-extrabold text-primary transition hover:bg-[var(--muted)]"
               >
                 {t(landingAgreementLabel)}
               </Link>
             </div>
           </div>
 
-          <aside id="offer" className="rounded-3xl border border-neutral-200 bg-neutral-50 p-5 shadow-sm sm:p-6 lg:p-7">
+          <aside id="offer" className="gold-frame rounded-3xl p-5 shadow-soft sm:p-6 lg:p-7">
             <div className="space-y-4">
               {landingOfferLines.map((line) => (
-                <div key={line} className="flex items-start gap-3 border-b border-neutral-200 pb-4 last:border-b-0 last:pb-0">
-                  <span className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-black text-white">
+                <div key={line} className="flex items-start gap-3 border-b border-primary/15 pb-4 last:border-b-0 last:pb-0">
+                  <span className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
                     <Check className="size-4" aria-hidden="true" />
                   </span>
                   <p className="text-3xl font-black leading-none sm:text-4xl">{t(line)}</p>
@@ -153,7 +153,7 @@ export function LandingPage() {
       <section id="rewards" className="px-4 py-10 sm:px-6 lg:px-8">
         <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-2">
           {landingTags.map((tag) => (
-            <article key={tag} className="flex min-h-56 items-end rounded-3xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm sm:p-8">
+            <article key={tag} className="flex min-h-56 items-end rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-soft sm:p-8">
               <p className="max-w-xl text-2xl font-black leading-tight sm:text-3xl">{t(tag)}</p>
             </article>
           ))}
@@ -161,18 +161,18 @@ export function LandingPage() {
       </section>
 
       <section id="faq" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 rounded-3xl border border-neutral-200 bg-white p-6 shadow-sm md:grid-cols-[0.4fr_1fr] md:p-8">
+        <div className="mx-auto grid max-w-7xl gap-6 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-soft md:grid-cols-[0.4fr_1fr] md:p-8">
           <h2 className="text-5xl font-black leading-none sm:text-6xl">{t('FAQ')}</h2>
           <div className="grid gap-3">
             {landingFaqItems.map((item) => (
-              <details key={item.question} className="group rounded-2xl border border-neutral-200 bg-neutral-50 p-5">
+              <details key={item.question} className="group rounded-2xl border border-[var(--border)] bg-[var(--muted)] p-5">
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
                   <span className="text-xl font-black leading-snug sm:text-2xl">{t(item.question)}</span>
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-black text-2xl font-black leading-none text-white transition group-open:rotate-45">
+                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-2xl font-black leading-none text-primary-foreground transition group-open:rotate-45">
                     +
                   </span>
                 </summary>
-                <p className="mt-4 max-w-3xl text-base font-semibold leading-7 text-neutral-700 sm:text-lg">
+                <p className="mt-4 max-w-3xl text-base font-semibold leading-7 text-[var(--muted-foreground)] sm:text-lg">
                   {t(item.answer)}
                 </p>
               </details>
@@ -182,7 +182,7 @@ export function LandingPage() {
       </section>
 
       <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-3xl border border-neutral-200 bg-neutral-50 p-6 shadow-sm sm:p-8">
+        <div className="mx-auto max-w-7xl rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-soft sm:p-8">
           <p className="max-w-3xl text-lg font-bold leading-7 sm:text-xl">{t(landingBusinessNote)}</p>
         </div>
       </section>

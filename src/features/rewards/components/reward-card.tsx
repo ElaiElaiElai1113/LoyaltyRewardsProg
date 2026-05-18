@@ -72,18 +72,18 @@ export function RewardCard({
           </div>
         </div>
 
-        <div className="relative min-h-32 overflow-hidden rounded-[1.15rem] border border-neutral-200 bg-neutral-100 p-4 shadow-sm">
-          <div className="absolute -left-8 -top-10 size-32 rounded-full bg-white/70 blur-2xl transition-transform duration-500 group-hover:scale-125" />
+        <div className="luxe-art relative min-h-32 overflow-hidden rounded-[1.15rem] p-4 shadow-soft">
+          <div className="absolute -left-8 -top-10 size-32 rounded-full bg-[var(--champagne)]/20 blur-2xl transition-transform duration-500 group-hover:scale-125" />
           <div className="relative flex h-full items-end justify-between">
             <div>
-              <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-neutral-600">
+              <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-[var(--champagne)]/80">
                 {canRedeem ? t('Ready to redeem') : t('Unlock the treat')}
               </p>
-              <p className="mt-2 font-serif text-3xl leading-none text-black">
+              <p className="mt-2 font-serif text-3xl leading-none text-[var(--cream)]">
                 {formatPoints(reward.pointsCost)}
               </p>
             </div>
-            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-neutral-300 bg-white text-black shadow-sm">
+            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)] shadow-soft">
               {canRedeem ? <CategoryIcon className="size-7" /> : <Lock className="size-7" />}
             </div>
           </div>
