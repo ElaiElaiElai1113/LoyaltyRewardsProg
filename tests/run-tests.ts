@@ -173,6 +173,26 @@ runTest('admin portal exposes early access lead workflow', () => {
   assert.match(adminHooks, /useUpdateEarlyAccessLeadStatus/)
 })
 
+runTest('admin early access rows label captured contact details', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const sectionStart = adminPage.indexOf('<TabsContent value="early-access"')
+  const sectionEnd = adminPage.indexOf('<TabsContent value="referrals"')
+
+  assert.ok(sectionStart > -1)
+  assert.ok(sectionEnd > sectionStart)
+
+  const earlyAccessSection = adminPage.slice(sectionStart, sectionEnd)
+
+  assert.match(earlyAccessSection, /Contact Details/)
+  assert.match(earlyAccessSection, /Name/)
+  assert.match(earlyAccessSection, /Email/)
+  assert.match(earlyAccessSection, /WhatsApp/)
+  assert.match(earlyAccessSection, /Instagram/)
+  assert.match(earlyAccessSection, /lead\.whatsapp/)
+  assert.match(earlyAccessSection, /lead\.email/)
+  assert.match(earlyAccessSection, /lead\.notes/)
+})
+
 runTest('reward cards use branded luxe artwork', () => {
   const cardFiles = [
     'src/features/rewards/components/reward-card.tsx',

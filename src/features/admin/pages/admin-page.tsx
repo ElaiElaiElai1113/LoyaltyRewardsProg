@@ -2229,9 +2229,9 @@ export function AdminPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Contact</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Contact Details</th>
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Source</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Note</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Other Information</th>
                         <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
                       </tr>
                     </thead>
@@ -2239,12 +2239,24 @@ export function AdminPage() {
                       {(earlyAccessLeads.data ?? []).map((lead) => (
                         <tr key={lead.id} className="border-b border-outline-variant/5 bg-transparent align-top">
                           <td className="px-6 py-5">
-                            <p className="font-serif text-xl text-primary">{lead.fullName || 'Early access lead'}</p>
-                            {lead.email ? <p className="mt-1 break-all text-sm text-on-surface-variant/80">{lead.email}</p> : null}
-                            {lead.whatsapp ? <p className="text-sm text-on-surface-variant/80">{lead.whatsapp}</p> : null}
-                            <p className="mt-2 text-xs uppercase tracking-[0.16em] text-on-surface-variant/65">
-                              {formatDate(lead.createdAt)}
-                            </p>
+                            <div className="space-y-2">
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Name</p>
+                                <p className="font-serif text-xl text-primary">{lead.fullName || 'Early access lead'}</p>
+                              </div>
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">WhatsApp</p>
+                                <p className="break-all text-sm text-on-surface-variant/80">{lead.whatsapp || 'Not provided'}</p>
+                              </div>
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Email</p>
+                                <p className="break-all text-sm text-on-surface-variant/80">{lead.email || 'Not provided'}</p>
+                              </div>
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Submitted</p>
+                                <p className="text-sm text-on-surface-variant/80">{formatDate(lead.createdAt)}</p>
+                              </div>
+                            </div>
                           </td>
                           <td className="px-6 py-5">
                             <Badge variant="outline" className="max-w-[14rem] truncate border-primary-container/20 bg-[var(--muted)] text-on-surface-variant">
@@ -2252,7 +2264,12 @@ export function AdminPage() {
                             </Badge>
                           </td>
                           <td className="px-6 py-5">
-                            <p className="max-w-sm text-sm leading-6 text-on-surface-variant/80">{lead.notes || 'No note'}</p>
+                            <div className="max-w-sm space-y-2 text-sm leading-6 text-on-surface-variant/80">
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Instagram / Notes</p>
+                                <p>{lead.notes || 'No note'}</p>
+                              </div>
+                            </div>
                           </td>
                           <td className="px-6 py-5">
                             <select
