@@ -3,8 +3,10 @@ import { ArrowRight, Check, Coins } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { z } from 'zod'
 
 import { Badge } from '@/components/ui/badge'
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -13,6 +15,7 @@ import { Label } from '@/components/ui/label'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
+import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { useLanguage } from '@/lib/language'
 import { validateVerificationDocument } from '@/lib/member-verification'
 import { authSchema, memberSignUpSchema, type AuthFormValues, type MemberSignUpFormValues } from '@/types/forms'
@@ -45,10 +48,29 @@ const signUpDefaultValues: MemberSignUpFormValues = {
   role: 'customer',
 }
 
+const memberLeadSchema = z.object({
+  fullName: z.string().trim().min(2, 'Enter your name'),
+  whatsapp: z.string().trim().min(5, 'Enter your WhatsApp number').max(40, 'Keep WhatsApp under 40 characters'),
+  instagram: z.string().trim().max(120, 'Keep Instagram under 120 characters').optional(),
+  email: z.union([z.literal(''), z.email('Enter a valid email')]).optional(),
+})
+
+type MemberLeadFormValues = z.infer<typeof memberLeadSchema>
+
+const memberLeadDefaultValues: MemberLeadFormValues = {
+  fullName: '',
+  whatsapp: '',
+  instagram: '',
+  email: '',
+}
+
 const authPanelTitleClass = 'font-serif text-4xl tracking-tight text-[var(--foreground)] md:text-5xl'
 const authPanelCopyClass = 'text-sm font-semibold text-[var(--on-surface-variant)]'
 const authInputClass =
   'border-[var(--champagne)]/38 bg-[var(--espresso)]/58 text-[var(--cream)] placeholder:text-[var(--cream)]/62 focus-visible:ring-[var(--champagne)]/32'
+const leadInputClass =
+  'h-12 rounded-2xl border-neutral-300 bg-white px-4 text-sm text-black shadow-none placeholder:text-neutral-500 focus-visible:border-black focus-visible:ring-black/10'
+const leadLabelClass = 'text-[0.68rem] font-extrabold uppercase tracking-[0.16em] text-neutral-600'
 
 function LoadingSpinner() {
   return (
@@ -70,6 +92,19 @@ function LoadingSpinner() {
 
 export function LandingPage() {
   const { t } = useLanguage()
+  const [leadModalOpen, setLeadModalOpen] = useState(false)
+  const [leadSubmitted, setLeadSubmitted] = useState(false)
+  const [leadError, setLeadError] = useState<string | null>(null)
+  const leadForm = useForm<MemberLeadFormValues>({
+    resolver: zodResolver(memberLeadSchema),
+    defaultValues: memberLeadDefaultValues,
+  })
+
+  const openLeadModal = () => {
+    setLeadError(null)
+    setLeadSubmitted(false)
+    setLeadModalOpen(true)
+  }
 
   return (
     <main className="min-h-screen overflow-x-hidden bg-white pb-16 text-black">
@@ -94,12 +129,13 @@ export function LandingPage() {
             <Link to="/signin" className="hidden rounded-full px-4 py-2 text-sm font-bold text-black transition hover:bg-neutral-100 sm:inline-flex">
               {t('Sign In')}
             </Link>
-            <Link
-              to="/join"
+            <button
+              type="button"
+              onClick={openLeadModal}
               className="inline-flex min-h-10 items-center justify-center rounded-full bg-black px-5 text-sm font-bold text-white transition hover:bg-neutral-700"
             >
               {t(landingJoinButtonLabel)}
-            </Link>
+            </button>
           </div>
         </div>
         </header>
@@ -119,13 +155,14 @@ export function LandingPage() {
               </p>
             </div>
             <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link
-                to="/join"
+              <button
+                type="button"
+                onClick={openLeadModal}
                 className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-black px-8 text-base font-extrabold text-white shadow-sm transition hover:bg-neutral-700"
               >
                 {t(landingJoinButtonLabel)}
                 <ArrowRight className="size-5" aria-hidden="true" />
-              </Link>
+              </button>
               <Link
                 to="/reward-terms"
                 className="inline-flex min-h-14 items-center justify-center rounded-full border border-black bg-white px-8 text-base font-extrabold text-black transition hover:bg-neutral-100"
@@ -186,6 +223,91 @@ export function LandingPage() {
           <p className="max-w-3xl text-lg font-bold leading-7 sm:text-xl">{t(landingBusinessNote)}</p>
         </div>
       </section>
+
+      <Dialog open={leadModalOpen} onOpenChange={setLeadModalOpen}>
+        <DialogContent className="max-w-lg rounded-3xl border border-neutral-200 bg-white p-6 text-black shadow-xl sm:p-8">
+          {leadSubmitted ? (
+            <div className="space-y-5 py-6 text-center">
+              <DialogHeader className="items-center text-center">
+                <DialogTitle className="text-3xl font-black text-black">You're on the list.</DialogTitle>
+                <DialogDescription className="max-w-sm text-sm font-semibold leading-6 text-neutral-700">
+                  We saved your information. Medellin Rewards will contact you when early member access opens.
+                </DialogDescription>
+              </DialogHeader>
+              <Button
+                type="button"
+                className="rounded-full bg-black px-8 text-white hover:bg-neutral-700"
+                onClick={() => setLeadModalOpen(false)}
+              >
+                Close
+              </Button>
+            </div>
+          ) : (
+            <form
+              className="space-y-5"
+              onSubmit={leadForm.handleSubmit(async (values) => {
+                try {
+                  setLeadError(null)
+                  const instagram = values.instagram?.trim() ?? ''
+                  await earlyAccessService.createLead({
+                    fullName: values.fullName,
+                    whatsapp: values.whatsapp,
+                    email: values.email ?? '',
+                    notes: instagram ? `Instagram: ${instagram}` : '',
+                    marketingConsent: true,
+                  })
+                  leadForm.reset(memberLeadDefaultValues)
+                  setLeadSubmitted(true)
+                } catch (error) {
+                  setLeadError(error instanceof Error ? error.message : 'Unable to save your information.')
+                }
+              })}
+            >
+              <DialogHeader>
+                <DialogTitle className="text-3xl font-black text-black">Join Medellin Rewards</DialogTitle>
+                <DialogDescription className="text-sm font-semibold leading-6 text-neutral-700">
+                  Leave your details and we will contact you about early member access.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="grid gap-3">
+                <Label htmlFor="lead-name" className={leadLabelClass}>Name</Label>
+                <Input id="lead-name" className={leadInputClass} placeholder="Your name" {...leadForm.register('fullName')} />
+                {leadForm.formState.errors.fullName ? <p className="text-xs font-bold text-error">{leadForm.formState.errors.fullName.message}</p> : null}
+              </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="lead-whatsapp" className={leadLabelClass}>WhatsApp</Label>
+                <Input id="lead-whatsapp" className={leadInputClass} placeholder="+57 300 000 0000" {...leadForm.register('whatsapp')} />
+                {leadForm.formState.errors.whatsapp ? <p className="text-xs font-bold text-error">{leadForm.formState.errors.whatsapp.message}</p> : null}
+              </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="lead-instagram" className={leadLabelClass}>Instagram optional</Label>
+                <Input id="lead-instagram" className={leadInputClass} placeholder="@yourhandle" {...leadForm.register('instagram')} />
+                {leadForm.formState.errors.instagram ? <p className="text-xs font-bold text-error">{leadForm.formState.errors.instagram.message}</p> : null}
+              </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="lead-email" className={leadLabelClass}>Email optional</Label>
+                <Input id="lead-email" className={leadInputClass} placeholder="you@example.com" {...leadForm.register('email')} />
+                {leadForm.formState.errors.email ? <p className="text-xs font-bold text-error">{leadForm.formState.errors.email.message}</p> : null}
+              </div>
+
+              {leadError ? <p className="rounded-2xl border border-error/20 bg-error/10 p-3 text-sm font-bold text-error">{leadError}</p> : null}
+
+              <Button
+                type="submit"
+                size="lg"
+                className="h-12 w-full rounded-full bg-black text-white hover:bg-neutral-700"
+                isLoading={leadForm.formState.isSubmitting}
+              >
+                Submit
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </main>
   )
 }

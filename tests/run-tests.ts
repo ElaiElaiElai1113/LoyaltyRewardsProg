@@ -258,3 +258,17 @@ runTest('member signup page uses simplified neutral layout', () => {
   assert.doesNotMatch(joinPage, /bg-\[#24150e\]/)
   assert.doesNotMatch(joinPage, /#f2c978/)
 })
+
+runTest('landing join buttons open a lead capture modal', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /Dialog open=\{leadModalOpen\}/)
+  assert.match(landingPage, /memberLeadSchema/)
+  assert.match(landingPage, /earlyAccessService\.createLead/)
+  assert.match(landingPage, /leadForm\.register\('fullName'\)/)
+  assert.match(landingPage, /leadForm\.register\('whatsapp'\)/)
+  assert.match(landingPage, /leadForm\.register\('instagram'\)/)
+  assert.match(landingPage, /leadForm\.register\('email'\)/)
+  assert.match(landingPage, /Instagram/)
+  assert.doesNotMatch(landingPage, /to="\/join"/)
+})
