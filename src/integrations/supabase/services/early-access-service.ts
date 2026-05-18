@@ -37,4 +37,34 @@ export const earlyAccessService = {
 
     return mapEarlyAccessLead(data as Record<string, unknown>)
   },
+
+  async getLeads(): Promise<EarlyAccessLead[]> {
+    const sb = requireSupabase()
+    const { data, error } = await sb
+      .from('early_access_leads')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      throw new Error('Failed to load early access leads.')
+    }
+
+    return ((data ?? []) as Record<string, unknown>[]).map(mapEarlyAccessLead)
+  },
+
+  async updateLeadStatus(id: string, status: EarlyAccessLeadStatus): Promise<EarlyAccessLead> {
+    const sb = requireSupabase()
+    const { data, error } = await sb
+      .from('early_access_leads')
+      .update({ status })
+      .eq('id', id)
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to update early access lead.')
+    }
+
+    return mapEarlyAccessLead(data as Record<string, unknown>)
+  },
 }

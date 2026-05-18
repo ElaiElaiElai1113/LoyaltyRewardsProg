@@ -34,13 +34,13 @@ export function GiftCardTile({ item, balancePoints = 0, businessName, actionLock
         {item.imageUrl ? (
           <img src={item.imageUrl} alt="" className="aspect-[16/9] w-full rounded-[1.35rem] object-cover shadow-soft" />
         ) : (
-          <div className="luxe-art relative aspect-[16/9] overflow-hidden rounded-[1.35rem] p-5 shadow-soft">
-            <div className="absolute left-5 top-5 h-16 w-24 rotate-[-8deg] rounded-xl border border-[var(--champagne)]/35 bg-[var(--cream)]/12" />
-            <div className="absolute bottom-5 right-6 h-20 w-32 rotate-6 rounded-2xl border border-[var(--champagne)]/35 bg-[var(--cream)]/12" />
-            <div className="animate-float-soft absolute right-8 top-8 flex size-14 items-center justify-center rounded-full bg-[var(--champagne)] text-[var(--espresso)]">
+          <div className="relative aspect-[16/9] overflow-hidden rounded-[1.35rem] border border-neutral-200 bg-neutral-100 p-5 shadow-sm">
+            <div className="absolute left-5 top-5 h-16 w-24 rotate-[-8deg] rounded-xl border border-neutral-300 bg-white/70" />
+            <div className="absolute bottom-5 right-6 h-20 w-32 rotate-6 rounded-2xl border border-neutral-300 bg-white/70" />
+            <div className="animate-float-soft absolute right-8 top-8 flex size-14 items-center justify-center rounded-full bg-black text-white shadow-sm">
               <Gift className="size-7" />
             </div>
-            <p className="absolute bottom-5 left-5 font-serif text-3xl text-[var(--cream)]">{item.valueLabel}</p>
+            <p className="absolute bottom-5 left-5 font-serif text-3xl text-black">{item.valueLabel}</p>
           </div>
         )}
 
