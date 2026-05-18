@@ -259,16 +259,23 @@ runTest('member signup page uses simplified neutral layout', () => {
   assert.doesNotMatch(joinPage, /#f2c978/)
 })
 
-runTest('landing join buttons open a lead capture modal', () => {
+runTest('landing join buttons go to member signup', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /Dialog open=\{leadModalOpen\}/)
-  assert.match(landingPage, /memberLeadSchema/)
-  assert.match(landingPage, /earlyAccessService\.createLead/)
-  assert.match(landingPage, /leadForm\.register\('fullName'\)/)
-  assert.match(landingPage, /leadForm\.register\('whatsapp'\)/)
-  assert.match(landingPage, /leadForm\.register\('instagram'\)/)
-  assert.match(landingPage, /leadForm\.register\('email'\)/)
-  assert.match(landingPage, /Instagram/)
-  assert.doesNotMatch(landingPage, /to="\/join"/)
+  assert.match(landingPage, /to="\/join"/)
+  assert.doesNotMatch(landingPage, /leadModalOpen/)
+  assert.doesNotMatch(landingPage, /memberLeadSchema/)
+})
+
+runTest('early access CTA opens a lead capture modal', () => {
+  const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
+
+  assert.match(earlyAccessPage, /Dialog open=\{leadModalOpen\}/)
+  assert.match(earlyAccessPage, /earlyAccessModalSchema/)
+  assert.match(earlyAccessPage, /earlyAccessService\.createLead/)
+  assert.match(earlyAccessPage, /leadForm\.register\('fullName'\)/)
+  assert.match(earlyAccessPage, /leadForm\.register\('whatsapp'\)/)
+  assert.match(earlyAccessPage, /leadForm\.register\('instagram'\)/)
+  assert.match(earlyAccessPage, /leadForm\.register\('email'\)/)
+  assert.match(earlyAccessPage, /Instagram/)
 })
