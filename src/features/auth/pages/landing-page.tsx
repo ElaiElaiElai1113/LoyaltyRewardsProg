@@ -21,12 +21,10 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
-import { validateVerificationDocument } from '@/lib/member-verification'
-import { authSchema, memberSignUpSchema, type AuthFormValues, type MemberSignUpFormValues } from '@/types/forms'
+import { authSchema, type AuthFormValues } from '@/types/forms'
 import {
   landingAgreementLabel,
   landingCategoryTags,
@@ -47,14 +45,6 @@ const defaultValues: AuthFormValues = {
   fullName: '',
   email: '',
   password: '',
-  role: 'customer',
-}
-
-const signUpDefaultValues: MemberSignUpFormValues = {
-  fullName: '',
-  email: '',
-  password: '',
-  verificationIdNumber: '',
   role: 'customer',
 }
 
@@ -294,9 +284,8 @@ export function LandingPage() {
 export function AuthPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { signIn, signUp } = useAuth()
+  const { signIn } = useAuth()
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
   const [error, setError] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
 
@@ -308,18 +297,10 @@ export function AuthPage() {
   })
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null)
-  const [signUpComplete, setSignUpComplete] = useState(false)
-  const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
-  const [verificationDocument, setVerificationDocument] = useState<File | null>(null)
 
   const signInForm = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues,
-  })
-
-  const signUpForm = useForm<MemberSignUpFormValues>({
-    resolver: zodResolver(memberSignUpSchema),
-    defaultValues: signUpDefaultValues,
   })
 
   const resetForm = useForm<Pick<AuthFormValues, 'email'>>({
@@ -327,18 +308,6 @@ export function AuthPage() {
       email: '',
     },
   })
-
-  const handleTabChange = (value: string) => {
-    const nextTab = value === 'signup' ? 'signup' : 'signin'
-    setActiveTab(nextTab)
-    setError(null)
-    setResetSuccessMessage(null)
-    setShowForgotPassword(false)
-
-    if (nextTab === 'signin') {
-      setSignUpComplete(false)
-    }
-  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
@@ -385,339 +354,173 @@ export function AuthPage() {
             <ThemeToggle className="rounded-full border border-[var(--champagne)]/24 bg-[var(--espresso)]/35 text-[var(--champagne)] hover:bg-[var(--espresso)]/55 hover:text-[var(--cream)]" />
             <LanguagePicker className="text-on-surface-variant" />
           </div>
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-5">
-            <div className="flex justify-center">
-              <TabsList className="grid w-full max-w-md grid-cols-2">
-                <TabsTrigger value="signin" className="min-w-0 px-4">{t('Sign In')}</TabsTrigger>
-                <TabsTrigger value="signup" className="min-w-0 px-4">{t('Register')}</TabsTrigger>
-              </TabsList>
+          <div className="space-y-5">
+            <div className="space-y-1.5 text-center">
+              <h2 className={authPanelTitleClass}>
+                {t('Welcome Back')}
+              </h2>
+              <p className={authPanelCopyClass}>
+                {t('Step back into your rewards ritual.')}
+              </p>
             </div>
 
-            <TabsContent value="signin" className="outline-none">
-              <div className="space-y-5">
-                <div className="space-y-1.5 text-center">
-                  <h2 className={authPanelTitleClass}>
-                    {t('Welcome Back')}
-                  </h2>
-                  <p className={authPanelCopyClass}>
-                    {t('Step back into your rewards ritual.')}
-                  </p>
-                </div>
+            <div className="relative mx-auto min-h-[25.5rem] max-w-md overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
+              <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
+              <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
+              <div className="relative z-10">
+                {showForgotPassword ? (
+                  <form
+                    className="space-y-6"
+                    onSubmit={resetForm.handleSubmit(async (values) => {
+                      try {
+                        setError(null)
+                        setResetSuccessMessage(null)
+                        await authService.resetPassword(values.email.trim())
+                        setResetSuccessMessage(t('Check your email for a password reset link.'))
+                        setShowForgotPassword(false)
+                        resetForm.reset({ email: '' })
+                      } catch (submissionError) {
+                        setError(
+                          submissionError instanceof Error
+                            ? submissionError.message
+                            : t('Unable to send reset link.'),
+                        )
+                      }
+                    })}
+                  >
+                    <div className="space-y-2 text-center">
+                      <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">
+                        {t('Reset Password')}
+                      </h3>
+                      <p className="text-sm font-medium text-[var(--cream)]/74">
+                        {t("Enter your email and we'll send you a reset link.")}
+                      </p>
+                    </div>
 
-                <div className="relative mx-auto min-h-[25.5rem] max-w-md overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
-                  <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
-                  <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
-                  <div className="relative z-10">
-                  {showForgotPassword ? (
-                    <form
-                      className="space-y-6"
-                      onSubmit={resetForm.handleSubmit(async (values) => {
+                    <div className="grid gap-3">
+                      <Label htmlFor="reset-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
+                      <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
+                    </div>
+
+                    {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
+                      disabled={resetForm.formState.isSubmitting}
+                    >
+                      {resetForm.formState.isSubmitting ? (
+                        <span className="inline-flex items-center gap-2">
+                          <LoadingSpinner />
+                          {t('Send reset link')}
+                        </span>
+                      ) : (
+                        t('Send reset link')
+                      )}
+                    </Button>
+
+                    <button
+                      type="button"
+                      className="block w-full text-center text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
+                      onClick={() => {
+                        setError(null)
+                        setShowForgotPassword(false)
+                      }}
+                    >
+                      {t('Back to sign in')}
+                    </button>
+                  </form>
+                ) : (
+                  <form
+                    className="space-y-6"
+                    onSubmit={signInForm.handleSubmit(
+                      async (values) => {
                         try {
                           setError(null)
                           setResetSuccessMessage(null)
-                          await authService.resetPassword(values.email.trim())
-                          setResetSuccessMessage(t('Check your email for a password reset link.'))
-                          setShowForgotPassword(false)
-                          resetForm.reset({ email: '' })
-                        } catch (submissionError) {
-                          if (
-                            submissionError instanceof Error &&
-                            submissionError.message.includes('profile could not be loaded')
-                          ) {
-                            setSignUpComplete(true)
-                            signUpForm.reset(signUpDefaultValues)
-                            return
+                          await signIn({ ...values, role: 'customer' })
+                          const redirect = searchParams.get('redirect')
+                          if (redirect) {
+                            navigate(redirect)
                           }
-
+                        } catch (submissionError) {
                           setError(
                             submissionError instanceof Error
                               ? submissionError.message
-                              : t('Unable to send reset link.'),
+                              : t('Unable to sign in.'),
                           )
                         }
-                      })}
-                    >
-                      <div className="space-y-2 text-center">
-                        <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">
-                          {t('Reset Password')}
-                        </h3>
-                        <p className="text-sm font-medium text-[var(--cream)]/74">
-                          {t("Enter your email and we'll send you a reset link.")}
+                      },
+                      () => {
+                        setError(t('Enter a valid email address and password to sign in.'))
+                      },
+                    )}
+                  >
+                    {resetSuccessMessage ? (
+                      <p className="text-sm font-bold text-success text-center">{resetSuccessMessage}</p>
+                    ) : null}
+
+                    <div className="grid gap-3">
+                      <Label htmlFor="signin-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
+                      <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
+                      {signInForm.formState.errors.email ? (
+                        <p className="text-xs font-bold text-red-500">
+                          {t(signInForm.formState.errors.email.message ?? '')}
                         </p>
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="reset-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
-                      </div>
-
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
-                        disabled={resetForm.formState.isSubmitting}
-                      >
-                        {resetForm.formState.isSubmitting ? (
-                          <span className="inline-flex items-center gap-2">
-                            <LoadingSpinner />
-                            {t('Send reset link')}
-                          </span>
-                        ) : (
-                          t('Send reset link')
-                        )}
-                      </Button>
-
-                      <button
-                        type="button"
-                        className="block w-full text-center text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
-                        onClick={() => {
-                          setError(null)
-                          setShowForgotPassword(false)
-                        }}
-                      >
-                        {t('Back to sign in')}
-                      </button>
-                    </form>
-                  ) : (
-                    <form
-                      className="space-y-6"
-                      onSubmit={signInForm.handleSubmit(
-                        async (values) => {
-                          try {
-                            setError(null)
-                            setResetSuccessMessage(null)
-                            await signIn({ ...values, role: 'customer' })
-                            const redirect = searchParams.get('redirect')
-                            if (redirect) {
-                              navigate(redirect)
-                            }
-                          } catch (submissionError) {
-                            setError(
-                              submissionError instanceof Error
-                                ? submissionError.message
-                                : t('Unable to sign in.'),
-                            )
-                          }
-                        },
-                        () => {
-                          setError(t('Enter a valid email address and password to sign in.'))
-                        },
-                      )}
-                    >
-                      {resetSuccessMessage ? (
-                        <p className="text-sm font-bold text-success text-center">{resetSuccessMessage}</p>
                       ) : null}
+                    </div>
 
-                      <div className="grid gap-3">
-                        <Label htmlFor="signin-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
-                        {signInForm.formState.errors.email ? (
-                          <p className="text-xs font-bold text-red-500">
-                            {t(signInForm.formState.errors.email.message ?? '')}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signin-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                        <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
-                        {signInForm.formState.errors.password ? (
-                          <p className="text-xs font-bold text-red-500">
-                            {t(signInForm.formState.errors.password.message ?? '')}
-                          </p>
-                        ) : null}
-                        <button
-                          type="button"
-                          className="text-left text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
-                          onClick={() => {
-                            setError(null)
-                            resetForm.setValue('email', signInForm.getValues('email'))
-                            setShowForgotPassword(true)
-                          }}
-                        >
-                          {t('Forgot password?')}
-                        </button>
-                      </div>
-
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
-                        disabled={signInForm.formState.isSubmitting}
-                      >
-                        {signInForm.formState.isSubmitting ? (
-                          <span className="inline-flex items-center gap-2">
-                            <LoadingSpinner />
-                            {t('Signing in...')}
-                          </span>
-                        ) : (
-                          t('Sign In')
-                        )}
-                      </Button>
-
-                    </form>
-                  )}
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="signup" className="outline-none">
-              <div className="space-y-5">
-                <div className="space-y-1.5 text-center">
-                  <h2 className={authPanelTitleClass}>
-                    {t('Create Account')}
-                  </h2>
-                  <p className={authPanelCopyClass}>
-                    {t('Join the circle and start collecting delights.')}
-                  </p>
-                </div>
-
-                <div className="relative mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
-                  <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
-                  <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
-                  <div className="relative z-10">
-                  {signUpComplete ? (
-                    <div className="space-y-6 text-center">
-                      <div className="space-y-3">
-                        <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">{t('Welcome aboard!')}</h3>
-                        <p className="text-sm font-medium leading-relaxed text-[var(--cream)]/76">
-                          {t('Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.')}
+                    <div className="grid gap-3">
+                      <Label htmlFor="signin-password" className="text-[var(--champagne)]">{t('Password')}</Label>
+                      <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
+                      {signInForm.formState.errors.password ? (
+                        <p className="text-xs font-bold text-red-500">
+                          {t(signInForm.formState.errors.password.message ?? '')}
                         </p>
-                        {signUpWarning ? (
-                          <p className="text-sm font-bold leading-relaxed text-[var(--champagne)]">
-                            {signUpWarning}
-                          </p>
-                        ) : null}
-                      </div>
-
+                      ) : null}
                       <button
                         type="button"
-                        className="text-sm font-bold text-[var(--champagne)] transition hover:text-[var(--cream)]"
+                        className="text-left text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
                         onClick={() => {
-                          setSignUpComplete(false)
-                          setActiveTab('signin')
                           setError(null)
+                          resetForm.setValue('email', signInForm.getValues('email'))
+                          setShowForgotPassword(true)
                         }}
                       >
-                        {t('Go to sign in ->')}
+                        {t('Forgot password?')}
                       </button>
                     </div>
-                  ) : (
-                    <form
-                      className="space-y-6"
-                      onSubmit={signUpForm.handleSubmit(async (values) => {
-                        try {
-                          setError(null)
-                          const documentFile = verificationDocument
-                          const documentError = validateVerificationDocument(documentFile)
-                          if (documentError || !documentFile) {
-                            setError(documentError ?? 'Upload a photo or PDF of your ID for account verification.')
-                            return
-                          }
 
-                          const result = await signUp({ ...values, verificationDocument: documentFile })
-                          setSignUpWarning(result.warning ?? null)
-                          setSignUpComplete(true)
-                          signUpForm.reset(signUpDefaultValues)
-                          setVerificationDocument(null)
-                        } catch (submissionError) {
-                          if (
-                            submissionError instanceof Error &&
-                            submissionError.message.includes('profile could not be loaded')
-                          ) {
-                            setSignUpComplete(true)
-                            signUpForm.reset(signUpDefaultValues)
-                            setVerificationDocument(null)
-                            return
-                          }
+                    {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
 
-                          setError(
-                            submissionError instanceof Error
-                              ? submissionError.message
-                              : t('Unable to create the account.'),
-                          )
-                        }
-                      })}
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
+                      disabled={signInForm.formState.isSubmitting}
                     >
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-[var(--cream)]/76">
-                          {t('Create your account, verify once, and activate your membership to earn points, unlock perks, and move through the circle with ease.')}
-                        </p>
-                      </div>
+                      {signInForm.formState.isSubmitting ? (
+                        <span className="inline-flex items-center gap-2">
+                          <LoadingSpinner />
+                          {t('Signing in...')}
+                        </span>
+                      ) : (
+                        t('Sign In')
+                      )}
+                    </Button>
 
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-name" className="text-[var(--champagne)]">{t('Full Name')}</Label>
-                        <Input id="signup-name" className={authInputClass} placeholder={t('Your name')} {...signUpForm.register('fullName')} />
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="signup-email" className={authInputClass} placeholder="your@email.com" {...signUpForm.register('email')} />
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                        <Input id="signup-password" className={authInputClass} type="password" placeholder="Password" {...signUpForm.register('password')} />
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-verification-id" className="text-[var(--champagne)]">{t('Verification ID number')}</Label>
-                        <Input
-                          id="signup-verification-id"
-                          className={authInputClass}
-                          placeholder={t('ID number')}
-                          {...signUpForm.register('verificationIdNumber')}
-                        />
-                        {signUpForm.formState.errors.verificationIdNumber ? (
-                          <p className="text-xs font-bold text-red-500">
-                            {t(signUpForm.formState.errors.verificationIdNumber.message ?? '')}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-verification-document" className="text-[var(--champagne)]">{t('Photo or PDF of ID')}</Label>
-                        <Input
-                          id="signup-verification-document"
-                          className={authInputClass}
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp,application/pdf"
-                          onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
-                        />
-                        <p className="text-xs font-medium leading-5 text-[var(--cream)]/66">
-                          {t('Used by admins to verify one member account per person.')}
-                        </p>
-                      </div>
-
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
-                        disabled={signUpForm.formState.isSubmitting}
-                      >
-                        {signUpForm.formState.isSubmitting ? (
-                          <span className="inline-flex items-center gap-2">
-                            <LoadingSpinner />
-                            {t('Creating account...')}
-                          </span>
-                        ) : (
-                          t('Create Account')
-                        )}
-                      </Button>
-                    </form>
-                  )}
-                  </div>
-                </div>
+                    <p className="text-center text-sm font-medium text-[var(--cream)]/72">
+                      {t('Need a member account?')}{' '}
+                      <Link to="/join" className="font-bold text-[var(--champagne)] transition hover:text-[var(--cream)]">
+                        {t('Join now')}
+                      </Link>
+                    </p>
+                  </form>
+                )}
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </section>
       </div>
     </div>
