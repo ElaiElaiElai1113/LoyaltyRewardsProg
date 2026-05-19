@@ -58,8 +58,8 @@ export function JoinRewardsPage() {
               <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">
                 {t('Medellin Rewards')}
               </p>
-              <Link to="/signin" className="rounded-full px-4 py-2 text-sm font-bold text-primary transition hover:bg-[var(--muted)]">
-                {t('Sign in')}
+              <Link to="/" className="rounded-full px-4 py-2 text-sm font-bold text-primary transition hover:bg-[var(--muted)]">
+                {t('Back to landing page')}
               </Link>
             </div>
 

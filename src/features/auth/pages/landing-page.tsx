@@ -1,5 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowRight, Check, Coins } from 'lucide-react'
+import {
+  ArrowUpRight,
+  BadgePercent,
+  CarFront,
+  ChevronRight,
+  CirclePercent,
+  Coins,
+  FileText,
+  Hotel,
+  Landmark,
+  Sparkles,
+} from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
@@ -10,22 +21,22 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
-import { validateVerificationDocument } from '@/lib/member-verification'
-import { authSchema, memberSignUpSchema, type AuthFormValues, type MemberSignUpFormValues } from '@/types/forms'
+import { authSchema, type AuthFormValues } from '@/types/forms'
 import {
   landingAgreementLabel,
-  landingBody,
-  landingBusinessNote,
+  landingCategoryTags,
+  landingEyebrow,
   landingFaqItems,
+  landingHeadline,
+  landingHighlights,
+  landingHowItWorksLead,
+  landingHowItWorksSteps,
   landingJoinButtonLabel,
-  landingLogo,
-  landingOfferLines,
-  landingTagline,
-  landingTags,
+  landingParagraphs,
+  landingSubscription,
 } from '../landing-content'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -34,14 +45,6 @@ const defaultValues: AuthFormValues = {
   fullName: '',
   email: '',
   password: '',
-  role: 'customer',
-}
-
-const signUpDefaultValues: MemberSignUpFormValues = {
-  fullName: '',
-  email: '',
-  password: '',
-  verificationIdNumber: '',
   role: 'customer',
 }
 
@@ -70,109 +73,180 @@ function LoadingSpinner() {
 
 export function LandingPage() {
   const { t } = useLanguage()
+  const categoryIcons = [Hotel, CarFront, CirclePercent, Sparkles] as const
 
   return (
-    <main className="soft-luxe-shell min-h-screen overflow-x-hidden pb-16 text-[var(--foreground)]">
-      <header className="sticky top-0 z-50 px-3 py-3 backdrop-blur sm:px-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 rounded-2xl border border-[var(--border)] bg-[var(--card)]/95 px-4 py-3 shadow-soft sm:px-5">
-          <Link to="/" className="min-w-0 truncate text-xl font-black sm:text-2xl">
-            {landingLogo}
+    <main className="min-h-screen overflow-x-hidden bg-[#f9fafb] text-[#1a1a1a]">
+      <header className="sticky top-0 z-50 border-b border-[#e5e7eb] bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:flex-nowrap lg:px-8">
+          <Link to="/" className="font-serif text-xl font-semibold tracking-[0.04em] text-[#1a1a1a]">
+            Medellin <span className="text-[#c9a84c]">Rewards</span>
           </Link>
-          <nav className="hidden items-center gap-1 rounded-full bg-[var(--muted)] px-2 py-1.5 lg:flex">
-            <a href="#rewards" className="rounded-full px-4 py-2 text-sm font-bold text-[var(--muted-foreground)] transition hover:bg-[var(--card)] hover:text-[var(--foreground)]">
-              {t('Rewards')}
+          <nav className="hidden items-center gap-6 text-[13px] text-[#6b7280] md:flex">
+            <a href="#how-it-works" className="transition hover:text-[#1a1a1a]">
+              {t('How it works')}
             </a>
-            <a href="#offer" className="rounded-full px-4 py-2 text-sm font-bold text-[var(--muted-foreground)] transition hover:bg-[var(--card)] hover:text-[var(--foreground)]">
-              {t('Offer')}
-            </a>
-            <a href="#faq" className="rounded-full px-4 py-2 text-sm font-bold text-[var(--muted-foreground)] transition hover:bg-[var(--card)] hover:text-[var(--foreground)]">
+            <Link to="/for-businesses" className="transition hover:text-[#1a1a1a]">
+              {t('For businesses')}
+            </Link>
+            <a href="#faq" className="transition hover:text-[#1a1a1a]">
               {t('FAQ')}
             </a>
+            <Link to="/join" className="font-medium text-[#c9a84c] transition hover:text-[#a07820]">
+              {t('Join now')}
+            </Link>
           </nav>
           <div className="flex items-center gap-2">
-            <LanguagePicker compact className="hidden text-[var(--foreground)] sm:flex" />
-            <Link to="/signin" className="hidden rounded-full px-4 py-2 text-sm font-bold text-[var(--foreground)] transition hover:bg-[var(--muted)] sm:inline-flex">
-              {t('Sign In')}
-            </Link>
-            <Link
-              to="/join"
-              className="inline-flex min-h-10 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground shadow-soft transition hover:bg-primary-container"
-            >
-              {t(landingJoinButtonLabel)}
-            </Link>
+            <LanguagePicker compact className="hidden text-[#6b7280] sm:flex" />
+            <ThemeToggle />
           </div>
         </div>
-        </header>
+      </header>
 
-      <section className="px-4 pb-12 pt-8 sm:px-6 sm:pb-16 sm:pt-12 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(18rem,0.55fr)] lg:items-end">
-          <div className="max-w-4xl space-y-7">
-            <Badge className="w-fit max-w-full justify-center whitespace-normal border-primary/20 bg-[var(--card)] px-4 py-2 text-center text-xs font-extrabold uppercase leading-5 text-primary shadow-soft">
-              {t(landingLogo)}
-            </Badge>
-            <div className="space-y-5">
-              <h1 className="text-wrap text-5xl font-black leading-none sm:text-6xl lg:text-7xl">
-                {t(landingTagline)}
-              </h1>
-              <p className="max-w-3xl text-2xl font-semibold leading-snug sm:text-3xl">
-                {t(landingBody)}
-              </p>
-            </div>
-            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link
-                to="/join"
-                className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 text-base font-extrabold text-primary-foreground shadow-soft transition hover:bg-primary-container"
-              >
-                {t(landingJoinButtonLabel)}
-                <ArrowRight className="size-5" aria-hidden="true" />
-              </Link>
-              <Link
-                to="/reward-terms"
-                className="inline-flex min-h-14 items-center justify-center rounded-full border border-primary/35 bg-[var(--card)] px-8 text-base font-extrabold text-primary transition hover:bg-[var(--muted)]"
-              >
-                {t(landingAgreementLabel)}
-              </Link>
-            </div>
-          </div>
+      <section className="border-b border-[#e5e7eb] px-4 pb-14 pt-10 sm:px-6 sm:pb-16 sm:pt-14 lg:px-8 lg:pt-16">
+        <div className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6 text-center">
+          <Badge className="max-w-full rounded-full border-[#c9a84c]/40 bg-[#c9a84c]/12 px-4 py-2 text-[10px] font-medium tracking-[0.18em] text-[#a07820] sm:px-5 sm:text-[11px] sm:tracking-[0.22em]">
+            {t(landingEyebrow)}
+          </Badge>
 
-          <aside id="offer" className="gold-frame rounded-3xl p-5 shadow-soft sm:p-6 lg:p-7">
-            <div className="space-y-4">
-              {landingOfferLines.map((line) => (
-                <div key={line} className="flex items-start gap-3 border-b border-primary/15 pb-4 last:border-b-0 last:pb-0">
-                  <span className="mt-1 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                    <Check className="size-4" aria-hidden="true" />
-                  </span>
-                  <p className="text-3xl font-black leading-none sm:text-4xl">{t(line)}</p>
-                </div>
+          <div className="w-full max-w-[min(92vw,72rem)] space-y-5">
+            <h1 className="mx-auto max-w-[18ch] text-balance font-serif text-[clamp(3rem,7vw,6.25rem)] font-semibold leading-[0.96] tracking-[-0.03em] text-[#1a1a1a]">
+              {t(landingHeadline)}
+            </h1>
+            <div className="mx-auto max-w-[min(92vw,60rem)] space-y-4 text-[clamp(1.05rem,2vw,1.8rem)] leading-[1.55] text-[#6b7280]">
+              {landingParagraphs.map((paragraph) => (
+                <p key={paragraph} className="mx-auto max-w-[34ch] text-pretty">
+                  {t(paragraph)}
+                </p>
               ))}
             </div>
-          </aside>
-        </div>
-      </section>
+          </div>
 
-      <section id="rewards" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-4 md:grid-cols-2">
-          {landingTags.map((tag) => (
-            <article key={tag} className="flex min-h-56 items-end rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-soft sm:p-8">
-              <p className="max-w-xl text-2xl font-black leading-tight sm:text-3xl">{t(tag)}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section id="faq" className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl gap-6 rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-soft md:grid-cols-[0.4fr_1fr] md:p-8">
-          <h2 className="text-5xl font-black leading-none sm:text-6xl">{t('FAQ')}</h2>
-          <div className="grid gap-3">
-            {landingFaqItems.map((item) => (
-              <details key={item.question} className="group rounded-2xl border border-[var(--border)] bg-[var(--muted)] p-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4">
-                  <span className="text-xl font-black leading-snug sm:text-2xl">{t(item.question)}</span>
-                  <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-2xl font-black leading-none text-primary-foreground transition group-open:rotate-45">
-                    +
+          <div className="w-full max-w-[min(92vw,56rem)] space-y-3 pt-3">
+            {landingHighlights.map((highlight, index) => {
+              const HighlightIcon = index === 0 ? BadgePercent : Landmark
+              return (
+                <div
+                  key={highlight}
+                  className="flex items-start gap-3 rounded-xl border border-[#e5e7eb] bg-white px-4 py-4 text-left shadow-[0_1px_1px_rgba(0,0,0,0.05)] sm:px-5"
+                >
+                  <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center text-[#c9a84c]">
+                    <HighlightIcon className="size-4" aria-hidden="true" />
                   </span>
+                  <p className="text-sm leading-6 text-[#6b7280] sm:text-[15px]">
+                    {t(highlight)}
+                  </p>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex w-full max-w-[min(94vw,64rem)] flex-wrap items-center justify-center gap-3 pt-1">
+            {landingCategoryTags.map((tag, index) => {
+              const TagIcon = categoryIcons[index]
+              return (
+                <div
+                  key={tag}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#e5e7eb] bg-white px-4 text-[13px] text-[#555] shadow-[0_1px_1px_rgba(0,0,0,0.05)]"
+                >
+                  <TagIcon className="size-3.5 text-[#c9a84c]" aria-hidden="true" />
+                  <span>{t(tag)}</span>
+                </div>
+              )
+            })}
+          </div>
+
+          <Button asChild size="lg" className="mt-2 h-auto rounded-lg bg-[#c9a84c] px-10 py-3.5 text-[15px] font-semibold text-[#1a1000] shadow-none hover:bg-[#b99534]">
+            <Link to="/join">
+              {t(landingJoinButtonLabel)}
+              <ArrowUpRight className="size-4" aria-hidden="true" />
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      <section className="px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto flex max-w-5xl flex-col items-center gap-8 text-center">
+          <div className="space-y-2">
+            <h2 className="mx-auto max-w-[18ch] text-balance font-serif text-[clamp(2.1rem,4.4vw,4.1rem)] font-semibold leading-[1.04] tracking-[-0.025em] text-[#1a1a1a]">
+              {t('Early adopter monthly subscription')}
+            </h2>
+          </div>
+
+          <article className="relative w-full max-w-[680px] rounded-[1.55rem] border-[4px] border-[#cda640] bg-white px-6 pb-12 pt-16 shadow-none sm:px-10 sm:pb-14 sm:pt-18">
+            <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d1af49] px-9 py-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#1a1000] sm:px-10 sm:text-[11px]">
+              {t(landingSubscription.offerBadge)}
+            </div>
+            <p className="text-[clamp(1.15rem,2vw,1.9rem)] font-medium uppercase tracking-[0.22em] text-[#6b7280]">
+              {t(landingSubscription.eyebrow)}
+            </p>
+            <div className="mx-auto mt-6 max-w-[560px] rounded-[1.2rem] bg-[#f7f8fb] px-5 py-8 sm:px-8 sm:py-9">
+              <p className="text-[clamp(1rem,1.5vw,1.1rem)] uppercase tracking-[0.04em] text-[#6b7280]">
+                {t(landingSubscription.bonusLabel)}
+              </p>
+              <p className="mx-auto mt-5 max-w-[14ch] text-balance text-[clamp(2.2rem,4.5vw,4rem)] font-semibold leading-[1.02] tracking-[-0.035em] text-[#cda640]">
+                {t(landingSubscription.rewardValue)}
+              </p>
+            </div>
+            <Button asChild size="lg" className="mx-auto mt-9 h-16 w-full max-w-[560px] rounded-[1rem] bg-[#d1af49] text-[clamp(1.15rem,2vw,1.5rem)] font-semibold text-[#1a1000] shadow-none hover:bg-[#b99534]">
+              <Link to="/join">{t('Join now')}</Link>
+            </Button>
+            <div className="mt-6 flex items-center justify-center gap-2 text-[clamp(1rem,1.5vw,1.15rem)] text-[#6b7280]">
+              <FileText className="size-4 text-[#6b7280]" aria-hidden="true" />
+              <span>{t('Member agreement applies')}</span>
+            </div>
+          </article>
+
+          <Button asChild variant="secondary" size="lg" className="mt-2 h-15 rounded-[1rem] border-[#d8dde7] bg-white px-10 text-[clamp(1.05rem,1.8vw,1.35rem)] font-medium text-[#566173] shadow-[0_14px_28px_-24px_rgba(30,41,59,0.28)] hover:bg-[#fafbfd]">
+            <Link to="/reward-terms">
+              <FileText className="size-5 text-[#cda640]" aria-hidden="true" />
+              {t(landingAgreementLabel)}
+            </Link>
+          </Button>
+        </div>
+      </section>
+
+      <section id="how-it-works" className="border-t border-[#e5e7eb] px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <div className="text-center">
+            <h2 className="font-serif text-3xl font-semibold text-[#1a1a1a] sm:text-[2.5rem]">
+              {t('How it works')}
+            </h2>
+            <p className="mt-3 text-sm text-[#6b7280] sm:text-base">
+              {t(landingHowItWorksLead)}
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+            {landingHowItWorksSteps.map((step) => (
+              <article key={step.number} className="rounded-xl border border-[#e5e7eb] bg-white px-5 py-6 text-center shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+                <div className="mx-auto flex size-9 items-center justify-center rounded-full border border-[#c9a84c]/50 bg-[#c9a84c]/10 text-sm font-semibold text-[#a07820]">
+                  {step.number}
+                </div>
+                <h3 className="mt-4 text-[15px] font-medium text-[#1a1a1a]">{t(step.title)}</h3>
+                <p className="mt-3 text-sm leading-6 text-[#6b7280]">{t(step.body)}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" className="border-t border-[#e5e7eb] bg-[#f9fafb] px-4 py-14 sm:px-6 sm:py-16 lg:px-8">
+        <div className="mx-auto max-w-4xl">
+          <div className="text-center">
+            <h2 className="font-serif text-3xl font-semibold text-[#1a1a1a] sm:text-[2.5rem]">
+              {t('Frequently asked questions')}
+            </h2>
+          </div>
+
+          <div className="mt-10 space-y-3">
+            {landingFaqItems.map((item) => (
+              <details key={item.question} className="group rounded-lg border border-[#e5e7eb] bg-white px-5 py-4 shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-sm font-medium text-[#1a1a1a] sm:text-[15px]">
+                  <span>{t(item.question)}</span>
+                  <ChevronRight className="size-4 shrink-0 text-[#c9a84c] transition group-open:rotate-90" aria-hidden="true" />
                 </summary>
-                <p className="mt-4 max-w-3xl text-base font-semibold leading-7 text-[var(--muted-foreground)] sm:text-lg">
+                <p className="pt-4 text-sm leading-6 text-[#6b7280]">
                   {t(item.answer)}
                 </p>
               </details>
@@ -181,21 +255,37 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="px-4 py-10 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl rounded-3xl border border-[var(--border)] bg-[var(--card)] p-6 shadow-soft sm:p-8">
-          <p className="max-w-3xl text-lg font-bold leading-7 sm:text-xl">{t(landingBusinessNote)}</p>
+      <footer className="border-t border-[#e5e7eb] bg-white px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-7xl flex-col gap-5 text-center sm:text-left lg:flex-row lg:items-center lg:justify-between">
+          <p className="font-serif text-lg font-semibold text-[#1a1a1a]">
+            Medellin <span className="text-[#c9a84c]">Rewards</span>
+          </p>
+          <p className="text-xs text-[#6b7280]">
+            {t("The world's highest paying rewards program")}
+          </p>
+          <nav className="flex flex-wrap items-center justify-center gap-3 text-xs text-[#6b7280] lg:justify-end">
+            <Link to="/reward-terms" className="transition hover:text-[#1a1a1a]">
+              {t('Member agreement')}
+            </Link>
+            <span className="hidden text-[#d1d5db] sm:inline">·</span>
+            <Link to="/privacy" className="transition hover:text-[#1a1a1a]">
+              {t('Privacy policy')}
+            </Link>
+            <span className="hidden text-[#d1d5db] sm:inline">·</span>
+            <Link to="/terms" className="transition hover:text-[#1a1a1a]">
+              {t('Contact')}
+            </Link>
+          </nav>
         </div>
-      </section>
-
+      </footer>
     </main>
   )
 }
 export function AuthPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { signIn, signUp } = useAuth()
+  const { signIn } = useAuth()
   const { t } = useLanguage()
-  const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin')
   const [error, setError] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
 
@@ -207,18 +297,10 @@ export function AuthPage() {
   })
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null)
-  const [signUpComplete, setSignUpComplete] = useState(false)
-  const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
-  const [verificationDocument, setVerificationDocument] = useState<File | null>(null)
 
   const signInForm = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
     defaultValues,
-  })
-
-  const signUpForm = useForm<MemberSignUpFormValues>({
-    resolver: zodResolver(memberSignUpSchema),
-    defaultValues: signUpDefaultValues,
   })
 
   const resetForm = useForm<Pick<AuthFormValues, 'email'>>({
@@ -226,18 +308,6 @@ export function AuthPage() {
       email: '',
     },
   })
-
-  const handleTabChange = (value: string) => {
-    const nextTab = value === 'signup' ? 'signup' : 'signin'
-    setActiveTab(nextTab)
-    setError(null)
-    setResetSuccessMessage(null)
-    setShowForgotPassword(false)
-
-    if (nextTab === 'signin') {
-      setSignUpComplete(false)
-    }
-  }
 
   return (
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
@@ -284,339 +354,173 @@ export function AuthPage() {
             <ThemeToggle className="rounded-full border border-[var(--champagne)]/24 bg-[var(--espresso)]/35 text-[var(--champagne)] hover:bg-[var(--espresso)]/55 hover:text-[var(--cream)]" />
             <LanguagePicker className="text-on-surface-variant" />
           </div>
-          <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full space-y-5">
-            <div className="flex justify-center">
-              <TabsList className="grid w-full max-w-md grid-cols-2">
-                <TabsTrigger value="signin" className="min-w-0 px-4">{t('Sign In')}</TabsTrigger>
-                <TabsTrigger value="signup" className="min-w-0 px-4">{t('Register')}</TabsTrigger>
-              </TabsList>
+          <div className="space-y-5">
+            <div className="space-y-1.5 text-center">
+              <h2 className={authPanelTitleClass}>
+                {t('Welcome Back')}
+              </h2>
+              <p className={authPanelCopyClass}>
+                {t('Step back into your rewards ritual.')}
+              </p>
             </div>
 
-            <TabsContent value="signin" className="outline-none">
-              <div className="space-y-5">
-                <div className="space-y-1.5 text-center">
-                  <h2 className={authPanelTitleClass}>
-                    {t('Welcome Back')}
-                  </h2>
-                  <p className={authPanelCopyClass}>
-                    {t('Step back into your rewards ritual.')}
-                  </p>
-                </div>
+            <div className="relative mx-auto min-h-[25.5rem] max-w-md overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
+              <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
+              <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
+              <div className="relative z-10">
+                {showForgotPassword ? (
+                  <form
+                    className="space-y-6"
+                    onSubmit={resetForm.handleSubmit(async (values) => {
+                      try {
+                        setError(null)
+                        setResetSuccessMessage(null)
+                        await authService.resetPassword(values.email.trim())
+                        setResetSuccessMessage(t('Check your email for a password reset link.'))
+                        setShowForgotPassword(false)
+                        resetForm.reset({ email: '' })
+                      } catch (submissionError) {
+                        setError(
+                          submissionError instanceof Error
+                            ? submissionError.message
+                            : t('Unable to send reset link.'),
+                        )
+                      }
+                    })}
+                  >
+                    <div className="space-y-2 text-center">
+                      <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">
+                        {t('Reset Password')}
+                      </h3>
+                      <p className="text-sm font-medium text-[var(--cream)]/74">
+                        {t("Enter your email and we'll send you a reset link.")}
+                      </p>
+                    </div>
 
-                <div className="relative mx-auto min-h-[25.5rem] max-w-md overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
-                  <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
-                  <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
-                  <div className="relative z-10">
-                  {showForgotPassword ? (
-                    <form
-                      className="space-y-6"
-                      onSubmit={resetForm.handleSubmit(async (values) => {
+                    <div className="grid gap-3">
+                      <Label htmlFor="reset-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
+                      <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
+                    </div>
+
+                    {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
+                      disabled={resetForm.formState.isSubmitting}
+                    >
+                      {resetForm.formState.isSubmitting ? (
+                        <span className="inline-flex items-center gap-2">
+                          <LoadingSpinner />
+                          {t('Send reset link')}
+                        </span>
+                      ) : (
+                        t('Send reset link')
+                      )}
+                    </Button>
+
+                    <button
+                      type="button"
+                      className="block w-full text-center text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
+                      onClick={() => {
+                        setError(null)
+                        setShowForgotPassword(false)
+                      }}
+                    >
+                      {t('Back to sign in')}
+                    </button>
+                  </form>
+                ) : (
+                  <form
+                    className="space-y-6"
+                    onSubmit={signInForm.handleSubmit(
+                      async (values) => {
                         try {
                           setError(null)
                           setResetSuccessMessage(null)
-                          await authService.resetPassword(values.email.trim())
-                          setResetSuccessMessage(t('Check your email for a password reset link.'))
-                          setShowForgotPassword(false)
-                          resetForm.reset({ email: '' })
-                        } catch (submissionError) {
-                          if (
-                            submissionError instanceof Error &&
-                            submissionError.message.includes('profile could not be loaded')
-                          ) {
-                            setSignUpComplete(true)
-                            signUpForm.reset(signUpDefaultValues)
-                            return
+                          await signIn({ ...values, role: 'customer' })
+                          const redirect = searchParams.get('redirect')
+                          if (redirect) {
+                            navigate(redirect)
                           }
-
+                        } catch (submissionError) {
                           setError(
                             submissionError instanceof Error
                               ? submissionError.message
-                              : t('Unable to send reset link.'),
+                              : t('Unable to sign in.'),
                           )
                         }
-                      })}
-                    >
-                      <div className="space-y-2 text-center">
-                        <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">
-                          {t('Reset Password')}
-                        </h3>
-                        <p className="text-sm font-medium text-[var(--cream)]/74">
-                          {t("Enter your email and we'll send you a reset link.")}
+                      },
+                      () => {
+                        setError(t('Enter a valid email address and password to sign in.'))
+                      },
+                    )}
+                  >
+                    {resetSuccessMessage ? (
+                      <p className="text-sm font-bold text-success text-center">{resetSuccessMessage}</p>
+                    ) : null}
+
+                    <div className="grid gap-3">
+                      <Label htmlFor="signin-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
+                      <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
+                      {signInForm.formState.errors.email ? (
+                        <p className="text-xs font-bold text-red-500">
+                          {t(signInForm.formState.errors.email.message ?? '')}
                         </p>
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="reset-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
-                      </div>
-
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
-                        disabled={resetForm.formState.isSubmitting}
-                      >
-                        {resetForm.formState.isSubmitting ? (
-                          <span className="inline-flex items-center gap-2">
-                            <LoadingSpinner />
-                            {t('Send reset link')}
-                          </span>
-                        ) : (
-                          t('Send reset link')
-                        )}
-                      </Button>
-
-                      <button
-                        type="button"
-                        className="block w-full text-center text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
-                        onClick={() => {
-                          setError(null)
-                          setShowForgotPassword(false)
-                        }}
-                      >
-                        {t('Back to sign in')}
-                      </button>
-                    </form>
-                  ) : (
-                    <form
-                      className="space-y-6"
-                      onSubmit={signInForm.handleSubmit(
-                        async (values) => {
-                          try {
-                            setError(null)
-                            setResetSuccessMessage(null)
-                            await signIn({ ...values, role: 'customer' })
-                            const redirect = searchParams.get('redirect')
-                            if (redirect) {
-                              navigate(redirect)
-                            }
-                          } catch (submissionError) {
-                            setError(
-                              submissionError instanceof Error
-                                ? submissionError.message
-                                : t('Unable to sign in.'),
-                            )
-                          }
-                        },
-                        () => {
-                          setError(t('Enter a valid email address and password to sign in.'))
-                        },
-                      )}
-                    >
-                      {resetSuccessMessage ? (
-                        <p className="text-sm font-bold text-success text-center">{resetSuccessMessage}</p>
                       ) : null}
+                    </div>
 
-                      <div className="grid gap-3">
-                        <Label htmlFor="signin-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
-                        {signInForm.formState.errors.email ? (
-                          <p className="text-xs font-bold text-red-500">
-                            {t(signInForm.formState.errors.email.message ?? '')}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signin-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                        <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
-                        {signInForm.formState.errors.password ? (
-                          <p className="text-xs font-bold text-red-500">
-                            {t(signInForm.formState.errors.password.message ?? '')}
-                          </p>
-                        ) : null}
-                        <button
-                          type="button"
-                          className="text-left text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
-                          onClick={() => {
-                            setError(null)
-                            resetForm.setValue('email', signInForm.getValues('email'))
-                            setShowForgotPassword(true)
-                          }}
-                        >
-                          {t('Forgot password?')}
-                        </button>
-                      </div>
-
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
-                        disabled={signInForm.formState.isSubmitting}
-                      >
-                        {signInForm.formState.isSubmitting ? (
-                          <span className="inline-flex items-center gap-2">
-                            <LoadingSpinner />
-                            {t('Signing in...')}
-                          </span>
-                        ) : (
-                          t('Sign In')
-                        )}
-                      </Button>
-
-                    </form>
-                  )}
-                  </div>
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="signup" className="outline-none">
-              <div className="space-y-5">
-                <div className="space-y-1.5 text-center">
-                  <h2 className={authPanelTitleClass}>
-                    {t('Create Account')}
-                  </h2>
-                  <p className={authPanelCopyClass}>
-                    {t('Join the circle and start collecting delights.')}
-                  </p>
-                </div>
-
-                <div className="relative mx-auto flex min-h-[25.5rem] max-w-md flex-col justify-center overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
-                  <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
-                  <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
-                  <div className="relative z-10">
-                  {signUpComplete ? (
-                    <div className="space-y-6 text-center">
-                      <div className="space-y-3">
-                        <h3 className="font-serif text-4xl tracking-tight text-[var(--champagne)]">{t('Welcome aboard!')}</h3>
-                        <p className="text-sm font-medium leading-relaxed text-[var(--cream)]/76">
-                          {t('Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.')}
+                    <div className="grid gap-3">
+                      <Label htmlFor="signin-password" className="text-[var(--champagne)]">{t('Password')}</Label>
+                      <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
+                      {signInForm.formState.errors.password ? (
+                        <p className="text-xs font-bold text-red-500">
+                          {t(signInForm.formState.errors.password.message ?? '')}
                         </p>
-                        {signUpWarning ? (
-                          <p className="text-sm font-bold leading-relaxed text-[var(--champagne)]">
-                            {signUpWarning}
-                          </p>
-                        ) : null}
-                      </div>
-
+                      ) : null}
                       <button
                         type="button"
-                        className="text-sm font-bold text-[var(--champagne)] transition hover:text-[var(--cream)]"
+                        className="text-left text-sm font-medium text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
                         onClick={() => {
-                          setSignUpComplete(false)
-                          setActiveTab('signin')
                           setError(null)
+                          resetForm.setValue('email', signInForm.getValues('email'))
+                          setShowForgotPassword(true)
                         }}
                       >
-                        {t('Go to sign in ->')}
+                        {t('Forgot password?')}
                       </button>
                     </div>
-                  ) : (
-                    <form
-                      className="space-y-6"
-                      onSubmit={signUpForm.handleSubmit(async (values) => {
-                        try {
-                          setError(null)
-                          const documentFile = verificationDocument
-                          const documentError = validateVerificationDocument(documentFile)
-                          if (documentError || !documentFile) {
-                            setError(documentError ?? 'Upload a photo or PDF of your ID for account verification.')
-                            return
-                          }
 
-                          const result = await signUp({ ...values, verificationDocument: documentFile })
-                          setSignUpWarning(result.warning ?? null)
-                          setSignUpComplete(true)
-                          signUpForm.reset(signUpDefaultValues)
-                          setVerificationDocument(null)
-                        } catch (submissionError) {
-                          if (
-                            submissionError instanceof Error &&
-                            submissionError.message.includes('profile could not be loaded')
-                          ) {
-                            setSignUpComplete(true)
-                            signUpForm.reset(signUpDefaultValues)
-                            setVerificationDocument(null)
-                            return
-                          }
+                    {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
 
-                          setError(
-                            submissionError instanceof Error
-                              ? submissionError.message
-                              : t('Unable to create the account.'),
-                          )
-                        }
-                      })}
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
+                      disabled={signInForm.formState.isSubmitting}
                     >
-                      <div className="space-y-2">
-                        <p className="text-sm font-medium text-[var(--cream)]/76">
-                          {t('Create your account, verify once, and activate your membership to earn points, unlock perks, and move through the circle with ease.')}
-                        </p>
-                      </div>
+                      {signInForm.formState.isSubmitting ? (
+                        <span className="inline-flex items-center gap-2">
+                          <LoadingSpinner />
+                          {t('Signing in...')}
+                        </span>
+                      ) : (
+                        t('Sign In')
+                      )}
+                    </Button>
 
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-name" className="text-[var(--champagne)]">{t('Full Name')}</Label>
-                        <Input id="signup-name" className={authInputClass} placeholder={t('Your name')} {...signUpForm.register('fullName')} />
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                        <Input id="signup-email" className={authInputClass} placeholder="your@email.com" {...signUpForm.register('email')} />
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                        <Input id="signup-password" className={authInputClass} type="password" placeholder="Password" {...signUpForm.register('password')} />
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-verification-id" className="text-[var(--champagne)]">{t('Verification ID number')}</Label>
-                        <Input
-                          id="signup-verification-id"
-                          className={authInputClass}
-                          placeholder={t('ID number')}
-                          {...signUpForm.register('verificationIdNumber')}
-                        />
-                        {signUpForm.formState.errors.verificationIdNumber ? (
-                          <p className="text-xs font-bold text-red-500">
-                            {t(signUpForm.formState.errors.verificationIdNumber.message ?? '')}
-                          </p>
-                        ) : null}
-                      </div>
-
-                      <div className="grid gap-3">
-                        <Label htmlFor="signup-verification-document" className="text-[var(--champagne)]">{t('Photo or PDF of ID')}</Label>
-                        <Input
-                          id="signup-verification-document"
-                          className={authInputClass}
-                          type="file"
-                          accept="image/jpeg,image/png,image/webp,application/pdf"
-                          onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
-                        />
-                        <p className="text-xs font-medium leading-5 text-[var(--cream)]/66">
-                          {t('Used by admins to verify one member account per person.')}
-                        </p>
-                      </div>
-
-                      {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
-
-                      <Button
-                        type="submit"
-                        size="lg"
-                        className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]"
-                        disabled={signUpForm.formState.isSubmitting}
-                      >
-                        {signUpForm.formState.isSubmitting ? (
-                          <span className="inline-flex items-center gap-2">
-                            <LoadingSpinner />
-                            {t('Creating account...')}
-                          </span>
-                        ) : (
-                          t('Create Account')
-                        )}
-                      </Button>
-                    </form>
-                  )}
-                  </div>
-                </div>
+                    <p className="text-center text-sm font-medium text-[var(--cream)]/72">
+                      {t('Need a member account?')}{' '}
+                      <Link to="/join" className="font-bold text-[var(--champagne)] transition hover:text-[var(--cream)]">
+                        {t('Join now')}
+                      </Link>
+                    </p>
+                  </form>
+                )}
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </div>
         </section>
       </div>
     </div>
