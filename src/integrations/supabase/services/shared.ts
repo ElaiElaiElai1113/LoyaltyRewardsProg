@@ -27,3 +27,11 @@ export function requireSupabase() {
   }
   return supabase
 }
+
+export function friendlySupabaseError(error: { message?: string } | null | undefined, fallback: string) {
+  const message = error?.message ?? fallback
+  if (message.includes('identity_verification_required')) {
+    return 'ID verification is required before using reward value actions.'
+  }
+  return message
+}

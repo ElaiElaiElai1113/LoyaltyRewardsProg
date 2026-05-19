@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils'
 
 type Theme = 'light' | 'dark'
 
-const storageKey = 'coffee-loyalty-theme'
+const storageKey = 'medellinrewards-theme'
 
 function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'light'

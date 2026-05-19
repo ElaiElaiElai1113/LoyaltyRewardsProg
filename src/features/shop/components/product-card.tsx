@@ -48,7 +48,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
               </p>
               <p className="mt-2 font-serif text-2xl leading-none text-[var(--cream)]">{formatCurrency(product.price)}</p>
             </div>
-            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)]">
+            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)] shadow-soft">
               <CategoryIcon className="size-7" />
             </div>
           </div>

@@ -2,11 +2,14 @@ import { useEffect } from 'react'
 import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
-import { LandingPage } from '@/features/auth/pages/landing-page'
+import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
+import { AuthPage, LandingPage } from '@/features/auth/pages/landing-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
+import { CostCalculatorPage } from '@/features/business/pages/cost-calculator-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
 import { ActivityPage } from '@/features/activity/pages/activity-page'
 import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
+import { EarlyAccessPage } from '@/features/early-access/pages/early-access-page'
 import { ProfilePage } from '@/features/profile/pages/profile-page'
 import { PromotionsPage } from '@/features/promotions/pages/promotions-page'
 import { PromoPage } from '@/features/referrals/pages/promo-page'
@@ -18,6 +21,8 @@ import { GiftCardsPage } from '@/features/gift-cards/pages/gift-cards-page'
 import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card-page'
 import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
 import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
+import { JoinRewardsPage } from '@/features/join/pages/join-rewards-page'
+import { LegalPage } from '@/features/legal/pages/legal-page'
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
@@ -88,26 +93,10 @@ function LandingRoute() {
     return <Navigate replace to="/dashboard" />
   }
 
-  return <LandingPage />
+  return <AuthPage />
 }
 
 function RootRoute() {
-  const { profile, isLoading } = useAuth()
-
-  if (isLoading) {
-    return <RouteLoading />
-  }
-
-  if (profile) {
-    if (profile.role === 'platform-admin') {
-      return <Navigate replace to="/admin/portal" />
-    }
-    if (profile.role === 'business-owner' || profile.role === 'business-staff') {
-      return <Navigate replace to="/business/dashboard" />
-    }
-    return <Navigate replace to="/dashboard" />
-  }
-
   return <LandingPage />
 }
 
@@ -268,9 +257,47 @@ const router = createBrowserRouter([
     element: <ReferralRegisterPage />,
   },
   {
+    path: '/ambassadors',
+    element: <AmbassadorsPage />,
+  },
+  {
+    path: '/join',
+    element: <JoinRewardsPage />,
+  },
+  {
+    path: '/early-access',
+    element: <EarlyAccessPage />,
+  },
+  {
+    path: '/joinusearly',
+    element: <Navigate replace to="/early-access" />,
+  },
+  {
+    path: '/join-us-early',
+    element: <Navigate replace to="/early-access" />,
+  },
+  {
+    path: '/terms',
+    element: <LegalPage kind="terms" />,
+  },
+  {
+    path: '/privacy',
+    element: <LegalPage kind="privacy" />,
+  },
+  {
+    path: '/reward-terms',
+    element: <LegalPage kind="reward-terms" />,
+  },
+  {
+    path: '/verification-policy',
+    element: <LegalPage kind="verification-policy" />,
+  },
+  {
     element: <PublicBrowseLayout />,
     children: [
       { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
+      { path: '/cost-calculator', element: <CostCalculatorPage /> },
+      { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
     ],
   },
   {

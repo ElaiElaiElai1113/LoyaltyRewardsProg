@@ -14,8 +14,8 @@ import type {
   UserRole,
 } from '@/types/domain'
 
-const STORAGE_KEY = 'loyalty-platform-store-v3'
-const CART_KEY = 'loyalty-platform-cart-v1'
+const STORAGE_KEY = 'medellinrewards-store-v3'
+const CART_KEY = 'medellinrewards-cart-v1'
 
 // ─── Businesses ────────────────────────────────────────────────
 
@@ -59,7 +59,7 @@ const profiles: Profile[] = [
   {
     id: 'profile-platform-admin',
     fullName: 'Noah Reyes',
-    email: 'admin@loyaltyplatform.co',
+    email: 'admin@medellinrewards.com',
     phone: '+1 (415) 555-0140',
     location: 'San Francisco',
     favoriteOrder: 'Cortado',

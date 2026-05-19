@@ -1,4 +1,5 @@
 import { type CSSProperties, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 
 import { Coffee, Cookie, Gift, Shirt, Ticket } from 'lucide-react'
@@ -9,13 +10,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useAuth } from '@/hooks/use-auth'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useMembership } from '@/hooks/use-membership'
@@ -41,6 +36,7 @@ export function RewardsPage() {
   const [selectedReward, setSelectedReward] = useState<Reward | null>(null)
   const [activeFilter, setActiveFilter] = useState<(typeof filters)[number]>('All')
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null)
+  const portalRoot = typeof document === 'undefined' ? null : document.body
 
   const rewards = useRewards(selectedBusiness ?? undefined)
   const balancePoints = rewardBalance.data?.points ?? 0
@@ -48,12 +44,20 @@ export function RewardsPage() {
     activeFilter === 'All' ? true : reward.category === activeFilter,
   )
   const featuredRewards = filteredRewards.filter((reward) => reward.featured).slice(0, 5)
+  const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
+  const rewardActionsLocked = Boolean(profile) && verificationStatus !== 'verified'
 
   const getBusinessName = (businessId: string) =>
     businesses.data?.find((b) => b.id === businessId)?.name ?? ''
 
   const handleRedeem = (reward: Reward) => {
-    requireAuth(() => setSelectedReward(reward))
+    requireAuth(() => {
+      if (rewardActionsLocked) {
+        navigate('/profile')
+        return
+      }
+      setSelectedReward(reward)
+    })
   }
 
   return (
@@ -95,6 +99,13 @@ export function RewardsPage() {
           {t('Catalog browsing stays open. Subscribe in demo mode only when you are ready to redeem.')}
         </div>
       ) : null}
+      {profile ? (
+        <VerificationStatusNotice
+          status={verificationStatus}
+          rejectionReason={profile.verificationRejectionReason}
+          compact
+        />
+      ) : null}
 
       <div className="relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
@@ -133,6 +144,7 @@ export function RewardsPage() {
               balancePoints={balancePoints}
               businessName={getBusinessName(reward.businessId)}
               requirePoints={Boolean(profile)}
+              actionLocked={rewardActionsLocked}
               onRedeem={handleRedeem}
             />
           ))}
@@ -201,29 +213,44 @@ export function RewardsPage() {
               balancePoints={balancePoints}
               businessName={getBusinessName(reward.businessId)}
               requirePoints={Boolean(profile)}
+              actionLocked={rewardActionsLocked}
               onRedeem={handleRedeem}
             />
           ))}
         </div>
       )}
 
-      <Dialog
-        open={Boolean(selectedReward)}
-        onOpenChange={(open) => {
-          if (!open) {
-            setSelectedReward(null)
-          }
-        }}
-      >
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>{t('Redeem reward')}</DialogTitle>
-            <DialogDescription>
-              {t('Confirm the reward details, choose a pickup window, and submit.')}
-            </DialogDescription>
-          </DialogHeader>
-
-          {selectedReward ? (
+      {selectedReward && portalRoot ? createPortal(
+        <>
+          <div
+            className="fixed inset-0 z-[900] bg-[var(--espresso)]/45 backdrop-blur-sm"
+            onClick={() => setSelectedReward(null)}
+          />
+          <div
+            className="rounded-[1.75rem] border border-[var(--primary)]/20 bg-[var(--card)] p-6 text-[var(--foreground)] shadow-luxe sm:p-7"
+            style={{
+              position: 'fixed',
+              left: '50%',
+              top: '50%',
+              zIndex: 910,
+              width: 'min(92vw, 48rem)',
+              transform: 'translate(-50%, -50%)',
+            }}
+          >
+              <button
+                type="button"
+                className="absolute right-5 top-5 rounded-full p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                aria-label={t('Close')}
+                onClick={() => setSelectedReward(null)}
+              >
+                x
+              </button>
+              <div className="mb-5 grid gap-1.5 pr-10">
+                <h2 className="font-serif text-2xl font-semibold text-primary-container">{t('Redeem reward')}</h2>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {t('Confirm the reward details, choose a pickup window, and submit.')}
+                </p>
+              </div>
             <RedeemRewardPanel
               reward={selectedReward}
               balancePoints={balancePoints}
@@ -237,9 +264,10 @@ export function RewardsPage() {
                 navigate('/activity')
               }}
             />
-          ) : null}
-        </DialogContent>
-      </Dialog>
+          </div>
+        </>,
+        portalRoot,
+      ) : null}
       </div>
     </div>
   )

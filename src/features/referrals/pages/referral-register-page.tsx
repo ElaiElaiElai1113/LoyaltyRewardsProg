@@ -11,13 +11,15 @@ import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
-import { authSchema, type AuthFormValues } from '@/types/forms'
+import { validateVerificationDocument } from '@/lib/member-verification'
+import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 
-const defaultValues: AuthFormValues = {
+const defaultValues: MemberSignUpFormValues = {
   fullName: '',
   email: '',
   password: '',
   role: 'customer',
+  verificationIdNumber: '',
 }
 
 function LoadingSpinner() {
@@ -40,12 +42,14 @@ export function ReferralRegisterPage() {
   const businesses = useBusinesses()
   const [error, setError] = useState<string | null>(null)
   const [signUpComplete, setSignUpComplete] = useState(false)
+  const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
+  const [verificationDocument, setVerificationDocument] = useState<File | null>(null)
   const referrerId = searchParams.get('ref')
   const partnerCode = searchParams.get('partner')
   const businessId = searchParams.get('business')
 
-  const form = useForm<AuthFormValues>({
-    resolver: zodResolver(authSchema),
+  const form = useForm<MemberSignUpFormValues>({
+    resolver: zodResolver(memberSignUpSchema),
     defaultValues,
   })
 
@@ -119,6 +123,9 @@ export function ReferralRegisterPage() {
                         ? `Your ${currentBusiness.name} account is ready. Sign in to start earning.`
                         : t('Your invite status is pending. Staff will review it before reward credits are added.')}
                   </p>
+                  {signUpWarning ? (
+                    <p className="text-sm font-bold leading-relaxed text-warning">{signUpWarning}</p>
+                  ) : null}
                 </div>
                 <Button asChild size="lg" className="rounded-full">
                   <Link to="/signin">{t('Go to sign in')}</Link>
@@ -142,9 +149,18 @@ export function ReferralRegisterPage() {
                         sessionStorage.setItem('referralBusinessId', businessId)
                       }
                     }
-                    await signUp({ ...values, role: 'customer' })
+                    const documentFile = verificationDocument
+                    const documentError = validateVerificationDocument(documentFile)
+                    if (documentError || !documentFile) {
+                      setError(documentError ?? 'Upload a photo or PDF of your ID for account verification.')
+                      return
+                    }
+
+                    const result = await signUp({ ...values, role: 'customer', verificationDocument: documentFile })
+                    setSignUpWarning(result.warning ?? null)
                     setSignUpComplete(true)
                     form.reset(defaultValues)
+                    setVerificationDocument(null)
                   } catch (submissionError) {
                     if (
                       submissionError instanceof Error &&
@@ -152,6 +168,7 @@ export function ReferralRegisterPage() {
                     ) {
                       setSignUpComplete(true)
                       form.reset(defaultValues)
+                      setVerificationDocument(null)
                       return
                     }
 
@@ -192,6 +209,31 @@ export function ReferralRegisterPage() {
                     placeholder="••••••••"
                     {...form.register('password')}
                   />
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="referral-verification-id">Verification ID number</Label>
+                  <Input
+                    id="referral-verification-id"
+                    placeholder="ID number"
+                    {...form.register('verificationIdNumber')}
+                  />
+                  {form.formState.errors.verificationIdNumber ? (
+                    <p className="text-xs font-bold text-red-500">{form.formState.errors.verificationIdNumber.message}</p>
+                  ) : null}
+                </div>
+
+                <div className="grid gap-3">
+                  <Label htmlFor="referral-verification-document">Photo or PDF of ID</Label>
+                  <Input
+                    id="referral-verification-document"
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp,application/pdf"
+                    onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
+                  />
+                  <p className="text-xs font-medium leading-5 text-on-surface-variant/70">
+                    Used by admins to verify one member account per person.
+                  </p>
                 </div>
 
                 {error ? <p className="text-center text-sm font-bold text-red-500">{error}</p> : null}

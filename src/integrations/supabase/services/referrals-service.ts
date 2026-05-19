@@ -1,5 +1,5 @@
 import type { ReferralWithProfiles } from '@/types/domain'
-import { camelCaseRow, requireSupabase } from './shared'
+import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 type ProfileSummary = {
   fullName: string
@@ -95,11 +95,22 @@ function generateSixDigitCode() {
 export const referralsService = {
   async generateCreditCode(profileId: string): Promise<string> {
     const sb = requireSupabase()
-    const { data: balance, error: balanceError } = await sb
-      .from('reward_balances')
-      .select('available_credits')
-      .eq('profile_id', profileId)
-      .single()
+    const [{ data: profile }, { data: balance, error: balanceError }] = await Promise.all([
+      sb
+        .from('profiles')
+        .select('verification_status')
+        .eq('id', profileId)
+        .single(),
+      sb
+        .from('reward_balances')
+        .select('available_credits')
+        .eq('profile_id', profileId)
+        .single(),
+    ])
+
+    if (profile?.verification_status !== 'verified') {
+      throw new Error('ID verification is required before using reward value actions.')
+    }
 
     if (balanceError || !balance) {
       throw new Error('Balance not found.')
@@ -149,7 +160,7 @@ export const referralsService = {
       business_id: businessId,
     })
 
-    if (error) throw new Error(error.message)
+    if (error) throw new Error(friendlySupabaseError(error, 'Failed to redeem reward credit code.'))
 
     const row = Array.isArray(data) ? data[0] : data
     const profileId = (row as { profile_id?: string } | null)?.profile_id
@@ -249,7 +260,7 @@ export const referralsService = {
       approver_id: approverId,
     })
 
-    if (error) throw new Error(error.message)
+    if (error) throw new Error(friendlySupabaseError(error, 'Failed to approve referral.'))
   },
 
   async rejectReferral(referralId: string): Promise<void> {
@@ -269,7 +280,7 @@ export const referralsService = {
     })
 
     if (error) {
-      throw new Error(error.message)
+      throw new Error(friendlySupabaseError(error, 'Failed to use reward credit.'))
     }
   },
 }

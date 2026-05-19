@@ -43,6 +43,15 @@ export interface Profile {
   role: UserRole
   businessId?: string // For business owners - which business they belong to
   referralCode: string
+  verificationIdNumber?: string | null
+  verificationDocumentPath?: string | null
+  verificationDocumentFilename?: string | null
+  verificationDocumentUrl?: string | null
+  verificationSubmittedAt?: string | null
+  verificationStatus?: 'not_submitted' | 'pending_document' | 'submitted' | 'verified' | 'rejected'
+  verificationReviewedAt?: string | null
+  verificationReviewedBy?: string | null
+  verificationRejectionReason?: string | null
   membership?: Membership | null
 }
 
@@ -74,6 +83,41 @@ export interface Membership {
 
 export type ReferralStatus = 'pending' | 'approved' | 'rejected'
 export type PartnerReferralStatus = 'attributed' | 'credited' | 'voided'
+export type AmbassadorLeadStatus = 'new' | 'contacted' | 'converted' | 'archived'
+export type EarlyAccessLeadStatus = 'new' | 'contacted' | 'invited' | 'archived'
+
+export interface EarlyAccessLead {
+  id: string
+  fullName: string | null
+  email: string | null
+  whatsapp: string | null
+  notes: string
+  source: string
+  status: EarlyAccessLeadStatus
+  marketingConsentAt: string
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AmbassadorLead {
+  id: string
+  fullName: string
+  email: string
+  phone: string | null
+  city: string
+  socialLinks: {
+    instagram?: string
+    tiktok?: string
+    other?: string
+  }
+  notes: string
+  businessId: string | null
+  source: string
+  status: AmbassadorLeadStatus
+  marketingConsentAt: string
+  createdAt: string
+  updatedAt: string
+}
 
 export interface ReferralWithProfiles {
   id: string

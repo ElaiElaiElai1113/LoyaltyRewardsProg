@@ -13,6 +13,7 @@ interface RewardCardProps {
   balancePoints?: number
   businessName?: string
   requirePoints?: boolean
+  actionLocked?: boolean
   onRedeem: (reward: Reward) => void
 }
 
@@ -21,16 +22,23 @@ export function RewardCard({
   balancePoints = 0,
   businessName,
   requirePoints = true,
+  actionLocked = false,
   onRedeem,
 }: RewardCardProps) {
   const { t } = useLanguage()
   const { isActive: isMembershipActive } = useMembership()
   const hasInventory = reward.inventory > 0
   const hasEnoughPoints = balancePoints >= reward.pointsCost
-  const canRedeem = hasInventory && (!requirePoints || hasEnoughPoints)
-  const canOpenMembershipGate = hasInventory && !isMembershipActive
+  const canRedeem = hasInventory && !actionLocked && (!requirePoints || hasEnoughPoints)
+  const canOpenMembershipGate = hasInventory && !actionLocked && !isMembershipActive
   const pointsRemaining = Math.max(reward.pointsCost - balancePoints, 0)
-  const buttonLabel = !hasInventory ? 'Sold Out' : canRedeem || canOpenMembershipGate ? 'Redeem' : 'Need More Points'
+  const buttonLabel = actionLocked && hasInventory
+    ? 'Verify ID'
+    : !hasInventory
+      ? 'Sold Out'
+      : canRedeem || canOpenMembershipGate
+        ? 'Redeem'
+        : 'Need More Points'
   const CategoryIcon =
     reward.category === 'Drink'
       ? Coffee
@@ -65,7 +73,7 @@ export function RewardCard({
         </div>
 
         <div className="luxe-art relative min-h-32 overflow-hidden rounded-[1.15rem] p-4 shadow-soft">
-          <div className="absolute -left-8 -top-10 size-32 rounded-full bg-[var(--blush)]/20 blur-2xl transition-transform duration-500 group-hover:scale-125" />
+          <div className="absolute -left-8 -top-10 size-32 rounded-full bg-[var(--champagne)]/20 blur-2xl transition-transform duration-500 group-hover:scale-125" />
           <div className="relative flex h-full items-end justify-between">
             <div>
               <p className="text-[0.62rem] font-bold uppercase tracking-[0.22em] text-[var(--champagne)]/80">
@@ -75,7 +83,7 @@ export function RewardCard({
                 {formatPoints(reward.pointsCost)}
               </p>
             </div>
-            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)]">
+            <div className="animate-float-soft flex size-14 items-center justify-center rounded-[1.1rem] border border-[var(--champagne)]/30 bg-[var(--cream)]/12 text-[var(--champagne)] shadow-soft">
               {canRedeem ? <CategoryIcon className="size-7" /> : <Lock className="size-7" />}
             </div>
           </div>
@@ -107,17 +115,28 @@ export function RewardCard({
           </div>
 
           <div className="shrink-0">
-            <EarnRedeemGate action="redeem">
+            {actionLocked ? (
               <Button
                 onClick={() => onRedeem(reward)}
-                disabled={!canRedeem && !canOpenMembershipGate}
-                variant={canRedeem || canOpenMembershipGate ? 'tenant' : 'outline'}
+                disabled={!hasInventory}
+                variant="outline"
                 size="sm"
               >
-                {canRedeem || canOpenMembershipGate ? <CheckCircle className="size-4" /> : null}
                 {t(buttonLabel)}
               </Button>
-            </EarnRedeemGate>
+            ) : (
+              <EarnRedeemGate action="redeem">
+                <Button
+                  onClick={() => onRedeem(reward)}
+                  disabled={!canRedeem && !canOpenMembershipGate}
+                  variant={canRedeem || canOpenMembershipGate ? 'tenant' : 'outline'}
+                  size="sm"
+                >
+                  {canRedeem || canOpenMembershipGate ? <CheckCircle className="size-4" /> : null}
+                  {t(buttonLabel)}
+                </Button>
+              </EarnRedeemGate>
+            )}
           </div>
           </div>
         </div>

@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 
 import { giftCardCatalogService } from '@/integrations/supabase/services/gift-card-catalog-service'
 import { giftCardsService } from '@/integrations/supabase/services/gift-cards-service'
+import { useAuth } from '@/hooks/use-auth'
 import type { GiftCardCatalogItemFormValues } from '@/types/forms'
 
 export const giftCardKeys = {
@@ -87,9 +88,15 @@ export function useGiftCard(id?: string) {
 
 export function useIssueGiftCard(customerId?: string) {
   const queryClient = useQueryClient()
+  const { profile } = useAuth()
 
   return useMutation({
-    mutationFn: (catalogId: string) => giftCardsService.issueGiftCard(catalogId, customerId!),
+    mutationFn: (catalogId: string) => {
+      if (profile?.verificationStatus !== 'verified') {
+        throw new Error('ID verification is required before using reward value actions.')
+      }
+      return giftCardsService.issueGiftCard(catalogId, customerId!)
+    },
     onSuccess: (giftCard) => {
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.myCards })
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', customerId] })

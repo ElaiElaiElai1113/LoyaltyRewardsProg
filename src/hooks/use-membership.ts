@@ -12,6 +12,12 @@ function isMembershipActive(membership: Awaited<ReturnType<typeof membershipServ
   return membership?.status === 'active' && new Date(membership.currentPeriodEnd).getTime() > Date.now()
 }
 
+function requireVerifiedCustomer(verificationStatus?: string | null) {
+  if (verificationStatus !== 'verified') {
+    throw new Error('ID verification is required before using reward value actions.')
+  }
+}
+
 export function useMembership() {
   const { profile } = useAuth()
   const queryClient = useQueryClient()
@@ -31,7 +37,10 @@ export function useMembership() {
   }
 
   const subscribe = useMutation({
-    mutationFn: () => membershipService.mockSubscribe(),
+    mutationFn: () => {
+      requireVerifiedCustomer(profile?.verificationStatus)
+      return membershipService.mockSubscribe()
+    },
     onSuccess: () => {
       invalidateMembershipData()
       toast.success('Demo membership activated. $10 credit added.')
@@ -40,7 +49,10 @@ export function useMembership() {
   })
 
   const renew = useMutation({
-    mutationFn: () => membershipService.mockRenew(),
+    mutationFn: () => {
+      requireVerifiedCustomer(profile?.verificationStatus)
+      return membershipService.mockRenew()
+    },
     onSuccess: () => {
       invalidateMembershipData()
       toast.success('Demo renewal complete.')

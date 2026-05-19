@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
+import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useAuth } from '@/hooks/use-auth'
 import { useRedeemReward, useReward, useRewardBalance } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -18,6 +19,8 @@ export function RedeemRewardPage() {
   const reward = useReward(rewardId)
   const rewardBalance = useRewardBalance(profile?.id)
   const redeemReward = useRedeemReward(profile?.id)
+  const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
+  const rewardActionsLocked = verificationStatus !== 'verified'
 
   if (!rewardId) {
     return <Navigate to="/rewards" replace />
@@ -78,12 +81,22 @@ export function RedeemRewardPage() {
         </div>
       </div>
 
+      <VerificationStatusNotice
+        status={verificationStatus}
+        rejectionReason={profile?.verificationRejectionReason}
+      />
+
       <div className="rounded-[3rem] bg-surface-low p-8 md:p-12 border border-outline-variant/10 shadow-card">
         <RedeemRewardPanel
           reward={reward.data}
           balancePoints={rewardBalance.data?.points ?? 0}
           isSubmitting={redeemReward.isPending}
+          actionLocked={rewardActionsLocked}
           onSubmit={async (values) => {
+            if (rewardActionsLocked) {
+              navigate('/profile')
+              return
+            }
             await redeemReward.mutateAsync({
               rewardId,
               ...values,

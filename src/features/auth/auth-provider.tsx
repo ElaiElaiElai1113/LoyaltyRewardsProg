@@ -1,13 +1,13 @@
 import { type ReactNode, useEffect, useState } from 'react'
 
-import { AuthContext } from '@/features/auth/auth-context'
+import { AuthContext, type SignUpResult } from '@/features/auth/auth-context'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { supabase } from '@/integrations/supabase/client'
 import { queryClient } from '@/lib/query-client'
 import type { Profile, SessionUser, UserRole } from '@/types/domain'
-import type { AuthFormValues } from '@/types/forms'
+import type { AuthFormValues, MemberSignUpSubmission } from '@/types/forms'
 
 interface AuthProviderProps {
   children: ReactNode
@@ -15,12 +15,15 @@ interface AuthProviderProps {
 
 async function createPendingReferralForProfile(profile: Profile) {
   const referralCode = sessionStorage.getItem('referralCode')
-  if (!referralCode || referralCode === profile.id || referralCode === profile.referralCode) return
+  if (!referralCode || referralCode === profile.id || referralCode === profile.referralCode) return null
 
   const referralBusinessId = sessionStorage.getItem('referralBusinessId')
-  await referralsService.createReferral(referralCode, profile.id, referralBusinessId ?? null)
-  sessionStorage.removeItem('referralCode')
-  sessionStorage.removeItem('referralBusinessId')
+  const result = await referralsService.createReferral(referralCode, profile.id, referralBusinessId ?? null)
+  if (result) {
+    sessionStorage.removeItem('referralCode')
+    sessionStorage.removeItem('referralBusinessId')
+  }
+  return result
 }
 
 async function createPendingPartnerReferralForProfile(profile: Profile) {
@@ -147,17 +150,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   }, [])
 
-  useEffect(() => {
-    if (!profile?.id) return
-
-    void createPendingReferralForProfile(profile).catch((error) => {
-      console.warn('Pending referral creation skipped:', error)
-    })
-    void createPendingPartnerReferralForProfile(profile).catch((error) => {
-      console.warn('Pending partner referral creation skipped:', error)
-    })
-  }, [profile])
-
   const value = {
     profile,
     session,
@@ -173,8 +165,28 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
       return sessionProfile
     },
-    async signUp(values: AuthFormValues) {
+    async signUp(values: MemberSignUpSubmission): Promise<SignUpResult> {
       const sessionProfile = await authService.signUp(values)
+      const attributionWarnings: string[] = []
+
+      try {
+        const hadReferral = Boolean(sessionStorage.getItem('referralCode'))
+        const referralResult = await createPendingReferralForProfile(sessionProfile)
+        if (hadReferral && !referralResult) {
+          attributionWarnings.push('We could not link your referral invite. Your account was created successfully.')
+        }
+      } catch (error) {
+        console.warn('Pending referral creation skipped:', error)
+        attributionWarnings.push('We could not link your referral invite. Your account was created successfully.')
+      }
+
+      try {
+        await createPendingPartnerReferralForProfile(sessionProfile)
+      } catch (error) {
+        console.warn('Pending partner referral creation skipped:', error)
+        attributionWarnings.push('We could not link your partner invite. Your account was created successfully.')
+      }
+
       queryClient.clear()
       setProfile(sessionProfile)
       setSession({
@@ -182,7 +194,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         role: sessionProfile.role,
         businessId: sessionProfile.businessId,
       })
-      return sessionProfile
+      return {
+        profile: sessionProfile,
+        warning: attributionWarnings[0],
+      }
     },
     async continueAsDemo(role: UserRole) {
       const sessionProfile = await authService.continueAsDemo(role)

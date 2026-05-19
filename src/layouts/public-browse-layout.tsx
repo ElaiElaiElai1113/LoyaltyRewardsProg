@@ -9,7 +9,13 @@ const navigation = [
   { to: '/shop', label: 'Menu' },
   { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
-  { to: '/business', label: 'For Businesses' },
+]
+
+const legalLinks = [
+  { to: '/terms', label: 'Terms' },
+  { to: '/privacy', label: 'Privacy' },
+  { to: '/reward-terms', label: 'Reward Terms' },
+  { to: '/verification-policy', label: 'Verification Policy' },
 ]
 
 export function PublicBrowseLayout() {
@@ -54,8 +60,11 @@ export function PublicBrowseLayout() {
             <div className="hidden sm:block">
               <ThemeToggle />
             </div>
-            <Button asChild variant="secondary" size="sm" className="hidden sm:inline-flex">
-              <NavLink to="/business#book-demo">{t('Book Demo')}</NavLink>
+            <Button asChild variant="secondary" size="sm">
+              <NavLink to="/join">
+                <span className="hidden sm:inline">{t('Join Rewards Club')}</span>
+                <span className="sm:hidden">{t('Join')}</span>
+              </NavLink>
             </Button>
             <Button asChild variant="outline" size="sm">
               <NavLink to="/signin">{t('Sign In')}</NavLink>
@@ -69,6 +78,18 @@ export function PublicBrowseLayout() {
           <Outlet />
         </div>
       </main>
+      <footer className="border-t border-primary/15 bg-card px-4 py-8 sm:px-6 lg:px-8 2xl:px-12">
+        <div className="mx-auto flex w-full flex-col justify-between gap-4 text-sm text-[var(--muted-foreground)] md:flex-row md:items-center">
+          <span className="font-semibold text-[var(--foreground)]">Medellin Rewards</span>
+          <nav className="flex flex-wrap gap-4">
+            {legalLinks.map((link) => (
+              <NavLink key={link.to} to={link.to} className="transition-colors hover:text-[var(--foreground)]">
+                {t(link.label)}
+              </NavLink>
+            ))}
+          </nav>
+        </div>
+      </footer>
     </div>
   )
 }

@@ -2,7 +2,9 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { adminService } from '@/integrations/supabase/services/admin-service'
+import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
+import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
@@ -18,6 +20,7 @@ import type {
   RewardDraftFormValues,
 } from '@/types/forms'
 import type { Profile } from '@/types/domain'
+import type { AmbassadorLeadStatus, EarlyAccessLeadStatus } from '@/types/domain'
 
 const adminKeys = {
   users: ['admin-users'] as const,
@@ -235,6 +238,76 @@ export function useAdminPartnerPerformance() {
   return useQuery({
     queryKey: ['admin', 'partner-performance'],
     queryFn: () => partnerService.getPartnerPerformance(),
+  })
+}
+
+export function useAdminAmbassadorLeads() {
+  return useQuery({
+    queryKey: ['admin', 'ambassador-leads'],
+    queryFn: () => ambassadorService.getLeads(),
+  })
+}
+
+export function useAdminEarlyAccessLeads() {
+  return useQuery({
+    queryKey: ['admin', 'early-access-leads'],
+    queryFn: () => earlyAccessService.getLeads(),
+  })
+}
+
+export function useUpdateAmbassadorLeadStatus(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: AmbassadorLeadStatus }) =>
+      ambassadorService.updateLeadStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'ambassador-leads'] })
+      void queryClient.invalidateQueries({ queryKey: ['ambassador-leads', businessId ?? 'all'] })
+      toast.success('Ambassador lead updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Ambassador lead update failed: ${error.message}`)
+    },
+  })
+}
+
+export function useUpdateEarlyAccessLeadStatus() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: EarlyAccessLeadStatus }) =>
+      earlyAccessService.updateLeadStatus(id, status),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'early-access-leads'] })
+      toast.success('Early access lead updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Early access lead update failed: ${error.message}`)
+    },
+  })
+}
+
+export function useReviewMemberVerification() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({
+      profileId,
+      status,
+      reason,
+    }: {
+      profileId: string
+      status: 'verified' | 'rejected'
+      reason?: string
+    }) => adminService.reviewMemberVerification(profileId, status, reason),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      toast.success('Member verification updated')
+    },
+    onError: (error: Error) => {
+      toast.error(`Verification review failed: ${error.message}`)
+    },
   })
 }
 

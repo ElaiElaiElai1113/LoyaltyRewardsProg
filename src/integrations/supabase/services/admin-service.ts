@@ -6,7 +6,8 @@ import type {
   Redemption,
 } from '@/types/domain'
 import type { RewardAdjustmentFormValues } from '@/types/forms'
-import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
+import { MEMBER_VERIFICATION_BUCKET } from '@/lib/member-verification'
+import { requireSupabase, camelCaseRow, friendlySupabaseError, snakeCaseObj } from './shared'
 
 function toTierProgress(points: number, target: number) {
   return Math.max(0, Math.min(100, Math.round((points / target) * 100)))
@@ -40,7 +41,7 @@ async function performRewardAdjustment(
   })
 
   if (adjustmentError || !balance) {
-    throw new Error(adjustmentError?.message ?? 'Failed to adjust rewards.')
+    throw new Error(friendlySupabaseError(adjustmentError, 'Failed to adjust rewards.'))
   }
 }
 
@@ -181,7 +182,7 @@ export const adminService = {
       }),
     )
 
-    return (profileRows as Record<string, unknown>[]).map((row) => {
+    const profiles = (profileRows as Record<string, unknown>[]).map((row) => {
       const profile = camelCaseRow(row) as unknown as Profile
       const rawBalance = balanceMap.get(profile.id)
       const balance = rawBalance
@@ -195,6 +196,22 @@ export const adminService = {
         : null
       return { profile, balance }
     })
+
+    await Promise.all(
+      profiles.map(async ({ profile }) => {
+        if (!profile.verificationDocumentPath) return
+
+        const { data, error } = await sb.storage
+          .from(MEMBER_VERIFICATION_BUCKET)
+          .createSignedUrl(profile.verificationDocumentPath, 60 * 60)
+
+        if (!error && data?.signedUrl) {
+          profile.verificationDocumentUrl = data.signedUrl
+        }
+      }),
+    )
+
+    return profiles
   },
 
   async getOverview() {
@@ -408,6 +425,27 @@ export const adminService = {
         createdAt: order.createdAt as string,
       }
     })
+  },
+
+  async reviewMemberVerification(
+    profileId: string,
+    status: 'verified' | 'rejected',
+    reason?: string,
+  ): Promise<Profile> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('review_member_verification', {
+      p_profile_id: profileId,
+      p_status: status,
+      p_reason: reason ?? null,
+    })
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to review member verification.')
+    }
+
+    const row = Array.isArray(data) ? data[0] : data
+    return camelCaseRow(row as Record<string, unknown>) as unknown as Profile
   },
 
   async fulfillRedemption(redemptionId: string, actor: Profile) {

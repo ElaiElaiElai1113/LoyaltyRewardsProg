@@ -14,6 +14,13 @@ import { useCart } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
+const legalLinks = [
+  { to: '/terms', label: 'Terms' },
+  { to: '/privacy', label: 'Privacy' },
+  { to: '/reward-terms', label: 'Reward Terms' },
+  { to: '/verification-policy', label: 'Verification Policy' },
+]
+
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
@@ -31,7 +38,7 @@ export function CustomerLayout() {
               </span>
               <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
               <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
-                Rewards Network
+                Home
               </span>
             </NavLink>
           </div>
@@ -90,7 +97,7 @@ export function CustomerLayout() {
                 {t('Earn points, redeem rewards, and stay connected across partner businesses.')}
               </p>
             </div>
-            <div className="grid grid-cols-2 gap-12 sm:grid-cols-3">
+            <div className="grid grid-cols-2 gap-12 sm:grid-cols-4">
               <div className="flex flex-col gap-4">
                 <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
                   {t('Platform')}
@@ -99,7 +106,6 @@ export function CustomerLayout() {
                   <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Menu')}</NavLink>
                   <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
                   <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
-                  <NavLink to="/business" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('For Businesses')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
@@ -119,6 +125,18 @@ export function CustomerLayout() {
                 <nav className="flex flex-col gap-2">
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Settings')}</NavLink>
                   <NavLink to="/orders" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Order History')}</NavLink>
+                </nav>
+              </div>
+              <div className="flex flex-col gap-4">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[var(--foreground)]">
+                  {t('Legal')}
+                </span>
+                <nav className="flex flex-col gap-2">
+                  {legalLinks.map((link) => (
+                    <NavLink key={link.to} to={link.to} className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">
+                      {t(link.label)}
+                    </NavLink>
+                  ))}
                 </nav>
               </div>
             </div>

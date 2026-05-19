@@ -8,6 +8,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
+import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useLanguage } from '@/lib/language'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useRewardBalance } from '@/hooks/use-customer-data'
@@ -28,6 +29,16 @@ export function GiftCardsPage() {
   const issueGiftCard = useIssueGiftCard(profile?.id)
   const balancePoints = balance.data?.points ?? 0
   const featuredCards = (catalog.data ?? []).slice(0, 5)
+  const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
+  const rewardActionsLocked = verificationStatus !== 'verified'
+
+  function handleSelect(item: GiftCardCatalogItem) {
+    if (rewardActionsLocked) {
+      navigate('/profile')
+      return
+    }
+    setSelectedItem(item)
+  }
 
   async function handleIssue() {
     if (!selectedItem) return
@@ -58,6 +69,12 @@ export function GiftCardsPage() {
           </div>
         </div>
       </div>
+
+      <VerificationStatusNotice
+        status={verificationStatus}
+        rejectionReason={profile?.verificationRejectionReason}
+        compact
+      />
 
       <div className="luxe-card relative overflow-hidden rounded-[2rem] p-6 md:p-8">
         <div className="absolute right-8 top-8 h-24 w-40 rotate-6 rounded-[1.5rem] border border-primary/20 bg-blush/60" />
@@ -91,7 +108,8 @@ export function GiftCardsPage() {
               item={item}
               balancePoints={balancePoints}
               businessName={item.business?.name}
-              onSelect={setSelectedItem}
+              actionLocked={rewardActionsLocked}
+              onSelect={handleSelect}
             />
           ))}
         </LuxeCarousel>
@@ -124,7 +142,8 @@ export function GiftCardsPage() {
               item={item}
               balancePoints={balancePoints}
               businessName={item.business?.name}
-              onSelect={setSelectedItem}
+              actionLocked={rewardActionsLocked}
+              onSelect={handleSelect}
             />
           ))}
         </div>

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel, Megaphone, ExternalLink, IdCard, Mail } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -22,9 +22,11 @@ import {
   StaffNotFoundError,
   useAdjustRewards,
   useAllReferrals,
+  useAdminAmbassadorLeads,
   useAdminApproveReferral,
   useAdminAllBusinesses,
   useAdminBusinesses,
+  useAdminEarlyAccessLeads,
   useAdminOverview,
   useAdminPartnerPerformance,
   useAdminPartnerReferrals,
@@ -42,7 +44,10 @@ import {
   useDeleteReward,
   useFulfillRedemption,
   useOrdersForVerification,
+  useReviewMemberVerification,
+  useUpdateAmbassadorLeadStatus,
   useUpdateBusiness,
+  useUpdateEarlyAccessLeadStatus,
   useUseCredit,
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
@@ -88,6 +93,8 @@ export function AdminPage() {
   const allReferrals = useAllReferrals()
   const partnerPerformance = useAdminPartnerPerformance()
   const partnerReferrals = useAdminPartnerReferrals()
+  const ambassadorLeads = useAdminAmbassadorLeads()
+  const earlyAccessLeads = useAdminEarlyAccessLeads()
   const [rewardBusinessId, setRewardBusinessId] = useState('')
   const [productBusinessId, setProductBusinessId] = useState('')
   const [promotionBusinessId, setPromotionBusinessId] = useState('')
@@ -99,6 +106,7 @@ export function AdminPage() {
   const [verificationBusinessId, setVerificationBusinessId] = useState('all')
   const [createBusinessError, setCreateBusinessError] = useState<string | null>(null)
   const [partnerActionError, setPartnerActionError] = useState<string | null>(null)
+  const [verificationRejectionReason, setVerificationRejectionReason] = useState('')
   const [businessAccessDialog, setBusinessAccessDialog] = useState<{
     businessId: string
     role: 'business-owner' | 'business-staff'
@@ -126,6 +134,9 @@ export function AdminPage() {
   const useCredit = useUseCredit()
   const approveReferral = useAdminApproveReferral()
   const rejectReferral = useAdminRejectReferral()
+  const updateAmbassadorLeadStatus = useUpdateAmbassadorLeadStatus()
+  const updateEarlyAccessLeadStatus = useUpdateEarlyAccessLeadStatus()
+  const reviewMemberVerification = useReviewMemberVerification()
   const verificationOrders = useOrdersForVerification(
     verificationBusinessId === 'all' ? undefined : verificationBusinessId,
   )
@@ -305,6 +316,8 @@ export function AdminPage() {
       email: fallback.email || member?.email || profileId,
     }
   }
+  const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
+  const earlyAccessLeadStatusOptions = ['new', 'contacted', 'invited', 'archived'] as const
 
   if (profile?.role !== 'platform-admin') {
     return (
@@ -334,41 +347,40 @@ export function AdminPage() {
 
   return (
     <div className="min-w-0 space-y-10 pb-20 xl:space-y-16">
-      {/* Enhanced Header with Gradient Accent */}
-      <div className="warm-hero-muted relative min-w-0 overflow-hidden rounded-[2rem] px-5 py-8 shadow-2xl sm:px-6 xl:px-8 xl:py-12">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
+      <div className="warm-hero-muted relative min-w-0 overflow-hidden rounded-[2rem] px-5 py-8 shadow-card sm:px-6 xl:px-8 xl:py-12">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--champagne)_22%,transparent),transparent_34%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--rose-brown)_24%,transparent),transparent_32%)]"></div>
         <div className="relative">
           <div className="flex min-w-0 flex-col gap-6 2xl:flex-row 2xl:items-end 2xl:justify-between">
             <div className="max-w-2xl min-w-0 space-y-4">
-              <Badge variant="accent" className="bg-white/10 text-white border border-white/20 ">
+              <Badge variant="outline" className="border-[var(--champagne)]/35 bg-[var(--cream)]/12 text-[var(--champagne)]">
                 {t('Operations Portal')}
               </Badge>
-              <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] tracking-tight text-white leading-[1.1]">
+              <h1 className="font-serif text-[clamp(3rem,6vw,5rem)] tracking-tight text-[var(--cream)] leading-[1.1]">
                 {t('Admin Dashboard')}
               </h1>
-              <p className="text-lg leading-relaxed text-white/80 font-medium">
+              <p className="text-lg leading-relaxed text-[var(--cream)]/78 font-medium">
                 {t('Manage members, rewards, promotions, and monitor activity across the platform.')}
               </p>
             </div>
 
             {/* Enhanced Overview Cards */}
             <div className="grid w-full min-w-0 gap-3 sm:grid-cols-2 2xl:w-auto 2xl:gap-4">
-              <div className="min-w-0 rounded-2xl bg-white/10 px-4 py-4 text-white border border-white/10 flex items-center gap-3 xl:px-6 xl:py-5 xl:gap-4">
-                <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
+              <div className="min-w-0 rounded-2xl bg-[var(--cream)]/12 px-4 py-4 text-[var(--cream)] border border-[var(--champagne)]/20 flex items-center gap-3 shadow-soft xl:px-6 xl:py-5 xl:gap-4">
+                <div className="size-12 rounded-xl bg-[var(--champagne)] text-[var(--espresso)] flex items-center justify-center">
                   <Users className="size-6" />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif text-3xl leading-none">{(users.data ?? []).length}</span>
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Members')}</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-[var(--champagne)]">{t('Members')}</span>
                 </div>
               </div>
-              <div className="min-w-0 rounded-2xl bg-white/10 px-4 py-4 text-white border border-white/10 flex items-center gap-3 xl:px-6 xl:py-5 xl:gap-4">
-                <div className="size-12 rounded-xl bg-white/20 flex items-center justify-center">
+              <div className="min-w-0 rounded-2xl bg-[var(--cream)]/12 px-4 py-4 text-[var(--cream)] border border-[var(--champagne)]/20 flex items-center gap-3 shadow-soft xl:px-6 xl:py-5 xl:gap-4">
+                <div className="size-12 rounded-xl bg-[var(--champagne)] text-[var(--espresso)] flex items-center justify-center">
                   <Gift className="size-6" />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-serif text-3xl leading-none">{(allRewards.data ?? []).length}</span>
-                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-white/80">{t('Rewards')}</span>
+                  <span className="text-[0.6rem] font-bold uppercase tracking-[0.1em] text-[var(--champagne)]">{t('Rewards')}</span>
                 </div>
               </div>
             </div>
@@ -394,6 +406,12 @@ export function AdminPage() {
             <TabsTrigger value="partners" title={t('Partners')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
               <Hotel className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Partners')}</span>
             </TabsTrigger>
+            <TabsTrigger value="ambassadors" title="Ambassadors" className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Megaphone className="size-5 xl:mr-3" /><span className="hidden xl:inline">Ambassadors</span>
+            </TabsTrigger>
+            <TabsTrigger value="early-access" title="Early Access" className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
+              <Mail className="size-5 xl:mr-3" /><span className="hidden xl:inline">Early Access</span>
+            </TabsTrigger>
             <TabsTrigger value="referrals" title={t('Referrals')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
               <TrendingUp className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Referrals')}</span>
             </TabsTrigger>
@@ -404,23 +422,23 @@ export function AdminPage() {
         </div>
 
         <TabsContent value="members" className="space-y-12 outline-none">
-          <div className="grid min-w-0 gap-8 2xl:grid-cols-[420px_minmax(0,1fr)]">
-            <div className="space-y-8">
+          <div className="grid min-w-0 gap-8 2xl:grid-cols-[360px_minmax(0,1fr)]">
+            <div className="space-y-5">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Member Profile')}</span>
                 <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
               </div>
 
-              <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm rounded-[2rem] p-5 space-y-6 xl:p-8">
+              <div className="rounded-[1.5rem] border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm space-y-5">
                 {selectedMember ? (
-                  <div className="rounded-[2rem] border border-primary-container/15 bg-[var(--muted)] p-5 shadow-sm sm:p-6">
-                    <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-start">
-                      <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-xl text-primary-foreground shadow-lg">
+                  <div className="rounded-[1.25rem] border border-primary-container/15 bg-[var(--muted)] p-4 shadow-sm">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-black font-serif text-xl text-white shadow-sm">
                         {selectedMember.profile.fullName.charAt(0)}
                       </div>
-                      <div className="min-w-0 space-y-2">
+                      <div className="min-w-0 flex-1 space-y-3">
                         <div>
-                          <p className="font-serif text-2xl tracking-tight text-primary">
+                          <p className="truncate font-serif text-2xl tracking-tight text-primary">
                             {selectedMember.profile.fullName}
                           </p>
                           <p className="break-all text-sm font-medium text-on-surface-variant/90">
@@ -434,9 +452,6 @@ export function AdminPage() {
                           </Badge>
                           <Badge variant="accent" className="border-primary-container/25 bg-primary-container/15 text-primary">
                             {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
-                          </Badge>
-                          <Badge variant="outline" className="border-primary-container/20 bg-[var(--card)] text-on-surface-variant">
-                            {t('Joined')} {formatDate(selectedMember.profile.joinedAt)}
                           </Badge>
                         </div>
                         {(selectedMember.balance?.availableCredits ?? 0) > 0 ? (
@@ -459,22 +474,103 @@ export function AdminPage() {
                       </div>
                     </div>
 
-                    <div className="mt-5 grid gap-4 text-sm text-on-surface-variant/90">
-                      <div className="grid gap-1">
+                    <div className="mt-5 grid gap-3 text-sm text-on-surface-variant/90">
+                      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3">
                         <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Phone')}</span>
-                        <span>{selectedMember.profile.phone || t('Not provided')}</span>
+                        <span className="truncate">{selectedMember.profile.phone || t('Not provided')}</span>
                       </div>
-                      <div className="grid gap-1">
+                      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3">
                         <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Location')}</span>
-                        <span>{selectedMember.profile.location || t('Not provided')}</span>
+                        <span className="truncate">{selectedMember.profile.location || t('Not provided')}</span>
                       </div>
-                      <div className="grid gap-1">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Favorite Order')}</span>
-                        <span>{selectedMember.profile.favoriteOrder || t('Not provided')}</span>
-                      </div>
-                      <div className="grid gap-1">
+                      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3">
                         <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member ID')}</span>
-                        <span className="break-all">{selectedMember.profile.id}</span>
+                        <span className="truncate font-mono text-xs" title={selectedMember.profile.id}>
+                          {selectedMember.profile.id.slice(0, 8)}...{selectedMember.profile.id.slice(-6)}
+                        </span>
+                      </div>
+                      <div className="grid gap-2 border-t border-outline-variant/20 pt-3">
+                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Verification ID</span>
+                        <div className="flex min-w-0 flex-wrap items-center gap-2">
+                          <span className="min-w-0 truncate text-sm" title={selectedMember.profile.verificationIdNumber ?? ''}>
+                            {selectedMember.profile.verificationIdNumber || t('Not provided')}
+                          </span>
+                          <Badge
+                            variant="accent"
+                            className={
+                              selectedMember.profile.verificationDocumentPath
+                                ? 'border-success/25 bg-success/10 text-success'
+                                : 'border-warning/25 bg-warning/10 text-warning'
+                            }
+                          >
+                            <IdCard className="mr-1 size-3" />
+                            {selectedMember.profile.verificationStatus === 'submitted'
+                              ? 'ID submitted'
+                              : selectedMember.profile.verificationStatus === 'verified'
+                                ? 'Verified'
+                                : selectedMember.profile.verificationStatus === 'rejected'
+                                  ? 'Rejected'
+                                  : 'ID missing'}
+                          </Badge>
+                          {selectedMember.profile.verificationDocumentUrl ? (
+                            <Button asChild size="sm" variant="outline" className="rounded-full">
+                              <a href={selectedMember.profile.verificationDocumentUrl} target="_blank" rel="noreferrer">
+                                <ExternalLink className="size-4" />
+                                View ID
+                              </a>
+                            </Button>
+                          ) : null}
+                        </div>
+                        {selectedMember.profile.verificationRejectionReason ? (
+                          <p className="text-sm font-semibold leading-6 text-red-600">
+                            {selectedMember.profile.verificationRejectionReason}
+                          </p>
+                        ) : null}
+                        {selectedMember.profile.verificationDocumentPath ? (
+                          <div className="grid gap-3 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                            <div className="flex flex-wrap gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="rounded-full bg-success/10 text-success hover:bg-success/15"
+                                disabled={reviewMemberVerification.isPending}
+                                onClick={() => {
+                                  reviewMemberVerification.mutate({
+                                    profileId: selectedMember.profile.id,
+                                    status: 'verified',
+                                  })
+                                  setVerificationRejectionReason('')
+                                }}
+                              >
+                                <CheckCircle className="size-4" />
+                                Verify ID
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                                disabled={reviewMemberVerification.isPending || !verificationRejectionReason.trim()}
+                                onClick={() => {
+                                  reviewMemberVerification.mutate({
+                                    profileId: selectedMember.profile.id,
+                                    status: 'rejected',
+                                    reason: verificationRejectionReason,
+                                  })
+                                  setVerificationRejectionReason('')
+                                }}
+                              >
+                                Reject ID
+                              </Button>
+                            </div>
+                            <Textarea
+                              value={verificationRejectionReason}
+                              onChange={(event) => setVerificationRejectionReason(event.target.value)}
+                              placeholder="Reason required when rejecting an ID"
+                              className="min-h-16"
+                            />
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
@@ -485,7 +581,7 @@ export function AdminPage() {
                 )}
 
                 <form
-                  className="space-y-6"
+                  className="space-y-4 border-t border-outline-variant/20 pt-5"
                   onSubmit={adjustmentForm.handleSubmit(
                     async (values) => {
                       try {
@@ -505,13 +601,13 @@ export function AdminPage() {
                     },
                   )}
                 >
-                  <div className="grid gap-4">
+                  <div className="grid gap-2">
                     <Label htmlFor="profileId" className="text-sm font-semibold">{t('Member')}</Label>
                     <Input
                       id="profileId"
                       list="member-id-options"
                       placeholder={t('Select from the customer list or paste a member id')}
-                      className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
+                      className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                       {...adjustmentForm.register('profileId')}
                     />
                     <datalist id="member-id-options">
@@ -525,27 +621,29 @@ export function AdminPage() {
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.profileId.message}</p>
                     ) : null}
                     {selectedMember ? (
-                      <p className="text-xs text-on-surface-variant/80">
+                      <p className="truncate text-xs text-on-surface-variant/80">
                         {t('Selected')}: {selectedMember.profile.fullName} - {t('Current balance')}: {selectedMember.balance?.points ?? 0} {t('points')}
                       </p>
                     ) : null}
                   </div>
-                  <div className="grid gap-4">
-                    <Label htmlFor="delta" className="text-sm font-semibold">{t('Points Adjustment')}</Label>
-                    <Input id="delta" type="number" className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
-                    <p className="text-xs text-on-surface-variant/80">{t('Use a positive number to add points and a negative number to deduct them.')}</p>
-                    {adjustmentForm.formState.errors.delta ? (
-                      <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
-                    ) : null}
+                  <div className="grid gap-4 sm:grid-cols-[0.65fr_1fr]">
+                    <div className="grid gap-2">
+                      <Label htmlFor="delta" className="text-sm font-semibold">{t('Points Adjustment')}</Label>
+                      <Input id="delta" type="number" className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
+                      {adjustmentForm.formState.errors.delta ? (
+                        <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
+                      ) : null}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
+                      <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
+                      {adjustmentForm.formState.errors.reason ? (
+                        <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
+                      ) : null}
+                    </div>
                   </div>
-                  <div className="grid gap-4">
-                    <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
-                    <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
-                    {adjustmentForm.formState.errors.reason ? (
-                      <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
-                    ) : null}
-                  </div>
-                  <Button type="submit" size="lg" variant="secondary" className="h-14 w-full rounded-full font-semibold" disabled={adjustRewards.isPending}>
+                  <p className="text-xs text-on-surface-variant/80">{t('Use a positive number to add points and a negative number to deduct them.')}</p>
+                  <Button type="submit" size="lg" variant="secondary" className="h-12 w-full rounded-full font-semibold" disabled={adjustRewards.isPending}>
                     {adjustRewards.isPending ? t('Processing...') : t('Update Points')}
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
@@ -594,6 +692,29 @@ export function AdminPage() {
                     </div>
                     <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 xl:w-auto xl:justify-end">
                       <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-semibold text-primary">{member.role}</Badge>
+                      <Badge
+                        variant="accent"
+                        className={
+                          member.verificationDocumentPath
+                            ? 'border-success/25 bg-success/10 px-3 py-1.5 font-semibold text-success'
+                            : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
+                        }
+                      >
+                        <IdCard className="size-3" />
+                        {member.verificationDocumentPath ? 'ID submitted' : 'ID missing'}
+                      </Badge>
+                      <Badge
+                        variant="accent"
+                        className={
+                          member.verificationStatus === 'verified'
+                            ? 'border-success/25 bg-success/10 px-3 py-1.5 font-semibold text-success'
+                            : member.verificationStatus === 'rejected'
+                              ? 'border-red-200 bg-red-50 px-3 py-1.5 font-semibold text-red-600'
+                              : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
+                        }
+                      >
+                        {member.verificationStatus ?? 'not_submitted'}
+                      </Badge>
                       <Badge variant="accent" className="flex items-center gap-1.5 border-primary/25 bg-primary/12 px-3 py-1.5 font-semibold text-primary">
                         <Gift className="size-3" />
                         {balance?.points ?? 0} {t('points')}
@@ -1067,14 +1188,14 @@ export function AdminPage() {
               <div className="grid gap-8">
                 {(promotions.data ?? []).map((promotion) => (
                   <div key={promotion.id} className="relative group">
-                    <PromotionCard promotion={promotion} />
-                    <Badge variant="outline" className="absolute top-4 left-4 border-outline-variant/20 bg-white/90">
-                      {businessNameById.get(promotion.businessId) ?? 'Unknown partner'}
-                    </Badge>
+                    <PromotionCard
+                      promotion={promotion}
+                      businessName={businessNameById.get(promotion.businessId) ?? 'Unknown partner'}
+                    />
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="absolute top-4 right-4 size-10 rounded-full text-red-500 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
+                      className="absolute bottom-4 right-4 size-10 rounded-full text-red-500 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                       onClick={() => {
                         if (confirm('Are you sure you want to delete this promotion?')) {
                           deletePromotion.mutate(promotion.id)
@@ -1958,6 +2079,236 @@ export function AdminPage() {
                       icon={<Activity className="size-8" />}
                       title={t('No orders found')}
                       description={t('Orders matching this filter will appear here.')}
+                    />
+                  ) : null}
+                </div>
+              </ScrollArea>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="ambassadors" className="space-y-12 outline-none">
+          <div className="space-y-8">
+            <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
+              <div>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Lead Generation</span>
+                <h2 className="font-serif text-3xl text-primary">Ambassador Leads</h2>
+              </div>
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                {(ambassadorLeads.data ?? []).length} requests
+              </span>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-4">
+              {ambassadorStatusOptions.map((status) => (
+                <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{status}</p>
+                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                    {(ambassadorLeads.data ?? []).filter((lead) => lead.status === status).length}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
+              <ScrollArea className="h-[680px]">
+                <div className="min-w-[980px]">
+                  <table className="w-full text-sm">
+                    <thead className="bg-[var(--muted)] text-left">
+                      <tr className="border-b border-outline-variant/10">
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Lead</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Socials</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Partner</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Note</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(ambassadorLeads.data ?? []).map((lead) => {
+                        const socialEntries = Object.entries(lead.socialLinks).filter(([, value]) => Boolean(value))
+
+                        return (
+                          <tr key={lead.id} className="border-b border-outline-variant/5 bg-transparent align-top">
+                            <td className="px-6 py-5">
+                              <p className="font-serif text-xl text-primary">{lead.fullName}</p>
+                              <p className="mt-1 text-sm text-on-surface-variant/80">{lead.email}</p>
+                              {lead.phone ? <p className="text-xs text-on-surface-variant/70">{lead.phone}</p> : null}
+                              <p className="mt-2 text-xs uppercase tracking-[0.16em] text-on-surface-variant/65">
+                                {lead.city} · {formatDate(lead.createdAt)}
+                              </p>
+                            </td>
+                            <td className="px-6 py-5">
+                              <div className="space-y-2">
+                                {socialEntries.map(([key, value]) => (
+                                  <p key={key} className="max-w-[16rem] break-words text-xs font-semibold text-primary">
+                                    <span className="uppercase tracking-[0.14em] text-on-surface-variant/65">{key}: </span>
+                                    {value}
+                                  </p>
+                                ))}
+                              </div>
+                            </td>
+                            <td className="px-6 py-5 text-on-surface-variant/85">
+                              {lead.businessId ? businessNameById.get(lead.businessId) ?? 'Unknown partner' : 'Platform-wide'}
+                            </td>
+                            <td className="px-6 py-5">
+                              <p className="max-w-xs text-sm leading-6 text-on-surface-variant/80">{lead.notes || 'No note'}</p>
+                            </td>
+                            <td className="px-6 py-5">
+                              <select
+                                className={adminNativeSelectClass}
+                                value={lead.status}
+                                disabled={updateAmbassadorLeadStatus.isPending}
+                                onChange={(event) => {
+                                  updateAmbassadorLeadStatus.mutate({
+                                    id: lead.id,
+                                    status: event.target.value as typeof ambassadorStatusOptions[number],
+                                  })
+                                }}
+                              >
+                                {ambassadorStatusOptions.map((status) => (
+                                  <option key={status} value={status}>
+                                    {status}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+
+                  {ambassadorLeads.isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
+                  ) : null}
+
+                  {!ambassadorLeads.isLoading && (ambassadorLeads.data?.length ?? 0) === 0 ? (
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<Megaphone className="size-8" />}
+                      title="No ambassador leads yet"
+                      description="Public ambassador requests will appear here after people submit the form."
+                    />
+                  ) : null}
+                </div>
+              </ScrollArea>
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="early-access" className="space-y-12 outline-none">
+          <div className="space-y-8">
+            <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
+              <div>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Early Adopters</span>
+                <h2 className="font-serif text-3xl text-primary">Early Access Leads</h2>
+              </div>
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                {(earlyAccessLeads.data ?? []).length} leads
+              </span>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-4">
+              {earlyAccessLeadStatusOptions.map((status) => (
+                <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{status}</p>
+                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                    {(earlyAccessLeads.data ?? []).filter((lead) => lead.status === status).length}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
+              <ScrollArea className="h-[680px]">
+                <div className="min-w-[900px]">
+                  <table className="w-full text-sm">
+                    <thead className="bg-[var(--muted)] text-left">
+                      <tr className="border-b border-outline-variant/10">
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Contact Details</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Source</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Other Information</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(earlyAccessLeads.data ?? []).map((lead) => (
+                        <tr key={lead.id} className="border-b border-outline-variant/5 bg-transparent align-top">
+                          <td className="px-6 py-5">
+                            <div className="space-y-2">
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Name</p>
+                                <p className="font-serif text-xl text-primary">{lead.fullName || 'Early access lead'}</p>
+                              </div>
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">WhatsApp</p>
+                                <p className="break-all text-sm text-on-surface-variant/80">{lead.whatsapp || 'Not provided'}</p>
+                              </div>
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Email</p>
+                                <p className="break-all text-sm text-on-surface-variant/80">{lead.email || 'Not provided'}</p>
+                              </div>
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Submitted</p>
+                                <p className="text-sm text-on-surface-variant/80">{formatDate(lead.createdAt)}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-5">
+                            <Badge variant="outline" className="max-w-[14rem] truncate border-primary-container/20 bg-[var(--muted)] text-on-surface-variant">
+                              {lead.source}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-5">
+                            <div className="max-w-sm space-y-2 text-sm leading-6 text-on-surface-variant/80">
+                              <div>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Instagram / Notes</p>
+                                <p>{lead.notes || 'No note'}</p>
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-5">
+                            <select
+                              className={adminNativeSelectClass}
+                              value={lead.status}
+                              disabled={updateEarlyAccessLeadStatus.isPending}
+                              onChange={(event) => {
+                                updateEarlyAccessLeadStatus.mutate({
+                                  id: lead.id,
+                                  status: event.target.value as typeof earlyAccessLeadStatusOptions[number],
+                                })
+                              }}
+                            >
+                              {earlyAccessLeadStatusOptions.map((status) => (
+                                <option key={status} value={status}>
+                                  {status}
+                                </option>
+                              ))}
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  {earlyAccessLeads.isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
+                  ) : null}
+
+                  {!earlyAccessLeads.isLoading && (earlyAccessLeads.data?.length ?? 0) === 0 ? (
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<Mail className="size-8" />}
+                      title="No early access leads yet"
+                      description="Early adopter signups will appear here after people submit the public form."
                     />
                   ) : null}
                 </div>

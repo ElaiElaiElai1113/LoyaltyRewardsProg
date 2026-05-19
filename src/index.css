@@ -519,6 +519,38 @@ textarea {
   background-color: rgb(255 250 242 / 0.14) !important;
 }
 
+.early-access-neutral,
+.early-access-neutral.bg-white,
+.early-access-neutral .bg-white {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+}
+
+.early-access-neutral input,
+.early-access-neutral textarea,
+.early-access-neutral select {
+  background-color: #ffffff !important;
+  color: #111111 !important;
+  border-color: #111111 !important;
+}
+
+.early-access-neutral .text-black,
+.early-access-neutral .text-neutral-950 {
+  color: #111111 !important;
+}
+
+.early-access-neutral .text-neutral-700 {
+  color: #404040 !important;
+}
+
+.early-access-neutral .bg-black {
+  background-color: #111111 !important;
+}
+
+.early-access-neutral .text-white {
+  color: #ffffff !important;
+}
+
 :root[data-theme="dark"] .shadow-sm {
   box-shadow: 0 18px 40px -28px rgb(0 0 0 / 0.52);
 }

@@ -1,6 +1,6 @@
 import {
   BarChart3,
-  BadgeDollarSign,
+  Calculator,
   CalendarClock,
   ClipboardCheck,
   FileText,
@@ -67,41 +67,8 @@ const onboardingSteps = [
   },
 ]
 
-const DEFAULT_HARD_COST_PERCENT = 25
-const DEFAULT_TARGET_REVENUE = 1000
-const DEFAULT_REWARDS_PERCENT = 20
-const DEFAULT_REWARDS_COMMISSION_PERCENT = 10
-const DEFAULT_COMPETITOR_COMMISSION_PERCENT = 25
-
-function formatCurrency(value: number) {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(value)
-}
-
-function formatPercent(value: number) {
-  return `${value.toFixed(0)}%`
-}
-
-function parsePositiveNumber(value: string, fallback: number) {
-  const parsed = Number(value)
-
-  if (!Number.isFinite(parsed) || parsed < 0) {
-    return fallback
-  }
-
-  return parsed
-}
-
 export function ForBusinessesPage() {
   const [submitted, setSubmitted] = useState(false)
-  const [hardCostPercent, setHardCostPercent] = useState(DEFAULT_HARD_COST_PERCENT)
-  const [targetRevenue, setTargetRevenue] = useState(DEFAULT_TARGET_REVENUE)
-  const [rewardsPercent, setRewardsPercent] = useState(DEFAULT_REWARDS_PERCENT)
-  const [rewardsCommissionPercent, setRewardsCommissionPercent] = useState(DEFAULT_REWARDS_COMMISSION_PERCENT)
-  const [competitorCommissionPercent, setCompetitorCommissionPercent] = useState(DEFAULT_COMPETITOR_COMMISSION_PERCENT)
 
   useEffect(() => {
     if (window.location.hash !== '#book-demo') return
@@ -128,25 +95,6 @@ export function ForBusinessesPage() {
     setSubmitted(true)
   }
 
-  const hardCostRate = hardCostPercent / 100
-  const hardCostRewardsRate = DEFAULT_REWARDS_PERCENT / 100
-  const hardCostRewardsCommissionRate = DEFAULT_REWARDS_COMMISSION_PERCENT / 100
-  const rewardsRate = rewardsPercent / 100
-  const rewardsCommissionRate = rewardsCommissionPercent / 100
-  const competitorCommissionRate = competitorCommissionPercent / 100
-
-  const hardCostRewardsValue = targetRevenue * hardCostRewardsRate
-  const hardCostFulfillmentCost = hardCostRewardsValue * hardCostRate
-  const hardCostProgramCommission = hardCostRewardsValue * hardCostRewardsCommissionRate
-  const hardCostProgramTotal = hardCostFulfillmentCost + hardCostProgramCommission
-
-  const rewardsValue = targetRevenue * rewardsRate
-  const rewardFulfillmentCost = rewardsValue * hardCostRate
-  const rewardsProgramCommission = rewardsValue * rewardsCommissionRate
-  const totalRewardsProgramCost = rewardFulfillmentCost + rewardsProgramCommission
-  const competitorCost = targetRevenue * competitorCommissionRate
-  const savings = competitorCost - totalRewardsProgramCost
-
   return (
     <div className="ornate-page relative isolate w-full overflow-hidden rounded-[2rem] px-4 py-8 pb-20 sm:px-6 lg:px-8">
       <div className="space-y-16 sm:space-y-20">
@@ -169,6 +117,12 @@ export function ForBusinessesPage() {
           <div className="flex flex-wrap gap-4">
             <Button asChild size="lg" className="rounded-full">
               <a href="#book-demo">Start Onboarding</a>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="rounded-full">
+              <Link to="/cost-calculator">
+                <Calculator className="size-5" />
+                Cost Calculator
+              </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full">
               <Link to="/shop">View Member Experience</Link>
@@ -297,204 +251,40 @@ export function ForBusinessesPage() {
         </form>
       </section>
 
-      <section className="relative z-10 space-y-8">
+      <section className="relative z-10 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
         <div className="max-w-3xl space-y-4">
           <Badge variant="accent" className="w-fit">Cost calculator</Badge>
           <h2 className="font-serif text-5xl font-semibold tracking-[0.02em] text-primary-container">
-            Show how little it costs to win real customer spend.
+            Calculate real reward costs before launch.
           </h2>
           <p className="text-base leading-7 text-on-surface-variant/85">
-            Use this live calculator in sales conversations to compare Medellin Rewards against
-            cash-heavy acquisition channels like Food Panda or paid ads.
+            Compare marketplace cash commission against reward-funded growth at real food cost before
+            choosing the first member offer.
           </p>
+          <Button asChild size="lg" className="rounded-full">
+            <Link to="/cost-calculator">
+              <Calculator className="size-5" />
+              Open Cost Calculator
+            </Link>
+          </Button>
         </div>
 
-        <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">
-          <div className="ornate-frame rounded-[2rem] p-8">
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
-                  Hard Cost Calculator
-                </p>
-                <h3 className="font-serif text-4xl text-primary">
-                  What does {formatCurrency(targetRevenue)} in customer spend really cost?
-                </h3>
-                <p className="text-sm leading-6 text-on-surface-variant/80">
-                  Enter the two numbers an owner already knows. This quick version assumes the standard
-                  sales example: {formatPercent(DEFAULT_REWARDS_PERCENT)} rewards and{' '}
-                  {formatPercent(DEFAULT_REWARDS_COMMISSION_PERCENT)} commission on rewards only.
-                </p>
-              </div>
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-accent-soft)] text-primary-container">
-                <BadgeDollarSign className="size-6" />
-              </div>
+        <div className="ornate-frame rounded-[2rem] p-8">
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-accent-soft)] text-primary-container">
+              <Calculator className="size-6" />
             </div>
-
-            <div className="mt-8 grid gap-5 sm:grid-cols-2">
-              <div className="grid gap-3">
-                <Label htmlFor="hard-cost-percent">Hard Cost %</Label>
-                <Input
-                  id="hard-cost-percent"
-                  inputMode="decimal"
-                  value={hardCostPercent}
-                  onChange={(event) => {
-                    setHardCostPercent(parsePositiveNumber(event.target.value, 0))
-                  }}
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="target-revenue">Customer Spend You Want</Label>
-                <Input
-                  id="target-revenue"
-                  inputMode="decimal"
-                  value={targetRevenue}
-                  onChange={(event) => {
-                    setTargetRevenue(parsePositiveNumber(event.target.value, 0))
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-8 rounded-[1.6rem] border border-[#d8b56d]/35 bg-[#fff8eb] p-6 text-[#3a2615] shadow-soft">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#9b6b21]">
-                Your actual cost through us
-              </p>
-              <p className="mt-3 font-serif text-5xl leading-none text-[#c9891f]">
-                {formatCurrency(hardCostProgramTotal)}
-              </p>
-              <p className="mt-3 max-w-xl text-sm leading-6 text-[#6c5238]">
-                To generate {formatCurrency(targetRevenue)} in customer spend, the customer earns
-                {` ${formatCurrency(hardCostRewardsValue)} in rewards. `}
-                Your hard-cost exposure on fulfilling those rewards is {formatCurrency(hardCostFulfillmentCost)},
-                and our commission on those rewards is {formatCurrency(hardCostProgramCommission)}.
-              </p>
-            </div>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-[1.4rem] bg-[var(--surface-container-lowest)] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant/70">
-                  Rewards issued
-                </p>
-                <p className="mt-2 text-2xl font-semibold text-primary-container">
-                  {formatCurrency(hardCostRewardsValue)}
-                </p>
-              </div>
-              <div className="rounded-[1.4rem] bg-[var(--surface-container-lowest)] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant/70">
-                  Fulfillment hard cost
-                </p>
-                <p className="mt-2 text-2xl font-semibold text-primary-container">
-                  {formatCurrency(hardCostFulfillmentCost)}
-                </p>
-              </div>
-              <div className="rounded-[1.4rem] bg-[var(--surface-container-lowest)] p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-on-surface-variant/70">
-                  Our commission
-                </p>
-                <p className="mt-2 text-2xl font-semibold text-primary-container">
-                  {formatCurrency(hardCostProgramCommission)}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          <div className="ornate-frame rounded-[2rem] p-8">
-            <div className="space-y-2">
+            <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-primary-container">
-                Side-by-side comparison
+                Owner planning
               </p>
-              <h3 className="font-serif text-4xl text-primary-container">
-                Cash commission vs. reward-funded growth
+              <h3 className="mt-2 font-serif text-4xl text-primary-container">
+                Share the math before the offer is finalized.
               </h3>
-              <p className="max-w-2xl text-sm leading-6 text-on-surface-variant/80">
-                Adjust the assumptions below and show owners how different it feels to pay a platform
-                on every sale versus paying us only on the rewards value. These fields are editable
-                scenario assumptions for live sales conversations.
+              <p className="mt-3 text-sm leading-6 text-on-surface-variant/80">
+                The calculator gives owners a focused view of reward value, food cost, and channel
+                comparison without requiring portal access.
               </p>
-            </div>
-
-            <div className="mt-8 grid gap-5 md:grid-cols-3">
-              <div className="grid gap-3">
-                <Label htmlFor="rewards-percent">Rewards Offered %</Label>
-                <Input
-                  id="rewards-percent"
-                  inputMode="decimal"
-                  value={rewardsPercent}
-                  onChange={(event) => {
-                    setRewardsPercent(parsePositiveNumber(event.target.value, 0))
-                  }}
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="rewards-commission-percent">Our Commission on Rewards %</Label>
-                <Input
-                  id="rewards-commission-percent"
-                  inputMode="decimal"
-                  value={rewardsCommissionPercent}
-                  onChange={(event) => {
-                    setRewardsCommissionPercent(parsePositiveNumber(event.target.value, 0))
-                  }}
-                />
-              </div>
-              <div className="grid gap-3">
-                <Label htmlFor="competitor-commission-percent">Food Panda / Ads %</Label>
-                <Input
-                  id="competitor-commission-percent"
-                  inputMode="decimal"
-                  value={competitorCommissionPercent}
-                  onChange={(event) => {
-                    setCompetitorCommissionPercent(parsePositiveNumber(event.target.value, 0))
-                  }}
-                />
-              </div>
-            </div>
-
-            <div className="mt-8 grid gap-5 lg:grid-cols-2">
-              <div className="rounded-[1.75rem] border border-[#d19a8a]/40 bg-[#fff6f2] p-6 text-[#3b2119] shadow-soft">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#ab4b31]">
-                  Other platform
-                </p>
-                <h4 className="mt-3 font-serif text-3xl text-[#7a2f1f]">
-                  {formatCurrency(competitorCost)}
-                </h4>
-                <p className="mt-3 text-sm leading-6 text-[#704536]">
-                  {formatPercent(competitorCommissionPercent)} commission on {formatCurrency(targetRevenue)}
-                  means that cash leaves the business immediately.
-                </p>
-              </div>
-
-              <div className="rounded-[1.75rem] border border-[#d8b56d]/35 bg-[#fffaf0] p-6 text-[#3a2615] shadow-soft">
-                <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#9b6b21]">
-                  Medellin Rewards
-                </p>
-                <h4 className="mt-3 font-serif text-3xl text-[#c9891f]">
-                  {formatCurrency(totalRewardsProgramCost)}
-                </h4>
-                <p className="mt-3 text-sm leading-6 text-[#6c5238]">
-                  {formatPercent(rewardsPercent)} rewards creates {formatCurrency(rewardsValue)} in customer value,
-                  and we charge only on that reward amount, not on the full sale.
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-[1.75rem] border border-[#d8b56d]/35 bg-[#fff8eb] p-6 text-[#3a2615] shadow-soft">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[#9b6b21]">
-                Difference
-              </p>
-              <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-                <div>
-                  <p className="font-serif text-5xl leading-none text-[#c9891f]">
-                    {formatCurrency(Math.max(savings, 0))}
-                  </p>
-                  <p className="mt-2 text-sm leading-6 text-[#6c5238]">
-                    Saved versus paying a {formatPercent(competitorCommissionPercent)} cash commission channel.
-                  </p>
-                </div>
-                <p className="max-w-md text-sm leading-6 text-[#6c5238]">
-                  Example: {formatCurrency(targetRevenue)} in restaurant spend can cost {formatCurrency(competitorCost)}
-                  on a marketplace, versus about {formatCurrency(totalRewardsProgramCost)} here.
-                </p>
-              </div>
             </div>
           </div>
         </div>

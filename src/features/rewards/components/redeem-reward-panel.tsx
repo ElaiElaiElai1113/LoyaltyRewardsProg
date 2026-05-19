@@ -16,6 +16,7 @@ interface RedeemRewardPanelProps {
   reward: Reward
   balancePoints: number
   isSubmitting?: boolean
+  actionLocked?: boolean
   onSubmit: (values: RedeemFormValues) => Promise<void> | void
 }
 
@@ -23,6 +24,7 @@ export function RedeemRewardPanel({
   reward,
   balancePoints,
   isSubmitting,
+  actionLocked = false,
   onSubmit,
 }: RedeemRewardPanelProps) {
   const { t } = useLanguage()
@@ -38,46 +40,46 @@ export function RedeemRewardPanel({
   const canRedeem = balancePoints >= reward.pointsCost
 
   return (
-    <div className="space-y-12">
-      <div className="flex flex-wrap items-center gap-4">
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center gap-3">
         <Badge variant="accent" className="bg-primary/5 text-primary border-none">{t(reward.category)}</Badge>
         <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80 italic">
           {reward.inventory} {t('Available')}
         </span>
       </div>
 
-      <div className="space-y-4">
-        <h2 className="font-serif text-5xl tracking-tight text-primary">
+      <div className="space-y-2">
+        <h2 className="font-serif text-3xl tracking-tight text-primary">
           {t(reward.title)}
         </h2>
-        <p className="max-w-2xl text-xl font-medium leading-relaxed text-on-surface-variant/85">
+        <p className="max-w-2xl text-sm font-medium leading-6 text-on-surface-variant/85">
           {t(reward.description)}
         </p>
       </div>
 
       <div className="grid gap-1 overflow-hidden rounded-[2.5rem] bg-surface-lowest border border-outline-variant/5 shadow-card md:grid-cols-3">
-        <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
+        <div className="space-y-1.5 border-b border-outline-variant/10 p-5 md:border-b-0 md:border-r">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
             {t('Points Cost')}
           </p>
-          <p className="font-serif text-4xl text-primary">
+          <p className="font-serif text-2xl leading-tight text-primary">
             {formatPoints(reward.pointsCost)} {t('points')}
           </p>
         </div>
-        <div className="p-10 space-y-2 border-b md:border-b-0 md:border-r border-outline-variant/10">
+        <div className="space-y-1.5 border-b border-outline-variant/10 p-5 md:border-b-0 md:border-r">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
             {t('Your Points')}
           </p>
-          <p className="font-serif text-4xl text-primary">
+          <p className="font-serif text-2xl leading-tight text-primary">
             {formatPoints(balancePoints)} {t('points')}
           </p>
         </div>
-        <div className="p-10 space-y-2">
+        <div className="space-y-1.5 p-5">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/80">
             {t('Points After')}
           </p>
           <p className={cn(
-            "font-serif text-4xl",
+            "font-serif text-2xl leading-tight",
             canRedeem ? "text-primary/80" : "text-error/80"
           )}>
             {formatPoints(Math.max(balancePoints - reward.pointsCost, 0))} {t('points')}
@@ -86,12 +88,12 @@ export function RedeemRewardPanel({
       </div>
 
       <form
-        className="grid gap-12 lg:grid-cols-2 lg:items-end"
+        className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end"
         onSubmit={form.handleSubmit(async (values) => {
           await onSubmit(values)
         })}
       >
-        <div className="space-y-8">
+        <div className="grid gap-4 sm:grid-cols-2">
           <div className="grid gap-3">
             <Label htmlFor="pickupWindow">{t('Pickup window')}</Label>
             <Input id="pickupWindow" list="pickup-window-options" {...form.register('pickupWindow')} />
@@ -118,21 +120,32 @@ export function RedeemRewardPanel({
           </div>
         </div>
 
-        <EarnRedeemGate action="redeem">
+        {actionLocked ? (
           <Button
             type="submit"
             size="lg"
-            className="w-full rounded-full h-16 text-lg font-bold tracking-wide shadow-card"
-            disabled={(isMembershipActive && !canRedeem) || isSubmitting}
-            isLoading={Boolean(isSubmitting)}
+            className="h-12 w-full rounded-full px-8 text-sm font-bold tracking-wide shadow-card lg:w-auto"
+            disabled
           >
-            {isSubmitting
-              ? t('Processing...')
-              : canRedeem || !isMembershipActive
-                ? t('Redeem Now')
-                : t('Not Enough Points')}
+            {t('Verify ID to redeem')}
           </Button>
-        </EarnRedeemGate>
+        ) : (
+          <EarnRedeemGate action="redeem">
+            <Button
+              type="submit"
+              size="lg"
+              className="h-12 w-full rounded-full px-8 text-sm font-bold tracking-wide shadow-card lg:w-auto"
+              disabled={(isMembershipActive && !canRedeem) || isSubmitting}
+              isLoading={Boolean(isSubmitting)}
+            >
+              {isSubmitting
+                ? t('Processing...')
+                : canRedeem || !isMembershipActive
+                  ? t('Redeem Now')
+                  : t('Not Enough Points')}
+            </Button>
+          </EarnRedeemGate>
+        )}
       </form>
     </div>
   )

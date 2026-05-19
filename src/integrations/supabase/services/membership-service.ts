@@ -1,5 +1,5 @@
 import type { Membership } from '@/types/domain'
-import { camelCaseRow, requireSupabase } from './shared'
+import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 function mapMembership(row: Record<string, unknown>): Membership {
   const mapped = camelCaseRow(row)
@@ -31,7 +31,7 @@ async function callMembershipRpc(name: 'mock_subscribe' | 'mock_renew' | 'mock_c
       throw new Error('Demo membership setup is not active on this database yet. Ask an admin to apply the latest Supabase membership migration.')
     }
 
-    throw new Error(error?.message ?? 'Membership update failed.')
+    throw new Error(friendlySupabaseError(error, 'Membership update failed.'))
   }
 
   return mapMembership(row)
