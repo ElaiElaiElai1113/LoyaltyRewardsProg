@@ -49,14 +49,14 @@ export function EarlyAccessPage() {
   }
 
   return (
-    <main className="early-access-neutral min-h-screen overflow-x-hidden bg-white text-neutral-950">
+    <main className="early-access-neutral min-h-screen overflow-x-hidden bg-white font-sans text-neutral-950">
       <div className="mx-auto flex min-h-screen max-w-5xl items-center px-5 py-10 sm:px-8 lg:px-12">
         <section className="w-full space-y-7">
-          <p className="text-6xl font-semibold leading-none sm:text-7xl lg:text-8xl">
+          <p className="text-[clamp(2.75rem,7vw,4.25rem)] font-semibold leading-none">
             {earlyAccessMessageLines[0]}
           </p>
 
-          <div className="max-w-4xl space-y-5 text-xl font-medium leading-8 text-neutral-950 sm:text-2xl sm:leading-10">
+          <div className="max-w-3xl space-y-5 text-[1.125rem] font-medium leading-8 text-neutral-950 sm:text-[1.25rem] sm:leading-9">
             <p>{earlyAccessMessageLines[1]}</p>
             <p>{earlyAccessMessageLines[2]}</p>
             <p>{earlyAccessMessageLines[3]}</p>
@@ -64,7 +64,7 @@ export function EarlyAccessPage() {
           </div>
 
           <div className="space-y-5">
-            <p className="text-5xl font-semibold leading-none sm:text-6xl">
+            <p className="max-w-4xl text-[clamp(1.75rem,3.4vw,2.25rem)] font-semibold leading-tight">
               {earlyAccessMessageLines[5]}
             </p>
 

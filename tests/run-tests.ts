@@ -392,3 +392,15 @@ runTest('early access CTA opens a lead capture modal', () => {
   assert.match(earlyAccessPage, /leadForm\.register\('email'\)/)
   assert.match(earlyAccessPage, /Instagram/)
 })
+
+runTest('early access typography keeps the launch copy readable', () => {
+  const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
+
+  assert.match(earlyAccessPage, /font-sans/)
+  assert.match(earlyAccessPage, /text-\[clamp\(2\.75rem,7vw,4\.25rem\)\]/)
+  assert.match(earlyAccessPage, /text-\[clamp\(1\.75rem,3\.4vw,2\.25rem\)\]/)
+  assert.match(earlyAccessPage, /max-w-3xl space-y-5 text-\[1\.125rem\]/)
+  assert.doesNotMatch(earlyAccessPage, /text-8xl/)
+  assert.doesNotMatch(earlyAccessPage, /text-7xl/)
+  assert.doesNotMatch(earlyAccessPage, /text-6xl/)
+})
