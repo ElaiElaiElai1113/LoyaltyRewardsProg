@@ -20,6 +20,11 @@ import {
 import {
   landingBody,
   landingFaqQuestions,
+  landingHeroEyebrow,
+  landingHeroHeadline,
+  landingHeroInfoRows,
+  landingHeroPills,
+  landingJoinButtonLabel,
   landingOfferLines,
   landingTagline,
   landingTags,
@@ -236,11 +241,28 @@ runTest('referral approval can award credits before ID verification but still bl
 })
 
 runTest('landing page content follows the approved member-facing wording', () => {
-  assert.equal(landingTagline, 'The world’s highest paying Rewards Program!')
+  assert.equal(landingHeroEyebrow, "THE WORLD'S HIGHEST PAYING REWARDS PROGRAM")
+  assert.deepEqual(landingHeroHeadline, {
+    beforeHighlight: 'Earn a ',
+    highlight: 'free vacation',
+    afterHighlight: ' every year — doing what you already do',
+  })
+  assert.equal(landingTagline, 'Earn a free vacation every year — doing what you already do')
   assert.equal(
     landingBody,
     'Imagine being able to earn enough rewards every year for a free vacation by doing what you already do, with Medellin Rewards you can do exactly that!',
   )
+  assert.deepEqual(landingHeroInfoRows.map((row) => row.text), [
+    'Earn between 20% - 100% by simply spending at amazing businesses within our platform',
+    'Earn from purchasing almost any type of product or service from going to a restaurant or hotel to buying a car or home.',
+  ])
+  assert.deepEqual(landingHeroPills.map((pill) => pill.label), [
+    'Restaurants & hotels',
+    'Cars & real estate',
+    '20% – 100% back',
+    'Any product or service',
+  ])
+  assert.equal(landingJoinButtonLabel, 'Join Medellin Rewards')
   assert.deepEqual(landingTags, [
     'Earn between 20% - 100% by simply spending at amazing businesses within our platform',
     'Earn from purchasing almost any type of product or service from going to a restaurant or hotel to buying a car or home.',
@@ -271,6 +293,28 @@ runTest('landing page FAQs are clickable and include answers', () => {
   assert.match(landingContent, /answer:/)
 })
 
+runTest('landing FAQ and footer follow the Figma lower page', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landing-faq-figma/)
+  assert.match(landingPage, /max-w-\[672px\]/)
+  assert.match(landingPage, /border-t border-\[#e2c39f\] bg-\[#f6f7f8\]/)
+  assert.match(landingPage, /min-h-\[63px\]/)
+  assert.match(landingPage, /rounded-\[0\.45rem\] border border-\[#e2c39f\] bg-\[#fff9ef\]/)
+  assert.match(landingPage, /landingFaqIconByQuestion/)
+  assert.match(landingPage, /MapPin/)
+  assert.match(landingPage, /Users/)
+  assert.match(landingPage, /ArrowLeftRight/)
+  assert.match(landingPage, /DollarSign/)
+  assert.doesNotMatch(landingPage, /ChevronRight/)
+  assert.match(landingPage, /landing-footer-figma/)
+  assert.match(landingPage, /min-h-\[84px\]/)
+  assert.match(landingPage, /border-t border-\[#e2c39f\] bg-\[#fff9ef\]/)
+  assert.match(landingPage, /min-h-\[84px\][^"]*items-center/)
+  assert.match(landingPage, /grid-cols-\[1fr_auto_1fr\]/)
+  assert.match(landingPage, /max-w-none/)
+})
+
 runTest('member signup page uses simplified branded layout', () => {
   const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
 
@@ -287,8 +331,39 @@ runTest('landing join buttons go to member signup', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /to="\/join"/)
+  assert.match(landingPage, /landing-hero-exact/)
+  assert.match(landingPage, /landingHeroEyebrow/)
+  assert.match(landingPage, /landingHeroInfoRows\.map/)
+  assert.match(landingPage, /landingHeroPills\.map/)
+  assert.match(landingPage, /landingJoinButtonLabel/)
   assert.doesNotMatch(landingPage, /leadModalOpen/)
   assert.doesNotMatch(landingPage, /memberLeadSchema/)
+})
+
+runTest('landing subscription section follows the Figma card proportions', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landing-subscription-figma/)
+  assert.match(landingPage, /max-w-\[680px\]/)
+  assert.match(landingPage, /bg-\[#fff9ef\]/)
+  assert.match(landingPage, /border-\[#e2c39f\]/)
+  assert.match(landingPage, /max-w-\[560px\] rounded-\[1rem\] bg-\[#f7f8fb\]/)
+  assert.match(landingPage, /text-\[3\.35rem\][\s\S]*md:text-\[4\.1rem\]/)
+  assert.match(landingPage, /min-h-\[64px\] w-full max-w-\[560px\]/)
+  assert.match(landingPage, /View Agreement/)
+})
+
+runTest('landing how it works section follows the Figma card row', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landing-how-it-works-figma/)
+  assert.match(landingPage, /max-w-\[1216px\]/)
+  assert.match(landingPage, /lg:grid-cols-4/)
+  assert.match(landingPage, /min-h-\[155px\]/)
+  assert.match(landingPage, /rounded-\[0\.7rem\] border border-\[#dde1e6\] bg-\[#fbfcfd\]/)
+  assert.match(landingPage, /size-\[34px\]/)
+  assert.match(landingPage, /text-\[#9f730f\]/)
+  assert.match(landingPage, /text-\[13px\] leading-\[1\.55\] text-\[#667083\]/)
 })
 
 runTest('early access CTA opens a lead capture modal', () => {
