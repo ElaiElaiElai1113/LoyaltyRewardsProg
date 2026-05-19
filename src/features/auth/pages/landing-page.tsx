@@ -29,6 +29,7 @@ import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 import {
+  landingLogo,
   landingAgreementLabel,
   landingFaqItems,
   landingHeroEyebrow,
@@ -97,14 +98,37 @@ export function LandingPage() {
   } as const
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f6f7f8] pb-16 text-[#232326]">
-      <section className="landing-hero-exact flex min-h-screen items-start justify-center px-4 pb-12 pt-[58px] sm:px-6 lg:px-8">
-        <div className="mx-auto flex w-full max-w-[760px] flex-col items-center text-center">
+    <main className="min-h-screen overflow-x-hidden bg-[#f6f7f8] text-[#232326]">
+      <header className="landing-header-figma flex h-[61px] items-center border-b border-[#dde1e6] bg-[#ffffff] px-8">
+        <div className="mx-auto flex w-full max-w-none items-center justify-between">
+          <Link to="/" className="font-serif text-[24px] font-semibold leading-none text-[#202023]">
+            Medellin <span className="text-[#c9a84c]">Rewards</span>
+            <span className="sr-only">{t(landingLogo)}</span>
+          </Link>
+          <nav className="hidden items-center gap-[27px] text-[14px] font-normal leading-none text-[#667083] md:flex">
+            <a href="#how-it-works" className="transition hover:text-[#202023]">
+              {t('How it works')}
+            </a>
+            <a href="#businesses" className="transition hover:text-[#202023]">
+              {t('Businesses')}
+            </a>
+            <a href="#faq" className="transition hover:text-[#202023]">
+              {t('FAQ')}
+            </a>
+            <Link to="/join" className="text-[#c8a23d] transition hover:text-[#a77816]">
+              {t('Join now')}
+            </Link>
+          </nav>
+        </div>
+      </header>
+
+      <section className="landing-hero-exact flex min-h-[777px] items-start justify-center px-4 pb-16 pt-[66px] sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-[820px] flex-col items-center text-center">
           <p className="mb-[22px] rounded-full border border-[#d9bd73] bg-[#fff9ed] px-[18px] py-[7px] text-[11px] font-medium uppercase leading-none tracking-[0.28em] text-[#9f730f]">
             {t(landingHeroEyebrow)}
           </p>
 
-          <h1 className="max-w-[650px] font-serif text-[clamp(2.05rem,3.15vw,2.45rem)] font-bold leading-[1.12] tracking-normal text-[#202023]">
+          <h1 className="max-w-[650px] font-serif text-[36px] font-bold leading-[1.18] tracking-normal text-[#202023] sm:text-[38px]">
             {t(landingHeroHeadline.beforeHighlight)}
             <span className="text-[#c8a23d]">{t(landingHeroHeadline.highlight)}</span>
             {t(landingHeroHeadline.afterHighlight)}
@@ -121,7 +145,7 @@ export function LandingPage() {
               const Icon = heroInfoIconByName[row.icon]
 
               return (
-                <div key={row.text} className="flex min-h-[51px] items-center gap-3 rounded-xl border border-[#dde1e6] bg-white px-5 py-3 text-left shadow-[0_1px_2px_rgba(16,24,40,0.08)]">
+                <div key={row.text} className="flex min-h-[51px] items-center gap-3 rounded-xl border border-[#dde1e6] bg-[#ffffff] px-5 py-3 text-left shadow-[0_1px_2px_rgba(16,24,40,0.08)]">
                   <Icon className="size-4 shrink-0 text-[#c8a23d]" strokeWidth={1.75} aria-hidden="true" />
                   <p className="text-[14px] font-normal leading-[1.45] text-[#687386]">
                     {row.text === landingHeroInfoRows[0].text ? (
@@ -139,12 +163,12 @@ export function LandingPage() {
             })}
           </div>
 
-          <div className="mt-[33px] flex w-full max-w-[720px] flex-wrap justify-center gap-[10px]">
+          <div className="mt-[33px] flex w-full max-w-[820px] flex-wrap justify-center gap-[10px]">
             {landingHeroPills.map((pill) => {
               const Icon = heroPillIconByName[pill.icon]
 
               return (
-                <span key={pill.label} className="inline-flex min-h-[38px] items-center gap-2 rounded-full border border-[#dfe3e8] bg-white px-[17px] text-[14px] font-normal text-[#505761] shadow-[0_1px_1px_rgba(16,24,40,0.03)]">
+                <span key={pill.label} className="inline-flex min-h-[38px] items-center gap-2 rounded-full border border-[#dfe3e8] bg-[#ffffff] px-[17px] text-[14px] font-normal text-[#505761] shadow-[0_1px_1px_rgba(16,24,40,0.03)]">
                   <Icon className="size-4 shrink-0 text-[#c8a23d]" strokeWidth={1.65} aria-hidden="true" />
                   {t(pill.label)}
                 </span>
@@ -162,46 +186,46 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="landing-subscription-figma px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section id="businesses" className="landing-subscription-figma border-t border-[#dde1e6] bg-[#ffffff] px-4 pb-12 pt-[55px] sm:px-6 lg:px-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
-          <h2 className="mx-auto max-w-[14ch] text-balance font-serif text-[3.35rem] font-semibold leading-[0.98] tracking-normal text-[#202023] md:text-[4.1rem]">
+          <h2 className="mx-auto font-serif text-[26px] font-semibold leading-none tracking-normal text-[#202023]">
             {t('Early adopter monthly subscription')}
           </h2>
 
-          <article className="relative mt-10 w-full max-w-[680px] rounded-[1.55rem] border-[3px] border-[#e2c39f] bg-[#fff9ef] px-6 pb-12 pt-[76px] shadow-none sm:px-[58px] sm:pb-[58px] sm:pt-[80px]">
-            <div className="absolute left-1/2 top-0 min-w-[236px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4af43] px-9 py-3.5 text-[11px] font-semibold uppercase leading-none tracking-[0.22em] text-[#171108]">
+          <article className="relative mt-[39px] w-full max-w-[340px] rounded-[0.7rem] border-2 border-[#d0a534] bg-[#ffffff] px-7 pb-[17px] pt-[61px] shadow-none">
+            <div className="absolute left-1/2 top-0 flex h-[27px] min-w-[193px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#d4af43] px-5 text-[11px] font-semibold uppercase leading-none tracking-[0.22em] text-[#171108]">
               {t(landingSubscription.offerBadge)}
             </div>
-            <p className="text-[2rem] font-normal uppercase leading-none tracking-[0.32em] text-[#667083]">
+            <p className="text-[14px] font-normal uppercase leading-none tracking-[0.32em] text-[#667083]">
               {t(landingSubscription.eyebrow)}
             </p>
-            <div className="mx-auto mt-[34px] max-w-[560px] rounded-[1rem] bg-[#f7f8fb] px-5 py-[38px] sm:px-8 sm:py-[42px]">
-              <p className="text-[1rem] font-normal uppercase leading-none tracking-normal text-[#667083]">
+            <div className="mx-auto mt-[17px] flex min-h-[82px] max-w-[280px] flex-col items-center justify-center rounded-[0.45rem] bg-[#f7f8fb] px-5 py-4">
+              <p className="text-[11px] font-normal uppercase leading-none tracking-normal text-[#667083]">
                 {t(landingSubscription.bonusLabel)}
               </p>
-              <p className="mx-auto mt-6 max-w-[9ch] text-balance text-[3.35rem] font-semibold leading-[1.02] tracking-normal text-[#d0a534] md:text-[4.1rem]">
+              <p className="mt-3 text-[24px] font-semibold leading-none tracking-normal text-[#d0a534]">
                 {t(landingSubscription.rewardValue)}
               </p>
             </div>
-            <Button asChild size="lg" className="mx-auto mt-9 min-h-[64px] w-full max-w-[560px] rounded-[0.85rem] bg-[#d4af43] text-[1.5rem] font-medium text-[#070707] shadow-none hover:bg-[#c6a238]">
+            <Button asChild size="lg" className="mx-auto mt-5 min-h-[45px] w-full max-w-[280px] rounded-[0.45rem] bg-[#d4af43] text-[14px] font-semibold text-[#070707] shadow-none hover:bg-[#c6a238]">
               <Link to="/join">{t('Join now')}</Link>
             </Button>
-            <div className="mt-7 flex items-center justify-center gap-2 text-[1.05rem] text-[#667083]">
-              <FileText className="size-4 text-[#667083]" aria-hidden="true" />
+            <div className="mt-[12px] flex items-center justify-center gap-1.5 text-[11px] text-[#667083]">
+              <FileText className="size-3 text-[#667083]" aria-hidden="true" />
               <span>{t('Member agreement applies')}</span>
             </div>
           </article>
 
-          <Button asChild variant="secondary" size="lg" className="mt-10 min-h-[61px] rounded-[1rem] border border-[#e2c39f] bg-[#fff9ef] px-10 text-[1.35rem] font-medium text-[#40506d] shadow-none hover:bg-white">
+          <Button asChild variant="secondary" size="lg" className="mt-8 min-h-[50px] rounded-[0.45rem] border border-[#dde1e6] bg-[#ffffff] px-8 text-[14px] font-medium text-[#40506d] shadow-[0_1px_2px_rgba(16,24,40,0.06)] hover:bg-[#ffffff]">
             <Link to="/reward-terms" aria-label="View Agreement">
-              <FileText className="size-5 text-[#d0a534]" aria-hidden="true" />
+              <FileText className="size-4 text-[#d0a534]" aria-hidden="true" />
               {t(landingAgreementLabel)}
             </Link>
           </Button>
         </div>
       </section>
 
-      <section id="how-it-works" className="landing-how-it-works-figma px-[22px] py-12 sm:py-[50px]">
+      <section id="how-it-works" className="landing-how-it-works-figma border-t border-[#dde1e6] bg-[#f6f7f8] px-[32px] pb-[35px] pt-[55px]">
         <div className="mx-auto max-w-[1216px]">
           <div className="text-center">
             <h2 className="font-serif text-[26px] font-semibold leading-none tracking-normal text-[#202023]">
@@ -214,7 +238,7 @@ export function LandingPage() {
 
           <div className="mt-[35px] grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {landingHowItWorksSteps.map((step) => (
-              <article key={step.number} className="flex min-h-[155px] flex-col items-center justify-center rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] px-7 py-5 text-center shadow-none">
+              <article key={step.number} className="flex h-[155px] flex-col items-center justify-center rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] px-7 py-0 text-center shadow-none">
                 <div className="mx-auto flex size-[34px] items-center justify-center rounded-full border border-[#d9bd73] bg-[#fff9ed] text-[15px] font-medium text-[#9f730f]">
                   {step.number}
                 </div>
@@ -226,7 +250,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section id="faq" className="landing-faq-figma border-t border-[#e2c39f] bg-[#f6f7f8] px-4 py-[58px] sm:px-6">
+      <section id="faq" className="landing-faq-figma border-t border-[#dde1e6] bg-[#f6f7f8] px-4 pb-[49px] pt-[57px] sm:px-6">
         <div className="mx-auto max-w-[672px]">
           <div className="text-center">
             <h2 className="font-serif text-[26px] font-semibold leading-none tracking-normal text-[#202023]">
@@ -239,7 +263,7 @@ export function LandingPage() {
               const FaqIcon = landingFaqIconByQuestion[item.question]
 
               return (
-              <details key={item.question} className="group rounded-[0.45rem] border border-[#e2c39f] bg-[#fff9ef] px-5 shadow-none">
+              <details key={item.question} className="group rounded-[0.45rem] border border-[#dde1e6] bg-[#ffffff] px-5 shadow-none">
                 <summary className="flex min-h-[63px] cursor-pointer list-none items-center gap-3 text-[14px] font-medium leading-none text-[#202023]">
                   <FaqIcon className="size-4 shrink-0 text-[#c8a23d]" strokeWidth={1.8} aria-hidden="true" />
                   <span>{t(item.question)}</span>
@@ -254,7 +278,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <footer className="landing-footer-figma flex min-h-[84px] items-center border-t border-[#e2c39f] bg-[#fff9ef] px-[27px] py-0">
+      <footer className="landing-footer-figma flex min-h-[108px] items-center border-t border-[#dde1e6] bg-[#ffffff] px-[32px] py-0">
         <div className="mx-auto grid w-full max-w-none gap-5 text-center lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:text-left">
           <p className="font-serif text-[18px] font-semibold leading-none text-[#202023]">
             Medellin <span className="text-[#c9a84c]">Rewards</span>

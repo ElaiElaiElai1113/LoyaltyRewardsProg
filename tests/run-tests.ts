@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import {
   earlyAccessMessageLines,
@@ -298,9 +298,9 @@ runTest('landing FAQ and footer follow the Figma lower page', () => {
 
   assert.match(landingPage, /landing-faq-figma/)
   assert.match(landingPage, /max-w-\[672px\]/)
-  assert.match(landingPage, /border-t border-\[#e2c39f\] bg-\[#f6f7f8\]/)
+  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#f6f7f8\]/)
   assert.match(landingPage, /min-h-\[63px\]/)
-  assert.match(landingPage, /rounded-\[0\.45rem\] border border-\[#e2c39f\] bg-\[#fff9ef\]/)
+  assert.match(landingPage, /rounded-\[0\.45rem\] border border-\[#dde1e6\] bg-\[#ffffff\]/)
   assert.match(landingPage, /landingFaqIconByQuestion/)
   assert.match(landingPage, /MapPin/)
   assert.match(landingPage, /Users/)
@@ -308,11 +308,15 @@ runTest('landing FAQ and footer follow the Figma lower page', () => {
   assert.match(landingPage, /DollarSign/)
   assert.doesNotMatch(landingPage, /ChevronRight/)
   assert.match(landingPage, /landing-footer-figma/)
-  assert.match(landingPage, /min-h-\[84px\]/)
-  assert.match(landingPage, /border-t border-\[#e2c39f\] bg-\[#fff9ef\]/)
-  assert.match(landingPage, /min-h-\[84px\][^"]*items-center/)
+  assert.match(landingPage, /min-h-\[108px\]/)
+  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /min-h-\[108px\][^"]*items-center/)
   assert.match(landingPage, /grid-cols-\[1fr_auto_1fr\]/)
   assert.match(landingPage, /max-w-none/)
+})
+
+runTest('landing Figma reference asset is stored with app assets', () => {
+  assert.equal(existsSync('src/assets/medellin-landing.png'), true)
 })
 
 runTest('member signup page uses simplified branded layout', () => {
@@ -331,7 +335,13 @@ runTest('landing join buttons go to member signup', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /to="\/join"/)
+  assert.match(landingPage, /landing-header-figma/)
+  assert.match(landingPage, /h-\[61px\]/)
+  assert.match(landingPage, /How it works/)
+  assert.match(landingPage, /Businesses/)
+  assert.match(landingPage, /FAQ/)
   assert.match(landingPage, /landing-hero-exact/)
+  assert.match(landingPage, /min-h-\[777px\]/)
   assert.match(landingPage, /landingHeroEyebrow/)
   assert.match(landingPage, /landingHeroInfoRows\.map/)
   assert.match(landingPage, /landingHeroPills\.map/)
@@ -344,12 +354,15 @@ runTest('landing subscription section follows the Figma card proportions', () =>
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /landing-subscription-figma/)
-  assert.match(landingPage, /max-w-\[680px\]/)
-  assert.match(landingPage, /bg-\[#fff9ef\]/)
-  assert.match(landingPage, /border-\[#e2c39f\]/)
-  assert.match(landingPage, /max-w-\[560px\] rounded-\[1rem\] bg-\[#f7f8fb\]/)
-  assert.match(landingPage, /text-\[3\.35rem\][\s\S]*md:text-\[4\.1rem\]/)
-  assert.match(landingPage, /min-h-\[64px\] w-full max-w-\[560px\]/)
+  assert.match(landingPage, /id="businesses"/)
+  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /text-\[26px\]/)
+  assert.match(landingPage, /max-w-\[340px\]/)
+  assert.match(landingPage, /border-2 border-\[#d0a534\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /min-w-\[193px\]/)
+  assert.match(landingPage, /max-w-\[280px\][\s\S]*rounded-\[0\.45rem\] bg-\[#f7f8fb\]/)
+  assert.match(landingPage, /text-\[24px\] font-semibold/)
+  assert.match(landingPage, /min-h-\[45px\] w-full max-w-\[280px\]/)
   assert.match(landingPage, /View Agreement/)
 })
 
@@ -359,7 +372,7 @@ runTest('landing how it works section follows the Figma card row', () => {
   assert.match(landingPage, /landing-how-it-works-figma/)
   assert.match(landingPage, /max-w-\[1216px\]/)
   assert.match(landingPage, /lg:grid-cols-4/)
-  assert.match(landingPage, /min-h-\[155px\]/)
+  assert.match(landingPage, /h-\[155px\]/)
   assert.match(landingPage, /rounded-\[0\.7rem\] border border-\[#dde1e6\] bg-\[#fbfcfd\]/)
   assert.match(landingPage, /size-\[34px\]/)
   assert.match(landingPage, /text-\[#9f730f\]/)
