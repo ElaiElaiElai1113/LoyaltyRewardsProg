@@ -331,10 +331,10 @@ runTest('member signup page uses simplified branded layout', () => {
   assert.doesNotMatch(joinPage, /bg-\[#24150e\]/)
 })
 
-runTest('landing join buttons go to member signup', () => {
+runTest('landing hero Join Medellin Rewards button goes to early access', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /to="\/join"/)
+  assert.match(landingPage, /to="\/early-access"/)
   assert.match(landingPage, /landing-header-figma/)
   assert.match(landingPage, /h-\[61px\]/)
   assert.match(landingPage, /How it works/)

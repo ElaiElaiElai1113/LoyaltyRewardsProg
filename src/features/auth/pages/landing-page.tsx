@@ -177,7 +177,7 @@ export function LandingPage() {
           </div>
 
           <Link
-            to="/join"
+            to="/early-access"
             className="mt-8 inline-flex min-h-[51px] min-w-[266px] items-center justify-center gap-1.5 rounded-lg bg-[#d3ae43] px-8 text-[15px] font-bold text-[#111111] shadow-none transition hover:bg-[#c49e34]"
           >
             {t(landingJoinButtonLabel)}
