@@ -396,6 +396,17 @@ runTest('early access CTA opens a lead capture modal', () => {
   assert.match(earlyAccessPage, /Instagram/)
 })
 
+runTest('root route renders only the early access letter page', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const rootRouteStart = router.indexOf('function RootRoute()')
+  const protectedRouteStart = router.indexOf('function ProtectedCustomerRoute()')
+  const rootRoute = router.slice(rootRouteStart, protectedRouteStart)
+
+  assert.match(rootRoute, /<EarlyAccessPage \/>/)
+  assert.doesNotMatch(rootRoute, /<LandingPage \/>/)
+  assert.doesNotMatch(rootRoute, /landing-header-figma/)
+})
+
 runTest('early access typography keeps the launch copy readable', () => {
   const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
 
