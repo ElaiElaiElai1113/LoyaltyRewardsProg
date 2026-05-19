@@ -115,7 +115,7 @@ export function LandingPage() {
             <a href="#faq" className="transition hover:text-[#202023]">
               {t('FAQ')}
             </a>
-            <Link to="/join" className="text-[#c8a23d] transition hover:text-[#a77816]">
+            <Link to="/early-access" className="text-[#c8a23d] transition hover:text-[#a77816]">
               {t('Join now')}
             </Link>
           </nav>
@@ -208,7 +208,7 @@ export function LandingPage() {
               </p>
             </div>
             <Button asChild size="lg" className="mx-auto mt-5 min-h-[45px] w-full max-w-[280px] rounded-[0.45rem] bg-[#d4af43] text-[14px] font-semibold text-[#070707] shadow-none hover:bg-[#c6a238]">
-              <Link to="/join">{t('Join now')}</Link>
+              <Link to="/early-access">{t('Join now')}</Link>
             </Button>
             <div className="mt-[12px] flex items-center justify-center gap-1.5 text-[11px] text-[#667083]">
               <FileText className="size-3 text-[#667083]" aria-hidden="true" />
