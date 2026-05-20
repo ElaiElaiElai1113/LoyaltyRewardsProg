@@ -16,6 +16,37 @@ set name = excluded.name,
     currency = excluded.currency,
     active = excluded.active;
 
+do $$
+begin
+  if to_regclass('public.business_branding') is not null then
+    if exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'legacy_business_id'
+    ) then
+      execute $sql$
+        insert into public.business_branding (id, legacy_business_id)
+        select id, id
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do update
+        set legacy_business_id = excluded.legacy_business_id
+      $sql$;
+    else
+      execute $sql$
+        insert into public.business_branding (id)
+        select id
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do nothing
+      $sql$;
+    end if;
+  end if;
+end
+$$;
+
 -- ─── Demo Users (create via Supabase Auth, then profiles are auto-created) ──
 -- After running seed, create these users in Supabase Auth:
 --
