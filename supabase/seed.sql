@@ -31,15 +31,44 @@ begin
       where table_schema = 'public'
         and table_name = 'business_branding'
         and column_name = 'name'
+    ) and exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'slug'
     ) then
       execute $sql$
-        insert into public.business_branding (id, legacy_business_id, name)
-        select id, id, name
+        insert into public.business_branding (id, legacy_business_id, name, slug)
+        select id, id, name, slug
         from public.businesses
         where slug in ('velvet-brew', 'mystic-coffee')
         on conflict (id) do update
         set legacy_business_id = excluded.legacy_business_id,
-            name = excluded.name
+            name = excluded.name,
+            slug = excluded.slug
+      $sql$;
+    elsif exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'legacy_business_id'
+    ) and exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'slug'
+    ) then
+      execute $sql$
+        insert into public.business_branding (id, legacy_business_id, slug)
+        select id, id, slug
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do update
+        set legacy_business_id = excluded.legacy_business_id,
+            slug = excluded.slug
       $sql$;
     elsif exists (
       select 1
@@ -62,6 +91,28 @@ begin
       where table_schema = 'public'
         and table_name = 'business_branding'
         and column_name = 'name'
+    ) and exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'slug'
+    ) then
+      execute $sql$
+        insert into public.business_branding (id, name, slug)
+        select id, name, slug
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do update
+        set name = excluded.name,
+            slug = excluded.slug
+      $sql$;
+    elsif exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'name'
     ) then
       execute $sql$
         insert into public.business_branding (id, name)
@@ -70,6 +121,21 @@ begin
         where slug in ('velvet-brew', 'mystic-coffee')
         on conflict (id) do update
         set name = excluded.name
+      $sql$;
+    elsif exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'slug'
+    ) then
+      execute $sql$
+        insert into public.business_branding (id, slug)
+        select id, slug
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do update
+        set slug = excluded.slug
       $sql$;
     else
       execute $sql$
