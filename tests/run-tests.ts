@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { existsSync, readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 import {
   earlyAccessMessageLines,
@@ -39,6 +40,18 @@ function runTest(name: string, fn: () => void) {
     console.error(`FAIL ${name}`)
     throw error
   }
+}
+
+function getSourceFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      return getSourceFiles(entryPath)
+    }
+
+    return /\.(ts|tsx)$/.test(entry.name) ? [entryPath] : []
+  })
 }
 
 runTest('normalizeCheckoutItems aggregates duplicate products for one business', () => {
@@ -435,4 +448,40 @@ runTest('early access page defaults to Spanish and exposes language picker', () 
   assert.match(language, /'Hey,': 'Hola,'/)
   assert.match(language, /'Subscribe': 'Suscribirse'/)
   assert.match(language, /'When we officially launch, subscribers will be the first to know/)
+})
+
+runTest('all literal translated UI strings have Spanish entries', () => {
+  const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
+  const translationsSource = languageSource.match(
+    /const spanishTranslations: Record<string, string> = \{([\s\S]*?)\n\}/,
+  )?.[1]
+
+  assert.ok(translationsSource)
+
+  const translatedKeys = new Set<string>()
+  const translationKeyPattern =
+    /(?:^|\n)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z][A-Za-z0-9_]*))\s*:/g
+
+  for (const match of translationsSource.matchAll(translationKeyPattern)) {
+    translatedKeys.add(match[1] ?? match[2] ?? match[3])
+  }
+
+  const usedKeys = new Set<string>()
+  const literalTranslationPattern = /\bt\(\s*(?:'([^']+)'|"([^"]+)")/g
+
+  for (const filePath of getSourceFiles('src')) {
+    const source = readFileSync(filePath, 'utf8')
+
+    for (const match of source.matchAll(literalTranslationPattern)) {
+      usedKeys.add(match[1] ?? match[2])
+    }
+  }
+
+  const missingKeys = [...usedKeys].filter((key) => !translatedKeys.has(key)).sort()
+
+  if (missingKeys.length > 0) {
+    console.error(`Missing Spanish translation keys:\n${missingKeys.join('\n')}`)
+  }
+
+  assert.deepEqual(missingKeys, [])
 })

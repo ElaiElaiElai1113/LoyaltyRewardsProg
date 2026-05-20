@@ -1158,6 +1158,204 @@ const spanishTranslations: Record<string, string> = {
     'Deja tus datos y te contactaremos cuando Medellin Rewards abra.',
   'Instagram optional': 'Instagram opcional',
   'Email optional': 'Correo opcional',
+  ' by simply spending at amazing businesses within our platform':
+    ' simplemente comprando en negocios increibles dentro de nuestra plataforma',
+  '$10/mo flat': '$10/mes fijo',
+  '$10/mo membership, $10 credit instantly': 'Membresia de $10/mes, credito de $10 al instante',
+  '20% - 100%': '20% - 100%',
+  '20–100% back on eligible spending': '20-100% de vuelta en compras elegibles',
+  'A softer showcase for the items most likely to pull shoppers deeper into the catalog.':
+    'Una vitrina mas suave para los articulos que mas pueden atraer a los compradores al catalogo.',
+  'Account required.': 'Cuenta requerida.',
+  'Active in wallet': 'Activo en la billetera',
+  'Active promotions from participating businesses will appear here.':
+    'Las promociones activas de negocios participantes apareceran aqui.',
+  'Active.': 'Activo.',
+  'Add items from the shop before checking out.': 'Agrega articulos de la tienda antes de pagar.',
+  'Administrative changes will appear here.': 'Los cambios administrativos apareceran aqui.',
+  'Attributed customers will appear here after referral links are used.':
+    'Los clientes atribuidos apareceran aqui despues de usar enlaces de referido.',
+  'Back to landing page': 'Volver a la pagina principal',
+  Browse: 'Explorar',
+  'Browse businesses': 'Explorar negocios',
+  Businesses: 'Negocios',
+  'Canceling...': 'Cancelando...',
+  'Catalog browsing stays open. Subscribe in demo mode only when you are ready to redeem.':
+    'El catalogo queda abierto. Suscribete en modo demo solo cuando estes listo para canjear.',
+  Checking: 'Verificando',
+  'Checking active promotions.': 'Verificando promociones activas.',
+  'Checking your cart.': 'Verificando tu carrito.',
+  'Checkout is currently unavailable.': 'El pago no esta disponible en este momento.',
+  'Checkout unavailable': 'Pago no disponible',
+  Close: 'Cerrar',
+  'Coffee dates, market finds, golden points': 'Citas de cafe, hallazgos locales, puntos dorados',
+  'Confirmed order volume': 'Volumen de pedidos confirmados',
+  'Create a partner business before assigning owners or reviewing metrics.':
+    'Crea un negocio aliado antes de asignar duenos o revisar metricas.',
+  'Create a product for the selected partner.': 'Crea un producto para el aliado seleccionado.',
+  'Create a promotion for the selected partner.': 'Crea una promocion para el aliado seleccionado.',
+  'Create a reward for the selected partner.': 'Crea una recompensa para el aliado seleccionado.',
+  'Create an account or sign in first, then subscribe in demo mode to unlock this action.':
+    'Crea una cuenta o inicia sesion primero, luego suscribete en modo demo para desbloquear esta accion.',
+  'Create partner contacts to track hotel and front-desk referrals.':
+    'Crea contactos aliados para rastrear referidos de hoteles y recepciones.',
+  'Create reward': 'Crear recompensa',
+  'Create your first product to make it available in the shop.':
+    'Crea tu primer producto para que este disponible en la tienda.',
+  'Create your first referral source link to start tracking referred purchases.':
+    'Crea tu primer enlace de fuente de referido para empezar a rastrear compras referidas.',
+  'Create your first reward to start earning loyalty.':
+    'Crea tu primera recompensa para empezar a generar fidelidad.',
+  'Curated Social Catalog': 'Catalogo social curado',
+  'Curated pick': 'Seleccion curada',
+  'Customer accounts will appear here after signup.':
+    'Las cuentas de clientes apareceran aqui despues del registro.',
+  'Customer referral records will appear here.': 'Los registros de referidos de clientes apareceran aqui.',
+  'Customers with completed orders': 'Clientes con pedidos completados',
+  'Demo Checkout': 'Pago demo',
+  'Demo mode - no real charge': 'Modo demo - sin cargo real',
+  'Demo mode: subscribe with no real charge to earn points and redeem rewards.':
+    'Modo demo: suscribete sin cargo real para ganar puntos y canjear recompensas.',
+  'Discover curated experiences, pretty little perks, and rewards worth sharing with friends.':
+    'Descubre experiencias curadas, pequenos beneficios atractivos y recompensas para compartir con amigos.',
+  'Dismiss membership offer': 'Cerrar oferta de membresia',
+  'Early adopter monthly subscription': 'Suscripcion mensual para primeros miembros',
+  'Earn between ': 'Gana entre ',
+  'Earn between 20% - 100% by simply spending at amazing businesses within our platform':
+    'Gana entre 20% y 100% simplemente comprando en negocios increibles dentro de nuestra plataforma',
+  'Earn points at checkout and redeem rewards while active.':
+    'Gana puntos al pagar y canjea recompensas mientras estes activo.',
+  FAQ: 'Preguntas frecuentes',
+  'Featured drops': 'Destacados',
+  'Frequently asked questions': 'Preguntas frecuentes',
+  Frozen: 'Congelado',
+  'Get $10 credit instantly + earn rewards.': 'Recibe $10 de credito al instante y gana recompensas.',
+  'Get $10 reward credit immediately after subscribing.':
+    'Recibe $10 de credito de recompensa inmediatamente despues de suscribirte.',
+  'Gift Cards': 'Tarjetas de regalo',
+  'Gift cards from partner businesses will appear here when they are available.':
+    'Las tarjetas de regalo de negocios aliados apareceran aqui cuando esten disponibles.',
+  'Gift cards with this status will appear here.':
+    'Las tarjetas de regalo con este estado apareceran aqui.',
+  'Golden perks': 'Beneficios dorados',
+  'Instant credit': 'Credito instantaneo',
+  Join: 'Unirse',
+  'Latest entries': 'Entradas recientes',
+  'Lifetime demo order value': 'Valor total de pedidos demo',
+  'Loading your order history.': 'Cargando tu historial de pedidos.',
+  'Medellin Rewards': 'Medellin Rewards',
+  'Member agreement': 'Acuerdo de miembro',
+  'Member agreement applies': 'Aplica el acuerdo de miembro',
+  'Member signup': 'Registro de miembro',
+  Members: 'Miembros',
+  'Membership unlocks redemption.': 'La membresia desbloquea el canje.',
+  'Memberships are tied to your rewards balance, so guests must sign in or register before subscribing.':
+    'Las membresias estan vinculadas a tu saldo de recompensas, por eso los invitados deben iniciar sesion o registrarse antes de suscribirse.',
+  Mock: 'Demo',
+  'Mock Membership': 'Membresia demo',
+  Monthly: 'Mensual',
+  'Monthly Membership': 'Membresia mensual',
+  'Monthly price': 'Precio mensual',
+  'Need a member account?': 'Necesitas una cuenta de miembro?',
+  'No activity yet': 'Aun no hay actividad',
+  'No admin logs yet': 'Aun no hay registros administrativos',
+  'No ambassador leads yet': 'Aun no hay solicitudes de embajadores',
+  'No gift cards here': 'No hay tarjetas de regalo aqui',
+  'No gift cards yet': 'Aun no hay tarjetas de regalo',
+  'No orders found': 'No se encontraron pedidos',
+  'No orders yet': 'Aun no hay pedidos',
+  'No outstanding partner credits': 'No hay creditos de aliados pendientes',
+  'No partner contacts yet': 'Aun no hay contactos aliados',
+  'No partner referrals yet': 'Aun no hay referidos de aliados',
+  'No partners yet': 'Aun no hay aliados',
+  'No promotions yet': 'Aun no hay promociones',
+  'No real payment will be processed. This checkout creates a demo order for rewards testing.':
+    'No se procesara ningun pago real. Este pago crea un pedido demo para probar recompensas.',
+  'No redemptions yet': 'Aun no hay canjes',
+  'No referral sources yet': 'Aun no hay fuentes de referido',
+  'No referrals found': 'No se encontraron referidos',
+  'Not active': 'No activo',
+  'Not now': 'Ahora no',
+  'Opening your gift card wallet.': 'Abriendo tu billetera de tarjetas de regalo.',
+  'Orders matching this filter will appear here.':
+    'Los pedidos que coincidan con este filtro apareceran aqui.',
+  'Page not found': 'Pagina no encontrada',
+  'Partner referral records will appear here after attribution.':
+    'Los registros de referidos de aliados apareceran aqui despues de la atribucion.',
+  Payment: 'Pago',
+  'Pending Fulfillment': 'Cumplimiento pendiente',
+  'Place order': 'Hacer pedido',
+  'Points, redemptions, and account activity will appear here.':
+    'Los puntos, canjes y actividad de cuenta apareceran aqui.',
+  'Portfolio demo billing: buttons call Supabase RPCs directly and never process a real payment.':
+    'Facturacion demo de portafolio: los botones llaman RPCs de Supabase directamente y nunca procesan un pago real.',
+  'Portfolio demo only: no card, processor, or real charge.':
+    'Solo demo de portafolio: sin tarjeta, procesador ni cargo real.',
+  'Preparing available rewards.': 'Preparando recompensas disponibles.',
+  'Preparing gift cards.': 'Preparando tarjetas de regalo.',
+  'Preparing reward details.': 'Preparando detalles de recompensa.',
+  'Preparing your catalog.': 'Preparando tu catalogo.',
+  'Privacy policy': 'Politica de privacidad',
+  'Products from partner businesses will appear here when they are available.':
+    'Los productos de negocios aliados apareceran aqui cuando esten disponibles.',
+  'Promotions currently live': 'Promociones activas actualmente',
+  Provider: 'Proveedor',
+  'Ready to redeem': 'Listo para canjear',
+  'Ready to use': 'Listo para usar',
+  'Redeemable partner credits will appear here once referrals earn credits.':
+    'Los creditos canjeables de aliados apareceran aqui cuando los referidos generen creditos.',
+  'Renewing...': 'Renovando...',
+  Renews: 'Renueva',
+  'Review recent points and redemption activity.':
+    'Revisa puntos recientes y actividad de canjes.',
+  'Reward claims ready for staff': 'Solicitudes de recompensa listas para el personal',
+  'Reward claims will appear here when customers redeem points.':
+    'Las solicitudes de recompensa apareceran aqui cuando los clientes canjeen puntos.',
+  'Reward fulfillment requests will appear here.':
+    'Las solicitudes de cumplimiento de recompensas apareceran aqui.',
+  'Reward not found.': 'Recompensa no encontrada.',
+  'Rewards from participating businesses will appear here when they are available.':
+    'Las recompensas de negocios participantes apareceran aqui cuando esten disponibles.',
+  'Share the ambassador link to collect creator and promoter requests.':
+    'Comparte el enlace de embajadores para recopilar solicitudes de creadores y promotores.',
+  'Shop products and offers from the network.': 'Compra productos y ofertas de la red.',
+  'Showcase the most tempting redemptions with soft motion, warm highlights, and clear value.':
+    'Muestra los canjes mas atractivos con movimiento suave, detalles calidos y valor claro.',
+  'Sign in or register': 'Iniciar sesion o registrarse',
+  'Sign in to your member account.': 'Inicia sesion en tu cuenta de miembro.',
+  'Simulated Payment Method': 'Metodo de pago simulado',
+  'Submitting...': 'Enviando...',
+  'Subscribe in demo mode to start earning and redeeming while keeping the catalog open to browse.':
+    'Suscribete en modo demo para empezar a ganar y canjear mientras mantienes el catalogo abierto para explorar.',
+  'Subscribe in demo mode to unlock earning and redemption actions.':
+    'Suscribete en modo demo para desbloquear acciones de ganar y canjear.',
+  'Subscribe — Demo': 'Suscribirse - Demo',
+  'Subscribing...': 'Suscribiendo...',
+  'The page you are looking for does not exist or may have moved.':
+    'La pagina que buscas no existe o puede haberse movido.',
+  "The world's highest paying rewards program": 'El programa de recompensas que mas paga en el mundo',
+  'This week feels extra golden': 'Esta semana se siente extra dorada',
+  'Track your balance, rewards, and recent activity across partner businesses.':
+    'Consulta tu saldo, recompensas y actividad reciente en negocios aliados.',
+  'Track your rewards, gift-card value, and member activity in one verified account across the network.':
+    'Consulta tus recompensas, valor de tarjetas de regalo y actividad de miembro en una cuenta verificada en toda la red.',
+  Unknown: 'Desconocido',
+  'Unlock points on this order': 'Desbloquear puntos en este pedido',
+  'Unlock reward redemption': 'Desbloquear canje de recompensas',
+  'Unlock the treat': 'Desbloquear el beneficio',
+  'Use the preset demo payment options below. They do not charge a real card.':
+    'Usa las opciones de pago demo de abajo. No cobran una tarjeta real.',
+  'Use your points across participating businesses.': 'Usa tus puntos en negocios participantes.',
+  'View history': 'Ver historial',
+  'Your cart is empty': 'Tu carrito esta vacio',
+  'Your cart is invalid.': 'Tu carrito no es valido.',
+  'Your current renewal date is': 'Tu fecha actual de renovacion es',
+  'Your purchases and points earned will appear here.':
+    'Tus compras y puntos ganados apareceran aqui.',
+  customers: 'clientes',
+  'reward credits available': 'creditos de recompensa disponibles',
+  'your balance is safe. Resubscribe to start earning again.':
+    'tu saldo esta protegido. Vuelve a suscribirte para empezar a ganar otra vez.',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
