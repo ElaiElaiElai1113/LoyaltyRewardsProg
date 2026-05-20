@@ -1158,6 +1158,78 @@ const spanishTranslations: Record<string, string> = {
     'Deja tus datos y te contactaremos cuando Medellin Rewards abra.',
   'Instagram optional': 'Instagram opcional',
   'Email optional': 'Correo opcional',
+  'Medellin Rewards membership': 'Membresia Medellin Rewards',
+  'Turn everyday spending into member rewards across the Medellin Rewards network':
+    'Convierte tus compras diarias en recompensas para miembros dentro de la red Medellin Rewards',
+  'Join early to earn rewards from eligible purchases, access launch benefits, and keep your member value connected in one verified account.':
+    'Unete temprano para ganar recompensas por compras elegibles, acceder a beneficios de lanzamiento y mantener tu valor de miembro conectado en una cuenta verificada.',
+  'Join as an early subscriber': 'Unirme como suscriptor temprano',
+  'See how rewards work': 'Ver como funcionan las recompensas',
+  'Why people should join': 'Por que deberias unirte',
+  'Medellin Rewards is built for members who want everyday spending to create more usable value over time.':
+    'Medellin Rewards esta creado para miembros que quieren que sus compras diarias generen mas valor util con el tiempo.',
+  'Earn from everyday spending': 'Gana con compras cotidianas',
+  'Use purchases you already make to build reward value with participating businesses.':
+    'Usa compras que ya haces para construir valor de recompensas con negocios participantes.',
+  'Support participating businesses': 'Apoya negocios participantes',
+  'Shop, dine, and buy services inside a growing local rewards network.':
+    'Compra, come y adquiere servicios dentro de una red local de recompensas en crecimiento.',
+  'Build toward bigger perks': 'Acumula para beneficios mayores',
+  'Small eligible purchases can add up toward offers, experiences, and larger member benefits over time.':
+    'Las pequenas compras elegibles pueden acumularse para ofertas, experiencias y beneficios mayores con el tiempo.',
+  'Early benefits': 'Beneficios tempranos',
+  'Early subscriber benefits': 'Beneficios para suscriptores tempranos',
+  'Subscribers join before the public launch and receive early access to updates, launch offers, and first reward opportunities.':
+    'Los suscriptores entran antes del lanzamiento publico y reciben acceso temprano a novedades, ofertas de lanzamiento y primeras oportunidades de recompensas.',
+  'First access before public launch': 'Primer acceso antes del lanzamiento publico',
+  'Early subscribers are invited in before the broader public launch.':
+    'Los suscriptores tempranos son invitados antes del lanzamiento publico general.',
+  'Launch updates first': 'Actualizaciones de lanzamiento primero',
+  'Be among the first to hear when new businesses, rewards, and benefits go live.':
+    'Se de los primeros en saber cuando nuevos negocios, recompensas y beneficios esten disponibles.',
+  'Exclusive launch benefits': 'Beneficios exclusivos de lanzamiento',
+  'Early subscribers can qualify for selected launch offers and member-only opportunities.':
+    'Los suscriptores tempranos pueden calificar para ofertas seleccionadas de lanzamiento y oportunidades solo para miembros.',
+  'Early reward opportunities': 'Primeras oportunidades de recompensas',
+  'Get access to first-version reward opportunities as the network opens.':
+    'Accede a las primeras oportunidades de recompensas mientras la red abre.',
+  'Early subscriber summary': 'Resumen para suscriptores tempranos',
+  'Rewards on eligible spending, depending on the offer.':
+    'Recompensas por compras elegibles, segun la oferta.',
+  'Early access before public launch': 'Acceso temprano antes del lanzamiento publico',
+  'Join before the wider launch and receive first updates as the network opens.':
+    'Unete antes del lanzamiento general y recibe las primeras actualizaciones mientras la red abre.',
+  'Join early': 'Unirme temprano',
+  'Rewards system': 'Sistema de recompensas',
+  'How the rewards system works': 'Como funciona el sistema de recompensas',
+  'The program connects eligible purchases to rewards that can be redeemed through the Medellin Rewards network.':
+    'El programa conecta compras elegibles con recompensas que se pueden canjear dentro de la red Medellin Rewards.',
+  Earn: 'Gana',
+  Spend: 'Compra',
+  Redeem: 'Canjea',
+  'Create your member account and subscribe when you are ready.':
+    'Crea tu cuenta de miembro y suscribete cuando estes listo.',
+  'Make eligible purchases with participating businesses in the network.':
+    'Haz compras elegibles con negocios participantes de la red.',
+  'Earn 20% to 100% in rewards on eligible spending, depending on the offer.':
+    'Gana de 20% a 100% en recompensas por compras elegibles, segun la oferta.',
+  'Use rewards for available offers, gift-card value, experiences, and member perks.':
+    'Usa recompensas para ofertas disponibles, valor de tarjetas de regalo, experiencias y beneficios de miembro.',
+  'Rewards are program credits and offers, not automatic cash payouts.':
+    'Las recompensas son creditos y ofertas del programa, no pagos automaticos en efectivo.',
+  Membership: 'Membresia',
+  'Membership advantages': 'Ventajas de la membresia',
+  'Membership is the account layer that helps unlock, track, and protect reward value.':
+    'La membresia es la capa de cuenta que ayuda a desbloquear, seguir y proteger el valor de tus recompensas.',
+  'One verified account': 'Una cuenta verificada',
+  'Your rewards stay connected to one member profile.':
+    'Tus recompensas permanecen conectadas a un solo perfil de miembro.',
+  'Member-only access': 'Acceso solo para miembros',
+  'Membership unlocks earning, redemption, and selected subscriber benefits.':
+    'La membresia desbloquea ganancias, canjes y beneficios seleccionados para suscriptores.',
+  'Protected reward value': 'Valor de recompensas protegido',
+  'Verification helps keep rewards fair and protected for real members.':
+    'La verificacion ayuda a mantener las recompensas justas y protegidas para miembros reales.',
   ' by simply spending at amazing businesses within our platform':
     ' simplemente comprando en negocios increibles dentro de nuestra plataforma',
   '$10/mo flat': '$10/mes fijo',

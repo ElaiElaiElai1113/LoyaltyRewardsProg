@@ -1,17 +1,16 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   ArrowLeftRight,
-  BarChart3,
-  Building2,
-  Car,
+  ArrowRight,
+  BadgeCheck,
   Coins,
   DollarSign,
   ExternalLink,
-  FileText,
   Gift,
-  Leaf,
   MapPin,
+  ShieldCheck,
   ShoppingCart,
+  Sparkles,
   Users,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -29,18 +28,13 @@ import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 import {
+  landingClientHero,
   landingLogo,
-  landingAgreementLabel,
+  landingEarlySubscriberBenefits,
   landingFaqItems,
-  landingHeroEyebrow,
-  landingHeroHeadline,
-  landingHeroInfoRows,
-  landingHeroPills,
-  landingHowItWorksLead,
-  landingHowItWorksSteps,
-  landingJoinButtonLabel,
-  landingParagraphs,
-  landingSubscription,
+  landingMembershipAdvantages,
+  landingRewardsSteps,
+  landingWhyJoinItems,
 } from '../landing-content'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -78,18 +72,6 @@ function LoadingSpinner() {
 export function LandingPage() {
   const { t } = useLanguage()
 
-  const heroInfoIconByName = {
-    chart: BarChart3,
-    cart: ShoppingCart,
-  } as const
-
-  const heroPillIconByName = {
-    building: Building2,
-    car: Car,
-    gift: Gift,
-    leaf: Leaf,
-  } as const
-
   const landingFaqIconByQuestion = {
     [landingFaqItems[0].question]: MapPin,
     [landingFaqItems[1].question]: Users,
@@ -97,155 +79,193 @@ export function LandingPage() {
     [landingFaqItems[3].question]: DollarSign,
   } as const
 
+  const whyJoinIcons = [ShoppingCart, Users, Sparkles] as const
+  const earlyBenefitIcons = [BadgeCheck, Gift, Sparkles, ArrowRight] as const
+  const membershipIcons = [ShieldCheck, Coins, BadgeCheck] as const
+
   return (
     <main className="min-h-screen overflow-x-hidden bg-[#f6f7f8] text-[#232326]">
-      <header className="landing-header-figma flex h-[61px] items-center border-b border-[#dde1e6] bg-[#ffffff] px-8">
-        <div className="mx-auto flex w-full max-w-none items-center justify-between">
-          <Link to="/" className="font-serif text-[24px] font-semibold leading-none text-[#202023]">
+      <header className="landing-header-figma sticky top-0 z-40 flex min-h-[61px] items-center border-b border-[#dde1e6] bg-[#ffffff]/95 px-4 backdrop-blur sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-4">
+          <Link to="/landing-page" className="font-serif text-[24px] font-semibold leading-none text-[#202023]">
             Medellin <span className="text-[#c9a84c]">Rewards</span>
             <span className="sr-only">{t(landingLogo)}</span>
           </Link>
-          <nav className="hidden items-center gap-[27px] text-[14px] font-normal leading-none text-[#667083] md:flex">
-            <a href="#how-it-works" className="transition hover:text-[#202023]">
-              {t('How it works')}
+          <nav className="hidden items-center gap-5 text-[13px] font-medium leading-none text-[#667083] lg:flex">
+            <a href="#why-join" className="transition hover:text-[#202023]">
+              {t('Why join')}
             </a>
-            <a href="#businesses" className="transition hover:text-[#202023]">
-              {t('Businesses')}
+            <a href="#early-benefits" className="transition hover:text-[#202023]">
+              {t('Early benefits')}
+            </a>
+            <a href="#rewards-system" className="transition hover:text-[#202023]">
+              {t('Rewards system')}
+            </a>
+            <a href="#membership" className="transition hover:text-[#202023]">
+              {t('Membership')}
             </a>
             <a href="#faq" className="transition hover:text-[#202023]">
               {t('FAQ')}
             </a>
-            <Link to="/early-access" className="text-[#c8a23d] transition hover:text-[#a77816]">
-              {t('Join now')}
-            </Link>
           </nav>
+          <div className="flex items-center gap-3">
+            <LanguagePicker className="hidden text-[#667083] sm:flex" compact />
+            <Link to="/early-access" className="inline-flex min-h-10 items-center justify-center rounded-md bg-[#d3ae43] px-4 text-[13px] font-bold text-[#111111] transition hover:bg-[#c49e34]">
+              {t('Join early')}
+            </Link>
+          </div>
         </div>
       </header>
 
-      <section className="landing-hero-exact flex min-h-[777px] items-start justify-center px-4 pb-16 pt-[66px] sm:px-6 lg:px-8">
-        <div className="mx-auto flex w-full max-w-[820px] flex-col items-center text-center">
-          <p className="mb-[22px] rounded-full border border-[#d9bd73] bg-[#fff9ed] px-[18px] py-[7px] text-[11px] font-medium uppercase leading-none tracking-[0.28em] text-[#9f730f]">
-            {t(landingHeroEyebrow)}
-          </p>
-
-          <h1 className="max-w-[650px] font-serif text-[36px] font-bold leading-[1.18] tracking-normal text-[#202023] sm:text-[38px]">
-            {t(landingHeroHeadline.beforeHighlight)}
-            <span className="text-[#c8a23d]">{t(landingHeroHeadline.highlight)}</span>
-            {t(landingHeroHeadline.afterHighlight)}
-          </h1>
-
-          <div className="mt-[21px] max-w-[582px] space-y-[18px] text-[17px] font-normal leading-[1.55] tracking-normal text-[#687386]">
-            {landingParagraphs.map((paragraph) => (
-              <p key={paragraph}>{t(paragraph)}</p>
-            ))}
+      <section className="landing-hero-exact flex min-h-[690px] items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
+        <div className="mx-auto grid w-full max-w-[1180px] gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.72fr)] lg:items-center">
+          <div>
+            <p className="mb-5 inline-flex rounded-full border border-[#d9bd73] bg-[#fff9ed] px-4 py-2 text-[11px] font-semibold uppercase leading-none tracking-[0.18em] text-[#9f730f]">
+              {t(landingClientHero.eyebrow)}
+            </p>
+            <h1 className="max-w-[720px] font-serif text-[34px] font-semibold leading-[1.12] tracking-normal text-[#202023] sm:text-[44px] lg:text-[52px]">
+              {t(landingClientHero.headline)}
+            </h1>
+            <p className="mt-5 max-w-[660px] text-[17px] leading-8 text-[#5d6676]">
+              {t(landingClientHero.body)}
+            </p>
+            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+              <Link
+                to="/early-access"
+                className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-lg bg-[#d3ae43] px-6 text-[15px] font-bold text-[#111111] transition hover:bg-[#c49e34]"
+              >
+                {t(landingClientHero.primaryCta)}
+                <ExternalLink className="size-4" aria-hidden="true" />
+              </Link>
+              <a
+                href="#rewards-system"
+                className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-lg border border-[#d6dbe2] bg-white px-6 text-[15px] font-semibold text-[#40506d] transition hover:border-[#c8a23d]"
+              >
+                {t(landingClientHero.secondaryCta)}
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </a>
+            </div>
           </div>
 
-          <div className="mt-[33px] grid w-full max-w-[672px] gap-3">
-            {landingHeroInfoRows.map((row) => {
-              const Icon = heroInfoIconByName[row.icon]
-
-              return (
-                <div key={row.text} className="flex min-h-[51px] items-center gap-3 rounded-xl border border-[#dde1e6] bg-[#ffffff] px-5 py-3 text-left shadow-[0_1px_2px_rgba(16,24,40,0.08)]">
-                  <Icon className="size-4 shrink-0 text-[#c8a23d]" strokeWidth={1.75} aria-hidden="true" />
-                  <p className="text-[14px] font-normal leading-[1.45] text-[#687386]">
-                    {row.text === landingHeroInfoRows[0].text ? (
-                      <>
-                        {t('Earn between ')}
-                        <span className="text-[#202023]">{t('20% - 100%')}</span>
-                        {t(' by simply spending at amazing businesses within our platform')}
-                      </>
-                    ) : (
-                      t(row.text)
-                    )}
-                  </p>
-                </div>
-              )
-            })}
+          <div className="rounded-[0.8rem] border border-[#dde1e6] bg-white p-6 shadow-[0_14px_45px_rgba(16,24,40,0.08)]">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#667083]">
+              {t('Early subscriber summary')}
+            </p>
+            <div className="mt-5 grid gap-4">
+              <div className="rounded-[0.55rem] bg-[#f7f8fb] p-5">
+                <p className="text-[28px] font-semibold leading-none text-[#d0a534]">20% - 100%</p>
+                <p className="mt-2 text-[13px] leading-5 text-[#5d6676]">
+                  {t('Rewards on eligible spending, depending on the offer.')}
+                </p>
+              </div>
+              <div className="rounded-[0.55rem] bg-[#f7f8fb] p-5">
+                <p className="text-[18px] font-semibold leading-none text-[#202023]">
+                  {t('Early access before public launch')}
+                </p>
+                <p className="mt-2 text-[13px] leading-5 text-[#5d6676]">
+                  {t('Join before the wider launch and receive first updates as the network opens.')}
+                </p>
+              </div>
+            </div>
           </div>
-
-          <div className="mt-[33px] flex w-full max-w-[820px] flex-wrap justify-center gap-[10px]">
-            {landingHeroPills.map((pill) => {
-              const Icon = heroPillIconByName[pill.icon]
-
-              return (
-                <span key={pill.label} className="inline-flex min-h-[38px] items-center gap-2 rounded-full border border-[#dfe3e8] bg-[#ffffff] px-[17px] text-[14px] font-normal text-[#505761] shadow-[0_1px_1px_rgba(16,24,40,0.03)]">
-                  <Icon className="size-4 shrink-0 text-[#c8a23d]" strokeWidth={1.65} aria-hidden="true" />
-                  {t(pill.label)}
-                </span>
-              )
-            })}
-          </div>
-
-          <Link
-            to="/early-access"
-            className="mt-8 inline-flex min-h-[51px] min-w-[266px] items-center justify-center gap-1.5 rounded-lg bg-[#d3ae43] px-8 text-[15px] font-bold text-[#111111] shadow-none transition hover:bg-[#c49e34]"
-          >
-            {t(landingJoinButtonLabel)}
-            <ExternalLink className="size-4 text-[#4d8ac7]" strokeWidth={2.2} aria-hidden="true" />
-          </Link>
         </div>
       </section>
 
-      <section id="businesses" className="landing-subscription-figma border-t border-[#dde1e6] bg-[#ffffff] px-4 pb-12 pt-[55px] sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-5xl flex-col items-center text-center">
-          <h2 className="mx-auto font-serif text-[26px] font-semibold leading-none tracking-normal text-[#202023]">
-            {t('Early adopter monthly subscription')}
-          </h2>
+      <section id="why-join" className="border-t border-[#dde1e6] bg-white px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="max-w-2xl">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Why join')}</p>
+            <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('Why people should join')}</h2>
+            <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('Medellin Rewards is built for members who want everyday spending to create more usable value over time.')}</p>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {landingWhyJoinItems.map((item, index) => {
+              const Icon = whyJoinIcons[index]
 
-          <article className="relative mt-[39px] w-full max-w-[340px] rounded-[0.7rem] border-2 border-[#d0a534] bg-[#ffffff] px-7 pb-[17px] pt-[61px] shadow-none">
-            <div className="absolute left-1/2 top-0 flex h-[27px] min-w-[193px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#d4af43] px-5 text-[11px] font-semibold uppercase leading-none tracking-[0.22em] text-[#171108]">
-              {t(landingSubscription.offerBadge)}
+              return (
+                <article key={item.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] p-6">
+                  <Icon className="size-5 text-[#c8a23d]" aria-hidden="true" />
+                  <h3 className="mt-4 text-[16px] font-semibold text-[#202023]">{t(item.title)}</h3>
+                  <p className="mt-2 text-[14px] leading-6 text-[#667083]">{t(item.body)}</p>
+                </article>
+              )
+            })}
+          </div>
+        </div>
+      </section>
+
+      <section id="early-benefits" className="landing-subscription-figma border-t border-[#dde1e6] bg-[#f6f7f8] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Early benefits')}</p>
+              <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('Early subscriber benefits')}</h2>
+              <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('Subscribers join before the public launch and receive early access to updates, launch offers, and first reward opportunities.')}</p>
             </div>
-            <p className="text-[14px] font-normal uppercase leading-none tracking-[0.32em] text-[#667083]">
-              {t(landingSubscription.eyebrow)}
-            </p>
-            <div className="mx-auto mt-[17px] flex min-h-[82px] max-w-[280px] flex-col items-center justify-center rounded-[0.45rem] bg-[#f7f8fb] px-5 py-4">
-              <p className="text-[11px] font-normal uppercase leading-none tracking-normal text-[#667083]">
-                {t(landingSubscription.bonusLabel)}
-              </p>
-              <p className="mt-3 text-[24px] font-semibold leading-none tracking-normal text-[#d0a534]">
-                {t(landingSubscription.rewardValue)}
-              </p>
-            </div>
-            <Button asChild size="lg" className="mx-auto mt-5 min-h-[45px] w-full max-w-[280px] rounded-[0.45rem] bg-[#d4af43] text-[14px] font-semibold text-[#070707] shadow-none hover:bg-[#c6a238]">
-              <Link to="/early-access">{t('Join now')}</Link>
+            <Button asChild size="lg" className="min-h-[45px] rounded-[0.45rem] bg-[#d4af43] text-[14px] font-semibold text-[#070707] shadow-none hover:bg-[#c6a238]">
+              <Link to="/early-access">{t('Join early')}</Link>
             </Button>
-            <div className="mt-[12px] flex items-center justify-center gap-1.5 text-[11px] text-[#667083]">
-              <FileText className="size-3 text-[#667083]" aria-hidden="true" />
-              <span>{t('Member agreement applies')}</span>
-            </div>
-          </article>
+          </div>
 
-          <Button asChild variant="secondary" size="lg" className="mt-8 min-h-[50px] rounded-[0.45rem] border border-[#dde1e6] bg-[#ffffff] px-8 text-[14px] font-medium text-[#40506d] shadow-[0_1px_2px_rgba(16,24,40,0.06)] hover:bg-[#ffffff]">
-            <Link to="/reward-terms" aria-label="View Agreement">
-              <FileText className="size-4 text-[#d0a534]" aria-hidden="true" />
-              {t(landingAgreementLabel)}
-            </Link>
-          </Button>
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {landingEarlySubscriberBenefits.map((item, index) => {
+              const Icon = earlyBenefitIcons[index]
+
+              return (
+                <article key={item.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-white p-6">
+                  <Icon className="size-5 text-[#c8a23d]" aria-hidden="true" />
+                  <h3 className="mt-4 text-[15px] font-semibold leading-5 text-[#202023]">{t(item.title)}</h3>
+                  <p className="mt-2 text-[13px] leading-6 text-[#667083]">{t(item.body)}</p>
+                </article>
+              )
+            })}
+          </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="landing-how-it-works-figma border-t border-[#dde1e6] bg-[#f6f7f8] px-[32px] pb-[35px] pt-[55px]">
-        <div className="mx-auto max-w-[1216px]">
-          <div className="text-center">
-            <h2 className="font-serif text-[26px] font-semibold leading-none tracking-normal text-[#202023]">
-              {t('How it works')}
-            </h2>
-            <p className="mt-[17px] text-[14px] leading-none text-[#667083]">
-              {t(landingHowItWorksLead)}
-            </p>
+      <section id="rewards-system" className="landing-how-it-works-figma border-t border-[#dde1e6] bg-white px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="max-w-2xl">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Rewards system')}</p>
+            <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('How the rewards system works')}</h2>
+            <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('The program connects eligible purchases to rewards that can be redeemed through the Medellin Rewards network.')}</p>
           </div>
-
-          <div className="mt-[35px] grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {landingHowItWorksSteps.map((step) => (
-              <article key={step.number} className="flex h-[155px] flex-col items-center justify-center rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] px-7 py-0 text-center shadow-none">
-                <div className="mx-auto flex size-[34px] items-center justify-center rounded-full border border-[#d9bd73] bg-[#fff9ed] text-[15px] font-medium text-[#9f730f]">
-                  {step.number}
+          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            {landingRewardsSteps.map((step, index) => (
+              <article key={step.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] p-6">
+                <div className="flex size-[34px] items-center justify-center rounded-full border border-[#d9bd73] bg-[#fff9ed] text-[15px] font-medium text-[#9f730f]">
+                  {index + 1}
                 </div>
-                <h3 className="mt-[15px] text-[15px] font-medium leading-none text-[#202023]">{t(step.title)}</h3>
-                <p className="mt-[13px] max-w-[218px] text-[13px] leading-[1.55] text-[#667083]">{t(step.body)}</p>
+                <h3 className="mt-4 text-[15px] font-semibold leading-5 text-[#202023]">{t(step.title)}</h3>
+                <p className="mt-2 text-[13px] leading-6 text-[#667083]">{t(step.body)}</p>
               </article>
             ))}
+          </div>
+          <p className="mt-5 rounded-[0.45rem] border border-[#dde1e6] bg-[#f7f8fb] px-4 py-3 text-[13px] leading-6 text-[#667083]">
+            {t('Rewards are program credits and offers, not automatic cash payouts.')}
+          </p>
+        </div>
+      </section>
+
+      <section id="membership" className="border-t border-[#dde1e6] bg-[#f6f7f8] px-4 py-14 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="max-w-2xl">
+            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Membership')}</p>
+            <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('Membership advantages')}</h2>
+            <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('Membership is the account layer that helps unlock, track, and protect reward value.')}</p>
+          </div>
+          <div className="mt-8 grid gap-4 md:grid-cols-3">
+            {landingMembershipAdvantages.map((item, index) => {
+              const Icon = membershipIcons[index]
+
+              return (
+                <article key={item.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-white p-6">
+                  <Icon className="size-5 text-[#c8a23d]" aria-hidden="true" />
+                  <h3 className="mt-4 text-[16px] font-semibold text-[#202023]">{t(item.title)}</h3>
+                  <p className="mt-2 text-[14px] leading-6 text-[#667083]">{t(item.body)}</p>
+                </article>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -297,6 +317,9 @@ export function LandingPage() {
             <span className="hidden text-[#d1d5db] sm:inline">·</span>
             <Link to="/terms" className="transition hover:text-[#1a1a1a]">
               {t('Contact')}
+            </Link>
+            <Link to="/early-access" className="font-semibold text-[#c8a23d] transition hover:text-[#a77816]">
+              {t('Join early')}
             </Link>
           </nav>
         </div>

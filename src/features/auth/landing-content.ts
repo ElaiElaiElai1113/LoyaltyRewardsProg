@@ -85,6 +85,82 @@ export const landingOfferLines = [
   landingSubscription.rewardValue,
 ] as const
 
+export const landingClientHero = {
+  eyebrow: 'Medellin Rewards membership',
+  headline: 'Turn everyday spending into member rewards across the Medellin Rewards network',
+  body: 'Join early to earn rewards from eligible purchases, access launch benefits, and keep your member value connected in one verified account.',
+  primaryCta: 'Join as an early subscriber',
+  secondaryCta: 'See how rewards work',
+} as const
+
+export const landingWhyJoinItems = [
+  {
+    title: 'Earn from everyday spending',
+    body: 'Use purchases you already make to build reward value with participating businesses.',
+  },
+  {
+    title: 'Support participating businesses',
+    body: 'Shop, dine, and buy services inside a growing local rewards network.',
+  },
+  {
+    title: 'Build toward bigger perks',
+    body: 'Small eligible purchases can add up toward offers, experiences, and larger member benefits over time.',
+  },
+] as const
+
+export const landingEarlySubscriberBenefits = [
+  {
+    title: 'First access before public launch',
+    body: 'Early subscribers are invited in before the broader public launch.',
+  },
+  {
+    title: 'Launch updates first',
+    body: 'Be among the first to hear when new businesses, rewards, and benefits go live.',
+  },
+  {
+    title: 'Exclusive launch benefits',
+    body: 'Early subscribers can qualify for selected launch offers and member-only opportunities.',
+  },
+  {
+    title: 'Early reward opportunities',
+    body: 'Get access to first-version reward opportunities as the network opens.',
+  },
+] as const
+
+export const landingRewardsSteps = [
+  {
+    title: 'Join',
+    body: 'Create your member account and subscribe when you are ready.',
+  },
+  {
+    title: 'Spend',
+    body: 'Make eligible purchases with participating businesses in the network.',
+  },
+  {
+    title: 'Earn',
+    body: 'Earn 20% to 100% in rewards on eligible spending, depending on the offer.',
+  },
+  {
+    title: 'Redeem',
+    body: 'Use rewards for available offers, gift-card value, experiences, and member perks.',
+  },
+] as const
+
+export const landingMembershipAdvantages = [
+  {
+    title: 'One verified account',
+    body: 'Your rewards stay connected to one member profile.',
+  },
+  {
+    title: 'Member-only access',
+    body: 'Membership unlocks earning, redemption, and selected subscriber benefits.',
+  },
+  {
+    title: 'Protected reward value',
+    body: 'Verification helps keep rewards fair and protected for real members.',
+  },
+] as const
+
 export const landingHowItWorksLead = 'Three simple steps to start earning rewards'
 
 export const landingHowItWorksSteps = [

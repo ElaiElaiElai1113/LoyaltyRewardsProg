@@ -20,15 +20,20 @@ import {
 } from '../src/features/ambassadors/ambassador-content.js'
 import {
   landingBody,
+  landingClientHero,
+  landingEarlySubscriberBenefits,
   landingFaqQuestions,
   landingHeroEyebrow,
   landingHeroHeadline,
   landingHeroInfoRows,
   landingHeroPills,
+  landingMembershipAdvantages,
   landingJoinButtonLabel,
   landingOfferLines,
+  landingRewardsSteps,
   landingTagline,
   landingTags,
+  landingWhyJoinItems,
 } from '../src/features/auth/landing-content.js'
 import { isPickupWindow, normalizeCheckoutItems } from '../src/features/critical-flows/critical-flow.js'
 
@@ -294,6 +299,15 @@ runTest('landing page content follows the approved member-facing wording', () =>
   ])
 })
 
+runTest('landing page content covers the client requested topics', () => {
+  const landingContent = readFileSync('src/features/auth/landing-content.ts', 'utf8')
+
+  assert.match(landingContent, /landingWhyJoinItems/)
+  assert.match(landingContent, /landingEarlySubscriberBenefits/)
+  assert.match(landingContent, /landingRewardsSteps/)
+  assert.match(landingContent, /landingMembershipAdvantages/)
+})
+
 runTest('landing page FAQs are clickable and include answers', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const landingContent = readFileSync('src/features/auth/landing-content.ts', 'utf8')
@@ -328,6 +342,21 @@ runTest('landing FAQ and footer follow the Figma lower page', () => {
   assert.match(landingPage, /max-w-none/)
 })
 
+runTest('client landing page renders the required topic sections', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landingClientHero/)
+  assert.match(landingPage, /landingWhyJoinItems\.map/)
+  assert.match(landingPage, /landingEarlySubscriberBenefits\.map/)
+  assert.match(landingPage, /landingRewardsSteps\.map/)
+  assert.match(landingPage, /landingMembershipAdvantages\.map/)
+  assert.match(landingPage, /id="why-join"/)
+  assert.match(landingPage, /id="early-benefits"/)
+  assert.match(landingPage, /id="rewards-system"/)
+  assert.match(landingPage, /id="membership"/)
+  assert.match(landingPage, /Rewards are program credits and offers, not automatic cash payouts\./)
+})
+
 runTest('landing Figma reference asset is stored with app assets', () => {
   assert.equal(existsSync('src/assets/medellin-landing.png'), true)
 })
@@ -349,50 +378,44 @@ runTest('landing Join CTAs go to early access', () => {
   const authPageStart = landingPage.indexOf('export function AuthPage')
   const landingMarkup = landingPage.slice(0, authPageStart)
 
-  assert.equal((landingMarkup.match(/to="\/early-access"/g) ?? []).length, 3)
+  assert.ok((landingMarkup.match(/to="\/early-access"/g) ?? []).length >= 3)
   assert.doesNotMatch(landingMarkup, /to="\/join"/)
   assert.match(landingPage, /landing-header-figma/)
-  assert.match(landingPage, /h-\[61px\]/)
-  assert.match(landingPage, /How it works/)
-  assert.match(landingPage, /Businesses/)
+  assert.match(landingPage, /min-h-\[61px\]/)
+  assert.match(landingPage, /Why join/)
+  assert.match(landingPage, /Early benefits/)
+  assert.match(landingPage, /Rewards system/)
+  assert.match(landingPage, /Membership/)
   assert.match(landingPage, /FAQ/)
   assert.match(landingPage, /landing-hero-exact/)
-  assert.match(landingPage, /min-h-\[777px\]/)
-  assert.match(landingPage, /landingHeroEyebrow/)
-  assert.match(landingPage, /landingHeroInfoRows\.map/)
-  assert.match(landingPage, /landingHeroPills\.map/)
-  assert.match(landingPage, /landingJoinButtonLabel/)
+  assert.match(landingPage, /min-h-\[690px\]/)
+  assert.match(landingPage, /landingClientHero/)
   assert.doesNotMatch(landingPage, /leadModalOpen/)
   assert.doesNotMatch(landingPage, /memberLeadSchema/)
 })
 
-runTest('landing subscription section follows the Figma card proportions', () => {
+runTest('landing early subscriber section follows the client-focused design', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /landing-subscription-figma/)
-  assert.match(landingPage, /id="businesses"/)
-  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#ffffff\]/)
-  assert.match(landingPage, /text-\[26px\]/)
-  assert.match(landingPage, /max-w-\[340px\]/)
-  assert.match(landingPage, /border-2 border-\[#d0a534\] bg-\[#ffffff\]/)
-  assert.match(landingPage, /min-w-\[193px\]/)
-  assert.match(landingPage, /max-w-\[280px\][\s\S]*rounded-\[0\.45rem\] bg-\[#f7f8fb\]/)
-  assert.match(landingPage, /text-\[24px\] font-semibold/)
-  assert.match(landingPage, /min-h-\[45px\] w-full max-w-\[280px\]/)
-  assert.match(landingPage, /View Agreement/)
+  assert.match(landingPage, /id="early-benefits"/)
+  assert.match(landingPage, /landingEarlySubscriberBenefits\.map/)
+  assert.match(landingPage, /Early subscriber benefits/)
+  assert.match(landingPage, /Join early/)
+  assert.match(landingPage, /bg-\[#f6f7f8\]/)
 })
 
-runTest('landing how it works section follows the Figma card row', () => {
+runTest('landing rewards system section explains the flow and disclaimer', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /landing-how-it-works-figma/)
-  assert.match(landingPage, /max-w-\[1216px\]/)
+  assert.match(landingPage, /id="rewards-system"/)
+  assert.match(landingPage, /landingRewardsSteps\.map/)
   assert.match(landingPage, /lg:grid-cols-4/)
-  assert.match(landingPage, /h-\[155px\]/)
   assert.match(landingPage, /rounded-\[0\.7rem\] border border-\[#dde1e6\] bg-\[#fbfcfd\]/)
   assert.match(landingPage, /size-\[34px\]/)
   assert.match(landingPage, /text-\[#9f730f\]/)
-  assert.match(landingPage, /text-\[13px\] leading-\[1\.55\] text-\[#667083\]/)
+  assert.match(landingPage, /Rewards are program credits and offers, not automatic cash payouts\./)
 })
 
 runTest('early access CTA opens a lead capture modal', () => {
@@ -418,6 +441,13 @@ runTest('root route renders only the early access letter page', () => {
   assert.match(rootRoute, /<EarlyAccessPage \/>/)
   assert.doesNotMatch(rootRoute, /<LandingPage \/>/)
   assert.doesNotMatch(rootRoute, /landing-header-figma/)
+})
+
+runTest('client landing page is available at /landing-page', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+
+  assert.match(router, /path: '\/landing-page'/)
+  assert.match(router, /element: <LandingPage \/>/)
 })
 
 runTest('early access typography keeps the launch copy readable', () => {
@@ -468,6 +498,20 @@ runTest('all literal translated UI strings have Spanish entries', () => {
 
   const usedKeys = new Set<string>()
   const literalTranslationPattern = /\bt\(\s*(?:'([^']+)'|"([^"]+)")/g
+
+  for (const value of Object.values(landingClientHero)) {
+    usedKeys.add(value)
+  }
+
+  for (const item of [
+    ...landingWhyJoinItems,
+    ...landingEarlySubscriberBenefits,
+    ...landingRewardsSteps,
+    ...landingMembershipAdvantages,
+  ]) {
+    usedKeys.add(item.title)
+    usedKeys.add(item.body)
+  }
 
   for (const filePath of getSourceFiles('src')) {
     const source = readFileSync(filePath, 'utf8')

@@ -3,7 +3,7 @@ import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'reac
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
 import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
-import { AuthPage } from '@/features/auth/pages/landing-page'
+import { AuthPage, LandingPage } from '@/features/auth/pages/landing-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { CostCalculatorPage } from '@/features/business/pages/cost-calculator-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
@@ -267,6 +267,10 @@ const router = createBrowserRouter([
   {
     path: '/early-access',
     element: <EarlyAccessPage />,
+  },
+  {
+    path: '/landing-page',
+    element: <LandingPage />,
   },
   {
     path: '/joinusearly',
