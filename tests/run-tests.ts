@@ -529,3 +529,14 @@ runTest('all literal translated UI strings have Spanish entries', () => {
 
   assert.deepEqual(missingKeys, [])
 })
+
+runTest('supabase seed can be rerun without duplicate seeded rows', () => {
+  const seed = readFileSync('supabase/seed.sql', 'utf8')
+
+  assert.match(seed, /insert into public\.businesses[\s\S]*on conflict \(slug\) do update/i)
+  assert.match(seed, /delete from public\.rewards[\s\S]*Signature Velvet Latte/i)
+  assert.match(seed, /delete from public\.products[\s\S]*Oat Milk Latte/i)
+  assert.match(seed, /delete from public\.promotions[\s\S]*Double points after 3 PM/i)
+  assert.match(seed, /insert into auth\.users[\s\S]*on conflict \(id\) do update/i)
+  assert.match(seed, /insert into auth\.identities[\s\S]*on conflict \(id\) do update/i)
+})

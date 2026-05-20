@@ -7,7 +7,14 @@
 
 insert into public.businesses (id, name, slug, description, earn_rate, tax_rate, currency, active) values
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Velvet Brew', 'velvet-brew', 'A neighborhood beverage shop known for handcrafted drinks, seasonal pastries, and retail favorites.', 10, 0.0875, 'USD', true),
-  ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Coffee', 'mystic-coffee', 'A mystical coffee experience with ethically sourced beans, herbal infusions, and enchanted blends.', 8, 0.0925, 'USD', true);
+  ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Coffee', 'mystic-coffee', 'A mystical coffee experience with ethically sourced beans, herbal infusions, and enchanted blends.', 8, 0.0925, 'USD', true)
+on conflict (slug) do update
+set name = excluded.name,
+    description = excluded.description,
+    earn_rate = excluded.earn_rate,
+    tax_rate = excluded.tax_rate,
+    currency = excluded.currency,
+    active = excluded.active;
 
 -- ─── Demo Users (create via Supabase Auth, then profiles are auto-created) ──
 -- After running seed, create these users in Supabase Auth:
@@ -54,7 +61,14 @@ insert into auth.users (
   ('00000000-0000-0000-0000-000000000000', '22222222-2222-2222-2222-222222222222', 'authenticated', 'authenticated', 'unverified@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"customer"}'::jsonb, '{"full_name":"E2E Unverified Customer","verification_id_number":"E2E-CUSTOMER-002","verification_document_path":"pending/22222222-2222-2222-2222-222222222222.png","verification_document_filename":"unverified-customer.png"}'::jsonb, now(), now(), '', '', '', ''),
   ('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'staff@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-staff","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Velvet Staff"}'::jsonb, now(), now(), '', '', '', ''),
   ('00000000-0000-0000-0000-000000000000', '44444444-4444-4444-4444-444444444444', 'authenticated', 'authenticated', 'owner@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-owner","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Velvet Owner"}'::jsonb, now(), now(), '', '', '', ''),
-  ('00000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', 'authenticated', 'authenticated', 'admin@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"platform-admin"}'::jsonb, '{"full_name":"E2E Platform Admin"}'::jsonb, now(), now(), '', '', '', '');
+  ('00000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', 'authenticated', 'authenticated', 'admin@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"platform-admin"}'::jsonb, '{"full_name":"E2E Platform Admin"}'::jsonb, now(), now(), '', '', '', '')
+on conflict (id) do update
+set email = excluded.email,
+    encrypted_password = excluded.encrypted_password,
+    email_confirmed_at = excluded.email_confirmed_at,
+    raw_app_meta_data = excluded.raw_app_meta_data,
+    raw_user_meta_data = excluded.raw_user_meta_data,
+    updated_at = now();
 
 insert into auth.identities (
   id,
@@ -70,7 +84,12 @@ insert into auth.identities (
   ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'unverified@medellin.test', '{"sub":"22222222-2222-2222-2222-222222222222","email":"unverified@medellin.test"}'::jsonb, 'email', now(), now(), now()),
   ('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', 'staff@velvetbrew.test', '{"sub":"33333333-3333-3333-3333-333333333333","email":"staff@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
   ('44444444-4444-4444-4444-444444444444', '44444444-4444-4444-4444-444444444444', 'owner@velvetbrew.test', '{"sub":"44444444-4444-4444-4444-444444444444","email":"owner@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
-  ('55555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555', 'admin@medellin.test', '{"sub":"55555555-5555-5555-5555-555555555555","email":"admin@medellin.test"}'::jsonb, 'email', now(), now(), now());
+  ('55555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555', 'admin@medellin.test', '{"sub":"55555555-5555-5555-5555-555555555555","email":"admin@medellin.test"}'::jsonb, 'email', now(), now(), now())
+on conflict (id) do update
+set provider_id = excluded.provider_id,
+    identity_data = excluded.identity_data,
+    provider = excluded.provider,
+    updated_at = now();
 
 update public.profiles
 set verification_status = 'verified'
@@ -79,6 +98,21 @@ where id = '11111111-1111-1111-1111-111111111111';
 update public.profiles
 set verification_status = 'submitted'
 where id = '22222222-2222-2222-2222-222222222222';
+
+delete from public.rewards
+where business_id in (
+    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22'
+  )
+  and title in (
+    'Signature Velvet Latte',
+    'Cold Brew Flight',
+    'Butter Croissant Pairing',
+    'Velvet Brew Tote',
+    'Mystic Matcha Latte',
+    'Almond Croissant',
+    'Afternoon Tea Set'
+  );
 
 insert into public.rewards (business_id, title, description, category, points_cost, inventory, featured, highlight) values
   -- Velvet Brew
@@ -92,6 +126,25 @@ insert into public.rewards (business_id, title, description, category, points_co
   ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Afternoon Tea Set', 'Pot of premium herbal tea served with a selection of three mini pastries.', 'Experience', 400, 15, true, 'Weekend special');
 
 -- ─── Products ────────────────────────────────────────────────
+
+delete from public.products
+where business_id in (
+    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22'
+  )
+  and title in (
+    'Oat Milk Latte',
+    'Cold Brew Concentrate 32oz',
+    'Pistachio Cardamom Bun',
+    'Single Origin: Ethiopia Yirgacheffe',
+    'Velvet Brew Ceramic Tumbler',
+    'Pour-Over Starter Kit',
+    'Chai Spice Latte',
+    'Mystic Breakfast Sandwich',
+    'Lavender Honey Scone',
+    'Premium Tea Sampler',
+    'Mystic Coffee Mug'
+  );
 
 insert into public.products (business_id, title, description, category, price, inventory, featured, highlight) values
   -- Velvet Brew
@@ -109,6 +162,19 @@ insert into public.products (business_id, title, description, category, price, i
   ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Coffee Mug', 'Handmade ceramic mug with a mystical mountain motif. 12oz capacity.', 'Merch', 24.00, 18, true, 'Limited edition');
 
 -- ─── Promotions ──────────────────────────────────────────────
+
+delete from public.promotions
+where business_id in (
+    'a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11',
+    'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22'
+  )
+  and title in (
+    'Double points after 3 PM',
+    'Spring pairing menu',
+    'Bring-a-friend Saturdays',
+    'Tea Tuesday Bonus',
+    'Brunch Bundle'
+  );
 
 insert into public.promotions (business_id, title, description, badge, cta, expires_at, audience) values
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Double points after 3 PM', 'Stop by after 3 PM and earn twice the points on any handcrafted drink.', 'Weekday perk', 'Drop by after work', '2026-04-24T23:59:59.000Z', 'All members'),
