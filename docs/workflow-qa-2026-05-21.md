@@ -1,0 +1,179 @@
+# Workflow QA - 2026-05-21
+
+## Scope
+
+Reviewed the customer, business owner, business staff, and admin workflow surfaces after the Spanish-first landing page work.
+
+## Fresh Verification
+
+- `npm test` passed.
+- `npm run lint` passed.
+- `npm run build` passed.
+- `.env` has `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_PAYMENTS_ENABLED` keys present.
+
+Build note: Vite reports the main JS chunk is larger than 500 kB after minification. This is not a functional failure, but it should be handled before production polish.
+
+## Route Coverage
+
+### Public And Acquisition
+
+- `/` renders the early access letter page.
+- `/early-access` renders the early access lead capture page.
+- `/landing-page` renders the client-focused landing page.
+- `/signin` is the customer login page.
+- `/business/login` is the business/staff login page.
+- `/admin` is the admin login page.
+- `/promo`, `/promo/register`, `/ambassadors`, `/join`, `/business`, `/shop`, `/rewards`, and `/promotions` are public or customer-aware routes.
+
+### Customer
+
+- `/dashboard`
+- `/shop`
+- `/rewards`
+- `/promotions`
+- `/gift-cards`
+- `/wallet/gift-cards`
+- `/wallet/gift-cards/:id`
+- `/cart`
+- `/checkout`
+- `/order-confirmation`
+- `/orders`
+- `/membership`
+- `/redeem/:rewardId`
+- `/activity`
+- `/profile`
+
+Critical behavior observed in code:
+
+- Customer reward value actions require `verificationStatus === 'verified'`.
+- Checkout normalizes cart items and rejects mixed-business carts.
+- Reward redemption validates supported pickup windows.
+- Gift card issuance is blocked unless the customer is verified.
+
+### Business Owner And Staff
+
+- `/business/dashboard`
+- `/business/products`
+- `/business/rewards`
+- `/business/redemptions`
+- `/business/promotions`
+- `/business/members`
+- `/business/partners`
+- `/business/settings`
+- `/business/gift-cards` is owner-only in the sidebar.
+
+Critical behavior observed in code:
+
+- Business owner and business staff share the same protected route and business workspace.
+- Staff can access most business sections, except gift cards are hidden from staff in navigation.
+- Business data loads only after the signed-in profile has a `businessId`.
+
+### Admin
+
+- `/admin/portal`
+- `/admin/gift-cards`
+
+Critical behavior observed in code:
+
+- Admin routes require `platform-admin`.
+- Admin can manage users, businesses, owner/staff assignment, early access leads, ambassador leads, rewards, products, promotions, verification reviews, referrals, and gift card catalog/admin views.
+
+## Launch Blockers
+
+1. Legal pages are placeholder copy.
+   - The app explicitly says terms, privacy, reward terms, and verification policy should be reviewed before launch.
+
+2. Membership subscription is still mock-based.
+   - Membership service uses `mock_subscribe`, `mock_renew`, and `mock_cancel`.
+   - This is acceptable for demos, but not for a paid launch unless intentional.
+
+3. Checkout is documented as a demo flow with no real payment processing.
+   - `README.md` states no real payment is processed.
+   - If launch requires paid customer orders, payment work is still pending.
+
+4. No browser-level E2E suite exists for role workflows.
+   - Current tests are useful static/unit checks, but they do not log in as each role and click through the app.
+
+## Role Workflow Risks
+
+1. Business staff permissions need product confirmation.
+   - Code currently allows staff into products, rewards, redemptions, promotions, members, partners, and settings.
+   - Only gift cards are owner-only in navigation.
+   - This may be correct, but it needs a business decision before launch.
+
+2. Some business/staff pages depend directly on Supabase table reads.
+   - If RLS or profile claims differ between local and production, those pages may fail even when build/tests pass.
+
+3. Spanish coverage exists for `t(...)` strings, but many placeholders and some operational labels remain English.
+   - This affects admin/business/staff/customer polish, not compilation.
+
+4. Production bundle is large.
+   - Consider route-level lazy loading before launch.
+
+## Recommended Next Implementation Slice
+
+Build a role workflow QA suite and fix failures found by it.
+
+Initial E2E automation has been planned around Playwright and deterministic local Supabase seed users. Once Docker Desktop is running, use:
+
+```bash
+npx supabase db reset
+npm run test:e2e:workflows
+```
+
+Use `npm run test:e2e` for the public smoke suite. Authenticated role workflow specs are skipped there unless `E2E_AUTH_ENABLED=true` is set.
+
+The local seed accounts use password `demo1234`:
+
+- `customer@medellin.test`
+- `unverified@medellin.test`
+- `staff@velvetbrew.test`
+- `owner@velvetbrew.test`
+- `admin@medellin.test`
+
+Minimum E2E scenarios:
+
+1. Customer
+   - Sign in.
+   - Open dashboard.
+   - Browse shop.
+   - Add item to cart.
+   - Attempt checkout as unverified customer and confirm the verification gate.
+   - Submit verification details.
+   - Browse rewards.
+   - Attempt reward redemption.
+   - Open membership and gift card wallet.
+
+2. Business Staff
+   - Sign in through `/business/login`.
+   - Confirm redirect to `/business/dashboard`.
+   - Validate redemption screen.
+   - Search customer/member.
+   - Award or validate credits if permitted.
+   - Confirm owner-only sections are hidden or blocked.
+
+3. Business Owner
+   - Sign in through `/business/login`.
+   - Manage products.
+   - Manage rewards.
+   - Manage promotions.
+   - View members and redemptions.
+   - Manage gift card catalog.
+   - Review settings.
+
+4. Admin
+   - Sign in through `/admin`.
+   - Review early access leads.
+   - Review member verification.
+   - Create or update a business.
+   - Assign owner/staff.
+   - Review referrals and gift card catalog/admin views.
+
+Recommended order:
+
+1. Confirm staff permissions.
+2. Add browser E2E tooling and seeded test users.
+3. Run customer workflow first, because it drives signups and value actions.
+4. Run staff/business owner workflows second, because they support fulfillment.
+5. Run admin workflow third, because it controls launch operations.
+6. Replace legal placeholder copy and decide whether paid membership/checkout are launch requirements.

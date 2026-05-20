@@ -30,6 +30,56 @@ insert into public.businesses (id, name, slug, description, earn_rate, tax_rate,
 
 -- ─── Rewards ─────────────────────────────────────────────────
 
+-- E2E Auth Users
+-- Password for all E2E users: demo1234
+
+insert into auth.users (
+  instance_id,
+  id,
+  aud,
+  role,
+  email,
+  encrypted_password,
+  email_confirmed_at,
+  raw_app_meta_data,
+  raw_user_meta_data,
+  created_at,
+  updated_at,
+  confirmation_token,
+  email_change,
+  email_change_token_new,
+  recovery_token
+) values
+  ('00000000-0000-0000-0000-000000000000', '11111111-1111-1111-1111-111111111111', 'authenticated', 'authenticated', 'customer@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"customer"}'::jsonb, '{"full_name":"E2E Verified Customer","verification_id_number":"E2E-CUSTOMER-001","verification_document_path":"pending/11111111-1111-1111-1111-111111111111.png","verification_document_filename":"verified-customer.png"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '22222222-2222-2222-2222-222222222222', 'authenticated', 'authenticated', 'unverified@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"customer"}'::jsonb, '{"full_name":"E2E Unverified Customer","verification_id_number":"E2E-CUSTOMER-002","verification_document_path":"pending/22222222-2222-2222-2222-222222222222.png","verification_document_filename":"unverified-customer.png"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'staff@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-staff","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Velvet Staff"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '44444444-4444-4444-4444-444444444444', 'authenticated', 'authenticated', 'owner@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-owner","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Velvet Owner"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', 'authenticated', 'authenticated', 'admin@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"platform-admin"}'::jsonb, '{"full_name":"E2E Platform Admin"}'::jsonb, now(), now(), '', '', '', '');
+
+insert into auth.identities (
+  id,
+  user_id,
+  provider_id,
+  identity_data,
+  provider,
+  last_sign_in_at,
+  created_at,
+  updated_at
+) values
+  ('11111111-1111-1111-1111-111111111111', '11111111-1111-1111-1111-111111111111', 'customer@medellin.test', '{"sub":"11111111-1111-1111-1111-111111111111","email":"customer@medellin.test"}'::jsonb, 'email', now(), now(), now()),
+  ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'unverified@medellin.test', '{"sub":"22222222-2222-2222-2222-222222222222","email":"unverified@medellin.test"}'::jsonb, 'email', now(), now(), now()),
+  ('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', 'staff@velvetbrew.test', '{"sub":"33333333-3333-3333-3333-333333333333","email":"staff@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
+  ('44444444-4444-4444-4444-444444444444', '44444444-4444-4444-4444-444444444444', 'owner@velvetbrew.test', '{"sub":"44444444-4444-4444-4444-444444444444","email":"owner@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
+  ('55555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555', 'admin@medellin.test', '{"sub":"55555555-5555-5555-5555-555555555555","email":"admin@medellin.test"}'::jsonb, 'email', now(), now(), now());
+
+update public.profiles
+set verification_status = 'verified'
+where id = '11111111-1111-1111-1111-111111111111';
+
+update public.profiles
+set verification_status = 'submitted'
+where id = '22222222-2222-2222-2222-222222222222';
+
 insert into public.rewards (business_id, title, description, category, points_cost, inventory, featured, highlight) values
   -- Velvet Brew
   ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Signature Velvet Latte', 'Redeem any handcrafted latte with your choice of milk and syrup.', 'Drink', 250, 99, true, 'Most redeemed this week'),
