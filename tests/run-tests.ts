@@ -538,6 +538,8 @@ runTest('supabase seed can be rerun without duplicate seeded rows', () => {
   assert.match(seed, /insert into public\.business_branding/i)
   assert.match(seed, /unsupported_required_columns/i)
   assert.match(seed, /array_append\(insert_columns, 'slug'\)/i)
+  assert.match(seed, /status_data_type = 'USER-DEFINED'/i)
+  assert.match(seed, /status_udt_schema/i)
   assert.match(seed, /select id from public\.businesses where slug = 'velvet-brew'/i)
   assert.match(seed, /select id from public\.businesses where slug = 'mystic-coffee'/i)
   assert.match(seed, /delete from public\.rewards[\s\S]*Signature Velvet Latte/i)

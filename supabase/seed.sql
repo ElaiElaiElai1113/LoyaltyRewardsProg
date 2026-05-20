@@ -22,6 +22,9 @@ declare
   select_expressions text[] := array['b.id'];
   update_assignments text[] := array[]::text[];
   unsupported_required_columns text[];
+  status_data_type text;
+  status_udt_schema text;
+  status_udt_name text;
 begin
   if to_regclass('public.business_branding') is not null then
     select array_agg(column_name order by ordinal_position)
@@ -86,8 +89,22 @@ begin
     end if;
 
     if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'status') then
+      select data_type, udt_schema, udt_name
+      into status_data_type, status_udt_schema, status_udt_name
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'status';
+
       insert_columns := array_append(insert_columns, 'status');
-      select_expressions := array_append(select_expressions, 'case when b.active then ''active'' else ''inactive'' end');
+      if status_data_type = 'USER-DEFINED' then
+        select_expressions := array_append(
+          select_expressions,
+          format('(case when b.active then ''active'' else ''inactive'' end)::%I.%I', status_udt_schema, status_udt_name)
+        );
+      else
+        select_expressions := array_append(select_expressions, 'case when b.active then ''active'' else ''inactive'' end');
+      end if;
       update_assignments := array_append(update_assignments, 'status = excluded.status');
     end if;
 
