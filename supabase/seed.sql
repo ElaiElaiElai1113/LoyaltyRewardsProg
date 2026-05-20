@@ -17,134 +17,191 @@ set name = excluded.name,
     active = excluded.active;
 
 do $$
+declare
+  insert_columns text[] := array['id'];
+  select_expressions text[] := array['b.id'];
+  update_assignments text[] := array[]::text[];
+  unsupported_required_columns text[];
 begin
   if to_regclass('public.business_branding') is not null then
-    if exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'legacy_business_id'
-    ) and exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'name'
-    ) and exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'slug'
-    ) then
-      execute $sql$
-        insert into public.business_branding (id, legacy_business_id, name, slug)
-        select id, id, name, slug
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do update
-        set legacy_business_id = excluded.legacy_business_id,
-            name = excluded.name,
-            slug = excluded.slug
-      $sql$;
-    elsif exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'legacy_business_id'
-    ) and exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'slug'
-    ) then
-      execute $sql$
-        insert into public.business_branding (id, legacy_business_id, slug)
-        select id, id, slug
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do update
-        set legacy_business_id = excluded.legacy_business_id,
-            slug = excluded.slug
-      $sql$;
-    elsif exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'legacy_business_id'
-    ) then
-      execute $sql$
-        insert into public.business_branding (id, legacy_business_id)
-        select id, id
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do update
-        set legacy_business_id = excluded.legacy_business_id
-      $sql$;
-    elsif exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'name'
-    ) and exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'slug'
-    ) then
-      execute $sql$
-        insert into public.business_branding (id, name, slug)
-        select id, name, slug
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do update
-        set name = excluded.name,
-            slug = excluded.slug
-      $sql$;
-    elsif exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'name'
-    ) then
-      execute $sql$
-        insert into public.business_branding (id, name)
-        select id, name
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do update
-        set name = excluded.name
-      $sql$;
-    elsif exists (
-      select 1
-      from information_schema.columns
-      where table_schema = 'public'
-        and table_name = 'business_branding'
-        and column_name = 'slug'
-    ) then
-      execute $sql$
-        insert into public.business_branding (id, slug)
-        select id, slug
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do update
-        set slug = excluded.slug
-      $sql$;
+    select array_agg(column_name order by ordinal_position)
+    into unsupported_required_columns
+    from information_schema.columns
+    where table_schema = 'public'
+      and table_name = 'business_branding'
+      and is_nullable = 'NO'
+      and column_default is null
+      and coalesce(is_identity, 'NO') = 'NO'
+      and coalesce(is_generated, 'NEVER') = 'NEVER'
+      and column_name not in (
+        'id',
+        'legacy_business_id',
+        'name',
+        'slug',
+        'description',
+        'status',
+        'active',
+        'currency',
+        'primary_color',
+        'secondary_color',
+        'accent_color',
+        'brand_color',
+        'logo_url',
+        'banner_url',
+        'cover_url',
+        'website_url',
+        'phone',
+        'address',
+        'email',
+        'created_at',
+        'updated_at'
+      );
+
+    if unsupported_required_columns is not null then
+      raise exception 'Seed cannot populate required business_branding columns: %', array_to_string(unsupported_required_columns, ', ');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'legacy_business_id') then
+      insert_columns := array_append(insert_columns, 'legacy_business_id');
+      select_expressions := array_append(select_expressions, 'b.id');
+      update_assignments := array_append(update_assignments, 'legacy_business_id = excluded.legacy_business_id');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'name') then
+      insert_columns := array_append(insert_columns, 'name');
+      select_expressions := array_append(select_expressions, 'b.name');
+      update_assignments := array_append(update_assignments, 'name = excluded.name');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'slug') then
+      insert_columns := array_append(insert_columns, 'slug');
+      select_expressions := array_append(select_expressions, 'b.slug');
+      update_assignments := array_append(update_assignments, 'slug = excluded.slug');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'description') then
+      insert_columns := array_append(insert_columns, 'description');
+      select_expressions := array_append(select_expressions, 'b.description');
+      update_assignments := array_append(update_assignments, 'description = excluded.description');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'status') then
+      insert_columns := array_append(insert_columns, 'status');
+      select_expressions := array_append(select_expressions, 'case when b.active then ''active'' else ''inactive'' end');
+      update_assignments := array_append(update_assignments, 'status = excluded.status');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'active') then
+      insert_columns := array_append(insert_columns, 'active');
+      select_expressions := array_append(select_expressions, 'b.active');
+      update_assignments := array_append(update_assignments, 'active = excluded.active');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'currency') then
+      insert_columns := array_append(insert_columns, 'currency');
+      select_expressions := array_append(select_expressions, 'b.currency');
+      update_assignments := array_append(update_assignments, 'currency = excluded.currency');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'primary_color') then
+      insert_columns := array_append(insert_columns, 'primary_color');
+      select_expressions := array_append(select_expressions, '''#111111''');
+      update_assignments := array_append(update_assignments, 'primary_color = excluded.primary_color');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'secondary_color') then
+      insert_columns := array_append(insert_columns, 'secondary_color');
+      select_expressions := array_append(select_expressions, '''#ffffff''');
+      update_assignments := array_append(update_assignments, 'secondary_color = excluded.secondary_color');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'accent_color') then
+      insert_columns := array_append(insert_columns, 'accent_color');
+      select_expressions := array_append(select_expressions, '''#c8a45d''');
+      update_assignments := array_append(update_assignments, 'accent_color = excluded.accent_color');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'brand_color') then
+      insert_columns := array_append(insert_columns, 'brand_color');
+      select_expressions := array_append(select_expressions, '''#111111''');
+      update_assignments := array_append(update_assignments, 'brand_color = excluded.brand_color');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'logo_url') then
+      insert_columns := array_append(insert_columns, 'logo_url');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'logo_url = excluded.logo_url');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'banner_url') then
+      insert_columns := array_append(insert_columns, 'banner_url');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'banner_url = excluded.banner_url');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'cover_url') then
+      insert_columns := array_append(insert_columns, 'cover_url');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'cover_url = excluded.cover_url');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'website_url') then
+      insert_columns := array_append(insert_columns, 'website_url');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'website_url = excluded.website_url');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'phone') then
+      insert_columns := array_append(insert_columns, 'phone');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'phone = excluded.phone');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'address') then
+      insert_columns := array_append(insert_columns, 'address');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'address = excluded.address');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'email') then
+      insert_columns := array_append(insert_columns, 'email');
+      select_expressions := array_append(select_expressions, '''''');
+      update_assignments := array_append(update_assignments, 'email = excluded.email');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'created_at') then
+      insert_columns := array_append(insert_columns, 'created_at');
+      select_expressions := array_append(select_expressions, 'now()');
+    end if;
+
+    if exists (select 1 from information_schema.columns where table_schema = 'public' and table_name = 'business_branding' and column_name = 'updated_at') then
+      insert_columns := array_append(insert_columns, 'updated_at');
+      select_expressions := array_append(select_expressions, 'now()');
+      update_assignments := array_append(update_assignments, 'updated_at = now()');
+    end if;
+
+    if array_length(update_assignments, 1) is null then
+      execute format(
+        'insert into public.business_branding (%s)
+         select %s
+         from public.businesses b
+         where b.slug in (''velvet-brew'', ''mystic-coffee'')
+         on conflict (id) do nothing',
+        array_to_string(insert_columns, ', '),
+        array_to_string(select_expressions, ', ')
+      );
     else
-      execute $sql$
-        insert into public.business_branding (id)
-        select id
-        from public.businesses
-        where slug in ('velvet-brew', 'mystic-coffee')
-        on conflict (id) do nothing
-      $sql$;
+      execute format(
+        'insert into public.business_branding (%s)
+         select %s
+         from public.businesses b
+         where b.slug in (''velvet-brew'', ''mystic-coffee'')
+         on conflict (id) do update
+         set %s',
+        array_to_string(insert_columns, ', '),
+        array_to_string(select_expressions, ', '),
+        array_to_string(update_assignments, ', ')
+      );
     end if;
   end if;
 end
