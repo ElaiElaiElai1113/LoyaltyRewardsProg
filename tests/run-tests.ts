@@ -536,6 +536,7 @@ runTest('supabase seed can be rerun without duplicate seeded rows', () => {
   assert.match(seed, /insert into public\.businesses[\s\S]*on conflict \(slug\) do update/i)
   assert.match(seed, /to_regclass\('public\.business_branding'\)/i)
   assert.match(seed, /insert into public\.business_branding/i)
+  assert.match(seed, /insert into public\.business_branding \(id, legacy_business_id, name\)/i)
   assert.match(seed, /select id from public\.businesses where slug = 'velvet-brew'/i)
   assert.match(seed, /select id from public\.businesses where slug = 'mystic-coffee'/i)
   assert.match(seed, /delete from public\.rewards[\s\S]*Signature Velvet Latte/i)

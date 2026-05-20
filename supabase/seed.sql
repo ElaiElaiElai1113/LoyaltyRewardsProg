@@ -25,6 +25,28 @@ begin
       where table_schema = 'public'
         and table_name = 'business_branding'
         and column_name = 'legacy_business_id'
+    ) and exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'name'
+    ) then
+      execute $sql$
+        insert into public.business_branding (id, legacy_business_id, name)
+        select id, id, name
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do update
+        set legacy_business_id = excluded.legacy_business_id,
+            name = excluded.name
+      $sql$;
+    elsif exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'legacy_business_id'
     ) then
       execute $sql$
         insert into public.business_branding (id, legacy_business_id)
@@ -33,6 +55,21 @@ begin
         where slug in ('velvet-brew', 'mystic-coffee')
         on conflict (id) do update
         set legacy_business_id = excluded.legacy_business_id
+      $sql$;
+    elsif exists (
+      select 1
+      from information_schema.columns
+      where table_schema = 'public'
+        and table_name = 'business_branding'
+        and column_name = 'name'
+    ) then
+      execute $sql$
+        insert into public.business_branding (id, name)
+        select id, name
+        from public.businesses
+        where slug in ('velvet-brew', 'mystic-coffee')
+        on conflict (id) do update
+        set name = excluded.name
       $sql$;
     else
       execute $sql$
