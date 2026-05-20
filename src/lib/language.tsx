@@ -1140,13 +1140,31 @@ const spanishTranslations: Record<string, string> = {
   'Download QR': 'Descargar QR',
   'QR code downloaded.': 'Código QR descargado.',
   'Unable to download QR code.': 'No se pudo descargar el código QR.',
+  'Hey,': 'Hola,',
+  'We’re tired of watching people work hard but still struggle to afford the life they want — vacations, freedom, extras.':
+    'Estamos cansados de ver a la gente trabajar duro y aun asi luchar para pagar la vida que quiere: vacaciones, libertad y extras.',
+  'That’s why we’re building Medellín Rewards: the highest-paying rewards program. Earn 20–100% back on almost everything you already buy daily.':
+    'Por eso estamos creando Medellin Rewards: el programa de recompensas que mas paga. Gana de 20 a 100% de vuelta en casi todo lo que ya compras cada dia.',
+  'No extra spending. Just real money back to help you do more of what you love.':
+    'Sin gastar de mas. Solo dinero real de vuelta para ayudarte a hacer mas de lo que amas.',
+  'We’re currently preparing for launch, and we’re inviting early supporters to join before anyone else.':
+    'Estamos preparando el lanzamiento e invitando a los primeros miembros antes que a nadie.',
+  'When we officially launch, subscribers will be the first to know — with access to exclusive benefits, updates, and early rewards opportunities.':
+    'Cuando lancemos oficialmente, los suscriptores seran los primeros en saberlo y tendran acceso a beneficios exclusivos, novedades y primeras oportunidades de recompensas.',
+  'Ready to earn more?': 'Listo para ganar mas?',
+  'Let’s make this happen together.': 'Hagamos que esto pase juntos.',
+  'Subscribe': 'Suscribirse',
+  'Leave your details and we will contact you when Medellin Rewards opens.':
+    'Deja tus datos y te contactaremos cuando Medellin Rewards abra.',
+  'Instagram optional': 'Instagram opcional',
+  'Email optional': 'Correo opcional',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function getStoredLanguage(): Language {
-  if (typeof window === 'undefined') return 'en'
-  return window.localStorage.getItem('medellinrewards-language') === 'es' ? 'es' : 'en'
+  if (typeof window === 'undefined') return 'es'
+  return window.localStorage.getItem('medellinrewards-language') === 'en' ? 'en' : 'es'
 }
 
 function applyValues(text: string, values?: TranslationValues) {

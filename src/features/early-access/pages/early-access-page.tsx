@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { useLanguage } from '@/lib/language'
@@ -31,6 +32,7 @@ const inputClass =
   'h-12 w-full rounded-md border border-black bg-white px-3.5 text-base text-black placeholder:text-neutral-500 outline-none focus:ring-2 focus:ring-black/20'
 const labelClass = 'text-xs font-bold uppercase text-neutral-700'
 const errorClass = 'text-xs font-bold text-error'
+const earlyAccessParagraphClass = 'max-w-3xl text-[1.125rem] font-medium leading-8 text-neutral-950'
 
 export function EarlyAccessPage() {
   const { t } = useLanguage()
@@ -52,25 +54,20 @@ export function EarlyAccessPage() {
     <main className="early-access-neutral min-h-screen overflow-x-hidden bg-white font-sans text-neutral-950">
       <div className="mx-auto flex min-h-screen max-w-5xl items-center px-5 py-10 sm:px-8 lg:px-12">
         <section className="w-full space-y-7">
-          <p className="text-[clamp(2.75rem,7vw,4.25rem)] font-semibold leading-none">
-            {earlyAccessMessageLines[0]}
-          </p>
-
-          <div className="max-w-3xl space-y-5 text-[1.125rem] font-medium leading-8 text-neutral-950 sm:text-[1.25rem] sm:leading-9">
-            <p>{earlyAccessMessageLines[1]}</p>
-            <p>{earlyAccessMessageLines[2]}</p>
-            <p>{earlyAccessMessageLines[3]}</p>
-            <p>{earlyAccessMessageLines[4]}</p>
+          <div className="flex justify-end">
+            <LanguagePicker className="text-neutral-700" compact />
           </div>
 
           <div className="space-y-5">
-            <p className="max-w-4xl text-[clamp(1.75rem,3.4vw,2.25rem)] font-semibold leading-tight">
-              {earlyAccessMessageLines[5]}
-            </p>
+            {earlyAccessMessageLines.slice(0, 6).map((line) => (
+              <p key={line} className={earlyAccessParagraphClass}>
+                {t(line)}
+              </p>
+            ))}
 
             {isSubmitted ? (
               <div className="max-w-xl space-y-3 border-l-2 border-black pl-4">
-                <h2 className="text-3xl font-semibold leading-tight text-black">{t("You're on the early list.")}</h2>
+                <h2 className="text-xl font-semibold leading-tight text-black">{t("You're on the early list.")}</h2>
                 <p className="text-base font-medium leading-7 text-neutral-700">
                   {t('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
                 </p>
@@ -81,14 +78,17 @@ export function EarlyAccessPage() {
                 className="h-12 rounded-md bg-black px-8 text-base font-bold text-white"
                 onClick={openLeadModal}
               >
-                {earlyAccessSubscribeButtonLabel}
+                {t(earlyAccessSubscribeButtonLabel)}
               </button>
             )}
           </div>
 
-          <div className="space-y-1 text-lg font-semibold leading-7 text-neutral-950 sm:text-xl">
-            <p>{earlyAccessMessageLines[6]}</p>
-            <p>{earlyAccessMessageLines[7]}</p>
+          <div className="space-y-1">
+            {earlyAccessMessageLines.slice(6, 8).map((line) => (
+              <p key={line} className={earlyAccessParagraphClass}>
+                {t(line)}
+              </p>
+            ))}
           </div>
         </section>
       </div>
@@ -117,15 +117,15 @@ export function EarlyAccessPage() {
             })}
           >
             <DialogHeader>
-              <DialogTitle className="text-3xl font-black text-black">Join early access</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-black">{t('Join early access')}</DialogTitle>
               <DialogDescription className="text-sm font-semibold leading-6 text-neutral-700">
-                Leave your details and we will contact you when Medellin Rewards opens.
+                {t('Leave your details and we will contact you when Medellin Rewards opens.')}
               </DialogDescription>
             </DialogHeader>
 
             <div className="grid gap-3">
-              <label htmlFor="early-access-name" className={labelClass}>Name</label>
-              <input id="early-access-name" className={inputClass} placeholder="Your name" {...leadForm.register('fullName')} />
+              <label htmlFor="early-access-name" className={labelClass}>{t('Name')}</label>
+              <input id="early-access-name" className={inputClass} placeholder={t('Your name')} {...leadForm.register('fullName')} />
               {leadForm.formState.errors.fullName ? <p className={errorClass}>{t(leadForm.formState.errors.fullName.message ?? '')}</p> : null}
             </div>
 
@@ -136,13 +136,13 @@ export function EarlyAccessPage() {
             </div>
 
             <div className="grid gap-3">
-              <label htmlFor="early-access-instagram" className={labelClass}>Instagram optional</label>
+              <label htmlFor="early-access-instagram" className={labelClass}>{t('Instagram optional')}</label>
               <input id="early-access-instagram" className={inputClass} placeholder="@yourhandle" {...leadForm.register('instagram')} />
               {leadForm.formState.errors.instagram ? <p className={errorClass}>{t(leadForm.formState.errors.instagram.message ?? '')}</p> : null}
             </div>
 
             <div className="grid gap-3">
-              <label htmlFor="early-access-email" className={labelClass}>Email optional</label>
+              <label htmlFor="early-access-email" className={labelClass}>{t('Email optional')}</label>
               <input id="early-access-email" className={inputClass} placeholder="you@example.com" {...leadForm.register('email')} />
               {leadForm.formState.errors.email ? <p className={errorClass}>{t(leadForm.formState.errors.email.message ?? '')}</p> : null}
             </div>
@@ -158,7 +158,7 @@ export function EarlyAccessPage() {
               className="h-12 w-full rounded-md bg-black px-8 text-base font-bold text-white disabled:opacity-60"
               disabled={leadForm.formState.isSubmitting}
             >
-              {leadForm.formState.isSubmitting ? t('Submitting...') : earlyAccessSubscribeButtonLabel}
+              {leadForm.formState.isSubmitting ? t('Submitting...') : t(earlyAccessSubscribeButtonLabel)}
             </button>
           </form>
         </DialogContent>
