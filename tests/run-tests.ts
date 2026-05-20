@@ -534,6 +534,8 @@ runTest('supabase seed can be rerun without duplicate seeded rows', () => {
   const seed = readFileSync('supabase/seed.sql', 'utf8')
 
   assert.match(seed, /insert into public\.businesses[\s\S]*on conflict \(slug\) do update/i)
+  assert.match(seed, /select id from public\.businesses where slug = 'velvet-brew'/i)
+  assert.match(seed, /select id from public\.businesses where slug = 'mystic-coffee'/i)
   assert.match(seed, /delete from public\.rewards[\s\S]*Signature Velvet Latte/i)
   assert.match(seed, /delete from public\.products[\s\S]*Oat Milk Latte/i)
   assert.match(seed, /delete from public\.promotions[\s\S]*Double points after 3 PM/i)
