@@ -61,6 +61,14 @@ export const rewardAdjustmentSchema = z.object({
 
 export type RewardAdjustmentFormValues = z.infer<typeof rewardAdjustmentSchema>
 
+export const memberPurchaseSchema = z.object({
+  memberCode: z.string().trim().min(1, 'Scan or enter a member code'),
+  amount: z.number().positive('Enter a purchase amount greater than zero'),
+  note: z.string().trim().max(140, 'Keep notes under 140 characters').optional(),
+})
+
+export type MemberPurchaseFormValues = z.infer<typeof memberPurchaseSchema>
+
 export const rewardDraftSchema = z.object({
   businessId: z.string().min(1, 'Select a business'),
   title: z.string().min(2, 'Enter a reward title'),

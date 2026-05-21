@@ -75,7 +75,7 @@ export function EarlyAccessPage() {
             ) : (
               <button
                 type="button"
-                className="h-12 rounded-md bg-black px-8 text-base font-bold text-white"
+                className="h-12 rounded-md bg-[#2f9e44] px-8 text-base font-bold text-white transition hover:bg-[#27863a]"
                 onClick={openLeadModal}
               >
                 {t(earlyAccessSubscribeButtonLabel)}
@@ -155,7 +155,7 @@ export function EarlyAccessPage() {
 
             <button
               type="submit"
-              className="h-12 w-full rounded-md bg-black px-8 text-base font-bold text-white disabled:opacity-60"
+              className="h-12 w-full rounded-md bg-[#2f9e44] px-8 text-base font-bold text-white transition hover:bg-[#27863a] disabled:opacity-60"
               disabled={leadForm.formState.isSubmitting}
             >
               {leadForm.formState.isSubmitting ? t('Submitting...') : t(earlyAccessSubscribeButtonLabel)}

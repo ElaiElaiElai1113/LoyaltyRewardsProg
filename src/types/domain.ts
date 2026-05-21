@@ -63,6 +63,15 @@ export interface RewardBalance {
   tierProgress: number
 }
 
+export interface BusinessMember {
+  id: string
+  fullName: string
+  email: string
+  points: number
+  referralCode?: string
+  verificationStatus?: 'not_submitted' | 'pending_document' | 'submitted' | 'verified' | 'rejected'
+}
+
 export type MembershipStatus = 'active' | 'canceled'
 
 export interface Membership {
