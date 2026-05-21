@@ -34,6 +34,7 @@ import { OrdersPage } from '@/features/shop/pages/orders-page'
 import { ShopPage } from '@/features/shop/pages/shop-page'
 import {
   BusinessDashboardPage,
+  MemberSalePage,
   MembersPage,
   PartnersPage,
   ProductsPage,
@@ -342,6 +343,7 @@ const router = createBrowserRouter([
     element: <ProtectedBusinessOwnerRoute />,
     children: [
       { path: '/business/dashboard', element: <BusinessDashboardPage /> },
+      { path: '/business/member-sale/:token', element: <MemberSalePage /> },
       { path: '/business/products', element: <ProductsPage /> },
       { path: '/business/rewards', element: <BusinessRewardsPage /> },
       { path: '/business/gift-cards', element: <BusinessGiftCardsPage /> },

@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Package, Sparkles, Hotel, Megaphone, ExternalLink, IdCard, Mail } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -27,8 +27,8 @@ import {
   useAdminAllBusinesses,
   useAdminBusinesses,
   useAdminEarlyAccessLeads,
+  useAdminMemberTransactions,
   useAdminOverview,
-  useAdminPartnerPerformance,
   useAdminPartnerReferrals,
   useAdminProducts,
   useAdminUsers,
@@ -45,6 +45,7 @@ import {
   useFulfillRedemption,
   useOrdersForVerification,
   useReviewMemberVerification,
+  useMarkMemberTransactionCommissionPaid,
   useUpdateAmbassadorLeadStatus,
   useUpdateBusiness,
   useUpdateEarlyAccessLeadStatus,
@@ -69,6 +70,32 @@ import {
 } from '@/types/forms'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
+const adminTabValues = [
+  'members',
+  'catalog',
+  'products',
+  'promotions',
+  'partners',
+  'ambassadors',
+  'early-access',
+  'referrals',
+  'activity',
+  'commissions',
+] as const
+
+type AdminTabValue = (typeof adminTabValues)[number]
+
+function isAdminTabValue(value: string): value is AdminTabValue {
+  return adminTabValues.includes(value as AdminTabValue)
+}
+
+function getAdminTabFromHash(): AdminTabValue {
+  if (typeof window === 'undefined') return 'members'
+
+  const hashValue = window.location.hash.replace('#', '')
+  return isAdminTabValue(hashValue) ? hashValue : 'members'
+}
+
 function slugifyBusinessName(value: string) {
   return value
     .toLowerCase()
@@ -86,15 +113,16 @@ export function AdminPage() {
   const { profile } = useAuth()
   const { t } = useLanguage()
   const [actionError, setActionError] = useState<string | null>(null)
+  const [activeAdminTab, setActiveAdminTab] = useState<AdminTabValue>(() => getAdminTabFromHash())
   const users = useAdminUsers()
   const overview = useAdminOverview()
   const businesses = useAdminBusinesses()
   const allBusinesses = useAdminAllBusinesses()
   const allReferrals = useAllReferrals()
-  const partnerPerformance = useAdminPartnerPerformance()
   const partnerReferrals = useAdminPartnerReferrals()
   const ambassadorLeads = useAdminAmbassadorLeads()
   const earlyAccessLeads = useAdminEarlyAccessLeads()
+  const memberTransactions = useAdminMemberTransactions()
   const [rewardBusinessId, setRewardBusinessId] = useState('')
   const [productBusinessId, setProductBusinessId] = useState('')
   const [promotionBusinessId, setPromotionBusinessId] = useState('')
@@ -107,6 +135,7 @@ export function AdminPage() {
   const [createBusinessError, setCreateBusinessError] = useState<string | null>(null)
   const [partnerActionError, setPartnerActionError] = useState<string | null>(null)
   const [verificationRejectionReason, setVerificationRejectionReason] = useState('')
+  const [isCreateBusinessDialogOpen, setIsCreateBusinessDialogOpen] = useState(false)
   const [businessAccessDialog, setBusinessAccessDialog] = useState<{
     businessId: string
     role: 'business-owner' | 'business-staff'
@@ -137,6 +166,7 @@ export function AdminPage() {
   const updateAmbassadorLeadStatus = useUpdateAmbassadorLeadStatus()
   const updateEarlyAccessLeadStatus = useUpdateEarlyAccessLeadStatus()
   const reviewMemberVerification = useReviewMemberVerification()
+  const markCommissionPaid = useMarkMemberTransactionCommissionPaid()
   const verificationOrders = useOrdersForVerification(
     verificationBusinessId === 'all' ? undefined : verificationBusinessId,
   )
@@ -171,6 +201,29 @@ export function AdminPage() {
   const customerMembers = (users.data ?? []).filter(({ profile: member }) => member.role === 'customer')
   const selectedProfileId = adjustmentForm.watch('profileId')
   const selectedMember = customerMembers.find(({ profile: member }) => member.id === selectedProfileId) ?? null
+
+  useEffect(() => {
+    function syncTabFromHash() {
+      setActiveAdminTab(getAdminTabFromHash())
+    }
+
+    syncTabFromHash()
+    window.addEventListener('hashchange', syncTabFromHash)
+
+    return () => {
+      window.removeEventListener('hashchange', syncTabFromHash)
+    }
+  }, [])
+
+  function handleAdminTabChange(value: string) {
+    if (!isAdminTabValue(value)) return
+
+    setActiveAdminTab(value)
+
+    if (window.location.hash !== `#${value}`) {
+      window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}#${value}`)
+    }
+  }
 
   const rewardForm = useForm<RewardDraftFormValues>({
     resolver: zodResolver(rewardDraftSchema),
@@ -230,6 +283,21 @@ export function AdminPage() {
     },
   })
   const createBusinessName = createBusinessForm.watch('name')
+  const resetCreateBusinessForm = () => {
+    createBusinessForm.reset({
+      name: '',
+      slug: '',
+      description: '',
+      logoUrl: '',
+      earnRate: 1,
+      taxRate: 0,
+      currency: 'USD',
+      active: true,
+      ownerEmail: '',
+    })
+    setCreateBusinessError(null)
+    setIsCreateSlugManual(false)
+  }
 
   useEffect(() => {
     if (!availableBusinessId) return
@@ -388,39 +456,7 @@ export function AdminPage() {
         </div>
       </div>
 
-      <Tabs defaultValue="members" className="min-w-0 space-y-12">
-        <div className="fixed left-3 top-24 z-50 w-14 xl:left-4 xl:w-64">
-          <TabsList className="flex h-auto w-full flex-col items-stretch gap-1 rounded-[1rem] border-0 bg-transparent p-0 shadow-none backdrop-blur-none">
-            <TabsTrigger value="members" title={t('Members')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Users className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Members')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="catalog" title={t('Rewards')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Gift className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Rewards')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="products" title={t('Products')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Package className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Products')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="promotions" title={t('Promotions')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Sparkles className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Promotions')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="partners" title={t('Partners')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Hotel className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Partners')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="ambassadors" title="Ambassadors" className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Megaphone className="size-5 xl:mr-3" /><span className="hidden xl:inline">Ambassadors</span>
-            </TabsTrigger>
-            <TabsTrigger value="early-access" title="Early Access" className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Mail className="size-5 xl:mr-3" /><span className="hidden xl:inline">Early Access</span>
-            </TabsTrigger>
-            <TabsTrigger value="referrals" title={t('Referrals')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <TrendingUp className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Referrals')}</span>
-            </TabsTrigger>
-            <TabsTrigger value="activity" title={t('Activity')} className="min-w-0 justify-center rounded-[0.9rem] px-0 py-2 text-xs text-[var(--muted-foreground)] shadow-none data-[state=active]:bg-[var(--muted)] data-[state=active]:text-[var(--foreground)] xl:justify-start xl:px-3">
-              <Activity className="size-5 xl:mr-3" /><span className="hidden xl:inline">{t('Activity')}</span>
-            </TabsTrigger>
-          </TabsList>
-        </div>
-
+      <Tabs value={activeAdminTab} onValueChange={handleAdminTabChange} className="min-w-0 space-y-12">
         <TabsContent value="members" className="space-y-12 outline-none">
           <div className="grid min-w-0 gap-8 2xl:grid-cols-[360px_minmax(0,1fr)]">
             <div className="space-y-5">
@@ -429,7 +465,7 @@ export function AdminPage() {
                 <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
               </div>
 
-              <div className="rounded-[1.5rem] border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm space-y-5">
+              <div className="member-action-panel rounded-[1.5rem] border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm space-y-5">
                 {selectedMember ? (
                   <div className="rounded-[1.25rem] border border-primary-container/15 bg-[var(--muted)] p-4 shadow-sm">
                     <div className="flex min-w-0 items-start gap-3">
@@ -438,139 +474,35 @@ export function AdminPage() {
                       </div>
                       <div className="min-w-0 flex-1 space-y-3">
                         <div>
-                          <p className="truncate font-serif text-2xl tracking-tight text-primary">
+                          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Profile Summary</p>
+                          <p className="mt-1 truncate font-serif text-2xl tracking-tight text-primary">
                             {selectedMember.profile.fullName}
                           </p>
                           <p className="break-all text-sm font-medium text-on-surface-variant/90">
                             {selectedMember.profile.email}
                           </p>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <Badge variant="accent" className="border-primary/25 bg-primary/12 text-primary">
-                            <Gift className="size-3 mr-1" />
-                            {selectedMember.balance?.points ?? 0} {t('points')}
-                          </Badge>
-                          <Badge variant="accent" className="border-primary-container/25 bg-primary-container/15 text-primary">
-                            {selectedMember.balance?.availableCredits ?? 0} {t('Reward Credits')}
-                          </Badge>
-                        </div>
-                        {(selectedMember.balance?.availableCredits ?? 0) > 0 ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            className="rounded-full border-success/25 bg-success/10 text-success hover:bg-success/15"
-                            disabled={useCredit.isPending}
-                            onClick={() =>
-                              useCredit.mutate({
-                                profileId: selectedMember.profile.id,
-                                actorName: profile?.fullName ?? 'Admin',
-                              })
-                            }
-                          >
-                            {useCredit.isPending ? t('Using...') : t('Use Reward Credit')}
-                          </Button>
-                        ) : null}
-                      </div>
-                    </div>
-
-                    <div className="mt-5 grid gap-3 text-sm text-on-surface-variant/90">
-                      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Phone')}</span>
-                        <span className="truncate">{selectedMember.profile.phone || t('Not provided')}</span>
-                      </div>
-                      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Location')}</span>
-                        <span className="truncate">{selectedMember.profile.location || t('Not provided')}</span>
-                      </div>
-                      <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member ID')}</span>
-                        <span className="truncate font-mono text-xs" title={selectedMember.profile.id}>
-                          {selectedMember.profile.id.slice(0, 8)}...{selectedMember.profile.id.slice(-6)}
-                        </span>
-                      </div>
-                      <div className="grid gap-2 border-t border-outline-variant/20 pt-3">
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Verification ID</span>
-                        <div className="flex min-w-0 flex-wrap items-center gap-2">
-                          <span className="min-w-0 truncate text-sm" title={selectedMember.profile.verificationIdNumber ?? ''}>
-                            {selectedMember.profile.verificationIdNumber || t('Not provided')}
-                          </span>
-                          <Badge
-                            variant="accent"
-                            className={
-                              selectedMember.profile.verificationDocumentPath
-                                ? 'border-success/25 bg-success/10 text-success'
-                                : 'border-warning/25 bg-warning/10 text-warning'
-                            }
-                          >
-                            <IdCard className="mr-1 size-3" />
-                            {selectedMember.profile.verificationStatus === 'submitted'
-                              ? 'ID submitted'
-                              : selectedMember.profile.verificationStatus === 'verified'
-                                ? 'Verified'
-                                : selectedMember.profile.verificationStatus === 'rejected'
-                                  ? 'Rejected'
-                                  : 'ID missing'}
-                          </Badge>
-                          {selectedMember.profile.verificationDocumentUrl ? (
-                            <Button asChild size="sm" variant="outline" className="rounded-full">
-                              <a href={selectedMember.profile.verificationDocumentUrl} target="_blank" rel="noreferrer">
-                                <ExternalLink className="size-4" />
-                                View ID
-                              </a>
-                            </Button>
-                          ) : null}
-                        </div>
-                        {selectedMember.profile.verificationRejectionReason ? (
-                          <p className="text-sm font-semibold leading-6 text-red-600">
-                            {selectedMember.profile.verificationRejectionReason}
-                          </p>
-                        ) : null}
-                        {selectedMember.profile.verificationDocumentPath ? (
-                          <div className="grid gap-3 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
-                            <div className="flex flex-wrap gap-2">
-                              <Button
-                                type="button"
-                                size="sm"
-                                className="rounded-full bg-success/10 text-success hover:bg-success/15"
-                                disabled={reviewMemberVerification.isPending}
-                                onClick={() => {
-                                  reviewMemberVerification.mutate({
-                                    profileId: selectedMember.profile.id,
-                                    status: 'verified',
-                                  })
-                                  setVerificationRejectionReason('')
-                                }}
-                              >
-                                <CheckCircle className="size-4" />
-                                Verify ID
-                              </Button>
-                              <Button
-                                type="button"
-                                size="sm"
-                                variant="outline"
-                                className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
-                                disabled={reviewMemberVerification.isPending || !verificationRejectionReason.trim()}
-                                onClick={() => {
-                                  reviewMemberVerification.mutate({
-                                    profileId: selectedMember.profile.id,
-                                    status: 'rejected',
-                                    reason: verificationRejectionReason,
-                                  })
-                                  setVerificationRejectionReason('')
-                                }}
-                              >
-                                Reject ID
-                              </Button>
-                            </div>
-                            <Textarea
-                              value={verificationRejectionReason}
-                              onChange={(event) => setVerificationRejectionReason(event.target.value)}
-                              placeholder="Reason required when rejecting an ID"
-                              className="min-h-16"
-                            />
+                        <div className="member-stat-grid grid grid-cols-2 gap-2">
+                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Points</p>
+                            <p className="mt-1 flex items-center gap-1 font-serif text-2xl text-primary">
+                              <Gift className="size-3" />
+                              {selectedMember.balance?.points ?? 0}
+                            </p>
                           </div>
-                        ) : null}
+                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Credits</p>
+                            <p className="mt-1 font-serif text-2xl text-primary">{selectedMember.balance?.availableCredits ?? 0}</p>
+                          </div>
+                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Recent Value</p>
+                            <p className="mt-1 truncate text-sm font-semibold text-primary">{selectedMember.profile.location || t('Unknown')}</p>
+                          </div>
+                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Status</p>
+                            <p className="mt-1 truncate text-sm font-semibold text-primary">{selectedMember.profile.verificationStatus ?? 'not_submitted'}</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -580,8 +512,16 @@ export function AdminPage() {
                   </div>
                 )}
 
+                <Tabs defaultValue="award-points" className="member-action-tabs space-y-4 border-t border-outline-variant/20 pt-5">
+                  <TabsList className="grid h-auto grid-cols-[1fr_1fr_1fr] rounded-2xl bg-[var(--muted)] p-1">
+                    <TabsTrigger value="award-points" className="min-w-0 whitespace-normal rounded-xl px-2 text-center text-xs leading-tight">Award Points</TabsTrigger>
+                    <TabsTrigger value="use-credit" className="min-w-0 whitespace-normal rounded-xl px-2 text-center text-xs leading-tight">Use Credit</TabsTrigger>
+                    <TabsTrigger value="verification" className="min-w-0 whitespace-normal rounded-xl px-2 text-center text-xs leading-tight" title="Verification">ID</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="award-points" className="outline-none">
                 <form
-                  className="space-y-4 border-t border-outline-variant/20 pt-5"
+                  className="space-y-4"
                   onSubmit={adjustmentForm.handleSubmit(
                     async (values) => {
                       try {
@@ -648,6 +588,147 @@ export function AdminPage() {
                   </Button>
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
                 </form>
+                  </TabsContent>
+
+                  <TabsContent value="use-credit" className="outline-none">
+                    <div className="rounded-2xl border border-primary-container/15 bg-[var(--muted)] p-4">
+                      <p className="text-sm font-semibold text-primary">
+                        {selectedMember?.balance?.availableCredits ?? 0} {t('Reward Credits')}
+                      </p>
+                      <p className="mt-1 text-sm leading-6 text-on-surface-variant/80">
+                        Apply one available reward credit for the selected member.
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="mt-4 w-full rounded-full border-success/25 bg-success/10 text-success hover:bg-success/15"
+                        disabled={useCredit.isPending || !selectedMember || (selectedMember.balance?.availableCredits ?? 0) <= 0}
+                        onClick={() => {
+                          if (!selectedMember) return
+                          useCredit.mutate({
+                            profileId: selectedMember.profile.id,
+                            actorName: profile?.fullName ?? 'Admin',
+                          })
+                        }}
+                      >
+                        {useCredit.isPending ? t('Using...') : t('Use Reward Credit')}
+                      </Button>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="verification" className="outline-none">
+                    {selectedMember ? (
+                      <div className="space-y-4 rounded-2xl border border-primary-container/15 bg-[var(--muted)] p-4 text-sm text-on-surface-variant/90">
+                        <div className="grid gap-3">
+                          <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
+                            <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Phone')}</span>
+                            <span className="truncate">{selectedMember.profile.phone || t('Not provided')}</span>
+                          </div>
+                          <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
+                            <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Location')}</span>
+                            <span className="truncate">{selectedMember.profile.location || t('Not provided')}</span>
+                          </div>
+                          <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
+                            <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member ID')}</span>
+                            <span className="truncate font-mono text-xs" title={selectedMember.profile.id}>
+                              {selectedMember.profile.id.slice(0, 8)}...{selectedMember.profile.id.slice(-6)}
+                            </span>
+                          </div>
+                          <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
+                            <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Verification ID</span>
+                            <span className="truncate" title={selectedMember.profile.verificationIdNumber ?? ''}>
+                              {selectedMember.profile.verificationIdNumber || t('Not provided')}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex min-w-0 flex-wrap items-center gap-2 border-t border-outline-variant/20 pt-4">
+                          <Badge
+                            variant="accent"
+                            className={
+                              selectedMember.profile.verificationDocumentPath
+                                ? 'border-success/25 bg-success/10 text-success'
+                                : 'border-warning/25 bg-warning/10 text-warning'
+                            }
+                          >
+                            <IdCard className="mr-1 size-3" />
+                            {selectedMember.profile.verificationStatus === 'submitted'
+                              ? 'ID submitted'
+                              : selectedMember.profile.verificationStatus === 'verified'
+                                ? 'Verified'
+                                : selectedMember.profile.verificationStatus === 'rejected'
+                                  ? 'Rejected'
+                                  : 'ID missing'}
+                          </Badge>
+                          {selectedMember.profile.verificationDocumentUrl ? (
+                            <Button asChild size="sm" variant="outline" className="rounded-full">
+                              <a href={selectedMember.profile.verificationDocumentUrl} target="_blank" rel="noreferrer">
+                                <ExternalLink className="size-4" />
+                                View ID
+                              </a>
+                            </Button>
+                          ) : null}
+                        </div>
+
+                        {selectedMember.profile.verificationRejectionReason ? (
+                          <p className="text-sm font-semibold leading-6 text-red-600">
+                            {selectedMember.profile.verificationRejectionReason}
+                          </p>
+                        ) : null}
+
+                        {selectedMember.profile.verificationDocumentPath ? (
+                          <div className="grid gap-3 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                            <div className="flex flex-wrap gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="rounded-full bg-success/10 text-success hover:bg-success/15"
+                                disabled={reviewMemberVerification.isPending}
+                                onClick={() => {
+                                  reviewMemberVerification.mutate({
+                                    profileId: selectedMember.profile.id,
+                                    status: 'verified',
+                                  })
+                                  setVerificationRejectionReason('')
+                                }}
+                              >
+                                <CheckCircle className="size-4" />
+                                Verify ID
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                                disabled={reviewMemberVerification.isPending || !verificationRejectionReason.trim()}
+                                onClick={() => {
+                                  reviewMemberVerification.mutate({
+                                    profileId: selectedMember.profile.id,
+                                    status: 'rejected',
+                                    reason: verificationRejectionReason,
+                                  })
+                                  setVerificationRejectionReason('')
+                                }}
+                              >
+                                Reject ID
+                              </Button>
+                            </div>
+                            <Textarea
+                              value={verificationRejectionReason}
+                              onChange={(event) => setVerificationRejectionReason(event.target.value)}
+                              placeholder="Reason required when rejecting an ID"
+                              className="min-h-16"
+                            />
+                          </div>
+                        ) : null}
+                      </div>
+                    ) : (
+                      <div className="rounded-2xl border border-dashed border-primary-container/20 bg-[var(--muted)] p-4 text-sm text-on-surface-variant/85">
+                        {t('Select a member to view the profile and update points.')}
+                      </div>
+                    )}
+                  </TabsContent>
+                </Tabs>
               </div>
             </div>
 
@@ -1353,24 +1434,47 @@ export function AdminPage() {
           </div>
         </TabsContent>
 
-        <TabsContent value="partners" className="space-y-12 outline-none">
-          <div className="grid min-w-0 gap-8 2xl:grid-cols-[420px_minmax(0,1fr)]">
-            <div className="space-y-6">
-              <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Setup</span>
-                <h2 className="font-serif text-3xl text-primary">Create Business</h2>
+        <TabsContent value="partners" className="space-y-10 outline-none">
+          <div className="partner-operations-layout space-y-8">
+            <div className="flex flex-col gap-4 border-b border-outline-variant/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
+              <div className="space-y-2">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Network</span>
+                <h2 className="font-serif text-3xl text-primary">Partner Operations</h2>
+                <p className="max-w-2xl text-sm leading-7 text-on-surface-variant/80">
+                  Manage partner setup, access, member activity, and commission health from one operational table.
+                </p>
               </div>
+              <Button
+                type="button"
+                className="rounded-full"
+                onClick={() => {
+                  setCreateBusinessError(null)
+                  setIsCreateBusinessDialogOpen(true)
+                }}
+              >
+                Create Partner
+              </Button>
+            </div>
 
-              <div className="rounded-3xl border border-primary-container/20 bg-[var(--card)] p-8 shadow-card  space-y-6">
-                <div className="rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-5">
-                  <p className="text-sm font-semibold text-on-surface">Create a business and assign its owner in one flow.</p>
-                  <p className="mt-2 text-sm text-on-surface-variant/80">
-                    If the owner email is missing, the business will still be created and you can finish setup from the partner card.
-                  </p>
-                </div>
+            <Dialog
+              open={isCreateBusinessDialogOpen}
+              onOpenChange={(open) => {
+                setIsCreateBusinessDialogOpen(open)
+                if (!open) {
+                  setCreateBusinessError(null)
+                }
+              }}
+            >
+              <DialogContent className="partner-create-dialog max-h-[90vh] max-w-3xl overflow-y-auto rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
+                <DialogHeader>
+                  <DialogTitle className="font-serif text-2xl text-primary">Create Partner</DialogTitle>
+                  <DialogDescription className="text-sm text-on-surface-variant/80">
+                    Create a business and assign its owner in one flow. If the owner email is missing, the partner is still created.
+                  </DialogDescription>
+                </DialogHeader>
 
                 <form
-                  className="space-y-5"
+                  className="grid gap-5 pt-2 md:grid-cols-2"
                   onSubmit={createBusinessForm.handleSubmit(
                     async (values) => {
                       try {
@@ -1382,27 +1486,17 @@ export function AdminPage() {
                             email: values.ownerEmail,
                             businessId: business.id as string,
                           })
-
-                          createBusinessForm.reset({
-                            name: '',
-                            slug: '',
-                            description: '',
-                            logoUrl: '',
-                            earnRate: 1,
-                            taxRate: 0,
-                            currency: 'USD',
-                            active: true,
-                            ownerEmail: '',
-                          })
-                          setIsCreateSlugManual(false)
                           toast.success('Business created and owner assigned.')
                         } catch (ownerError) {
                           if (ownerError instanceof OwnerNotFoundError) {
-                            toast.warning('Business created, but the owner email was not found. Use Assign Owner on the new partner card to finish setup.')
+                            toast.warning('Business created, but the owner email was not found. Use Assign Owner to finish setup.')
                           } else {
-                            toast.warning('Business created, but owner assignment failed. Use Assign Owner on the new partner card to retry.')
+                            toast.warning('Business created, but owner assignment failed. Use Assign Owner to retry.')
                           }
                         }
+
+                        resetCreateBusinessForm()
+                        setIsCreateBusinessDialogOpen(false)
                       } catch (error) {
                         if (isUniqueSlugError(error)) {
                           createBusinessForm.setError('slug', {
@@ -1423,10 +1517,10 @@ export function AdminPage() {
                   )}
                 >
                   <div className="grid gap-3">
-                    <Label htmlFor="create-business-name">Name</Label>
+                    <Label htmlFor="create-partner-name">Name</Label>
                     <Input
-                      id="create-business-name"
-                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      id="create-partner-name"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                       placeholder="Harbor Roast"
                       {...createBusinessForm.register('name')}
                     />
@@ -1436,15 +1530,13 @@ export function AdminPage() {
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="create-business-slug">Slug</Label>
+                    <Label htmlFor="create-partner-slug">Slug</Label>
                     <Input
-                      id="create-business-slug"
-                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      id="create-partner-slug"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                       placeholder="harbor-roast"
                       {...createBusinessForm.register('slug', {
-                        onChange: () => {
-                          setIsCreateSlugManual(true)
-                        },
+                        onChange: () => setIsCreateSlugManual(true),
                       })}
                     />
                     {createBusinessForm.formState.errors.slug ? (
@@ -1454,11 +1546,11 @@ export function AdminPage() {
                     )}
                   </div>
 
-                  <div className="grid gap-3">
-                    <Label htmlFor="create-business-description">Description</Label>
+                  <div className="grid gap-3 md:col-span-2">
+                    <Label htmlFor="create-partner-description">Description</Label>
                     <Textarea
-                      id="create-business-description"
-                      className="min-h-28 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      id="create-partner-description"
+                      className="min-h-24 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                       placeholder="Neighborhood espresso bar with all-day pastries."
                       {...createBusinessForm.register('description')}
                     />
@@ -1467,11 +1559,11 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="grid gap-3">
-                    <Label htmlFor="create-business-logo-url">Logo URL</Label>
+                  <div className="grid gap-3 md:col-span-2">
+                    <Label htmlFor="create-partner-logo-url">Logo URL</Label>
                     <Input
-                      id="create-business-logo-url"
-                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      id="create-partner-logo-url"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                       placeholder="https://example.com/logo.png"
                       {...createBusinessForm.register('logoUrl')}
                     />
@@ -1480,73 +1572,69 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="grid gap-3">
-                      <Label htmlFor="create-business-earn-rate">Earn Rate</Label>
-                      <Input
-                        id="create-business-earn-rate"
-                        type="number"
-                        step="0.01"
-                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                        {...createBusinessForm.register('earnRate', { valueAsNumber: true })}
-                      />
-                      {createBusinessForm.formState.errors.earnRate ? (
-                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.earnRate.message}</p>
-                      ) : null}
-                    </div>
-
-                    <div className="grid gap-3">
-                      <Label htmlFor="create-business-tax-rate">Tax Rate</Label>
-                      <Input
-                        id="create-business-tax-rate"
-                        type="number"
-                        step="0.001"
-                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                        {...createBusinessForm.register('taxRate', { valueAsNumber: true })}
-                      />
-                      {createBusinessForm.formState.errors.taxRate ? (
-                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.taxRate.message}</p>
-                      ) : null}
-                    </div>
-                  </div>
-
-                  <div className="grid gap-4 sm:grid-cols-[1fr_auto]">
-                    <div className="grid gap-3">
-                      <Label htmlFor="create-business-currency">Currency</Label>
-                      <Input
-                        id="create-business-currency"
-                        maxLength={3}
-                        className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30 uppercase"
-                        {...createBusinessForm.register('currency', {
-                          onChange: (event) => {
-                            createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
-                              shouldDirty: true,
-                              shouldValidate: true,
-                            })
-                          },
-                        })}
-                      />
-                      {createBusinessForm.formState.errors.currency ? (
-                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
-                      ) : null}
-                    </div>
-
-                    <label className="flex items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 py-3 text-sm font-semibold text-on-surface">
-                      <input
-                        type="checkbox"
-                        className="size-4 rounded border-outline-variant/30"
-                        {...createBusinessForm.register('active')}
-                      />
-                      Active
-                    </label>
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-partner-earn-rate">Earn Rate</Label>
+                    <Input
+                      id="create-partner-earn-rate"
+                      type="number"
+                      step="0.01"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      {...createBusinessForm.register('earnRate', { valueAsNumber: true })}
+                    />
+                    {createBusinessForm.formState.errors.earnRate ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.earnRate.message}</p>
+                    ) : null}
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="create-business-owner-email">Owner Email</Label>
+                    <Label htmlFor="create-partner-tax-rate">Tax Rate</Label>
                     <Input
-                      id="create-business-owner-email"
+                      id="create-partner-tax-rate"
+                      type="number"
+                      step="0.001"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      {...createBusinessForm.register('taxRate', { valueAsNumber: true })}
+                    />
+                    {createBusinessForm.formState.errors.taxRate ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.taxRate.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-partner-currency">Currency</Label>
+                    <Input
+                      id="create-partner-currency"
+                      maxLength={3}
+                      className="h-12 rounded-2xl border-outline-variant/20 uppercase focus:border-primary/30"
+                      {...createBusinessForm.register('currency', {
+                        onChange: (event) => {
+                          createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
+                            shouldDirty: true,
+                            shouldValidate: true,
+                          })
+                        },
+                      })}
+                    />
+                    {createBusinessForm.formState.errors.currency ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
+                    ) : null}
+                  </div>
+
+                  <label className="flex items-center gap-3 self-end rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 py-3 text-sm font-semibold text-on-surface">
+                    <input
+                      type="checkbox"
+                      className="size-4 rounded border-outline-variant/30"
+                      {...createBusinessForm.register('active')}
+                    />
+                    Active
+                  </label>
+
+                  <div className="grid gap-3 md:col-span-2">
+                    <Label htmlFor="create-partner-owner-email">Owner Email</Label>
+                    <Input
+                      id="create-partner-owner-email"
                       type="email"
-                      className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
                       placeholder="owner@harborroast.com"
                       {...createBusinessForm.register('ownerEmail')}
                     />
@@ -1555,320 +1643,252 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex flex-wrap items-center justify-end gap-3 md:col-span-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="rounded-full"
+                      onClick={resetCreateBusinessForm}
+                      disabled={createBusiness.isPending || assignBusinessOwner.isPending}
+                    >
+                      Reset
+                    </Button>
                     <Button
                       type="submit"
                       className="rounded-full"
                       disabled={createBusiness.isPending || assignBusinessOwner.isPending}
                     >
-                      {createBusiness.isPending || assignBusinessOwner.isPending ? 'Creating...' : 'Create Business'}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      className="rounded-full"
-                      onClick={() => {
-                        createBusinessForm.reset({
-                          name: '',
-                          slug: '',
-                          description: '',
-                          logoUrl: '',
-                          earnRate: 1,
-                          taxRate: 0,
-                          currency: 'USD',
-                          active: true,
-                          ownerEmail: '',
-                        })
-                        setCreateBusinessError(null)
-                        setIsCreateSlugManual(false)
-                      }}
-                      disabled={createBusiness.isPending || assignBusinessOwner.isPending}
-                    >
-                      Reset
+                      {createBusiness.isPending || assignBusinessOwner.isPending ? 'Creating...' : 'Create Partner'}
                     </Button>
                   </div>
-                  {createBusinessError ? <p className="text-sm font-bold text-red-500">{createBusinessError}</p> : null}
+                  {createBusinessError ? <p className="text-sm font-bold text-red-500 md:col-span-2">{createBusinessError}</p> : null}
                 </form>
+              </DialogContent>
+            </Dialog>
+
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+              <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Total Partners</p>
+                <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{allBusinesses.data?.length ?? 0}</p>
+              </div>
+              <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Active Partners</p>
+                <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                  {allBusinesses.data?.filter((business) => business.active).length ?? 0}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Tracked Members</p>
+                <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                  {allBusinesses.data?.reduce((sum, business) => sum + business.totalMembers, 0) ?? 0}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">QR Sales</p>
+                <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                  {allBusinesses.data?.reduce((sum, business) => sum + business.memberTransactionCount, 0) ?? 0}
+                </p>
+              </div>
+              <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Commission Owed</p>
+                <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
+                  {formatCurrency(allBusinesses.data?.reduce((sum, business) => sum + business.commissionOwed, 0) ?? 0)}
+                </p>
               </div>
             </div>
 
-            <div className="space-y-8">
-              <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
+            <div className="partner-management-table overflow-hidden rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card">
+              <div className="flex flex-col gap-2 border-b border-outline-variant/10 px-6 py-5 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Network</span>
-                  <h2 className="font-serif text-3xl text-primary">Partner Cards</h2>
+                  <h3 className="font-serif text-2xl text-primary">Partner Management</h3>
+                  <p className="mt-1 text-sm text-on-surface-variant/75">Scan partner status, owner access, revenue, and commission from a denser list.</p>
                 </div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">
                   {(allBusinesses.data ?? []).length} partners
                 </span>
               </div>
 
-              <div className="grid gap-4 md:grid-cols-3">
-                <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Receptionist Codes</p>
-                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{partnerPerformance.data?.length ?? 0}</p>
-                </div>
-                <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Attributed Customers</p>
-                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
-                    {partnerReferrals.data?.length ?? 0}
-                  </p>
-                </div>
-                <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Partner Credits Earned</p>
-                  <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
-                    {partnerPerformance.data?.reduce((sum, entry) => sum + entry.creditsEarned, 0) ?? 0}
-                  </p>
-                </div>
-              </div>
-
-              <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
-                <div className="border-b border-outline-variant/10 px-6 py-5">
-                  <h3 className="font-serif text-2xl text-primary">Recent Partner Referrals</h3>
-                  <p className="mt-1 text-sm text-on-surface-variant/75">
-                    Receptionist-level attribution across all businesses.
-                  </p>
-                </div>
-                <div className="divide-y divide-outline-variant/10">
-                  {(partnerReferrals.data ?? []).slice(0, 8).map((referral) => (
-                    <div key={referral.id} className="flex flex-col gap-4 px-6 py-5 md:flex-row md:items-center md:justify-between">
-                      <div>
-                        <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
-                      </div>
-                      <div>
-                        <p className="font-semibold text-primary">{referral.customer.fullName}</p>
-                        <p className="text-sm text-on-surface-variant/80">{referral.customer.email}</p>
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <Badge
-                          variant="accent"
-                          className={
-                            referral.status === 'credited'
-                              ? 'bg-success/10 text-success border-success/20'
-                              : 'border-primary-container/20 bg-primary-container/12 text-primary'
-                          }
-                        >
-                          {referral.status}
-                        </Badge>
-                        <span className="text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">
-                          {formatDate(referral.createdAt)}
-                        </span>
-                      </div>
-                    </div>
-                  ))}
-                  {partnerReferrals.isLoading ? (
-                    Array.from({ length: 4 }).map((_, index) => (
-                      <div key={index} className="px-6 py-5">
-                        <Skeleton className="h-5 w-48" />
-                        <Skeleton className="mt-3 h-4 w-64" />
-                      </div>
-                    ))
-                  ) : null}
-                  {!partnerReferrals.isLoading && (partnerReferrals.data?.length ?? 0) === 0 ? (
-                    <EmptyState
-                      className="border-0 shadow-none"
-                      icon={<Users className="size-8" />}
-                      title={t('No partner referrals yet')}
-                      description={t('Partner referral records will appear here after attribution.')}
-                    />
-                  ) : null}
-                </div>
-              </div>
-
-              <div className="grid min-w-0 gap-4 2xl:grid-cols-2">
-                {(allBusinesses.data ?? []).map((business) => (
-                  <div key={business.id} className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-7 shadow-card  space-y-7">
-                    <div className="flex flex-col gap-5">
-                      <div className="flex flex-col gap-5">
-                        <div className="flex min-w-0 items-start gap-4">
-                        {business.logoUrl ? (
-                          <img
-                            src={business.logoUrl}
-                            alt={business.name}
-                            className="size-16 shrink-0 rounded-2xl object-cover border border-outline-variant/10"
-                          />
-                        ) : (
-                          <div className={`size-16 shrink-0 rounded-2xl flex items-center justify-center text-primary-foreground shadow-lg ${bizColorClass(business.id)}`}>
-                            <Store className="size-7" />
-                          </div>
-                        )}
-                        <div className="min-w-0 space-y-3">
-                          <div className="flex flex-wrap items-center gap-2">
-                            <p className="font-serif text-3xl leading-tight tracking-tight text-primary break-words">{business.name}</p>
-                            <Badge
-                              variant="accent"
-                              className={
-                                business.active
-                                  ? 'bg-success/10 text-success border-success/20'
-                                  : 'bg-outline-variant/10 text-on-surface-variant border-outline-variant/15'
-                              }
-                          >
-                            {business.active ? 'Active' : 'Inactive'}
-                          </Badge>
-                          </div>
-                          <p className="max-w-md text-base leading-8 font-medium text-on-surface-variant/85">
-                            {business.description || 'No description provided yet.'}
-                          </p>
-                          <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[0.72rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                            <span>{business.earnRate} pts / $1</span>
-                            <span>{business.currency}</span>
-                            <span>{business.slug}</span>
-                          </div>
-                          <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-4 text-sm">
-                            <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Owner</p>
-                            <p className="mt-2 font-semibold text-primary">
-                              {business.ownerName || business.ownerEmail || 'Unassigned'}
-                            </p>
-                            <p className="mt-1 text-on-surface-variant/75">
-                              {business.ownerEmail ?? 'Assign an owner to enable business access.'}
-                            </p>
-                          </div>
-                        </div>
-                      </div>
-                        <div className="grid grid-cols-2 gap-3 sm:flex sm:max-w-[220px] sm:flex-col sm:items-stretch">
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="rounded-full px-4"
-                          onClick={() => {
-                            setPartnerActionError(null)
-                            setBusinessAccessDialog({
-                              businessId: business.id,
-                              role: 'business-owner',
-                            })
-                          }}
-                        >
-                          Assign Owner
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="rounded-full px-4"
-                          onClick={() => {
-                            setPartnerActionError(null)
-                            setBusinessAccessDialog({
-                              businessId: business.id,
-                              role: 'business-staff',
-                            })
-                          }}
-                        >
-                          Add Staff
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="rounded-full px-4"
-                          onClick={() =>
-                            editingBusinessId === business.id
-                              ? setEditingBusinessId(null)
-                              : beginBusinessEdit(business)
-                          }
-                        >
-                          {editingBusinessId === business.id ? 'Cancel' : 'Edit'}
-                        </Button>
-                      </div>
-                    </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Customers</p>
-                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.totalMembers}</p>
-                      </div>
-                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Revenue</p>
-                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
-                      </div>
-                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Points Issued')}</p>
-                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.pointsIssued}</p>
-                      </div>
-                      <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                        <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Staff Accounts</p>
-                        <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{business.staffCount}</p>
-                      </div>
-                    </div>
-
-                    {editingBusinessId === business.id ? (
-                      <form
-                        className="space-y-4 rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-6"
-                        onSubmit={async (event) => {
-                          event.preventDefault()
-                          try {
-                            setPartnerActionError(null)
-                            await updateBusiness.mutateAsync({
-                              id: business.id,
-                              patch: {
-                                name: businessPatch.name.trim(),
-                                description: businessPatch.description.trim(),
-                                logoUrl: businessPatch.logoUrl.trim(),
-                              },
-                            })
-                            setEditingBusinessId(null)
-                            toast.success('Business updated.')
-                          } catch (error) {
-                            setPartnerActionError(
-                              error instanceof Error ? error.message : 'Failed to update partner info.',
-                            )
-                          }
-                        }}
-                      >
-                        <div className="grid gap-3">
-                          <Label htmlFor={`business-name-${business.id}`}>Name</Label>
-                          <Input
-                            id={`business-name-${business.id}`}
-                            value={businessPatch.name}
-                            onChange={(event) =>
-                              setBusinessPatch((current) => ({ ...current, name: event.target.value }))
-                            }
-                          />
-                        </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor={`business-description-${business.id}`}>Description</Label>
-                          <Textarea
-                            id={`business-description-${business.id}`}
-                            value={businessPatch.description}
-                            onChange={(event) =>
-                              setBusinessPatch((current) => ({ ...current, description: event.target.value }))
-                            }
-                          />
-                        </div>
-                        <div className="grid gap-3">
-                          <Label htmlFor={`business-logo-${business.id}`}>Logo URL</Label>
-                          <Input
-                            id={`business-logo-${business.id}`}
-                            value={businessPatch.logoUrl}
-                            onChange={(event) =>
-                              setBusinessPatch((current) => ({ ...current, logoUrl: event.target.value }))
-                            }
-                          />
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3">
-                          <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
-                            {updateBusiness.isPending ? 'Saving...' : 'Save'}
-                          </Button>
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="rounded-full"
-                            onClick={() => setEditingBusinessId(null)}
-                            disabled={updateBusiness.isPending}
-                          >
-                            Cancel
-                          </Button>
-                        </div>
-                        {partnerActionError ? (
-                          <p className="text-sm font-bold text-red-500">{partnerActionError}</p>
-                        ) : null}
-                      </form>
-                    ) : null}
+              <ScrollArea className="w-full">
+                <div className="min-w-[980px]">
+                  <div className="grid grid-cols-[minmax(260px,1.4fr)_120px_120px_130px_130px_170px] gap-4 border-b border-outline-variant/10 bg-[var(--muted)] px-6 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                    <span>Partner</span>
+                    <span>Members</span>
+                    <span>QR Sales</span>
+                    <span>Revenue</span>
+                    <span>Commission</span>
+                    <span className="text-right">Actions</span>
                   </div>
-                ))}
-              </div>
+
+                  <div className="divide-y divide-outline-variant/10">
+                    {(allBusinesses.data ?? []).map((business) => (
+                      <div key={business.id}>
+                        <div className="grid grid-cols-[minmax(260px,1.4fr)_120px_120px_130px_130px_170px] gap-4 px-6 py-5 text-sm">
+                          <div className="flex min-w-0 items-start gap-4">
+                            {business.logoUrl ? (
+                              <img
+                                src={business.logoUrl}
+                                alt={business.name}
+                                className="size-14 shrink-0 rounded-2xl border border-outline-variant/10 object-cover"
+                              />
+                            ) : (
+                              <div className={`flex size-14 shrink-0 items-center justify-center rounded-2xl text-primary-foreground shadow-lg ${bizColorClass(business.id)}`}>
+                                <Store className="size-6" />
+                              </div>
+                            )}
+                            <div className="min-w-0">
+                              <div className="flex flex-wrap items-center gap-2">
+                                <p className="truncate font-serif text-xl text-primary">{business.name}</p>
+                                <Badge
+                                  variant="accent"
+                                  className={
+                                    business.active
+                                      ? 'border-success/20 bg-success/10 text-success'
+                                      : 'border-outline-variant/15 bg-outline-variant/10 text-on-surface-variant'
+                                  }
+                                >
+                                  {business.active ? 'Active' : 'Inactive'}
+                                </Badge>
+                              </div>
+                              <p className="mt-1 truncate text-xs text-on-surface-variant/75">{business.slug}</p>
+                              <p className="mt-2 text-xs text-on-surface-variant/80">
+                                Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="font-semibold text-primary">{business.totalMembers}</div>
+                          <div className="font-semibold text-primary">{business.memberTransactionCount}</div>
+                          <div className="font-semibold text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</div>
+                          <div>
+                            <p className="font-semibold text-primary">{formatCurrency(business.commissionOwed)}</p>
+                            <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} paid</p>
+                          </div>
+                          <div className="flex flex-wrap justify-end gap-2">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="h-9 rounded-full px-3 text-xs"
+                              onClick={() => {
+                                setPartnerActionError(null)
+                                setBusinessAccessDialog({
+                                  businessId: business.id,
+                                  role: 'business-owner',
+                                })
+                              }}
+                            >
+                              Owner
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="h-9 rounded-full px-3 text-xs"
+                              onClick={() => {
+                                setPartnerActionError(null)
+                                setBusinessAccessDialog({
+                                  businessId: business.id,
+                                  role: 'business-staff',
+                                })
+                              }}
+                            >
+                              Staff
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              className="h-9 rounded-full px-3 text-xs"
+                              onClick={() =>
+                                editingBusinessId === business.id
+                                  ? setEditingBusinessId(null)
+                                  : beginBusinessEdit(business)
+                              }
+                            >
+                              {editingBusinessId === business.id ? 'Close' : 'Edit'}
+                            </Button>
+                          </div>
+                        </div>
+
+                        {editingBusinessId === business.id ? (
+                          <form
+                            className="mx-6 mb-5 grid gap-4 rounded-[2rem] border border-primary-container/20 bg-primary-container/10 p-5 md:grid-cols-3"
+                            onSubmit={async (event) => {
+                              event.preventDefault()
+                              try {
+                                setPartnerActionError(null)
+                                await updateBusiness.mutateAsync({
+                                  id: business.id,
+                                  patch: {
+                                    name: businessPatch.name.trim(),
+                                    description: businessPatch.description.trim(),
+                                    logoUrl: businessPatch.logoUrl.trim(),
+                                  },
+                                })
+                                setEditingBusinessId(null)
+                                toast.success('Business updated.')
+                              } catch (error) {
+                                setPartnerActionError(
+                                  error instanceof Error ? error.message : 'Failed to update partner info.',
+                                )
+                              }
+                            }}
+                          >
+                            <div className="grid gap-2">
+                              <Label htmlFor={`partner-name-${business.id}`}>Name</Label>
+                              <Input
+                                id={`partner-name-${business.id}`}
+                                value={businessPatch.name}
+                                onChange={(event) =>
+                                  setBusinessPatch((current) => ({ ...current, name: event.target.value }))
+                                }
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor={`partner-description-${business.id}`}>Description</Label>
+                              <Input
+                                id={`partner-description-${business.id}`}
+                                value={businessPatch.description}
+                                onChange={(event) =>
+                                  setBusinessPatch((current) => ({ ...current, description: event.target.value }))
+                                }
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor={`partner-logo-${business.id}`}>Logo URL</Label>
+                              <Input
+                                id={`partner-logo-${business.id}`}
+                                value={businessPatch.logoUrl}
+                                onChange={(event) =>
+                                  setBusinessPatch((current) => ({ ...current, logoUrl: event.target.value }))
+                                }
+                              />
+                            </div>
+                            <div className="flex flex-wrap items-center gap-3 md:col-span-3">
+                              <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
+                                {updateBusiness.isPending ? 'Saving...' : 'Save'}
+                              </Button>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                className="rounded-full"
+                                onClick={() => setEditingBusinessId(null)}
+                                disabled={updateBusiness.isPending}
+                              >
+                                Cancel
+                              </Button>
+                              {partnerActionError ? (
+                                <p className="text-sm font-bold text-red-500">{partnerActionError}</p>
+                              ) : null}
+                            </div>
+                          </form>
+                        ) : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </ScrollArea>
 
               {allBusinesses.isLoading ? (
-                <div className="grid gap-6 md:grid-cols-2">
+                <div className="space-y-3 p-6">
                   {Array.from({ length: 4 }).map((_, index) => (
-                    <Skeleton key={index} className="h-40 rounded-3xl" />
+                    <Skeleton key={index} className="h-16 rounded-2xl" />
                   ))}
                 </div>
               ) : null}
@@ -1880,6 +1900,54 @@ export function AdminPage() {
                   description={t('Create a partner business before assigning owners or reviewing metrics.')}
                 />
               ) : null}
+            </div>
+
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card">
+              <div className="border-b border-outline-variant/10 px-6 py-5">
+                <h3 className="font-serif text-2xl text-primary">Recent Referral Activity</h3>
+                <p className="mt-1 text-sm text-on-surface-variant/75">Receptionist-level attribution across all businesses.</p>
+              </div>
+              <div className="divide-y divide-outline-variant/10">
+                {(partnerReferrals.data ?? []).slice(0, 6).map((referral) => (
+                  <div key={referral.id} className="flex flex-col gap-3 px-6 py-5 md:flex-row md:items-center md:justify-between">
+                    <div>
+                      <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
+                      <p className="text-sm text-on-surface-variant/80">{referral.customer.email}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Badge
+                        variant="accent"
+                        className={
+                          referral.status === 'credited'
+                            ? 'border-success/20 bg-success/10 text-success'
+                            : 'border-primary-container/20 bg-primary-container/12 text-primary'
+                        }
+                      >
+                        {referral.status}
+                      </Badge>
+                      <span className="text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">
+                        {formatDate(referral.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+                {partnerReferrals.isLoading ? (
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="px-6 py-5">
+                      <Skeleton className="h-5 w-48" />
+                      <Skeleton className="mt-3 h-4 w-64" />
+                    </div>
+                  ))
+                ) : null}
+                {!partnerReferrals.isLoading && (partnerReferrals.data?.length ?? 0) === 0 ? (
+                  <EmptyState
+                    className="border-0 shadow-none"
+                    icon={<Users className="size-8" />}
+                    title={t('No partner referrals yet')}
+                    description={t('Partner referral records will appear here after attribution.')}
+                  />
+                ) : null}
+              </div>
             </div>
           </div>
 
@@ -2555,6 +2623,100 @@ export function AdminPage() {
               <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">Latest 6</span>
             </div>
             <ActivityList items={overview.data?.activities.slice(0, 6) ?? []} />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="commissions" className="space-y-12 outline-none">
+          <div className="space-y-8">
+            <div className="space-y-2 border-b border-outline-variant/10 pb-4">
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Commission Ledger</span>
+              <h2 className="font-serif text-3xl text-primary">Member QR Transactions</h2>
+            </div>
+
+            <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
+              <ScrollArea className="h-[680px]">
+                <div className="min-w-[960px]">
+                  <table className="w-full text-sm">
+                    <thead className="bg-[var(--muted)] text-left">
+                      <tr className="border-b border-outline-variant/10">
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Business</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Member</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Purchase</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Rewards</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Commission</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(memberTransactions.data ?? []).map((transaction) => (
+                        <tr key={transaction.id} className="border-b border-outline-variant/5 bg-transparent">
+                          <td className="px-6 py-4 text-on-surface-variant/85">{formatDate(transaction.createdAt)}</td>
+                          <td className="px-6 py-4">
+                            <p className="font-semibold text-primary">{transaction.business?.name ?? businessNameById.get(transaction.businessId) ?? 'Unknown business'}</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="font-semibold text-primary">{transaction.member?.fullName ?? 'Unknown member'}</p>
+                            <p className="text-xs text-on-surface-variant/75">{transaction.member?.email ?? transaction.profileId}</p>
+                          </td>
+                          <td className="px-6 py-4 font-semibold text-primary">{formatCurrency(transaction.purchaseAmount)}</td>
+                          <td className="px-6 py-4">
+                            <p className="font-semibold text-primary">{formatCurrency(transaction.rewardValue)}</p>
+                            <p className="text-xs text-on-surface-variant/75">{transaction.pointsAwarded} points</p>
+                          </td>
+                          <td className="px-6 py-4">
+                            <Badge
+                              variant="accent"
+                              className={
+                                transaction.commissionStatus === 'commission_paid'
+                                  ? 'border-success/20 bg-success/10 text-success'
+                                  : 'border-warning/20 bg-warning/10 text-warning'
+                              }
+                            >
+                              {formatCurrency(transaction.commissionAmount)} · {transaction.commissionStatus === 'commission_paid' ? 'paid' : 'owed'}
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4">
+                            {transaction.commissionStatus === 'commission_unpaid' ? (
+                              <Button
+                                type="button"
+                                size="sm"
+                                className="rounded-full"
+                                disabled={markCommissionPaid.isPending}
+                                onClick={() => markCommissionPaid.mutate({ transactionId: transaction.id })}
+                              >
+                                Mark paid
+                              </Button>
+                            ) : (
+                              <span className="text-xs font-medium text-on-surface-variant/70">
+                                {transaction.commissionPaidAt ? formatDate(transaction.commissionPaidAt) : 'Paid'}
+                              </span>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+
+                  {memberTransactions.isLoading ? (
+                    Array.from({ length: 5 }).map((_, index) => (
+                      <div key={index} className="px-6 py-4">
+                        <Skeleton className="h-5 w-full" />
+                      </div>
+                    ))
+                  ) : null}
+
+                  {!memberTransactions.isLoading && (memberTransactions.data?.length ?? 0) === 0 ? (
+                    <EmptyState
+                      className="border-0 shadow-none"
+                      icon={<ReceiptText className="size-8" />}
+                      title="No member QR transactions yet"
+                      description="Scanned outside-app purchases will appear here for commission tracking."
+                    />
+                  ) : null}
+                </div>
+              </ScrollArea>
+            </div>
           </div>
         </TabsContent>
       </Tabs>

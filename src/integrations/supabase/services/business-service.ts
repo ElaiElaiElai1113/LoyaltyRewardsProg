@@ -17,7 +17,14 @@ export const businessService = {
     const { data, error } = await query
 
     if (error) throw new Error('Failed to load businesses.')
-    return data.map((row) => camelCaseRow(row) as unknown as Business)
+    return data.map((row) => {
+      const business = camelCaseRow(row) as unknown as Business
+      return {
+        ...business,
+        rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+        commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+      }
+    })
   },
 
   async getSingleBusiness(businessId?: string): Promise<Business> {
@@ -40,7 +47,12 @@ export const businessService = {
       throw new Error('No business configured.')
     }
 
-    return camelCaseRow(data) as unknown as Business
+    const business = camelCaseRow(data) as unknown as Business
+    return {
+      ...business,
+      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+    }
   },
 
   async getBusinessById(businessId: string): Promise<Business | null> {
@@ -53,7 +65,12 @@ export const businessService = {
       .single()
 
     if (error || !data) return null
-    return camelCaseRow(data) as unknown as Business
+    const business = camelCaseRow(data) as unknown as Business
+    return {
+      ...business,
+      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+    }
   },
 
   async updateSettings(businessId: string, values: BusinessSettingsFormValues): Promise<Business> {
@@ -76,9 +93,14 @@ export const businessService = {
     await sb.from('admin_logs').insert({
       actor_name: 'Business Owner',
       action: 'Business settings updated',
-      details: `Updated earn rate ${values.earnRate} pts/$1, tax rate ${(values.taxRate * 100).toFixed(2)}%.`,
+      details: `Updated earn rate ${values.earnRate} pts/$1, reward rate ${values.rewardRatePercent}%, commission ${values.commissionRatePercent}%, tax rate ${(values.taxRate * 100).toFixed(2)}%.`,
     })
 
-    return camelCaseRow(data) as unknown as Business
+    const business = camelCaseRow(data) as unknown as Business
+    return {
+      ...business,
+      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+    }
   },
 }

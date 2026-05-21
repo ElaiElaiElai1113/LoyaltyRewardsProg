@@ -21,8 +21,13 @@ export function SettingsPage() {
   const form = useForm<BusinessSettingsFormValues>({
     resolver: zodResolver(businessSettingsSchema),
     values: business
-      ? { earnRate: business.earnRate, taxRate: business.taxRate }
-      : { earnRate: 10, taxRate: 0.0875 },
+      ? {
+          earnRate: business.earnRate,
+          rewardRatePercent: business.rewardRatePercent,
+          commissionRatePercent: business.commissionRatePercent,
+          taxRate: business.taxRate,
+        }
+      : { earnRate: 10, rewardRatePercent: 20, commissionRatePercent: 10, taxRate: 0.0875 },
   })
 
   if (!business) {
@@ -157,6 +162,46 @@ export function SettingsPage() {
                   )}
                   <p className="text-xs text-on-surface-variant/60">
                     {t('Enter as decimal (e.g., 0.0875 for 8.75%)')}
+                  </p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="reward-rate-percent" className="flex items-center gap-2">
+                    <DollarSign className="size-4" />
+                    Reward Rate %
+                  </Label>
+                  <Input
+                    id="reward-rate-percent"
+                    type="number"
+                    step="0.01"
+                    className="rounded-xl h-12"
+                    {...form.register('rewardRatePercent', { valueAsNumber: true })}
+                  />
+                  {form.formState.errors.rewardRatePercent && (
+                    <p className="text-xs text-red-500">{form.formState.errors.rewardRatePercent.message}</p>
+                  )}
+                  <p className="text-xs text-on-surface-variant/60">
+                    Percentage of outside-app purchases converted into reward value.
+                  </p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="commission-rate-percent" className="flex items-center gap-2">
+                    <DollarSign className="size-4" />
+                    Medellin Rewards Commission %
+                  </Label>
+                  <Input
+                    id="commission-rate-percent"
+                    type="number"
+                    step="0.01"
+                    className="rounded-xl h-12"
+                    {...form.register('commissionRatePercent', { valueAsNumber: true })}
+                  />
+                  {form.formState.errors.commissionRatePercent && (
+                    <p className="text-xs text-red-500">{form.formState.errors.commissionRatePercent.message}</p>
+                  )}
+                  <p className="text-xs text-on-surface-variant/60">
+                    Minimum 10%. Used to calculate commission owed from scanned member purchases.
                   </p>
                 </div>
               </div>

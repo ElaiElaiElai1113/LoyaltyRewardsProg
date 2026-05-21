@@ -6,6 +6,8 @@ export interface Business {
   slug: string
   description: string
   earnRate: number // points earned per $1 spent
+  rewardRatePercent: number
+  commissionRatePercent: number
   taxRate: number // e.g. 0.0875 for 8.75%
   currency: string
   active: boolean
@@ -19,6 +21,8 @@ export interface BusinessWithMetrics {
   slug: string
   description: string | null
   earnRate: number
+  rewardRatePercent: number
+  commissionRatePercent: number
   currency: string
   active: boolean
   logoUrl: string | null
@@ -26,6 +30,9 @@ export interface BusinessWithMetrics {
   totalRevenue: number
   pointsIssued: number
   creditsOutstanding: number
+  commissionOwed: number
+  commissionPaid: number
+  memberTransactionCount: number
   ownerProfileId: string | null
   ownerName: string | null
   ownerEmail: string | null
@@ -52,6 +59,7 @@ export interface Profile {
   verificationReviewedAt?: string | null
   verificationReviewedBy?: string | null
   verificationRejectionReason?: string | null
+  memberQrToken?: string | null
   membership?: Membership | null
 }
 
@@ -325,6 +333,39 @@ export interface OrderForVerification {
   createdAt: string
 }
 
+export type MemberTransactionStatus = 'commission_unpaid' | 'commission_paid'
+
+export interface MemberTransaction {
+  id: string
+  profileId: string
+  businessId: string
+  purchaseAmount: number
+  rewardRatePercent: number
+  rewardValue: number
+  pointsAwarded: number
+  commissionRatePercent: number
+  commissionAmount: number
+  commissionStatus: MemberTransactionStatus
+  commissionPaidAt: string | null
+  commissionPaidBy: string | null
+  commissionPaymentNote: string | null
+  recordedBy: string | null
+  note: string | null
+  clientRequestId: string | null
+  createdAt: string
+  updatedAt: string
+  member?: Pick<Profile, 'id' | 'fullName' | 'email' | 'verificationStatus'>
+  business?: Pick<Business, 'id' | 'name' | 'currency'>
+}
+
+export interface ScannedMember {
+  id: string
+  fullName: string
+  email: string
+  verificationStatus: Profile['verificationStatus']
+  memberQrToken: string
+}
+
 export interface Promotion {
   id: string
   businessId: string
@@ -379,6 +420,11 @@ export interface BusinessMetrics {
   pointsIssued: number
   pointsRedeemed: number
   activePromotions: number
+  memberTransactionCount: number
+  inPersonRevenue: number
+  inPersonRewardsIssued: number
+  commissionOwed: number
+  commissionPaid: number
 }
 
 export interface MockStore {

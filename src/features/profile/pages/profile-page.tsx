@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { IdCard, MapPin, Phone, Save, Upload } from 'lucide-react'
+import { Copy, IdCard, MapPin, Phone, QrCode, Save, Upload } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { QRCodeSVG } from 'qrcode.react'
+import { toast } from 'sonner'
 
 import { MetricCard } from '@/components/metric-card'
 import { Badge } from '@/components/ui/badge'
@@ -60,6 +62,10 @@ export function ProfilePage() {
 
   const verificationStatus = profile.data?.verificationStatus ?? 'not_submitted'
   const canSubmitVerification = ['not_submitted', 'pending_document', 'rejected', 'submitted'].includes(verificationStatus)
+  const memberQrUrl =
+    profile.data?.memberQrToken && typeof window !== 'undefined'
+      ? `${window.location.origin}/business/member-sale/${profile.data.memberQrToken}`
+      : ''
 
   return (
     <div className="space-y-16 pb-20">
@@ -192,6 +198,44 @@ export function ProfilePage() {
                 </Button>
               </form>
             ) : null}
+          </div>
+
+          <div className="rounded-3xl border border-outline-variant/10 bg-surface-low p-6">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <QrCode className="size-5" />
+              </div>
+              <div className="space-y-2">
+                <h2 className="font-serif text-2xl text-primary">Member QR</h2>
+                <p className="text-sm font-medium leading-6 text-on-surface-variant/80">
+                  Businesses scan this code to record outside-app purchases and award rewards automatically.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-6 rounded-2xl bg-white p-4">
+              <div className="mx-auto flex size-56 items-center justify-center rounded-xl bg-surface-lowest p-4">
+                {memberQrUrl ? (
+                  <QRCodeSVG value={memberQrUrl} size={184} />
+                ) : (
+                  <QrCode className="size-16 text-on-surface-variant/30" />
+                )}
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                className="mt-5 w-full rounded-2xl"
+                disabled={!memberQrUrl}
+                onClick={async () => {
+                  if (!memberQrUrl) return
+                  await navigator.clipboard.writeText(memberQrUrl)
+                  toast.success('Member QR link copied')
+                }}
+              >
+                <Copy className="size-4" />
+                Copy QR Link
+              </Button>
+            </div>
           </div>
         </div>
 

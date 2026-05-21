@@ -1,9 +1,19 @@
 import {
+  Activity,
   LayoutDashboard,
   CreditCard,
+  Gift,
+  Hotel,
   LogOut,
+  Mail,
+  Megaphone,
+  Package,
+  ReceiptText,
   Settings,
   ShieldCheck,
+  Sparkles,
+  TrendingUp,
+  Users,
 } from 'lucide-react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
@@ -21,11 +31,25 @@ const navigation = [
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: CreditCard },
 ]
 
+const adminPortalSections = [
+  { value: 'members', label: 'Members', icon: Users },
+  { value: 'catalog', label: 'Rewards', icon: Gift },
+  { value: 'products', label: 'Products', icon: Package },
+  { value: 'promotions', label: 'Promotions', icon: Sparkles },
+  { value: 'partners', label: 'Partners', icon: Hotel },
+  { value: 'ambassadors', label: 'Ambassadors', icon: Megaphone },
+  { value: 'early-access', label: 'Early Access', icon: Mail },
+  { value: 'referrals', label: 'Referrals', icon: TrendingUp },
+  { value: 'activity', label: 'Activity', icon: Activity },
+  { value: 'commissions', label: 'Commissions', icon: ReceiptText },
+]
+
 export function AdminLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
   const location = useLocation()
   const isAdminPortal = location.pathname === '/admin/portal'
+  const activeAdminSection = location.hash.replace('#', '') || 'members'
 
   return (
     <div className="soft-luxe-shell flex min-h-screen">
@@ -43,7 +67,25 @@ export function AdminLayout() {
         </div>
 
         {isAdminPortal ? (
-          <div className="flex-1" />
+          <nav className="mt-7 flex-1 min-h-0 overflow-y-auto pr-1">
+            <div className="grid content-start gap-1">
+              {adminPortalSections.map((item) => (
+                <a
+                  key={item.value}
+                  title={t(item.label)}
+                  href={`/admin/portal#${item.value}`}
+                  className={`group flex items-center justify-center rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors xl:justify-start ${
+                    activeAdminSection === item.value
+                      ? 'bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
+                      : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                  }`}
+                >
+                  <item.icon className="size-5 shrink-0 opacity-80 group-hover:opacity-100 xl:mr-3" />
+                  <span className="hidden truncate xl:inline">{t(item.label)}</span>
+                </a>
+              ))}
+            </div>
+          </nav>
         ) : (
           <nav className="mt-7 grid flex-1 content-start gap-1">
             {navigation.map((item) => (

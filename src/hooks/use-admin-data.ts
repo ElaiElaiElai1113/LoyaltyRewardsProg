@@ -5,6 +5,7 @@ import { adminService } from '@/integrations/supabase/services/admin-service'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
+import { memberTransactionsService } from '@/integrations/supabase/services/member-transactions-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
@@ -252,6 +253,30 @@ export function useAdminEarlyAccessLeads() {
   return useQuery({
     queryKey: ['admin', 'early-access-leads'],
     queryFn: () => earlyAccessService.getLeads(),
+  })
+}
+
+export function useAdminMemberTransactions() {
+  return useQuery({
+    queryKey: ['admin', 'member-transactions'],
+    queryFn: () => memberTransactionsService.getBusinessTransactions(),
+  })
+}
+
+export function useMarkMemberTransactionCommissionPaid() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ transactionId, note }: { transactionId: string; note?: string }) =>
+      memberTransactionsService.markCommissionPaid(transactionId, note),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'member-transactions'] })
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+      toast.success('Commission marked paid')
+    },
+    onError: (error: Error) => {
+      toast.error(`Commission update failed: ${error.message}`)
+    },
   })
 }
 

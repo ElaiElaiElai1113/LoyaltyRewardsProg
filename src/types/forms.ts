@@ -115,10 +115,19 @@ export type CheckoutFormValues = z.infer<typeof checkoutSchema>
 
 export const businessSettingsSchema = z.object({
   earnRate: z.number().min(0, 'Earn rate cannot be negative').max(100, 'Maximum 100 pts/$1'),
+  rewardRatePercent: z.number().min(0, 'Reward rate cannot be negative').max(100, 'Maximum 100% reward rate'),
+  commissionRatePercent: z.number().min(10, 'Commission must be at least 10%').max(100, 'Maximum 100% commission'),
   taxRate: z.number().min(0).max(0.5, 'Maximum 50% tax rate'),
 })
 
 export type BusinessSettingsFormValues = z.infer<typeof businessSettingsSchema>
+
+export const memberTransactionSchema = z.object({
+  purchaseAmount: z.number().min(0.01, 'Purchase amount must be greater than 0'),
+  note: z.string().trim().max(180, 'Keep notes under 180 characters').optional(),
+})
+
+export type MemberTransactionFormValues = z.infer<typeof memberTransactionSchema>
 
 export const createBusinessSchema = z.object({
   name: z.string().trim().min(2, 'Enter a business name'),

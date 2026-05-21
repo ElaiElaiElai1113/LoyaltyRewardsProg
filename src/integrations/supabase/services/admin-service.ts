@@ -49,13 +49,14 @@ export const adminService = {
   async getBusinessesWithMetrics(): Promise<BusinessWithMetrics[]> {
     const sb = requireSupabase()
 
-    const [businessesResult, ordersResult, activitiesResult, profilesResult, balancesResult] =
+    const [businessesResult, ordersResult, activitiesResult, profilesResult, balancesResult, memberTransactionsResult] =
       await Promise.all([
         sb.from('businesses').select('*').order('name'),
         sb.from('orders').select('business_id, profile_id, total'),
         sb.from('activities').select('business_id, points').eq('type', 'earned'),
         sb.from('profiles').select('id, business_id, role, full_name, email'),
         sb.from('reward_balances').select('profile_id, available_credits'),
+        sb.from('member_transactions').select('business_id, profile_id, commission_amount, commission_status'),
       ])
 
     if (businessesResult.error) throw new Error('Failed to load businesses.')
@@ -63,6 +64,7 @@ export const adminService = {
     if (activitiesResult.error) throw new Error('Failed to load business activity metrics.')
     if (profilesResult.error) throw new Error('Failed to load business reward credit metrics.')
     if (balancesResult.error) throw new Error('Failed to load member reward credit balances.')
+    if (memberTransactionsResult.error) throw new Error('Failed to load member transaction metrics.')
 
     const memberIdsByBusiness = new Map<string, Set<string>>()
     const revenueByBusiness = new Map<string, number>()
@@ -82,6 +84,33 @@ export const adminService = {
         businessId,
         (revenueByBusiness.get(businessId) ?? 0) + Number(order.total ?? 0),
       )
+    }
+
+    const commissionOwedByBusiness = new Map<string, number>()
+    const commissionPaidByBusiness = new Map<string, number>()
+    const memberTransactionCountByBusiness = new Map<string, number>()
+    for (const transaction of memberTransactionsResult.data ?? []) {
+      const businessId = transaction.business_id as string | null
+      const profileId = transaction.profile_id as string | null
+      if (!businessId) continue
+
+      memberTransactionCountByBusiness.set(
+        businessId,
+        (memberTransactionCountByBusiness.get(businessId) ?? 0) + 1,
+      )
+
+      if (profileId) {
+        const memberSet = memberIdsByBusiness.get(businessId) ?? new Set<string>()
+        memberSet.add(profileId)
+        memberIdsByBusiness.set(businessId, memberSet)
+      }
+
+      const commissionAmount = Number(transaction.commission_amount ?? 0)
+      if (transaction.commission_status === 'commission_paid') {
+        commissionPaidByBusiness.set(businessId, (commissionPaidByBusiness.get(businessId) ?? 0) + commissionAmount)
+      } else {
+        commissionOwedByBusiness.set(businessId, (commissionOwedByBusiness.get(businessId) ?? 0) + commissionAmount)
+      }
     }
 
     const pointsIssuedByBusiness = new Map<string, number>()
@@ -145,6 +174,8 @@ export const adminService = {
         slug: business.slug as string,
         description: (business.description as string | null) ?? null,
         earnRate: Number(business.earnRate ?? 0),
+        rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+        commissionRatePercent: Number(business.commissionRatePercent ?? 10),
         currency: (business.currency as string) || 'USD',
         active: Boolean(business.active),
         logoUrl: (business.logoUrl as string | null) ?? null,
@@ -152,6 +183,9 @@ export const adminService = {
         totalRevenue: revenueByBusiness.get(businessId) ?? 0,
         pointsIssued: pointsIssuedByBusiness.get(businessId) ?? 0,
         creditsOutstanding: creditsOutstandingByBusiness.get(businessId) ?? 0,
+        commissionOwed: commissionOwedByBusiness.get(businessId) ?? 0,
+        commissionPaid: commissionPaidByBusiness.get(businessId) ?? 0,
+        memberTransactionCount: memberTransactionCountByBusiness.get(businessId) ?? 0,
         ownerProfileId: (business.ownerProfileId as string | null) ?? ownerByBusiness.get(businessId)?.id ?? null,
         ownerName: ownerByBusiness.get(businessId)?.fullName ?? null,
         ownerEmail: ownerByBusiness.get(businessId)?.email ?? null,

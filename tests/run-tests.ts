@@ -36,6 +36,7 @@ import {
   landingWhyJoinItems,
 } from '../src/features/auth/landing-content.js'
 import { isPickupWindow, normalizeCheckoutItems } from '../src/features/critical-flows/critical-flow.js'
+import { calculateMemberTransaction } from '../src/features/critical-flows/member-transaction.js'
 
 function runTest(name: string, fn: () => void) {
   try {
@@ -98,6 +99,20 @@ runTest('isPickupWindow only accepts supported redemption windows', () => {
   assert.equal(isPickupWindow('Now'), true)
   assert.equal(isPickupWindow('Within 30 mins'), true)
   assert.equal(isPickupWindow('Tonight'), false)
+})
+
+runTest('calculateMemberTransaction converts outside purchase amount into reward value, points, and commission', () => {
+  const result = calculateMemberTransaction({
+    purchaseAmount: 50,
+    rewardRatePercent: 20,
+    commissionRatePercent: 10,
+  })
+
+  assert.deepEqual(result, {
+    rewardValue: 10,
+    pointsAwarded: 1000,
+    commissionAmount: 5,
+  })
 })
 
 runTest('early access content preserves the approved conversion copy', () => {
@@ -169,7 +184,7 @@ runTest('global CSS restores the brand theme outside early access', () => {
 runTest('admin portal header uses the restored warm theme', () => {
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
   const headerStart = adminPage.indexOf('warm-hero-muted relative min-w-0')
-  const tabsStart = adminPage.indexOf('<Tabs defaultValue="members"')
+  const tabsStart = adminPage.indexOf('<Tabs value={activeAdminTab}')
 
   assert.ok(headerStart > -1)
   assert.ok(tabsStart > headerStart)
@@ -547,4 +562,144 @@ runTest('supabase seed can be rerun without duplicate seeded rows', () => {
   assert.match(seed, /delete from public\.promotions[\s\S]*Double points after 3 PM/i)
   assert.match(seed, /insert into auth\.users[\s\S]*on conflict \(id\) do update/i)
   assert.match(seed, /insert into auth\.identities[\s\S]*on conflict \(id\) do update/i)
+})
+
+runTest('member transaction migration creates QR tokens, transaction ledger, and secure RPCs', () => {
+  const migration = readFileSync('supabase/migrations/20260521000000_member_transactions.sql', 'utf8')
+
+  assert.match(migration, /add column if not exists member_qr_token/i)
+  assert.match(migration, /add column if not exists reward_rate_percent/i)
+  assert.match(migration, /add column if not exists commission_rate_percent/i)
+  assert.match(migration, /create type public\.member_transaction_commission_status/i)
+  assert.match(migration, /create table if not exists public\.member_transactions/i)
+  assert.match(migration, /purchase_amount/i)
+  assert.match(migration, /reward_value/i)
+  assert.match(migration, /points_awarded/i)
+  assert.match(migration, /commission_amount/i)
+  assert.match(migration, /client_request_id/i)
+  assert.match(migration, /create or replace function public\.get_member_by_qr_token/)
+  assert.match(migration, /create or replace function public\.record_member_transaction/)
+  assert.match(migration, /create or replace function public\.mark_member_transaction_commission_paid/)
+  assert.match(migration, /points_awarded_value := floor\(reward_value_value \* 100\)/i)
+  assert.match(migration, /commission_rate_percent >= 10/i)
+})
+
+runTest('customer profile renders a member QR that opens the business member-sale route', () => {
+  const profilePage = readFileSync('src/features/profile/pages/profile-page.tsx', 'utf8')
+
+  assert.match(profilePage, /QRCodeSVG/)
+  assert.match(profilePage, /memberQrToken/)
+  assert.match(profilePage, /\/business\/member-sale\//)
+  assert.match(profilePage, /Member QR/)
+})
+
+runTest('router exposes protected business member-sale route', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+
+  assert.match(router, /MemberSalePage/)
+  assert.match(router, /path: '\/business\/member-sale\/:token'/)
+})
+
+runTest('business transaction page previews rewards and commission before recording sale', () => {
+  const page = readFileSync('src/features/business-owner/pages/member-sale-page.tsx', 'utf8')
+
+  assert.match(page, /calculateMemberTransaction/)
+  assert.match(page, /purchaseAmount/)
+  assert.match(page, /rewardValue/)
+  assert.match(page, /pointsAwarded/)
+  assert.match(page, /commissionAmount/)
+  assert.match(page, /recordTransaction/)
+})
+
+runTest('admin members profile panel uses compact stats and action tabs instead of one long vertical card', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const membersStart = adminPage.indexOf('<TabsContent value="members"')
+  const catalogStart = adminPage.indexOf('<TabsContent value="catalog"')
+  const membersSection = adminPage.slice(membersStart, catalogStart)
+
+  assert.match(membersSection, /member-action-panel/)
+  assert.match(membersSection, /member-stat-grid/)
+  assert.match(membersSection, /member-action-tabs/)
+  assert.match(membersSection, /value="award-points"/)
+  assert.match(membersSection, /value="use-credit"/)
+  assert.match(membersSection, /value="verification"/)
+  assert.match(membersSection, /Profile Summary/)
+  assert.match(membersSection, /Recent Value/)
+  const profileSummaryIndex = membersSection.indexOf('Profile Summary')
+  const actionTabsIndex = membersSection.indexOf('member-action-tabs')
+  const summaryBeforeTabs = membersSection.slice(profileSummaryIndex, actionTabsIndex)
+
+  assert.doesNotMatch(summaryBeforeTabs, /Verification ID/)
+  assert.doesNotMatch(summaryBeforeTabs, /\{t\('Phone'\)\}/)
+})
+
+runTest('admin member action tabs use short labels that fit the compact panel', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const tabsStart = adminPage.indexOf('member-action-tabs')
+  const tabsEnd = adminPage.indexOf('<TabsContent value="award-points"')
+  const actionTabs = adminPage.slice(tabsStart, tabsEnd)
+
+  assert.match(actionTabs, /grid-cols-\[1fr_1fr_1fr\]/)
+  assert.match(actionTabs, /min-w-0/)
+  assert.match(actionTabs, /whitespace-normal/)
+  assert.match(actionTabs, />ID<\/TabsTrigger>/)
+  assert.doesNotMatch(actionTabs, />Verification<\/TabsTrigger>/)
+})
+
+runTest('admin layout renders admin portal section navigation inside the sidebar', () => {
+  const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
+
+  assert.match(adminLayout, /adminPortalSections/)
+  assert.match(adminLayout, /isAdminPortal \? \(/)
+  assert.match(adminLayout, /href=\{`\/admin\/portal#\$\{item\.value\}`\}/)
+  assert.match(adminLayout, /overflow-y-auto/)
+  assert.match(adminLayout, /flex-1 min-h-0/)
+  assert.doesNotMatch(adminLayout, /isAdminPortal \? \(\s*<div className="flex-1" \/>/)
+})
+
+runTest('admin portal page uses controlled tab content without duplicating sidebar navigation', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const tabsStart = adminPage.indexOf('<Tabs value={activeAdminTab}')
+  const membersStart = adminPage.indexOf('<TabsContent value="members"')
+  const tabsShell = adminPage.slice(tabsStart, membersStart)
+
+  assert.match(adminPage, /activeAdminTab/)
+  assert.match(adminPage, /onValueChange=\{handleAdminTabChange\}/)
+  assert.match(adminPage, /hashchange/)
+  assert.match(tabsShell, /className="min-w-0 space-y-12"/)
+  assert.doesNotMatch(adminPage, /admin-portal-tabs/)
+  assert.doesNotMatch(tabsShell, /TabsTrigger value="members"/)
+  assert.doesNotMatch(tabsShell, /fixed/)
+})
+
+runTest('customer layout exposes full desktop navigation in the header', () => {
+  const customerLayout = readFileSync('src/layouts/customer-layout.tsx', 'utf8')
+  const headerStart = customerLayout.indexOf('<header')
+  const mainStart = customerLayout.indexOf('<main')
+  const headerMarkup = customerLayout.slice(headerStart, mainStart)
+
+  assert.match(customerLayout, /customerNavigation/)
+  assert.match(headerMarkup, /hidden items-center gap-1 lg:flex/)
+  assert.match(headerMarkup, /customerNavigation\.map/)
+  for (const path of ['/dashboard', '/shop', '/rewards', '/gift-cards', '/activity', '/profile']) {
+    assert.match(headerMarkup, new RegExp(`to: '${path}'|to=\\{item\\.to\\}`))
+  }
+  assert.doesNotMatch(headerMarkup, /<span className="hidden text-xs[^>]*>\s*Home\s*<\/span>/)
+})
+
+runTest('admin partners page uses table-first operations layout with modal create flow', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const partnersStart = adminPage.indexOf('<TabsContent value="partners"')
+  const nextSectionStart = adminPage.indexOf('<TabsContent value="activity"')
+  const partnersSection = adminPage.slice(partnersStart, nextSectionStart)
+
+  assert.match(partnersSection, /partner-operations-layout/)
+  assert.match(partnersSection, /partner-create-dialog/)
+  assert.match(partnersSection, /partner-management-table/)
+  assert.match(partnersSection, /Partner Operations/)
+  assert.match(partnersSection, /Create Partner/)
+  assert.match(partnersSection, /Recent Referral Activity/)
+  assert.match(partnersSection, /Commission Owed/)
+  assert.doesNotMatch(partnersSection, /2xl:grid-cols-\[420px_minmax\(0,1fr\)\]/)
+  assert.doesNotMatch(partnersSection, /Partner Cards/)
 })

@@ -7,6 +7,7 @@ import { businessService } from '@/integrations/supabase/services/business-servi
 import { productsService } from '@/integrations/supabase/services/products-service'
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
+import { memberTransactionsService } from '@/integrations/supabase/services/member-transactions-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
@@ -135,6 +136,12 @@ export function useBusinessOwnerData() {
     ...sharedQueryOptions,
   })
 
+  const memberTransactionsQuery = useQuery({
+    queryKey: ['member-transactions', businessId],
+    queryFn: () => memberTransactionsService.getBusinessTransactions(businessId!),
+    ...sharedQueryOptions,
+  })
+
   // Calculate business metrics
   const metricsQuery = useQuery({
     queryKey: ['metrics', businessId],
@@ -142,7 +149,7 @@ export function useBusinessOwnerData() {
       if (!businessId) return null
 
       const sb = requireSupabase()
-      const [ordersResult, activitiesResult, promotionsResult] = await Promise.all([
+      const [ordersResult, activitiesResult, promotionsResult, memberTransactionsResult] = await Promise.all([
         sb
           .from('orders')
           .select('profile_id, total')
@@ -155,15 +162,21 @@ export function useBusinessOwnerData() {
           .from('promotions')
           .select('expires_at')
           .eq('business_id', businessId),
+        sb
+          .from('member_transactions')
+          .select('profile_id, purchase_amount, points_awarded, commission_amount, commission_status')
+          .eq('business_id', businessId),
       ])
 
       if (ordersResult.error) throw new Error('Failed to load order metrics.')
       if (activitiesResult.error) throw new Error('Failed to load activity metrics.')
       if (promotionsResult.error) throw new Error('Failed to load promotion metrics.')
+      if (memberTransactionsResult.error) throw new Error('Failed to load member transaction metrics.')
 
       const orders = ordersResult.data ?? []
       const activities = activitiesResult.data ?? []
       const promotions = promotionsResult.data ?? []
+      const memberTransactions = memberTransactionsResult.data ?? []
 
       const earnedPoints = activities
         .filter((a) => a.type === 'earned')
@@ -174,12 +187,21 @@ export function useBusinessOwnerData() {
         .reduce((sum, a) => sum + Math.abs(a.points), 0)
 
       return {
-        totalMembers: new Set(orders.map((o) => o.profile_id)).size,
+        totalMembers: new Set([...orders.map((o) => o.profile_id), ...memberTransactions.map((t) => t.profile_id)]).size,
         totalOrders: orders.length,
         totalRevenue: orders.reduce((sum, o) => sum + Number(o.total), 0),
         pointsIssued: earnedPoints,
         pointsRedeemed: redeemedPoints,
         activePromotions: promotions.filter((p) => new Date(p.expires_at) > new Date()).length,
+        memberTransactionCount: memberTransactions.length,
+        inPersonRevenue: memberTransactions.reduce((sum, transaction) => sum + Number(transaction.purchase_amount ?? 0), 0),
+        inPersonRewardsIssued: memberTransactions.reduce((sum, transaction) => sum + Number(transaction.points_awarded ?? 0), 0),
+        commissionOwed: memberTransactions
+          .filter((transaction) => transaction.commission_status === 'commission_unpaid')
+          .reduce((sum, transaction) => sum + Number(transaction.commission_amount ?? 0), 0),
+        commissionPaid: memberTransactions
+          .filter((transaction) => transaction.commission_status === 'commission_paid')
+          .reduce((sum, transaction) => sum + Number(transaction.commission_amount ?? 0), 0),
       }
     },
     ...sharedQueryOptions,
@@ -192,6 +214,7 @@ export function useBusinessOwnerData() {
     promotions: promotionsQuery.data ?? [],
     orders: ordersQuery.data ?? [],
     redemptions: redemptionsQuery.data ?? [],
+    memberTransactions: memberTransactionsQuery.data ?? [],
     metrics: metricsQuery.data ?? null,
     isBusinessLoading: businessQuery.isLoading,
     isLoading:
@@ -201,6 +224,7 @@ export function useBusinessOwnerData() {
       promotionsQuery.isLoading ||
       ordersQuery.isLoading ||
       redemptionsQuery.isLoading ||
+      memberTransactionsQuery.isLoading ||
       metricsQuery.isLoading,
     error:
       businessQuery.error ??
@@ -209,6 +233,7 @@ export function useBusinessOwnerData() {
       promotionsQuery.error ??
       ordersQuery.error ??
       redemptionsQuery.error ??
+      memberTransactionsQuery.error ??
       metricsQuery.error ??
       null,
   }
@@ -234,16 +259,37 @@ export function useBusinessMembers(businessId?: string) {
 
       if (balError) throw new Error('Failed to load balances.')
 
+      const { data: orderRows, error: orderError } = await sb
+        .from('orders')
+        .select('profile_id')
+        .eq('business_id', businessId)
+
+      if (orderError) throw new Error('Failed to load customer orders.')
+
+      const { data: transactionRows, error: transactionError } = await sb
+        .from('member_transactions')
+        .select('profile_id')
+        .eq('business_id', businessId)
+
+      if (transactionError) throw new Error('Failed to load scanned customer transactions.')
+
       const balanceMap = new Map(
         (balanceRows ?? []).map((balance) => [balance.profile_id as string, balance.points as number]),
       )
 
-      return (profileRows ?? []).map((profile) => ({
-        id: profile.id as string,
-        fullName: profile.full_name as string,
-        email: profile.email as string,
-        points: balanceMap.get(profile.id as string) ?? 0,
-      }))
+      const interactedProfileIds = new Set([
+        ...(orderRows ?? []).map((order) => order.profile_id as string),
+        ...(transactionRows ?? []).map((transaction) => transaction.profile_id as string),
+      ])
+
+      return (profileRows ?? [])
+        .filter((profile) => interactedProfileIds.has(profile.id as string))
+        .map((profile) => ({
+          id: profile.id as string,
+          fullName: profile.full_name as string,
+          email: profile.email as string,
+          points: balanceMap.get(profile.id as string) ?? 0,
+        }))
     },
     enabled: !!businessId,
   })
@@ -264,6 +310,35 @@ export function useAwardPoints(actor?: Profile | null, businessId?: string) {
     },
     onError: (error: Error) => {
       toast.error(`Award failed: ${error.message}`)
+    },
+  })
+}
+
+export function useScannedMember(token?: string) {
+  return useQuery({
+    queryKey: ['scanned-member', token ?? 'missing'],
+    queryFn: () => memberTransactionsService.getMemberByQrToken(token!),
+    enabled: Boolean(token),
+    retry: false,
+  })
+}
+
+export function useRecordMemberTransaction(businessId?: string, profileId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: { token: string; purchaseAmount: number; note?: string; clientRequestId: string }) =>
+      memberTransactionsService.recordTransaction(values),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['member-transactions', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance', profileId] })
+      void queryClient.invalidateQueries({ queryKey: ['activities', profileId] })
+      toast.success('Member transaction recorded')
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
     },
   })
 }

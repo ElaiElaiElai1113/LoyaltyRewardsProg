@@ -21,6 +21,15 @@ const legalLinks = [
   { to: '/verification-policy', label: 'Verification Policy' },
 ]
 
+const customerNavigation = [
+  { to: '/dashboard', label: 'Home' },
+  { to: '/shop', label: 'Shop' },
+  { to: '/rewards', label: 'Rewards' },
+  { to: '/gift-cards', label: 'Gift Cards' },
+  { to: '/activity', label: 'Activity' },
+  { to: '/profile', label: 'Profile' },
+]
+
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
@@ -36,11 +45,25 @@ export function CustomerLayout() {
               <span className="text-xl font-semibold text-[var(--foreground)]">
                 Medellin Rewards
               </span>
-              <span className="hidden h-6 w-px bg-[var(--border)] md:block" />
-              <span className="hidden text-xs font-medium text-[var(--muted-foreground)] md:block">
-                Home
-              </span>
             </NavLink>
+
+            <nav className="hidden items-center gap-1 lg:flex">
+              {customerNavigation.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `rounded-full px-3 py-2 text-sm font-semibold transition-colors ${
+                      isActive
+                        ? 'bg-[var(--muted)] text-[var(--foreground)]'
+                        : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                    }`
+                  }
+                >
+                  {t(item.label)}
+                </NavLink>
+              ))}
+            </nav>
           </div>
 
           <div className="flex items-center gap-6">

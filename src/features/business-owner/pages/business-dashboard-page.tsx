@@ -3,10 +3,12 @@ import {
   CheckCircle,
   Copy,
   Download,
+  DollarSign,
   Gift,
   Hotel,
   Package,
   QrCode,
+  ReceiptText,
   ShoppingBag,
   Sparkles,
   TrendingUp,
@@ -157,6 +159,24 @@ export function BusinessDashboardPage() {
           value={outstandingPartnerCredits.toString()}
           icon={<QrCode className="size-6" />}
           helper="Partner credits not yet marked redeemed"
+        />
+        <BusinessMetricCard
+          title="QR Transactions"
+          value={(metrics.memberTransactionCount ?? 0).toString()}
+          icon={<ReceiptText className="size-6" />}
+          helper="Outside-app sales recorded from member QR scans"
+        />
+        <BusinessMetricCard
+          title="QR Revenue"
+          value={formatCurrency(metrics.inPersonRevenue ?? 0)}
+          icon={<DollarSign className="size-6" />}
+          helper="Outside-app purchase volume recorded"
+        />
+        <BusinessMetricCard
+          title="Commission Owed"
+          value={formatCurrency(metrics.commissionOwed ?? 0)}
+          icon={<TrendingUp className="size-6" />}
+          helper="Unpaid Medellin Rewards commission"
         />
         <BusinessMetricCard
           title={t('Pending Fulfillment')}
