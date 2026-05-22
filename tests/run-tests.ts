@@ -746,6 +746,207 @@ runTest('customer layout exposes full desktop navigation in the header', () => {
   assert.doesNotMatch(headerMarkup, /<span className="hidden text-xs[^>]*>\s*Home\s*<\/span>/)
 })
 
+runTest('customer mobile bottom nav exposes core routes and verification status', () => {
+  const bottomNav = readFileSync('src/components/customer-bottom-nav.tsx', 'utf8')
+  const customerLayout = readFileSync('src/layouts/customer-layout.tsx', 'utf8')
+
+  for (const route of ['/dashboard', '/rewards', '/shop', '/activity', '/profile']) {
+    assert.match(bottomNav, new RegExp(`to: '${route}'`))
+  }
+
+  for (const label of ['Home', 'Rewards', 'Shop', 'Activity', 'Profile']) {
+    assert.match(bottomNav, new RegExp(`label: '${label}'`))
+  }
+
+  assert.match(bottomNav, /grid-cols-5/)
+  assert.match(bottomNav, /md:hidden/)
+  assert.match(bottomNav, /verificationStatus\?: Profile\['verificationStatus'\] \| null/)
+  assert.match(bottomNav, /\/profile#id-verification/)
+  assert.match(bottomNav, /Verification required/)
+  assert.match(bottomNav, /Under review/)
+  assert.match(bottomNav, /Needs resubmission/)
+  assert.match(bottomNav, /Verified/)
+  assert.match(bottomNav, /pathname\.startsWith\(prefix\)/)
+  assert.match(bottomNav, /'\/redeem'/)
+
+  assert.match(customerLayout, /<CustomerBottomNav verificationStatus=\{profile\?\.verificationStatus\} \/>/)
+  assert.match(customerLayout, /pb-32/)
+})
+
+runTest('customer dashboard exposes a guided onboarding checklist', () => {
+  const dashboardPage = readFileSync('src/features/dashboard/pages/dashboard-page.tsx', 'utf8')
+  const checklist = readFileSync('src/features/dashboard/components/customer-onboarding-checklist.tsx', 'utf8')
+
+  assert.match(dashboardPage, /CustomerOnboardingChecklist/)
+  assert.match(dashboardPage, /verificationStatus=\{verificationStatus\}/)
+  assert.match(dashboardPage, /isMembershipActive=\{isMembershipActive\}/)
+  assert.match(dashboardPage, /points=\{points\}/)
+  assert.match(dashboardPage, /recentActivity=\{recentActivity\}/)
+
+  for (const label of ['Account created', 'Verify ID', 'Activate membership', 'Unlock member QR', 'Earn first reward']) {
+    assert.match(checklist, new RegExp(label))
+  }
+
+  assert.match(checklist, /\/profile#id-verification/)
+  assert.match(checklist, /\/membership/)
+  assert.match(checklist, /\/profile/)
+  assert.match(checklist, /\/shop/)
+  assert.match(checklist, /Under review/)
+  assert.match(checklist, /Needs resubmission/)
+})
+
+runTest('customer dashboard exposes a guided wallet summary', () => {
+  const dashboardPage = readFileSync('src/features/dashboard/pages/dashboard-page.tsx', 'utf8')
+  const walletSummary = readFileSync('src/features/dashboard/components/customer-wallet-summary.tsx', 'utf8')
+
+  assert.match(dashboardPage, /CustomerWalletSummary/)
+  assert.match(dashboardPage, /verificationStatus=\{verificationStatus\}/)
+  assert.match(dashboardPage, /isMembershipActive=\{isMembershipActive\}/)
+  assert.match(dashboardPage, /points=\{points\}/)
+  assert.match(dashboardPage, /availableCredits=\{balance\?\.availableCredits \?\? 0\}/)
+  assert.match(dashboardPage, /activeGiftCardCount=\{activeGiftCardCount\}/)
+
+  for (const label of ['Verify ID', 'Activate membership', 'Redeem rewards', 'Browse businesses']) {
+    assert.match(walletSummary, new RegExp(label))
+  }
+
+  assert.match(walletSummary, /\/profile#id-verification/)
+  assert.match(walletSummary, /\/membership/)
+  assert.match(walletSummary, /\/rewards/)
+  assert.match(walletSummary, /\/shop/)
+  assert.match(walletSummary, /Reward wallet/)
+  assert.match(walletSummary, /Ready to redeem/)
+  assert.match(walletSummary, /Start earning/)
+
+  assert.doesNotMatch(dashboardPage, /<MetricCard[\s\S]*Reward Credits/)
+  assert.doesNotMatch(dashboardPage, /<MetricCard[\s\S]*Gift Cards/)
+})
+
+runTest('customer header exposes verification status pill', () => {
+  const customerLayout = readFileSync('src/layouts/customer-layout.tsx', 'utf8')
+  const pill = readFileSync('src/features/membership/components/verification-status-pill.tsx', 'utf8')
+
+  assert.match(customerLayout, /VerificationStatusPill/)
+  assert.match(customerLayout, /status=\{profile\?\.verificationStatus\}/)
+  assert.match(pill, /Verification required/)
+  assert.match(pill, /Under review/)
+  assert.match(pill, /Verified/)
+  assert.match(pill, /Needs resubmission/)
+  assert.match(pill, /\/profile#id-verification/)
+  assert.match(pill, /\/profile/)
+})
+
+runTest('reward cards explain ID verification locked redemption', () => {
+  const rewardCard = readFileSync('src/features/rewards/components/reward-card.tsx', 'utf8')
+
+  assert.match(rewardCard, /Verify ID to redeem/)
+  assert.doesNotMatch(rewardCard, /\? 'Verify ID'\s*:/)
+})
+
+runTest('activity feedback uses clear labels and customer empty actions', () => {
+  const activityList = readFileSync('src/features/activity/components/activity-list.tsx', 'utf8')
+  const dashboardPage = readFileSync('src/features/dashboard/pages/dashboard-page.tsx', 'utf8')
+  const activityPage = readFileSync('src/features/activity/pages/activity-page.tsx', 'utf8')
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+
+  for (const label of ['Earned', 'Redeemed', 'Bonus', 'Adjusted', 'Gift card issued', 'Gift card redeemed']) {
+    assert.match(activityList, new RegExp(label))
+  }
+
+  assert.match(activityList, /emptyActionTo\?: string/)
+  assert.match(activityList, /emptyActionLabel\?: string/)
+  assert.match(activityList, /Pending/)
+  assert.match(activityList, /<Button asChild/)
+  assert.match(activityList, /<Link to=\{emptyActionTo\}/)
+
+  assert.match(dashboardPage, /emptyActionTo="\/shop"/)
+  assert.match(dashboardPage, /emptyActionLabel="Browse businesses"/)
+  assert.match(activityPage, /emptyActionTo="\/shop"/)
+  assert.match(activityPage, /emptyActionLabel="Browse businesses"/)
+  assert.doesNotMatch(adminPage, /emptyActionTo="\/shop"/)
+})
+
+runTest('gift card tiles explain ID verification locked issuance', () => {
+  const giftCardTile = readFileSync('src/features/gift-cards/components/gift-card-tile.tsx', 'utf8')
+
+  assert.match(giftCardTile, /Verify ID to issue/)
+  assert.doesNotMatch(giftCardTile, /\? t\('Verify ID'\) : t\('Issue'\)/)
+})
+
+runTest('gift card catalog exposes claimable filtering and summary feedback', () => {
+  const giftCardsPage = readFileSync('src/features/gift-cards/pages/gift-cards-page.tsx', 'utf8')
+
+  assert.match(giftCardsPage, /showClaimableOnly/)
+  assert.match(giftCardsPage, /setShowClaimableOnly/)
+  assert.match(giftCardsPage, /const catalogItems = catalog\.data \?\? \[\]/)
+  assert.match(giftCardsPage, /const claimableGiftCards = catalogItems\.filter/)
+  assert.match(giftCardsPage, /balancePoints >= item\.pointsCost/)
+  assert.match(giftCardsPage, /!rewardActionsLocked/)
+  assert.match(giftCardsPage, /const visibleGiftCards = showClaimableOnly/)
+  assert.match(giftCardsPage, /Claimable/)
+
+  for (const label of ['Gift card summary', 'Available points', 'Total gift cards', 'Claimable gift cards', 'Active business']) {
+    assert.match(giftCardsPage, new RegExp(label))
+  }
+
+  assert.match(giftCardsPage, /No claimable gift cards yet/)
+  assert.match(giftCardsPage, /No gift cards for this business/)
+  assert.match(giftCardsPage, /Earn more points, verify your ID, or check back when new gift cards are available\./)
+  assert.match(giftCardsPage, /Try another business or clear the business filter\./)
+})
+
+runTest('checkout and order pages explain purchase feedback and next actions', () => {
+  const cartPage = readFileSync('src/features/shop/pages/cart-page.tsx', 'utf8')
+  const checkoutPage = readFileSync('src/features/shop/pages/checkout-page.tsx', 'utf8')
+  const confirmationPage = readFileSync('src/features/shop/pages/order-confirmation-page.tsx', 'utf8')
+  const ordersPage = readFileSync('src/features/shop/pages/orders-page.tsx', 'utf8')
+
+  assert.match(cartPage, /Pick products from participating businesses before checking out\./)
+  assert.match(cartPage, /Start shopping/)
+
+  for (const label of [
+    'Checkout summary',
+    'Items in order',
+    'Estimated total',
+    'Estimated reward impact',
+    'Verification required before earning rewards',
+  ]) {
+    assert.match(checkoutPage, new RegExp(label))
+  }
+  assert.match(checkoutPage, /resolvedItems\.reduce\(\(sum, \{ quantity \}\) => sum \+ quantity, 0\)/)
+
+  assert.match(confirmationPage, /to="\/orders"/)
+  assert.match(confirmationPage, /to="\/shop"/)
+  assert.match(confirmationPage, /to="\/rewards"/)
+  assert.match(confirmationPage, /View rewards/)
+
+  assert.match(ordersPage, /Purchases and points earned after checkout will appear here\./)
+  assert.match(ordersPage, /Start shopping/)
+  assert.match(ordersPage, /to="\/shop"/)
+})
+
+runTest('reward catalog exposes claimable filtering and summary feedback', () => {
+  const rewardsPage = readFileSync('src/features/rewards/pages/rewards-page.tsx', 'utf8')
+
+  assert.match(rewardsPage, /'Claimable'/)
+  assert.match(rewardsPage, /const allRewards = rewards\.data \?\? \[\]/)
+  assert.match(rewardsPage, /const claimableRewards = allRewards\.filter/)
+  assert.match(rewardsPage, /reward\.inventory > 0/)
+  assert.match(rewardsPage, /balancePoints >= reward\.pointsCost/)
+  assert.match(rewardsPage, /!rewardActionsLocked/)
+  assert.match(rewardsPage, /isMembershipActive/)
+  assert.match(rewardsPage, /activeFilter === 'Claimable'/)
+
+  for (const label of ['Catalog summary', 'Available points', 'Total rewards', 'Claimable rewards', 'Active filter']) {
+    assert.match(rewardsPage, new RegExp(label))
+  }
+
+  assert.match(rewardsPage, /No claimable rewards yet/)
+  assert.match(rewardsPage, /No rewards match this filter/)
+  assert.match(rewardsPage, /Earn more points, verify your ID, or check back when new rewards are available\./)
+  assert.match(rewardsPage, /Try a different category or business filter\./)
+})
+
 runTest('admin partners page uses table-first operations layout with modal create flow', () => {
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
   const partnersStart = adminPage.indexOf('<TabsContent value="partners"')

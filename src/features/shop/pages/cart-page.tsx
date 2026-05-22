@@ -85,10 +85,10 @@ export function CartPage() {
         <EmptyState
           icon={<ShoppingBag className="size-8" />}
           title={t('Your cart is empty')}
-          description={t('Add items from the shop before checking out.')}
+          description={t('Pick products from participating businesses before checking out.')}
           action={
             <Button asChild variant="default" size="lg" className="rounded-full">
-              <Link to="/shop">{t('Browse Products')}</Link>
+              <Link to="/shop">{t('Start shopping')}</Link>
             </Button>
           }
         />

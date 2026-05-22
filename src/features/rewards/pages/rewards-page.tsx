@@ -21,7 +21,7 @@ import type { Reward } from '@/types/domain'
 import { RedeemRewardPanel } from '../components/redeem-reward-panel'
 import { RewardCard } from '../components/reward-card'
 
-const filters = ['All', 'Drink', 'Pastry', 'Merch', 'Experience'] as const
+const filters = ['All', 'Claimable', 'Drink', 'Pastry', 'Merch', 'Experience'] as const
 
 export function RewardsPage() {
   const navigate = useNavigate()
@@ -40,12 +40,32 @@ export function RewardsPage() {
 
   const rewards = useRewards(selectedBusiness ?? undefined)
   const balancePoints = rewardBalance.data?.points ?? 0
-  const filteredRewards = (rewards.data ?? []).filter((reward) =>
-    activeFilter === 'All' ? true : reward.category === activeFilter,
-  )
-  const featuredRewards = filteredRewards.filter((reward) => reward.featured).slice(0, 5)
   const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
   const rewardActionsLocked = Boolean(profile) && verificationStatus !== 'verified'
+  const allRewards = rewards.data ?? []
+  const claimableRewards = allRewards.filter((reward) =>
+    reward.inventory > 0
+    && balancePoints >= reward.pointsCost
+    && !rewardActionsLocked
+    && isMembershipActive
+  )
+  const categoryFilteredRewards = allRewards.filter((reward) =>
+    activeFilter === 'All' || activeFilter === 'Claimable' ? true : reward.category === activeFilter,
+  )
+  const filteredRewards = activeFilter === 'Claimable'
+    ? claimableRewards
+    : categoryFilteredRewards
+  const featuredRewards = filteredRewards.filter((reward) => reward.featured).slice(0, 5)
+  const emptyStateTitle = activeFilter === 'Claimable'
+    ? 'No claimable rewards yet'
+    : allRewards.length > 0
+      ? 'No rewards match this filter'
+      : 'No rewards yet'
+  const emptyStateDescription = activeFilter === 'Claimable'
+    ? 'Earn more points, verify your ID, or check back when new rewards are available.'
+    : allRewards.length > 0
+      ? 'Try a different category or business filter.'
+      : 'Rewards from participating businesses will appear here when they are available.'
 
   const getBusinessName = (businessId: string) =>
     businesses.data?.find((b) => b.id === businessId)?.name ?? ''
@@ -106,6 +126,30 @@ export function RewardsPage() {
           compact
         />
       ) : null}
+
+      <section className="relative z-10 rounded-[1.5rem] border border-primary/15 bg-card/92 p-4 shadow-soft">
+        <div className="mb-4 flex items-center justify-between gap-3">
+          <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{t('Catalog summary')}</h2>
+          <Badge variant="outline" className="rounded-full">
+            {t(activeFilter)}
+          </Badge>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: 'Available points', value: `${balancePoints}` },
+            { label: 'Total rewards', value: `${allRewards.length}` },
+            { label: 'Claimable rewards', value: `${claimableRewards.length}` },
+            { label: 'Active filter', value: t(activeFilter) },
+          ].map((item) => (
+            <div key={item.label} className="rounded-2xl border border-[var(--border)] bg-[var(--muted)] px-4 py-3">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                {t(item.label)}
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="relative z-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {[
@@ -201,8 +245,8 @@ export function RewardsPage() {
       ) : filteredRewards.length === 0 ? (
         <EmptyState
           icon={<Gift className="size-8" />}
-          title={t('No rewards yet')}
-          description={t('Rewards from participating businesses will appear here when they are available.')}
+          title={t(emptyStateTitle)}
+          description={t(emptyStateDescription)}
         />
       ) : (
         <div className="relative z-10 grid gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 min-[1900px]:grid-cols-5 min-[2400px]:grid-cols-6">

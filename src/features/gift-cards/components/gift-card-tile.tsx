@@ -73,7 +73,7 @@ export function GiftCardTile({ item, balancePoints = 0, businessName, actionLock
             onClick={() => onSelect(item)}
           >
             {canIssue ? <CheckCircle className="size-4" /> : null}
-            {actionLocked && hasEnoughPoints ? t('Verify ID') : t('Issue')}
+            {actionLocked && hasEnoughPoints ? t('Verify ID to issue') : t('Issue')}
           </Button>
         </div>
     </div>

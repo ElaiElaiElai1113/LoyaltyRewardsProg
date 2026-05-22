@@ -33,7 +33,7 @@ export function RewardCard({
   const canOpenMembershipGate = hasInventory && !actionLocked && !isMembershipActive
   const pointsRemaining = Math.max(reward.pointsCost - balancePoints, 0)
   const buttonLabel = actionLocked && hasInventory
-    ? 'Verify ID'
+    ? 'Verify ID to redeem'
     : !hasInventory
       ? 'Sold Out'
       : canRedeem || canOpenMembershipGate

@@ -74,7 +74,11 @@ export function ActivityPage() {
           <h2 className="font-serif text-3xl text-primary">{t('Timeline')}</h2>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 italic">{t('Most Recent First')}</span>
         </div>
-        <ActivityList items={activities.data ?? []} />
+        <ActivityList
+          items={activities.data ?? []}
+          emptyActionTo="/shop"
+          emptyActionLabel="Browse businesses"
+        />
       </div>
     </div>
   )

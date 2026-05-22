@@ -4,6 +4,7 @@ import { Gift, Sparkles } from 'lucide-react'
 
 import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
@@ -23,14 +24,34 @@ export function GiftCardsPage() {
   const { t } = useLanguage()
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null)
   const [selectedItem, setSelectedItem] = useState<GiftCardCatalogItem | null>(null)
+  const [showClaimableOnly, setShowClaimableOnly] = useState(false)
   const businesses = useBusinesses()
   const catalog = useGiftCardCatalog(selectedBusiness ?? undefined)
   const balance = useRewardBalance(profile?.id)
   const issueGiftCard = useIssueGiftCard(profile?.id)
   const balancePoints = balance.data?.points ?? 0
-  const featuredCards = (catalog.data ?? []).slice(0, 5)
   const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
   const rewardActionsLocked = verificationStatus !== 'verified'
+  const catalogItems = catalog.data ?? []
+  const claimableGiftCards = catalogItems.filter((item) =>
+    balancePoints >= item.pointsCost
+    && !rewardActionsLocked
+  )
+  const visibleGiftCards = showClaimableOnly ? claimableGiftCards : catalogItems
+  const featuredCards = catalogItems.slice(0, 5)
+  const selectedBusinessName = selectedBusiness
+    ? businesses.data?.find((business) => business.id === selectedBusiness)?.name ?? t('Selected business')
+    : t('All businesses')
+  const emptyStateTitle = showClaimableOnly
+    ? 'No claimable gift cards yet'
+    : selectedBusiness
+      ? 'No gift cards for this business'
+      : 'No gift cards yet'
+  const emptyStateDescription = showClaimableOnly
+    ? 'Earn more points, verify your ID, or check back when new gift cards are available.'
+    : selectedBusiness
+      ? 'Try another business or clear the business filter.'
+      : 'Gift cards from partner businesses will appear here when they are available.'
 
   function handleSelect(item: GiftCardCatalogItem) {
     if (rewardActionsLocked) {
@@ -75,6 +96,38 @@ export function GiftCardsPage() {
         rejectionReason={profile?.verificationRejectionReason}
         compact
       />
+
+      <section className="rounded-[1.5rem] border border-primary/15 bg-card/92 p-4 shadow-soft">
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-sm font-bold uppercase tracking-[0.18em] text-primary">{t('Gift card summary')}</h2>
+            <p className="mt-1 text-sm font-medium text-[var(--muted-foreground)]">{selectedBusinessName}</p>
+          </div>
+          <Button
+            type="button"
+            variant={showClaimableOnly ? 'tertiary' : 'outline'}
+            className="rounded-full"
+            onClick={() => setShowClaimableOnly((current) => !current)}
+          >
+            {t('Claimable')}
+          </Button>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { label: 'Available points', value: `${balancePoints}` },
+            { label: 'Total gift cards', value: `${catalogItems.length}` },
+            { label: 'Claimable gift cards', value: `${claimableGiftCards.length}` },
+            { label: 'Active business', value: selectedBusinessName },
+          ].map((item) => (
+            <div key={item.label} className="rounded-2xl border border-[var(--border)] bg-[var(--muted)] px-4 py-3">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--muted-foreground)]">
+                {t(item.label)}
+              </p>
+              <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">{item.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <div className="luxe-card relative overflow-hidden rounded-[2rem] p-6 md:p-8">
         <div className="absolute right-8 top-8 h-24 w-40 rotate-6 rounded-[1.5rem] border border-primary/20 bg-blush/60" />
@@ -128,15 +181,15 @@ export function GiftCardsPage() {
             ))}
           </div>
         </div>
-      ) : (catalog.data ?? []).length === 0 ? (
+      ) : visibleGiftCards.length === 0 ? (
         <EmptyState
           icon={<Gift className="size-8" />}
-          title={t('No gift cards yet')}
-          description={t('Gift cards from partner businesses will appear here when they are available.')}
+          title={t(emptyStateTitle)}
+          description={t(emptyStateDescription)}
         />
       ) : (
         <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {(catalog.data ?? []).map((item) => (
+          {visibleGiftCards.map((item) => (
             <GiftCardTile
               key={item.id}
               item={item}

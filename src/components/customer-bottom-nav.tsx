@@ -1,22 +1,77 @@
-import { Gift, Megaphone, ShoppingBag } from 'lucide-react'
+import { Activity, AlertTriangle, CheckCircle2, Clock3, Gift, Home, IdCard, ShoppingBag, User } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
 
 import { useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'
+import type { Profile } from '@/types/domain'
 
 const tabs = [
-  { to: '/shop', label: 'Menu', icon: ShoppingBag, match: ['/shop'] },
+  { to: '/dashboard', label: 'Home', icon: Home, match: ['/dashboard'] },
   { to: '/rewards', label: 'Rewards', icon: Gift, match: ['/rewards', '/redeem'] },
-  { to: '/promotions', label: 'Promos', icon: Megaphone, match: ['/promotions'] },
+  { to: '/shop', label: 'Shop', icon: ShoppingBag, match: ['/shop'] },
+  { to: '/activity', label: 'Activity', icon: Activity, match: ['/activity'] },
+  { to: '/profile', label: 'Profile', icon: User, match: ['/profile'] },
 ]
 
-export function CustomerBottomNav() {
+interface CustomerBottomNavProps {
+  verificationStatus?: Profile['verificationStatus'] | null
+}
+
+function getVerificationStatus(status: Profile['verificationStatus'] | null | undefined) {
+  if (status === 'verified') {
+    return {
+      label: 'Verified',
+      to: '/profile',
+      icon: CheckCircle2,
+      className: 'border-success/20 bg-success/10 text-success',
+    }
+  }
+
+  if (status === 'submitted') {
+    return {
+      label: 'Under review',
+      to: '/profile#id-verification',
+      icon: Clock3,
+      className: 'border-warning/20 bg-warning/10 text-warning',
+    }
+  }
+
+  if (status === 'rejected') {
+    return {
+      label: 'Needs resubmission',
+      to: '/profile#id-verification',
+      icon: AlertTriangle,
+      className: 'border-red-200 bg-red-50 text-red-600',
+    }
+  }
+
+  return {
+    label: 'Verification required',
+    to: '/profile#id-verification',
+    icon: IdCard,
+    className: 'border-warning/20 bg-warning/10 text-warning',
+  }
+}
+
+export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps) {
   const { pathname } = useLocation()
   const { t } = useLanguage()
+  const status = getVerificationStatus(verificationStatus)
+  const StatusIcon = status.icon
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-primary/15 bg-card/95 px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-luxe backdrop-blur md:hidden">
-      <div className="grid grid-cols-3 gap-1">
+      <NavLink
+        to={status.to}
+        className={cn(
+          'mb-2 flex items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-bold',
+          status.className,
+        )}
+      >
+        <StatusIcon className="size-3.5" />
+        {t(status.label)}
+      </NavLink>
+      <div className="grid grid-cols-5 gap-1">
         {tabs.map((item) => {
           const isActive = item.match.some((prefix) => pathname.startsWith(prefix))
 
@@ -30,6 +85,7 @@ export function CustomerBottomNav() {
                   ? 'bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
                   : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]',
               )}
+              aria-current={isActive ? 'page' : undefined}
             >
               <span className="relative">
                 <item.icon className="size-5" />

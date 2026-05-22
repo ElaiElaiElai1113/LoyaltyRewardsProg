@@ -72,6 +72,7 @@ export function CheckoutPage() {
   const taxRate = business?.taxRate ?? 0.09
   const tax = +(subtotal * taxRate).toFixed(2)
   const total = +(subtotal + tax).toFixed(2)
+  const itemCount = resolvedItems.reduce((sum, { quantity }) => sum + quantity, 0)
   const estimatedPoints = Math.floor(total * (business?.earnRate ?? 10))
   const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
   const rewardActionsLocked = verificationStatus !== 'verified'
@@ -96,6 +97,34 @@ export function CheckoutPage() {
             status={verificationStatus}
             rejectionReason={profile?.verificationRejectionReason}
           />
+          <section className="rounded-[2rem] border border-outline-variant/10 bg-surface-low p-6 shadow-card">
+            <h2 className="font-serif text-3xl text-primary">{t('Checkout summary')}</h2>
+            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl bg-surface-lowest p-4">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">
+                  {t('Items in order')}
+                </p>
+                <p className="mt-2 text-2xl font-semibold text-primary">{itemCount}</p>
+              </div>
+              <div className="rounded-2xl bg-surface-lowest p-4">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">
+                  {t('Estimated total')}
+                </p>
+                <p className="mt-2 text-2xl font-semibold text-primary">{formatCurrency(total)}</p>
+              </div>
+              <div className="rounded-2xl bg-surface-lowest p-4">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">
+                  {t('Estimated reward impact')}
+                </p>
+                <p className="mt-2 text-2xl font-semibold text-primary">+{estimatedPoints}</p>
+              </div>
+            </div>
+            {rewardActionsLocked ? (
+              <p className="mt-4 rounded-xl bg-warning/10 p-4 text-sm font-semibold text-warning">
+                {t('Verification required before earning rewards')}
+              </p>
+            ) : null}
+          </section>
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6">
             <div className="space-y-2">
               <h2 className="font-serif text-3xl text-primary">{t('Simulated Payment Method')}</h2>
@@ -111,7 +140,7 @@ export function CheckoutPage() {
                   return
                 }
                 if (rewardActionsLocked) {
-                  setError('ID verification is required before placing demo orders that earn rewards.')
+                  setError('Verification required before earning rewards')
                   return
                 }
 

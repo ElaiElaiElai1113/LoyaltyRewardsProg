@@ -1,9 +1,10 @@
-import { Activity, Gift, History, ShoppingBag, Ticket } from 'lucide-react'
+import { Gift, History, ShoppingBag } from 'lucide-react'
 import { Link, useNavigate } from 'react-router-dom'
 
-import { MetricCard } from '@/components/metric-card'
 import { Button } from '@/components/ui/button'
 import { ActivityList } from '@/features/activity/components/activity-list'
+import { CustomerOnboardingChecklist } from '@/features/dashboard/components/customer-onboarding-checklist'
+import { CustomerWalletSummary } from '@/features/dashboard/components/customer-wallet-summary'
 import { useMyGiftCards } from '@/features/gift-cards/hooks/use-gift-cards'
 import { MembershipBanner } from '@/features/membership/components/membership-banner'
 import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
@@ -18,7 +19,6 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
-import { formatCurrency, formatPoints } from '@/lib/utils'
 
 export function DashboardPage() {
   const navigate = useNavigate()
@@ -29,11 +29,10 @@ export function DashboardPage() {
   const promotions = usePromotions()
   const activities = useActivities(profile?.id)
   const giftCards = useMyGiftCards()
-  const { membership, isActive: isMembershipActive } = useMembership()
+  const { isActive: isMembershipActive } = useMembership()
 
   const balance = rewardBalance.data
   const points = balance?.points ?? 0
-  const isFrozen = Boolean(membership) && !isMembershipActive
   const featuredRewards = rewards.data?.filter((reward) => reward.featured).slice(0, 2) ?? []
   const activePromotions = promotions.data?.slice(0, 2) ?? []
   const recentActivity = activities.data?.slice(0, 4) ?? []
@@ -70,6 +69,12 @@ export function DashboardPage() {
         status={verificationStatus}
         rejectionReason={profile?.verificationRejectionReason}
       />
+      <CustomerOnboardingChecklist
+        verificationStatus={verificationStatus}
+        isMembershipActive={isMembershipActive}
+        points={points}
+        recentActivity={recentActivity}
+      />
 
       <section className="space-y-6">
         <div className="space-y-2">
@@ -81,68 +86,29 @@ export function DashboardPage() {
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[1fr_2fr]">
-          <div className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Total Points')}</p>
-                <p className="mt-3 text-4xl font-semibold tracking-normal text-[var(--foreground)]">
-                  {formatPoints(points)}
-                </p>
-              </div>
-              <div className="flex size-11 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
-                <Ticket className="size-5" />
-              </div>
-            </div>
-            <div data-tenant={featuredRewards[0]?.businessId} className="mt-5">
-              <span className="inline-flex rounded-md bg-tenant-soft px-2.5 py-1 text-xs font-medium">
-                {formatCurrency((balance?.availableCredits ?? 0) / 100)} {t('reward credits available')}
-              </span>
-              {isFrozen ? (
-                <span className="ml-2 inline-flex rounded-md border border-[var(--border)] bg-white px-2.5 py-1 text-xs font-medium text-[var(--muted-foreground)]">
-                  {t('Frozen')}
-                </span>
-              ) : null}
-            </div>
-          </div>
+        <CustomerWalletSummary
+          verificationStatus={verificationStatus}
+          isMembershipActive={isMembershipActive}
+          points={points}
+          availableCredits={balance?.availableCredits ?? 0}
+          activeGiftCardCount={activeGiftCardCount}
+        />
 
-          <div className="grid gap-4 md:grid-cols-3">
-            {quickActions.map((action) => (
-              <Link
-                key={action.to}
-                to={action.to}
-                className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm transition-colors hover:bg-[var(--muted)]"
-              >
-                <div className="flex size-10 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
-                  <action.icon className="size-5" />
-                </div>
-                <h2 className="mt-4 text-base font-semibold text-[var(--foreground)]">{action.title}</h2>
-                <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{action.description}</p>
-              </Link>
-            ))}
-          </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          {quickActions.map((action) => (
+            <Link
+              key={action.to}
+              to={action.to}
+              className="rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm transition-colors hover:bg-[var(--muted)]"
+            >
+              <div className="flex size-10 items-center justify-center rounded-lg bg-[var(--muted)] text-[var(--foreground)]">
+                <action.icon className="size-5" />
+              </div>
+              <h2 className="mt-4 text-base font-semibold text-[var(--foreground)]">{action.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{action.description}</p>
+            </Link>
+          ))}
         </div>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-3">
-        <MetricCard
-          label={t('Reward Credits')}
-          value={formatCurrency((balance?.availableCredits ?? 0) / 100)}
-          icon={Gift}
-          helper={isFrozen ? t('Frozen') : t('Ready to use')}
-        />
-        <MetricCard
-          label={t('Gift Cards')}
-          value={`${activeGiftCardCount}`}
-          icon={Ticket}
-          helper={t('Active in wallet')}
-        />
-        <MetricCard
-          label={t('Recent Activity')}
-          value={`${recentActivity.length}`}
-          icon={Activity}
-          helper={t('Latest entries')}
-        />
       </section>
 
       <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
@@ -199,7 +165,7 @@ export function DashboardPage() {
           </Button>
         </div>
         <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white p-2 shadow-sm">
-          <ActivityList items={recentActivity} />
+          <ActivityList items={recentActivity} emptyActionTo="/shop" emptyActionLabel="Browse businesses" />
         </div>
       </section>
     </div>

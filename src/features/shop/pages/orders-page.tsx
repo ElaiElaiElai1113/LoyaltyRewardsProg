@@ -49,10 +49,10 @@ export function OrdersPage() {
       ) : (orders.data ?? []).length === 0 ? (
         <EmptyState
           title={t('No orders yet')}
-          description={t('Your purchases and points earned will appear here.')}
+          description={t('Purchases and points earned after checkout will appear here.')}
           action={
             <Button asChild variant="default" size="lg" className="rounded-full">
-              <Link to="/shop">{t('Start Shopping')}</Link>
+              <Link to="/shop">{t('Start shopping')}</Link>
             </Button>
           }
         />

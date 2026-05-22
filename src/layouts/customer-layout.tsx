@@ -9,6 +9,7 @@ import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
+import { VerificationStatusPill } from '@/features/membership/components/verification-status-pill'
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
@@ -73,6 +74,7 @@ export function CustomerLayout() {
             </div>
 
             <div className="flex items-center gap-4">
+              <VerificationStatusPill status={profile?.verificationStatus} />
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
               <NavLink to="/cart" className="relative rounded-lg p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
@@ -103,13 +105,13 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <main className="w-full flex-1 px-5 py-8 pb-20 md:px-8 md:pb-8 lg:px-10 2xl:px-12">
+      <main className="w-full flex-1 px-5 py-8 pb-32 md:px-8 md:pb-8 lg:px-10 2xl:px-12">
         <div className="mx-auto w-full">
         <Outlet />
         </div>
       </main>
 
-      <CustomerBottomNav />
+      <CustomerBottomNav verificationStatus={profile?.verificationStatus} />
 
       <footer className="border-t border-[var(--border)] bg-card py-12">
         <div className="mx-auto w-full px-6 2xl:px-10">

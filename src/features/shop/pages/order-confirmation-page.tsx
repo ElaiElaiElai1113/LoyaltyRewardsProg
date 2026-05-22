@@ -73,6 +73,9 @@ export function OrderConfirmationPage() {
           <Button asChild variant="outline" className="rounded-full">
             <Link to="/orders">{t('View Orders')}</Link>
           </Button>
+          <Button asChild variant="outline" className="rounded-full">
+            <Link to="/rewards">{t('View rewards')}</Link>
+          </Button>
         </div>
       </div>
     </div>
