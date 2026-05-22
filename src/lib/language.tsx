@@ -247,6 +247,8 @@ const spanishTranslations: Record<string, string> = {
   'Welcome aboard!': '¡Bienvenido!',
   'Your account request is saved. Check your email if confirmation is required, then sign in. Reward actions may stay locked until admin approval.':
     'Tu solicitud de cuenta se guardó. Revisa tu correo si se requiere confirmación, luego inicia sesión. Las acciones de recompensas pueden permanecer bloqueadas hasta la aprobación del administrador.',
+  'Your account is created. Sign in, then verify your ID from your profile to unlock earning, redemption, memberships, gift cards, and QR rewards.':
+    'Tu cuenta esta creada. Inicia sesion y verifica tu ID desde tu perfil para desbloquear ganancias, canjes, membresias, tarjetas de regalo y recompensas QR.',
   'Join now': 'Unete ahora',
   'Join Medellin Rewards': 'Unete a Medellin Rewards',
   'One membership for participating local businesses': 'Una membresia para negocios locales participantes',
@@ -569,6 +571,8 @@ const spanishTranslations: Record<string, string> = {
   'Create your member account': 'Crea tu cuenta de miembro',
   'Create your account first. Once approved, eligible spending can earn 20-100% back as reward points.':
     'Crea tu cuenta primero. Una vez aprobada, tus compras elegibles pueden ganar 20-100% de vuelta como puntos de recompensa.',
+  'Account created. Verification unlocks rewards.':
+    'Cuenta creada. La verificacion desbloquea recompensas.',
   'Join and earn points': 'Unete y gana puntos',
   'Early adopter list': 'Lista de primeros usuarios',
   'A note before we launch.': 'Una nota antes del lanzamiento.',
@@ -618,6 +622,14 @@ const spanishTranslations: Record<string, string> = {
     'Se usa solo para verificar una cuenta de miembro por persona antes de que se puedan ganar o canjear recompensas.',
   'After signup, your account may need admin approval before reward actions unlock.':
     'Después del registro, tu cuenta puede necesitar aprobación administrativa antes de desbloquear acciones de recompensas.',
+  'Verify your ID to activate your member QR.':
+    'Verifica tu ID para activar tu QR de miembro.',
+  'Your ID is under review. Your member QR activates after approval.':
+    'Tu ID esta en revision. Tu QR de miembro se activa despues de la aprobacion.',
+  'Resubmit ID verification to activate your member QR.':
+    'Vuelve a enviar la verificacion de ID para activar tu QR de miembro.',
+  'QR locked': 'QR bloqueado',
+  'Verify ID to activate QR': 'Verificar ID para activar QR',
   'Already a member?': '¿Ya eres miembro?',
   'Used by admins to verify one member account per person.':
     'Usado por administradores para verificar una cuenta de miembro por persona.',

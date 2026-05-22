@@ -1,10 +1,5 @@
 import type { Membership, Profile, UserRole } from '@/types/domain'
 import type { AuthFormValues, MemberSignUpSubmission } from '@/types/forms'
-import {
-  getVerificationDocumentExtension,
-  MEMBER_VERIFICATION_BUCKET,
-  validateVerificationDocument,
-} from '@/lib/member-verification'
 import { requireSupabase, camelCaseRow } from './shared'
 
 let pendingSignInRole: AuthFormValues['role'] | null = null
@@ -141,32 +136,8 @@ export const authService = {
 
     const name = input.fullName?.trim()
     const email = input.email.trim().toLowerCase()
-    const verificationIdNumber = input.verificationIdNumber.trim()
-    const documentError = validateVerificationDocument(input.verificationDocument)
     if (!name) {
       throw new Error('Enter your full name to create an account.')
-    }
-
-    if (!verificationIdNumber) {
-      throw new Error('Enter the ID number shown on your verification document.')
-    }
-
-    if (documentError) {
-      throw new Error(documentError)
-    }
-
-    const extension = getVerificationDocumentExtension(input.verificationDocument)
-    const documentPath = `pending/${crypto.randomUUID()}.${extension}`
-
-    const { error: uploadError } = await sb.storage
-      .from(MEMBER_VERIFICATION_BUCKET)
-      .upload(documentPath, input.verificationDocument, {
-        contentType: input.verificationDocument.type,
-        upsert: false,
-      })
-
-    if (uploadError) {
-      throw new Error(`The ID document could not be uploaded: ${uploadError.message}`)
     }
 
     const { data, error: authError } = await sb.auth.signUp({
@@ -175,9 +146,6 @@ export const authService = {
       options: {
         data: {
           full_name: name,
-          verification_id_number: verificationIdNumber,
-          verification_document_path: documentPath,
-          verification_document_filename: input.verificationDocument.name,
         },
       },
     })

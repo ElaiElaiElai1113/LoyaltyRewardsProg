@@ -201,7 +201,7 @@ export function MemberSalePage() {
 
           {!isMemberVerified ? (
             <p className="rounded-2xl bg-warning/10 p-4 text-sm font-medium text-warning">
-              This member must be verified before reward value can be awarded.
+              This member QR is not active yet. Ask the member to complete ID verification before recording rewards.
             </p>
           ) : null}
         </div>

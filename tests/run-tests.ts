@@ -388,6 +388,44 @@ runTest('member signup page uses simplified branded layout', () => {
   assert.doesNotMatch(joinPage, /bg-\[#24150e\]/)
 })
 
+runTest('member signup schema no longer requires ID verification fields', () => {
+  const forms = readFileSync('src/types/forms.ts', 'utf8')
+  const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
+  const referralPage = readFileSync('src/features/referrals/pages/referral-register-page.tsx', 'utf8')
+  const authService = readFileSync('src/integrations/supabase/services/auth-service.ts', 'utf8')
+
+  assert.match(forms, /export const memberSignUpSchema = authSchema\.extend\(\{[\s\S]*role: z\.literal\('customer'\)/)
+  assert.match(forms, /export type MemberSignUpSubmission = MemberSignUpFormValues/)
+  assert.doesNotMatch(forms, /MemberSignUpSubmission = MemberSignUpFormValues & \{\s*verificationDocument: File/)
+  assert.doesNotMatch(joinPage, /verificationDocument/)
+  assert.doesNotMatch(joinPage, /verificationIdNumber/)
+  assert.doesNotMatch(referralPage, /verificationDocument/)
+  assert.doesNotMatch(referralPage, /verificationIdNumber/)
+  assert.doesNotMatch(authService, /validateVerificationDocument\(input\.verificationDocument\)/)
+  assert.doesNotMatch(authService, /MEMBER_VERIFICATION_BUCKET/)
+})
+
+runTest('profile verification remains the ID upload path after signup', () => {
+  const profilePage = readFileSync('src/features/profile/pages/profile-page.tsx', 'utf8')
+  const profileService = readFileSync('src/integrations/supabase/services/profile-service.ts', 'utf8')
+  const forms = readFileSync('src/types/forms.ts', 'utf8')
+
+  assert.match(forms, /export const memberVerificationSchema/)
+  assert.match(forms, /export type MemberVerificationSubmission = MemberVerificationFormValues & \{\s*verificationDocument: File\s*\}/)
+  assert.match(profilePage, /Submit ID/)
+  assert.match(profilePage, /verificationForm\.register\('verificationIdNumber'\)/)
+  assert.match(profileService, /validateVerificationDocument\(values\.verificationDocument\)/)
+  assert.match(profileService, /submit_member_verification/)
+})
+
+runTest('new customer auth trigger allows account creation before ID submission', () => {
+  const migration = readFileSync('supabase/migrations/20260512000000_member_identity_verification.sql', 'utf8')
+
+  assert.doesNotMatch(migration, /Verification ID is required for member signup/)
+  assert.doesNotMatch(migration, /Verification document is required for member signup/)
+  assert.match(migration, /else 'not_submitted'/)
+})
+
 runTest('landing Join CTAs go to early access', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const authPageStart = landingPage.indexOf('export function AuthPage')
@@ -579,18 +617,39 @@ runTest('member transaction migration creates QR tokens, transaction ledger, and
   assert.match(migration, /client_request_id/i)
   assert.match(migration, /create or replace function public\.get_member_by_qr_token/)
   assert.match(migration, /create or replace function public\.record_member_transaction/)
+  assert.match(migration, /member_profile\.verification_status::text <> 'verified'/)
+  assert.match(migration, /raise exception 'identity_verification_required'/)
   assert.match(migration, /create or replace function public\.mark_member_transaction_commission_paid/)
   assert.match(migration, /points_awarded_value := floor\(reward_value_value \* 100\)/i)
   assert.match(migration, /commission_rate_percent >= 10/i)
 })
 
-runTest('customer profile renders a member QR that opens the business member-sale route', () => {
+runTest('customer profile only exposes the scannable member QR after verification', () => {
   const profilePage = readFileSync('src/features/profile/pages/profile-page.tsx', 'utf8')
+  const qrSectionStart = profilePage.indexOf('<h2 className="font-serif text-2xl text-primary">Member QR</h2>')
+  const preferencesStart = profilePage.indexOf('<span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t(\'Preferences\')}</span>')
 
-  assert.match(profilePage, /QRCodeSVG/)
-  assert.match(profilePage, /memberQrToken/)
-  assert.match(profilePage, /\/business\/member-sale\//)
-  assert.match(profilePage, /Member QR/)
+  assert.ok(qrSectionStart > -1)
+  assert.ok(preferencesStart > qrSectionStart)
+
+  const qrSection = profilePage.slice(qrSectionStart, preferencesStart)
+
+  assert.match(profilePage, /const isMemberVerified = verificationStatus === 'verified'/)
+  assert.match(qrSection, /isMemberVerified && memberQrUrl/)
+  assert.match(qrSection, /<QRCodeSVG value=\{memberQrUrl\}/)
+  assert.match(profilePage, /Verify your ID to activate your member QR\./)
+  assert.match(profilePage, /Your ID is under review\. Your member QR activates after approval\./)
+  assert.match(profilePage, /Resubmit ID verification to activate your member QR\./)
+  assert.match(qrSection, /href="#id-verification"/)
+  assert.match(qrSection, /disabled=\{!isMemberVerified \|\| !memberQrUrl\}/)
+})
+
+runTest('business member-sale page clearly blocks unverified scanned QR transactions', () => {
+  const page = readFileSync('src/features/business-owner/pages/member-sale-page.tsx', 'utf8')
+
+  assert.match(page, /const isMemberVerified = member\.data\.verificationStatus === 'verified'/)
+  assert.match(page, /disabled=\{!isMemberVerified \|\| !preview \|\| recordTransaction\.isPending\}/)
+  assert.match(page, /This member QR is not active yet\. Ask the member to complete ID verification before recording rewards\./)
 })
 
 runTest('router exposes protected business member-sale route', () => {

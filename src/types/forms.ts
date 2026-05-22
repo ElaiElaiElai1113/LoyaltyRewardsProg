@@ -11,18 +11,11 @@ export type AuthFormValues = z.infer<typeof authSchema>
 
 export const memberSignUpSchema = authSchema.extend({
   fullName: z.string().trim().min(2, 'Enter your full name'),
-  verificationIdNumber: z
-    .string()
-    .trim()
-    .min(4, 'Enter the ID number shown on your verification document')
-    .max(80, 'Keep the ID number under 80 characters'),
   role: z.literal('customer'),
 })
 
 export type MemberSignUpFormValues = z.infer<typeof memberSignUpSchema>
-export type MemberSignUpSubmission = MemberSignUpFormValues & {
-  verificationDocument: File
-}
+export type MemberSignUpSubmission = MemberSignUpFormValues
 
 export const memberVerificationSchema = z.object({
   verificationIdNumber: z

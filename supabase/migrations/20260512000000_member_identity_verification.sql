@@ -87,14 +87,6 @@ begin
   new_verification_document_path := nullif(trim(coalesce(new.raw_user_meta_data ->> 'verification_document_path', '')), '');
   new_verification_document_filename := nullif(trim(coalesce(new.raw_user_meta_data ->> 'verification_document_filename', '')), '');
 
-  if new_role = 'customer' and new_verification_id is null then
-    raise exception 'Verification ID is required for member signup.';
-  end if;
-
-  if new_role = 'customer' and new_verification_document_path is null then
-    raise exception 'Verification document is required for member signup.';
-  end if;
-
   if new_verification_document_path is not null
     and new_verification_document_path !~ '^pending/[a-zA-Z0-9-]+\.[a-z0-9]+$'
   then
@@ -126,9 +118,9 @@ begin
     new_verification_document_filename,
     case when new_verification_document_path is null then null else now() end,
     case
-      when new_verification_id is null then 'not_submitted'
-      when new_verification_document_path is null then 'pending_document'
-      else 'submitted'
+      when new_verification_id is not null and new_verification_document_path is null then 'pending_document'
+      when new_verification_document_path is not null then 'submitted'
+      else 'not_submitted'
     end
   );
 
