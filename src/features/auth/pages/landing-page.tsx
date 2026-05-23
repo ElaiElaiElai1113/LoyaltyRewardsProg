@@ -1,16 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
-  ArrowLeftRight,
-  ArrowRight,
   BadgeCheck,
+  BarChart3,
+  Car,
   Coins,
   DollarSign,
-  ExternalLink,
+  FileText,
   Gift,
+  Hotel,
+  KeyRound,
+  Leaf,
   MapPin,
-  ShieldCheck,
   ShoppingCart,
-  Sparkles,
   Users,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -27,15 +28,6 @@ import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
-import {
-  landingClientHero,
-  landingLogo,
-  landingEarlySubscriberBenefits,
-  landingFaqItems,
-  landingMembershipAdvantages,
-  landingRewardsSteps,
-  landingWhyJoinItems,
-} from '../landing-content'
 
 const portalAccessErrorKey = 'portalAccessError'
 
@@ -70,257 +62,249 @@ function LoadingSpinner() {
 }
 
 export function LandingPage() {
-  const { t } = useLanguage()
+  const featureRows = [
+    {
+      icon: BarChart3,
+      text: (
+        <>
+          Earn between <strong className="font-semibold text-[#28292b]">20% - 100%</strong> by simply spending at amazing businesses within our platform
+        </>
+      ),
+    },
+    {
+      icon: ShoppingCart,
+      text: 'Earn from purchasing almost any type of product or service from going to a restaurant or hotel to buying a car or home.',
+    },
+  ] as const
 
-  const landingFaqIconByQuestion = {
-    [landingFaqItems[0].question]: MapPin,
-    [landingFaqItems[1].question]: Users,
-    [landingFaqItems[2].question]: ArrowLeftRight,
-    [landingFaqItems[3].question]: DollarSign,
-  } as const
+  const categoryPills = [
+    { icon: Hotel, label: 'Restaurants & hotels' },
+    { icon: Car, label: 'Cars & real estate' },
+    { icon: Gift, label: '20% - 100% back' },
+    { icon: Leaf, label: 'Any product or service' },
+  ] as const
 
-  const whyJoinIcons = [ShoppingCart, Users, Sparkles] as const
-  const earlyBenefitIcons = [BadgeCheck, Gift, Sparkles, ArrowRight] as const
-  const membershipIcons = [ShieldCheck, Coins, BadgeCheck] as const
+  const steps = [
+    {
+      title: 'Join',
+      body: 'Sign up as a member and receive your $100k early adopter bonus rewards.',
+    },
+    {
+      title: 'Spend',
+      body: 'Shop, dine, and buy services at any business in our network.',
+    },
+    {
+      title: 'Earn',
+      body: 'Automatically earn 20%-100% back in rewards on every purchase.',
+    },
+    {
+      title: 'Redeem',
+      body: 'Use your rewards for travel, experiences, and more - free vacation every year.',
+    },
+  ] as const
+
+  const faqs = [
+    {
+      icon: MapPin,
+      question: 'Where can I use my rewards?',
+      answer: 'You can use your rewards with partnered businesses inside the Medellin Rewards network. As the network grows, more places to earn and redeem will become available to members.',
+    },
+    {
+      icon: Users,
+      question: 'Can I have more than one rewards account?',
+      answer: 'No. Each person can have one rewards account. Medellin Rewards uses ID verification to keep rewards fair, protect member value, and prevent duplicate accounts.',
+    },
+    {
+      icon: BadgeCheck,
+      question: 'Can I transfer rewards to another account?',
+      answer: 'Rewards are tied to your verified member account and cannot be transferred. This helps protect your balance and keeps the program secure for every member.',
+    },
+    {
+      icon: DollarSign,
+      question: 'Can rewards be exchanged for money?',
+      answer: 'No. Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards program, not cash exchange.',
+    },
+  ] as const
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f6f7f8] text-[#232326]">
-      <header className="landing-header-figma sticky top-0 z-40 flex min-h-[61px] items-center border-b border-[#dde1e6] bg-[#ffffff]/95 px-4 backdrop-blur sm:px-6 lg:px-8">
-        <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-4">
-          <Link to="/landing-page" className="font-serif text-[24px] font-semibold leading-none text-[#202023]">
+    <main className="screenshot-landing min-h-screen overflow-x-hidden bg-[#f6f7f8] text-[#242426]">
+      <header className="sticky top-0 z-40 flex min-h-[61px] items-center border-b border-[#e1e4e8] bg-[#ffffff] px-8">
+        <div className="mx-auto flex w-full max-w-[1336px] items-center justify-between gap-4">
+          <Link to="/landing-page" className="font-serif text-[23px] font-bold leading-none tracking-[-0.01em] text-[#202023]">
             Medellin <span className="text-[#c9a84c]">Rewards</span>
-            <span className="sr-only">{t(landingLogo)}</span>
           </Link>
-          <nav className="hidden items-center gap-5 text-[13px] font-medium leading-none text-[#667083] lg:flex">
-            <a href="#why-join" className="transition hover:text-[#202023]">
-              {t('Why join')}
+          <nav className="hidden items-center gap-[30px] text-[14px] font-medium leading-none text-[#687282] md:flex">
+            <a href="#how-it-works" className="transition hover:text-[#202023]">
+              How it works
             </a>
-            <a href="#early-benefits" className="transition hover:text-[#202023]">
-              {t('Early benefits')}
-            </a>
-            <a href="#rewards-system" className="transition hover:text-[#202023]">
-              {t('Rewards system')}
-            </a>
-            <a href="#membership" className="transition hover:text-[#202023]">
-              {t('Membership')}
-            </a>
-            <a href="#faq" className="transition hover:text-[#202023]">
-              {t('FAQ')}
-            </a>
-          </nav>
-          <div className="flex items-center gap-3">
-            <LanguagePicker className="hidden text-[#667083] sm:flex" compact />
-            <Link to="/early-access" className="inline-flex min-h-10 items-center justify-center rounded-md bg-[#d3ae43] px-4 text-[13px] font-bold text-[#111111] transition hover:bg-[#c49e34]">
-              {t('Join early')}
+            <Link to="/business" className="transition hover:text-[#202023]">
+              Businesses
             </Link>
-          </div>
+            <a href="#faq" className="transition hover:text-[#202023]">
+              FAQ
+            </a>
+            <Link to="/early-access" className="font-semibold text-[#caa747] transition hover:text-[#a87916]">
+              Join now
+            </Link>
+          </nav>
         </div>
       </header>
 
-      <section className="landing-hero-exact flex min-h-[690px] items-center justify-center px-4 py-16 sm:px-6 lg:px-8">
-        <div className="mx-auto grid w-full max-w-[1180px] gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(320px,0.72fr)] lg:items-center">
-          <div>
-            <p className="mb-5 inline-flex rounded-full border border-[#d9bd73] bg-[#fff9ed] px-4 py-2 text-[11px] font-semibold uppercase leading-none tracking-[0.18em] text-[#9f730f]">
-              {t(landingClientHero.eyebrow)}
+      <section className="border-b border-[#e1e4e8] px-4 pb-[38px] pt-[52px] sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-[790px] flex-col items-center text-center">
+          <p className="landing-soft-gold-border inline-flex min-h-[32px] items-center rounded-full border border-[#dcc070] bg-[#fffaf0] px-[18px] text-[12px] font-semibold uppercase leading-none tracking-[0.22em] text-[#a47713]">
+            The world's highest paying rewards program
+          </p>
+
+          <h1 className="mt-[24px] max-w-[700px] font-serif text-[38px] font-bold leading-[1.11] tracking-normal text-[#202023] sm:text-[44px]">
+            Earn a <span className="text-[#cfaa44]">free vacation</span> every year - doing what you already do
+          </h1>
+
+          <div className="mt-[22px] max-w-[610px] space-y-[18px] text-[17px] font-medium leading-[1.55] text-[#687282]">
+            <p>
+              Imagine being able to earn enough rewards every year for a free vacation by doing what you already do,
+              with Medellin Rewards you can do exactly that!
             </p>
-            <h1 className="max-w-[720px] font-serif text-[34px] font-semibold leading-[1.12] tracking-normal text-[#202023] sm:text-[44px] lg:text-[52px]">
-              {t(landingClientHero.headline)}
-            </h1>
-            <p className="mt-5 max-w-[660px] text-[17px] leading-8 text-[#5d6676]">
-              {t(landingClientHero.body)}
+            <p>
+              Medellin Rewards pays a minimum of 20% to a maximum of 100% in Rewards when you spend your money
+              with the businesses that are within our network.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link
-                to="/early-access"
-                className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-lg bg-[#d3ae43] px-6 text-[15px] font-bold text-[#111111] transition hover:bg-[#c49e34]"
-              >
-                {t(landingClientHero.primaryCta)}
-                <ExternalLink className="size-4" aria-hidden="true" />
-              </Link>
-              <a
-                href="#rewards-system"
-                className="inline-flex min-h-[50px] items-center justify-center gap-2 rounded-lg border border-[#d6dbe2] bg-white px-6 text-[15px] font-semibold text-[#40506d] transition hover:border-[#c8a23d]"
-              >
-                {t(landingClientHero.secondaryCta)}
-                <ArrowRight className="size-4" aria-hidden="true" />
-              </a>
-            </div>
           </div>
 
-          <div className="rounded-[0.8rem] border border-[#dde1e6] bg-white p-6 shadow-[0_14px_45px_rgba(16,24,40,0.08)]">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#667083]">
-              {t('Early subscriber summary')}
-            </p>
-            <div className="mt-5 grid gap-4">
-              <div className="rounded-[0.55rem] bg-[#f7f8fb] p-5">
-                <p className="text-[28px] font-semibold leading-none text-[#d0a534]">20% - 100%</p>
-                <p className="mt-2 text-[13px] leading-5 text-[#5d6676]">
-                  {t('Rewards on eligible spending, depending on the offer.')}
-                </p>
-              </div>
-              <div className="rounded-[0.55rem] bg-[#f7f8fb] p-5">
-                <p className="text-[18px] font-semibold leading-none text-[#202023]">
-                  {t('Early access before public launch')}
-                </p>
-                <p className="mt-2 text-[13px] leading-5 text-[#5d6676]">
-                  {t('Join before the wider launch and receive first updates as the network opens.')}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section id="why-join" className="border-t border-[#dde1e6] bg-white px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[1180px]">
-          <div className="max-w-2xl">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Why join')}</p>
-            <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('Why people should join')}</h2>
-            <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('Medellin Rewards is built for members who want everyday spending to create more usable value over time.')}</p>
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {landingWhyJoinItems.map((item, index) => {
-              const Icon = whyJoinIcons[index]
+          <div className="mt-[30px] grid w-full max-w-[700px] gap-[14px]">
+            {featureRows.map((item) => {
+              const Icon = item.icon
 
               return (
-                <article key={item.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] p-6">
-                  <Icon className="size-5 text-[#c8a23d]" aria-hidden="true" />
-                  <h3 className="mt-4 text-[16px] font-semibold text-[#202023]">{t(item.title)}</h3>
-                  <p className="mt-2 text-[14px] leading-6 text-[#667083]">{t(item.body)}</p>
-                </article>
+                <div key={String(item.text)} className="flex min-h-[55px] items-center gap-4 rounded-[10px] border border-[#dfe3e8] bg-[#ffffff] px-[21px] text-left text-[14px] font-medium leading-5 text-[#687282] shadow-[0_2px_4px_rgba(16,24,40,0.04)]">
+                  <Icon className="size-[17px] shrink-0 text-[#caa747]" strokeWidth={1.9} aria-hidden="true" />
+                  <span>{item.text}</span>
+                </div>
               )
             })}
           </div>
-        </div>
-      </section>
 
-      <section id="early-benefits" className="landing-subscription-figma border-t border-[#dde1e6] bg-[#f6f7f8] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[1180px]">
-          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-            <div className="max-w-2xl">
-              <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Early benefits')}</p>
-              <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('Early subscriber benefits')}</h2>
-              <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('Subscribers join before the public launch and receive early access to updates, launch offers, and first reward opportunities.')}</p>
-            </div>
-            <Button asChild size="lg" className="min-h-[45px] rounded-[0.45rem] bg-[#d4af43] text-[14px] font-semibold text-[#070707] shadow-none hover:bg-[#c6a238]">
-              <Link to="/early-access">{t('Join early')}</Link>
-            </Button>
-          </div>
-
-          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {landingEarlySubscriberBenefits.map((item, index) => {
-              const Icon = earlyBenefitIcons[index]
+          <div className="mt-[28px] flex max-w-[800px] flex-wrap items-center justify-center gap-[10px]">
+            {categoryPills.map((item) => {
+              const Icon = item.icon
 
               return (
-                <article key={item.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-white p-6">
-                  <Icon className="size-5 text-[#c8a23d]" aria-hidden="true" />
-                  <h3 className="mt-4 text-[15px] font-semibold leading-5 text-[#202023]">{t(item.title)}</h3>
-                  <p className="mt-2 text-[13px] leading-6 text-[#667083]">{t(item.body)}</p>
-                </article>
+                <span key={item.label} className="inline-flex min-h-[38px] items-center gap-[10px] rounded-full border border-[#dfe3e8] bg-[#ffffff] px-[20px] text-[13px] font-medium text-[#545b66]">
+                  <Icon className="size-[15px] text-[#caa747]" strokeWidth={1.8} aria-hidden="true" />
+                  {item.label}
+                </span>
               )
             })}
           </div>
+
+          <Link
+            to="/early-access"
+            className="mt-[26px] inline-flex min-h-[54px] min-w-[278px] items-center justify-center rounded-[8px] bg-[#d1ad4a] px-8 text-[15px] font-bold text-[#121212] transition hover:bg-[#c29f3d]"
+          >
+            Join Medellin Rewards
+          </Link>
         </div>
       </section>
 
-      <section id="rewards-system" className="landing-how-it-works-figma border-t border-[#dde1e6] bg-white px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[1180px]">
-          <div className="max-w-2xl">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Rewards system')}</p>
-            <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('How the rewards system works')}</h2>
-            <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('The program connects eligible purchases to rewards that can be redeemed through the Medellin Rewards network.')}</p>
+      <section className="border-b border-[#e1e4e8] bg-[#ffffff] px-4 py-[34px] sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-[520px] flex-col items-center text-center">
+          <h2 className="font-serif text-[30px] font-bold leading-none text-[#202023]">
+            Early adopter monthly subscription
+          </h2>
+
+          <div className="landing-gold-border mt-[30px] w-full max-w-[352px] rounded-[10px] border-2 border-[#d1ad4a] bg-[#ffffff] px-[30px] pb-[22px] pt-[38px]">
+            <p className="mx-auto -mt-[50px] flex h-[28px] w-[200px] items-center justify-center rounded-full bg-[#d1ad4a] text-[12px] font-bold uppercase tracking-[0.18em] text-[#202023]">
+              Early adopter offer
+            </p>
+            <p className="mt-[22px] text-[15px] font-bold uppercase tracking-[0.22em] text-[#7a8291]">
+              Monthly subscription
+            </p>
+
+            <div className="mt-[13px] rounded-[8px] bg-[#f8f9fb] px-4 py-[14px]">
+              <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-[#9aa2af]">$100,000 Bonus 100%</p>
+              <p className="mt-[10px] text-[25px] font-bold leading-none text-[#d0a63d]">$100,000 in Rewards</p>
+            </div>
+
+            <Link
+              to="/early-access"
+              className="mt-[14px] flex min-h-[44px] w-full items-center justify-center rounded-[8px] bg-[#d1ad4a] text-[15px] font-bold text-[#121212] transition hover:bg-[#c29f3d]"
+            >
+              Join now
+            </Link>
+
+            <p className="mt-[14px] flex items-center justify-center gap-[5px] text-[12px] font-medium text-[#7a8291]">
+              <FileText className="size-[13px]" strokeWidth={1.7} aria-hidden="true" />
+              Member agreement applies
+            </p>
           </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-            {landingRewardsSteps.map((step, index) => (
-              <article key={step.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-[#fbfcfd] p-6">
-                <div className="flex size-[34px] items-center justify-center rounded-full border border-[#d9bd73] bg-[#fff9ed] text-[15px] font-medium text-[#9f730f]">
+
+          <Link
+            to="/reward-terms"
+            className="mt-[22px] inline-flex min-h-[48px] items-center justify-center gap-[12px] rounded-[8px] border border-[#dfe3e8] bg-[#ffffff] px-[27px] text-[14px] font-semibold text-[#4f5866] shadow-[0_2px_4px_rgba(16,24,40,0.04)] transition hover:border-[#d1ad4a]"
+          >
+            <KeyRound className="size-[17px] text-[#caa747]" strokeWidth={1.8} aria-hidden="true" />
+            View Agreement
+          </Link>
+        </div>
+      </section>
+
+      <section id="how-it-works" className="border-b border-[#e1e4e8] px-4 py-[34px] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1280px] text-center">
+          <h2 className="font-serif text-[30px] font-bold leading-none text-[#202023]">How it works</h2>
+          <p className="mt-[14px] text-[15px] font-medium text-[#687282]">Three simple steps to start earning rewards</p>
+
+          <div className="mt-[24px] grid gap-[16px] md:grid-cols-2 lg:grid-cols-4">
+            {steps.map((step, index) => (
+              <article key={step.title} className="flex min-h-[132px] flex-col items-center rounded-[10px] border border-[#dfe3e8] bg-[#ffffff] px-[28px] py-[16px]">
+                <div className="landing-soft-gold-border flex size-[36px] items-center justify-center rounded-full border border-[#dfc477] bg-[#fffaf0] text-[16px] font-semibold text-[#a47713]">
                   {index + 1}
                 </div>
-                <h3 className="mt-4 text-[15px] font-semibold leading-5 text-[#202023]">{t(step.title)}</h3>
-                <p className="mt-2 text-[13px] leading-6 text-[#667083]">{t(step.body)}</p>
+                <h3 className="mt-[15px] text-[15px] font-bold text-[#202023]">{step.title}</h3>
+                <p className="mt-[11px] text-[13px] font-medium leading-[1.55] text-[#687282]">{step.body}</p>
               </article>
             ))}
           </div>
-          <p className="mt-5 rounded-[0.45rem] border border-[#dde1e6] bg-[#f7f8fb] px-4 py-3 text-[13px] leading-6 text-[#667083]">
-            {t('Rewards are program credits and offers, not automatic cash payouts.')}
-          </p>
         </div>
       </section>
 
-      <section id="membership" className="border-t border-[#dde1e6] bg-[#f6f7f8] px-4 py-14 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[1180px]">
-          <div className="max-w-2xl">
-            <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#9f730f]">{t('Membership')}</p>
-            <h2 className="mt-3 font-serif text-[30px] font-semibold leading-tight text-[#202023]">{t('Membership advantages')}</h2>
-            <p className="mt-3 text-[15px] leading-7 text-[#667083]">{t('Membership is the account layer that helps unlock, track, and protect reward value.')}</p>
-          </div>
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {landingMembershipAdvantages.map((item, index) => {
-              const Icon = membershipIcons[index]
+      <section id="faq" className="border-b border-[#e1e4e8] px-4 pb-[34px] pt-[38px] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[700px]">
+          <h2 className="text-center font-serif text-[30px] font-bold leading-none text-[#202023]">
+            Frequently asked questions
+          </h2>
+
+          <div className="mt-[24px] space-y-[11px]">
+            {faqs.map((item) => {
+              const Icon = item.icon
 
               return (
-                <article key={item.title} className="rounded-[0.7rem] border border-[#dde1e6] bg-white p-6">
-                  <Icon className="size-5 text-[#c8a23d]" aria-hidden="true" />
-                  <h3 className="mt-4 text-[16px] font-semibold text-[#202023]">{t(item.title)}</h3>
-                  <p className="mt-2 text-[14px] leading-6 text-[#667083]">{t(item.body)}</p>
-                </article>
+                <details key={item.question} className="group rounded-[7px] border border-[#dfe3e8] bg-[#ffffff] px-[20px] text-[#2f3339]">
+                  <summary className="flex min-h-[58px] cursor-pointer list-none items-center gap-[13px] text-[14px] font-bold [&::-webkit-details-marker]:hidden">
+                    <Icon className="size-[15px] shrink-0 text-[#caa747]" strokeWidth={1.7} aria-hidden="true" />
+                    <span>{item.question}</span>
+                  </summary>
+                  <p className="pb-[18px] pl-[28px] pr-[10px] text-[13px] font-medium leading-[1.65] text-[#687282]">
+                    {item.answer}
+                  </p>
+                </details>
               )
             })}
           </div>
         </div>
       </section>
 
-      <section id="faq" className="landing-faq-figma border-t border-[#dde1e6] bg-[#f6f7f8] px-4 pb-[49px] pt-[57px] sm:px-6">
-        <div className="mx-auto max-w-[672px]">
-          <div className="text-center">
-            <h2 className="font-serif text-[26px] font-semibold leading-none tracking-normal text-[#202023]">
-              {t('Frequently asked questions')}
-            </h2>
-          </div>
-
-          <div className="mt-[35px] space-y-[11px]">
-            {landingFaqItems.map((item) => {
-              const FaqIcon = landingFaqIconByQuestion[item.question]
-
-              return (
-              <details key={item.question} className="group rounded-[0.45rem] border border-[#dde1e6] bg-[#ffffff] px-5 shadow-none">
-                <summary className="flex min-h-[63px] cursor-pointer list-none items-center gap-3 text-[14px] font-medium leading-none text-[#202023]">
-                  <FaqIcon className="size-4 shrink-0 text-[#c8a23d]" strokeWidth={1.8} aria-hidden="true" />
-                  <span>{t(item.question)}</span>
-                </summary>
-                <p className="pb-5 pl-7 text-[13px] leading-[1.55] text-[#667083]">
-                  {t(item.answer)}
-                </p>
-              </details>
-              )
-            })}
-          </div>
-        </div>
-      </section>
-
-      <footer className="landing-footer-figma flex min-h-[108px] items-center border-t border-[#dde1e6] bg-[#ffffff] px-[32px] py-0">
-        <div className="mx-auto grid w-full max-w-none gap-5 text-center lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:text-left">
-          <p className="font-serif text-[18px] font-semibold leading-none text-[#202023]">
+      <footer className="flex min-h-[86px] items-center bg-[#ffffff] px-8">
+        <div className="mx-auto grid w-full max-w-[1336px] gap-4 text-center md:grid-cols-[1fr_auto_1fr] md:items-center md:text-left">
+          <p className="font-serif text-[20px] font-bold leading-none tracking-[-0.01em] text-[#202023]">
             Medellin <span className="text-[#c9a84c]">Rewards</span>
           </p>
-          <p className="text-[12px] leading-none text-[#667083]">
-            {t("The world's highest paying rewards program")}
-          </p>
-          <nav className="flex flex-wrap items-center justify-center gap-3 text-[12px] leading-none text-[#667083] lg:justify-end">
-            <Link to="/reward-terms" className="transition hover:text-[#1a1a1a]">
-              {t('Member agreement')}
-            </Link>
-            <span className="hidden text-[#d1d5db] sm:inline">·</span>
-            <Link to="/privacy" className="transition hover:text-[#1a1a1a]">
-              {t('Privacy policy')}
-            </Link>
-            <span className="hidden text-[#d1d5db] sm:inline">·</span>
-            <Link to="/terms" className="transition hover:text-[#1a1a1a]">
-              {t('Contact')}
-            </Link>
-            <Link to="/early-access" className="font-semibold text-[#c8a23d] transition hover:text-[#a77816]">
-              {t('Join early')}
-            </Link>
+          <p className="text-[12px] font-medium text-[#687282]">The world's highest paying rewards program</p>
+          <nav className="flex flex-wrap items-center justify-center gap-[16px] text-[12px] font-medium text-[#687282] md:justify-end">
+            <Link to="/reward-terms" className="transition hover:text-[#202023]">Member agreement</Link>
+            <span className="text-[#c5cad2]">|</span>
+            <Link to="/privacy" className="transition hover:text-[#202023]">Privacy policy</Link>
+            <span className="text-[#c5cad2]">|</span>
+            <Link to="/terms" className="transition hover:text-[#202023]">Contact</Link>
           </nav>
         </div>
       </footer>

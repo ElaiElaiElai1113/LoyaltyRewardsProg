@@ -634,6 +634,8 @@ const spanishTranslations: Record<string, string> = {
   'Used by admins to verify one member account per person.':
     'Usado por administradores para verificar una cuenta de miembro por persona.',
   'Enter a valid email': 'Ingresa un correo válido',
+  'Enter your email': 'Ingresa tu correo',
+  'Email': 'Correo',
   'Use at least 5 characters': 'Usa al menos 5 caracteres',
   'Enter your full name': 'Ingresa tu nombre completo',
   'Enter the ID number shown on your verification document':

@@ -16,7 +16,7 @@ const earlyAccessModalSchema = z.object({
   fullName: z.string().trim().min(2, 'Enter your name').max(80, 'Keep your name under 80 characters'),
   whatsapp: z.string().trim().min(5, 'Enter your WhatsApp number').max(40, 'Keep WhatsApp under 40 characters'),
   instagram: z.string().trim().max(120, 'Keep Instagram under 120 characters').optional(),
-  email: z.union([z.literal(''), z.email('Enter a valid email')]).optional(),
+  email: z.string().trim().min(1, 'Enter your email').pipe(z.email('Enter a valid email')),
 })
 
 type EarlyAccessModalFormValues = z.infer<typeof earlyAccessModalSchema>
@@ -75,7 +75,7 @@ export function EarlyAccessPage() {
             ) : (
               <button
                 type="button"
-                className="h-12 rounded-md bg-black px-8 text-base font-bold text-white"
+                className="h-12 rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d]"
                 onClick={openLeadModal}
               >
                 {t(earlyAccessSubscribeButtonLabel)}
@@ -142,7 +142,7 @@ export function EarlyAccessPage() {
             </div>
 
             <div className="grid gap-3">
-              <label htmlFor="early-access-email" className={labelClass}>{t('Email optional')}</label>
+              <label htmlFor="early-access-email" className={labelClass}>{t('Email')}</label>
               <input id="early-access-email" className={inputClass} placeholder="you@example.com" {...leadForm.register('email')} />
               {leadForm.formState.errors.email ? <p className={errorClass}>{t(leadForm.formState.errors.email.message ?? '')}</p> : null}
             </div>
@@ -155,7 +155,7 @@ export function EarlyAccessPage() {
 
             <button
               type="submit"
-              className="h-12 w-full rounded-md bg-black px-8 text-base font-bold text-white disabled:opacity-60"
+              className="h-12 w-full rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d] disabled:opacity-60"
               disabled={leadForm.formState.isSubmitting}
             >
               {leadForm.formState.isSubmitting ? t('Submitting...') : t(earlyAccessSubscribeButtonLabel)}

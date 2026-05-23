@@ -132,7 +132,7 @@ runTest('early access content preserves the approved conversion copy', () => {
 runTest('early access subscribe form only exposes WhatsApp and email contact fields', () => {
   assert.deepEqual(earlyAccessSubscribeFields.map((field) => field.name), ['whatsapp', 'email'])
   assert.equal(earlyAccessSubscribeButtonLabel, 'Subscribe')
-  assert.equal(earlyAccessSubscribePrompt, 'Enter your WhatsApp number and/or email')
+  assert.equal(earlyAccessSubscribePrompt, 'Enter your WhatsApp number and email')
 })
 
 runTest('ambassador content uses approved VIP creator positioning', () => {
@@ -325,51 +325,41 @@ runTest('landing page content covers the client requested topics', () => {
 
 runTest('landing page FAQs are clickable and include answers', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
-  const landingContent = readFileSync('src/features/auth/landing-content.ts', 'utf8')
 
   assert.match(landingPage, /<details/)
   assert.match(landingPage, /<summary/)
-  assert.match(landingPage, /landingFaqItems\.map/)
-  assert.doesNotMatch(landingPage, /landingFaqQuestions\.map/)
-  assert.match(landingContent, /export const landingFaqItems/)
-  assert.match(landingContent, /answer:/)
+  assert.match(landingPage, /faqs\.map/)
+  assert.match(landingPage, /answer:/)
+  assert.match(landingPage, /partnered businesses inside the Medellin Rewards network/)
+  assert.match(landingPage, /ID verification/)
 })
 
 runTest('landing FAQ and footer follow the Figma lower page', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /landing-faq-figma/)
-  assert.match(landingPage, /max-w-\[672px\]/)
-  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#f6f7f8\]/)
-  assert.match(landingPage, /min-h-\[63px\]/)
-  assert.match(landingPage, /rounded-\[0\.45rem\] border border-\[#dde1e6\] bg-\[#ffffff\]/)
-  assert.match(landingPage, /landingFaqIconByQuestion/)
+  assert.match(landingPage, /id="faq"/)
+  assert.match(landingPage, /max-w-\[700px\]/)
+  assert.match(landingPage, /min-h-\[58px\]/)
+  assert.match(landingPage, /rounded-\[7px\] border border-\[#dfe3e8\] bg-\[#ffffff\]/)
   assert.match(landingPage, /MapPin/)
   assert.match(landingPage, /Users/)
-  assert.match(landingPage, /ArrowLeftRight/)
+  assert.match(landingPage, /BadgeCheck/)
   assert.match(landingPage, /DollarSign/)
   assert.doesNotMatch(landingPage, /ChevronRight/)
-  assert.match(landingPage, /landing-footer-figma/)
-  assert.match(landingPage, /min-h-\[108px\]/)
-  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#ffffff\]/)
-  assert.match(landingPage, /min-h-\[108px\][^"]*items-center/)
-  assert.match(landingPage, /grid-cols-\[1fr_auto_1fr\]/)
-  assert.match(landingPage, /max-w-none/)
+  assert.match(landingPage, /min-h-\[86px\]/)
+  assert.match(landingPage, /md:grid-cols-\[1fr_auto_1fr\]/)
+  assert.match(landingPage, /max-w-\[1336px\]/)
 })
 
-runTest('client landing page renders the required topic sections', () => {
+runTest('client landing page renders the screenshot sections', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /landingClientHero/)
-  assert.match(landingPage, /landingWhyJoinItems\.map/)
-  assert.match(landingPage, /landingEarlySubscriberBenefits\.map/)
-  assert.match(landingPage, /landingRewardsSteps\.map/)
-  assert.match(landingPage, /landingMembershipAdvantages\.map/)
-  assert.match(landingPage, /id="why-join"/)
-  assert.match(landingPage, /id="early-benefits"/)
-  assert.match(landingPage, /id="rewards-system"/)
-  assert.match(landingPage, /id="membership"/)
-  assert.match(landingPage, /Rewards are program credits and offers, not automatic cash payouts\./)
+  assert.match(landingPage, /free vacation<\/span>/)
+  assert.match(landingPage, /Early adopter monthly subscription/)
+  assert.match(landingPage, /\$100,000 in Rewards/)
+  assert.match(landingPage, /id="how-it-works"/)
+  assert.match(landingPage, /steps\.map/)
+  assert.match(landingPage, /faqs\.map/)
 })
 
 runTest('landing Figma reference asset is stored with app assets', () => {
@@ -431,18 +421,15 @@ runTest('landing Join CTAs go to early access', () => {
   const authPageStart = landingPage.indexOf('export function AuthPage')
   const landingMarkup = landingPage.slice(0, authPageStart)
 
-  assert.ok((landingMarkup.match(/to="\/early-access"/g) ?? []).length >= 3)
+  assert.ok((landingMarkup.match(/to="\/early-access"/g) ?? []).length >= 2)
   assert.doesNotMatch(landingMarkup, /to="\/join"/)
-  assert.match(landingPage, /landing-header-figma/)
   assert.match(landingPage, /min-h-\[61px\]/)
-  assert.match(landingPage, /Why join/)
-  assert.match(landingPage, /Early benefits/)
-  assert.match(landingPage, /Rewards system/)
-  assert.match(landingPage, /Membership/)
+  assert.match(landingPage, /How it works/)
+  assert.match(landingPage, /Businesses/)
   assert.match(landingPage, /FAQ/)
-  assert.match(landingPage, /landing-hero-exact/)
-  assert.match(landingPage, /min-h-\[690px\]/)
-  assert.match(landingPage, /landingClientHero/)
+  assert.match(landingPage, /Join now/)
+  assert.match(landingPage, /Join Medellin Rewards/)
+  assert.match(landingPage, /Early adopter monthly subscription/)
   assert.doesNotMatch(landingPage, /leadModalOpen/)
   assert.doesNotMatch(landingPage, /memberLeadSchema/)
 })
@@ -450,25 +437,24 @@ runTest('landing Join CTAs go to early access', () => {
 runTest('landing early subscriber section follows the client-focused design', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /landing-subscription-figma/)
-  assert.match(landingPage, /id="early-benefits"/)
-  assert.match(landingPage, /landingEarlySubscriberBenefits\.map/)
-  assert.match(landingPage, /Early subscriber benefits/)
-  assert.match(landingPage, /Join early/)
-  assert.match(landingPage, /bg-\[#f6f7f8\]/)
+  assert.match(landingPage, /Early adopter monthly subscription/)
+  assert.match(landingPage, /Early adopter offer/)
+  assert.match(landingPage, /Monthly subscription/)
+  assert.match(landingPage, /\$100,000 Bonus 100%/)
+  assert.match(landingPage, /Member agreement applies/)
+  assert.match(landingPage, /View Agreement/)
 })
 
 runTest('landing rewards system section explains the flow and disclaimer', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /landing-how-it-works-figma/)
-  assert.match(landingPage, /id="rewards-system"/)
-  assert.match(landingPage, /landingRewardsSteps\.map/)
+  assert.match(landingPage, /id="how-it-works"/)
+  assert.match(landingPage, /steps\.map/)
   assert.match(landingPage, /lg:grid-cols-4/)
-  assert.match(landingPage, /rounded-\[0\.7rem\] border border-\[#dde1e6\] bg-\[#fbfcfd\]/)
-  assert.match(landingPage, /size-\[34px\]/)
-  assert.match(landingPage, /text-\[#9f730f\]/)
-  assert.match(landingPage, /Rewards are program credits and offers, not automatic cash payouts\./)
+  assert.match(landingPage, /rounded-\[10px\] border border-\[#dfe3e8\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /size-\[36px\]/)
+  assert.match(landingPage, /Three simple steps to start earning rewards/)
+  assert.match(landingPage, /Use your rewards for travel, experiences, and more - free vacation every year\./)
 })
 
 runTest('early access CTA opens a lead capture modal', () => {
@@ -483,6 +469,8 @@ runTest('early access CTA opens a lead capture modal', () => {
   assert.match(earlyAccessPage, /leadForm\.register\('instagram'\)/)
   assert.match(earlyAccessPage, /leadForm\.register\('email'\)/)
   assert.match(earlyAccessPage, /Instagram/)
+  assert.match(earlyAccessPage, /email: z\.string\(\)\.trim\(\)\.min\(1, 'Enter your email'\)\.pipe\(z\.email\('Enter a valid email'\)\)/)
+  assert.ok((earlyAccessPage.match(/bg-\[#16a34a\]/g) ?? []).length >= 2)
 })
 
 runTest('root route renders only the early access letter page', () => {

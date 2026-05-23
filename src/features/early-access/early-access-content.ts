@@ -12,7 +12,7 @@ export const earlyAccessMessageLines = [
 
 export const earlyAccessSubscribeButtonLabel = 'Subscribe'
 
-export const earlyAccessSubscribePrompt = 'Enter your WhatsApp number and/or email'
+export const earlyAccessSubscribePrompt = 'Enter your WhatsApp number and email'
 
 export const earlyAccessSubscribeFields = [
   {

@@ -558,3 +558,16 @@ textarea {
 :root[data-theme="dark"] .border-stone-200 {
   border-color: var(--border) !important;
 }
+
+.screenshot-landing,
+.screenshot-landing * {
+  border-color: #dfe3e8;
+}
+
+.screenshot-landing .landing-gold-border {
+  border-color: #d1ad4a;
+}
+
+.screenshot-landing .landing-soft-gold-border {
+  border-color: #dcc070;
+}
