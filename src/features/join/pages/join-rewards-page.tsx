@@ -214,7 +214,7 @@ export function JoinRewardsPage() {
           Medellin Rewards
         </p>
         <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
-          MEMBER PORTAL
+          {t('Member Portal').toUpperCase()}
         </p>
       </div>
 
@@ -225,17 +225,17 @@ export function JoinRewardsPage() {
           </div>
           <div className="space-y-3">
             <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">
-              Welcome to the Rewards Club.
+              {t('Welcome to the Rewards Club.')}
             </h1>
             <p className="text-[12px] font-medium leading-5 text-[#8f8f8f]">
-              Your account is created. Sign in, then verify your ID from your profile to unlock rewards.
+              {t('Your account is created. Sign in, then verify your ID from your profile to unlock rewards.')}
             </p>
             {signUpWarning ? (
               <p className="text-xs font-bold leading-5 text-warning">{signUpWarning}</p>
             ) : null}
           </div>
           <Button asChild className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold text-[#080808] hover:bg-[#c5a141]">
-            <Link to="/signin">Go to sign in</Link>
+            <Link to="/signin">{t('Go to sign in')}</Link>
           </Button>
         </div>
       ) : (
@@ -267,15 +267,15 @@ export function JoinRewardsPage() {
           })}
         >
           <div className="grid gap-2">
-            <Label htmlFor="join-name" className="text-[12px] font-semibold text-[#8f8f8f]">Full name</Label>
-            <Input id="join-name" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" placeholder="Your name" {...form.register('fullName')} />
+            <Label htmlFor="join-name" className="text-[12px] font-semibold text-[#8f8f8f]">{t('Full name')}</Label>
+            <Input id="join-name" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" placeholder={t('Your name')} {...form.register('fullName')} />
             {form.formState.errors.fullName ? (
               <p className="text-xs font-bold text-red-400">{t(form.formState.errors.fullName.message ?? '')}</p>
             ) : null}
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="join-email" className="text-[12px] font-semibold text-[#8f8f8f]">Email address</Label>
+            <Label htmlFor="join-email" className="text-[12px] font-semibold text-[#8f8f8f]">{t('Email address')}</Label>
             <Input id="join-email" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" type="email" placeholder="your@email.com" {...form.register('email')} />
             {form.formState.errors.email ? (
               <p className="text-xs font-bold text-red-400">{t(form.formState.errors.email.message ?? '')}</p>
@@ -283,7 +283,7 @@ export function JoinRewardsPage() {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="join-password" className="text-[12px] font-semibold text-[#8f8f8f]">Password</Label>
+            <Label htmlFor="join-password" className="text-[12px] font-semibold text-[#8f8f8f]">{t('Password')}</Label>
             <div className="relative">
               <Input
                 id="join-password"
@@ -316,13 +316,13 @@ export function JoinRewardsPage() {
             className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold tracking-[0.04em] text-[#080808] hover:bg-[#c5a141]"
             isLoading={form.formState.isSubmitting}
           >
-            Create my account ↗
+            {t('Create my account')} ↗
           </Button>
 
           <p className="text-center text-[11px] font-medium text-[#8aa0bc]">
-            Already have an account?{' '}
+            {t('Already have an account?')}{' '}
             <Link to="/signin" className="font-bold text-[#d1ad4a] transition hover:text-[#f0ca62]">
-              Sign in
+              {t('Sign in')}
             </Link>
           </p>
         </form>

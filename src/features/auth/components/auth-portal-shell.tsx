@@ -1,6 +1,10 @@
 import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 
+import { LanguagePicker } from '@/components/language-picker'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { useLanguage } from '@/lib/language'
+
 type AuthPortalShellProps = {
   activeTab: 'signin' | 'signup'
   children: ReactNode
@@ -11,24 +15,38 @@ function tabClass(isActive: boolean) {
     'flex h-10 flex-1 items-center justify-center rounded-[9px] text-[13px] font-semibold transition',
     isActive
       ? 'bg-[#d1ad4a] text-[#060606]'
-      : 'text-[#8b8b8b] hover:bg-[#0e0e0e] hover:text-[#d1ad4a]',
+      : 'text-[var(--muted-foreground)] hover:bg-[color-mix(in_srgb,var(--surface-container-highest)_34%,transparent)] hover:text-[#d1ad4a]',
   ].join(' ')
 }
 
 export function AuthPortalShell({ activeTab, children }: AuthPortalShellProps) {
+  const { t } = useLanguage()
+
   return (
-    <main className="auth-portal-shell flex min-h-screen items-start justify-center bg-[#000000] px-4 py-8 text-[#f7f7f7] sm:px-6">
-      <div className="flex w-full max-w-[420px] flex-col items-center">
-        <nav className="grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[#000000] p-0">
+    <main className="auth-portal-shell relative flex min-h-screen items-start justify-center overflow-hidden bg-[var(--background)] px-4 py-8 text-[var(--foreground)] sm:px-6">
+      <div
+        className="auth-portal-backdrop pointer-events-none absolute inset-0"
+        style={{
+          background:
+            'radial-gradient(ellipse at top, color-mix(in srgb, var(--champagne) 30%, transparent) 0%, color-mix(in srgb, var(--surface-container-highest) 58%, transparent) 34%, color-mix(in srgb, var(--surface-container-lowest) 88%, transparent) 76%), linear-gradient(135deg, var(--surface-container-lowest) 0%, var(--background) 46%, var(--surface-container-low) 100%)',
+        }}
+      />
+      <div className="relative z-10 flex w-full max-w-[420px] flex-col items-center">
+        <div className="mb-4 flex w-full items-center justify-end gap-2 text-[var(--foreground)]">
+          <LanguagePicker className="text-current" compact />
+          <ThemeToggle className="border border-[#d1ad4a]/45 bg-[color-mix(in_srgb,var(--surface-container-lowest)_86%,transparent)] text-[#d1ad4a] hover:bg-[#d1ad4a] hover:text-[#060606]" />
+        </div>
+
+        <nav className="grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] p-0">
           <Link to="/signin" className={tabClass(activeTab === 'signin')}>
-            Sign in
+            {t('Sign in')}
           </Link>
           <Link to="/join" className={tabClass(activeTab === 'signup')}>
-            Create account
+            {t('Create account')}
           </Link>
         </nav>
 
-        <section className="mt-8 w-full rounded-[12px] border border-[#d1ad4a] bg-[#000000] px-8 pb-9 pt-9 shadow-[0_18px_60px_rgba(0,0,0,0.45)] sm:px-8">
+        <section className="mt-8 w-full rounded-[12px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] px-8 pb-9 pt-9 text-[var(--foreground)] shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:px-8">
           {children}
         </section>
       </div>

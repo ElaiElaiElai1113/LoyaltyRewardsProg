@@ -566,6 +566,13 @@ const spanishTranslations: Record<string, string> = {
     'Invita amigos y sigue tus recompensas mientras la red crece a tu alrededor.',
   'Welcome to the Rewards Club.': 'Bienvenido al Club de Recompensas.',
   'Go to sign in': 'Ir a iniciar sesión',
+  'Member Portal': 'Portal de miembro',
+  'Sign in to my account': 'Iniciar sesion en mi cuenta',
+  "Don't have an account?": 'No tienes cuenta?',
+  'Already have an account?': 'Ya tienes cuenta?',
+  'Create my account': 'Crear mi cuenta',
+  'Your account is created. Sign in, then verify your ID from your profile to unlock rewards.':
+    'Tu cuenta esta creada. Inicia sesion y verifica tu ID desde tu perfil para desbloquear recompensas.',
   'Upload a photo or PDF of your ID for account verification.':
     'Sube una foto o PDF de tu ID para verificar la cuenta.',
   'Create your member account': 'Crea tu cuenta de miembro',

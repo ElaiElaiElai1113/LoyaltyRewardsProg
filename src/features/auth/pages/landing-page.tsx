@@ -598,7 +598,7 @@ export function AuthPage() {
           Medellin Rewards
         </p>
         <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
-          MEMBER PORTAL
+          {t('Member Portal').toUpperCase()}
         </p>
       </div>
 
@@ -623,14 +623,14 @@ export function AuthPage() {
           })}
         >
           <div className="space-y-2 text-center">
-            <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">Reset Password</h1>
+            <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">{t('Reset Password')}</h1>
             <p className="text-[12px] font-medium leading-5 text-[#8f8f8f]">
-              Enter your email and we'll send you a reset link.
+              {t("Enter your email and we'll send you a reset link.")}
             </p>
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="reset-email" className={authLabelClass}>Email address</Label>
+            <Label htmlFor="reset-email" className={authLabelClass}>{t('Email address')}</Label>
             <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
           </div>
 
@@ -645,10 +645,10 @@ export function AuthPage() {
             {resetForm.formState.isSubmitting ? (
               <span className="inline-flex items-center gap-2">
                 <LoadingSpinner />
-                Send reset link
+                {t('Send reset link')}
               </span>
             ) : (
-              'Send reset link'
+              t('Send reset link')
             )}
           </Button>
 
@@ -660,7 +660,7 @@ export function AuthPage() {
               setShowForgotPassword(false)
             }}
           >
-            Back to sign in
+            {t('Back to sign in')}
           </button>
         </form>
       ) : (
@@ -694,7 +694,7 @@ export function AuthPage() {
           ) : null}
 
           <div className="grid gap-2">
-            <Label htmlFor="signin-email" className={authLabelClass}>Email address</Label>
+            <Label htmlFor="signin-email" className={authLabelClass}>{t('Email address')}</Label>
             <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
             {signInForm.formState.errors.email ? (
               <p className="text-xs font-bold text-red-400">
@@ -704,7 +704,7 @@ export function AuthPage() {
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="signin-password" className={authLabelClass}>Password</Label>
+            <Label htmlFor="signin-password" className={authLabelClass}>{t('Password')}</Label>
             <div className="relative">
               <Input
                 id="signin-password"
@@ -736,7 +736,7 @@ export function AuthPage() {
                 setShowForgotPassword(true)
               }}
             >
-              Forgot password?
+              {t('Forgot password?')}
             </button>
           </div>
 
@@ -751,17 +751,17 @@ export function AuthPage() {
             {signInForm.formState.isSubmitting ? (
               <span className="inline-flex items-center gap-2">
                 <LoadingSpinner />
-                Signing in...
+                {t('Signing in...')}
               </span>
             ) : (
-              'Sign in to my account ↗'
+              `${t('Sign in to my account')} ↗`
             )}
           </Button>
 
           <p className="text-center text-[11px] font-medium text-[#8aa0bc]">
-            Don't have an account?{' '}
+            {t("Don't have an account?")}{' '}
             <Link to="/join" className="font-bold text-[#d1ad4a] transition hover:text-[#f0ca62]">
-              Join Medellin Rewards
+              {t('Join Medellin Rewards')}
             </Link>
           </p>
         </form>
