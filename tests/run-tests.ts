@@ -366,12 +366,12 @@ runTest('landing Figma reference asset is stored with app assets', () => {
   assert.equal(existsSync('src/assets/medellin-landing.png'), true)
 })
 
-runTest('member signup page uses simplified branded layout', () => {
+runTest('member signup page uses compact black and gold portal layout', () => {
   const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
 
-  assert.match(joinPage, /soft-luxe-shell/)
-  assert.match(joinPage, /gold-frame/)
-  assert.match(joinPage, /luxe-card/)
+  assert.match(joinPage, /AuthPortalShell/)
+  assert.match(joinPage, /activeTab="signup"/)
+  assert.match(joinPage, /Create my account/)
   assert.doesNotMatch(joinPage, /heroImage/)
   assert.doesNotMatch(joinPage, /Spend \$X locally/)
   assert.doesNotMatch(joinPage, /Why we verify members/)
@@ -418,7 +418,7 @@ runTest('new customer auth trigger allows account creation before ID submission'
 
 runTest('landing Join CTAs go to early access', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
-  const authPageStart = landingPage.indexOf('export function AuthPage')
+  const authPageStart = landingPage.indexOf('export function LegacyAuthPage')
   const landingMarkup = landingPage.slice(0, authPageStart)
 
   assert.ok((landingMarkup.match(/to="\/early-access"/g) ?? []).length >= 2)
@@ -536,6 +536,54 @@ runTest('client landing page is available at /landing-page', () => {
 
   assert.match(router, /path: '\/landing-page'/)
   assert.match(router, /element: <LandingPage \/>/)
+})
+
+runTest('member auth pages use the approved black and gold portal shell', () => {
+  const authShell = readFileSync('src/features/auth/components/auth-portal-shell.tsx', 'utf8')
+  const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+  const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
+
+  assert.match(authShell, /auth-portal-shell/)
+  assert.match(authShell, /bg-\[#000000\]/)
+  assert.match(authShell, /border-\[#d1ad4a\]/)
+  assert.match(authShell, /to="\/signin"/)
+  assert.match(authShell, /to="\/join"/)
+  assert.match(authShell, /activeTab === 'signin'/)
+  assert.match(authShell, /activeTab === 'signup'/)
+  assert.match(authPage, /<AuthPortalShell activeTab="signin"/)
+  assert.match(joinPage, /<AuthPortalShell activeTab="signup"/)
+})
+
+runTest('member sign in page matches the compact portal reference', () => {
+  const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+  const authSectionStart = authPage.indexOf('export function AuthPage')
+  const authSection = authPage.slice(authSectionStart)
+
+  assert.match(authSection, /MEMBER PORTAL/)
+  assert.match(authSection, /id="signin-email"/)
+  assert.match(authSection, /id="signin-password"/)
+  assert.match(authSection, /Forgot password\?/)
+  assert.match(authSection, /Sign in to my account/)
+  assert.match(authSection, /Don.?t have an account\?/)
+  assert.match(authSection, /Join Medellin Rewards/)
+  assert.match(authSection, /Eye/)
+  assert.doesNotMatch(authSection, /Sign in to your member account\./)
+  assert.doesNotMatch(authSection, /Track your rewards, gift-card value/)
+})
+
+runTest('member signup page shares the compact portal reference layout', () => {
+  const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
+
+  assert.match(joinPage, /MEMBER PORTAL/)
+  assert.match(joinPage, /id="join-name"/)
+  assert.match(joinPage, /id="join-email"/)
+  assert.match(joinPage, /id="join-password"/)
+  assert.match(joinPage, /Create my account/)
+  assert.match(joinPage, /Already have an account\?/)
+  assert.match(joinPage, /Sign in/)
+  assert.match(joinPage, /Eye/)
+  assert.doesNotMatch(joinPage, /soft-luxe-shell/)
+  assert.doesNotMatch(joinPage, /gold-frame/)
 })
 
 runTest('early access typography keeps the launch copy readable', () => {

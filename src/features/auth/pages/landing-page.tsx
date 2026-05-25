@@ -5,6 +5,8 @@ import {
   Car,
   Coins,
   DollarSign,
+  Eye,
+  EyeOff,
   FileText,
   Gift,
   Hotel,
@@ -21,6 +23,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
+import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -38,10 +41,12 @@ const defaultValues: AuthFormValues = {
   role: 'customer',
 }
 
+const authInputClass =
+  'h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35'
+const authLabelClass = 'text-[12px] font-semibold text-[#8f8f8f]'
+const authErrorClass = 'text-center text-xs font-bold text-red-400'
 const authPanelTitleClass = 'font-serif text-4xl tracking-tight text-[var(--foreground)] md:text-5xl'
 const authPanelCopyClass = 'text-sm font-semibold text-[var(--on-surface-variant)]'
-const authInputClass =
-  'border-[var(--champagne)]/38 bg-[var(--espresso)]/58 text-[var(--cream)] placeholder:text-[var(--cream)]/62 focus-visible:ring-[var(--champagne)]/32'
 
 function LoadingSpinner() {
   return (
@@ -311,7 +316,7 @@ export function LandingPage() {
     </main>
   )
 }
-export function AuthPage() {
+export function LegacyAuthPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { signIn } = useAuth()
@@ -554,5 +559,213 @@ export function AuthPage() {
         </section>
       </div>
     </div>
+  )
+}
+
+export function AuthPage() {
+  const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const { signIn } = useAuth()
+  const { t } = useLanguage()
+  const [error, setError] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+
+    const storedError = sessionStorage.getItem(portalAccessErrorKey)
+    if (storedError) {
+      sessionStorage.removeItem(portalAccessErrorKey)
+    }
+    return storedError
+  })
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null)
+
+  const signInForm = useForm<AuthFormValues>({
+    resolver: zodResolver(authSchema),
+    defaultValues,
+  })
+
+  const resetForm = useForm<Pick<AuthFormValues, 'email'>>({
+    defaultValues: {
+      email: '',
+    },
+  })
+
+  return (
+    <AuthPortalShell activeTab="signin">
+      <div className="mb-7 text-center">
+        <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
+          Medellin Rewards
+        </p>
+        <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
+          MEMBER PORTAL
+        </p>
+      </div>
+
+      {showForgotPassword ? (
+        <form
+          className="space-y-5"
+          onSubmit={resetForm.handleSubmit(async (values) => {
+            try {
+              setError(null)
+              setResetSuccessMessage(null)
+              await authService.resetPassword(values.email.trim())
+              setResetSuccessMessage(t('Check your email for a password reset link.'))
+              setShowForgotPassword(false)
+              resetForm.reset({ email: '' })
+            } catch (submissionError) {
+              setError(
+                submissionError instanceof Error
+                  ? submissionError.message
+                  : t('Unable to send reset link.'),
+              )
+            }
+          })}
+        >
+          <div className="space-y-2 text-center">
+            <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">Reset Password</h1>
+            <p className="text-[12px] font-medium leading-5 text-[#8f8f8f]">
+              Enter your email and we'll send you a reset link.
+            </p>
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="reset-email" className={authLabelClass}>Email address</Label>
+            <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
+          </div>
+
+          {error ? <p className={authErrorClass}>{t(error)}</p> : null}
+
+          <Button
+            type="submit"
+            size="lg"
+            className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold tracking-[0.04em] text-[#080808] hover:bg-[#c5a141]"
+            disabled={resetForm.formState.isSubmitting}
+          >
+            {resetForm.formState.isSubmitting ? (
+              <span className="inline-flex items-center gap-2">
+                <LoadingSpinner />
+                Send reset link
+              </span>
+            ) : (
+              'Send reset link'
+            )}
+          </Button>
+
+          <button
+            type="button"
+            className="block w-full text-center text-[12px] font-semibold text-[#d1ad4a] transition hover:text-[#f0ca62]"
+            onClick={() => {
+              setError(null)
+              setShowForgotPassword(false)
+            }}
+          >
+            Back to sign in
+          </button>
+        </form>
+      ) : (
+        <form
+          className="space-y-5"
+          onSubmit={signInForm.handleSubmit(
+            async (values) => {
+              try {
+                setError(null)
+                setResetSuccessMessage(null)
+                await signIn({ ...values, role: 'customer' })
+                const redirect = searchParams.get('redirect')
+                if (redirect) {
+                  navigate(redirect)
+                }
+              } catch (submissionError) {
+                setError(
+                  submissionError instanceof Error
+                    ? submissionError.message
+                    : t('Unable to sign in.'),
+                )
+              }
+            },
+            () => {
+              setError(t('Enter a valid email address and password to sign in.'))
+            },
+          )}
+        >
+          {resetSuccessMessage ? (
+            <p className="text-center text-xs font-bold text-success">{resetSuccessMessage}</p>
+          ) : null}
+
+          <div className="grid gap-2">
+            <Label htmlFor="signin-email" className={authLabelClass}>Email address</Label>
+            <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
+            {signInForm.formState.errors.email ? (
+              <p className="text-xs font-bold text-red-400">
+                {t(signInForm.formState.errors.email.message ?? '')}
+              </p>
+            ) : null}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="signin-password" className={authLabelClass}>Password</Label>
+            <div className="relative">
+              <Input
+                id="signin-password"
+                className={`${authInputClass} pr-10`}
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                {...signInForm.register('password')}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-[#6b7280] transition hover:text-[#111827]"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword((value) => !value)}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+            {signInForm.formState.errors.password ? (
+              <p className="text-xs font-bold text-red-400">
+                {t(signInForm.formState.errors.password.message ?? '')}
+              </p>
+            ) : null}
+            <button
+              type="button"
+              className="justify-self-end text-[12px] font-semibold text-[#d1ad4a] transition hover:text-[#f0ca62]"
+              onClick={() => {
+                setError(null)
+                resetForm.setValue('email', signInForm.getValues('email'))
+                setShowForgotPassword(true)
+              }}
+            >
+              Forgot password?
+            </button>
+          </div>
+
+          {error ? <p className={authErrorClass}>{t(error)}</p> : null}
+
+          <Button
+            type="submit"
+            size="lg"
+            className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold tracking-[0.04em] text-[#080808] hover:bg-[#c5a141]"
+            disabled={signInForm.formState.isSubmitting}
+          >
+            {signInForm.formState.isSubmitting ? (
+              <span className="inline-flex items-center gap-2">
+                <LoadingSpinner />
+                Signing in...
+              </span>
+            ) : (
+              'Sign in to my account ↗'
+            )}
+          </Button>
+
+          <p className="text-center text-[11px] font-medium text-[#8aa0bc]">
+            Don't have an account?{' '}
+            <Link to="/join" className="font-bold text-[#d1ad4a] transition hover:text-[#f0ca62]">
+              Join Medellin Rewards
+            </Link>
+          </p>
+        </form>
+      )}
+    </AuthPortalShell>
   )
 }

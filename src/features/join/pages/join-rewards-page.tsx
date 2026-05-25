@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { BadgeCheck, Gift } from 'lucide-react'
+import { BadgeCheck, Eye, EyeOff, Gift } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, Navigate } from 'react-router-dom'
@@ -7,6 +7,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
@@ -28,7 +29,7 @@ function homePathForRole(role: string) {
   return '/dashboard'
 }
 
-export function JoinRewardsPage() {
+export function LegacyJoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const { t } = useLanguage()
   const [signUpComplete, setSignUpComplete] = useState(false)
@@ -45,9 +46,9 @@ export function JoinRewardsPage() {
   }
 
   return (
-    <main className="soft-luxe-shell min-h-screen overflow-x-hidden px-4 py-6 text-[var(--foreground)] sm:px-6 lg:px-8">
+    <main className="legacy-signup-shell min-h-screen overflow-x-hidden px-4 py-6 text-[var(--foreground)] sm:px-6 lg:px-8">
       <div className="mx-auto grid min-h-[calc(100svh-3rem)] w-full max-w-6xl gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(24rem,1fr)] lg:items-center">
-        <section className="gold-frame rounded-3xl p-6 shadow-soft sm:p-8">
+        <section className="legacy-signup-frame rounded-3xl p-6 shadow-soft sm:p-8">
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
               <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">
@@ -75,7 +76,7 @@ export function JoinRewardsPage() {
         </section>
 
         <section id="join-form" className="w-full">
-          <div className="luxe-card w-full rounded-3xl p-5 shadow-soft sm:p-7">
+          <div className="legacy-signup-card w-full rounded-3xl p-5 shadow-soft sm:p-7">
             {signUpComplete ? (
               <div className="space-y-7 py-8 text-center">
                 <div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
@@ -186,5 +187,146 @@ export function JoinRewardsPage() {
         </section>
       </div>
     </main>
+  )
+}
+
+export function JoinRewardsPage() {
+  const { profile, signUp } = useAuth()
+  const { t } = useLanguage()
+  const [signUpComplete, setSignUpComplete] = useState(false)
+  const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+
+  const form = useForm<MemberSignUpFormValues>({
+    resolver: zodResolver(memberSignUpSchema),
+    defaultValues,
+  })
+
+  if (profile && !signUpComplete) {
+    return <Navigate replace to={homePathForRole(profile.role)} />
+  }
+
+  return (
+    <AuthPortalShell activeTab="signup">
+      <div className="mb-7 text-center">
+        <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
+          Medellin Rewards
+        </p>
+        <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
+          MEMBER PORTAL
+        </p>
+      </div>
+
+      {signUpComplete ? (
+        <div className="space-y-6 py-2 text-center">
+          <div className="mx-auto flex size-14 items-center justify-center rounded-[8px] bg-[#d1ad4a] text-[#080808]">
+            <BadgeCheck className="size-7" />
+          </div>
+          <div className="space-y-3">
+            <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">
+              Welcome to the Rewards Club.
+            </h1>
+            <p className="text-[12px] font-medium leading-5 text-[#8f8f8f]">
+              Your account is created. Sign in, then verify your ID from your profile to unlock rewards.
+            </p>
+            {signUpWarning ? (
+              <p className="text-xs font-bold leading-5 text-warning">{signUpWarning}</p>
+            ) : null}
+          </div>
+          <Button asChild className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold text-[#080808] hover:bg-[#c5a141]">
+            <Link to="/signin">Go to sign in</Link>
+          </Button>
+        </div>
+      ) : (
+        <form
+          className="space-y-5"
+          onSubmit={form.handleSubmit(async (values) => {
+            try {
+              setError(null)
+              const result = await signUp({ ...values, role: 'customer' })
+              setSignUpWarning(result.warning ?? null)
+              form.reset(defaultValues)
+              setSignUpComplete(true)
+            } catch (submissionError) {
+              if (
+                submissionError instanceof Error &&
+                submissionError.message.includes('profile could not be loaded')
+              ) {
+                form.reset(defaultValues)
+                setSignUpComplete(true)
+                return
+              }
+
+              setError(
+                submissionError instanceof Error
+                  ? t(submissionError.message)
+                  : t('Unable to create the account.'),
+              )
+            }
+          })}
+        >
+          <div className="grid gap-2">
+            <Label htmlFor="join-name" className="text-[12px] font-semibold text-[#8f8f8f]">Full name</Label>
+            <Input id="join-name" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" placeholder="Your name" {...form.register('fullName')} />
+            {form.formState.errors.fullName ? (
+              <p className="text-xs font-bold text-red-400">{t(form.formState.errors.fullName.message ?? '')}</p>
+            ) : null}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="join-email" className="text-[12px] font-semibold text-[#8f8f8f]">Email address</Label>
+            <Input id="join-email" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" type="email" placeholder="your@email.com" {...form.register('email')} />
+            {form.formState.errors.email ? (
+              <p className="text-xs font-bold text-red-400">{t(form.formState.errors.email.message ?? '')}</p>
+            ) : null}
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="join-password" className="text-[12px] font-semibold text-[#8f8f8f]">Password</Label>
+            <div className="relative">
+              <Input
+                id="join-password"
+                className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 pr-10 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Password"
+                {...form.register('password')}
+              />
+              <button
+                type="button"
+                className="absolute inset-y-0 right-3 flex items-center text-[#6b7280] transition hover:text-[#111827]"
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                onClick={() => setShowPassword((value) => !value)}
+              >
+                {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              </button>
+            </div>
+            {form.formState.errors.password ? (
+              <p className="text-xs font-bold text-red-400">{t(form.formState.errors.password.message ?? '')}</p>
+            ) : null}
+          </div>
+
+          {error ? (
+            <p className="text-center text-xs font-bold text-red-400">{t(error)}</p>
+          ) : null}
+
+          <Button
+            type="submit"
+            size="lg"
+            className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold tracking-[0.04em] text-[#080808] hover:bg-[#c5a141]"
+            isLoading={form.formState.isSubmitting}
+          >
+            Create my account ↗
+          </Button>
+
+          <p className="text-center text-[11px] font-medium text-[#8aa0bc]">
+            Already have an account?{' '}
+            <Link to="/signin" className="font-bold text-[#d1ad4a] transition hover:text-[#f0ca62]">
+              Sign in
+            </Link>
+          </p>
+        </form>
+      )}
+    </AuthPortalShell>
   )
 }
