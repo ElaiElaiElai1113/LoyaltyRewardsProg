@@ -473,6 +473,53 @@ runTest('early access CTA opens a lead capture modal', () => {
   assert.ok((earlyAccessPage.match(/bg-\[#16a34a\]/g) ?? []).length >= 2)
 })
 
+runTest('early access sends welcome email after saving lead without blocking success', () => {
+  const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
+  const emailClient = readFileSync('src/features/early-access/welcome-email-service.ts', 'utf8')
+
+  assert.match(earlyAccessPage, /sendEarlyAccessWelcomeEmail/)
+  assert.match(emailClient, /\/api\/send-welcome-email/)
+
+  const createLeadIndex = earlyAccessPage.indexOf('earlyAccessService.createLead')
+  const sendEmailIndex = earlyAccessPage.indexOf('await sendEarlyAccessWelcomeEmail')
+  const resetIndex = earlyAccessPage.indexOf('leadForm.reset(defaultValues)')
+  const emailFailureStart = earlyAccessPage.indexOf('catch (emailError)')
+  const emailFailureEnd = earlyAccessPage.indexOf('leadForm.reset(defaultValues)')
+  const emailFailureBlock = earlyAccessPage.slice(emailFailureStart, emailFailureEnd)
+
+  assert.ok(createLeadIndex > -1)
+  assert.ok(sendEmailIndex > createLeadIndex)
+  assert.ok(resetIndex > sendEmailIndex)
+  assert.match(earlyAccessPage, /email: lead\.email/)
+  assert.match(emailFailureBlock, /console\.warn/)
+  assert.doesNotMatch(emailFailureBlock, /setSubmitError/)
+})
+
+runTest('welcome email API uses server-only Hostinger SMTP settings', () => {
+  const api = readFileSync('api/send-welcome-email.ts', 'utf8')
+  const envExample = readFileSync('.env.example', 'utf8')
+  const packageJson = readFileSync('package.json', 'utf8')
+
+  assert.match(api, /nodemailer/)
+  assert.match(api, /createTransport/)
+  assert.match(api, /process\.env\.SMTP_HOST/)
+  assert.match(api, /process\.env\.SMTP_PORT/)
+  assert.match(api, /process\.env\.SMTP_SECURE/)
+  assert.match(api, /process\.env\.SMTP_USER/)
+  assert.match(api, /process\.env\.SMTP_PASS/)
+  assert.match(api, /process\.env\.SMTP_FROM/)
+  assert.match(api, /Welcome to Medellin Rewards/)
+  assert.match(api, /html:/)
+  assert.match(api, /text:/)
+  assert.match(envExample, /SMTP_HOST=smtp\.hostinger\.com/)
+  assert.match(envExample, /SMTP_USER=info@medellinrewards\.com/)
+  assert.match(packageJson, /"nodemailer"/)
+
+  for (const source of [api, envExample, packageJson]) {
+    assert.doesNotMatch(source, /VITE_SMTP/)
+  }
+})
+
 runTest('root route renders only the early access letter page', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const rootRouteStart = router.indexOf('function RootRoute()')

@@ -11,6 +11,7 @@ import {
   earlyAccessMessageLines,
   earlyAccessSubscribeButtonLabel,
 } from '../early-access-content'
+import { sendEarlyAccessWelcomeEmail } from '../welcome-email-service'
 
 const earlyAccessModalSchema = z.object({
   fullName: z.string().trim().min(2, 'Enter your name').max(80, 'Keep your name under 80 characters'),
@@ -101,13 +102,23 @@ export function EarlyAccessPage() {
               try {
                 setSubmitError(null)
                 const instagram = values.instagram?.trim() ?? ''
-                await earlyAccessService.createLead({
+                const lead = await earlyAccessService.createLead({
                   fullName: values.fullName,
                   whatsapp: values.whatsapp,
                   email: values.email ?? '',
                   notes: instagram ? `Instagram: ${instagram}` : '',
                   marketingConsent: true,
                 })
+                if (lead.email) {
+                  try {
+                    await sendEarlyAccessWelcomeEmail({
+                      fullName: lead.fullName,
+                      email: lead.email,
+                    })
+                  } catch (emailError) {
+                    console.warn('Unable to send early access welcome email.', emailError)
+                  }
+                }
                 leadForm.reset(defaultValues)
                 setIsSubmitted(true)
                 setLeadModalOpen(false)
