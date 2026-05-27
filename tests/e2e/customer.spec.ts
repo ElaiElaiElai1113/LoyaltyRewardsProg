@@ -15,4 +15,14 @@ test.describe('customer workflow smoke test', () => {
       await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`))
     }
   })
+
+  test('unverified customer is blocked from reward value actions', async ({ page }) => {
+    await signInCustomer(page, e2eAccounts.unverifiedCustomer)
+
+    await page.goto('/rewards')
+    await expect(page.locator('body')).toContainText(/Verify ID to redeem|Verifica tu ID para canjear|Verification required/i)
+
+    await page.goto('/gift-cards')
+    await expect(page.locator('body')).toContainText(/Verify ID to issue|Verifica tu ID para emitir|Verification required|Tu ID fue enviado/i)
+  })
 })

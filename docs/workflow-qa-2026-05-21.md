@@ -65,7 +65,8 @@ Critical behavior observed in code:
 Critical behavior observed in code:
 
 - Business owner and business staff share the same protected route and business workspace.
-- Staff can access most business sections, except gift cards are hidden from staff in navigation.
+- Business staff are operational users: they can use dashboard, redemptions, member QR sale, members, partners, referral approval, and credit validation workflows.
+- Business staff cannot manage products, rewards, promotions, gift-card catalog, or settings. Those sections are owner-only in navigation and direct-route access.
 - Business data loads only after the signed-in profile has a `businessId`.
 
 ### Admin
@@ -96,10 +97,10 @@ Critical behavior observed in code:
 
 ## Role Workflow Risks
 
-1. Business staff permissions need product confirmation.
-   - Code currently allows staff into products, rewards, redemptions, promotions, members, partners, and settings.
-   - Only gift cards are owner-only in navigation.
-   - This may be correct, but it needs a business decision before launch.
+1. Business staff permissions are intentionally operational.
+   - Staff can handle redemptions, member QR sales, members, partners, referrals, and credit validation.
+   - Staff cannot manage products, rewards, promotions, gift-card catalog, or settings.
+   - Run `npm run test:e2e:workflows` after `npx supabase db reset` to verify staff direct URLs remain blocked.
 
 2. Some business/staff pages depend directly on Supabase table reads.
    - If RLS or profile claims differ between local and production, those pages may fail even when build/tests pass.
@@ -148,9 +149,10 @@ Minimum E2E scenarios:
    - Sign in through `/business/login`.
    - Confirm redirect to `/business/dashboard`.
    - Validate redemption screen.
+   - Confirm operational access to redemptions, members, partners, and member QR sale workflows.
    - Search customer/member.
    - Award or validate credits if permitted.
-   - Confirm owner-only sections are hidden or blocked.
+   - Confirm owner-only sections are hidden and direct URLs for products, rewards, promotions, gift-card catalog, and settings redirect back to dashboard.
 
 3. Business Owner
    - Sign in through `/business/login`.

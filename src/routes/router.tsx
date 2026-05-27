@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
@@ -49,6 +49,7 @@ import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
 import { LoadingState } from '@/components/ui/loading-state'
+import { isBusinessOwnerRole } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -179,6 +180,20 @@ function ProtectedBusinessOwnerRoute() {
   }
 
   return <BusinessOwnerLayout />
+}
+
+function OwnerOnlyBusinessRoute({ children }: { children: ReactNode }) {
+  const { profile, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  if (!isBusinessOwnerRole(profile?.role)) {
+    return <Navigate replace to="/business/dashboard" />
+  }
+
+  return <>{children}</>
 }
 
 function AdminEntryRoute() {
@@ -344,14 +359,14 @@ const router = createBrowserRouter([
     children: [
       { path: '/business/dashboard', element: <BusinessDashboardPage /> },
       { path: '/business/member-sale/:token', element: <MemberSalePage /> },
-      { path: '/business/products', element: <ProductsPage /> },
-      { path: '/business/rewards', element: <BusinessRewardsPage /> },
-      { path: '/business/gift-cards', element: <BusinessGiftCardsPage /> },
+      { path: '/business/products', element: <OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute> },
+      { path: '/business/rewards', element: <OwnerOnlyBusinessRoute><BusinessRewardsPage /></OwnerOnlyBusinessRoute> },
+      { path: '/business/gift-cards', element: <OwnerOnlyBusinessRoute><BusinessGiftCardsPage /></OwnerOnlyBusinessRoute> },
       { path: '/business/redemptions', element: <RedemptionsPage /> },
-      { path: '/business/promotions', element: <BusinessPromotionsPage /> },
+      { path: '/business/promotions', element: <OwnerOnlyBusinessRoute><BusinessPromotionsPage /></OwnerOnlyBusinessRoute> },
       { path: '/business/members', element: <MembersPage /> },
       { path: '/business/partners', element: <PartnersPage /> },
-      { path: '/business/settings', element: <SettingsPage /> },
+      { path: '/business/settings', element: <OwnerOnlyBusinessRoute><SettingsPage /></OwnerOnlyBusinessRoute> },
     ],
   },
   {

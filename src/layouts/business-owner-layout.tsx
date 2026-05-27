@@ -19,14 +19,15 @@ import { LoadingState } from '@/components/ui/loading-state'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { canAccessBusinessPath } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
-const navigation = [
+const businessNavigationItems = [
   { to: '/business/dashboard', label: 'Business Overview', icon: LayoutDashboard },
   { to: '/business/products', label: 'Products', icon: Package },
   { to: '/business/rewards', label: 'Rewards', icon: Gift },
-  { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard, ownerOnly: true },
+  { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/business/redemptions', label: 'Redemptions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
@@ -105,8 +106,8 @@ export function BusinessOwnerLayout() {
 
         {/* Navigation */}
         <nav className="mt-7 grid flex-1 content-start gap-1">
-          {navigation
-            .filter((item) => !item.ownerOnly || profile?.role === 'business-owner')
+          {businessNavigationItems
+            .filter((item) => canAccessBusinessPath(profile?.role, item.to))
             .map((item) => (
             <NavLink
               key={item.to}

@@ -60,6 +60,18 @@ function getSourceFiles(directory: string): string[] {
   })
 }
 
+function getFilesByExtension(directory: string, extension: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      return getFilesByExtension(entryPath, extension)
+    }
+
+    return entry.name.endsWith(extension) ? [entryPath] : []
+  })
+}
+
 runTest('normalizeCheckoutItems aggregates duplicate products for one business', () => {
   const result = normalizeCheckoutItems([
     { productId: 'prod-1', businessId: 'biz-1', quantity: 1 },
@@ -1059,4 +1071,56 @@ runTest('admin partners page uses table-first operations layout with modal creat
   assert.match(partnersSection, /Commission Owed/)
   assert.doesNotMatch(partnersSection, /2xl:grid-cols-\[420px_minmax\(0,1fr\)\]/)
   assert.doesNotMatch(partnersSection, /Partner Cards/)
+})
+
+runTest('business staff role policy is centralized and marks catalog management owner-only', () => {
+  const policy = readFileSync('src/lib/business-role-policy.ts', 'utf8')
+
+  assert.match(policy, /businessOwnerOnlyPaths/)
+  assert.match(policy, /businessStaffOperationalPaths/)
+  assert.match(policy, /canAccessBusinessPath/)
+
+  for (const path of ['/business/products', '/business/rewards', '/business/promotions', '/business/gift-cards', '/business/settings']) {
+    assert.match(policy, new RegExp(`'${path}'`))
+  }
+
+  for (const path of ['/business/dashboard', '/business/redemptions', '/business/member-sale', '/business/members', '/business/partners']) {
+    assert.match(policy, new RegExp(`'${path}'`))
+  }
+})
+
+runTest('business staff owner-only routes are guarded and hidden from navigation', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const layout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
+
+  assert.match(router, /OwnerOnlyBusinessRoute/)
+  for (const path of ['/business/products', '/business/rewards', '/business/promotions', '/business/gift-cards', '/business/settings']) {
+    assert.match(router, new RegExp(`path: '${path.replaceAll('/', '\\/')}'[\\s\\S]*<OwnerOnlyBusinessRoute>`))
+  }
+
+  assert.match(layout, /canAccessBusinessPath/)
+  assert.match(layout, /businessNavigationItems/)
+  assert.doesNotMatch(layout, /\.filter\(\(item\) => !item\.ownerOnly \|\| profile\?\.role === 'business-owner'\)/)
+})
+
+runTest('staff permission migration keeps operational access but restricts catalog management', () => {
+  const migrations = getFilesByExtension('supabase/migrations', '.sql')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+
+  assert.match(migrations, /can_manage_business_catalog/)
+  assert.match(migrations, /jwt_role\(\) = 'business-owner'/)
+  assert.match(migrations, /business-staff[\s\S]*record_member_transaction|record_member_transaction[\s\S]*business-staff/)
+  assert.match(migrations, /Business owners can create products for their business/)
+  assert.match(migrations, /Business owners can create rewards for their business/)
+  assert.match(migrations, /Business owners can create promotions/)
+})
+
+runTest('workflow QA docs record staff operational policy and seeded workflow command', () => {
+  const qaDoc = readFileSync('docs/workflow-qa-2026-05-21.md', 'utf8')
+
+  assert.match(qaDoc, /business staff are operational users/i)
+  assert.match(qaDoc, /cannot manage products, rewards, promotions, gift-card catalog, or settings/i)
+  assert.match(qaDoc, /npx supabase db reset/)
+  assert.match(qaDoc, /npm run test:e2e:workflows/)
 })
