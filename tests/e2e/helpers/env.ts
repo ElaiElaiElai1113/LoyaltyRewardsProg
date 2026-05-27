@@ -4,7 +4,12 @@ export const e2ePassword = process.env.E2E_PASSWORD ?? 'demo1234'
 
 export const workflowAuthEnabled =
   process.env.E2E_AUTH_ENABLED === 'true' ||
-  process.env.npm_lifecycle_event === 'test:e2e:workflows'
+  process.env.npm_lifecycle_event === 'test:e2e:workflows' ||
+  process.env.npm_lifecycle_event === 'test:launch' ||
+  process.env.npm_lifecycle_event === 'test:referrals' ||
+  process.env.npm_lifecycle_event === 'test:onboarding' ||
+  process.env.npm_lifecycle_event === 'test:gift-cards' ||
+  process.env.npm_lifecycle_event === 'test:rewards'
 
 export const e2eAccounts = {
   customer: process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test',

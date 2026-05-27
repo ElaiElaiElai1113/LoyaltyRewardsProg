@@ -124,6 +124,27 @@ npm run test:e2e:workflows
 
 Use `npm run test:e2e` for the public smoke suite. Authenticated role workflow specs are skipped there unless `E2E_AUTH_ENABLED=true` is set.
 
+Use the launch checklist suite to replace the spreadsheet's manual pass/fail process:
+
+```bash
+npx supabase db reset
+npm run test:launch
+```
+
+The launch checklist maps directly to PT001 through PT008. Use Playwright pass, fail, and skipped output to update the platform testing log. PT001 and PT002 annotate payment settlement as pending until a real payment gateway exists. PT007 is skipped until a dedicated k6 or Artillery stress-test slice is added.
+
+Use focused workflow suites when you want to replace additional manual passes:
+
+```bash
+npm run test:referrals
+npm run test:onboarding
+npm run test:gift-cards
+npm run test:rewards
+npm run test:load
+```
+
+These suites cover partner referral attribution and duplicate protection, first-run onboarding states, gift-card issue/redeem operations, reward redemption fulfillment, and a 100-request public launch load smoke. They use the same seeded accounts and Supabase browser/client assertions as `test:launch`.
+
 The local seed accounts use password `demo1234`:
 
 - `customer@medellin.test`

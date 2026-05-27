@@ -1124,3 +1124,111 @@ runTest('workflow QA docs record staff operational policy and seeded workflow co
   assert.match(qaDoc, /npx supabase db reset/)
   assert.match(qaDoc, /npm run test:e2e:workflows/)
 })
+
+runTest('package exposes a launch checklist test command', () => {
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> }
+
+  assert.equal(pkg.scripts?.['test:launch'], 'playwright test tests/e2e/launch-checklist.spec.ts')
+})
+
+runTest('launch checklist Playwright suite maps to PT001 through PT008', () => {
+  const launchChecklist = readFileSync('tests/e2e/launch-checklist.spec.ts', 'utf8')
+  const launchHelper = readFileSync('tests/e2e/helpers/supabase.ts', 'utf8')
+  const launchCoverage = `${launchChecklist}\n${launchHelper}`
+
+  for (const testId of ['PT001', 'PT002', 'PT003', 'PT004', 'PT005', 'PT006', 'PT007', 'PT008']) {
+    assert.match(launchChecklist, new RegExp(`test(?:\\.skip)?\\('${testId}`))
+  }
+
+  assert.match(launchChecklist, /test\.skip\([^)]*PT007/)
+  assert.match(launchCoverage, /getSupabaseSessionClient/)
+  assert.match(launchCoverage, /member_transactions/)
+  assert.match(launchCoverage, /early_access_leads/)
+})
+
+runTest('launch checklist command enables authenticated workflow tests', () => {
+  const envHelper = readFileSync('tests/e2e/helpers/env.ts', 'utf8')
+
+  assert.match(envHelper, /test:e2e:workflows/)
+  assert.match(envHelper, /test:launch/)
+})
+
+runTest('focused workflow commands enable authenticated workflow tests', () => {
+  const envHelper = readFileSync('tests/e2e/helpers/env.ts', 'utf8')
+
+  for (const command of ['test:referrals', 'test:onboarding', 'test:gift-cards', 'test:rewards']) {
+    assert.match(envHelper, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  }
+})
+
+runTest('workflow QA docs explain the automated launch checklist command', () => {
+  const qaDoc = readFileSync('docs/workflow-qa-2026-05-21.md', 'utf8')
+
+  assert.match(qaDoc, /npm run test:launch/)
+  assert.match(qaDoc, /PT001/)
+  assert.match(qaDoc, /PT008/)
+  assert.match(qaDoc, /Use Playwright pass, fail, and skipped output to update the platform testing log/)
+})
+
+runTest('package exposes focused workflow automation commands', () => {
+  const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> }
+
+  assert.equal(pkg.scripts?.['test:referrals'], 'playwright test tests/e2e/referrals.spec.ts')
+  assert.equal(pkg.scripts?.['test:onboarding'], 'playwright test tests/e2e/onboarding.spec.ts')
+  assert.equal(pkg.scripts?.['test:gift-cards'], 'playwright test tests/e2e/gift-cards.spec.ts')
+  assert.equal(pkg.scripts?.['test:rewards'], 'playwright test tests/e2e/rewards-redemption.spec.ts')
+  assert.equal(pkg.scripts?.['test:load'], 'playwright test tests/e2e/load.spec.ts')
+})
+
+runTest('focused workflow suites cover referrals, onboarding, gift cards, rewards, and load', () => {
+  const expectedSpecs = [
+    ['tests/e2e/referrals.spec.ts', ['QR001', 'REF001', 'REF002', 'REF003']],
+    ['tests/e2e/onboarding.spec.ts', ['ONB001', 'ONB002', 'ONB003']],
+    ['tests/e2e/gift-cards.spec.ts', ['GC001', 'GC002', 'GC003']],
+    ['tests/e2e/rewards-redemption.spec.ts', ['RW001', 'RW002', 'RW003']],
+    ['tests/e2e/load.spec.ts', ['LOAD001']],
+  ] as const
+
+  for (const [filePath, testIds] of expectedSpecs) {
+    const spec = readFileSync(filePath, 'utf8')
+    for (const testId of testIds) {
+      assert.match(spec, new RegExp(`test\\('${testId}`))
+    }
+  }
+})
+
+runTest('Supabase E2E helpers expose workflow assertion utilities', () => {
+  const helper = readFileSync('tests/e2e/helpers/supabase.ts', 'utf8')
+
+  for (const helperName of [
+    'createAnonymousSupabaseClient',
+    'signUpTestCustomer',
+    'getBusinessBySlug',
+    'getPartnerReferralForCustomer',
+    'getLatestGiftCardForCustomer',
+    'getLatestRedemptionForCustomer',
+  ]) {
+    assert.match(helper, new RegExp(`export async function ${helperName}|export function ${helperName}`))
+  }
+})
+
+runTest('gift card issuing migration enables pgcrypto token generation', () => {
+  const migration = readFileSync('supabase/migrations/20260528000000_enable_pgcrypto_for_gift_cards.sql', 'utf8')
+
+  assert.match(migration, /create extension if not exists pgcrypto/i)
+  assert.match(migration, /gen_random_bytes/i)
+})
+
+runTest('workflow QA docs list focused automation commands', () => {
+  const qaDoc = readFileSync('docs/workflow-qa-2026-05-21.md', 'utf8')
+
+  for (const command of [
+    'npm run test:referrals',
+    'npm run test:onboarding',
+    'npm run test:gift-cards',
+    'npm run test:rewards',
+    'npm run test:load',
+  ]) {
+    assert.match(qaDoc, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  }
+})
