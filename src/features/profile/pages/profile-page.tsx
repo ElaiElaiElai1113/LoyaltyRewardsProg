@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { IdCard, MapPin, Phone, Save, Upload } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { QRCodeSVG } from 'qrcode.react'
 
 import { MetricCard } from '@/components/metric-card'
 import { Badge } from '@/components/ui/badge'
@@ -60,6 +61,8 @@ export function ProfilePage() {
 
   const verificationStatus = profile.data?.verificationStatus ?? 'not_submitted'
   const canSubmitVerification = ['not_submitted', 'pending_document', 'rejected', 'submitted'].includes(verificationStatus)
+  const memberCode = profile.data?.referralCode ?? ''
+  const memberQrValue = memberCode ? `MRMEM:${memberCode}` : ''
 
   return (
     <div className="space-y-16 pb-20">
@@ -101,6 +104,27 @@ export function ProfilePage() {
               icon={MapPin}
               helper={t('Default shop location')}
             />
+          </div>
+
+          <div className="rounded-3xl border border-outline-variant/10 bg-surface-low p-6">
+            <div className="space-y-3">
+              <h2 className="font-serif text-2xl text-primary">{t('Member QR')}</h2>
+              <p className="text-sm font-medium leading-6 text-on-surface-variant/80">
+                {t('Show this code to staff when a participating business wants to record your purchase and award points.')}
+              </p>
+            </div>
+
+            <div className="mt-5 flex flex-col items-center gap-4 rounded-3xl border border-outline-variant/10 bg-white p-5 text-center">
+              {memberQrValue ? (
+                <QRCodeSVG value={memberQrValue} size={176} includeMargin className="h-auto w-full max-w-[176px]" />
+              ) : null}
+              <div className="space-y-1">
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                  {t('Member code')}
+                </p>
+                <p className="font-mono text-lg font-semibold text-primary">{memberCode || '...'}</p>
+              </div>
+            </div>
           </div>
 
           <div className="rounded-3xl border border-outline-variant/10 bg-surface-low p-6">

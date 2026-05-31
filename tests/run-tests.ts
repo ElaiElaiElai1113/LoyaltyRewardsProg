@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync } from 'node:fs'
+import { join } from 'node:path'
 
 import {
   earlyAccessMessageLines,
@@ -19,10 +20,20 @@ import {
 } from '../src/features/ambassadors/ambassador-content.js'
 import {
   landingBody,
+  landingClientHero,
+  landingEarlySubscriberBenefits,
   landingFaqQuestions,
+  landingHeroEyebrow,
+  landingHeroHeadline,
+  landingHeroInfoRows,
+  landingHeroPills,
+  landingMembershipAdvantages,
+  landingJoinButtonLabel,
   landingOfferLines,
+  landingRewardsSteps,
   landingTagline,
   landingTags,
+  landingWhyJoinItems,
 } from '../src/features/auth/landing-content.js'
 import { isPickupWindow, normalizeCheckoutItems } from '../src/features/critical-flows/critical-flow.js'
 
@@ -34,6 +45,18 @@ function runTest(name: string, fn: () => void) {
     console.error(`FAIL ${name}`)
     throw error
   }
+}
+
+function getSourceFiles(directory: string): string[] {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = join(directory, entry.name)
+
+    if (entry.isDirectory()) {
+      return getSourceFiles(entryPath)
+    }
+
+    return /\.(ts|tsx)$/.test(entry.name) ? [entryPath] : []
+  })
 }
 
 runTest('normalizeCheckoutItems aggregates duplicate products for one business', () => {
@@ -81,9 +104,10 @@ runTest('early access content preserves the approved conversion copy', () => {
   assert.deepEqual(earlyAccessMessageLines, [
     'Hey,',
     'We’re tired of watching people work hard but still struggle to afford the life they want — vacations, freedom, extras.',
-    'That’s why we’re building Medellin Rewards: the highest-paying rewards program. Earn 20-100% back on almost everything you already buy daily.',
+    'That’s why we’re building Medellín Rewards: the highest-paying rewards program. Earn 20–100% back on almost everything you already buy daily.',
     'No extra spending. Just real money back to help you do more of what you love.',
-    'As an early adopter, you’ll get exclusive benefits before anyone else.',
+    'We’re currently preparing for launch, and we’re inviting early supporters to join before anyone else.',
+    'When we officially launch, subscribers will be the first to know — with access to exclusive benefits, updates, and early rewards opportunities.',
     'Ready to earn more?',
     'Let’s make this happen together.',
     'Medellín Rewards Team',
@@ -235,11 +259,28 @@ runTest('referral approval can award credits before ID verification but still bl
 })
 
 runTest('landing page content follows the approved member-facing wording', () => {
-  assert.equal(landingTagline, 'The world’s highest paying Rewards Program!')
+  assert.equal(landingHeroEyebrow, "THE WORLD'S HIGHEST PAYING REWARDS PROGRAM")
+  assert.deepEqual(landingHeroHeadline, {
+    beforeHighlight: 'Earn a ',
+    highlight: 'free vacation',
+    afterHighlight: ' every year — doing what you already do',
+  })
+  assert.equal(landingTagline, 'Earn a free vacation every year — doing what you already do')
   assert.equal(
     landingBody,
     'Imagine being able to earn enough rewards every year for a free vacation by doing what you already do, with Medellin Rewards you can do exactly that!',
   )
+  assert.deepEqual(landingHeroInfoRows.map((row) => row.text), [
+    'Earn between 20% - 100% by simply spending at amazing businesses within our platform',
+    'Earn from purchasing almost any type of product or service from going to a restaurant or hotel to buying a car or home.',
+  ])
+  assert.deepEqual(landingHeroPills.map((pill) => pill.label), [
+    'Restaurants & hotels',
+    'Cars & real estate',
+    '20% – 100% back',
+    'Any product or service',
+  ])
+  assert.equal(landingJoinButtonLabel, 'Join Medellin Rewards')
   assert.deepEqual(landingTags, [
     'Earn between 20% - 100% by simply spending at amazing businesses within our platform',
     'Earn from purchasing almost any type of product or service from going to a restaurant or hotel to buying a car or home.',
@@ -258,6 +299,15 @@ runTest('landing page content follows the approved member-facing wording', () =>
   ])
 })
 
+runTest('landing page content covers the client requested topics', () => {
+  const landingContent = readFileSync('src/features/auth/landing-content.ts', 'utf8')
+
+  assert.match(landingContent, /landingWhyJoinItems/)
+  assert.match(landingContent, /landingEarlySubscriberBenefits/)
+  assert.match(landingContent, /landingRewardsSteps/)
+  assert.match(landingContent, /landingMembershipAdvantages/)
+})
+
 runTest('landing page FAQs are clickable and include answers', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const landingContent = readFileSync('src/features/auth/landing-content.ts', 'utf8')
@@ -268,6 +318,47 @@ runTest('landing page FAQs are clickable and include answers', () => {
   assert.doesNotMatch(landingPage, /landingFaqQuestions\.map/)
   assert.match(landingContent, /export const landingFaqItems/)
   assert.match(landingContent, /answer:/)
+})
+
+runTest('landing FAQ and footer follow the Figma lower page', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landing-faq-figma/)
+  assert.match(landingPage, /max-w-\[672px\]/)
+  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#f6f7f8\]/)
+  assert.match(landingPage, /min-h-\[63px\]/)
+  assert.match(landingPage, /rounded-\[0\.45rem\] border border-\[#dde1e6\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /landingFaqIconByQuestion/)
+  assert.match(landingPage, /MapPin/)
+  assert.match(landingPage, /Users/)
+  assert.match(landingPage, /ArrowLeftRight/)
+  assert.match(landingPage, /DollarSign/)
+  assert.doesNotMatch(landingPage, /ChevronRight/)
+  assert.match(landingPage, /landing-footer-figma/)
+  assert.match(landingPage, /min-h-\[108px\]/)
+  assert.match(landingPage, /border-t border-\[#dde1e6\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /min-h-\[108px\][^"]*items-center/)
+  assert.match(landingPage, /grid-cols-\[1fr_auto_1fr\]/)
+  assert.match(landingPage, /max-w-none/)
+})
+
+runTest('client landing page renders the required topic sections', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landingClientHero/)
+  assert.match(landingPage, /landingWhyJoinItems\.map/)
+  assert.match(landingPage, /landingEarlySubscriberBenefits\.map/)
+  assert.match(landingPage, /landingRewardsSteps\.map/)
+  assert.match(landingPage, /landingMembershipAdvantages\.map/)
+  assert.match(landingPage, /id="why-join"/)
+  assert.match(landingPage, /id="early-benefits"/)
+  assert.match(landingPage, /id="rewards-system"/)
+  assert.match(landingPage, /id="membership"/)
+  assert.match(landingPage, /Rewards are program credits and offers, not automatic cash payouts\./)
+})
+
+runTest('landing Figma reference asset is stored with app assets', () => {
+  assert.equal(existsSync('src/assets/medellin-landing.png'), true)
 })
 
 runTest('member signup page uses simplified branded layout', () => {
@@ -282,12 +373,49 @@ runTest('member signup page uses simplified branded layout', () => {
   assert.doesNotMatch(joinPage, /bg-\[#24150e\]/)
 })
 
-runTest('landing join buttons go to member signup', () => {
+runTest('landing Join CTAs go to early access', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+  const authPageStart = landingPage.indexOf('export function AuthPage')
+  const landingMarkup = landingPage.slice(0, authPageStart)
 
-  assert.match(landingPage, /to="\/join"/)
+  assert.ok((landingMarkup.match(/to="\/early-access"/g) ?? []).length >= 3)
+  assert.doesNotMatch(landingMarkup, /to="\/join"/)
+  assert.match(landingPage, /landing-header-figma/)
+  assert.match(landingPage, /min-h-\[61px\]/)
+  assert.match(landingPage, /Why join/)
+  assert.match(landingPage, /Early benefits/)
+  assert.match(landingPage, /Rewards system/)
+  assert.match(landingPage, /Membership/)
+  assert.match(landingPage, /FAQ/)
+  assert.match(landingPage, /landing-hero-exact/)
+  assert.match(landingPage, /min-h-\[690px\]/)
+  assert.match(landingPage, /landingClientHero/)
   assert.doesNotMatch(landingPage, /leadModalOpen/)
   assert.doesNotMatch(landingPage, /memberLeadSchema/)
+})
+
+runTest('landing early subscriber section follows the client-focused design', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landing-subscription-figma/)
+  assert.match(landingPage, /id="early-benefits"/)
+  assert.match(landingPage, /landingEarlySubscriberBenefits\.map/)
+  assert.match(landingPage, /Early subscriber benefits/)
+  assert.match(landingPage, /Join early/)
+  assert.match(landingPage, /bg-\[#f6f7f8\]/)
+})
+
+runTest('landing rewards system section explains the flow and disclaimer', () => {
+  const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+
+  assert.match(landingPage, /landing-how-it-works-figma/)
+  assert.match(landingPage, /id="rewards-system"/)
+  assert.match(landingPage, /landingRewardsSteps\.map/)
+  assert.match(landingPage, /lg:grid-cols-4/)
+  assert.match(landingPage, /rounded-\[0\.7rem\] border border-\[#dde1e6\] bg-\[#fbfcfd\]/)
+  assert.match(landingPage, /size-\[34px\]/)
+  assert.match(landingPage, /text-\[#9f730f\]/)
+  assert.match(landingPage, /Rewards are program credits and offers, not automatic cash payouts\./)
 })
 
 runTest('early access CTA opens a lead capture modal', () => {
@@ -302,4 +430,121 @@ runTest('early access CTA opens a lead capture modal', () => {
   assert.match(earlyAccessPage, /leadForm\.register\('instagram'\)/)
   assert.match(earlyAccessPage, /leadForm\.register\('email'\)/)
   assert.match(earlyAccessPage, /Instagram/)
+})
+
+runTest('root route renders only the early access letter page', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const rootRouteStart = router.indexOf('function RootRoute()')
+  const protectedRouteStart = router.indexOf('function ProtectedCustomerRoute()')
+  const rootRoute = router.slice(rootRouteStart, protectedRouteStart)
+
+  assert.match(rootRoute, /<EarlyAccessPage \/>/)
+  assert.doesNotMatch(rootRoute, /<LandingPage \/>/)
+  assert.doesNotMatch(rootRoute, /landing-header-figma/)
+})
+
+runTest('client landing page is available at /landing-page', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+
+  assert.match(router, /path: '\/landing-page'/)
+  assert.match(router, /element: <LandingPage \/>/)
+})
+
+runTest('early access typography keeps the launch copy readable', () => {
+  const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
+
+  assert.match(earlyAccessPage, /font-sans/)
+  assert.match(earlyAccessPage, /earlyAccessParagraphClass/)
+  assert.match(earlyAccessPage, /earlyAccessMessageLines\.slice\(0, 6\)\.map/)
+  assert.match(earlyAccessPage, /earlyAccessMessageLines\.slice\(6, 8\)\.map/)
+  assert.doesNotMatch(earlyAccessPage, /text-\[clamp\(/)
+  assert.doesNotMatch(earlyAccessPage, /text-3xl/)
+  assert.doesNotMatch(earlyAccessPage, /text-2xl/)
+  assert.doesNotMatch(earlyAccessPage, /text-8xl/)
+  assert.doesNotMatch(earlyAccessPage, /text-7xl/)
+  assert.doesNotMatch(earlyAccessPage, /text-6xl/)
+})
+
+runTest('early access page defaults to Spanish and exposes language picker', () => {
+  const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
+  const languagePicker = readFileSync('src/components/language-picker.tsx', 'utf8')
+
+  assert.match(language, /if \(typeof window === 'undefined'\) return 'es'/)
+  assert.match(language, /=== 'en' \? 'en' : 'es'/)
+  assert.match(languagePicker, /\(\['es', 'en'\] as Language\[\]\)/)
+  assert.match(earlyAccessPage, /LanguagePicker/)
+  assert.match(earlyAccessPage, /t\(line\)/)
+  assert.match(language, /'Hey,': 'Hola,'/)
+  assert.match(language, /'Subscribe': 'Suscribirse'/)
+  assert.match(language, /'When we officially launch, subscribers will be the first to know/)
+})
+
+runTest('all literal translated UI strings have Spanish entries', () => {
+  const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
+  const translationsSource = languageSource.match(
+    /const spanishTranslations: Record<string, string> = \{([\s\S]*?)\n\}/,
+  )?.[1]
+
+  assert.ok(translationsSource)
+
+  const translatedKeys = new Set<string>()
+  const translationKeyPattern =
+    /(?:^|\n)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z][A-Za-z0-9_]*))\s*:/g
+
+  for (const match of translationsSource.matchAll(translationKeyPattern)) {
+    translatedKeys.add(match[1] ?? match[2] ?? match[3])
+  }
+
+  const usedKeys = new Set<string>()
+  const literalTranslationPattern = /\bt\(\s*(?:'([^']+)'|"([^"]+)")/g
+
+  for (const value of Object.values(landingClientHero)) {
+    usedKeys.add(value)
+  }
+
+  for (const item of [
+    ...landingWhyJoinItems,
+    ...landingEarlySubscriberBenefits,
+    ...landingRewardsSteps,
+    ...landingMembershipAdvantages,
+  ]) {
+    usedKeys.add(item.title)
+    usedKeys.add(item.body)
+  }
+
+  for (const filePath of getSourceFiles('src')) {
+    const source = readFileSync(filePath, 'utf8')
+
+    for (const match of source.matchAll(literalTranslationPattern)) {
+      usedKeys.add(match[1] ?? match[2])
+    }
+  }
+
+  const missingKeys = [...usedKeys].filter((key) => !translatedKeys.has(key)).sort()
+
+  if (missingKeys.length > 0) {
+    console.error(`Missing Spanish translation keys:\n${missingKeys.join('\n')}`)
+  }
+
+  assert.deepEqual(missingKeys, [])
+})
+
+runTest('supabase seed can be rerun without duplicate seeded rows', () => {
+  const seed = readFileSync('supabase/seed.sql', 'utf8')
+
+  assert.match(seed, /insert into public\.businesses[\s\S]*on conflict \(slug\) do update/i)
+  assert.match(seed, /to_regclass\('public\.business_branding'\)/i)
+  assert.match(seed, /insert into public\.business_branding/i)
+  assert.match(seed, /unsupported_required_columns/i)
+  assert.match(seed, /array_append\(insert_columns, 'slug'\)/i)
+  assert.match(seed, /status_data_type = 'USER-DEFINED'/i)
+  assert.match(seed, /status_udt_schema/i)
+  assert.match(seed, /select id from public\.businesses where slug = 'velvet-brew'/i)
+  assert.match(seed, /select id from public\.businesses where slug = 'mystic-coffee'/i)
+  assert.match(seed, /delete from public\.rewards[\s\S]*Signature Velvet Latte/i)
+  assert.match(seed, /delete from public\.products[\s\S]*Oat Milk Latte/i)
+  assert.match(seed, /delete from public\.promotions[\s\S]*Double points after 3 PM/i)
+  assert.match(seed, /insert into auth\.users[\s\S]*on conflict \(id\) do update/i)
+  assert.match(seed, /insert into auth\.identities[\s\S]*on conflict \(id\) do update/i)
 })

@@ -26,7 +26,7 @@ export function LanguagePicker({ className, compact = false }: LanguagePickerPro
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {(['en', 'es'] as Language[]).map((option) => (
+          {(['es', 'en'] as Language[]).map((option) => (
             <SelectItem key={option} value={option}>
               {compact ? option.toUpperCase() : t(languageLabels[option])}
             </SelectItem>

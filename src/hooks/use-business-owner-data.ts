@@ -10,7 +10,7 @@ import { partnerService } from '@/integrations/supabase/services/partner-service
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
-import type { AmbassadorLeadStatus, Profile, Redemption } from '@/types/domain'
+import type { AmbassadorLeadStatus, BusinessMember, Profile, Redemption } from '@/types/domain'
 import type { PartnerReferrerDraftFormValues, RewardAdjustmentFormValues } from '@/types/forms'
 import { useAuth } from './use-auth'
 
@@ -242,6 +242,8 @@ export function useBusinessMembers(businessId?: string) {
         id: profile.id as string,
         fullName: profile.full_name as string,
         email: profile.email as string,
+        referralCode: profile.referral_code as string,
+        verificationStatus: (profile.verification_status as BusinessMember['verificationStatus']) ?? 'not_submitted',
         points: balanceMap.get(profile.id as string) ?? 0,
       }))
     },
@@ -264,6 +266,37 @@ export function useAwardPoints(actor?: Profile | null, businessId?: string) {
     },
     onError: (error: Error) => {
       toast.error(`Award failed: ${error.message}`)
+    },
+  })
+}
+
+export function useResolveMemberForBusinessScan(businessId?: string) {
+  return useMutation({
+    mutationFn: (memberCode: string) => adminService.resolveMemberForBusinessScan(memberCode, businessId!),
+  })
+}
+
+export function useRecordBusinessMemberPurchase(actor?: Profile | null, businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: { memberCode: string; amount: number; note?: string }) =>
+      adminService.recordBusinessMemberPurchase({
+        ...values,
+        businessId: businessId!,
+      }),
+    onSuccess: (order) => {
+      void actor
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['businessOrders', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance'] })
+      void queryClient.invalidateQueries({ queryKey: ['activities'] })
+      void queryClient.invalidateQueries({ queryKey: ['orders', order.profileId] })
+      toast.success('Member purchase recorded')
+    },
+    onError: (error: Error) => {
+      toast.error(`Transaction failed: ${error.message}`)
     },
   })
 }

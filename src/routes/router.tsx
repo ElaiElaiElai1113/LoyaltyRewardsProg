@@ -97,7 +97,7 @@ function LandingRoute() {
 }
 
 function RootRoute() {
-  return <LandingPage />
+  return <EarlyAccessPage />
 }
 
 function ProtectedCustomerRoute() {
@@ -267,6 +267,10 @@ const router = createBrowserRouter([
   {
     path: '/early-access',
     element: <EarlyAccessPage />,
+  },
+  {
+    path: '/landing-page',
+    element: <LandingPage />,
   },
   {
     path: '/joinusearly',

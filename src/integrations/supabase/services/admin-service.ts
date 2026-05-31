@@ -1,6 +1,8 @@
 import type {
   Activity,
+  BusinessMember,
   BusinessWithMetrics,
+  Order,
   OrderForVerification,
   Profile,
   Redemption,
@@ -381,6 +383,69 @@ export const adminService = {
     await performRewardAdjustment(values, {
       businessId,
     })
+  },
+
+  async resolveMemberForBusinessScan(memberCode: string, businessId: string): Promise<BusinessMember> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('resolve_member_for_business_scan', {
+      p_member_code: memberCode,
+      p_business_id: businessId,
+    })
+
+    const row = Array.isArray(data) ? data[0] : data
+    if (error || !row) {
+      throw new Error(friendlySupabaseError(error, 'Member not found.'))
+    }
+
+    const mapped = camelCaseRow(row as Record<string, unknown>)
+
+    return {
+      id: mapped.id as string,
+      fullName: mapped.fullName as string,
+      email: mapped.email as string,
+      referralCode: mapped.referralCode as string,
+      verificationStatus: (mapped.verificationStatus as BusinessMember['verificationStatus']) ?? 'not_submitted',
+      points: Number(mapped.points ?? 0),
+    }
+  },
+
+  async recordBusinessMemberPurchase(input: {
+    memberCode: string
+    amount: number
+    businessId: string
+    note?: string
+  }): Promise<Order> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('record_business_member_purchase', {
+      p_member_code: input.memberCode,
+      p_amount: input.amount,
+      p_business_id: input.businessId,
+      p_note: input.note ?? null,
+    })
+
+    const row = Array.isArray(data) ? data[0] : data
+    if (error || !row) {
+      throw new Error(friendlySupabaseError(error, 'Failed to record the member purchase.'))
+    }
+
+    const mapped = camelCaseRow(row as Record<string, unknown>)
+
+    return {
+      id: mapped.id as string,
+      profileId: mapped.profileId as string,
+      businessId: mapped.businessId as string,
+      items: [],
+      subtotal: Number(mapped.subtotal ?? 0),
+      tax: Number(mapped.tax ?? 0),
+      total: Number(mapped.total ?? 0),
+      pointsEarned: Number(mapped.pointsEarned ?? 0),
+      pointsStatus: mapped.pointsStatus as Order['pointsStatus'],
+      paymentMethod: mapped.paymentMethod as string,
+      status: mapped.status as Order['status'],
+      createdAt: mapped.createdAt as string,
+    }
   },
 
   async getOrdersForVerification(businessId?: string): Promise<OrderForVerification[]> {
