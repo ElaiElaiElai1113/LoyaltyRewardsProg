@@ -417,6 +417,28 @@ export const adminService = {
     })
   },
 
+  async registerCustomer(name: string, email: string, businessId: string) {
+    const sb = requireSupabase()
+    const { data, error } = await sb.functions.invoke('register-customer', {
+      body: {
+        name,
+        email,
+        businessId,
+      },
+    })
+
+    if (error) {
+      throw new Error(error.message)
+    }
+
+    const user = (data as { user?: { id: string; email?: string } } | null)?.user
+    if (!user) {
+      throw new Error('Customer invitation was sent but user data was not returned.')
+    }
+
+    return user
+  },
+
   async getOrdersForVerification(businessId?: string): Promise<OrderForVerification[]> {
     const sb = requireSupabase()
 

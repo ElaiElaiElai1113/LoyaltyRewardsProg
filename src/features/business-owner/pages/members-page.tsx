@@ -13,12 +13,15 @@ import {
   useAwardPoints,
   useBusinessMembers,
   useBusinessOwnerData,
+  useRegisterCustomer,
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
 import { cn, formatPoints, getInitials } from '@/lib/utils'
 import {
+  registerCustomerSchema,
   rewardAdjustmentSchema,
+  type RegisterCustomerFormValues,
   type RewardAdjustmentFormValues,
 } from '@/types/forms'
 
@@ -28,7 +31,10 @@ export function MembersPage() {
   const { business, metrics } = useBusinessOwnerData()
   const members = useBusinessMembers(business?.id)
   const awardPoints = useAwardPoints(profile, business?.id)
+  const registerCustomer = useRegisterCustomer(business?.id)
   const [actionError, setActionError] = useState<string | null>(null)
+  const [registerActionError, setRegisterActionError] = useState<string | null>(null)
+  const [purchaseAmount, setPurchaseAmount] = useState<string>('')
 
   const form = useForm<RewardAdjustmentFormValues>({
     resolver: zodResolver(rewardAdjustmentSchema),
@@ -38,12 +44,23 @@ export function MembersPage() {
       reason: '',
     },
   })
+  const registerForm = useForm<RegisterCustomerFormValues>({
+    resolver: zodResolver(registerCustomerSchema),
+    defaultValues: {
+      fullName: '',
+      email: '',
+    },
+  })
 
   const selectedProfileId = useWatch({
     control: form.control,
     name: 'profileId',
   })
   const selectedMember = members.data?.find((member) => member.id === selectedProfileId) ?? null
+  const calculatedPoints =
+    purchaseAmount && business?.earnRate
+      ? Math.floor(Number.parseFloat(purchaseAmount) * business.earnRate)
+      : null
 
   return (
     <div className="space-y-16">
@@ -80,6 +97,7 @@ export function MembersPage() {
                     delta: 10,
                     reason: '',
                   })
+                  setPurchaseAmount('')
                 } catch (error) {
                   setActionError(error instanceof Error ? error.message : t('Failed to award points.'))
                 }
@@ -139,6 +157,40 @@ export function MembersPage() {
               </div>
 
               <div className="grid gap-3">
+                <Label htmlFor="purchaseAmount" className="text-sm font-semibold">
+                  Purchase Amount (optional)
+                </Label>
+                <div className="relative">
+                  <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-on-surface-variant/60">
+                    $
+                  </span>
+                  <Input
+                    id="purchaseAmount"
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    placeholder="0.00"
+                    className="h-12 rounded-2xl border-outline-variant/20 pl-8 focus:border-primary/30"
+                    value={purchaseAmount}
+                    onChange={(event) => {
+                      const value = event.target.value
+                      setPurchaseAmount(value)
+
+                      const amount = Number.parseFloat(value)
+                      if (!Number.isNaN(amount) && business?.earnRate) {
+                        form.setValue('delta', Math.floor(amount * business.earnRate), { shouldValidate: true })
+                      }
+                    }}
+                  />
+                </div>
+                {purchaseAmount ? (
+                  <p className="text-xs text-on-surface-variant/70">
+                    {business?.earnRate ?? 0} pts per $1 · ${purchaseAmount} = {calculatedPoints ?? 0} pts
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-3">
                 <Label htmlFor="delta" className="text-sm font-semibold">
                   {t('Points to Award')}
                 </Label>
@@ -178,6 +230,78 @@ export function MembersPage() {
                 {awardPoints.isPending ? t('Awarding...') : t('Award Points')}
               </Button>
               {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
+            </form>
+          </div>
+
+          <div className="space-y-2 pb-4 border-b border-outline-variant/10">
+            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
+              Quick Action
+            </span>
+            <h2 className="font-serif text-3xl text-primary">Register New Customer</h2>
+          </div>
+
+          <div className="rounded-3xl border border-outline-variant/5 bg-white p-8 shadow-sm">
+            <form
+              className="space-y-6"
+              onSubmit={registerForm.handleSubmit(async (values) => {
+                try {
+                  setRegisterActionError(null)
+                  await registerCustomer.mutateAsync({
+                    name: values.fullName,
+                    email: values.email,
+                  })
+                  registerForm.reset({
+                    fullName: '',
+                    email: '',
+                  })
+                } catch (error) {
+                  setRegisterActionError(
+                    error instanceof Error ? error.message : 'Failed to register customer.',
+                  )
+                }
+              })}
+            >
+              <div className="grid gap-3">
+                <Label htmlFor="registerFullName" className="text-sm font-semibold">
+                  Full Name
+                </Label>
+                <Input
+                  id="registerFullName"
+                  type="text"
+                  className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                  {...registerForm.register('fullName')}
+                />
+                {registerForm.formState.errors.fullName ? (
+                  <p className="text-xs text-red-500">{registerForm.formState.errors.fullName.message}</p>
+                ) : null}
+              </div>
+
+              <div className="grid gap-3">
+                <Label htmlFor="registerEmail" className="text-sm font-semibold">
+                  Email Address
+                </Label>
+                <Input
+                  id="registerEmail"
+                  type="email"
+                  className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                  {...registerForm.register('email')}
+                />
+                {registerForm.formState.errors.email ? (
+                  <p className="text-xs text-red-500">{registerForm.formState.errors.email.message}</p>
+                ) : null}
+              </div>
+
+              <Button
+                type="submit"
+                size="lg"
+                className="h-14 w-full rounded-full font-semibold"
+                disabled={registerCustomer.isPending}
+              >
+                {registerCustomer.isPending ? 'Registering...' : 'Register Customer'}
+              </Button>
+              {registerActionError ? (
+                <p className="text-sm font-bold text-red-500">{registerActionError}</p>
+              ) : null}
             </form>
           </div>
         </div>

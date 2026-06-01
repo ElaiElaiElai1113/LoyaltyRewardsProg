@@ -504,3 +504,21 @@ export function useUpdateBusinessAmbassadorLeadStatus(businessId?: string) {
     },
   })
 }
+
+export function useRegisterCustomer(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ name, email }: { name: string; email: string }) => {
+      if (!businessId) throw new Error('No business context.')
+      return adminService.registerCustomer(name, email, businessId)
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      toast.success('Customer invited. They must sign the Member Agreement on first access.')
+    },
+    onError: (error: Error) => {
+      toast.error(`Registration failed: ${error.message}`)
+    },
+  })
+}

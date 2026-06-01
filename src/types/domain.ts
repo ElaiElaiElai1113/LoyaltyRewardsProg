@@ -1,5 +1,7 @@
 export type UserRole = 'customer' | 'platform-admin' | 'business-owner' | 'business-staff'
 
+export type AgreementKind = 'member' | 'business_affiliate' | 'trade_deal'
+
 export interface Business {
   id: string
   name: string
@@ -405,6 +407,39 @@ export interface AdminLog {
   action: string
   details: string
   createdAt: string
+}
+
+export interface AgreementVersion {
+  id: string
+  kind: AgreementKind
+  requiredRole: UserRole | null
+  version: number
+  title: string
+  body: string
+  contentHash: string
+  isActive: boolean
+  effectiveAt: string
+}
+
+export interface AgreementAcceptance {
+  id: string
+  profileId: string
+  businessId: string | null
+  agreementVersionId: string
+  agreementKind: AgreementKind
+  agreementVersion: number
+  contentHash: string
+  typedSignature: string
+  acceptedElectronicRecords: boolean
+  acceptedTerms: boolean
+  signedAt: string
+}
+
+export interface RequiredAgreementStatus {
+  pendingAgreements: AgreementVersion[]
+  activeAgreements: AgreementVersion[]
+  acceptances: AgreementAcceptance[]
+  isComplete: boolean
 }
 
 export interface SessionUser {

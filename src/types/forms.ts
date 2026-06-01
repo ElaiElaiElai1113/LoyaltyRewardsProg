@@ -204,3 +204,22 @@ export const ambassadorLeadSchema = z
   )
 
 export type AmbassadorLeadFormValues = z.infer<typeof ambassadorLeadSchema>
+
+export const registerCustomerSchema = z.object({
+  fullName: z.string().min(2, "Enter the customer's full name"),
+  email: z.string().email('Enter a valid email address'),
+})
+
+export type RegisterCustomerFormValues = z.infer<typeof registerCustomerSchema>
+
+export const signAgreementSchema = z.object({
+  typedSignature: z.string().min(2, 'Type your full legal name'),
+  acceptedElectronicRecords: z.boolean().refine((value) => value, {
+    message: 'Electronic records consent is required',
+  }),
+  acceptedTerms: z.boolean().refine((value) => value, {
+    message: 'Agreement confirmation is required',
+  }),
+})
+
+export type SignAgreementFormValues = z.infer<typeof signAgreementSchema>

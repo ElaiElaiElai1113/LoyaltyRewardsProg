@@ -4,6 +4,7 @@ import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'reac
 import { AdminPage } from '@/features/admin/pages/admin-page'
 import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
 import { AuthPage, LandingPage } from '@/features/auth/pages/landing-page'
+import { RequiredAgreementsPage } from '@/features/auth/pages/required-agreements-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { CostCalculatorPage } from '@/features/business/pages/cost-calculator-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
@@ -48,17 +49,14 @@ import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
+import { useRequiredAgreements } from '@/hooks/use-legal-agreements'
 import { LoadingState } from '@/components/ui/loading-state'
+import { getAgreementGateDecision } from '@/lib/agreement-gate'
 import { isBusinessOwnerRole } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
+import { getHomePathForRole } from '@/lib/role-routes'
 
 const portalAccessErrorKey = 'portalAccessError'
-
-function getHomePathForRole(role: string) {
-  if (role === 'platform-admin') return '/admin/portal'
-  if (role === 'business-owner' || role === 'business-staff') return '/business/dashboard'
-  return '/dashboard'
-}
 
 function RouteLoading() {
   const { t } = useLanguage()
@@ -75,6 +73,13 @@ function RouteLoading() {
 
 function LandingRoute() {
   const { profile, isLoading, signOut } = useAuth()
+  const requiredAgreements = useRequiredAgreements(profile)
+  const agreementGate = getAgreementGateDecision({
+    role: profile?.role ?? null,
+    isAgreementLoading: requiredAgreements.isLoading,
+    hasAgreementError: Boolean(requiredAgreements.error),
+    isAgreementComplete: requiredAgreements.data?.isComplete,
+  })
 
   useEffect(() => {
     if (!profile) return
@@ -92,6 +97,14 @@ function LandingRoute() {
     if (profile.role !== 'customer') {
       return <RouteLoading />
     }
+
+    if (agreementGate === 'loading') {
+      return <RouteLoading />
+    }
+
+    if (agreementGate === 'redirect-required-agreements') {
+      return <Navigate replace to="/agreements/required" />
+    }
     return <Navigate replace to="/dashboard" />
   }
 
@@ -104,6 +117,13 @@ function RootRoute() {
 
 function ProtectedCustomerRoute() {
   const { profile, isLoading } = useAuth()
+  const requiredAgreements = useRequiredAgreements(profile)
+  const agreementGate = getAgreementGateDecision({
+    role: profile?.role ?? null,
+    isAgreementLoading: requiredAgreements.isLoading,
+    hasAgreementError: Boolean(requiredAgreements.error),
+    isAgreementComplete: requiredAgreements.data?.isComplete,
+  })
 
   if (isLoading) {
     return <RouteLoading />
@@ -117,11 +137,26 @@ function ProtectedCustomerRoute() {
     return <Navigate replace to={getHomePathForRole(profile.role)} />
   }
 
+  if (agreementGate === 'loading') {
+    return <RouteLoading />
+  }
+
+  if (agreementGate === 'redirect-required-agreements') {
+    return <Navigate replace to="/agreements/required" />
+  }
+
   return <CustomerLayout />
 }
 
 function PublicOrCustomerRoute() {
   const { profile, isLoading } = useAuth()
+  const requiredAgreements = useRequiredAgreements(profile)
+  const agreementGate = getAgreementGateDecision({
+    role: profile?.role ?? null,
+    isAgreementLoading: requiredAgreements.isLoading,
+    hasAgreementError: Boolean(requiredAgreements.error),
+    isAgreementComplete: requiredAgreements.data?.isComplete,
+  })
 
   if (isLoading) {
     return <RouteLoading />
@@ -136,6 +171,14 @@ function PublicOrCustomerRoute() {
   }
 
   if (profile?.role === 'customer') {
+    if (agreementGate === 'loading') {
+      return <RouteLoading />
+    }
+
+    if (agreementGate === 'redirect-required-agreements') {
+      return <Navigate replace to="/agreements/required" />
+    }
+
     return <CustomerLayout />
   }
 
@@ -165,6 +208,13 @@ function ProtectedAdminRoute() {
 function ProtectedBusinessOwnerRoute() {
   const { profile, isLoading } = useAuth()
   const location = useLocation()
+  const requiredAgreements = useRequiredAgreements(profile)
+  const agreementGate = getAgreementGateDecision({
+    role: profile?.role ?? null,
+    isAgreementLoading: requiredAgreements.isLoading,
+    hasAgreementError: Boolean(requiredAgreements.error),
+    isAgreementComplete: requiredAgreements.data?.isComplete,
+  })
 
   if (isLoading) {
     return <RouteLoading />
@@ -177,6 +227,14 @@ function ProtectedBusinessOwnerRoute() {
         to={profile ? getHomePathForRole(profile.role) : `/business/login?redirect=${encodeURIComponent(location.pathname)}`}
       />
     )
+  }
+
+  if (agreementGate === 'loading') {
+    return <RouteLoading />
+  }
+
+  if (agreementGate === 'redirect-required-agreements') {
+    return <Navigate replace to="/agreements/required" />
   }
 
   return <BusinessOwnerLayout />
@@ -263,6 +321,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminEntryRoute />,
+  },
+  {
+    path: '/agreements/required',
+    element: <RequiredAgreementsPage />,
   },
   {
     path: '/promo',
