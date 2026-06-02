@@ -140,10 +140,13 @@ npm run test:referrals
 npm run test:onboarding
 npm run test:gift-cards
 npm run test:rewards
+npm run test:agreements
 npm run test:load
 ```
 
-These suites cover partner referral attribution and duplicate protection, first-run onboarding states, gift-card issue/redeem operations, reward redemption fulfillment, and a 100-request public launch load smoke. They use the same seeded accounts and Supabase browser/client assertions as `test:launch`.
+These suites cover partner referral attribution and duplicate protection, first-run onboarding states, gift-card issue/redeem operations, reward redemption fulfillment, required agreement signing, admin signed/unsigned agreement reporting, and a 100-request public launch load smoke. They use the same seeded accounts and Supabase browser/client assertions as `test:launch`.
+
+The agreement suite signs through the real `sign-agreement` Supabase Edge Function. Before running `npm run test:agreements` locally, reset/seed Supabase and serve or deploy that Edge Function for the configured `VITE_SUPABASE_URL`.
 
 The local seed accounts use password `demo1234`:
 
@@ -152,6 +155,9 @@ The local seed accounts use password `demo1234`:
 - `staff@velvetbrew.test`
 - `owner@velvetbrew.test`
 - `admin@medellin.test`
+- `agreement-pending-customer@medellin.test`
+- `agreement-pending-owner@velvetbrew.test`
+- `agreement-unsigned-customer@medellin.test`
 
 Minimum E2E scenarios:
 

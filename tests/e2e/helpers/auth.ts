@@ -10,12 +10,28 @@ export async function signInCustomer(page: Page, email: string, password = e2ePa
   await expect(page).toHaveURL(/\/dashboard$/)
 }
 
+export async function signInCustomerExpectAgreementGate(page: Page, email: string, password = e2ePassword) {
+  await page.goto('/signin')
+  await page.locator('#signin-email').fill(email)
+  await page.locator('#signin-password').fill(password)
+  await page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+  await expect(page).toHaveURL(/\/agreements\/required$/)
+}
+
 export async function signInBusinessPortal(page: Page, email: string, password = e2ePassword) {
   await page.goto('/business/login')
   await page.locator('#staff-signin-email').fill(email)
   await page.locator('#staff-signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
   await expect(page).toHaveURL(/\/business\/dashboard$/)
+}
+
+export async function signInBusinessPortalExpectAgreementGate(page: Page, email: string, password = e2ePassword) {
+  await page.goto('/business/login')
+  await page.locator('#staff-signin-email').fill(email)
+  await page.locator('#staff-signin-password').fill(password)
+  await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+  await expect(page).toHaveURL(/\/agreements\/required$/)
 }
 
 export async function signInAdmin(page: Page, email: string, password = e2ePassword) {

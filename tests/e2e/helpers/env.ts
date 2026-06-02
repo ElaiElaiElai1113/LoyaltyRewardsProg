@@ -9,7 +9,8 @@ export const workflowAuthEnabled =
   process.env.npm_lifecycle_event === 'test:referrals' ||
   process.env.npm_lifecycle_event === 'test:onboarding' ||
   process.env.npm_lifecycle_event === 'test:gift-cards' ||
-  process.env.npm_lifecycle_event === 'test:rewards'
+  process.env.npm_lifecycle_event === 'test:rewards' ||
+  process.env.npm_lifecycle_event === 'test:agreements'
 
 export const e2eAccounts = {
   customer: process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test',
@@ -17,4 +18,10 @@ export const e2eAccounts = {
   businessStaff: process.env.E2E_BUSINESS_STAFF_EMAIL ?? 'staff@velvetbrew.test',
   businessOwner: process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'owner@velvetbrew.test',
   admin: process.env.E2E_ADMIN_EMAIL ?? 'admin@medellin.test',
+  agreementPendingCustomer:
+    process.env.E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL ?? 'agreement-pending-customer@medellin.test',
+  agreementPendingBusinessOwner:
+    process.env.E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL ?? 'agreement-pending-owner@velvetbrew.test',
+  agreementUnsignedCustomer:
+    process.env.E2E_AGREEMENT_UNSIGNED_CUSTOMER_EMAIL ?? 'agreement-unsigned-customer@medellin.test',
 } as const

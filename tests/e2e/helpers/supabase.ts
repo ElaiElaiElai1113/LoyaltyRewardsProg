@@ -30,6 +30,15 @@ export interface E2EMemberTransaction {
   note: string | null
 }
 
+export interface E2EAgreementAcceptance {
+  id: string
+  agreementKind: string
+  agreementVersion: number
+  typedSignature: string
+  signatureSvg: string | null
+  signedAt: string
+}
+
 function readDotEnv() {
   if (!existsSync('.env')) return new Map<string, string>()
 
@@ -165,6 +174,30 @@ export async function getRewardBalance(client: AppSupabaseClient, profileId: str
     points: Number(row.points),
     availableCredits: Number(row.available_credits),
   }
+}
+
+export async function getAgreementAcceptancesForProfile(
+  client: AppSupabaseClient,
+  profileId: string,
+): Promise<E2EAgreementAcceptance[]> {
+  const { data, error } = await client
+    .from('agreement_acceptances')
+    .select('id, agreement_kind, agreement_version, typed_signature, signature_svg, signed_at')
+    .eq('profile_id', profileId)
+    .order('signed_at', { ascending: false })
+
+  if (error) {
+    throw new Error(`Agreement acceptances not found for ${profileId}: ${error.message}`)
+  }
+
+  return ((data ?? []) as Record<string, unknown>[]).map((row) => ({
+    id: row.id as string,
+    agreementKind: row.agreement_kind as string,
+    agreementVersion: Number(row.agreement_version),
+    typedSignature: row.typed_signature as string,
+    signatureSvg: (row.signature_svg as string | null) ?? null,
+    signedAt: row.signed_at as string,
+  }))
 }
 
 export async function recordMemberQrSale(

@@ -1156,7 +1156,7 @@ runTest('launch checklist command enables authenticated workflow tests', () => {
 runTest('focused workflow commands enable authenticated workflow tests', () => {
   const envHelper = readFileSync('tests/e2e/helpers/env.ts', 'utf8')
 
-  for (const command of ['test:referrals', 'test:onboarding', 'test:gift-cards', 'test:rewards']) {
+  for (const command of ['test:referrals', 'test:onboarding', 'test:gift-cards', 'test:rewards', 'test:agreements']) {
     assert.match(envHelper, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
   }
 })
@@ -1178,15 +1178,17 @@ runTest('package exposes focused workflow automation commands', () => {
   assert.equal(pkg.scripts?.['test:gift-cards'], 'playwright test tests/e2e/gift-cards.spec.ts')
   assert.equal(pkg.scripts?.['test:rewards'], 'playwright test tests/e2e/rewards-redemption.spec.ts')
   assert.equal(pkg.scripts?.['test:load'], 'playwright test tests/e2e/load.spec.ts')
+  assert.equal(pkg.scripts?.['test:agreements'], 'playwright test tests/e2e/agreements.spec.ts')
 })
 
-runTest('focused workflow suites cover referrals, onboarding, gift cards, rewards, and load', () => {
+runTest('focused workflow suites cover referrals, onboarding, gift cards, rewards, agreements, and load', () => {
   const expectedSpecs = [
     ['tests/e2e/referrals.spec.ts', ['QR001', 'REF001', 'REF002', 'REF003']],
     ['tests/e2e/onboarding.spec.ts', ['ONB001', 'ONB002', 'ONB003']],
     ['tests/e2e/gift-cards.spec.ts', ['GC001', 'GC002', 'GC003']],
     ['tests/e2e/rewards-redemption.spec.ts', ['RW001', 'RW002', 'RW003']],
     ['tests/e2e/load.spec.ts', ['LOAD001']],
+    ['tests/e2e/agreements.spec.ts', ['AGR001', 'AGR002', 'AGR003']],
   ] as const
 
   for (const [filePath, testIds] of expectedSpecs) {
@@ -1195,6 +1197,21 @@ runTest('focused workflow suites cover referrals, onboarding, gift cards, reward
       assert.match(spec, new RegExp(`test\\('${testId}`))
     }
   }
+})
+
+runTest('agreement workflow QA has seeded signed and unsigned users', () => {
+  const seed = readFileSync('supabase/seed.sql', 'utf8')
+  const envHelper = readFileSync('tests/e2e/helpers/env.ts', 'utf8')
+
+  assert.match(envHelper, /test:agreements/)
+  assert.match(envHelper, /agreementPendingCustomer/)
+  assert.match(envHelper, /agreementPendingBusinessOwner/)
+  assert.match(envHelper, /agreementUnsignedCustomer/)
+  assert.match(seed, /agreement-pending-customer@medellin\.test/)
+  assert.match(seed, /agreement-pending-owner@velvetbrew\.test/)
+  assert.match(seed, /agreement-unsigned-customer@medellin\.test/)
+  assert.match(seed, /insert into public\.agreement_acceptances[\s\S]*signature_svg/i)
+  assert.match(seed, /data-signature="drawn"/)
 })
 
 runTest('Supabase E2E helpers expose workflow assertion utilities', () => {
@@ -1228,6 +1245,7 @@ runTest('workflow QA docs list focused automation commands', () => {
     'npm run test:gift-cards',
     'npm run test:rewards',
     'npm run test:load',
+    'npm run test:agreements',
   ]) {
     assert.match(qaDoc, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
   }

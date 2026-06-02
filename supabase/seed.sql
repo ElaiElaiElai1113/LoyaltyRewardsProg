@@ -269,7 +269,10 @@ insert into auth.users (
   ('00000000-0000-0000-0000-000000000000', '22222222-2222-2222-2222-222222222222', 'authenticated', 'authenticated', 'unverified@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"customer"}'::jsonb, '{"full_name":"E2E Unverified Customer","verification_id_number":"E2E-CUSTOMER-002","verification_document_path":"pending/22222222-2222-2222-2222-222222222222.png","verification_document_filename":"unverified-customer.png"}'::jsonb, now(), now(), '', '', '', ''),
   ('00000000-0000-0000-0000-000000000000', '33333333-3333-3333-3333-333333333333', 'authenticated', 'authenticated', 'staff@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-staff","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Velvet Staff"}'::jsonb, now(), now(), '', '', '', ''),
   ('00000000-0000-0000-0000-000000000000', '44444444-4444-4444-4444-444444444444', 'authenticated', 'authenticated', 'owner@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-owner","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Velvet Owner"}'::jsonb, now(), now(), '', '', '', ''),
-  ('00000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', 'authenticated', 'authenticated', 'admin@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"platform-admin"}'::jsonb, '{"full_name":"E2E Platform Admin"}'::jsonb, now(), now(), '', '', '', '')
+  ('00000000-0000-0000-0000-000000000000', '55555555-5555-5555-5555-555555555555', 'authenticated', 'authenticated', 'admin@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"platform-admin"}'::jsonb, '{"full_name":"E2E Platform Admin"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '66666666-6666-6666-6666-666666666666', 'authenticated', 'authenticated', 'agreement-pending-customer@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"customer"}'::jsonb, '{"full_name":"E2E Agreement Pending Customer","verification_id_number":"E2E-AGREEMENT-001","verification_document_path":"pending/66666666-6666-6666-6666-666666666666.png","verification_document_filename":"agreement-pending-customer.png"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '77777777-7777-7777-7777-777777777777', 'authenticated', 'authenticated', 'agreement-pending-owner@velvetbrew.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"business-owner","business_id":"a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11"}'::jsonb, '{"full_name":"E2E Agreement Pending Owner"}'::jsonb, now(), now(), '', '', '', ''),
+  ('00000000-0000-0000-0000-000000000000', '88888888-8888-8888-8888-888888888888', 'authenticated', 'authenticated', 'agreement-unsigned-customer@medellin.test', crypt('demo1234', gen_salt('bf')), now(), '{"provider":"email","providers":["email"],"role":"customer"}'::jsonb, '{"full_name":"E2E Unsigned Agreement Customer"}'::jsonb, now(), now(), '', '', '', '')
 on conflict (id) do update
 set email = excluded.email,
     encrypted_password = excluded.encrypted_password,
@@ -292,7 +295,10 @@ insert into auth.identities (
   ('22222222-2222-2222-2222-222222222222', '22222222-2222-2222-2222-222222222222', 'unverified@medellin.test', '{"sub":"22222222-2222-2222-2222-222222222222","email":"unverified@medellin.test"}'::jsonb, 'email', now(), now(), now()),
   ('33333333-3333-3333-3333-333333333333', '33333333-3333-3333-3333-333333333333', 'staff@velvetbrew.test', '{"sub":"33333333-3333-3333-3333-333333333333","email":"staff@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
   ('44444444-4444-4444-4444-444444444444', '44444444-4444-4444-4444-444444444444', 'owner@velvetbrew.test', '{"sub":"44444444-4444-4444-4444-444444444444","email":"owner@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
-  ('55555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555', 'admin@medellin.test', '{"sub":"55555555-5555-5555-5555-555555555555","email":"admin@medellin.test"}'::jsonb, 'email', now(), now(), now())
+  ('55555555-5555-5555-5555-555555555555', '55555555-5555-5555-5555-555555555555', 'admin@medellin.test', '{"sub":"55555555-5555-5555-5555-555555555555","email":"admin@medellin.test"}'::jsonb, 'email', now(), now(), now()),
+  ('66666666-6666-6666-6666-666666666666', '66666666-6666-6666-6666-666666666666', 'agreement-pending-customer@medellin.test', '{"sub":"66666666-6666-6666-6666-666666666666","email":"agreement-pending-customer@medellin.test"}'::jsonb, 'email', now(), now(), now()),
+  ('77777777-7777-7777-7777-777777777777', '77777777-7777-7777-7777-777777777777', 'agreement-pending-owner@velvetbrew.test', '{"sub":"77777777-7777-7777-7777-777777777777","email":"agreement-pending-owner@velvetbrew.test"}'::jsonb, 'email', now(), now(), now()),
+  ('88888888-8888-8888-8888-888888888888', '88888888-8888-8888-8888-888888888888', 'agreement-unsigned-customer@medellin.test', '{"sub":"88888888-8888-8888-8888-888888888888","email":"agreement-unsigned-customer@medellin.test"}'::jsonb, 'email', now(), now(), now())
 on conflict (id) do update
 set provider_id = excluded.provider_id,
     identity_data = excluded.identity_data,
@@ -306,6 +312,76 @@ where id = '11111111-1111-1111-1111-111111111111';
 update public.profiles
 set verification_status = 'submitted'
 where id = '22222222-2222-2222-2222-222222222222';
+
+update public.profiles
+set verification_status = 'verified'
+where id = '66666666-6666-6666-6666-666666666666';
+
+with signed_agreement_profiles as (
+  select p.id as profile_id, p.business_id, p.role, p.full_name
+  from public.profiles p
+  where p.id in (
+    '11111111-1111-1111-1111-111111111111',
+    '22222222-2222-2222-2222-222222222222',
+    '44444444-4444-4444-4444-444444444444'
+  )
+),
+required_agreements as (
+  select
+    sap.profile_id,
+    sap.business_id,
+    sap.full_name,
+    av.id as agreement_version_id,
+    av.kind as agreement_kind,
+    av.version as agreement_version,
+    av.content_hash
+  from signed_agreement_profiles sap
+  join public.agreement_versions av
+    on av.is_active
+   and av.required_role = sap.role
+)
+insert into public.agreement_acceptances (
+  profile_id,
+  business_id,
+  agreement_version_id,
+  agreement_kind,
+  agreement_version,
+  content_hash,
+  typed_signature,
+  signature_svg,
+  accepted_electronic_records,
+  accepted_terms,
+  signer_ip,
+  signer_user_agent,
+  signed_at
+)
+select
+  profile_id,
+  business_id,
+  agreement_version_id,
+  agreement_kind,
+  agreement_version,
+  content_hash,
+  full_name,
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 220" data-signature="drawn"><path d="M 80 132 L 142 94 L 206 124 L 286 72 L 374 118 L 512 86" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  true,
+  true,
+  '127.0.0.1',
+  'Supabase seed',
+  now()
+from required_agreements
+on conflict (profile_id, agreement_version_id) do update
+set business_id = excluded.business_id,
+    agreement_kind = excluded.agreement_kind,
+    agreement_version = excluded.agreement_version,
+    content_hash = excluded.content_hash,
+    typed_signature = excluded.typed_signature,
+    signature_svg = excluded.signature_svg,
+    accepted_electronic_records = excluded.accepted_electronic_records,
+    accepted_terms = excluded.accepted_terms,
+    signer_ip = excluded.signer_ip,
+    signer_user_agent = excluded.signer_user_agent,
+    signed_at = excluded.signed_at;
 
 delete from public.rewards
 where business_id in (
