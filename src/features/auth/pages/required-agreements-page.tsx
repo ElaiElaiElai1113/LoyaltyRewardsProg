@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FileSignature, LogOut, ShieldCheck } from 'lucide-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
@@ -12,6 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { useAuth } from '@/hooks/use-auth'
 import { useRequiredAgreements, useSignAgreement } from '@/hooks/use-legal-agreements'
 import { getHomePathForRole } from '@/lib/role-routes'
+import { SignaturePad } from '../components/signature-pad'
 import {
   signAgreementSchema,
   type SignAgreementFormValues,
@@ -23,11 +24,13 @@ export function RequiredAgreementsPage() {
   const { profile, isLoading: isAuthLoading, signOut } = useAuth()
   const requiredAgreements = useRequiredAgreements(profile)
   const signAgreement = useSignAgreement(profile)
+  const [signatureResetSignal, setSignatureResetSignal] = useState(0)
 
   const form = useForm<SignAgreementFormValues>({
     resolver: zodResolver(signAgreementSchema),
     defaultValues: {
       typedSignature: '',
+      signatureSvg: '',
       acceptedElectronicRecords: false,
       acceptedTerms: false,
     },
@@ -151,6 +154,7 @@ export function RequiredAgreementsPage() {
                     ...values,
                   })
                   form.reset()
+                  setSignatureResetSignal((value) => value + 1)
                   const refreshed = await requiredAgreements.refetch()
                   if (refreshed.data?.isComplete) {
                     navigate(getHomePathForRole(profile.role), { replace: true })
@@ -198,6 +202,22 @@ export function RequiredAgreementsPage() {
                       {form.formState.errors.typedSignature.message}
                     </p>
                   ) : null}
+                </div>
+
+                <div className="grid gap-3">
+                  <Label>Drawn Signature</Label>
+                  <input type="hidden" {...form.register('signatureSvg')} />
+                  <SignaturePad
+                    key={signatureResetSignal}
+                    disabled={signAgreement.isPending || requiredAgreements.isFetching}
+                    error={form.formState.errors.signatureSvg?.message}
+                    onChange={(signatureSvg) =>
+                      form.setValue('signatureSvg', signatureSvg, {
+                        shouldDirty: true,
+                        shouldValidate: true,
+                      })
+                    }
+                  />
                 </div>
 
                 <Button

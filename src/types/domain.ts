@@ -430,9 +430,27 @@ export interface AgreementAcceptance {
   agreementVersion: number
   contentHash: string
   typedSignature: string
+  signatureSvg: string | null
   acceptedElectronicRecords: boolean
   acceptedTerms: boolean
   signedAt: string
+}
+
+export interface AgreementStatusRecord {
+  profileId: string
+  fullName: string
+  email: string
+  role: UserRole
+  businessId: string | null
+  agreementVersionId: string
+  agreementKind: AgreementKind
+  agreementTitle: string
+  agreementVersion: number
+  contentHash: string
+  isSigned: boolean
+  signedAt: string | null
+  typedSignature: string | null
+  signatureSvg: string | null
 }
 
 export interface RequiredAgreementStatus {

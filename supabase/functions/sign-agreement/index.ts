@@ -3,6 +3,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2'
 type SignAgreementRequest = {
   agreementVersionId?: string
   typedSignature?: string
+  signatureSvg?: string
   acceptedElectronicRecords?: boolean
   acceptedTerms?: boolean
 }
@@ -40,6 +41,35 @@ function getSecretKey() {
 function getSignerIp(req: Request) {
   const forwardedFor = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
   return req.headers.get('cf-connecting-ip') ?? forwardedFor ?? null
+}
+
+function sanitizeSignatureSvg(value?: string) {
+  const signatureSvg = value?.trim()
+  if (!signatureSvg || signatureSvg.length < 80 || signatureSvg.length > 50000) {
+    return null
+  }
+
+  const lowerSignature = signatureSvg.toLowerCase()
+  const hasExpectedShape =
+    lowerSignature.startsWith('<svg') &&
+    lowerSignature.includes('data-signature="drawn"') &&
+    lowerSignature.includes('<path')
+
+  const hasUnsafeContent =
+    lowerSignature.includes('<script') ||
+    lowerSignature.includes('<foreignobject') ||
+    lowerSignature.includes('javascript:') ||
+    /\son[a-z]+\s*=/.test(lowerSignature)
+
+  if (!hasExpectedShape || hasUnsafeContent) {
+    return null
+  }
+
+  return signatureSvg
+}
+
+function hasStoredSignature(acceptance: { signature_svg?: string | null }) {
+  return Boolean(acceptance.signature_svg && acceptance.signature_svg.length >= 80)
 }
 
 Deno.serve(async (req: Request) => {
@@ -83,6 +113,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const typedSignature = payload.typedSignature?.trim()
+  const signatureSvg = sanitizeSignatureSvg(payload.signatureSvg)
   if (!payload.agreementVersionId) {
     return jsonResponse({ message: 'Agreement version is required.' }, 400)
   }
@@ -93,6 +124,10 @@ Deno.serve(async (req: Request) => {
 
   if (!payload.acceptedElectronicRecords || !payload.acceptedTerms) {
     return jsonResponse({ message: 'Both consent confirmations are required.' }, 400)
+  }
+
+  if (!signatureSvg) {
+    return jsonResponse({ message: 'Drawn signature is required.' }, 400)
   }
 
   const { data: profile, error: profileError } = await admin
@@ -131,8 +166,31 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ message: 'Could not check existing signature.' }, 500)
   }
 
-  if (existing) {
+  if (existing && hasStoredSignature(existing)) {
     return jsonResponse({ acceptance: existing, alreadySigned: true })
+  }
+
+  if (existing) {
+    const { data: updatedAcceptance, error: updateError } = await admin
+      .from('agreement_acceptances')
+      .update({
+        typed_signature: typedSignature,
+        signature_svg: signatureSvg,
+        accepted_electronic_records: true,
+        accepted_terms: true,
+        signer_ip: getSignerIp(req),
+        signer_user_agent: req.headers.get('user-agent'),
+        signed_at: new Date().toISOString(),
+      })
+      .eq('id', existing.id)
+      .select('*')
+      .single()
+
+    if (updateError || !updatedAcceptance) {
+      return jsonResponse({ message: updateError?.message ?? 'Signature could not be saved.' }, 500)
+    }
+
+    return jsonResponse({ acceptance: updatedAcceptance, updatedSignature: true })
   }
 
   const { data: acceptance, error: acceptanceError } = await admin
@@ -145,6 +203,7 @@ Deno.serve(async (req: Request) => {
       agreement_version: agreement.version,
       content_hash: agreement.content_hash,
       typed_signature: typedSignature,
+      signature_svg: signatureSvg,
       accepted_electronic_records: true,
       accepted_terms: true,
       signer_ip: getSignerIp(req),

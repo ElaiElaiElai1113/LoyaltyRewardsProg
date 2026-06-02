@@ -28,7 +28,8 @@ function hasMatchingAcceptance(
       acceptance.agreementVersion === agreement.version &&
       acceptance.contentHash === agreement.contentHash &&
       acceptance.acceptedElectronicRecords &&
-      acceptance.acceptedTerms,
+      acceptance.acceptedTerms &&
+      Boolean(acceptance.signatureSvg && acceptance.signatureSvg.length >= 80),
   )
 }
 

@@ -27,6 +27,7 @@ const adminKeys = {
   users: ['admin-users'] as const,
   overview: ['admin-overview'] as const,
   businesses: ['businesses'] as const,
+  agreementStatuses: ['admin-agreement-statuses'] as const,
 }
 
 export class OwnerNotFoundError extends Error {
@@ -54,6 +55,13 @@ export function useAdminOverview() {
   return useQuery({
     queryKey: adminKeys.overview,
     queryFn: () => adminService.getOverview(),
+  })
+}
+
+export function useAdminAgreementStatuses() {
+  return useQuery({
+    queryKey: adminKeys.agreementStatuses,
+    queryFn: () => adminService.getAgreementStatuses(),
   })
 }
 

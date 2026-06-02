@@ -214,6 +214,7 @@ export type RegisterCustomerFormValues = z.infer<typeof registerCustomerSchema>
 
 export const signAgreementSchema = z.object({
   typedSignature: z.string().min(2, 'Type your full legal name'),
+  signatureSvg: z.string().trim().min(80, 'Draw your signature').max(50000, 'Signature is too large'),
   acceptedElectronicRecords: z.boolean().refine((value) => value, {
     message: 'Electronic records consent is required',
   }),

@@ -5,6 +5,7 @@ import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphon
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
+import { AgreementStatusPanel } from '@/features/admin/components/agreement-status-panel'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { RewardCard } from '@/features/rewards/components/reward-card'
 import { Badge } from '@/components/ui/badge'
@@ -24,6 +25,7 @@ import {
   useAllReferrals,
   useAdminAmbassadorLeads,
   useAdminApproveReferral,
+  useAdminAgreementStatuses,
   useAdminAllBusinesses,
   useAdminBusinesses,
   useAdminEarlyAccessLeads,
@@ -79,6 +81,7 @@ const adminTabValues = [
   'ambassadors',
   'early-access',
   'referrals',
+  'agreements',
   'activity',
   'commissions',
 ] as const
@@ -123,6 +126,7 @@ export function AdminPage() {
   const ambassadorLeads = useAdminAmbassadorLeads()
   const earlyAccessLeads = useAdminEarlyAccessLeads()
   const memberTransactions = useAdminMemberTransactions()
+  const agreementStatuses = useAdminAgreementStatuses()
   const [rewardBusinessId, setRewardBusinessId] = useState('')
   const [productBusinessId, setProductBusinessId] = useState('')
   const [promotionBusinessId, setPromotionBusinessId] = useState('')
@@ -2497,6 +2501,13 @@ export function AdminPage() {
               </ScrollArea>
             </div>
           </div>
+        </TabsContent>
+
+        <TabsContent value="agreements" className="space-y-12 outline-none">
+          <AgreementStatusPanel
+            records={agreementStatuses.data ?? []}
+            isLoading={agreementStatuses.isLoading}
+          />
         </TabsContent>
 
         <TabsContent value="activity" className="space-y-12 outline-none">

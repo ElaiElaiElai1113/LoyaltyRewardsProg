@@ -34,6 +34,7 @@ type AgreementAcceptanceRow = {
   agreement_version: number
   content_hash: string
   typed_signature: string
+  signature_svg: string | null
   accepted_electronic_records: boolean
   accepted_terms: boolean
   signed_at: string
@@ -67,6 +68,7 @@ function toAgreementAcceptance(row: AgreementAcceptanceRow): AgreementAcceptance
     agreementVersion: row.agreement_version,
     contentHash: row.content_hash,
     typedSignature: row.typed_signature,
+    signatureSvg: row.signature_svg,
     acceptedElectronicRecords: row.accepted_electronic_records,
     acceptedTerms: row.accepted_terms,
     signedAt: row.signed_at,

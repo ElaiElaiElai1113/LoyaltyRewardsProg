@@ -43,6 +43,9 @@ const activeTradeDealAgreement: AgreementVersion = {
   effectiveAt: '2026-06-01T00:00:00.000Z',
 }
 
+const drawnSignatureSvg =
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 220" data-signature="drawn"><path d="M 10 10 L 60 45" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+
 function accepted(version: AgreementVersion): AgreementAcceptance {
   return {
     id: `acceptance-${version.id}`,
@@ -53,10 +56,11 @@ function accepted(version: AgreementVersion): AgreementAcceptance {
     agreementVersion: version.version,
     contentHash: version.contentHash,
     typedSignature: 'Ava Member',
+    signatureSvg: drawnSignatureSvg,
     acceptedElectronicRecords: true,
     acceptedTerms: true,
     signedAt: '2026-06-01T01:00:00.000Z',
-  }
+  } as AgreementAcceptance
 }
 
 describe('agreement requirements', () => {
@@ -97,6 +101,21 @@ describe('agreement requirements', () => {
 
     expect(pending).toEqual([])
     expect(hasCompletedRequiredAgreements(pending)).toBe(true)
+  })
+
+  it('does not treat typed-only acceptance records as complete', () => {
+    const typedOnlyAcceptance = {
+      ...accepted(activeMemberAgreement),
+      signatureSvg: null,
+    } as AgreementAcceptance
+
+    const pending = getPendingRequiredAgreements({
+      role: 'customer',
+      activeAgreements: [activeMemberAgreement],
+      acceptances: [typedOnlyAcceptance],
+    })
+
+    expect(pending).toEqual([activeMemberAgreement])
   })
 
   it('requires re-signing when the active agreement version or hash changes', () => {

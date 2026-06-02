@@ -8,7 +8,7 @@ type RegisterCustomerRequest = {
 
 type ProfileRow = {
   id: string
-  role: 'customer' | 'platform-admin' | 'business-owner'
+  role: 'customer' | 'platform-admin' | 'business-owner' | 'business-staff'
   business_id: string | null
 }
 
@@ -74,7 +74,9 @@ async function hasRequiredAgreements(admin: ReturnType<typeof createClient>, pro
         acceptance.agreement_version === agreement.version &&
         acceptance.content_hash === agreement.content_hash &&
         acceptance.accepted_electronic_records &&
-        acceptance.accepted_terms,
+        acceptance.accepted_terms &&
+        acceptance.signature_svg &&
+        acceptance.signature_svg.length >= 80,
     ),
   )
 }

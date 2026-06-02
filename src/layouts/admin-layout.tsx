@@ -1,5 +1,6 @@
 import {
   Activity,
+  FileSignature,
   LayoutDashboard,
   CreditCard,
   Gift,
@@ -40,6 +41,7 @@ const adminPortalSections = [
   { value: 'ambassadors', label: 'Ambassadors', icon: Megaphone },
   { value: 'early-access', label: 'Early Access', icon: Mail },
   { value: 'referrals', label: 'Referrals', icon: TrendingUp },
+  { value: 'agreements', label: 'Agreements', icon: FileSignature },
   { value: 'activity', label: 'Activity', icon: Activity },
   { value: 'commissions', label: 'Commissions', icon: ReceiptText },
 ]

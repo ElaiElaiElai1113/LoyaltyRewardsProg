@@ -1,9 +1,12 @@
 import type {
   Activity,
+  AgreementKind,
+  AgreementStatusRecord,
   BusinessWithMetrics,
   OrderForVerification,
   Profile,
   Redemption,
+  UserRole,
 } from '@/types/domain'
 import type { RewardAdjustmentFormValues } from '@/types/forms'
 import { MEMBER_VERIFICATION_BUCKET } from '@/lib/member-verification'
@@ -15,6 +18,37 @@ function toTierProgress(points: number, target: number) {
 
 type AdjustmentContext = {
   businessId?: string
+}
+
+type AgreementStatusProfileRow = {
+  id: string
+  full_name: string | null
+  email: string | null
+  role: UserRole
+  business_id: string | null
+}
+
+type AgreementStatusVersionRow = {
+  id: string
+  kind: AgreementKind
+  required_role: UserRole | null
+  version: number
+  title: string
+  content_hash: string
+  is_active: boolean
+}
+
+type AgreementStatusAcceptanceRow = {
+  profile_id: string
+  agreement_version_id: string
+  agreement_kind: AgreementKind
+  agreement_version: number
+  content_hash: string
+  typed_signature: string | null
+  signature_svg: string | null
+  accepted_electronic_records: boolean
+  accepted_terms: boolean
+  signed_at: string | null
 }
 
 async function performRewardAdjustment(
@@ -246,6 +280,90 @@ export const adminService = {
     )
 
     return profiles
+  },
+
+  async getAgreementStatuses(): Promise<AgreementStatusRecord[]> {
+    const sb = requireSupabase()
+
+    const [profilesResult, agreementsResult, acceptancesResult] = await Promise.all([
+      sb
+        .from('profiles')
+        .select('id, full_name, email, role, business_id')
+        .neq('role', 'platform-admin')
+        .order('full_name'),
+      sb
+        .from('agreement_versions')
+        .select('id, kind, required_role, version, title, content_hash, is_active')
+        .eq('is_active', true)
+        .not('required_role', 'is', null)
+        .order('kind', { ascending: true })
+        .order('version', { ascending: false }),
+      sb
+        .from('agreement_acceptances')
+        .select(
+          'profile_id, agreement_version_id, agreement_kind, agreement_version, content_hash, typed_signature, signature_svg, accepted_electronic_records, accepted_terms, signed_at',
+        ),
+    ])
+
+    if (profilesResult.error) throw new Error('Failed to load agreement users.')
+    if (agreementsResult.error) throw new Error('Failed to load active agreements.')
+    if (acceptancesResult.error) throw new Error('Failed to load agreement signatures.')
+
+    const profiles = (profilesResult.data ?? []) as AgreementStatusProfileRow[]
+    const agreements = (agreementsResult.data ?? []) as AgreementStatusVersionRow[]
+    const acceptances = (acceptancesResult.data ?? []) as AgreementStatusAcceptanceRow[]
+    const acceptanceByProfileAndVersion = new Map<string, AgreementStatusAcceptanceRow>()
+
+    for (const acceptance of acceptances) {
+      acceptanceByProfileAndVersion.set(
+        `${acceptance.profile_id}:${acceptance.agreement_version_id}`,
+        acceptance,
+      )
+    }
+
+    const records: AgreementStatusRecord[] = []
+    for (const profile of profiles) {
+      const requiredAgreements = agreements.filter((agreement) => agreement.required_role === profile.role)
+
+      for (const agreement of requiredAgreements) {
+        const acceptance = acceptanceByProfileAndVersion.get(`${profile.id}:${agreement.id}`)
+        const signatureSvg = acceptance?.signature_svg ?? null
+        const isSigned = Boolean(
+          acceptance &&
+            acceptance.agreement_kind === agreement.kind &&
+            acceptance.agreement_version === agreement.version &&
+            acceptance.content_hash === agreement.content_hash &&
+            acceptance.accepted_electronic_records &&
+            acceptance.accepted_terms &&
+            signatureSvg &&
+            signatureSvg.length >= 80,
+        )
+
+        records.push({
+          profileId: profile.id,
+          fullName: profile.full_name ?? profile.email ?? 'Unknown user',
+          email: profile.email ?? '',
+          role: profile.role,
+          businessId: profile.business_id,
+          agreementVersionId: agreement.id,
+          agreementKind: agreement.kind,
+          agreementTitle: agreement.title,
+          agreementVersion: agreement.version,
+          contentHash: agreement.content_hash,
+          isSigned,
+          signedAt: isSigned ? acceptance?.signed_at ?? null : null,
+          typedSignature: acceptance?.typed_signature ?? null,
+          signatureSvg: isSigned ? signatureSvg : null,
+        })
+      }
+    }
+
+    return records.sort((a, b) => {
+      if (a.isSigned !== b.isSigned) return a.isSigned ? 1 : -1
+      return `${a.role}:${a.fullName}:${a.agreementTitle}`.localeCompare(
+        `${b.role}:${b.fullName}:${b.agreementTitle}`,
+      )
+    })
   },
 
   async getOverview() {
