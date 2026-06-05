@@ -83,11 +83,13 @@ function buildTextEmail(fullName: string): string {
   return [
     `Hi ${getGreetingName(fullName)},`,
     '',
-    "Welcome to Medellin Rewards. You're officially on the early access list.",
+    'Welcome to Medellin Rewards. Your early access request has been received.',
     '',
-    'We will keep you posted as early adopter access opens, including launch updates, reward opportunities, and selected member benefits.',
+    'We are creating a private rewards experience for women who enjoy beautiful places, elevated moments, and getting more from the lifestyle they already love.',
     '',
-    'Thanks for joining us early.',
+    'As we prepare to open access, you will be among the first to receive selected invitations, rewards opportunities, and member updates.',
+    '',
+    'Thank you for joining us early. We are excited to share what is coming.',
     '',
     'Medellin Rewards',
     'medellinrewards.com',
@@ -119,19 +121,23 @@ function buildHtmlEmail(fullName: string): string {
               <td style="padding:32px 28px;">
                 <p style="margin:0 0 18px;font-size:18px;line-height:1.6;color:#24190f;">Hi ${greetingName},</p>
                 <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#443426;">
-                  You're officially on the Medellin Rewards early access list.
+                  Your early access request has been received.
                 </p>
                 <p style="margin:0 0 22px;font-size:16px;line-height:1.7;color:#443426;">
-                  We will keep you posted as early adopter access opens, including launch updates, reward opportunities, and selected member benefits.
+                  We are creating a private rewards experience for women who enjoy beautiful places, elevated moments, and getting more from the lifestyle they already love.
+                </p>
+                <p style="margin:0 0 22px;font-size:16px;line-height:1.7;color:#443426;">
+                  As we prepare to open access, you will be among the first to receive selected invitations, rewards opportunities, and member updates.
                 </p>
                 <div style="border-left:4px solid #16a34a;background:#f3faf4;padding:16px 18px;margin:24px 0;">
                   <p style="margin:0;font-size:15px;line-height:1.6;color:#24422b;">
-                    Thanks for joining us early. We are building Medellin Rewards so members can earn more from the purchases they already make.
+                    Your request has been received. Selected invitations and early rewards opportunities will be shared as access opens.
                   </p>
                 </div>
                 <p style="margin:24px 0 0;font-size:16px;line-height:1.7;color:#443426;">
-                  Medellin Rewards Team
+                  Thank you for joining us early. We are excited to share what is coming.
                 </p>
+                <p style="margin:10px 0 0;font-size:16px;line-height:1.7;color:#443426;">Medellin Rewards Team</p>
               </td>
             </tr>
             <tr>
