@@ -14,7 +14,7 @@ test.describe('public acquisition workflow', () => {
     await page.getByText('Where can I use my rewards?').click()
     await expect(page.getByText('You can use your rewards with partnered businesses inside the Medellin Rewards network.')).toBeVisible()
 
-    await page.goto('/early-access')
+    await page.goto('/invitation')
     await expect(page.locator('body')).toContainText('Medellin Rewards')
     await expect(page.locator('body')).toContainText(/Suscribirse|Subscribe/i)
     await page.getByRole('button', { name: /Suscribirse|Subscribe/i }).click()

@@ -110,7 +110,7 @@ test.describe.serial('platform launch checklist PT001-PT008', () => {
   })
 
   test('PT008 early subscriber form stores a lead visible to admin', async ({ page }) => {
-    await page.goto('/early-access')
+    await page.goto('/invitation')
     await page.getByRole('button', { name: /Suscribirse|Subscribe/i }).click()
     await page.locator('#early-access-name').fill('Launch Checklist Lead')
     await page.locator('#early-access-whatsapp').fill(earlyAccessWhatsapp)

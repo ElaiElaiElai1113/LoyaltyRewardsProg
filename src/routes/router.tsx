@@ -343,8 +343,12 @@ const router = createBrowserRouter([
     element: <JoinRewardsPage />,
   },
   {
-    path: '/early-access',
+    path: '/invitation',
     element: <EarlyAccessPage />,
+  },
+  {
+    path: '/early-access',
+    element: <Navigate replace to="/invitation" />,
   },
   {
     path: '/landing-page',
@@ -352,11 +356,11 @@ const router = createBrowserRouter([
   },
   {
     path: '/joinusearly',
-    element: <Navigate replace to="/early-access" />,
+    element: <Navigate replace to="/invitation" />,
   },
   {
     path: '/join-us-early',
-    element: <Navigate replace to="/early-access" />,
+    element: <Navigate replace to="/invitation" />,
   },
   {
     path: '/terms',

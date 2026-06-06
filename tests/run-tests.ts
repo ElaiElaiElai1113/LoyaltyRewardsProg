@@ -428,12 +428,13 @@ runTest('new customer auth trigger allows account creation before ID submission'
   assert.match(migration, /else 'not_submitted'/)
 })
 
-runTest('landing Join CTAs go to early access', () => {
+runTest('landing Join CTAs go to invitation', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const authPageStart = landingPage.indexOf('export function LegacyAuthPage')
   const landingMarkup = landingPage.slice(0, authPageStart)
 
-  assert.ok((landingMarkup.match(/to="\/early-access"/g) ?? []).length >= 2)
+  assert.ok((landingMarkup.match(/to="\/invitation"/g) ?? []).length >= 2)
+  assert.doesNotMatch(landingMarkup, /to="\/early-access"/)
   assert.doesNotMatch(landingMarkup, /to="\/join"/)
   assert.match(landingPage, /min-h-\[61px\]/)
   assert.match(landingPage, /How it works/)
@@ -505,6 +506,32 @@ runTest('early access sends welcome email after saving lead without blocking suc
   assert.match(earlyAccessPage, /email: lead\.email/)
   assert.match(emailFailureBlock, /console\.warn/)
   assert.doesNotMatch(emailFailureBlock, /setSubmitError/)
+})
+
+runTest('public invitation route renders the early access page', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const invitationRouteStart = router.indexOf("path: '/invitation'")
+  const earlyAccessRouteStart = router.indexOf("path: '/early-access'")
+  const invitationRoute = router.slice(invitationRouteStart, earlyAccessRouteStart)
+
+  assert.ok(invitationRouteStart > -1)
+  assert.match(invitationRoute, /element: <EarlyAccessPage \/>/)
+})
+
+runTest('legacy early access route redirects to invitation', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const earlyAccessRouteStart = router.indexOf("path: '/early-access'")
+  const landingRouteStart = router.indexOf("path: '/landing-page'")
+  const legacyRoute = router.slice(earlyAccessRouteStart, landingRouteStart)
+
+  assert.ok(earlyAccessRouteStart > -1)
+  assert.match(legacyRoute, /<Navigate replace to="\/invitation" \/>/)
+})
+
+runTest('welcome email does not expose the legacy early access URL', () => {
+  const api = readFileSync('api/send-welcome-email.ts', 'utf8')
+
+  assert.doesNotMatch(api, /\/early-access/)
 })
 
 runTest('welcome email API uses server-only Hostinger SMTP settings', () => {

@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test.describe('load smoke workflow automation', () => {
   test('LOAD001 public launch surfaces handle 100 concurrent smoke requests', async ({ request }) => {
-    const paths = ['/', '/early-access', '/landing-page']
+    const paths = ['/', '/invitation', '/landing-page']
     const responses = await Promise.all(
       Array.from({ length: 100 }, (_, index) => request.get(paths[index % paths.length])),
     )

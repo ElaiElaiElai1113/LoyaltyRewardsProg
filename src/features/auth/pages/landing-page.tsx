@@ -148,7 +148,7 @@ export function LandingPage() {
             <a href="#faq" className="transition hover:text-[#202023]">
               FAQ
             </a>
-            <Link to="/early-access" className="font-semibold text-[#caa747] transition hover:text-[#a87916]">
+            <Link to="/invitation" className="font-semibold text-[#caa747] transition hover:text-[#a87916]">
               Join now
             </Link>
           </nav>
@@ -203,7 +203,7 @@ export function LandingPage() {
           </div>
 
           <Link
-            to="/early-access"
+            to="/invitation"
             className="mt-[26px] inline-flex min-h-[54px] min-w-[278px] items-center justify-center rounded-[8px] bg-[#d1ad4a] px-8 text-[15px] font-bold text-[#121212] transition hover:bg-[#c29f3d]"
           >
             Join Medellin Rewards
@@ -231,7 +231,7 @@ export function LandingPage() {
             </div>
 
             <Link
-              to="/early-access"
+              to="/invitation"
               className="mt-[14px] flex min-h-[44px] w-full items-center justify-center rounded-[8px] bg-[#d1ad4a] text-[15px] font-bold text-[#121212] transition hover:bg-[#c29f3d]"
             >
               Join now
