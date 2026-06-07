@@ -1250,6 +1250,7 @@ runTest('focused workflow suites cover referrals, onboarding, gift cards, reward
 runTest('agreement workflow QA has seeded signed and unsigned users', () => {
   const seed = readFileSync('supabase/seed.sql', 'utf8')
   const envHelper = readFileSync('tests/e2e/helpers/env.ts', 'utf8')
+  const zeroBalanceMigration = readFileSync('supabase/migrations/20260607000000_allow_zero_signup_reward_balances.sql', 'utf8')
 
   assert.match(envHelper, /test:agreements/)
   assert.match(envHelper, /agreementPendingCustomer/)
@@ -1260,6 +1261,9 @@ runTest('agreement workflow QA has seeded signed and unsigned users', () => {
   assert.match(seed, /agreement-unsigned-customer@medellin\.test/)
   assert.match(seed, /insert into public\.agreement_acceptances[\s\S]*signature_svg/i)
   assert.match(seed, /data-signature="drawn"/)
+  assert.match(zeroBalanceMigration, /tg_table_name = 'reward_balances'/)
+  assert.match(zeroBalanceMigration, /coalesce\(new\.points, 0\) = 0/)
+  assert.match(zeroBalanceMigration, /coalesce\(new\.available_credits, 0\) = 0/)
 })
 
 runTest('Supabase E2E helpers expose workflow assertion utilities', () => {
