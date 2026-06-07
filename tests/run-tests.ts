@@ -419,10 +419,18 @@ runTest('profile verification remains the ID upload path after signup', () => {
 
 runTest('new customer auth trigger allows account creation before ID submission', () => {
   const migration = readFileSync('supabase/migrations/20260512000000_member_identity_verification.sql', 'utf8')
+  const forwardMigration = readFileSync(
+    'supabase/migrations/20260608000000_allow_member_signup_without_verification_id.sql',
+    'utf8',
+  )
 
   assert.doesNotMatch(migration, /Verification ID is required for member signup/)
   assert.doesNotMatch(migration, /Verification document is required for member signup/)
   assert.match(migration, /else 'not_submitted'/)
+  assert.match(forwardMigration, /create or replace function public\.handle_new_user/)
+  assert.doesNotMatch(forwardMigration, /Verification ID is required for member signup/)
+  assert.doesNotMatch(forwardMigration, /Verification document is required for member signup/)
+  assert.match(forwardMigration, /else 'not_submitted'/)
 })
 
 runTest('landing Join CTAs go to invitation', () => {
