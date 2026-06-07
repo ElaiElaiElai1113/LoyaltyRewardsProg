@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -20,6 +20,8 @@ const legalLinks = [
 
 export function PublicBrowseLayout() {
   const { t } = useLanguage()
+  const location = useLocation()
+  const isBusinessOnboarding = location.pathname === '/business'
 
   return (
     <div className="soft-luxe-shell flex min-h-screen flex-col">
@@ -60,15 +62,28 @@ export function PublicBrowseLayout() {
             <div className="hidden sm:block">
               <ThemeToggle />
             </div>
-            <Button asChild variant="secondary" size="sm">
-              <NavLink to="/join">
-                <span className="hidden sm:inline">{t('Join Rewards Club')}</span>
-                <span className="sm:hidden">{t('Join')}</span>
-              </NavLink>
-            </Button>
-            <Button asChild variant="outline" size="sm">
-              <NavLink to="/signin">{t('Sign In')}</NavLink>
-            </Button>
+            {isBusinessOnboarding ? (
+              <>
+                <Button asChild variant="secondary" size="sm">
+                  <a href="#book-demo">{t('Start Onboarding')}</a>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <NavLink to="/business/login">{t('Business Login')}</NavLink>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button asChild variant="secondary" size="sm">
+                  <NavLink to="/join">
+                    <span className="hidden sm:inline">{t('Join Rewards Club')}</span>
+                    <span className="sm:hidden">{t('Join')}</span>
+                  </NavLink>
+                </Button>
+                <Button asChild variant="outline" size="sm">
+                  <NavLink to="/signin">{t('Sign In')}</NavLink>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </header>

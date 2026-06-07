@@ -66,6 +66,9 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
 
   const isAdminPortal = portal === 'admin'
   const portalHome = isAdminPortal ? '/admin/portal' : '/business/dashboard'
+  const businessSignInLink = isAdminPortal ? '/signin' : '/business'
+  const secondaryPortalLabel = isAdminPortal ? 'Public member sign in' : 'Business overview'
+  const secondaryPortalAction = isAdminPortal ? 'Go to sign in' : 'View business page'
   const portalIcon = isAdminPortal ? ShieldCheck : Building2
   const PortalIcon = portalIcon
 
@@ -128,10 +131,10 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
               </div>
               <div className="rounded-[0.9rem] border border-[var(--champagne)]/24 bg-[var(--espresso)]/34 p-4 transition hover:-translate-y-0.5 hover:border-[var(--champagne)]/55 hover:bg-[var(--espresso)]/52">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--champagne)]">
-                  Public member sign in
+                  {secondaryPortalLabel}
                 </p>
-                <Link className="mt-3 inline-flex text-sm font-semibold text-[var(--cream)] hover:text-[var(--champagne)]" to="/signin">
-                  {t('Go to sign in')}
+                <Link className="mt-3 inline-flex text-sm font-semibold text-[var(--cream)] hover:text-[var(--champagne)]" to={businessSignInLink}>
+                  {t(secondaryPortalAction)}
                 </Link>
               </div>
             </div>

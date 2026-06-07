@@ -1132,6 +1132,25 @@ runTest('business staff owner-only routes are guarded and hidden from navigation
   assert.doesNotMatch(layout, /\.filter\(\(item\) => !item\.ownerOnly \|\| profile\?\.role === 'business-owner'\)/)
 })
 
+runTest('public business page header uses business onboarding actions', () => {
+  const layout = readFileSync('src/layouts/public-browse-layout.tsx', 'utf8')
+
+  assert.match(layout, /useLocation/)
+  assert.match(layout, /isBusinessOnboarding/)
+  assert.match(layout, /href="#book-demo"/)
+  assert.match(layout, /to="\/business\/login"/)
+  assert.match(layout, /isBusinessOnboarding[\s\S]*Start Onboarding/)
+  assert.match(layout, /isBusinessOnboarding[\s\S]*Business Login/)
+})
+
+runTest('business login page does not point business users to customer sign in', () => {
+  const page = readFileSync('src/features/auth/pages/staff-login-page.tsx', 'utf8')
+
+  assert.match(page, /businessSignInLink/)
+  assert.match(page, /businessSignInLink[\s\S]*\/business/)
+  assert.doesNotMatch(page, /Public member sign in[\s\S]*to="\/signin"/)
+})
+
 runTest('staff permission migration keeps operational access but restricts catalog management', () => {
   const migrations = getFilesByExtension('supabase/migrations', '.sql')
     .map((file) => readFileSync(file, 'utf8'))
