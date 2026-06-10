@@ -513,6 +513,40 @@ runTest('early access sends welcome email after saving lead without blocking suc
   assert.doesNotMatch(emailFailureBlock, /setSubmitError/)
 })
 
+runTest('early access public lead capture submits through the same-origin API', () => {
+  const earlyAccessService = readFileSync('src/integrations/supabase/services/early-access-service.ts', 'utf8')
+  const createLeadStart = earlyAccessService.indexOf('async createLead')
+  const getLeadsStart = earlyAccessService.indexOf('async getLeads')
+  const createLeadBlock = earlyAccessService.slice(createLeadStart, getLeadsStart)
+
+  assert.ok(createLeadStart > -1)
+  assert.ok(getLeadsStart > createLeadStart)
+  assert.match(createLeadBlock, /fetch\('\/api\/early-access-leads'/)
+  assert.doesNotMatch(createLeadBlock, /\.rpc\('create_early_access_lead'/)
+})
+
+runTest('early access API creates leads through Supabase server-side', () => {
+  assert.ok(existsSync('api/early-access-leads.ts'))
+
+  const api = readFileSync('api/early-access-leads.ts', 'utf8')
+
+  assert.match(api, /createClient/)
+  assert.match(api, /rpc\('create_early_access_lead'/)
+  assert.match(api, /process\.env\.SUPABASE_URL/)
+  assert.match(api, /process\.env\.SUPABASE_ANON_KEY/)
+})
+
+runTest('early access lead capture hides raw browser load failures', () => {
+  const earlyAccessService = readFileSync('src/integrations/supabase/services/early-access-service.ts', 'utf8')
+  const createLeadStart = earlyAccessService.indexOf('async createLead')
+  const getLeadsStart = earlyAccessService.indexOf('async getLeads')
+  const createLeadBlock = earlyAccessService.slice(createLeadStart, getLeadsStart)
+
+  assert.match(createLeadBlock, /catch \(/)
+  assert.match(createLeadBlock, /Unable to join the early access list\./)
+  assert.doesNotMatch(createLeadBlock, /throw new Error\(error\.message\)/)
+})
+
 runTest('public invitation route renders the early access page', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const invitationRouteStart = router.indexOf("path: '/invitation'")
