@@ -10,8 +10,8 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { useCreatePromotion, useDeletePromotion, useUpdatePromotion } from '@/hooks/use-admin-data'
-import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useDeletePromotion, useUpdatePromotion } from '@/hooks/use-admin-data'
+import { useBusinessOwnerData, useCreateOwnerPromotion } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
 import { formatDate } from '@/lib/utils'
@@ -22,7 +22,7 @@ export function PromotionsPage() {
   const { business, promotions } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
-  const createPromotion = useCreatePromotion(profile)
+  const createPromotion = useCreateOwnerPromotion(profile, business?.id)
   const deletePromotion = useDeletePromotion(profile?.fullName)
   const updatePromotion = useUpdatePromotion(profile?.fullName)
   const [open, setOpen] = useState(false)
@@ -53,6 +53,11 @@ export function PromotionsPage() {
   }
 
   const handleOpenForCreate = () => {
+    if (!business) {
+      setError('Business context is still loading. Please try again in a moment.')
+      return
+    }
+
     setEditingId(null)
     form.reset({
       title: '',
@@ -61,6 +66,7 @@ export function PromotionsPage() {
       cta: '',
       audience: '',
     })
+    setError(null)
     setOpen(true)
   }
 
@@ -78,7 +84,7 @@ export function PromotionsPage() {
       if (editingId) {
         await updatePromotion.mutateAsync({ promotionId: editingId, values })
       } else {
-        await createPromotion.mutateAsync({ ...values, businessId: business!.id })
+        await createPromotion.mutateAsync(values)
       }
       form.reset()
       setOpen(false)
@@ -98,11 +104,16 @@ export function PromotionsPage() {
             {t('Create and manage promotions that engage customers and drive repeat purchases.')}
           </p>
         </div>
-        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
+        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate} disabled={!business}>
           <Megaphone className="size-5 mr-2" />
           {t('Create Campaign')}
         </Button>
       </div>
+      {!business ? (
+        <p className="rounded-2xl border border-warning/25 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">
+          {t('Business context is still loading.')}
+        </p>
+      ) : null}
 
       {/* Create/Edit Promotion Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -153,7 +164,7 @@ export function PromotionsPage() {
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                 {t('Cancel')}
               </Button>
-              <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
+              <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting || (!editingId && !business)}>
                 {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Campaign') : t('Create Campaign')}
               </Button>
             </div>
@@ -170,7 +181,7 @@ export function PromotionsPage() {
             title={t('No campaigns yet')}
             description={t('Create your first campaign to drive repeat engagement.')}
             action={
-              <Button className="h-12 rounded-full px-8" onClick={handleOpenForCreate}>
+              <Button className="h-12 rounded-full px-8" onClick={handleOpenForCreate} disabled={!business}>
                 <Megaphone className="size-5 mr-2" />
                 {t('Create Campaign')}
               </Button>

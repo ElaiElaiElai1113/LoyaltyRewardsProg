@@ -1,5 +1,5 @@
 import type { Product } from '@/types/domain'
-import type { ProductDraftFormValues } from '@/types/forms'
+import type { OwnerProductDraftFormValues, ProductDraftFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
 
 export const productsService = {
@@ -51,6 +51,40 @@ export const productsService = {
     }
 
     const product = camelCaseRow(data) as unknown as Product
+
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Product created',
+      details: `Added ${product.title} to the shop.`,
+    })
+
+    if (logError) {
+      throw new Error(logError.message)
+    }
+
+    return product
+  },
+
+  async createOwnerProduct(
+    values: OwnerProductDraftFormValues,
+    actorName = 'Business Owner',
+  ): Promise<Product> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('create_owner_product', {
+      p_title: values.title,
+      p_description: values.description,
+      p_category: values.category,
+      p_price: values.price,
+      p_highlight: values.highlight,
+      p_inventory: values.inventory,
+    })
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to create product.')
+    }
+
+    const product = camelCaseRow(data as Record<string, unknown>) as unknown as Product
 
     const { error: logError } = await sb.from('admin_logs').insert({
       actor_name: actorName,

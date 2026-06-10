@@ -42,6 +42,10 @@ function getSecretKey() {
   return Deno.env.get('SUPABASE_SECRET_KEY') ?? Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')
 }
 
+function generateReferralCode() {
+  return `MR-${crypto.randomUUID().replaceAll('-', '').slice(0, 8).toUpperCase()}`
+}
+
 async function hasRequiredAgreements(admin: ReturnType<typeof createClient>, profile: ProfileRow) {
   if (profile.role === 'platform-admin') return true
 
@@ -168,6 +172,7 @@ Deno.serve(async (req: Request) => {
     redirectTo,
     data: {
       full_name: name,
+      registered_by_business_id: businessId,
     },
   })
 
@@ -181,9 +186,11 @@ Deno.serve(async (req: Request) => {
   const { error: updateUserError } = await admin.auth.admin.updateUserById(created.user.id, {
     app_metadata: {
       role: 'customer',
+      registered_by_business_id: businessId,
     },
     user_metadata: {
       full_name: name,
+      registered_by_business_id: businessId,
     },
   })
 
@@ -191,19 +198,51 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ message: updateUserError.message }, 500)
   }
 
-  /*
-   * Some Supabase projects create invited users before the profile trigger runs.
-   * If the trigger is delayed, this update is harmlessly skipped and the user
-   * can still sign in once the profile exists.
-   */
-  const { error: linkError } = await admin
+  const { data: linkedProfiles, error: linkError } = await admin
     .from('profiles')
     .update({ registered_by_business_id: businessId })
     .eq('id', created.user.id)
     .eq('role', 'customer')
+    .select('id')
 
   if (linkError) {
     return jsonResponse({ message: linkError.message }, 500)
+  }
+
+  if (!linkedProfiles?.length) {
+    const { error: upsertProfileError } = await admin
+      .from('profiles')
+      .upsert(
+        {
+          id: created.user.id,
+          full_name: name,
+          email: created.user.email ?? email,
+          role: 'customer',
+          registered_by_business_id: businessId,
+          referral_code: generateReferralCode(),
+        },
+        { onConflict: 'id' },
+      )
+
+    if (upsertProfileError) {
+      return jsonResponse({ message: upsertProfileError.message }, 500)
+    }
+  }
+
+  const { error: balanceError } = await admin
+    .from('reward_balances')
+    .upsert(
+      {
+        profile_id: created.user.id,
+        points: 0,
+        next_reward_points: 300,
+        available_credits: 0,
+      },
+      { onConflict: 'profile_id', ignoreDuplicates: true },
+    )
+
+  if (balanceError) {
+    return jsonResponse({ message: balanceError.message }, 500)
   }
 
   return jsonResponse({

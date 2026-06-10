@@ -53,6 +53,39 @@ export const promotionsService = {
     return promotion
   },
 
+  async createOwnerPromotion(
+    values: PromotionDraftFormValues,
+    actorName = 'Business Owner',
+  ): Promise<Promotion> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('create_owner_promotion', {
+      p_title: values.title,
+      p_description: values.description,
+      p_badge: values.badge,
+      p_cta: values.cta,
+      p_audience: values.audience,
+    })
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to create promotion.')
+    }
+
+    const promotion = camelCaseRow(data as Record<string, unknown>) as unknown as Promotion
+
+    const { error: logError } = await sb.from('admin_logs').insert({
+      actor_name: actorName,
+      action: 'Promotion created',
+      details: `Created ${promotion.title}.`,
+    })
+
+    if (logError) {
+      throw new Error(logError.message)
+    }
+
+    return promotion
+  },
+
   async deletePromotion(promotionId: string, actorName = 'Platform Admin'): Promise<void> {
     const sb = requireSupabase()
 

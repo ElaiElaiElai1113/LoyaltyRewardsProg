@@ -129,12 +129,12 @@ runTest('calculateMemberTransaction converts outside purchase amount into reward
 
 runTest('early access content preserves the approved conversion copy', () => {
   assert.deepEqual(earlyAccessMessageLines, [
-    'Hola:',
-    'Estamos cansados de ver a las personas trabajar duro y, aun así, luchar para pagar el estilo de vida que desean: vacaciones, libertad financiera y esos extras que hacen la vida más agradable.',
-    'Por eso estamos creando Medellín Rewards, el programa de recompensas que más paga. Obtén entre un 20 % y un 100 % de devolución en gran parte de las compras que ya realizas cada día.',
-    'Sin gastar de más. Sin complicaciones. Solo dinero real de vuelta para ayudarte a disfrutar más de lo que amas.',
-    'Actualmente estamos preparando nuestro lanzamiento e invitando a los primeros miembros antes que a nadie.',
-    'Cuando lancemos oficialmente, los suscriptores serán los primeros en enterarse y tendrán acceso a beneficios exclusivos, novedades y oportunidades especiales para maximizar sus recompensas.',
+    'Hey,',
+    'We are tired of watching people work hard and still struggle to pay for the lifestyle they want: vacations, financial freedom, and the extras that make life more enjoyable.',
+    'That is why we are creating Medellin Rewards, the highest-paying rewards program. Get between 20% and 100% back on many of the purchases you already make every day.',
+    'No overspending. No complications. Just real value back to help you enjoy more of what you love.',
+    'We are currently preparing our launch and inviting the first members before anyone else.',
+    'When we officially launch, subscribers will be the first to know and will get access to exclusive benefits, updates, and special opportunities to maximize their rewards.',
   ])
 })
 
@@ -713,6 +713,20 @@ runTest('early access page defaults to Spanish and exposes language picker', () 
   assert.match(language, /'When we officially launch, subscribers will be the first to know/)
 })
 
+runTest('early access English source copy has Spanish translations', () => {
+  const content = readFileSync('src/features/early-access/early-access-content.ts', 'utf8')
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
+
+  assert.equal(earlyAccessMessageLines[0], 'Hey,')
+  assert.doesNotMatch(content, /'Hola:'/)
+  assert.doesNotMatch(content, /Estamos cansados/)
+  assert.match(language, /'Hey,': 'Hola,'/)
+  assert.match(language, /We are tired of watching people work hard/)
+  assert.match(language, /That is why we are creating Medellin Rewards/)
+  assert.match(language, /No overspending\. No complications/)
+  assert.match(language, /We are currently preparing our launch/)
+})
+
 runTest('all literal translated UI strings have Spanish entries', () => {
   const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
   const translationsSource = languageSource.match(
@@ -822,6 +836,15 @@ runTest('customer profile only exposes the scannable member QR after verificatio
   assert.match(profilePage, /Resubmit ID verification to activate your member QR\./)
   assert.match(qrSection, /href="#id-verification"/)
   assert.match(qrSection, /disabled=\{!isMemberVerified \|\| !memberQrUrl\}/)
+})
+
+runTest('profile verification submit persists unsaved contact fields first', () => {
+  const profilePage = readFileSync('src/features/profile/pages/profile-page.tsx', 'utf8')
+
+  assert.match(profilePage, /form\.formState\.isDirty/)
+  assert.match(profilePage, /updateProfile\.mutateAsync\(form\.getValues\(\)\)/)
+  assert.match(profilePage, /syncProfile\(savedProfile\)/)
+  assert.match(profilePage, /disabled=\{submitVerification\.isPending \|\| updateProfile\.isPending\}/)
 })
 
 runTest('business member-sale page clearly blocks unverified scanned QR transactions', () => {
@@ -1142,6 +1165,102 @@ runTest('admin partners page uses table-first operations layout with modal creat
   assert.match(partnersSection, /Commission Owed/)
   assert.doesNotMatch(partnersSection, /2xl:grid-cols-\[420px_minmax\(0,1fr\)\]/)
   assert.doesNotMatch(partnersSection, /Partner Cards/)
+})
+
+runTest('admin partner creation treats tax as percent and owner email as optional access assignment', () => {
+  const forms = readFileSync('src/types/forms.ts', 'utf8')
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const adminService = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
+
+  assert.match(forms, /taxRate:[\s\S]*max\(50, 'Maximum 50% tax rate'\)/)
+  assert.match(forms, /ownerEmail:[\s\S]*optional\(\)/)
+  assert.match(adminService, /p_tax_rate:\s*input\.taxRate \/ 100/)
+  assert.match(adminPage, /Tax Rate \(%\)/)
+  assert.match(adminPage, /values\.ownerEmail\.trim\(\)/)
+  assert.match(adminPage, /Owner access unassigned/)
+})
+
+runTest('admin member verification queue prioritizes submitted IDs and exposes review details', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+
+  assert.match(adminPage, /pendingVerificationMembers/)
+  assert.match(adminPage, /verificationSubmittedAt/)
+  assert.match(adminPage, /verificationPriority/)
+  assert.match(adminPage, /IDs awaiting review/)
+  assert.match(adminPage, /Copy ID number/)
+  assert.match(adminPage, /verificationIdNumber/)
+})
+
+runTest('password reset uses configured public reset route and update-password page', () => {
+  const authService = readFileSync('src/integrations/supabase/services/auth-service.ts', 'utf8')
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const envExample = readFileSync('.env.example', 'utf8')
+
+  assert.match(authService, /VITE_PUBLIC_SITE_URL/)
+  assert.match(authService, /\/reset-password/)
+  assert.match(authService, /updatePassword/)
+  assert.doesNotMatch(authService, /redirectTo:\s*window\.location\.origin/)
+  assert.match(router, /ResetPasswordPage/)
+  assert.match(router, /path: '\/reset-password'/)
+  assert.match(envExample, /VITE_PUBLIC_SITE_URL=/)
+})
+
+runTest('business owner catalog and settings writes use owner-scoped RPCs', () => {
+  const migrations = getFilesByExtension('supabase/migrations', '.sql')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+  const forms = readFileSync('src/types/forms.ts', 'utf8')
+  const productsPage = readFileSync('src/features/business-owner/pages/products-page.tsx', 'utf8')
+  const promotionsPage = readFileSync('src/features/business-owner/pages/promotions-page.tsx', 'utf8')
+  const giftCardsPage = readFileSync('src/features/gift-cards/pages/business-gift-cards-page.tsx', 'utf8')
+  const settingsPage = readFileSync('src/features/business-owner/pages/settings-page.tsx', 'utf8')
+  const productsService = readFileSync('src/integrations/supabase/services/products-service.ts', 'utf8')
+  const promotionsService = readFileSync('src/integrations/supabase/services/promotions-service.ts', 'utf8')
+  const giftCardService = readFileSync('src/integrations/supabase/services/gift-card-catalog-service.ts', 'utf8')
+  const businessService = readFileSync('src/integrations/supabase/services/business-service.ts', 'utf8')
+
+  for (const rpc of [
+    'create_owner_product',
+    'create_owner_promotion',
+    'create_owner_gift_card_catalog_item',
+    'update_owner_business_settings',
+  ]) {
+    assert.match(migrations, new RegExp(`create or replace function public\\.${rpc}`))
+  }
+
+  assert.match(forms, /ownerProductDraftSchema/)
+  assert.match(forms, /ownerGiftCardCatalogItemSchema/)
+  assert.match(productsPage, /ownerProductDraftSchema/)
+  assert.match(productsPage, /inventory: 50/)
+  assert.match(productsPage, /useCreateOwnerProduct/)
+  assert.doesNotMatch(productsPage, /business!\.id/)
+  assert.match(promotionsPage, /useCreateOwnerPromotion/)
+  assert.doesNotMatch(promotionsPage, /business!\.id/)
+  assert.match(giftCardsPage, /ownerGiftCardCatalogItemSchema/)
+  assert.match(giftCardsPage, /useCreateOwnerGiftCardCatalogItem/)
+  assert.doesNotMatch(giftCardsPage, /businessId: business\?\.id/)
+  assert.match(settingsPage, /useUpdateOwnerBusinessSettings/)
+  assert.match(settingsPage, /updateSettings\.error/)
+  assert.match(productsService, /createOwnerProduct/)
+  assert.match(promotionsService, /createOwnerPromotion/)
+  assert.match(giftCardService, /createOwnerCatalogItem/)
+  assert.match(businessService, /updateOwnerSettings/)
+})
+
+runTest('register customer surfaces edge function messages and persists business attribution', () => {
+  const adminService = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
+  const registerCustomerFunction = readFileSync('supabase/functions/register-customer/index.ts', 'utf8')
+  const migrations = getFilesByExtension('supabase/migrations', '.sql')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+
+  assert.match(adminService, /readFunctionErrorMessage/)
+  assert.match(adminService, /context/)
+  assert.match(registerCustomerFunction, /registered_by_business_id/)
+  assert.match(registerCustomerFunction, /upsert/)
+  assert.match(registerCustomerFunction, /SUPABASE_SERVICE_ROLE_KEY/)
+  assert.match(migrations, /new_registered_by_business_id/)
+  assert.match(migrations, /registered_by_business_id/)
 })
 
 runTest('business staff role policy is centralized and marks catalog management owner-only', () => {

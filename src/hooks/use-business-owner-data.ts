@@ -12,7 +12,13 @@ import { referralsService } from '@/integrations/supabase/services/referrals-ser
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
 import type { AmbassadorLeadStatus, Profile, Redemption } from '@/types/domain'
-import type { PartnerReferrerDraftFormValues, RewardAdjustmentFormValues } from '@/types/forms'
+import type {
+  BusinessSettingsFormValues,
+  OwnerProductDraftFormValues,
+  PartnerReferrerDraftFormValues,
+  PromotionDraftFormValues,
+  RewardAdjustmentFormValues,
+} from '@/types/forms'
 import { useAuth } from './use-auth'
 
 export function useBusinessOwnerData() {
@@ -501,6 +507,58 @@ export function useUpdateBusinessAmbassadorLeadStatus(businessId?: string) {
     },
     onError: (error: Error) => {
       toast.error(`Ambassador lead update failed: ${error.message}`)
+    },
+  })
+}
+
+export function useCreateOwnerProduct(actor?: Profile | null, businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: OwnerProductDraftFormValues) =>
+      productsService.createOwnerProduct(values, actor?.fullName ?? 'Business Owner'),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['products', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['products'] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      toast.success('Product created successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(`Creation failed: ${error.message}`)
+    },
+  })
+}
+
+export function useCreateOwnerPromotion(actor?: Profile | null, businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: PromotionDraftFormValues) =>
+      promotionsService.createOwnerPromotion(values, actor?.fullName ?? 'Business Owner'),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['promotions', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['promotions'] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      toast.success('Promotion created successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(`Creation failed: ${error.message}`)
+    },
+  })
+}
+
+export function useUpdateOwnerBusinessSettings(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: BusinessSettingsFormValues) => businessService.updateOwnerSettings(values),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ['business', businessId ?? 'unassigned'] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      toast.success('Settings updated successfully')
+    },
+    onError: (error: Error) => {
+      toast.error(`Update failed: ${error.message}`)
     },
   })
 }

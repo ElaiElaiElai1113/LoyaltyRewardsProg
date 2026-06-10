@@ -103,4 +103,26 @@ export const businessService = {
       commissionRatePercent: Number(business.commissionRatePercent ?? 10),
     }
   },
+
+  async updateOwnerSettings(values: BusinessSettingsFormValues): Promise<Business> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('update_owner_business_settings', {
+      p_earn_rate: values.earnRate,
+      p_reward_rate_percent: values.rewardRatePercent,
+      p_commission_rate_percent: values.commissionRatePercent,
+      p_tax_rate: values.taxRate,
+    })
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to update business settings.')
+    }
+
+    const business = camelCaseRow(data as Record<string, unknown>) as unknown as Business
+    return {
+      ...business,
+      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+    }
+  },
 }

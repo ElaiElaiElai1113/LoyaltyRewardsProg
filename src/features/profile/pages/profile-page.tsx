@@ -166,6 +166,23 @@ export function ProfilePage() {
                       return
                     }
 
+                    if (form.formState.isDirty) {
+                      const isProfileValid = await form.trigger()
+                      if (!isProfileValid) {
+                        setVerificationError('Save valid contact details before submitting ID verification.')
+                        return
+                      }
+
+                      const savedProfile = await updateProfile.mutateAsync(form.getValues())
+                      syncProfile(savedProfile)
+                      form.reset({
+                        fullName: savedProfile.fullName,
+                        phone: savedProfile.phone,
+                        location: savedProfile.location,
+                        favoriteOrder: savedProfile.favoriteOrder,
+                      })
+                    }
+
                     const updatedProfile = await submitVerification.mutateAsync({
                       ...values,
                       verificationDocument,
@@ -201,9 +218,9 @@ export function ProfilePage() {
                   />
                 </div>
                 {verificationError ? <p className="text-sm font-bold text-red-500">{verificationError}</p> : null}
-                <Button type="submit" disabled={submitVerification.isPending}>
+                <Button type="submit" disabled={submitVerification.isPending || updateProfile.isPending}>
                   <Upload className="size-4" />
-                  {submitVerification.isPending ? 'Submitting...' : 'Submit ID'}
+                  {submitVerification.isPending || updateProfile.isPending ? 'Submitting...' : 'Submit ID'}
                 </Button>
               </form>
             ) : null}

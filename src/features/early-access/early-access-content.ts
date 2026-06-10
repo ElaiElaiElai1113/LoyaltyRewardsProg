@@ -1,10 +1,10 @@
 export const earlyAccessMessageLines = [
-  'Hola:',
-  'Estamos cansados de ver a las personas trabajar duro y, aun así, luchar para pagar el estilo de vida que desean: vacaciones, libertad financiera y esos extras que hacen la vida más agradable.',
-  'Por eso estamos creando Medellín Rewards, el programa de recompensas que más paga. Obtén entre un 20 % y un 100 % de devolución en gran parte de las compras que ya realizas cada día.',
-  'Sin gastar de más. Sin complicaciones. Solo dinero real de vuelta para ayudarte a disfrutar más de lo que amas.',
-  'Actualmente estamos preparando nuestro lanzamiento e invitando a los primeros miembros antes que a nadie.',
-  'Cuando lancemos oficialmente, los suscriptores serán los primeros en enterarse y tendrán acceso a beneficios exclusivos, novedades y oportunidades especiales para maximizar sus recompensas.',
+  'Hey,',
+  'We are tired of watching people work hard and still struggle to pay for the lifestyle they want: vacations, financial freedom, and the extras that make life more enjoyable.',
+  'That is why we are creating Medellin Rewards, the highest-paying rewards program. Get between 20% and 100% back on many of the purchases you already make every day.',
+  'No overspending. No complications. Just real value back to help you enjoy more of what you love.',
+  'We are currently preparing our launch and inviting the first members before anyone else.',
+  'When we officially launch, subscribers will be the first to know and will get access to exclusive benefits, updates, and special opportunities to maximize their rewards.',
 ] as const
 
 export const earlyAccessSubscribeButtonLabel = 'Subscribe'

@@ -1,5 +1,5 @@
 import type { GiftCardCatalogItem } from '@/types/domain'
-import type { GiftCardCatalogItemFormValues } from '@/types/forms'
+import type { GiftCardCatalogItemFormValues, OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 import { camelCaseRow, requireSupabase, snakeCaseObj } from './shared'
 
 function mapCatalogItem(row: Record<string, unknown>): GiftCardCatalogItem {
@@ -77,6 +77,26 @@ export const giftCardCatalogService = {
 
     if (error || !data) throw new Error(error?.message ?? 'Failed to create gift card catalog item.')
     return mapCatalogItem(data as Record<string, unknown>)
+  },
+
+  async createOwnerCatalogItem(values: OwnerGiftCardCatalogItemFormValues): Promise<GiftCardCatalogItem> {
+    const sb = requireSupabase()
+
+    const { data, error } = await sb.rpc('create_owner_gift_card_catalog_item', {
+      p_title: values.title,
+      p_description: values.description,
+      p_image_url: values.imageUrl || null,
+      p_points_cost: values.pointsCost,
+      p_value_label: values.valueLabel,
+      p_expiry_days: values.expiryDays,
+      p_is_active: values.isActive,
+    })
+
+    if (error || !data) throw new Error(error?.message ?? 'Failed to create gift card catalog item.')
+
+    const item = mapCatalogItem(data as Record<string, unknown>)
+    const business = await this.getCatalogItem(item.id)
+    return business ?? item
   },
 
   async updateCatalogItem(id: string, values: Partial<GiftCardCatalogItemFormValues>): Promise<GiftCardCatalogItem> {

@@ -51,6 +51,32 @@ type AgreementStatusAcceptanceRow = {
   signed_at: string | null
 }
 
+async function readFunctionErrorMessage(error: unknown, fallback: string) {
+  if (error && typeof error === 'object' && 'context' in error) {
+    const context = (error as { context?: unknown }).context
+    if (context instanceof Response) {
+      try {
+        const text = await context.text()
+        if (text) {
+          try {
+            const parsed = JSON.parse(text) as { message?: unknown; error?: unknown }
+            const message = parsed.message ?? parsed.error
+            if (typeof message === 'string' && message.trim()) {
+              return message
+            }
+          } catch {
+            return text
+          }
+        }
+      } catch {
+        // Fall back to the Supabase error message below.
+      }
+    }
+  }
+
+  return error instanceof Error ? error.message : fallback
+}
+
 async function performRewardAdjustment(
   values: RewardAdjustmentFormValues,
   context: AdjustmentContext,
@@ -472,7 +498,7 @@ export const adminService = {
       p_description: input.description?.trim() ?? '',
       p_logo_url: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
       p_earn_rate: input.earnRate,
-      p_tax_rate: input.taxRate,
+      p_tax_rate: input.taxRate / 100,
       p_currency: input.currency.trim().toUpperCase(),
       p_active: input.active,
     })
@@ -546,7 +572,7 @@ export const adminService = {
     })
 
     if (error) {
-      throw new Error(error.message)
+      throw new Error(await readFunctionErrorMessage(error, 'Customer invitation could not be sent.'))
     }
 
     const user = (data as { user?: { id: string; email?: string } } | null)?.user

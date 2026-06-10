@@ -199,8 +199,10 @@ const spanishTranslations: Record<string, string> = {
   'This area is for business owners only.': 'Esta área es solo para dueños de negocio.',
   'Return Home': 'Volver al inicio',
   'Business Setup Required': 'Configuración de negocio requerida',
+  'Business context is still loading.': 'El contexto del negocio todavia esta cargando.',
   'This account does not have a business assigned yet.':
     'Esta cuenta aún no tiene un negocio asignado.',
+  Inventory: 'Inventario',
   'Order History': 'Historial de pedidos',
   'Earn XP, complete quests, and unlock rewards across partner realms.':
     'Gana XP, completa misiones y desbloquea recompensas en negocios aliados.',
@@ -273,6 +275,8 @@ const spanishTranslations: Record<string, string> = {
     'Una cuenta verificada por persona ayuda a proteger el valor de recompensas en toda la red.',
   'For Businesses': 'Para negocios',
   'For businesses': 'Para negocios',
+  'Business Login': 'Acceso para negocios',
+  'Start Onboarding': 'Iniciar onboarding',
   'Browse rewards': 'Ver recompensas',
   'Earn 20% to 100% back': 'Gana de 20% a 100% de vuelta',
   'Redeem through Medellin Rewards': 'Canjea con Medellin Rewards',
@@ -1162,6 +1166,16 @@ const spanishTranslations: Record<string, string> = {
   'QR code downloaded.': 'Código QR descargado.',
   'Unable to download QR code.': 'No se pudo descargar el código QR.',
   'Hey,': 'Hola,',
+  'We are tired of watching people work hard and still struggle to pay for the lifestyle they want: vacations, financial freedom, and the extras that make life more enjoyable.':
+    'Estamos cansados de ver a las personas trabajar duro y aun asi luchar para pagar el estilo de vida que desean: vacaciones, libertad financiera y esos extras que hacen la vida mas agradable.',
+  'That is why we are creating Medellin Rewards, the highest-paying rewards program. Get between 20% and 100% back on many of the purchases you already make every day.':
+    'Por eso estamos creando Medellin Rewards, el programa de recompensas que mas paga. Obten entre 20% y 100% de vuelta en muchas de las compras que ya haces cada dia.',
+  'No overspending. No complications. Just real value back to help you enjoy more of what you love.':
+    'Sin gastar de mas. Sin complicaciones. Solo valor real de vuelta para ayudarte a disfrutar mas de lo que amas.',
+  'We are currently preparing our launch and inviting the first members before anyone else.':
+    'Actualmente estamos preparando nuestro lanzamiento e invitando a los primeros miembros antes que a nadie.',
+  'When we officially launch, subscribers will be the first to know and will get access to exclusive benefits, updates, and special opportunities to maximize their rewards.':
+    'Cuando lancemos oficialmente, los suscriptores seran los primeros en enterarse y tendran acceso a beneficios exclusivos, novedades y oportunidades especiales para maximizar sus recompensas.',
   'We’re tired of watching people work hard but still struggle to afford the life they want — vacations, freedom, extras.':
     'Estamos cansados de ver a la gente trabajar duro y aun asi luchar para pagar la vida que quiere: vacaciones, libertad y extras.',
   'That’s why we’re building Medellín Rewards: the highest-paying rewards program. Earn 20–100% back on almost everything you already buy daily.':

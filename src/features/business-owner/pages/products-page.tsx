@@ -10,20 +10,20 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
-import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
-import { useCreateProduct, useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
+import { useBusinessOwnerData, useCreateOwnerProduct } from '@/hooks/use-business-owner-data'
+import { useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
-import { productDraftSchema, type ProductDraftFormValues } from '@/types/forms'
+import { ownerProductDraftSchema, type OwnerProductDraftFormValues } from '@/types/forms'
 import { Controller } from 'react-hook-form'
 
 export function ProductsPage() {
   const { business, products } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
-  const createProduct = useCreateProduct(profile)
+  const createProduct = useCreateOwnerProduct(profile, business?.id)
   const deleteProduct = useDeleteProduct(profile?.fullName)
   const updateProduct = useUpdateProduct(profile?.fullName)
 
@@ -31,41 +31,47 @@ export function ProductsPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const form = useForm<ProductDraftFormValues>({
-    resolver: zodResolver(productDraftSchema),
+  const form = useForm<OwnerProductDraftFormValues>({
+    resolver: zodResolver(ownerProductDraftSchema),
     defaultValues: {
-      businessId: business?.id ?? '',
       title: '',
       description: '',
       category: 'Coffee',
       price: 4.5,
       highlight: '',
+      inventory: 50,
     },
   })
 
   const handleEdit = (product: Product) => {
     setEditingId(product.id)
     form.reset({
-      businessId: product.businessId,
       title: product.title,
       description: product.description,
       category: product.category,
       price: Number(product.price),
       highlight: product.highlight || '',
+      inventory: product.inventory,
     })
     setOpen(true)
   }
 
   const handleOpenForCreate = () => {
+    if (!business) {
+      setError('Business context is still loading. Please try again in a moment.')
+      return
+    }
+
     setEditingId(null)
     form.reset({
-      businessId: business?.id ?? '',
       title: '',
       description: '',
       category: 'Coffee',
       price: 4.5,
       highlight: '',
+      inventory: 50,
     })
+    setError(null)
     setOpen(true)
   }
 
@@ -81,7 +87,7 @@ export function ProductsPage() {
       if (editingId) {
         await updateProduct.mutateAsync({ productId: editingId, values })
       } else {
-        await createProduct.mutateAsync({ ...values, businessId: business!.id })
+        await createProduct.mutateAsync(values)
       }
       form.reset()
       setOpen(false)
@@ -106,11 +112,16 @@ export function ProductsPage() {
             {t('View and manage your product catalog and inventory.')}
           </p>
         </div>
-        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
+        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate} disabled={!business}>
           <Plus className="size-5 mr-2" />
           {t('Add Product')}
         </Button>
       </div>
+      {!business ? (
+        <p className="rounded-2xl border border-warning/25 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">
+          {t('Business context is still loading.')}
+        </p>
+      ) : null}
 
       {/* Add/Edit Product Dialog */}
       <Dialog open={open} onOpenChange={setOpen}>
@@ -172,6 +183,20 @@ export function ProductsPage() {
               )}
             </div>
             <div className="grid gap-2">
+              <Label htmlFor="product-inventory">{t('Inventory')}</Label>
+              <Input
+                id="product-inventory"
+                type="number"
+                min="0"
+                step="1"
+                placeholder="50"
+                {...form.register('inventory', { valueAsNumber: true })}
+              />
+              {form.formState.errors.inventory && (
+                <p className="text-xs text-red-500">{form.formState.errors.inventory.message}</p>
+              )}
+            </div>
+            <div className="grid gap-2">
               <Label htmlFor="product-highlight">{t('Highlight')}</Label>
               <Input id="product-highlight" placeholder="Special Roast" {...form.register('highlight')} />
             </div>
@@ -180,7 +205,7 @@ export function ProductsPage() {
               <Button type="button" variant="outline" className="rounded-full" onClick={() => setOpen(false)}>
                 {t('Cancel')}
               </Button>
-              <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting}>
+              <Button type="submit" className="rounded-full" disabled={form.formState.isSubmitting || (!editingId && !business)}>
                 {form.formState.isSubmitting ? t('Saving...') : editingId ? t('Update Product') : t('Add Product')}
               </Button>
             </div>
@@ -196,7 +221,7 @@ export function ProductsPage() {
             title={t('No products yet')}
             description={t('Create your first product to make it available in the shop.')}
             action={
-              <Button className="rounded-full" onClick={handleOpenForCreate}>
+              <Button className="rounded-full" onClick={handleOpenForCreate} disabled={!business}>
                 <Plus className="size-4" />
                 {t('Add Product')}
               </Button>

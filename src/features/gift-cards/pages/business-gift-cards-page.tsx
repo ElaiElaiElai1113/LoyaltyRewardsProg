@@ -12,9 +12,9 @@ import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import type { GiftCardCatalogItem } from '@/types/domain'
-import { giftCardCatalogItemSchema, type GiftCardCatalogItemFormValues } from '@/types/forms'
+import { ownerGiftCardCatalogItemSchema, type OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 import {
-  useCreateGiftCardCatalogItem,
+  useCreateOwnerGiftCardCatalogItem,
   useDeleteGiftCardCatalogItem,
   useGiftCardCatalog,
   useUpdateGiftCardCatalogItem,
@@ -24,16 +24,16 @@ export function BusinessGiftCardsPage() {
   const { profile } = useAuth()
   const { business } = useBusinessOwnerData()
   const catalog = useGiftCardCatalog(business?.id)
-  const createItem = useCreateGiftCardCatalogItem(profile?.id)
+  const createItem = useCreateOwnerGiftCardCatalogItem(business?.id)
   const updateItem = useUpdateGiftCardCatalogItem()
   const deleteItem = useDeleteGiftCardCatalogItem()
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [actionError, setActionError] = useState<string | null>(null)
 
-  const form = useForm<GiftCardCatalogItemFormValues>({
-    resolver: zodResolver(giftCardCatalogItemSchema),
+  const form = useForm<OwnerGiftCardCatalogItemFormValues>({
+    resolver: zodResolver(ownerGiftCardCatalogItemSchema),
     defaultValues: {
-      businessId: business?.id ?? '',
       title: '',
       description: '',
       imageUrl: '',
@@ -49,9 +49,13 @@ export function BusinessGiftCardsPage() {
   }
 
   function openForCreate() {
+    if (!business) {
+      setActionError('Business context is still loading. Please try again in a moment.')
+      return
+    }
+
     setEditingId(null)
     form.reset({
-      businessId: business?.id ?? '',
       title: '',
       description: '',
       imageUrl: '',
@@ -60,13 +64,13 @@ export function BusinessGiftCardsPage() {
       expiryDays: 30,
       isActive: true,
     })
+    setActionError(null)
     setOpen(true)
   }
 
   function openForEdit(item: GiftCardCatalogItem) {
     setEditingId(item.id)
     form.reset({
-      businessId: item.businessId,
       title: item.title,
       description: item.description,
       imageUrl: item.imageUrl ?? '',
@@ -79,12 +83,17 @@ export function BusinessGiftCardsPage() {
   }
 
   const submit = form.handleSubmit(async (values) => {
-    if (editingId) {
-      await updateItem.mutateAsync({ id: editingId, values })
-    } else {
-      await createItem.mutateAsync({ ...values, businessId: business!.id })
+    try {
+      setActionError(null)
+      if (editingId) {
+        await updateItem.mutateAsync({ id: editingId, values })
+      } else {
+        await createItem.mutateAsync(values)
+      }
+      setOpen(false)
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : 'Gift card could not be saved.')
     }
-    setOpen(false)
   })
 
   return (
@@ -94,11 +103,16 @@ export function BusinessGiftCardsPage() {
           <h1 className="font-serif text-5xl tracking-tight text-primary">Gift Card Catalog</h1>
           <p className="text-lg text-on-surface-variant/85">Create and manage gift cards customers can buy with points.</p>
         </div>
-        <Button className="h-14 rounded-full px-8" onClick={openForCreate}>
+        <Button className="h-14 rounded-full px-8" onClick={openForCreate} disabled={!business}>
           <Gift className="size-5" />
           Add Gift Card
         </Button>
       </div>
+      {!business ? (
+        <p className="rounded-2xl border border-warning/25 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">
+          Business context is still loading.
+        </p>
+      ) : null}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">
@@ -138,9 +152,10 @@ export function BusinessGiftCardsPage() {
               <input type="checkbox" {...form.register('isActive')} />
               Active
             </label>
+            {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
             <div className="flex justify-end gap-3">
               <Button type="button" variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-              <Button type="submit" variant="secondary" disabled={form.formState.isSubmitting}>
+              <Button type="submit" variant="secondary" disabled={form.formState.isSubmitting || (!editingId && !business)}>
                 {form.formState.isSubmitting ? 'Saving...' : 'Save'}
               </Button>
             </div>

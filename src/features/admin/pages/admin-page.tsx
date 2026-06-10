@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -56,6 +56,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import type { Profile } from '@/types/domain'
 import {
   assignBusinessOwnerSchema,
   createBusinessSchema,
@@ -110,6 +111,25 @@ function slugifyBusinessName(value: string) {
 
 function isUniqueSlugError(error: unknown) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505'
+}
+
+function isAwaitingVerificationReview(profile: Profile) {
+  return (
+    profile.verificationStatus === 'submitted' ||
+    Boolean(
+      profile.verificationDocumentPath &&
+      profile.verificationStatus !== 'verified' &&
+      profile.verificationStatus !== 'rejected',
+    )
+  )
+}
+
+function verificationPriority(profile: Profile) {
+  if (isAwaitingVerificationReview(profile)) return 0
+  if (profile.verificationStatus === 'pending_document') return 1
+  if (profile.verificationStatus === 'not_submitted' || !profile.verificationStatus) return 2
+  if (profile.verificationStatus === 'rejected') return 3
+  return 4
 }
 
 export function AdminPage() {
@@ -202,7 +222,24 @@ export function AdminPage() {
       reason: '',
     },
   })
-  const customerMembers = (users.data ?? []).filter(({ profile: member }) => member.role === 'customer')
+  const customerMembers = (users.data ?? [])
+    .filter(({ profile: member }) => member.role === 'customer')
+    .slice()
+    .sort((left, right) => {
+      const priorityDelta = verificationPriority(left.profile) - verificationPriority(right.profile)
+      if (priorityDelta !== 0) return priorityDelta
+
+      const leftSubmittedAt = Date.parse(left.profile.verificationSubmittedAt ?? '')
+      const rightSubmittedAt = Date.parse(right.profile.verificationSubmittedAt ?? '')
+      const submittedAtDelta = (Number.isNaN(rightSubmittedAt) ? 0 : rightSubmittedAt) -
+        (Number.isNaN(leftSubmittedAt) ? 0 : leftSubmittedAt)
+      if (submittedAtDelta !== 0) return submittedAtDelta
+
+      return left.profile.fullName.localeCompare(right.profile.fullName)
+    })
+  const pendingVerificationMembers = customerMembers.filter(({ profile: member }) =>
+    isAwaitingVerificationReview(member),
+  )
   const selectedProfileId = adjustmentForm.watch('profileId')
   const selectedMember = customerMembers.find(({ profile: member }) => member.id === selectedProfileId) ?? null
 
@@ -386,6 +423,17 @@ export function AdminPage() {
           ? fallback.fullName
           : (member?.fullName ?? `Member ${profileId.slice(0, 8)}`),
       email: fallback.email || member?.email || profileId,
+    }
+  }
+  const copyVerificationIdNumber = async (idNumber: string | null | undefined) => {
+    const normalizedIdNumber = idNumber?.trim()
+    if (!normalizedIdNumber) return
+
+    try {
+      await navigator.clipboard.writeText(normalizedIdNumber)
+      toast.success('ID number copied.')
+    } catch {
+      toast.error('Could not copy ID number.')
     }
   }
   const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
@@ -640,9 +688,24 @@ export function AdminPage() {
                           </div>
                           <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
                             <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Verification ID</span>
-                            <span className="truncate" title={selectedMember.profile.verificationIdNumber ?? ''}>
-                              {selectedMember.profile.verificationIdNumber || t('Not provided')}
-                            </span>
+                            <div className="flex min-w-0 flex-wrap items-center gap-2">
+                              <span className="min-w-0 truncate font-mono text-xs" title={selectedMember.profile.verificationIdNumber ?? ''}>
+                                {selectedMember.profile.verificationIdNumber || t('Not provided')}
+                              </span>
+                              {selectedMember.profile.verificationIdNumber ? (
+                                <Button
+                                  type="button"
+                                  size="sm"
+                                  variant="ghost"
+                                  className="h-7 rounded-full px-2 text-xs"
+                                  aria-label="Copy ID number"
+                                  onClick={() => copyVerificationIdNumber(selectedMember.profile.verificationIdNumber)}
+                                >
+                                  <Copy className="size-3" />
+                                  Copy ID number
+                                </Button>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
 
@@ -664,6 +727,11 @@ export function AdminPage() {
                                   ? 'Rejected'
                                   : 'ID missing'}
                           </Badge>
+                          {selectedMember.profile.verificationIdNumber ? (
+                            <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 font-mono text-xs text-primary">
+                              ID number: {selectedMember.profile.verificationIdNumber}
+                            </Badge>
+                          ) : null}
                           {selectedMember.profile.verificationDocumentUrl ? (
                             <Button asChild size="sm" variant="outline" className="rounded-full">
                               <a href={selectedMember.profile.verificationDocumentUrl} target="_blank" rel="noreferrer">
@@ -741,6 +809,11 @@ export function AdminPage() {
                 <div>
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Active Members')}</span>
                   <h2 className="font-serif text-3xl text-primary">{t('Members')}</h2>
+                  {pendingVerificationMembers.length > 0 ? (
+                    <p className="mt-2 rounded-2xl border border-warning/25 bg-warning/10 px-3 py-2 text-sm font-semibold text-warning">
+                      {pendingVerificationMembers.length} IDs awaiting review. Newest submitted IDs are shown first.
+                    </p>
+                  ) : null}
                 </div>
                 <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
                   {customerMembers.length} {t('customers')}
@@ -1483,20 +1556,28 @@ export function AdminPage() {
                     async (values) => {
                       try {
                         setCreateBusinessError(null)
-                        const business = await createBusiness.mutateAsync(values)
+                        const ownerEmail = values.ownerEmail ? values.ownerEmail.trim() : ''
+                        const business = await createBusiness.mutateAsync({
+                          ...values,
+                          ownerEmail,
+                        })
 
-                        try {
-                          await assignBusinessOwner.mutateAsync({
-                            email: values.ownerEmail,
-                            businessId: business.id as string,
-                          })
-                          toast.success('Business created and owner assigned.')
-                        } catch (ownerError) {
-                          if (ownerError instanceof OwnerNotFoundError) {
-                            toast.warning('Business created, but the owner email was not found. Use Assign Owner to finish setup.')
-                          } else {
-                            toast.warning('Business created, but owner assignment failed. Use Assign Owner to retry.')
+                        if (ownerEmail) {
+                          try {
+                            await assignBusinessOwner.mutateAsync({
+                              email: ownerEmail,
+                              businessId: business.id as string,
+                            })
+                            toast.success('Business created and owner assigned.')
+                          } catch (ownerError) {
+                            if (ownerError instanceof OwnerNotFoundError) {
+                              toast.warning('Business created. Owner access unassigned because that owner email was not found.')
+                            } else {
+                              toast.warning('Business created. Owner access unassigned because assignment failed.')
+                            }
                           }
+                        } else {
+                          toast.success('Business created. Owner access unassigned.')
                         }
 
                         resetCreateBusinessForm()
@@ -1591,17 +1672,20 @@ export function AdminPage() {
                   </div>
 
                   <div className="grid gap-3">
-                    <Label htmlFor="create-partner-tax-rate">Tax Rate</Label>
+                    <Label htmlFor="create-partner-tax-rate">Tax Rate (%)</Label>
                     <Input
                       id="create-partner-tax-rate"
                       type="number"
-                      step="0.001"
+                      step="0.01"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="12.5"
                       {...createBusinessForm.register('taxRate', { valueAsNumber: true })}
                     />
                     {createBusinessForm.formState.errors.taxRate ? (
                       <p className="text-xs text-red-500">{createBusinessForm.formState.errors.taxRate.message}</p>
-                    ) : null}
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Enter 12.5 for a 12.5% tax rate.</p>
+                    )}
                   </div>
 
                   <div className="grid gap-3">
@@ -1634,7 +1718,7 @@ export function AdminPage() {
                   </label>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-owner-email">Owner Email</Label>
+                    <Label htmlFor="create-partner-owner-email">Owner Email (optional)</Label>
                     <Input
                       id="create-partner-owner-email"
                       type="email"
@@ -1644,7 +1728,9 @@ export function AdminPage() {
                     />
                     {createBusinessForm.formState.errors.ownerEmail ? (
                       <p className="text-xs text-red-500">{createBusinessForm.formState.errors.ownerEmail.message}</p>
-                    ) : null}
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">If this email is not an existing account, owner access stays unassigned.</p>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap items-center justify-end gap-3 md:col-span-2">

@@ -5,6 +5,7 @@ import { AdminPage } from '@/features/admin/pages/admin-page'
 import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
 import { AuthPage, LandingPage } from '@/features/auth/pages/landing-page'
 import { RequiredAgreementsPage } from '@/features/auth/pages/required-agreements-page'
+import { ResetPasswordPage } from '@/features/auth/pages/reset-password-page'
 import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
 import { CostCalculatorPage } from '@/features/business/pages/cost-calculator-page'
 import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
@@ -313,6 +314,10 @@ const router = createBrowserRouter([
   {
     path: '/signin',
     element: <LandingRoute />,
+  },
+  {
+    path: '/reset-password',
+    element: <ResetPasswordPage />,
   },
   {
     path: '/business/login',

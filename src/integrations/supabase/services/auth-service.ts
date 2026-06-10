@@ -4,6 +4,15 @@ import { requireSupabase, camelCaseRow } from './shared'
 
 let pendingSignInRole: AuthFormValues['role'] | null = null
 
+function getPublicSiteUrl() {
+  const configuredUrl = import.meta.env.VITE_PUBLIC_SITE_URL?.trim()
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/+$/, '')
+  }
+
+  return typeof window === 'undefined' ? '' : window.location.origin
+}
+
 function mapMembership(row: Record<string, unknown>): Membership {
   const mapped = camelCaseRow(row)
 
@@ -185,7 +194,16 @@ export const authService = {
   async resetPassword(email: string): Promise<void> {
     const sb = requireSupabase()
     const { error } = await sb.auth.resetPasswordForEmail(email, {
-      redirectTo: window.location.origin,
+      redirectTo: `${getPublicSiteUrl()}/reset-password`,
+    })
+
+    if (error) throw error
+  },
+
+  async updatePassword(password: string): Promise<void> {
+    const sb = requireSupabase()
+    const { error } = await sb.auth.updateUser({
+      password,
     })
 
     if (error) throw error

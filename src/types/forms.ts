@@ -78,6 +78,12 @@ export const giftCardCatalogItemSchema = z.object({
 
 export type GiftCardCatalogItemFormValues = z.infer<typeof giftCardCatalogItemSchema>
 
+export const ownerGiftCardCatalogItemSchema = giftCardCatalogItemSchema.omit({
+  businessId: true,
+})
+
+export type OwnerGiftCardCatalogItemFormValues = z.infer<typeof ownerGiftCardCatalogItemSchema>
+
 export const promotionDraftSchema = z.object({
   title: z.string().min(2, 'Enter a promotion title'),
   description: z.string().min(8, 'Add a short description'),
@@ -99,6 +105,12 @@ export const productDraftSchema = z.object({
 })
 
 export type ProductDraftFormValues = z.infer<typeof productDraftSchema>
+
+export const ownerProductDraftSchema = productDraftSchema.omit({
+  businessId: true,
+})
+
+export type OwnerProductDraftFormValues = z.infer<typeof ownerProductDraftSchema>
 
 export const checkoutSchema = z.object({
   paymentMethod: z.enum(['visa', 'mastercard', 'applepay']),
@@ -132,14 +144,14 @@ export const createBusinessSchema = z.object({
   description: z.string().optional(),
   logoUrl: z.union([z.literal(''), z.url('Enter a valid logo URL')]).optional(),
   earnRate: z.number().min(0, 'Earn rate cannot be negative'),
-  taxRate: z.number().min(0, 'Tax rate cannot be negative'),
+  taxRate: z.number().min(0, 'Tax rate cannot be negative').max(50, 'Maximum 50% tax rate'),
   currency: z
     .string()
     .trim()
     .length(3, 'Use a 3-letter currency code')
     .regex(/^[A-Za-z]{3}$/, 'Use a 3-letter currency code'),
   active: z.boolean(),
-  ownerEmail: z.email('Enter a valid owner email'),
+  ownerEmail: z.union([z.literal(''), z.email('Enter a valid owner email')]).optional(),
 })
 
 export type CreateBusinessFormValues = z.infer<typeof createBusinessSchema>

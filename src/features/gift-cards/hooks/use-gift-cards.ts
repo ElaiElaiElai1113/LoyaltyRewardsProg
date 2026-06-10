@@ -4,7 +4,7 @@ import { toast } from 'sonner'
 import { giftCardCatalogService } from '@/integrations/supabase/services/gift-card-catalog-service'
 import { giftCardsService } from '@/integrations/supabase/services/gift-cards-service'
 import { useAuth } from '@/hooks/use-auth'
-import type { GiftCardCatalogItemFormValues } from '@/types/forms'
+import type { GiftCardCatalogItemFormValues, OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 
 export const giftCardKeys = {
   catalog: (businessId?: string) => ['gift-card-catalog', businessId ?? 'all'] as const,
@@ -30,6 +30,22 @@ export function useCreateGiftCardCatalogItem(createdBy?: string) {
     onSuccess: (item) => {
       void queryClient.invalidateQueries({ queryKey: ['gift-card-catalog'] })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(item.businessId) })
+      toast.success('Gift card catalog item created')
+    },
+    onError: (error: Error) => toast.error(error.message),
+  })
+}
+
+export function useCreateOwnerGiftCardCatalogItem(businessId?: string) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: OwnerGiftCardCatalogItemFormValues) =>
+      giftCardCatalogService.createOwnerCatalogItem(values),
+    onSuccess: (item) => {
+      void queryClient.invalidateQueries({ queryKey: ['gift-card-catalog'] })
+      void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(item.businessId) })
+      void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(businessId) })
       toast.success('Gift card catalog item created')
     },
     onError: (error: Error) => toast.error(error.message),

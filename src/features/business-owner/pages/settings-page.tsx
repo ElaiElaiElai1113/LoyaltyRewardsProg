@@ -7,15 +7,14 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useUpdateBusinessSettings } from '@/hooks/use-admin-data'
-import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useBusinessOwnerData, useUpdateOwnerBusinessSettings } from '@/hooks/use-business-owner-data'
 import { useLanguage } from '@/lib/language'
 import { businessSettingsSchema, type BusinessSettingsFormValues } from '@/types/forms'
 
 export function SettingsPage() {
   const { business } = useBusinessOwnerData()
   const { t } = useLanguage()
-  const updateSettings = useUpdateBusinessSettings()
+  const updateSettings = useUpdateOwnerBusinessSettings(business?.id)
   const [saved, setSaved] = useState(false)
 
   const form = useForm<BusinessSettingsFormValues>({
@@ -48,7 +47,7 @@ export function SettingsPage() {
       : { primary: 'from-tertiary to-primary-container' }
 
   const handleSubmit = form.handleSubmit(async (values) => {
-    await updateSettings.mutateAsync({ businessId: business.id, values })
+    await updateSettings.mutateAsync(values)
     setSaved(true)
     setTimeout(() => setSaved(false), 2000)
   })
@@ -231,7 +230,11 @@ export function SettingsPage() {
         {/* Save Button */}
         <div className="flex items-center justify-end gap-4 mt-8">
           {updateSettings.isError && (
-            <p className="text-sm font-bold text-red-500">{t('Failed to save settings. Please try again.')}</p>
+            <p className="text-sm font-bold text-red-500">
+              {updateSettings.error instanceof Error
+                ? updateSettings.error.message
+                : t('Failed to save settings. Please try again.')}
+            </p>
           )}
           {saved && (
             <p className="text-sm font-bold text-success">{t('Settings saved!')}</p>
