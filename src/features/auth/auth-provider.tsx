@@ -5,6 +5,7 @@ import { authService } from '@/integrations/supabase/services/auth-service'
 import { partnerService } from '@/integrations/supabase/services/partner-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { supabase } from '@/integrations/supabase/client'
+import { getSignOutRedirectPath } from '@/lib/auth-navigation'
 import { queryClient } from '@/lib/query-client'
 import type { Profile, SessionUser, UserRole } from '@/types/domain'
 import type { AuthFormValues, MemberSignUpSubmission } from '@/types/forms'
@@ -210,7 +211,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
       return sessionProfile
     },
-    async signOut() {
+    async signOut(options?: { redirectTo?: string; skipRedirect?: boolean }) {
+      const redirectTo = options?.redirectTo ?? getSignOutRedirectPath(profile?.role)
       setIsLoading(true)
       try {
         await authService.signOut()
@@ -219,6 +221,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
         setProfile(null)
         setSession(null)
         setIsLoading(false)
+
+        if (!options?.skipRedirect && typeof window !== 'undefined') {
+          window.location.replace(redirectTo)
+        }
       }
     },
     syncProfile(nextProfile: Profile) {

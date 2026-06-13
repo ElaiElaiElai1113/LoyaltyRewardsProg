@@ -2,11 +2,11 @@ alter table public.profiles
   add column if not exists member_qr_token text;
 
 update public.profiles
-set member_qr_token = encode(gen_random_bytes(24), 'hex')
+set member_qr_token = replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '')
 where member_qr_token is null;
 
 alter table public.profiles
-  alter column member_qr_token set default encode(gen_random_bytes(24), 'hex');
+  alter column member_qr_token set default replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', '');
 
 create unique index if not exists profiles_member_qr_token_key
   on public.profiles (member_qr_token)
@@ -377,4 +377,16 @@ grant execute on function public.get_member_by_qr_token(text) to authenticated;
 grant execute on function public.record_member_transaction(text, numeric, text, uuid) to authenticated;
 grant execute on function public.mark_member_transaction_commission_paid(uuid, text) to authenticated;
 
-alter publication supabase_realtime add table public.member_transactions;
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+      and schemaname = 'public'
+      and tablename = 'member_transactions'
+  ) then
+    alter publication supabase_realtime add table public.member_transactions;
+  end if;
+end;
+$$;

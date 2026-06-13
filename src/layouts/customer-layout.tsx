@@ -2,6 +2,7 @@ import {
   LogOut,
   ShoppingBag,
 } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { CustomerBottomNav } from '@/components/customer-bottom-nav'
@@ -36,10 +37,30 @@ export function CustomerLayout() {
   const { t } = useLanguage()
   const cart = useCart()
   const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
+  const [isCartHighlighted, setIsCartHighlighted] = useState(false)
+
+  useEffect(() => {
+    let timeoutId = 0
+
+    const handleCartUpdated = () => {
+      setIsCartHighlighted(true)
+      window.clearTimeout(timeoutId)
+      timeoutId = window.setTimeout(() => {
+        setIsCartHighlighted(false)
+      }, 700)
+    }
+
+    window.addEventListener('customer-cart-updated', handleCartUpdated)
+
+    return () => {
+      window.removeEventListener('customer-cart-updated', handleCartUpdated)
+      window.clearTimeout(timeoutId)
+    }
+  }, [])
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="sticky top-0 z-50 border-b border-[var(--border)] bg-card/95 backdrop-blur">
+      <header className="fixed inset-x-0 top-0 z-50 shrink-0 border-b border-[var(--border)] bg-card/95 backdrop-blur">
         <div className="mx-auto flex h-16 w-full items-center justify-between px-5 md:px-6 2xl:px-10">
           <div className="flex items-center gap-12">
             <NavLink to="/dashboard" className="flex items-center gap-3">
@@ -77,10 +98,19 @@ export function CustomerLayout() {
               <VerificationStatusPill status={profile?.verificationStatus} />
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
-              <NavLink to="/cart" className="relative rounded-lg p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
-                <ShoppingBag className="size-5" />
+              <NavLink
+                to="/cart"
+                className={`relative rounded-lg p-2 text-[var(--muted-foreground)] transition-all hover:bg-[var(--muted)] hover:text-[var(--foreground)] ${
+                  isCartHighlighted ? 'scale-110 bg-[var(--muted)] text-[var(--foreground)]' : ''
+                }`}
+              >
+                <ShoppingBag className={`size-5 ${isCartHighlighted ? 'animate-bounce' : ''}`} />
                 {cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-[var(--primary)] text-[0.6rem] font-bold text-[var(--primary-foreground)]">
+                  <span
+                    className={`absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-[var(--primary)] text-[0.6rem] font-bold text-[var(--primary-foreground)] ${
+                      isCartHighlighted ? 'scale-125' : ''
+                    }`}
+                  >
                     {cartCount}
                   </span>
                 )}
@@ -105,7 +135,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <main className="w-full flex-1 px-5 py-8 pb-32 md:px-8 md:pb-8 lg:px-10 2xl:px-12">
+      <main className="w-full flex-1 px-5 pb-32 pt-24 md:px-8 md:pb-8 lg:px-10 2xl:px-12">
         <div className="mx-auto w-full">
         <Outlet />
         </div>

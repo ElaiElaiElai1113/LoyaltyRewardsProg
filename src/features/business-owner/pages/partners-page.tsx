@@ -24,6 +24,7 @@ import {
   useUpdateBusinessAmbassadorLeadStatus,
 } from '@/hooks/use-business-owner-data'
 import { useLanguage } from '@/lib/language'
+import { getAmbassadorLeadStatusLabel, getPartnerReferralStatusLabel } from '@/lib/status-labels'
 import { partnerReferrerDraftSchema, type PartnerReferrerDraftFormValues } from '@/types/forms'
 
 function downloadCsv(filename: string, rows: Array<Record<string, string | number | null>>) {
@@ -81,6 +82,12 @@ export function PartnersPage() {
   const unreedeemedCredits = (partnerCredits.data ?? []).filter((entry) => !entry.redeemedAt)
   const outstandingCredits = unreedeemedCredits.reduce((sum, entry) => sum + entry.creditUnits, 0)
   const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
+  const allReferrers = referrers.data ?? []
+  const activeReferrers = allReferrers.filter((referrer) => referrer.active)
+  const archivedReferrers = allReferrers.filter((referrer) => !referrer.active)
+  const allAmbassadorLeads = ambassadorLeads.data ?? []
+  const activeAmbassadorLeads = allAmbassadorLeads.filter((lead) => lead.status !== 'archived')
+  const archivedAmbassadorLeads = allAmbassadorLeads.filter((lead) => lead.status === 'archived')
   const ambassadorUrl =
     business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/ambassadors?business=${business.id}`
@@ -195,7 +202,7 @@ export function PartnersPage() {
               <h2 className="mt-1 font-serif text-3xl text-primary">Ambassador Leads</h2>
             </div>
             <Badge variant="accent" className="w-fit border-primary-container/25 bg-primary-container/12 text-primary">
-              {(ambassadorLeads.data ?? []).length} requests
+              {activeAmbassadorLeads.length} active requests
             </Badge>
           </div>
 
@@ -207,8 +214,8 @@ export function PartnersPage() {
                   <Skeleton className="mt-3 h-4 w-64" />
                 </div>
               ))
-            ) : (ambassadorLeads.data ?? []).length ? (
-              (ambassadorLeads.data ?? []).slice(0, 6).map((lead) => (
+            ) : activeAmbassadorLeads.length ? (
+              activeAmbassadorLeads.slice(0, 6).map((lead) => (
                 <div key={lead.id} className="flex flex-col gap-4 p-6 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0">
                     <p className="font-serif text-2xl text-primary">{lead.fullName}</p>
@@ -240,7 +247,7 @@ export function PartnersPage() {
                   >
                     {ambassadorStatusOptions.map((status) => (
                       <option key={status} value={status}>
-                        {status}
+                        {getAmbassadorLeadStatusLabel(status)}
                       </option>
                     ))}
                   </select>
@@ -255,6 +262,26 @@ export function PartnersPage() {
               />
             )}
           </div>
+
+          {archivedAmbassadorLeads.length ? (
+            <div className="border-t border-outline-variant/10">
+              <div className="flex items-center justify-between gap-4 p-6">
+                <div>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Archived</p>
+                  <h3 className="mt-1 font-serif text-2xl text-primary">Archived Leads</h3>
+                </div>
+                <Badge variant="outline">{archivedAmbassadorLeads.length}</Badge>
+              </div>
+              <div className="divide-y divide-outline-variant/10">
+                {archivedAmbassadorLeads.slice(0, 6).map((lead) => (
+                  <div key={lead.id} className="flex flex-col gap-2 p-6">
+                    <p className="font-serif text-xl text-primary">{lead.fullName}</p>
+                    <p className="text-sm text-on-surface-variant/80">{lead.email}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -363,9 +390,9 @@ export function PartnersPage() {
                 </div>
               ))}
             </div>
-          ) : (referrers.data ?? []).length ? (
+          ) : activeReferrers.length ? (
             <div className="grid gap-5">
-              {(referrers.data ?? []).map((referrer) => {
+              {activeReferrers.slice(0, 12).map((referrer) => {
                 const stats = performance.data?.find((entry) => entry.partnerReferrerId === referrer.id)
                 const partnerUrl =
                   business?.id && typeof window !== 'undefined'
@@ -419,17 +446,15 @@ export function PartnersPage() {
                             <Copy className="size-4" />
                             Copy Link
                           </Button>
-                          {referrer.active ? (
-                            <Button
-                              type="button"
-                              variant="outline"
-                              className="rounded-full border-red-300 text-red-400 hover:bg-red-500/10"
-                              onClick={() => archivePartnerReferrer.mutate(referrer.id)}
-                            >
-                              <Archive className="size-4" />
-                              Archive
-                            </Button>
-                          ) : null}
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="rounded-full border-red-300 text-red-400 hover:bg-red-500/10"
+                            onClick={() => archivePartnerReferrer.mutate(referrer.id)}
+                          >
+                            <Archive className="size-4" />
+                            Archive
+                          </Button>
                         </div>
                       </div>
                     </div>
@@ -445,6 +470,25 @@ export function PartnersPage() {
               description={t('Create your first referral source link to start tracking referred purchases.')}
             />
           )}
+
+          {archivedReferrers.length ? (
+            <div className="space-y-5 pt-4">
+              <div className="space-y-2 border-t border-outline-variant/10 pt-6">
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
+                  Archived
+                </span>
+                <h3 className="font-serif text-2xl text-primary">Archived Contacts</h3>
+              </div>
+              <div className="grid gap-4">
+                {archivedReferrers.slice(0, 6).map((referrer) => (
+                  <div key={referrer.id} className="rounded-[2rem] border border-[var(--border)] bg-white p-5 shadow-sm">
+                    <p className="font-serif text-2xl text-primary">{referrer.contactName}</p>
+                    <p className="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">{referrer.code}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
@@ -494,7 +538,7 @@ export function PartnersPage() {
                           : 'border-primary-container/25 bg-primary-container/12 text-primary'
                       }
                     >
-                      {referral.status}
+                      {getPartnerReferralStatusLabel(referral.status)}
                     </Badge>
                   </div>
                   <p className="text-sm text-on-surface-variant/75">

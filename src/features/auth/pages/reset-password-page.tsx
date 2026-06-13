@@ -1,4 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
@@ -24,6 +25,8 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
 
 export function ResetPasswordPage() {
   const { t } = useLanguage()
+  const [isSessionReady, setIsSessionReady] = useState(false)
+  const [sessionError, setSessionError] = useState<string | null>(null)
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -32,8 +35,42 @@ export function ResetPasswordPage() {
     },
   })
 
+  useEffect(() => {
+    let isMounted = true
+
+    void authService
+      .ensureRecoverySession()
+      .then((hasSession) => {
+        if (!isMounted) return
+
+        if (!hasSession) {
+          setSessionError('Auth session missing. Open the latest reset link again.')
+          return
+        }
+
+        setSessionError(null)
+        setIsSessionReady(true)
+      })
+      .catch((error) => {
+        if (!isMounted) return
+
+        setSessionError(error instanceof Error ? error.message : 'Auth session missing. Open the latest reset link again.')
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
   const onSubmit = form.handleSubmit(async (values) => {
     form.clearErrors('root')
+
+    if (!isSessionReady) {
+      form.setError('root', {
+        message: sessionError ?? 'Auth session missing. Open the latest reset link again.',
+      })
+      return
+    }
 
     try {
       await authService.updatePassword(values.password)
@@ -57,6 +94,16 @@ export function ResetPasswordPage() {
             Use at least 6 characters for your new password.
           </p>
         </div>
+
+        {!isSessionReady && !sessionError ? (
+          <p className="text-center text-sm font-medium text-[var(--muted-foreground)]">
+            Preparing secure reset session...
+          </p>
+        ) : null}
+
+        {sessionError ? (
+          <p className="text-center text-sm font-bold text-red-500">{sessionError}</p>
+        ) : null}
 
         <div className="grid gap-2">
           <Label htmlFor="new-password">New password</Label>
@@ -85,7 +132,7 @@ export function ResetPasswordPage() {
         ) : null}
 
         <div className="flex flex-col gap-3">
-          <Button type="submit" disabled={form.formState.isSubmitting}>
+          <Button type="submit" disabled={form.formState.isSubmitting || !isSessionReady}>
             {form.formState.isSubmitting ? t('Saving...') : 'Update password'}
           </Button>
           <Button asChild type="button" variant="outline">

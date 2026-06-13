@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 import { useAuth } from '@/hooks/use-auth'
 import { activityService } from '@/integrations/supabase/services/activity-service'
@@ -124,6 +125,8 @@ export function useAddToCart() {
       cartService.addItem(productId, quantity),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: customerKeys.cart })
+      toast.success('Added to cart.')
+      window.dispatchEvent(new CustomEvent('customer-cart-updated'))
     },
   })
 }

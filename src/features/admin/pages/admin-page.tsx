@@ -56,6 +56,14 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import {
+  getAmbassadorLeadStatusLabel,
+  getEarlyAccessLeadStatusLabel,
+  getPartnerReferralStatusLabel,
+  getRedemptionStatusLabel,
+  getReferralStatusLabel,
+  getVerificationStatusLabel,
+} from '@/lib/status-labels'
 import type { Profile } from '@/types/domain'
 import {
   assignBusinessOwnerSchema,
@@ -552,7 +560,7 @@ export function AdminPage() {
                           </div>
                           <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
                             <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Status</p>
-                            <p className="mt-1 truncate text-sm font-semibold text-primary">{selectedMember.profile.verificationStatus ?? 'not_submitted'}</p>
+                            <p className="mt-1 truncate text-sm font-semibold text-primary">{getVerificationStatusLabel(selectedMember.profile.verificationStatus)}</p>
                           </div>
                         </div>
                       </div>
@@ -871,7 +879,7 @@ export function AdminPage() {
                               : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
                         }
                       >
-                        {member.verificationStatus ?? 'not_submitted'}
+                        {getVerificationStatusLabel(member.verificationStatus)}
                       </Badge>
                       <Badge variant="accent" className="flex items-center gap-1.5 border-primary/25 bg-primary/12 px-3 py-1.5 font-semibold text-primary">
                         <Gift className="size-3" />
@@ -2013,7 +2021,7 @@ export function AdminPage() {
                             : 'border-primary-container/20 bg-primary-container/12 text-primary'
                         }
                       >
-                        {referral.status}
+                        {getPartnerReferralStatusLabel(referral.status)}
                       </Badge>
                       <span className="text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">
                         {formatDate(referral.createdAt)}
@@ -2260,7 +2268,7 @@ export function AdminPage() {
             <div className="grid gap-4 md:grid-cols-4">
               {ambassadorStatusOptions.map((status) => (
                 <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{status}</p>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{getAmbassadorLeadStatusLabel(status)}</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                     {(ambassadorLeads.data ?? []).filter((lead) => lead.status === status).length}
                   </p>
@@ -2325,7 +2333,7 @@ export function AdminPage() {
                               >
                                 {ambassadorStatusOptions.map((status) => (
                                   <option key={status} value={status}>
-                                    {status}
+                                    {getAmbassadorLeadStatusLabel(status)}
                                   </option>
                                 ))}
                               </select>
@@ -2373,7 +2381,7 @@ export function AdminPage() {
             <div className="grid gap-4 md:grid-cols-4">
               {earlyAccessLeadStatusOptions.map((status) => (
                 <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{status}</p>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{getEarlyAccessLeadStatusLabel(status)}</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                     {(earlyAccessLeads.data ?? []).filter((lead) => lead.status === status).length}
                   </p>
@@ -2443,7 +2451,7 @@ export function AdminPage() {
                             >
                               {earlyAccessLeadStatusOptions.map((status) => (
                                 <option key={status} value={status}>
-                                  {status}
+                                  {getEarlyAccessLeadStatusLabel(status)}
                                 </option>
                               ))}
                             </select>
@@ -2527,7 +2535,7 @@ export function AdminPage() {
                                     : 'bg-warning/10 text-warning border-warning/20'
                               }
                             >
-                              {referral.status}
+                              {getReferralStatusLabel(referral.status)}
                             </Badge>
                           </td>
                           <td className="px-6 py-4">
@@ -2626,7 +2634,7 @@ export function AdminPage() {
                                 ? 'border-warning/50 text-warning bg-warning/10'
                                 : 'bg-success/10 text-success border-success/20'
                             }>
-                              {redemption.status}
+                              {getRedemptionStatusLabel(redemption.status)}
                             </Badge>
                             {redemption.status === 'ready' && (
                               <Button
