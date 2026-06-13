@@ -289,7 +289,11 @@ export function useBusinessMembers(businessId?: string) {
       ])
 
       return (profileRows ?? [])
-        .filter((profile) => interactedProfileIds.has(profile.id as string))
+        .filter((profile) => {
+          const profileId = profile.id as string
+          const registeredByBusinessId = (profile.registered_by_business_id as string | null) ?? null
+          return interactedProfileIds.has(profileId) || registeredByBusinessId === businessId
+        })
         .map((profile) => ({
           id: profile.id as string,
           fullName: profile.full_name as string,
@@ -573,6 +577,7 @@ export function useRegisterCustomer(businessId?: string) {
     },
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
       toast.success('Customer invited. They must sign the Member Agreement on first access.')
     },
     onError: (error: Error) => {

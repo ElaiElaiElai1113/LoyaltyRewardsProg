@@ -435,6 +435,8 @@ export function useFulfillRedemption(actor?: Profile | null) {
     mutationFn: (redemptionId: string) => adminService.fulfillRedemption(redemptionId, actor!),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
+      void queryClient.invalidateQueries({ queryKey: ['businessRedemptions', actor?.businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', actor?.businessId] })
       void queryClient.invalidateQueries({ queryKey: ['activities'] })
       toast.success('Redemption fulfilled successfully')
     },

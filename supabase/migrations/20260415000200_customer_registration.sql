@@ -1,6 +1,7 @@
 alter table public.profiles
   add column if not exists registered_by_business_id uuid references public.businesses(id);
 
+drop policy if exists "Staff can link customers to their business" on public.profiles;
 create policy "Staff can link customers to their business"
   on public.profiles for update
   using (public.has_staff_access() and public.profiles.role = 'customer')

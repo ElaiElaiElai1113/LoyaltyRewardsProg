@@ -152,17 +152,8 @@ export function BusinessOwnerLayout() {
               compact
               className="hidden w-full justify-between rounded-lg border border-[var(--border)] bg-card px-3 py-2 text-[var(--muted-foreground)] xl:inline-flex"
             />
-            <div className="flex flex-col items-center justify-center gap-1 xl:flex-row xl:gap-2">
+            <div className="flex items-center justify-center xl:justify-start">
               <ThemeToggle />
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
-                title={t('Settings')}
-                aria-label={t('Settings')}
-              >
-                <Settings className="size-4" />
-              </Button>
               <Button
                 variant="ghost"
                 size="icon"

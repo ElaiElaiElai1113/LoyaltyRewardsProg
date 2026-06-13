@@ -240,7 +240,7 @@ select
   version,
   title,
   body,
-  encode(digest(body, 'sha256'), 'hex'),
+  encode(extensions.digest(body, 'sha256'), 'hex'),
   true,
   '2026-06-01 00:00:00+00'::timestamptz
 from member_agreement
@@ -316,7 +316,7 @@ select
   version,
   title,
   body,
-  encode(digest(body, 'sha256'), 'hex'),
+  encode(extensions.digest(body, 'sha256'), 'hex'),
   true,
   '2026-06-01 00:00:00+00'::timestamptz
 from affiliate_agreement
@@ -383,7 +383,7 @@ select
   version,
   title,
   body,
-  encode(digest(body, 'sha256'), 'hex'),
+  encode(extensions.digest(body, 'sha256'), 'hex'),
   true,
   '2026-06-01 00:00:00+00'::timestamptz
 from trade_deal_agreement

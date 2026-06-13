@@ -15,7 +15,7 @@ export interface AuthContextValue {
   signIn: (values: AuthFormValues) => Promise<Profile>
   signUp: (values: MemberSignUpSubmission) => Promise<SignUpResult>
   continueAsDemo: (role: UserRole) => Promise<Profile>
-  signOut: () => Promise<void>
+  signOut: (options?: { redirectTo?: string; skipRedirect?: boolean }) => Promise<void>
   syncProfile: (profile: Profile) => void
 }
 

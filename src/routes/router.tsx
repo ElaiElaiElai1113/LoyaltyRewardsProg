@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
-import { Navigate, RouterProvider, createBrowserRouter, useLocation } from 'react-router-dom'
+import { Navigate, Outlet, RouterProvider, createBrowserRouter, useLocation, useNavigate } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
 import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
@@ -72,6 +72,35 @@ function RouteLoading() {
   )
 }
 
+function RouteEffects() {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' })
+  }, [location.pathname])
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search)
+    const hash = location.hash.startsWith('#') ? location.hash.slice(1) : location.hash
+    const hashParams = new URLSearchParams(hash)
+    const recoveryParams = searchParams.get('type') === 'recovery' ? searchParams : hashParams
+
+    if (recoveryParams.get('type') !== 'recovery' || location.pathname === '/reset-password') return
+
+    navigate(
+      {
+        pathname: '/reset-password',
+        search: location.search,
+        hash: location.hash,
+      },
+      { replace: true },
+    )
+  }, [location.hash, location.pathname, location.search, navigate])
+
+  return <Outlet />
+}
+
 function LandingRoute() {
   const { profile, isLoading, signOut } = useAuth()
   const requiredAgreements = useRequiredAgreements(profile)
@@ -87,7 +116,7 @@ function LandingRoute() {
     if (profile.role === 'customer') return
 
     sessionStorage.setItem(portalAccessErrorKey, 'This sign-in page is for customer accounts only.')
-    void signOut()
+    void signOut({ redirectTo: '/signin' })
   }, [profile, signOut])
 
   if (isLoading) {
@@ -161,14 +190,6 @@ function PublicOrCustomerRoute() {
 
   if (isLoading) {
     return <RouteLoading />
-  }
-
-  if (profile && profile.role === 'platform-admin') {
-    return <Navigate replace to="/admin/portal" />
-  }
-
-  if (profile && (profile.role === 'business-owner' || profile.role === 'business-staff')) {
-    return <Navigate replace to="/business/dashboard" />
   }
 
   if (profile?.role === 'customer') {
@@ -262,7 +283,7 @@ function AdminEntryRoute() {
     if (!profile || profile.role === 'platform-admin') return
 
     sessionStorage.setItem(portalAccessErrorKey, 'This account does not have access to the admin portal.')
-    void signOut()
+    void signOut({ redirectTo: '/admin' })
   }, [profile, signOut])
 
   if (isLoading) {
@@ -288,7 +309,7 @@ function BusinessEntryRoute() {
     if (profile.role === 'business-owner' || profile.role === 'business-staff') return
 
     sessionStorage.setItem(portalAccessErrorKey, 'This account does not have access to the business portal.')
-    void signOut()
+    void signOut({ redirectTo: '/business/login' })
   }, [profile, signOut])
 
   if (isLoading) {
@@ -308,141 +329,146 @@ function BusinessEntryRoute() {
 
 const router = createBrowserRouter([
   {
-    path: '/',
-    element: <RootRoute />,
-  },
-  {
-    path: '/signin',
-    element: <LandingRoute />,
-  },
-  {
-    path: '/reset-password',
-    element: <ResetPasswordPage />,
-  },
-  {
-    path: '/business/login',
-    element: <BusinessEntryRoute />,
-  },
-  {
-    path: '/admin',
-    element: <AdminEntryRoute />,
-  },
-  {
-    path: '/agreements/required',
-    element: <RequiredAgreementsPage />,
-  },
-  {
-    path: '/promo',
-    element: <PromoPage />,
-  },
-  {
-    path: '/promo/register',
-    element: <ReferralRegisterPage />,
-  },
-  {
-    path: '/ambassadors',
-    element: <AmbassadorsPage />,
-  },
-  {
-    path: '/join',
-    element: <JoinRewardsPage />,
-  },
-  {
-    path: '/invitation',
-    element: <EarlyAccessPage />,
-  },
-  {
-    path: '/early-access',
-    element: <Navigate replace to="/invitation" />,
-  },
-  {
-    path: '/landing-page',
-    element: <LandingPage />,
-  },
-  {
-    path: '/joinusearly',
-    element: <Navigate replace to="/invitation" />,
-  },
-  {
-    path: '/join-us-early',
-    element: <Navigate replace to="/invitation" />,
-  },
-  {
-    path: '/terms',
-    element: <LegalPage kind="terms" />,
-  },
-  {
-    path: '/privacy',
-    element: <LegalPage kind="privacy" />,
-  },
-  {
-    path: '/reward-terms',
-    element: <LegalPage kind="reward-terms" />,
-  },
-  {
-    path: '/verification-policy',
-    element: <LegalPage kind="verification-policy" />,
-  },
-  {
-    element: <PublicBrowseLayout />,
+    element: <RouteEffects />,
     children: [
-      { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
-      { path: '/cost-calculator', element: <CostCalculatorPage /> },
-      { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
+      {
+        path: '/',
+        element: <RootRoute />,
+      },
+      {
+        path: '/signin',
+        element: <LandingRoute />,
+      },
+      {
+        path: '/reset-password',
+        element: <ResetPasswordPage />,
+      },
+      {
+        path: '/business/login',
+        element: <BusinessEntryRoute />,
+      },
+      {
+        path: '/admin',
+        element: <AdminEntryRoute />,
+      },
+      {
+        path: '/agreements/required',
+        element: <RequiredAgreementsPage />,
+      },
+      {
+        path: '/promo',
+        element: <PromoPage />,
+      },
+      {
+        path: '/promo/register',
+        element: <ReferralRegisterPage />,
+      },
+      {
+        path: '/ambassadors',
+        element: <AmbassadorsPage />,
+      },
+      {
+        path: '/join',
+        element: <JoinRewardsPage />,
+      },
+      {
+        path: '/invitation',
+        element: <EarlyAccessPage />,
+      },
+      {
+        path: '/early-access',
+        element: <Navigate replace to="/invitation" />,
+      },
+      {
+        path: '/landing-page',
+        element: <LandingPage />,
+      },
+      {
+        path: '/joinusearly',
+        element: <Navigate replace to="/invitation" />,
+      },
+      {
+        path: '/join-us-early',
+        element: <Navigate replace to="/invitation" />,
+      },
+      {
+        path: '/terms',
+        element: <LegalPage kind="terms" />,
+      },
+      {
+        path: '/privacy',
+        element: <LegalPage kind="privacy" />,
+      },
+      {
+        path: '/reward-terms',
+        element: <LegalPage kind="reward-terms" />,
+      },
+      {
+        path: '/verification-policy',
+        element: <LegalPage kind="verification-policy" />,
+      },
+      {
+        element: <PublicBrowseLayout />,
+        children: [
+          { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
+          { path: '/cost-calculator', element: <CostCalculatorPage /> },
+          { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
+        ],
+      },
+      {
+        element: <PublicOrCustomerRoute />,
+        children: [
+          { path: '/shop', element: <ShopPage /> },
+          { path: '/rewards', element: <RewardsPage /> },
+          { path: '/promotions', element: <PromotionsPage /> },
+          { path: '/business', element: <ForBusinessesPage /> },
+          { path: '/for-businesses', element: <Navigate replace to="/business" /> },
+        ],
+      },
+      {
+        element: <ProtectedCustomerRoute />,
+        children: [
+          { path: '/dashboard', element: <DashboardPage /> },
+          { path: '/gift-cards', element: <GiftCardsPage /> },
+          { path: '/wallet/gift-cards', element: <WalletGiftCardsPage /> },
+          { path: '/wallet/gift-cards/:id', element: <GiftCardDetailPage /> },
+          { path: '/cart', element: <CartPage /> },
+          { path: '/checkout', element: <CheckoutPage /> },
+          { path: '/order-confirmation', element: <OrderConfirmationPage /> },
+          { path: '/orders', element: <OrdersPage /> },
+          { path: '/membership', element: <MembershipPage /> },
+          { path: '/redeem/:rewardId', element: <RedeemRewardPage /> },
+          { path: '/activity', element: <ActivityPage /> },
+          { path: '/profile', element: <ProfilePage /> },
+        ],
+      },
+      {
+        element: <ProtectedAdminRoute />,
+        children: [
+          { path: '/admin/portal', element: <AdminPage /> },
+          { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
+        ],
+      },
+      {
+        element: <ProtectedBusinessOwnerRoute />,
+        children: [
+          { path: '/business/dashboard', element: <BusinessDashboardPage /> },
+          { path: '/business/member-sale/:token', element: <MemberSalePage /> },
+          { path: '/business/products', element: <OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/rewards', element: <OwnerOnlyBusinessRoute><BusinessRewardsPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/gift-cards', element: <OwnerOnlyBusinessRoute><BusinessGiftCardsPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/redemptions', element: <RedemptionsPage /> },
+          { path: '/business/promotions', element: <OwnerOnlyBusinessRoute><BusinessPromotionsPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/members', element: <MembersPage /> },
+          { path: '/business/partners', element: <PartnersPage /> },
+          { path: '/business/settings', element: <OwnerOnlyBusinessRoute><SettingsPage /></OwnerOnlyBusinessRoute> },
+        ],
+      },
+      {
+        path: '*',
+        element: <NotFoundPage />,
+      },
     ],
-  },
-  {
-    element: <PublicOrCustomerRoute />,
-    children: [
-      { path: '/shop', element: <ShopPage /> },
-      { path: '/rewards', element: <RewardsPage /> },
-      { path: '/promotions', element: <PromotionsPage /> },
-      { path: '/business', element: <ForBusinessesPage /> },
-      { path: '/for-businesses', element: <Navigate replace to="/business" /> },
-    ],
-  },
-  {
-    element: <ProtectedCustomerRoute />,
-    children: [
-      { path: '/dashboard', element: <DashboardPage /> },
-      { path: '/gift-cards', element: <GiftCardsPage /> },
-      { path: '/wallet/gift-cards', element: <WalletGiftCardsPage /> },
-      { path: '/wallet/gift-cards/:id', element: <GiftCardDetailPage /> },
-      { path: '/cart', element: <CartPage /> },
-      { path: '/checkout', element: <CheckoutPage /> },
-      { path: '/order-confirmation', element: <OrderConfirmationPage /> },
-      { path: '/orders', element: <OrdersPage /> },
-      { path: '/membership', element: <MembershipPage /> },
-      { path: '/redeem/:rewardId', element: <RedeemRewardPage /> },
-      { path: '/activity', element: <ActivityPage /> },
-      { path: '/profile', element: <ProfilePage /> },
-    ],
-  },
-  {
-    element: <ProtectedAdminRoute />,
-    children: [
-      { path: '/admin/portal', element: <AdminPage /> },
-      { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
-    ],
-  },
-  {
-    element: <ProtectedBusinessOwnerRoute />,
-    children: [
-      { path: '/business/dashboard', element: <BusinessDashboardPage /> },
-      { path: '/business/member-sale/:token', element: <MemberSalePage /> },
-      { path: '/business/products', element: <OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute> },
-      { path: '/business/rewards', element: <OwnerOnlyBusinessRoute><BusinessRewardsPage /></OwnerOnlyBusinessRoute> },
-      { path: '/business/gift-cards', element: <OwnerOnlyBusinessRoute><BusinessGiftCardsPage /></OwnerOnlyBusinessRoute> },
-      { path: '/business/redemptions', element: <RedemptionsPage /> },
-      { path: '/business/promotions', element: <OwnerOnlyBusinessRoute><BusinessPromotionsPage /></OwnerOnlyBusinessRoute> },
-      { path: '/business/members', element: <MembersPage /> },
-      { path: '/business/partners', element: <PartnersPage /> },
-      { path: '/business/settings', element: <OwnerOnlyBusinessRoute><SettingsPage /></OwnerOnlyBusinessRoute> },
-    ],
-  },
-  {
-    path: '*',
-    element: <NotFoundPage />,
   },
 ])
 

@@ -141,7 +141,7 @@ export function RedemptionsPage() {
                     </div>
                     <div>
                       <p className="text-xs uppercase tracking-widest text-on-surface-variant">Status</p>
-                      <p className="font-semibold">{selectedCard.status}</p>
+                      <p className="font-semibold">{selectedCard.status === 'active' ? 'Active' : selectedCard.status === 'expired' ? 'Expired' : 'Redeemed'}</p>
                     </div>
                   </div>
                 </div>

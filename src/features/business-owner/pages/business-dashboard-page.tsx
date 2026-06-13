@@ -34,6 +34,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
 import { useLanguage } from '@/lib/language'
+import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/status-labels'
 import { formatCurrency, formatDate, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
@@ -43,6 +44,7 @@ export function BusinessDashboardPage() {
   const signupQrRef = useRef<HTMLDivElement | null>(null)
   const [redemptionCode, setRedemptionCode] = useState('')
   const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
+  const [pendingFulfillmentId, setPendingFulfillmentId] = useState<string | null>(null)
   const fulfillRedemption = useFulfillRedemption(profile)
   const partnerPerformance = usePartnerPerformance(business?.id)
   const partnerReferrals = usePartnerReferrals(business?.id)
@@ -479,7 +481,7 @@ export function BusinessDashboardPage() {
               <div className="flex flex-wrap items-center gap-3">
                 <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">{formatDate(referral.createdAt)}</span>
                 <Button type="button" size="sm" variant="outline" className="rounded-full">
-                  {referral.status}
+                  {getPartnerReferralStatusLabel(referral.status)}
                 </Button>
               </div>
             </div>
@@ -537,17 +539,24 @@ export function BusinessDashboardPage() {
                       ? 'bg-amber-100 text-amber-700' 
                       : 'bg-green-100 text-green-700'
                   }`}>
-                    {redemption.status}
+                    {getRedemptionStatusLabel(redemption.status)}
                   </div>
                   
                   {redemption.status === 'ready' && (
                     <Button 
                       size="sm" 
                       className="rounded-full h-8 px-4 text-xs font-bold"
-                      onClick={() => fulfillRedemption.mutate(redemption.id)}
-                      disabled={fulfillRedemption.isPending}
+                      onClick={() => {
+                        setPendingFulfillmentId(redemption.id)
+                        fulfillRedemption.mutate(redemption.id, {
+                          onSettled: () => {
+                            setPendingFulfillmentId((current) => (current === redemption.id ? null : current))
+                          },
+                        })
+                      }}
+                      disabled={pendingFulfillmentId !== null}
                     >
-                      {fulfillRedemption.isPending ? '...' : t('Fulfill')}
+                      {pendingFulfillmentId === redemption.id ? '...' : t('Fulfill')}
                     </Button>
                   )}
                 </div>

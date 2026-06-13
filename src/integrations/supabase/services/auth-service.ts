@@ -4,6 +4,43 @@ import { requireSupabase, camelCaseRow } from './shared'
 
 let pendingSignInRole: AuthFormValues['role'] | null = null
 
+function getUrlTokenParams() {
+  if (typeof window === 'undefined') {
+    return new URLSearchParams()
+  }
+
+  const searchParams = new URLSearchParams(window.location.search)
+  if (searchParams.get('type') === 'recovery') {
+    return searchParams
+  }
+
+  const hash = window.location.hash.startsWith('#')
+    ? window.location.hash.slice(1)
+    : window.location.hash
+
+  return new URLSearchParams(hash)
+}
+
+function clearRecoveryParamsFromUrl() {
+  if (typeof window === 'undefined') return
+
+  const nextUrl = new URL(window.location.href)
+  nextUrl.hash = ''
+  ;[
+    'access_token',
+    'refresh_token',
+    'expires_at',
+    'expires_in',
+    'token_type',
+    'type',
+    'code',
+  ].forEach((key) => {
+    nextUrl.searchParams.delete(key)
+  })
+
+  window.history.replaceState({}, document.title, `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`)
+}
+
 function getPublicSiteUrl() {
   const configuredUrl = import.meta.env.VITE_PUBLIC_SITE_URL?.trim()
   if (configuredUrl) {
@@ -212,6 +249,34 @@ export const authService = {
   async signOut(): Promise<void> {
     const sb = requireSupabase()
     await sb.auth.signOut()
+  },
+
+  async ensureRecoverySession(): Promise<boolean> {
+    const sb = requireSupabase()
+    const params = getUrlTokenParams()
+    const recoveryType = params.get('type')
+    const accessToken = params.get('access_token')
+    const refreshToken = params.get('refresh_token')
+
+    if (recoveryType === 'recovery' && accessToken && refreshToken) {
+      const { error } = await sb.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      })
+
+      if (error) {
+        throw error
+      }
+
+      clearRecoveryParamsFromUrl()
+      return true
+    }
+
+    const {
+      data: { session },
+    } = await sb.auth.getSession()
+
+    return Boolean(session)
   },
 
   getPendingSignInRole(): AuthFormValues['role'] | null {
