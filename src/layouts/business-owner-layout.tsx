@@ -1,5 +1,4 @@
 import {
-  Gift,
   CreditCard,
   Hotel,
   LayoutDashboard,
@@ -24,9 +23,7 @@ import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const businessNavigationItems = [
-  { to: '/business/dashboard', label: 'Business Overview', icon: LayoutDashboard },
-  { to: '/business/products', label: 'Products', icon: Package },
-  { to: '/business/rewards', label: 'Rewards', icon: Gift },
+  { to: '/business/dashboard', label: 'QR Sales', icon: LayoutDashboard },
   { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/business/redemptions', label: 'Redemptions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },

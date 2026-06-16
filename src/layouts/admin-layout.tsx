@@ -3,12 +3,10 @@ import {
   FileSignature,
   LayoutDashboard,
   CreditCard,
-  Gift,
   Hotel,
   LogOut,
   Mail,
   Megaphone,
-  Package,
   ReceiptText,
   ShieldCheck,
   Sparkles,
@@ -33,8 +31,6 @@ const navigation = [
 
 const adminPortalSections = [
   { value: 'members', label: 'Members', icon: Users },
-  { value: 'catalog', label: 'Rewards', icon: Gift },
-  { value: 'products', label: 'Products', icon: Package },
   { value: 'promotions', label: 'Promotions', icon: Sparkles },
   { value: 'partners', label: 'Partners', icon: Hotel },
   { value: 'ambassadors', label: 'Ambassadors', icon: Megaphone },

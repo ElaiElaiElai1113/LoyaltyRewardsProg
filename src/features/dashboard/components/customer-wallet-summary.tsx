@@ -44,18 +44,18 @@ function getPrimaryAction({
 
   if (points > 0 || availableCredits > 0) {
     return {
-      label: 'Redeem rewards',
-      to: '/rewards',
-      status: 'Ready to redeem',
-      helper: 'Your balance is ready for rewards.',
+      label: 'Show member QR',
+      to: '/profile',
+      status: 'Ready to earn',
+      helper: 'Show your QR at a partner business so staff can award points.',
     }
   }
 
   return {
-    label: 'Browse businesses',
-    to: '/shop',
+    label: 'Show member QR',
+    to: '/profile',
     status: 'Start earning',
-    helper: 'Shop with a participating business to start earning.',
+    helper: 'Buy at a participating business and show your QR to earn points.',
   }
 }
 

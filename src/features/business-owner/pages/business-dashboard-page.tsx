@@ -6,7 +6,6 @@ import {
   DollarSign,
   Gift,
   Hotel,
-  Package,
   QrCode,
   ReceiptText,
   ShoppingBag,
@@ -38,7 +37,7 @@ import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/s
 import { formatCurrency, formatDate, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
-  const { business, metrics, products, rewards, promotions, redemptions } = useBusinessOwnerData()
+  const { business, metrics, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
   const signupQrRef = useRef<HTMLDivElement | null>(null)
@@ -113,7 +112,31 @@ export function BusinessDashboardPage() {
             {business?.name} {t('Command Center')}
           </h1>
           <p className="mt-4 text-lg text-white/80 font-medium">
-            {t('Track members, campaigns, reward credits, and fulfillment from one operations dashboard.')}
+            {t('Scan customer member QR codes, record purchases, award points, and track commission from one workspace.')}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="rounded-3xl border border-primary/15 bg-card p-8 shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <QrCode className="size-6" />
+            </div>
+            <div className="space-y-3">
+              <h2 className="font-serif text-3xl text-primary">Customer QR Sales</h2>
+              <p className="text-sm leading-6 text-on-surface-variant/80">
+                Staff scan the customer QR from their profile, enter the purchase amount, and Medellin Rewards records the points plus the commission owed by this business.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="rounded-3xl border border-primary/15 bg-primary/5 p-8 shadow-sm">
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Commission Model</p>
+          <p className="mt-3 font-serif text-4xl text-primary">{business?.commissionRatePercent ?? 0}%</p>
+          <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
+            Applied to recorded QR sales and tracked as commission owed to Medellin Rewards.
           </p>
         </div>
       </div>
@@ -221,32 +244,6 @@ export function BusinessDashboardPage() {
       <div>
         <h2 className="font-serif text-2xl text-primary mb-6">{t('Command Shortcuts')}</h2>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <Link
-            to="/business/products"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Products')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{products.length}</p>
-              </div>
-              <Package className="size-8 text-primary/70 group-hover:text-white/70" />
-            </div>
-          </Link>
-
-          <Link
-            to="/business/rewards"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
-          >
-            <div className="flex items-center justify-between">
-              <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Rewards')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{rewards.length}</p>
-              </div>
-              <Gift className="size-8 text-primary/70 group-hover:text-white/70" />
-            </div>
-          </Link>
-
           <Link
             to="/business/promotions"
             className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
@@ -497,9 +494,6 @@ export function BusinessDashboardPage() {
             <h2 className="font-serif text-2xl text-primary">{t('Fulfillment Queue')}</h2>
             <p className="text-sm text-on-surface-variant/70">{t('Manage and fulfill pending reward claims')}</p>
           </div>
-          <Link to="/business/rewards" className="text-sm font-semibold text-primary hover:underline">
-            {t('Manage Rewards')}
-          </Link>
         </div>
 
         <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
@@ -509,11 +503,6 @@ export function BusinessDashboardPage() {
               icon={<Gift className="size-8" />}
               title={t('No redemptions yet')}
               description={t('Reward claims will appear here when customers redeem points.')}
-              action={
-                <Button asChild variant="outline" className="rounded-full">
-                  <Link to="/business/rewards">{t('Manage Rewards')}</Link>
-                </Button>
-              }
             />
           ) : (
             redemptions.slice(0, 5).map((redemption) => (

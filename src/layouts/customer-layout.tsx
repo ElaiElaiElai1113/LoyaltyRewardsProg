@@ -1,8 +1,6 @@
 import {
   LogOut,
-  ShoppingBag,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { CustomerBottomNav } from '@/components/customer-bottom-nav'
@@ -12,7 +10,6 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { VerificationStatusPill } from '@/features/membership/components/verification-status-pill'
 import { useAuth } from '@/hooks/use-auth'
-import { useCart } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
@@ -25,38 +22,13 @@ const legalLinks = [
 
 const customerNavigation = [
   { to: '/dashboard', label: 'Home' },
-  { to: '/shop', label: 'Shop' },
-  { to: '/rewards', label: 'Rewards' },
-  { to: '/gift-cards', label: 'Gift Cards' },
+  { to: '/profile', label: 'Member QR' },
   { to: '/activity', label: 'Activity' },
-  { to: '/profile', label: 'Profile' },
 ]
 
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
-  const cart = useCart()
-  const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
-  const [isCartHighlighted, setIsCartHighlighted] = useState(false)
-
-  useEffect(() => {
-    let timeoutId = 0
-
-    const handleCartUpdated = () => {
-      setIsCartHighlighted(true)
-      window.clearTimeout(timeoutId)
-      timeoutId = window.setTimeout(() => {
-        setIsCartHighlighted(false)
-      }, 700)
-    }
-
-    window.addEventListener('customer-cart-updated', handleCartUpdated)
-
-    return () => {
-      window.removeEventListener('customer-cart-updated', handleCartUpdated)
-      window.clearTimeout(timeoutId)
-    }
-  }, [])
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
@@ -98,23 +70,6 @@ export function CustomerLayout() {
               <VerificationStatusPill status={profile?.verificationStatus} />
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
-              <NavLink
-                to="/cart"
-                className={`relative rounded-lg p-2 text-[var(--muted-foreground)] transition-all hover:bg-[var(--muted)] hover:text-[var(--foreground)] ${
-                  isCartHighlighted ? 'scale-110 bg-[var(--muted)] text-[var(--foreground)]' : ''
-                }`}
-              >
-                <ShoppingBag className={`size-5 ${isCartHighlighted ? 'animate-bounce' : ''}`} />
-                {cartCount > 0 && (
-                  <span
-                    className={`absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-[var(--primary)] text-[0.6rem] font-bold text-[var(--primary-foreground)] ${
-                      isCartHighlighted ? 'scale-125' : ''
-                    }`}
-                  >
-                    {cartCount}
-                  </span>
-                )}
-              </NavLink>
 
               <Avatar className="size-10 rounded-lg border border-[var(--border)]">
                 <AvatarFallback className="rounded-lg bg-[var(--muted)] font-semibold text-[var(--foreground)]">
@@ -158,9 +113,8 @@ export function CustomerLayout() {
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Menu')}</NavLink>
-                  <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
-                  <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
+                  <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Member QR')}</NavLink>
+                  <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Activity')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">

@@ -1,4 +1,4 @@
-import { Activity, AlertTriangle, CheckCircle2, Clock3, Gift, Home, IdCard, ShoppingBag, User } from 'lucide-react'
+import { Activity, AlertTriangle, CheckCircle2, Clock3, Home, IdCard, QrCode } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
 
 import { useLanguage } from '@/lib/language'
@@ -7,10 +7,8 @@ import type { Profile } from '@/types/domain'
 
 const tabs = [
   { to: '/dashboard', label: 'Home', icon: Home, match: ['/dashboard'] },
-  { to: '/rewards', label: 'Rewards', icon: Gift, match: ['/rewards', '/redeem'] },
-  { to: '/shop', label: 'Shop', icon: ShoppingBag, match: ['/shop'] },
+  { to: '/profile', label: 'QR', icon: QrCode, match: ['/profile'] },
   { to: '/activity', label: 'Activity', icon: Activity, match: ['/activity'] },
-  { to: '/profile', label: 'Profile', icon: User, match: ['/profile'] },
 ]
 
 interface CustomerBottomNavProps {
@@ -71,7 +69,7 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
         <StatusIcon className="size-3.5" />
         {t(status.label)}
       </NavLink>
-      <div className="grid grid-cols-5 gap-1">
+      <div className="grid grid-cols-3 gap-1">
         {tabs.map((item) => {
           const isActive = item.match.some((prefix) => pathname.startsWith(prefix))
 

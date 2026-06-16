@@ -106,10 +106,10 @@ export function CustomerOnboardingChecklist({
       title: 'Earn first reward',
       description: hasEarnedReward
         ? 'You have reward activity on your account.'
-        : 'Shop with a participating business to earn points.',
+        : 'Show your QR at a participating business to earn points.',
       state: hasEarnedReward ? 'complete' : isVerified && isMembershipActive ? 'current' : 'pending',
-      to: '/shop',
-      action: hasEarnedReward ? undefined : 'Start shopping',
+      to: '/profile',
+      action: hasEarnedReward ? undefined : 'Show QR',
     },
   ]
 
