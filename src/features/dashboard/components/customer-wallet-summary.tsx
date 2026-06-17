@@ -1,74 +1,56 @@
-import { BadgeCheck, Gift, IdCard, Landmark, Ticket } from 'lucide-react'
+import { BadgeCheck, IdCard, QrCode, Ticket } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
-import { formatCurrency, formatPoints } from '@/lib/utils'
+import { formatPoints } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
 
 interface CustomerWalletSummaryProps {
   verificationStatus?: Profile['verificationStatus'] | null
-  isMembershipActive: boolean
   points: number
-  availableCredits: number
-  activeGiftCardCount: number
 }
 
 function getPrimaryAction({
   isVerified,
-  isMembershipActive,
   points,
-  availableCredits,
 }: {
   isVerified: boolean
-  isMembershipActive: boolean
   points: number
-  availableCredits: number
 }) {
   if (!isVerified) {
     return {
       label: 'Verify ID',
       to: '/profile#id-verification',
-      helper: 'Verify your ID to unlock rewards.',
+      helper: 'Verify your ID to activate your member QR.',
     }
   }
 
-  if (!isMembershipActive) {
+  if (points > 0) {
     return {
-      label: 'Activate membership',
-      to: '/membership',
-      helper: 'Activate membership to use reward value.',
-    }
-  }
-
-  if (points > 0 || availableCredits > 0) {
-    return {
-      label: 'Redeem rewards',
-      to: '/rewards',
-      status: 'Ready to redeem',
-      helper: 'Your balance is ready for rewards.',
+      label: 'Show member QR',
+      to: '/profile',
+      status: 'Ready to earn',
+      helper: 'Show your QR at a Medellin Rewards partner business so staff can award points.',
     }
   }
 
   return {
-    label: 'Browse businesses',
-    to: '/shop',
+    label: 'Show member QR',
+    to: '/profile',
     status: 'Start earning',
-    helper: 'Shop with a participating business to start earning.',
+    helper: 'Buy at a participating business and show your QR to earn points.',
   }
 }
 
 export function CustomerWalletSummary({
   verificationStatus,
-  isMembershipActive,
   points,
-  availableCredits,
-  activeGiftCardCount,
 }: CustomerWalletSummaryProps) {
   const { t } = useLanguage()
   const isVerified = verificationStatus === 'verified'
-  const primaryAction = getPrimaryAction({ isVerified, isMembershipActive, points, availableCredits })
+  const primaryAction = getPrimaryAction({ isVerified, points })
 
   const stats = [
     {
@@ -77,18 +59,13 @@ export function CustomerWalletSummary({
       icon: Ticket,
     },
     {
-      label: 'Reward credits',
-      value: formatCurrency(availableCredits / 100),
-      icon: Gift,
+      label: 'QR status',
+      value: isVerified ? t('Active') : t('Locked'),
+      icon: QrCode,
     },
     {
-      label: 'Gift cards',
-      value: `${activeGiftCardCount}`,
-      icon: Landmark,
-    },
-    {
-      label: 'Membership',
-      value: isMembershipActive ? t('Active membership') : t('Membership inactive'),
+      label: 'Account status',
+      value: isVerified ? t('Verified') : t('Needs ID check'),
       icon: BadgeCheck,
     },
   ]
@@ -123,7 +100,7 @@ export function CustomerWalletSummary({
         </Button>
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="mt-5 grid gap-3 sm:grid-cols-3">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-xl border border-[var(--border)] bg-[var(--muted)] p-4">
             <div className="flex items-center justify-between gap-3">

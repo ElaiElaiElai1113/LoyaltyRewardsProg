@@ -12,6 +12,7 @@ import { profileService } from '@/integrations/supabase/services/profile-service
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
+import type { CheckoutPayloadItem } from '@/features/critical-flows/critical-flow'
 import type { MemberVerificationSubmission, ProfileFormValues, RedeemFormValues } from '@/types/forms'
 
 const customerKeys = {
@@ -159,14 +160,16 @@ export function usePlaceOrder(profileId?: string) {
     mutationFn: ({
       businessId,
       paymentMethod,
+      items,
       partnerCode,
     }: {
       businessId: string
       paymentMethod: string
+      items: CheckoutPayloadItem[]
       partnerCode?: string | null
     }) => {
       requireVerifiedCustomer(profile?.verificationStatus)
-      return ordersService.placeOrder(profileId!, businessId, paymentMethod, partnerCode)
+      return ordersService.placeOrder(profileId!, businessId, paymentMethod, items, partnerCode)
     },
     onSuccess: () => {
       if (!profileId) return

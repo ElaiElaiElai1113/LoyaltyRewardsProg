@@ -1,7 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Copy, QrCode } from 'lucide-react'
 import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
+import { QRCodeSVG } from 'qrcode.react'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -54,15 +57,18 @@ export function CheckoutPage() {
 
   let businessId = ''
   let validationError: string | null = null
+  let checkoutItems: { productId: string; quantity: number }[] = []
 
   try {
-    businessId = normalizeCheckoutItems(
+    const normalized = normalizeCheckoutItems(
       resolvedItems.map(({ product, quantity }) => ({
         productId: product.id,
         businessId: product.businessId,
         quantity,
       })),
-    ).businessId
+    )
+    businessId = normalized.businessId
+    checkoutItems = normalized.items
   } catch (validationIssue) {
     validationError = validationIssue instanceof Error ? validationIssue.message : t('Your cart is invalid.')
   }
@@ -76,6 +82,10 @@ export function CheckoutPage() {
   const estimatedPoints = Math.floor(total * (business?.earnRate ?? 10))
   const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
   const rewardActionsLocked = verificationStatus !== 'verified'
+  const memberQrUrl =
+    profile?.memberQrToken && typeof window !== 'undefined'
+      ? `${window.location.origin}/business/member-sale/${profile.memberQrToken}`
+      : ''
 
   return (
     <div className="space-y-16 pb-20">
@@ -87,7 +97,7 @@ export function CheckoutPage() {
           {t('Demo Checkout')}
         </h1>
         <p className="text-base font-medium leading-relaxed text-on-surface-variant/80">
-          {t('No real payment will be processed. This checkout creates a demo order for rewards testing.')}
+          {t('No real payment will be processed. This purchase creates the order and posts the matching points to your account immediately.')}
         </p>
       </div>
 
@@ -123,7 +133,58 @@ export function CheckoutPage() {
               <p className="mt-4 rounded-xl bg-warning/10 p-4 text-sm font-semibold text-warning">
                 {t('Verification required before earning rewards')}
               </p>
-            ) : null}
+            ) : (
+              <p className="mt-4 rounded-xl bg-primary/5 p-4 text-sm font-semibold text-primary">
+                {t('Your points will post as soon as the purchase is confirmed.')}
+              </p>
+            )}
+
+            <div className="mt-6 rounded-2xl border border-outline-variant/10 bg-white p-5">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                <div className="flex items-start gap-3">
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                    <QrCode className="size-5" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-serif text-2xl text-primary">Member QR</h3>
+                    <p className="max-w-xl text-sm font-medium leading-6 text-on-surface-variant/80">
+                      {rewardActionsLocked
+                        ? t('Verify your ID first to activate the QR staff will scan at checkout.')
+                        : t('If partner staff need to verify your member account during checkout, they can scan this QR.')}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-surface-low p-4">
+                  <div className="mx-auto flex size-52 items-center justify-center rounded-xl bg-white p-4">
+                    {!rewardActionsLocked && memberQrUrl ? (
+                      <QRCodeSVG value={memberQrUrl} size={168} />
+                    ) : (
+                      <div className="flex size-full flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-outline-variant/40 bg-[var(--muted)] text-center">
+                        <QrCode className="size-14 text-on-surface-variant/30" />
+                        <span className="px-4 text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">
+                          {t('QR locked')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="mt-3 w-full rounded-2xl"
+                    disabled={rewardActionsLocked || !memberQrUrl}
+                    onClick={async () => {
+                      if (rewardActionsLocked || !memberQrUrl) return
+                      await navigator.clipboard.writeText(memberQrUrl)
+                      toast.success('Member QR link copied')
+                    }}
+                  >
+                    <Copy className="size-4" />
+                    Copy QR Link
+                  </Button>
+                </div>
+              </div>
+            </div>
           </section>
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6">
             <div className="space-y-2">
@@ -149,8 +210,10 @@ export function CheckoutPage() {
                   const order = await placeOrder.mutateAsync({
                     businessId,
                     paymentMethod: values.paymentMethod,
+                    items: checkoutItems,
                     partnerCode,
                   })
+                  toast.success('Purchase made successfully.')
                   if (partnerCode.trim()) {
                     sessionStorage.removeItem('partnerReferrerCode')
                     sessionStorage.removeItem('partnerBusinessId')
@@ -231,7 +294,7 @@ export function CheckoutPage() {
                     ? t('Verify ID to place order')
                     : placeOrder.isPending
                       ? t('Placing Order...')
-                      : `${t('Place order')} ${formatCurrency(total)}`}
+                      : `${t('Place order request')} ${formatCurrency(total)}`}
                 </Button>
               </EarnRedeemGate>
             </form>
@@ -262,10 +325,10 @@ export function CheckoutPage() {
               <span>{formatCurrency(total)}</span>
             </div>
           </div>
-          <div className="rounded-xl bg-tertiary/20 p-4 text-sm">
-            <span className="font-bold text-primary">+{estimatedPoints} {t('points')}</span>
-            <span className="text-on-surface-variant/80"> {t('will be earned')}</span>
-          </div>
+            <div className="rounded-xl bg-tertiary/20 p-4 text-sm">
+              <span className="font-bold text-primary">+{estimatedPoints} {t('points')}</span>
+              <span className="text-on-surface-variant/80"> {t('will post after checkout')}</span>
+            </div>
         </div>
       </div>
     </div>

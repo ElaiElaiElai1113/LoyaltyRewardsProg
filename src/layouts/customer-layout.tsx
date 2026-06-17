@@ -1,8 +1,7 @@
 import {
+  ShoppingCart,
   LogOut,
-  ShoppingBag,
 } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { CustomerBottomNav } from '@/components/customer-bottom-nav'
@@ -26,37 +25,15 @@ const legalLinks = [
 const customerNavigation = [
   { to: '/dashboard', label: 'Home' },
   { to: '/shop', label: 'Shop' },
-  { to: '/rewards', label: 'Rewards' },
-  { to: '/gift-cards', label: 'Gift Cards' },
+  { to: '/profile', label: 'Member QR' },
   { to: '/activity', label: 'Activity' },
-  { to: '/profile', label: 'Profile' },
 ]
 
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
-  const { t } = useLanguage()
   const cart = useCart()
+  const { t } = useLanguage()
   const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
-  const [isCartHighlighted, setIsCartHighlighted] = useState(false)
-
-  useEffect(() => {
-    let timeoutId = 0
-
-    const handleCartUpdated = () => {
-      setIsCartHighlighted(true)
-      window.clearTimeout(timeoutId)
-      timeoutId = window.setTimeout(() => {
-        setIsCartHighlighted(false)
-      }, 700)
-    }
-
-    window.addEventListener('customer-cart-updated', handleCartUpdated)
-
-    return () => {
-      window.removeEventListener('customer-cart-updated', handleCartUpdated)
-      window.clearTimeout(timeoutId)
-    }
-  }, [])
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
@@ -96,25 +73,20 @@ export function CustomerLayout() {
 
             <div className="flex items-center gap-4">
               <VerificationStatusPill status={profile?.verificationStatus} />
-              <LanguagePicker className="text-[var(--muted-foreground)]" compact />
-              <ThemeToggle />
               <NavLink
                 to="/cart"
-                className={`relative rounded-lg p-2 text-[var(--muted-foreground)] transition-all hover:bg-[var(--muted)] hover:text-[var(--foreground)] ${
-                  isCartHighlighted ? 'scale-110 bg-[var(--muted)] text-[var(--foreground)]' : ''
-                }`}
+                className="relative rounded-full p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                aria-label={t('View cart')}
               >
-                <ShoppingBag className={`size-5 ${isCartHighlighted ? 'animate-bounce' : ''}`} />
-                {cartCount > 0 && (
-                  <span
-                    className={`absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded bg-[var(--primary)] text-[0.6rem] font-bold text-[var(--primary-foreground)] ${
-                      isCartHighlighted ? 'scale-125' : ''
-                    }`}
-                  >
+                <ShoppingCart className="size-5" />
+                {cartCount > 0 ? (
+                  <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[0.65rem] font-bold text-primary-foreground">
                     {cartCount}
                   </span>
-                )}
+                ) : null}
               </NavLink>
+              <LanguagePicker className="text-[var(--muted-foreground)]" compact />
+              <ThemeToggle />
 
               <Avatar className="size-10 rounded-lg border border-[var(--border)]">
                 <AvatarFallback className="rounded-lg bg-[var(--muted)] font-semibold text-[var(--foreground)]">
@@ -149,7 +121,7 @@ export function CustomerLayout() {
             <div className="max-w-xs">
               <span className="text-lg font-semibold text-[var(--foreground)]">Medellin Rewards</span>
               <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
-                {t('Earn points, redeem rewards, and stay connected across partner businesses.')}
+                {t('Use one member QR across partner businesses and keep every recorded purchase connected to your account.')}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-12 sm:grid-cols-4">
@@ -158,9 +130,9 @@ export function CustomerLayout() {
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Menu')}</NavLink>
-                  <NavLink to="/rewards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Rewards')}</NavLink>
-                  <NavLink to="/promotions" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Promotions')}</NavLink>
+                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Shop')}</NavLink>
+                  <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Member QR')}</NavLink>
+                  <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Activity')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">

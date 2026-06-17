@@ -6,9 +6,8 @@ import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
 
 const navigation = [
-  { to: '/shop', label: 'Menu' },
-  { to: '/rewards', label: 'Rewards' },
   { to: '/promotions', label: 'Promotions' },
+  { to: '/business', label: 'For Businesses' },
 ]
 
 const legalLinks = [

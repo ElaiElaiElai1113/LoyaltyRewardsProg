@@ -5,8 +5,7 @@ import {
   Megaphone,
   Settings2,
   ShieldCheck,
-  ShoppingBag,
-  UserRound,
+  QrCode,
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
@@ -19,10 +18,9 @@ import { getInitials } from '@/lib/utils'
 
 const memberNavigation = [
   { to: '/dashboard', label: 'Dashboard', icon: Home },
-  { to: '/shop', label: 'Menu', icon: ShoppingBag },
+  { to: '/profile', label: 'Member QR', icon: QrCode },
   { to: '/promotions', label: 'Promotions', icon: Megaphone },
   { to: '/activity', label: 'Activity', icon: Activity },
-  { to: '/profile', label: 'Profile', icon: UserRound },
 ]
 
 const adminNavigation = [{ to: '/admin/portal', label: 'Admin Portal', icon: ShieldCheck }]
@@ -55,7 +53,7 @@ export function AppShell() {
               </h1>
             </div>
             <div className="rounded-full bg-secondary/80 p-3 text-primary">
-              <ShoppingBag className="size-5" />
+              <QrCode className="size-5" />
             </div>
           </div>
 
@@ -117,9 +115,9 @@ export function AppShell() {
               </p>
             </div>
             <Button asChild variant="secondary" size="sm">
-              <NavLink to={profile?.role === 'platform-admin' ? '/admin/portal' : '/shop'}>
+              <NavLink to={profile?.role === 'platform-admin' ? '/admin/portal' : '/profile'}>
                 <Settings2 className="size-4" />
-                {profile?.role === 'platform-admin' ? 'Staff tools' : 'Browse menu'}
+                {profile?.role === 'platform-admin' ? 'Staff tools' : 'Open QR'}
               </NavLink>
             </Button>
           </header>

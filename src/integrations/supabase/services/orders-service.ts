@@ -1,5 +1,6 @@
+import type { CheckoutPayloadItem } from '@/features/critical-flows/critical-flow'
 import { createClientRequestId, normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
-import { readCart, clearCart } from '@/lib/mock-store'
+import { clearCart } from '@/lib/mock-store'
 import type { Order, OrderLineItem } from '@/types/domain'
 import { partnerService } from './partner-service'
 import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
@@ -67,14 +68,13 @@ export const ordersService = {
     profileId: string,
     businessId: string,
     paymentMethod: string,
+    items: CheckoutPayloadItem[],
     partnerCode?: string | null,
   ): Promise<Order> {
     const sb = requireSupabase()
-    const cartItems = readCart()
+    if (items.length === 0) throw new Error('Your cart is empty.')
 
-    if (cartItems.length === 0) throw new Error('Your cart is empty.')
-
-    const productIds = cartItems.map((item) => item.productId)
+    const productIds = items.map((item) => item.productId)
     const { data: productRows, error: productsError } = await sb
       .from('products')
       .select('id, business_id, title, price')
@@ -83,28 +83,28 @@ export const ordersService = {
     if (productsError) throw new Error('Failed to load products.')
 
     const productMap = new Map((productRows ?? []).map((row) => [row.id as string, row]))
-    const lineItems: OrderLineItem[] = cartItems.map((cartItem) => {
-      const product = productMap.get(cartItem.productId)
-      if (!product) throw new Error(`Product ${cartItem.productId} not found.`)
+    const lineItems: OrderLineItem[] = items.map((item) => {
+      const product = productMap.get(item.productId)
+      if (!product) throw new Error(`Product ${item.productId} not found.`)
 
       return {
         productId: product.id as string,
         productTitle: product.title as string,
         unitPrice: Number(product.price),
-        quantity: cartItem.quantity,
-        subtotal: Number(product.price) * cartItem.quantity,
+        quantity: item.quantity,
+        subtotal: Number(product.price) * item.quantity,
       }
     })
 
     const normalized = normalizeCheckoutItems(
-      cartItems.map((cartItem) => {
-        const product = productMap.get(cartItem.productId)
-        if (!product) throw new Error(`Product ${cartItem.productId} not found.`)
+      items.map((item) => {
+        const product = productMap.get(item.productId)
+        if (!product) throw new Error(`Product ${item.productId} not found.`)
 
         return {
-          productId: cartItem.productId,
+          productId: item.productId,
           businessId: product.business_id as string,
-          quantity: cartItem.quantity,
+          quantity: item.quantity,
         }
       }),
     )
@@ -121,7 +121,10 @@ export const ordersService = {
     const { data, error } = await sb.rpc('place_order', {
       p_business_id: businessId,
       p_payment_method: paymentMethod,
-      p_items: normalized.items,
+      p_items: normalized.items.map((item) => ({
+        product_id: item.productId,
+        quantity: item.quantity,
+      })),
       p_client_request_id: createClientRequestId(),
     })
 

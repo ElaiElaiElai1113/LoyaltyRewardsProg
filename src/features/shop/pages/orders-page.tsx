@@ -29,7 +29,7 @@ export function OrdersPage() {
           {t('Your Orders')}
         </h1>
         <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-          {t('View your past purchases and points earned.')}
+          {t('View your past purchases and the points posted from each confirmed order.')}
         </p>
       </div>
 
@@ -49,7 +49,7 @@ export function OrdersPage() {
       ) : (orders.data ?? []).length === 0 ? (
         <EmptyState
           title={t('No orders yet')}
-          description={t('Purchases and points earned after checkout will appear here.')}
+          description={t('Purchases placed from partner businesses will appear here together with their posted points.')}
           action={
             <Button asChild variant="default" size="lg" className="rounded-full">
               <Link to="/shop">{t('Start shopping')}</Link>
@@ -88,12 +88,14 @@ export function OrdersPage() {
               </div>
 
               <div className="flex justify-between items-center border-t border-outline-variant/5 pt-3">
-                <span className="text-sm font-bold text-primary">+{order.pointsEarned} {t('points earned')}</span>
+                <span className="text-sm font-bold text-primary">
+                  +{order.pointsEarned} {order.pointsStatus === 'pending' ? t('points pending') : t('points posted')}
+                </span>
                 <Badge
                   variant={order.pointsStatus === 'pending' ? 'outline' : 'success'}
                   className="text-[0.55rem]"
                 >
-                  {order.pointsStatus === 'pending' ? t('Processing') : t('Posted')}
+                  {order.pointsStatus === 'pending' ? t('Pending') : t('Posted')}
                 </Badge>
               </div>
             </div>
