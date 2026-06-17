@@ -37,7 +37,7 @@ export function OrderConfirmationPage() {
           {t('Thank you!')}
         </h1>
         <p className="text-lg text-on-surface-variant/85 font-medium max-w-xl mx-auto">
-          {t('Your order has been placed successfully.')}
+          {t('Your purchase has been made successfully and the order is now confirmed.')}
         </p>
       </div>
 
@@ -60,7 +60,11 @@ export function OrderConfirmationPage() {
 
         <div className="rounded-xl bg-tertiary/20 p-6 text-center space-y-2">
           <p className="font-serif text-3xl text-primary">+{order.data.pointsEarned} {t('points')}</p>
-          <p className="text-sm text-on-surface-variant/80">{t('Processing - available within 24 hours')}</p>
+          <p className="text-sm text-on-surface-variant/80">{t('Posted to your account')}</p>
+        </div>
+
+        <div className="rounded-xl border border-primary/15 bg-primary/5 p-5 text-center text-sm font-medium text-primary">
+          {t('You can review the order below or continue shopping from partner businesses.')}
         </div>
 
         <div className="flex gap-4 justify-center">
@@ -72,9 +76,6 @@ export function OrderConfirmationPage() {
           </Button>
           <Button asChild variant="outline" className="rounded-full">
             <Link to="/orders">{t('View Orders')}</Link>
-          </Button>
-          <Button asChild variant="outline" className="rounded-full">
-            <Link to="/rewards">{t('View rewards')}</Link>
           </Button>
         </div>
       </div>

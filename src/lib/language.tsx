@@ -1292,8 +1292,6 @@ const spanishTranslations: Record<string, string> = {
   Checking: 'Verificando',
   'Checking active promotions.': 'Verificando promociones activas.',
   'Checking your cart.': 'Verificando tu carrito.',
-  'Checkout is currently unavailable.': 'El pago no esta disponible en este momento.',
-  'Checkout unavailable': 'Pago no disponible',
   Close: 'Cerrar',
   'Coffee dates, market finds, golden points': 'Citas de cafe, hallazgos locales, puntos dorados',
   'Confirmed order volume': 'Volumen de pedidos confirmados',

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom'
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { CustomerOnboardingChecklist } from '@/features/dashboard/components/customer-onboarding-checklist'
 import { CustomerWalletSummary } from '@/features/dashboard/components/customer-wallet-summary'
-import { useMyGiftCards } from '@/features/gift-cards/hooks/use-gift-cards'
 import { MembershipBanner } from '@/features/membership/components/membership-banner'
 import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import {
@@ -12,7 +11,6 @@ import {
   useRewardBalance,
 } from '@/hooks/use-customer-data'
 import { useAuth } from '@/hooks/use-auth'
-import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
 
 export function DashboardPage() {
@@ -20,13 +18,9 @@ export function DashboardPage() {
   const { t } = useLanguage()
   const rewardBalance = useRewardBalance(profile?.id)
   const activities = useActivities(profile?.id)
-  const giftCards = useMyGiftCards()
-  const { isActive: isMembershipActive } = useMembership()
 
-  const balance = rewardBalance.data
-  const points = balance?.points ?? 0
+  const points = rewardBalance.data?.points ?? 0
   const recentActivity = activities.data?.slice(0, 4) ?? []
-  const activeGiftCardCount = giftCards.data?.filter((card) => card.status === 'active').length ?? 0
   const firstName = profile?.fullName?.split(' ')[0] ?? t('Member')
   const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
 
@@ -39,13 +33,13 @@ export function DashboardPage() {
     },
     {
       title: t('Verify ID'),
-      description: t('Activate your member QR and reward earning access.'),
+      description: t('Activate your member QR so staff can record purchases.'),
       icon: ShieldCheck,
       to: '/profile#id-verification',
     },
     {
       title: t('View history'),
-      description: t('Review recent points and redemption activity.'),
+      description: t('Review recorded visits, points earned, and account activity.'),
       icon: History,
       to: '/activity',
     },
@@ -60,7 +54,6 @@ export function DashboardPage() {
       />
       <CustomerOnboardingChecklist
         verificationStatus={verificationStatus}
-        isMembershipActive={isMembershipActive}
         points={points}
         recentActivity={recentActivity}
       />
@@ -71,16 +64,13 @@ export function DashboardPage() {
             {t('Welcome back,')} {firstName}
           </h1>
           <p className="max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
-            {t('Track your balance, rewards, and recent activity across partner businesses.')}
+            {t('Show your member QR at partner businesses, earn points from recorded purchases, and track each visit in one place.')}
           </p>
         </div>
 
         <CustomerWalletSummary
           verificationStatus={verificationStatus}
-          isMembershipActive={isMembershipActive}
           points={points}
-          availableCredits={balance?.availableCredits ?? 0}
-          activeGiftCardCount={activeGiftCardCount}
         />
 
         <div className="grid gap-4 md:grid-cols-3">

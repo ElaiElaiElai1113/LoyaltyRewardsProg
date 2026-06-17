@@ -30,7 +30,7 @@ export function ActivityPage() {
             {t('Your Timeline')}
           </h1>
           <p className="text-lg leading-relaxed text-on-surface-variant/85 font-medium">
-            {t('Every visit, bonus, and reward claim in one clear timeline.')}
+            {t('Every recorded QR purchase, point award, and account update in one clear timeline.')}
           </p>
         </div>
 
@@ -77,7 +77,7 @@ export function ActivityPage() {
         <ActivityList
           items={activities.data ?? []}
           emptyActionTo="/shop"
-          emptyActionLabel="Browse businesses"
+          emptyActionLabel="Start shopping"
         />
       </div>
     </div>

@@ -97,6 +97,56 @@ export function ProfilePage() {
         </div>
       </div>
 
+      <div className="rounded-3xl border border-outline-variant/10 bg-surface-low p-6">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-start gap-3">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <QrCode className="size-5" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="font-serif text-2xl text-primary">Member QR</h2>
+              <p className="max-w-2xl text-sm font-medium leading-6 text-on-surface-variant/80">
+                {t(memberQrStatusMessage)}
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl bg-white p-4">
+            <div className="mx-auto flex size-56 items-center justify-center rounded-xl bg-surface-lowest p-4">
+              {isMemberVerified && memberQrUrl ? (
+                <QRCodeSVG value={memberQrUrl} size={184} />
+              ) : (
+                <div className="flex size-full flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-outline-variant/40 bg-[var(--muted)] text-center">
+                  <QrCode className="size-16 text-on-surface-variant/30" />
+                  <span className="px-4 text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">
+                    {t('QR locked')}
+                  </span>
+                </div>
+              )}
+            </div>
+            {!isMemberVerified ? (
+              <Button asChild type="button" variant="outline" className="mt-5 w-full rounded-2xl">
+                <a href="#id-verification">{t('Verify ID to activate QR')}</a>
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-3 w-full rounded-2xl"
+              disabled={!isMemberVerified || !memberQrUrl}
+              onClick={async () => {
+                if (!isMemberVerified || !memberQrUrl) return
+                await navigator.clipboard.writeText(memberQrUrl)
+                toast.success('Member QR link copied')
+              }}
+            >
+              <Copy className="size-4" />
+              Copy QR Link
+            </Button>
+          </div>
+        </div>
+      </div>
+
       <div className="grid gap-16 lg:grid-cols-[400px_1fr]">
         <div className="space-y-8">
            <div className="space-y-2 pb-4 border-b border-outline-variant/5">
@@ -226,53 +276,6 @@ export function ProfilePage() {
             ) : null}
           </div>
 
-          <div className="rounded-3xl border border-outline-variant/10 bg-surface-low p-6">
-            <div className="flex items-start gap-3">
-              <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <QrCode className="size-5" />
-              </div>
-              <div className="space-y-2">
-                <h2 className="font-serif text-2xl text-primary">Member QR</h2>
-                <p className="text-sm font-medium leading-6 text-on-surface-variant/80">
-                  {t(memberQrStatusMessage)}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-6 rounded-2xl bg-white p-4">
-              <div className="mx-auto flex size-56 items-center justify-center rounded-xl bg-surface-lowest p-4">
-                {isMemberVerified && memberQrUrl ? (
-                  <QRCodeSVG value={memberQrUrl} size={184} />
-                ) : (
-                  <div className="flex size-full flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-outline-variant/40 bg-[var(--muted)] text-center">
-                    <QrCode className="size-16 text-on-surface-variant/30" />
-                    <span className="px-4 text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">
-                      {t('QR locked')}
-                    </span>
-                  </div>
-                )}
-              </div>
-              {!isMemberVerified ? (
-                <Button asChild type="button" variant="outline" className="mt-5 w-full rounded-2xl">
-                  <a href="#id-verification">{t('Verify ID to activate QR')}</a>
-                </Button>
-              ) : null}
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-3 w-full rounded-2xl"
-                disabled={!isMemberVerified || !memberQrUrl}
-                onClick={async () => {
-                  if (!isMemberVerified || !memberQrUrl) return
-                  await navigator.clipboard.writeText(memberQrUrl)
-                  toast.success('Member QR link copied')
-                }}
-              >
-                <Copy className="size-4" />
-                Copy QR Link
-              </Button>
-            </div>
-          </div>
         </div>
 
         <div className="space-y-8">

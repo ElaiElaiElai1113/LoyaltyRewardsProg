@@ -27,8 +27,6 @@ import { JoinRewardsPage } from '@/features/join/pages/join-rewards-page'
 import { LegalPage } from '@/features/legal/pages/legal-page'
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
-import { RedeemRewardPage } from '@/features/rewards/pages/redeem-reward-page'
-import { RewardsPage } from '@/features/rewards/pages/rewards-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
 import { CheckoutPage } from '@/features/shop/pages/checkout-page'
 import { OrderConfirmationPage } from '@/features/shop/pages/order-confirmation-page'
@@ -205,6 +203,24 @@ function PublicOrCustomerRoute() {
   }
 
   return <PublicBrowseLayout />
+}
+
+function HiddenCustomerCommerceRoute() {
+  const { profile, isLoading } = useAuth()
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  if (profile?.role === 'customer') {
+    return <Navigate replace to="/dashboard" />
+  }
+
+  if (profile) {
+    return <Navigate replace to={getHomePathForRole(profile.role)} />
+  }
+
+  return <Navigate replace to="/signin" />
 }
 
 function ProtectedAdminRoute() {
@@ -419,7 +435,7 @@ const router = createBrowserRouter([
         element: <PublicOrCustomerRoute />,
         children: [
           { path: '/shop', element: <ShopPage /> },
-          { path: '/rewards', element: <RewardsPage /> },
+          { path: '/rewards', element: <HiddenCustomerCommerceRoute /> },
           { path: '/promotions', element: <PromotionsPage /> },
           { path: '/business', element: <ForBusinessesPage /> },
           { path: '/for-businesses', element: <Navigate replace to="/business" /> },
@@ -437,7 +453,7 @@ const router = createBrowserRouter([
           { path: '/order-confirmation', element: <OrderConfirmationPage /> },
           { path: '/orders', element: <OrdersPage /> },
           { path: '/membership', element: <MembershipPage /> },
-          { path: '/redeem/:rewardId', element: <RedeemRewardPage /> },
+          { path: '/redeem/:rewardId', element: <HiddenCustomerCommerceRoute /> },
           { path: '/activity', element: <ActivityPage /> },
           { path: '/profile', element: <ProfilePage /> },
         ],

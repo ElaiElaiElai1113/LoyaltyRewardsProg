@@ -3,15 +3,20 @@ import { Coffee, Cookie, PackageSearch, Shirt, Sparkles, Wrench } from 'lucide-r
 
 import { Badge } from '@/components/ui/badge'
 import { BusinessFilter } from '@/components/business-filter'
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { Skeleton } from '@/components/ui/skeleton'
 import { MembershipBanner } from '@/features/membership/components/membership-banner'
 import { ProductCard } from '@/features/shop/components/product-card'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import { formatCurrency } from '@/lib/utils'
+import type { Product } from '@/types/domain'
 
 const categories = [
   { value: 'All', label: 'All' },
@@ -30,6 +35,8 @@ export function ShopPage() {
 
   const [selectedBusiness, setSelectedBusiness] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<(typeof categories)[number]['value']>('All')
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+  const [selectedQuantity, setSelectedQuantity] = useState(1)
 
   const filtered = (products.data ?? []).filter((p) => {
     if (selectedBusiness && p.businessId !== selectedBusiness) return false
@@ -38,8 +45,11 @@ export function ShopPage() {
   })
   const featuredProducts = filtered.filter((product) => product.featured).slice(0, 5)
 
-  const handleAddToCart = (productId: string) => {
-    requireAuth(() => addToCart.mutate({ productId }))
+  const handleAddToCart = (product: Product) => {
+    requireAuth(() => {
+      setSelectedProduct(product)
+      setSelectedQuantity(1)
+    })
   }
 
   return (
@@ -112,7 +122,7 @@ export function ShopPage() {
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={(p) => handleAddToCart(p.id)}
+              onAddToCart={handleAddToCart}
               isAdding={addToCart.isPending}
             />
           ))}
@@ -176,13 +186,122 @@ export function ShopPage() {
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={(p) => handleAddToCart(p.id)}
+              onAddToCart={handleAddToCart}
               isAdding={addToCart.isPending}
             />
           ))}
         </div>
       )}
       </div>
+
+      <Dialog
+        open={Boolean(selectedProduct)}
+        onOpenChange={(open) => {
+          if (!open) {
+            setSelectedProduct(null)
+          }
+        }}
+      >
+        <DialogContent className="max-w-lg rounded-[2rem] p-8">
+          <DialogHeader>
+            <DialogTitle>Confirm Quantity</DialogTitle>
+            <DialogDescription>
+              {selectedProduct
+                ? `Choose how many ${selectedProduct.title} you want to add to your cart.`
+                : 'Choose how many items you want to add to your cart.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          {selectedProduct ? (
+            <div className="space-y-6">
+              <div className="rounded-2xl border border-[var(--border)] bg-[var(--muted)] p-5">
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm font-bold uppercase tracking-[0.12em] text-[var(--muted-foreground)]">
+                      {selectedProduct.category}
+                    </p>
+                    <h3 className="mt-2 text-xl font-semibold text-[var(--foreground)]">
+                      {selectedProduct.title}
+                    </h3>
+                    <p className="mt-2 text-sm text-[var(--muted-foreground)]">
+                      {selectedProduct.inventory} in stock
+                    </p>
+                  </div>
+                  <p className="font-serif text-2xl text-primary-container">
+                    {formatCurrency(selectedProduct.price)}
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid gap-3">
+                <label htmlFor="cart-quantity" className="text-sm font-semibold text-[var(--foreground)]">
+                  Quantity
+                </label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() => setSelectedQuantity((value) => Math.max(1, value - 1))}
+                    disabled={selectedQuantity <= 1}
+                  >
+                    -
+                  </Button>
+                  <Input
+                    id="cart-quantity"
+                    type="number"
+                    min="1"
+                    max={selectedProduct.inventory}
+                    value={selectedQuantity}
+                    onChange={(event) => {
+                      const nextValue = Number(event.target.value)
+                      if (!Number.isFinite(nextValue)) return
+                      setSelectedQuantity(Math.min(selectedProduct.inventory, Math.max(1, Math.floor(nextValue))))
+                    }}
+                    className="h-12 text-center text-lg"
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() => setSelectedQuantity((value) => Math.min(selectedProduct.inventory, value + 1))}
+                    disabled={selectedQuantity >= selectedProduct.inventory}
+                  >
+                    +
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setSelectedProduct(null)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              isLoading={addToCart.isPending}
+              disabled={!selectedProduct || selectedQuantity < 1}
+              onClick={() => {
+                if (!selectedProduct) return
+                addToCart.mutate(
+                  { productId: selectedProduct.id, quantity: selectedQuantity },
+                  {
+                    onSuccess: () => {
+                      setSelectedProduct(null)
+                      setSelectedQuantity(1)
+                    },
+                  },
+                )
+              }}
+            >
+              Add {selectedQuantity} to Cart
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

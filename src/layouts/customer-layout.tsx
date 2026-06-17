@@ -1,4 +1,5 @@
 import {
+  ShoppingCart,
   LogOut,
 } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
@@ -10,6 +11,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { VerificationStatusPill } from '@/features/membership/components/verification-status-pill'
 import { useAuth } from '@/hooks/use-auth'
+import { useCart } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
@@ -22,13 +24,16 @@ const legalLinks = [
 
 const customerNavigation = [
   { to: '/dashboard', label: 'Home' },
+  { to: '/shop', label: 'Shop' },
   { to: '/profile', label: 'Member QR' },
   { to: '/activity', label: 'Activity' },
 ]
 
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
+  const cart = useCart()
   const { t } = useLanguage()
+  const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
@@ -68,6 +73,18 @@ export function CustomerLayout() {
 
             <div className="flex items-center gap-4">
               <VerificationStatusPill status={profile?.verificationStatus} />
+              <NavLink
+                to="/cart"
+                className="relative rounded-full p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                aria-label={t('View cart')}
+              >
+                <ShoppingCart className="size-5" />
+                {cartCount > 0 ? (
+                  <span className="absolute -right-1 -top-1 inline-flex min-w-5 items-center justify-center rounded-full bg-primary px-1.5 py-0.5 text-[0.65rem] font-bold text-primary-foreground">
+                    {cartCount}
+                  </span>
+                ) : null}
+              </NavLink>
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
 
@@ -104,7 +121,7 @@ export function CustomerLayout() {
             <div className="max-w-xs">
               <span className="text-lg font-semibold text-[var(--foreground)]">Medellin Rewards</span>
               <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
-                {t('Earn points, redeem rewards, and stay connected across partner businesses.')}
+                {t('Use one member QR across partner businesses and keep every recorded purchase connected to your account.')}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-12 sm:grid-cols-4">
@@ -113,6 +130,7 @@ export function CustomerLayout() {
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
+                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Shop')}</NavLink>
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Member QR')}</NavLink>
                   <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Activity')}</NavLink>
                 </nav>

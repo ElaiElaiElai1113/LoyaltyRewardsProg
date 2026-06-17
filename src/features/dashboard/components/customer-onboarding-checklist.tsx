@@ -8,7 +8,6 @@ import type { Activity, Profile } from '@/types/domain'
 
 interface CustomerOnboardingChecklistProps {
   verificationStatus?: Profile['verificationStatus'] | null
-  isMembershipActive: boolean
   points: number
   recentActivity: Activity[]
 }
@@ -69,7 +68,6 @@ function getStateIcon(state: ChecklistState) {
 
 export function CustomerOnboardingChecklist({
   verificationStatus,
-  isMembershipActive,
   points,
   recentActivity,
 }: CustomerOnboardingChecklistProps) {
@@ -85,31 +83,31 @@ export function CustomerOnboardingChecklist({
     },
     verificationStep(verificationStatus),
     {
-      title: 'Activate membership',
-      description: isMembershipActive
-        ? 'Membership is active.'
-        : 'Activate membership to earn and redeem reward value.',
-      state: isMembershipActive ? 'complete' : isVerified ? 'current' : 'pending',
-      to: '/membership',
-      action: isMembershipActive ? undefined : 'Activate',
-    },
-    {
       title: 'Unlock member QR',
       description: isVerified
         ? 'Member QR is active in your profile.'
         : 'Your QR activates after ID approval.',
-      state: isVerified ? 'complete' : 'pending',
+      state: isVerified ? 'complete' : 'current',
       to: '/profile',
-      action: isVerified ? undefined : 'View QR',
+      action: isVerified ? undefined : 'Open profile',
     },
     {
-      title: 'Earn first reward',
+      title: 'Make first QR sale',
       description: hasEarnedReward
-        ? 'You have reward activity on your account.'
-        : 'Show your QR at a participating business to earn points.',
-      state: hasEarnedReward ? 'complete' : isVerified && isMembershipActive ? 'current' : 'pending',
+        ? 'Your account already has QR earning activity.'
+        : 'Buy at a partner business and let staff scan your QR to award points.',
+      state: hasEarnedReward ? 'complete' : isVerified ? 'current' : 'pending',
       to: '/profile',
       action: hasEarnedReward ? undefined : 'Show QR',
+    },
+    {
+      title: 'Review activity',
+      description: recentActivity.length > 0
+        ? 'Your QR visits and points are recorded in activity.'
+        : 'Your first recorded scan will appear in activity.',
+      state: recentActivity.length > 0 ? 'complete' : hasEarnedReward ? 'current' : 'pending',
+      to: '/activity',
+      action: recentActivity.length > 0 ? undefined : 'View activity',
     },
   ]
 

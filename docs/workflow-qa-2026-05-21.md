@@ -9,7 +9,7 @@ Reviewed the customer, business owner, business staff, and admin workflow surfac
 - `npm test` passed.
 - `npm run lint` passed.
 - `npm run build` passed.
-- `.env` has `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, and `VITE_PAYMENTS_ENABLED` keys present.
+- `.env` has `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` keys present.
 
 Build note: Vite reports the main JS chunk is larger than 500 kB after minification. This is not a functional failure, but it should be handled before production polish.
 
@@ -90,6 +90,7 @@ Critical behavior observed in code:
 
 3. Checkout is documented as a demo flow with no real payment processing.
    - `README.md` states no real payment is processed.
+   - Checkout is always available in-app, but points remain pending until partner staff scan the member QR.
    - If launch requires paid customer orders, payment work is still pending.
 
 4. No browser-level E2E suite exists for role workflows.

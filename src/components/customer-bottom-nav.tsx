@@ -1,12 +1,14 @@
-import { Activity, AlertTriangle, CheckCircle2, Clock3, Home, IdCard, QrCode } from 'lucide-react'
+import { Activity, AlertTriangle, CheckCircle2, Clock3, Home, IdCard, QrCode, ShoppingCart } from 'lucide-react'
 import { NavLink, useLocation } from 'react-router-dom'
 
+import { useCart } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
 
 const tabs = [
   { to: '/dashboard', label: 'Home', icon: Home, match: ['/dashboard'] },
+  { to: '/cart', label: 'Cart', icon: ShoppingCart, match: ['/cart', '/checkout', '/order-confirmation', '/orders'] },
   { to: '/profile', label: 'QR', icon: QrCode, match: ['/profile'] },
   { to: '/activity', label: 'Activity', icon: Activity, match: ['/activity'] },
 ]
@@ -53,9 +55,11 @@ function getVerificationStatus(status: Profile['verificationStatus'] | null | un
 
 export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps) {
   const { pathname } = useLocation()
+  const cart = useCart()
   const { t } = useLanguage()
   const status = getVerificationStatus(verificationStatus)
   const StatusIcon = status.icon
+  const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-primary/15 bg-card/95 px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-luxe backdrop-blur md:hidden">
@@ -69,7 +73,7 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
         <StatusIcon className="size-3.5" />
         {t(status.label)}
       </NavLink>
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-4 gap-1">
         {tabs.map((item) => {
           const isActive = item.match.some((prefix) => pathname.startsWith(prefix))
 
@@ -87,6 +91,11 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
             >
               <span className="relative">
                 <item.icon className="size-5" />
+                {item.to === '/cart' && cartCount > 0 ? (
+                  <span className="absolute -right-2 -top-2 inline-flex min-w-4 items-center justify-center rounded-full bg-primary px-1 py-0.5 text-[0.55rem] font-bold text-primary-foreground">
+                    {cartCount}
+                  </span>
+                ) : null}
               </span>
               <span>{t(item.label)}</span>
             </NavLink>
