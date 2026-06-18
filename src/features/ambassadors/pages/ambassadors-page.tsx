@@ -73,7 +73,7 @@ export function AmbassadorsPage() {
                 VIP creator invites
               </Badge>
               <Link to="/shop" className="text-sm font-bold text-[var(--champagne)] transition hover:text-[var(--cream)]">
-                View rewards
+                Partner map
               </Link>
             </div>
 
@@ -140,7 +140,7 @@ export function AmbassadorsPage() {
                   </p>
                 </div>
                 <Button asChild variant="secondary" size="lg" className="rounded-full border border-primary/30 bg-[var(--card)] text-primary hover:bg-[var(--muted)]">
-                  <Link to="/shop">Browse rewards</Link>
+                  <Link to="/shop">Explore businesses</Link>
                 </Button>
               </div>
             ) : (

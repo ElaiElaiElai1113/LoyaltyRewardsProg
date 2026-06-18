@@ -5,16 +5,19 @@
 
 -- ─── Businesses ──────────────────────────────────────────────
 
-insert into public.businesses (id, name, slug, description, earn_rate, tax_rate, currency, active) values
-  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Velvet Brew', 'velvet-brew', 'A neighborhood beverage shop known for handcrafted drinks, seasonal pastries, and retail favorites.', 10, 0.0875, 'USD', true),
-  ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Coffee', 'mystic-coffee', 'A mystical coffee experience with ethically sourced beans, herbal infusions, and enchanted blends.', 8, 0.0925, 'USD', true)
+insert into public.businesses (id, name, slug, description, earn_rate, tax_rate, currency, active, address, latitude, longitude) values
+  ('a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11', 'Velvet Brew', 'velvet-brew', 'A neighborhood beverage shop known for handcrafted drinks, seasonal pastries, and retail favorites.', 10, 0.0875, 'USD', true, 'Cra. 37 #10-32, El Poblado, Medellin', 6.2088, -75.5672),
+  ('b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22', 'Mystic Coffee', 'mystic-coffee', 'A mystical coffee experience with ethically sourced beans, herbal infusions, and enchanted blends.', 8, 0.0925, 'USD', true, 'Cl. 10B #36-14, Provenza, Medellin', 6.2099, -75.5651)
 on conflict (slug) do update
 set name = excluded.name,
     description = excluded.description,
     earn_rate = excluded.earn_rate,
     tax_rate = excluded.tax_rate,
     currency = excluded.currency,
-    active = excluded.active;
+    active = excluded.active,
+    address = excluded.address,
+    latitude = excluded.latitude,
+    longitude = excluded.longitude;
 
 do $$
 declare

@@ -1,5 +1,9 @@
 import { z } from 'zod'
 
+function optionalCoordinate(label: string, min: number, max: number) {
+  return z.number().min(min, `${label} must be ${min} or greater`).max(max, `${label} must be ${max} or less`).nullable()
+}
+
 export const authSchema = z.object({
   fullName: z.string().optional(),
   email: z.email('Enter a valid email'),
@@ -142,6 +146,9 @@ export const createBusinessSchema = z.object({
     .min(1, 'Enter a slug')
     .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Use lowercase letters, numbers, and single hyphens only'),
   description: z.string().optional(),
+  address: z.string().trim().max(180, 'Keep the address under 180 characters'),
+  latitude: optionalCoordinate('Latitude', -90, 90),
+  longitude: optionalCoordinate('Longitude', -180, 180),
   logoUrl: z.union([z.literal(''), z.url('Enter a valid logo URL')]).optional(),
   earnRate: z.number().min(0, 'Earn rate cannot be negative'),
   taxRate: z.number().min(0, 'Tax rate cannot be negative').max(50, 'Maximum 50% tax rate'),

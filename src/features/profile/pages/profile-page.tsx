@@ -164,7 +164,7 @@ export function ProfilePage() {
               label={t('Location')}
               value={profile.data?.location ?? 'N/A'}
               icon={MapPin}
-              helper={t('Default shop location')}
+              helper={t('Default business location')}
             />
           </div>
 
@@ -302,7 +302,7 @@ export function ProfilePage() {
                   <Input id="phone" placeholder="+1 (555) 000-0000" {...form.register('phone')} />
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="location">{t('Home Shop')}</Label>
+                  <Label htmlFor="location">{t('Home Business')}</Label>
                   <Input id="location" placeholder="e.g., Downtown" {...form.register('location')} />
                 </div>
               </div>

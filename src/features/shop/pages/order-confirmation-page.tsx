@@ -1,4 +1,4 @@
-import { CheckCircle, ShoppingBag } from 'lucide-react'
+import { CheckCircle, MapPin } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
@@ -18,7 +18,7 @@ export function OrderConfirmationPage() {
       <div className="text-center py-20 space-y-6">
         <p className="text-on-surface-variant/60 font-medium">{t('Order not found.')}</p>
         <Button asChild variant="default" className="rounded-full">
-          <Link to="/shop">{t('Continue Shopping')}</Link>
+          <Link to="/shop">{t('Explore businesses')}</Link>
         </Button>
       </div>
     )
@@ -64,14 +64,14 @@ export function OrderConfirmationPage() {
         </div>
 
         <div className="rounded-xl border border-primary/15 bg-primary/5 p-5 text-center text-sm font-medium text-primary">
-          {t('You can review the order below or continue shopping from partner businesses.')}
+          {t('You can review the order below or keep exploring partner businesses.')}
         </div>
 
         <div className="flex gap-4 justify-center">
           <Button asChild variant="default" className="rounded-full">
             <Link to="/shop" className="flex items-center gap-2">
-              <ShoppingBag className="size-4" />
-              {t('Continue Shopping')}
+              <MapPin className="size-4" />
+              {t('Explore businesses')}
             </Link>
           </Button>
           <Button asChild variant="outline" className="rounded-full">

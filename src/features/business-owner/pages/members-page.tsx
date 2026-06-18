@@ -5,6 +5,8 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CompactFilter } from '@/components/ui/compact-filter'
+import { CompactSearch } from '@/components/ui/compact-search'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -17,6 +19,8 @@ import {
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { searchMatches } from '@/lib/search'
+import { getVerificationStatusLabel } from '@/lib/status-labels'
 import { cn, formatPoints, getInitials } from '@/lib/utils'
 import {
   registerCustomerSchema,
@@ -24,6 +28,19 @@ import {
   type RegisterCustomerFormValues,
   type RewardAdjustmentFormValues,
 } from '@/types/forms'
+
+type CustomerStatusFilter = 'all' | 'under_review' | 'approved' | 'missing_document' | 'rejected'
+
+function matchesCustomerStatusFilter(
+  member: { verificationStatus?: 'not_submitted' | 'pending_document' | 'submitted' | 'verified' | 'rejected' },
+  filter: CustomerStatusFilter,
+) {
+  if (filter === 'all') return true
+  if (filter === 'under_review') return member.verificationStatus === 'submitted'
+  if (filter === 'approved') return member.verificationStatus === 'verified'
+  if (filter === 'rejected') return member.verificationStatus === 'rejected'
+  return member.verificationStatus !== 'submitted' && member.verificationStatus !== 'verified' && member.verificationStatus !== 'rejected'
+}
 
 export function MembersPage() {
   const { profile } = useAuth()
@@ -35,6 +52,8 @@ export function MembersPage() {
   const [actionError, setActionError] = useState<string | null>(null)
   const [registerActionError, setRegisterActionError] = useState<string | null>(null)
   const [purchaseAmount, setPurchaseAmount] = useState<string>('')
+  const [memberSearch, setMemberSearch] = useState('')
+  const [customerStatusFilter, setCustomerStatusFilter] = useState<CustomerStatusFilter>('all')
 
   const form = useForm<RewardAdjustmentFormValues>({
     resolver: zodResolver(rewardAdjustmentSchema),
@@ -57,6 +76,42 @@ export function MembersPage() {
     name: 'profileId',
   })
   const selectedMember = members.data?.find((member) => member.id === selectedProfileId) ?? null
+  const memberRows = members.data ?? []
+  const customerStatusFilterOptions = [
+    { value: 'all', label: t('All'), count: memberRows.length },
+    {
+      value: 'under_review',
+      label: t('Under review'),
+      count: memberRows.filter((member) => matchesCustomerStatusFilter(member, 'under_review')).length,
+    },
+    {
+      value: 'approved',
+      label: t('Approved'),
+      count: memberRows.filter((member) => matchesCustomerStatusFilter(member, 'approved')).length,
+    },
+    {
+      value: 'missing_document',
+      label: t('Missing ID'),
+      count: memberRows.filter((member) => matchesCustomerStatusFilter(member, 'missing_document')).length,
+    },
+    {
+      value: 'rejected',
+      label: t('Rejected'),
+      count: memberRows.filter((member) => matchesCustomerStatusFilter(member, 'rejected')).length,
+    },
+  ]
+  const filteredMembers = memberRows.filter(
+    (member) =>
+      matchesCustomerStatusFilter(member, customerStatusFilter) &&
+      searchMatches(memberSearch, [
+        member.fullName,
+        member.email,
+        member.id,
+        member.points,
+        member.verificationStatus,
+        getVerificationStatusLabel(member.verificationStatus),
+      ]),
+  )
   const calculatedPoints =
     purchaseAmount && business?.earnRate
       ? Math.floor(Number.parseFloat(purchaseAmount) * business.earnRate)
@@ -307,11 +362,29 @@ export function MembersPage() {
         </div>
 
         <div className="space-y-8">
-          <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              {t('Customer Base')}
-            </span>
-            <h2 className="font-serif text-3xl text-primary">{t('Your Customers')}</h2>
+          <div className="flex flex-col gap-4 border-b border-outline-variant/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
+                {t('Customer Base')}
+              </span>
+              <h2 className="font-serif text-3xl text-primary">{t('Your Customers')}</h2>
+            </div>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+              <CompactSearch
+                value={memberSearch}
+                onChange={(event) => setMemberSearch(event.target.value)}
+                placeholder={t('Search customers')}
+                aria-label={t('Search customers')}
+                wrapperClassName="w-full sm:w-64"
+              />
+              <CompactFilter
+                value={customerStatusFilter}
+                onChange={(event) => setCustomerStatusFilter(event.target.value as CustomerStatusFilter)}
+                options={customerStatusFilterOptions}
+                aria-label={t('Filter customers by verification status')}
+                wrapperClassName="w-full sm:w-52"
+              />
+            </div>
           </div>
 
           {members.isLoading ? (
@@ -332,7 +405,7 @@ export function MembersPage() {
             </div>
           ) : members.data?.length ? (
             <div className="grid gap-4">
-              {members.data.map((member) => {
+              {filteredMembers.length ? filteredMembers.map((member) => {
                 const selected = member.id === selectedProfileId
 
                 return (
@@ -365,6 +438,19 @@ export function MembersPage() {
                         <Gift className="size-3" />
                         {formatPoints(member.points)} {t('points')}
                       </Badge>
+                      <Badge
+                        variant="accent"
+                        className={cn(
+                          'rounded-full px-4 py-2',
+                          member.verificationStatus === 'verified'
+                            ? 'border-success/25 bg-success/10 text-success'
+                            : member.verificationStatus === 'rejected'
+                              ? 'border-red-200 bg-red-50 text-red-600'
+                              : 'border-warning/25 bg-warning/10 text-warning',
+                        )}
+                      >
+                        {getVerificationStatusLabel(member.verificationStatus)}
+                      </Badge>
                       <Button
                         variant={selected ? 'default' : 'outline'}
                         className={cn(
@@ -379,7 +465,14 @@ export function MembersPage() {
                     </div>
                   </div>
                 )
-              })}
+              }) : (
+                <EmptyState
+                  className="rounded-[2rem]"
+                  icon={<Users className="size-8" />}
+                  title={t('No customers match this search')}
+                  description={t('Try a different search or status filter.')}
+                />
+              )}
             </div>
           ) : (
             <EmptyState

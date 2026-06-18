@@ -52,7 +52,7 @@ export function OrdersPage() {
           description={t('Purchases placed from partner businesses will appear here together with their posted points.')}
           action={
             <Button asChild variant="default" size="lg" className="rounded-full">
-              <Link to="/shop">{t('Start shopping')}</Link>
+              <Link to="/shop">{t('Browse businesses')}</Link>
             </Button>
           }
         />

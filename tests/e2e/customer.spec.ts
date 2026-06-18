@@ -9,7 +9,11 @@ test.describe('customer workflow smoke test', () => {
   test('customer can sign in and open core member pages', async ({ page }) => {
     await signInCustomer(page, e2eAccounts.customer)
 
-    for (const path of ['/shop', '/rewards', '/membership', '/profile', '/cart']) {
+    await page.goto('/shop')
+    await expect(page.locator('body')).toContainText(/Partner Map|Explore Businesses/i)
+    await expect(page).toHaveURL(/\/shop$/)
+
+    for (const path of ['/rewards', '/membership', '/profile', '/cart']) {
       await page.goto(path)
       await expect(page.locator('body')).toContainText('Medellin Rewards')
       await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`))

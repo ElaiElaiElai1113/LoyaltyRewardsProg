@@ -92,11 +92,11 @@ export function LegalPage({ kind }: LegalPageProps) {
   return (
     <main className="min-h-screen bg-[#fffaf4] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-8">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <Link to="/" className="font-serif text-2xl font-bold text-[#21140d]">
             Medellin Rewards
           </Link>
-          <Button asChild variant="outline" className="rounded-full border-[#9c6a22]/35 bg-[#fffdf8]">
+          <Button asChild variant="outline" className="w-full rounded-full border-[#9c6a22]/35 bg-[#fffdf8] sm:w-auto">
             <Link to="/join">{t('Join Rewards Club')}</Link>
           </Button>
         </div>

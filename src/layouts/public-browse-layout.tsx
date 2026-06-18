@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
 
 const navigation = [
+  { to: '/guide', label: 'Guia' },
   { to: '/promotions', label: 'Promotions' },
   { to: '/business', label: 'For Businesses' },
 ]

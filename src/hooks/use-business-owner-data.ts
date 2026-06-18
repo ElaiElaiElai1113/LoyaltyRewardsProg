@@ -299,6 +299,7 @@ export function useBusinessMembers(businessId?: string) {
           fullName: profile.full_name as string,
           email: profile.email as string,
           points: balanceMap.get(profile.id as string) ?? 0,
+          verificationStatus: profile.verification_status as Profile['verificationStatus'],
         }))
     },
     enabled: !!businessId,

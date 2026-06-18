@@ -3,6 +3,7 @@ import {
   Hotel,
   LayoutDashboard,
   LogOut,
+  MonitorPlay,
   Package,
   Settings,
   Sparkles,
@@ -29,6 +30,7 @@ const businessNavigationItems = [
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
   { to: '/business/partners', label: 'Partners', icon: Hotel },
+  { to: '/business/guide', label: 'Guia', icon: MonitorPlay },
   { to: '/business/settings', label: 'Settings', icon: Settings },
 ]
 

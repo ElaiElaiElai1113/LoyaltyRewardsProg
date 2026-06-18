@@ -57,7 +57,7 @@ export function CartPage() {
     <div className="space-y-16 pb-20">
       <div className="space-y-4 max-w-2xl">
         <Badge variant="accent" className="bg-tertiary/20 text-primary">
-          {t('Shopping Cart')}
+          {t('Cart')}
         </Badge>
         <h1 className="font-serif text-5xl tracking-tight text-primary md:text-7xl leading-[1.1]">
           {t('Your Cart')}
@@ -87,7 +87,7 @@ export function CartPage() {
           description={t('Pick products from participating businesses before checking out.')}
           action={
             <Button asChild variant="default" size="lg" className="rounded-full">
-              <Link to="/shop">{t('Start shopping')}</Link>
+              <Link to="/shop">{t('Browse businesses')}</Link>
             </Button>
           }
         />

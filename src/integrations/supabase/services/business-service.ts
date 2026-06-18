@@ -1,6 +1,18 @@
 import type { Business } from '@/types/domain'
 import type { BusinessSettingsFormValues } from '@/types/forms'
-import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
+import { requireSupabase, camelCaseRow, snakeCaseObj, toNullableNumber } from './shared'
+
+function normalizeBusiness(row: Record<string, unknown>): Business {
+  const business = camelCaseRow(row) as unknown as Business
+  return {
+    ...business,
+    address: business.address ?? '',
+    latitude: toNullableNumber(business.latitude),
+    longitude: toNullableNumber(business.longitude),
+    rewardRatePercent: Number(business.rewardRatePercent ?? 20),
+    commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+  }
+}
 
 export const businessService = {
   async getBusinesses(includeInactive = false): Promise<Business[]> {
@@ -17,14 +29,7 @@ export const businessService = {
     const { data, error } = await query
 
     if (error) throw new Error('Failed to load businesses.')
-    return data.map((row) => {
-      const business = camelCaseRow(row) as unknown as Business
-      return {
-        ...business,
-        rewardRatePercent: Number(business.rewardRatePercent ?? 20),
-        commissionRatePercent: Number(business.commissionRatePercent ?? 10),
-      }
-    })
+    return data.map((row) => normalizeBusiness(row as Record<string, unknown>))
   },
 
   async getSingleBusiness(businessId?: string): Promise<Business> {
@@ -47,12 +52,7 @@ export const businessService = {
       throw new Error('No business configured.')
     }
 
-    const business = camelCaseRow(data) as unknown as Business
-    return {
-      ...business,
-      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
-      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
-    }
+    return normalizeBusiness(data as Record<string, unknown>)
   },
 
   async getBusinessById(businessId: string): Promise<Business | null> {
@@ -65,12 +65,7 @@ export const businessService = {
       .single()
 
     if (error || !data) return null
-    const business = camelCaseRow(data) as unknown as Business
-    return {
-      ...business,
-      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
-      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
-    }
+    return normalizeBusiness(data as Record<string, unknown>)
   },
 
   async updateSettings(businessId: string, values: BusinessSettingsFormValues): Promise<Business> {
@@ -96,12 +91,7 @@ export const businessService = {
       details: `Updated earn rate ${values.earnRate} pts/$1, reward rate ${values.rewardRatePercent}%, commission ${values.commissionRatePercent}%, tax rate ${(values.taxRate * 100).toFixed(2)}%.`,
     })
 
-    const business = camelCaseRow(data) as unknown as Business
-    return {
-      ...business,
-      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
-      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
-    }
+    return normalizeBusiness(data as Record<string, unknown>)
   },
 
   async updateOwnerSettings(values: BusinessSettingsFormValues): Promise<Business> {
@@ -118,11 +108,6 @@ export const businessService = {
       throw new Error(error?.message ?? 'Failed to update business settings.')
     }
 
-    const business = camelCaseRow(data as Record<string, unknown>) as unknown as Business
-    return {
-      ...business,
-      rewardRatePercent: Number(business.rewardRatePercent ?? 20),
-      commissionRatePercent: Number(business.commissionRatePercent ?? 10),
-    }
+    return normalizeBusiness(data as Record<string, unknown>)
   },
 }

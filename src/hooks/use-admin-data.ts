@@ -157,7 +157,11 @@ export function useUpdateBusiness() {
       id: string
       patch: Parameters<typeof adminService.updateBusiness>[1]
     }) => adminService.updateBusiness(id, patch),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'businesses'] }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+      void qc.invalidateQueries({ queryKey: adminKeys.businesses })
+      void qc.invalidateQueries({ queryKey: ['businesses'] })
+    },
   })
 }
 

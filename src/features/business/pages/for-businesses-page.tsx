@@ -125,7 +125,7 @@ export function ForBusinessesPage() {
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full">
-              <Link to="/shop">View Member Experience</Link>
+              <Link to="/shop">View Partner Map</Link>
             </Button>
             <Button asChild variant="ghost" size="lg" className="rounded-full">
               <Link to="/business/login">Business Login</Link>

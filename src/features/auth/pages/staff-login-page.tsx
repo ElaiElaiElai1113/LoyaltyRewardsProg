@@ -76,13 +76,13 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--rose-brown)_18%,transparent),transparent_28%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--espresso)_28%,transparent),transparent_32%)]" />
       <div className="mx-auto flex min-h-[calc(100svh-2rem)] max-w-[74rem] flex-col justify-center gap-5">
-        <div className="absolute right-4 top-4 flex items-center gap-2 md:right-8 lg:right-10">
+        <div className="relative z-10 ml-auto flex items-center gap-2 md:absolute md:right-8 md:top-4 lg:right-10">
           <ThemeToggle className="rounded-full border border-[var(--champagne)]/24 bg-[var(--espresso)]/35 text-[var(--champagne)] hover:bg-[var(--espresso)]/55 hover:text-[var(--cream)]" />
           <LanguagePicker className="text-on-surface-variant" />
         </div>
 
         <div className="space-y-2 text-center">
-          <h2 className="font-serif text-4xl tracking-tight text-[var(--foreground)] md:text-5xl">
+          <h2 className="font-serif text-3xl tracking-tight text-[var(--foreground)] sm:text-4xl md:text-5xl">
             {isAdminPortal ? 'Staff Access' : 'Business Access'}
           </h2>
           <p className="text-sm font-semibold text-[var(--muted-foreground)]">

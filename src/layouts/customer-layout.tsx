@@ -24,7 +24,7 @@ const legalLinks = [
 
 const customerNavigation = [
   { to: '/dashboard', label: 'Home' },
-  { to: '/shop', label: 'Shop' },
+  { to: '/shop', label: 'Businesses' },
   { to: '/profile', label: 'Member QR' },
   { to: '/activity', label: 'Activity' },
 ]
@@ -130,7 +130,7 @@ export function CustomerLayout() {
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Shop')}</NavLink>
+                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Partner Map')}</NavLink>
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Member QR')}</NavLink>
                   <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Activity')}</NavLink>
                 </nav>
