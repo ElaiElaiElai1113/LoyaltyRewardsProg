@@ -1,6 +1,5 @@
 import {
   BadgeCheck,
-  Building2,
   ClipboardCheck,
   MapPinned,
   MonitorPlay,
@@ -13,8 +12,10 @@ import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useLanguage, type Language } from '@/lib/language'
 
-const spanishScript = [
+const scriptsByLanguage: Record<Language, Array<{ time: string; title: string; body: string }>> = {
+  es: [
   {
     time: '00:00',
     title: 'Que es Medellin Rewards',
@@ -45,72 +46,207 @@ const spanishScript = [
     body:
       'Empieza con el QR del cliente, despues muestra una venta QR en el portal del negocio y termina con la vista admin para que el cliente vea control, trazabilidad y soporte operativo.',
   },
-]
-
-const englishScript = [
+  ],
+  en: [
   {
+    time: '00:00',
     title: 'What the platform does',
     body:
       'Medellin Rewards connects members, partner businesses, and the operations team. Members use a personal QR, businesses record purchases from that QR, and admins monitor partners, points, and commissions.',
   },
   {
+    time: '00:35',
     title: 'Customer flow',
     body:
       'Customers sign in, complete their profile, show their QR at a partner business, explore participating businesses, and review their points activity.',
   },
   {
+    time: '01:20',
     title: 'Business flow',
     body:
       'Business staff open the portal, scan or enter the customer QR, add the purchase amount, and record the sale. Rewards and commission are calculated automatically.',
   },
   {
+    time: '02:10',
     title: 'Admin flow',
     body:
       'Admins create partner businesses, manage map location fields, review members, verify IDs, publish campaigns, and track commission owed.',
   },
-]
+  {
+    time: '03:00',
+    title: 'How to present it in a demo',
+    body:
+      'Start with the member QR, show a QR sale in the business portal, and close with the admin view so the audience sees control, traceability, and operational support.',
+  },
+  ],
+}
 
-const storyboard = [
-  {
-    icon: QrCode,
-    label: 'Cliente',
-    title: 'QR personal',
-    route: '/profile',
-    caption: 'El cliente muestra su QR para ganar puntos en compras presenciales.',
-    mock: ['Perfil verificado', 'QR de miembro', 'Historial de actividad'],
+const guideContent = {
+  es: {
+    eyebrow: 'Guia interna y para clientes',
+    title: 'Guia de la plataforma',
+    intro:
+      'Un lugar corto y claro para explicar que es Medellin Rewards, como se usa y que debe mostrar el equipo en una demo.',
+    links: {
+      map: 'Ver mapa',
+      business: 'Portal negocio',
+      admin: 'Admin',
+      openView: 'Abrir vista',
+    },
+    videoTitle: 'Video aqui proximamente',
+    videoBody: 'Este bloque se reemplazara por el video oficial de entrenamiento.',
+    chapters: ['Introduccion', 'Demo cliente', 'Demo negocio', 'Demo admin'],
+    scriptEyebrow: 'Guion en espanol',
+    scriptTitle: 'Script base para grabar',
+    notesTitle: 'Notas para presentar',
+    notes: [
+      'Mostrar primero el valor para el cliente: un QR sencillo y una cuenta donde se guarda todo.',
+      'Despues explicar el valor para el negocio: ventas presenciales, puntos automaticos y seguimiento.',
+      'Cerrar con confianza operativa: admin puede verificar IDs, crear aliados y revisar comisiones.',
+      'Cuando exista el video final, reemplazar el bloque superior y dejar este guion como referencia interna.',
+    ],
+    storyboardEyebrow: 'Storyboard con pantallas',
+    storyboardTitle: 'Que screenshots usar en el video',
+    storyboardBadge: 'Version texto primero',
+    storyboard: [
+      {
+        icon: QrCode,
+        label: 'Cliente',
+        title: 'QR personal',
+        route: '/profile',
+        caption: 'El cliente muestra su QR para ganar puntos en compras presenciales.',
+        mock: ['Perfil verificado', 'QR de miembro', 'Historial de actividad'],
+      },
+      {
+        icon: MapPinned,
+        label: 'Descubrimiento',
+        title: 'Mapa de negocios',
+        route: '/shop',
+        caption: 'Los usuarios exploran negocios aliados y eligen donde comprar.',
+        mock: ['Mapa visual', 'Pines de aliados', 'Productos por negocio'],
+      },
+      {
+        icon: ScanLine,
+        label: 'Negocio',
+        title: 'Venta con QR',
+        route: '/business/dashboard',
+        caption: 'El negocio registra compra, puntos y comision desde el portal.',
+        mock: ['Escanear QR', 'Valor de compra', 'Confirmar puntos'],
+      },
+      {
+        icon: ShieldCheck,
+        label: 'Admin',
+        title: 'Operaciones',
+        route: '/admin/portal#members',
+        caption: 'El equipo administra miembros, aliados, verificaciones y comisiones.',
+        mock: ['Miembros', 'Aliados', 'Comisiones'],
+      },
+    ],
+    nextEyebrow: 'Proximo paso',
+    nextTitle: 'Cuando el video este listo',
+    nextBody:
+      'Subir el archivo o link embed en el bloque superior. Este guion puede quedarse como material de apoyo para ventas, onboarding y entrenamiento interno.',
+    badges: ['Espanol primero', 'Video listo despues'],
   },
-  {
-    icon: MapPinned,
-    label: 'Descubrimiento',
-    title: 'Mapa de negocios',
-    route: '/shop',
-    caption: 'Los usuarios exploran negocios aliados y eligen donde comprar.',
-    mock: ['Mapa visual', 'Pines de aliados', 'Productos por negocio'],
+  en: {
+    eyebrow: 'Internal and customer guide',
+    title: 'Platform guide',
+    intro:
+      'A short, clear place to explain what Medellin Rewards is, how it works, and what the team should show in a demo.',
+    links: {
+      map: 'View map',
+      business: 'Business portal',
+      admin: 'Admin',
+      openView: 'Open view',
+    },
+    videoTitle: 'Video coming soon',
+    videoBody: 'This block will be replaced by the official training video.',
+    chapters: ['Introduction', 'Customer demo', 'Business demo', 'Admin demo'],
+    scriptEyebrow: 'English script',
+    scriptTitle: 'Recording script',
+    notesTitle: 'Presentation notes',
+    notes: [
+      'Start with customer value: one simple QR and an account where everything is saved.',
+      'Then explain business value: in-person sales, automatic points, and tracking.',
+      'Close with operational confidence: admins can verify IDs, create partners, and review commissions.',
+      'When the final video exists, replace the top video block and keep this script as internal reference.',
+    ],
+    storyboardEyebrow: 'Screen storyboard',
+    storyboardTitle: 'Which screenshots to use in the video',
+    storyboardBadge: 'Text-first version',
+    storyboard: [
+      {
+        icon: QrCode,
+        label: 'Customer',
+        title: 'Personal QR',
+        route: '/profile',
+        caption: 'The customer shows their QR to earn points from in-person purchases.',
+        mock: ['Verified profile', 'Member QR', 'Activity history'],
+      },
+      {
+        icon: MapPinned,
+        label: 'Discovery',
+        title: 'Business map',
+        route: '/shop',
+        caption: 'Users explore partner businesses and choose where to shop.',
+        mock: ['Visual map', 'Partner pins', 'Business products'],
+      },
+      {
+        icon: ScanLine,
+        label: 'Business',
+        title: 'QR sale',
+        route: '/business/dashboard',
+        caption: 'The business records the purchase, points, and commission from the portal.',
+        mock: ['Scan QR', 'Purchase value', 'Confirm points'],
+      },
+      {
+        icon: ShieldCheck,
+        label: 'Admin',
+        title: 'Operations',
+        route: '/admin/portal#members',
+        caption: 'The team manages members, partners, verifications, and commissions.',
+        mock: ['Members', 'Partners', 'Commissions'],
+      },
+    ],
+    nextEyebrow: 'Next step',
+    nextTitle: 'When the video is ready',
+    nextBody:
+      'Upload the file or embed link in the top block. This script can remain as support material for sales, onboarding, and internal training.',
+    badges: ['English version', 'Video ready later'],
   },
-  {
-    icon: ScanLine,
-    label: 'Negocio',
-    title: 'Venta con QR',
-    route: '/business/dashboard',
-    caption: 'El negocio registra compra, puntos y comision desde el portal.',
-    mock: ['Escanear QR', 'Valor de compra', 'Confirmar puntos'],
-  },
-  {
-    icon: ShieldCheck,
-    label: 'Admin',
-    title: 'Operaciones',
-    route: '/admin/portal#members',
-    caption: 'El equipo administra miembros, aliados, verificaciones y comisiones.',
-    mock: ['Miembros', 'Aliados', 'Comisiones'],
-  },
-]
-
-const teamChecklist = [
-  'Mostrar primero el valor para el cliente: un QR sencillo y una cuenta donde se guarda todo.',
-  'Despues explicar el valor para el negocio: ventas presenciales, puntos automaticos y seguimiento.',
-  'Cerrar con confianza operativa: admin puede verificar IDs, crear aliados y revisar comisiones.',
-  'Cuando exista el video final, reemplazar el bloque superior y dejar este guion como referencia interna.',
-]
+} satisfies Record<Language, {
+  eyebrow: string
+  title: string
+  intro: string
+  links: {
+    map: string
+    business: string
+    admin: string
+    openView: string
+  }
+  videoTitle: string
+  videoBody: string
+  chapters: string[]
+  scriptEyebrow: string
+  scriptTitle: string
+  notesTitle: string
+  notes: string[]
+  storyboardEyebrow: string
+  storyboardTitle: string
+  storyboardBadge: string
+  storyboard: Array<{
+    icon: typeof QrCode
+    label: string
+    title: string
+    route: string
+    caption: string
+    mock: string[]
+  }>
+  nextEyebrow: string
+  nextTitle: string
+  nextBody: string
+  badges: string[]
+}>
 
 function ScreenshotMockup({ items }: { items: string[] }) {
   return (
@@ -139,38 +275,42 @@ function ScreenshotMockup({ items }: { items: string[] }) {
 }
 
 export function PlatformGuidePage() {
+  const { language } = useLanguage()
+  const content = guideContent[language]
+  const script = scriptsByLanguage[language]
+
   return (
     <div className="mx-auto max-w-7xl space-y-12 pb-10">
       <section className="grid gap-8 rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-6 shadow-card lg:grid-cols-[minmax(0,1fr)_420px] lg:p-8">
         <div className="space-y-6">
           <Badge variant="accent" className="w-fit rounded-full border-primary-container/25 bg-primary-container/12 text-primary">
-            Guia interna y para clientes
+            {content.eyebrow}
           </Badge>
           <div className="space-y-4">
             <h1 className="font-serif text-5xl tracking-tight text-primary sm:text-6xl">
-              Guia de la plataforma
+              {content.title}
             </h1>
             <p className="max-w-3xl text-lg leading-8 text-on-surface-variant/85">
-              Un lugar corto y claro para explicar que es Medellin Rewards, como se usa y que debe mostrar el equipo en una demo. Primero esta en espanol para el equipo de Colombia; despues queda el resumen en ingles.
+              {content.intro}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild className="rounded-full">
               <Link to="/shop">
                 <MapPinned className="size-4" />
-                Ver mapa
+                {content.links.map}
               </Link>
             </Button>
             <Button asChild variant="outline" className="rounded-full">
               <Link to="/business/dashboard">
                 <ScanLine className="size-4" />
-                Portal negocio
+                {content.links.business}
               </Link>
             </Button>
             <Button asChild variant="outline" className="rounded-full">
               <Link to="/admin/portal#members">
                 <ShieldCheck className="size-4" />
-                Admin
+                {content.links.admin}
               </Link>
             </Button>
           </div>
@@ -180,14 +320,14 @@ export function PlatformGuidePage() {
           <div className="aspect-video rounded-t-[2rem] bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.24),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.14),rgba(0,0,0,0.22))] p-6">
             <div className="flex h-full flex-col items-center justify-center rounded-[1.5rem] border border-white/20 bg-black/18 text-center">
               <MonitorPlay className="size-14 text-primary-foreground" />
-              <p className="mt-4 font-serif text-3xl">Video aqui proximamente</p>
+              <p className="mt-4 font-serif text-3xl">{content.videoTitle}</p>
               <p className="mt-2 max-w-xs text-sm leading-6 text-primary-foreground/80">
-                Este bloque se reemplazara por el video oficial de entrenamiento.
+                {content.videoBody}
               </p>
             </div>
           </div>
           <div className="space-y-3 p-5">
-            {['Introduccion', 'Demo cliente', 'Demo negocio', 'Demo admin'].map((item, index) => (
+            {content.chapters.map((item, index) => (
               <div key={item} className="flex items-center justify-between rounded-2xl bg-white/10 px-4 py-3 text-sm">
                 <span>{item}</span>
                 <span className="font-mono text-primary-foreground/80">0{index}:00</span>
@@ -205,14 +345,14 @@ export function PlatformGuidePage() {
             </div>
             <div>
               <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-                Guion en espanol
+                {content.scriptEyebrow}
               </p>
-              <h2 className="mt-2 font-serif text-3xl text-primary">Script base para grabar</h2>
+              <h2 className="mt-2 font-serif text-3xl text-primary">{content.scriptTitle}</h2>
             </div>
           </div>
 
           <div className="mt-8 space-y-5">
-            {spanishScript.map((step) => (
+            {script.map((step) => (
               <article key={step.title} className="grid gap-4 rounded-2xl border border-outline-variant/16 bg-surface-low p-5 md:grid-cols-[5rem_minmax(0,1fr)]">
                 <span className="font-mono text-sm font-bold text-primary-container">{step.time}</span>
                 <div>
@@ -227,10 +367,10 @@ export function PlatformGuidePage() {
         <aside className="rounded-[2rem] border border-secondary-container/25 bg-secondary-container/12 p-6">
           <div className="flex items-center gap-3">
             <Sparkles className="size-5 text-secondary" />
-            <h2 className="font-serif text-2xl text-primary">Notas para presentar</h2>
+            <h2 className="font-serif text-2xl text-primary">{content.notesTitle}</h2>
           </div>
           <div className="mt-6 space-y-4">
-            {teamChecklist.map((item) => (
+            {content.notes.map((item) => (
               <div key={item} className="flex gap-3">
                 <BadgeCheck className="mt-1 size-4 shrink-0 text-secondary" />
                 <p className="text-sm leading-6 text-on-surface-variant/85">{item}</p>
@@ -244,17 +384,17 @@ export function PlatformGuidePage() {
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-              Storyboard con pantallas
+              {content.storyboardEyebrow}
             </p>
-            <h2 className="mt-2 font-serif text-3xl text-primary">Que screenshots usar en el video</h2>
+            <h2 className="mt-2 font-serif text-3xl text-primary">{content.storyboardTitle}</h2>
           </div>
           <Badge variant="outline" className="w-fit rounded-full">
-            Version texto primero
+            {content.storyboardBadge}
           </Badge>
         </div>
 
         <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-          {storyboard.map((screen) => (
+          {content.storyboard.map((screen) => (
             <article key={screen.title} className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-5 shadow-sm">
               <div className="flex items-start justify-between gap-3">
                 <div>
@@ -268,31 +408,8 @@ export function PlatformGuidePage() {
               <p className="mt-3 text-sm leading-6 text-on-surface-variant/85">{screen.caption}</p>
               <ScreenshotMockup items={screen.mock} />
               <Button asChild variant="ghost" className="mt-4 w-full rounded-full">
-                <Link to={screen.route}>Abrir vista</Link>
+                <Link to={screen.route}>{content.links.openView}</Link>
               </Button>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-[2rem] border border-outline-variant/16 bg-surface-low p-6 lg:p-8">
-        <div className="flex items-start gap-4">
-          <div className="flex size-12 items-center justify-center rounded-2xl bg-[var(--card)] text-primary">
-            <Building2 className="size-5" />
-          </div>
-          <div>
-            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-              English version
-            </p>
-            <h2 className="mt-2 font-serif text-3xl text-primary">Platform guide summary</h2>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {englishScript.map((step) => (
-            <article key={step.title} className="rounded-2xl border border-outline-variant/16 bg-[var(--card)] p-5">
-              <h3 className="font-serif text-2xl text-primary">{step.title}</h3>
-              <p className="mt-2 text-sm leading-7 text-on-surface-variant/85">{step.body}</p>
             </article>
           ))}
         </div>
@@ -302,20 +419,19 @@ export function PlatformGuidePage() {
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
           <div>
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-              Proximo paso
+              {content.nextEyebrow}
             </p>
-            <h2 className="mt-2 font-serif text-3xl text-primary">Cuando el video este listo</h2>
+            <h2 className="mt-2 font-serif text-3xl text-primary">{content.nextTitle}</h2>
             <p className="mt-3 text-sm leading-7 text-on-surface-variant/85">
-              Subir el archivo o link embed en el bloque superior. Este guion puede quedarse como material de apoyo para ventas, onboarding y entrenamiento interno.
+              {content.nextBody}
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
-            <Badge variant="outline" className="rounded-full px-4 py-2">
-              Espanol primero
-            </Badge>
-            <Badge variant="outline" className="rounded-full px-4 py-2">
-              Video ready later
-            </Badge>
+            {content.badges.map((badge) => (
+              <Badge key={badge} variant="outline" className="rounded-full px-4 py-2">
+                {badge}
+              </Badge>
+            ))}
           </div>
         </div>
       </section>
