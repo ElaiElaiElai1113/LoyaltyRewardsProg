@@ -41,6 +41,7 @@ const spanishTranslations: Record<string, string> = {
     'Gana puntos, canjea recompensas y mantente conectado con negocios aliados.',
   'Business Overview': 'Resumen del negocio',
   'Platform Operations': 'Operaciones de plataforma',
+  Guia: 'Guia',
   'Member Dashboard': 'Panel de miembro',
   'Track your points, available rewards, and activity across partner businesses.':
     'Consulta tus puntos, recompensas disponibles y actividad en negocios aliados.',
@@ -88,6 +89,77 @@ const spanishTranslations: Record<string, string> = {
   'Business:': 'Negocio:',
   'All Businesses': 'Todos los negocios',
   'Partner Businesses': 'Negocios aliados',
+  'Partner Map': 'Mapa de aliados',
+  'Find partner businesses around Medellin and open their products from the map.':
+    'Encuentra negocios aliados en Medellin y abre sus productos desde el mapa.',
+  'On Map': 'En el mapa',
+  Pinned: 'Fijados',
+  Exact: 'Exacto',
+  Listed: 'Listado',
+  Preview: 'Vista previa',
+  'Preparing your partner map.': 'Preparando tu mapa de aliados.',
+  'No partner businesses yet': 'Aun no hay negocios aliados',
+  'Partner businesses will appear here when they are available.':
+    'Los negocios aliados apareceran aqui cuando esten disponibles.',
+  Medellin: 'Medellin',
+  'Open business': 'Abrir negocio',
+  'Business Directory': 'Directorio de negocios',
+  'Partners without coordinates are shown with preview pins until exact locations are added.':
+    'Los aliados sin coordenadas se muestran con pines de vista previa hasta agregar ubicaciones exactas.',
+  'Partner Business': 'Negocio aliado',
+  'Earn Rate': 'Tasa de ganancia',
+  'Map Status': 'Estado en el mapa',
+  'Selected item': 'Articulo seleccionado',
+  'Available Products': 'Productos disponibles',
+  Choose: 'Elegir',
+  'Products from this partner will appear here when they are available.':
+    'Los productos de este aliado apareceran aqui cuando esten disponibles.',
+  'Explore businesses': 'Explorar negocios',
+  'You can review the order below or keep exploring partner businesses.':
+    'Puedes revisar el pedido abajo o seguir explorando negocios aliados.',
+  'Default business location': 'Ubicacion de negocio predeterminada',
+  'Home Business': 'Negocio principal',
+  Cart: 'Carrito',
+  'Activate your member QR so staff can record purchases.':
+    'Activa tu QR de miembro para que el personal pueda registrar compras.',
+  'Checkout blocked': 'Pago bloqueado',
+  'Every recorded QR purchase, point award, and account update in one clear timeline.':
+    'Cada compra con QR, punto otorgado y actualizacion de cuenta en una linea de tiempo clara.',
+  'If partner staff need to verify your member account during checkout, they can scan this QR.':
+    'Si el personal aliado necesita verificar tu cuenta durante el pago, puede escanear este QR.',
+  'Member QR': 'QR de miembro',
+  'Needs ID check': 'Necesita verificacion de ID',
+  'No real payment will be processed. This purchase creates the order and posts the matching points to your account immediately.':
+    'No se procesara ningun pago real. Esta compra crea el pedido y publica los puntos correspondientes de inmediato.',
+  'Partner staff scan your QR to record purchases and award points.':
+    'El personal aliado escanea tu QR para registrar compras y otorgar puntos.',
+  'Place order request': 'Enviar pedido',
+  'Posted to your account': 'Publicado en tu cuenta',
+  'Purchases placed from partner businesses will appear here together with their posted points.':
+    'Las compras realizadas en negocios aliados apareceran aqui junto con sus puntos publicados.',
+  'Review recorded visits, points earned, and account activity.':
+    'Revisa visitas registradas, puntos ganados y actividad de cuenta.',
+  'Scan customer member QR codes, record purchases, award points, and track commission from one workspace.':
+    'Escanea QR de miembros, registra compras, otorga puntos y rastrea comisiones desde un solo espacio.',
+  'Show member QR': 'Mostrar QR de miembro',
+  'Show your member QR at partner businesses, earn points from recorded purchases, and track each visit in one place.':
+    'Muestra tu QR en negocios aliados, gana puntos por compras registradas y consulta cada visita en un solo lugar.',
+  'Use one member QR across partner businesses and keep every recorded purchase connected to your account.':
+    'Usa un solo QR de miembro en negocios aliados y conserva cada compra registrada conectada a tu cuenta.',
+  'Verify your ID first to activate the QR staff will scan at checkout.':
+    'Verifica tu ID primero para activar el QR que el personal escaneara en el pago.',
+  'View cart': 'Ver carrito',
+  'View your past purchases and the points posted from each confirmed order.':
+    'Revisa tus compras anteriores y los puntos publicados por cada pedido confirmado.',
+  'Your points will post as soon as the purchase is confirmed.':
+    'Tus puntos se publicaran cuando la compra sea confirmada.',
+  'Your purchase has been made successfully and the order is now confirmed.':
+    'Tu compra se realizo correctamente y el pedido esta confirmado.',
+  'estimated after partner staff scan your QR at purchase':
+    'estimados despues de que el personal aliado escanee tu QR en la compra',
+  'points pending': 'puntos pendientes',
+  'points posted': 'puntos publicados',
+  'will post after checkout': 'se publicaran despues del pago',
   'Shop Businesses': 'Comprar en negocios',
   'Browse partner businesses, complete purchases, and earn points automatically.':
     'Explora negocios aliados, completa compras y gana puntos automáticamente.',
@@ -1064,6 +1136,46 @@ const spanishTranslations: Record<string, string> = {
   'Failed to award points.': 'No se pudieron otorgar puntos.',
   Customer: 'Cliente',
   'Search by customer ID': 'Buscar por ID de cliente',
+  'Search members': 'Buscar miembros',
+  'Search customers': 'Buscar clientes',
+  'Search products': 'Buscar productos',
+  'Search rewards': 'Buscar recompensas',
+  'Search campaigns': 'Buscar campanas',
+  'Search partners': 'Buscar aliados',
+  'Search contacts': 'Buscar contactos',
+  'Search leads': 'Buscar prospectos',
+  'Search referrals': 'Buscar referidos',
+  'Search credits': 'Buscar creditos',
+  'Filter members by verification status': 'Filtrar miembros por estado de verificacion',
+  'Filter customers by verification status': 'Filtrar clientes por estado de verificacion',
+  'Filter partners by status': 'Filtrar aliados por estado',
+  Approved: 'Aprobado',
+  Rejected: 'Rechazado',
+  'Missing ID': 'Falta ID',
+  'Active only': 'Solo activos',
+  'Inactive only': 'Solo inactivos',
+  'Missing coordinates': 'Faltan coordenadas',
+  'Missing owner': 'Sin propietario',
+  'No customers match this search': 'Ningun cliente coincide con esta busqueda',
+  'No products match this search': 'Ningun producto coincide con esta busqueda',
+  'No rewards match this search': 'Ninguna recompensa coincide con esta busqueda',
+  'No campaigns match this search': 'Ninguna campana coincide con esta busqueda',
+  'No partners match this search': 'Ningun aliado coincide con esta busqueda',
+  'No contacts match this search': 'Ningun contacto coincide con esta busqueda',
+  'No leads match this search': 'Ningun prospecto coincide con esta busqueda',
+  'No referrals match this search': 'Ningun referido coincide con esta busqueda',
+  'No credits match this search': 'Ningun credito coincide con esta busqueda',
+  'Try a name, email, or customer ID.': 'Prueba con nombre, email o ID de cliente.',
+  'Try a product title, category, or highlight.': 'Prueba con titulo, categoria o etiqueta.',
+  'Try a reward title, category, or highlight.': 'Prueba con recompensa, categoria o etiqueta.',
+  'Try a campaign title, badge, or audience.': 'Prueba con campana, etiqueta o audiencia.',
+  'Try a partner name, owner, address, or slug.': 'Prueba con aliado, propietario, direccion o slug.',
+  'Try a contact name, code, email, or note.': 'Prueba con contacto, codigo, email o nota.',
+  'Try a name, email, city, or social handle.': 'Prueba con nombre, email, ciudad o usuario social.',
+  'Try a customer, email, source, code, or status.': 'Prueba con cliente, email, fuente, codigo o estado.',
+  'Try a referral source, credit type, or details.': 'Prueba con fuente, tipo de credito o detalles.',
+  'Try a different search or status filter.': 'Prueba otra busqueda o filtro de estado.',
+  'Try a different search or partner filter.': 'Prueba otra busqueda o filtro de aliado.',
   'No customer selected': 'Ningún cliente seleccionado',
   'Choose a customer to preview their current balance before awarding XP.':
     'Elige un cliente para ver su saldo actual antes de otorgar XP.',

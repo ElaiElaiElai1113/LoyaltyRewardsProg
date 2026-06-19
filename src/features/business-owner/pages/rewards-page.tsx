@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CompactSearch } from '@/components/ui/compact-search'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
@@ -16,6 +17,7 @@ import { useCreateReward, useDeleteReward, useUpdateReward } from '@/hooks/use-a
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { searchMatches } from '@/lib/search'
 import { formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
 import { rewardDraftSchema, type RewardDraftFormValues } from '@/types/forms'
@@ -30,6 +32,7 @@ export function RewardsPage() {
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [rewardSearch, setRewardSearch] = useState('')
 
   const form = useForm<RewardDraftFormValues>({
     resolver: zodResolver(rewardDraftSchema),
@@ -90,6 +93,16 @@ export function RewardsPage() {
       setError(err instanceof Error ? err.message : t('Action failed.'))
     }
   })
+  const filteredRewards = rewards.filter((reward) =>
+    searchMatches(rewardSearch, [
+      reward.title,
+      reward.description,
+      reward.category,
+      reward.highlight,
+      reward.pointsCost,
+      reward.inventory,
+    ]),
+  )
 
   return (
     <div className="space-y-16">
@@ -101,10 +114,18 @@ export function RewardsPage() {
             {t('Create and manage rewards customers can redeem with points.')}
           </p>
         </div>
-        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate}>
-          <Gift className="size-5 mr-2" />
-          {t('Add Reward')}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end">
+          <CompactSearch
+            value={rewardSearch}
+            onChange={(event) => setRewardSearch(event.target.value)}
+            placeholder={t('Search rewards')}
+            aria-label={t('Search rewards')}
+          />
+          <Button className="h-14 rounded-full px-8 font-semibold" onClick={handleOpenForCreate}>
+            <Gift className="size-5 mr-2" />
+            {t('Add Reward')}
+          </Button>
+        </div>
       </div>
 
       {/* Add/Edit Reward Dialog */}
@@ -229,8 +250,15 @@ export function RewardsPage() {
                 </Button>
               }
             />
+          ) : filteredRewards.length === 0 ? (
+            <EmptyState
+              className="col-span-full rounded-[2rem]"
+              icon={<Gift className="size-8" />}
+              title={t('No rewards match this search')}
+              description={t('Try a reward title, category, or highlight.')}
+            />
           ) : (
-          rewards.map((reward) => (
+          filteredRewards.map((reward) => (
             <div
               key={reward.id}
               className="group relative overflow-hidden rounded-[2.5rem] border border-[var(--border)] bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm"

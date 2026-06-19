@@ -7,6 +7,7 @@ import {
   LogOut,
   Mail,
   Megaphone,
+  MonitorPlay,
   ReceiptText,
   ShieldCheck,
   Sparkles,
@@ -27,6 +28,7 @@ import { getInitials } from '@/lib/utils'
 const navigation = [
   { to: '/admin/portal', label: 'Operations', icon: LayoutDashboard },
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: CreditCard },
+  { to: '/admin/guide', label: 'Guia', icon: MonitorPlay },
 ]
 
 const adminPortalSections = [
@@ -66,6 +68,14 @@ export function AdminLayout() {
         {isAdminPortal ? (
           <nav className="mt-7 flex-1 min-h-0 overflow-y-auto pr-1">
             <div className="grid content-start gap-1">
+              <NavLink
+                title="Guia"
+                to="/admin/guide"
+                className="group mb-3 flex items-center justify-center rounded-[0.9rem] px-3 py-2 text-sm font-semibold text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)] xl:justify-start"
+              >
+                <MonitorPlay className="size-5 shrink-0 opacity-80 group-hover:opacity-100 xl:mr-3" />
+                <span className="hidden truncate xl:inline">Guia</span>
+              </NavLink>
               {adminPortalSections.map((item) => (
                 <a
                   key={item.value}

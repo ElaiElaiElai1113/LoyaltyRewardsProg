@@ -621,6 +621,101 @@ runTest('client landing page is available at /landing-page', () => {
   assert.match(router, /element: <LandingPage \/>/)
 })
 
+runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const guidePage = readFileSync('src/features/platform-guide/pages/platform-guide-page.tsx', 'utf8')
+  const publicLayout = readFileSync('src/layouts/public-browse-layout.tsx', 'utf8')
+  const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
+  const businessLayout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
+  const businessPolicy = readFileSync('src/lib/business-role-policy.ts', 'utf8')
+  const packageJson = readFileSync('package.json', 'utf8')
+  const guideConfig = readFileSync('playwright.guide.config.ts', 'utf8')
+  const localConfig = readFileSync('playwright.local.config.ts', 'utf8')
+  const guideRunner = readFileSync('scripts/run-guide-playwright.mjs', 'utf8')
+  const localRunner = readFileSync('scripts/run-playwright-local.mjs', 'utf8')
+  const guideSpec = readFileSync('tests/e2e/platform-guide.spec.ts', 'utf8')
+  const guideAuthSpec = readFileSync('tests/e2e/platform-guide-auth.spec.ts', 'utf8')
+
+  assert.match(router, /path: '\/guide', element: <PlatformGuidePage \/>/)
+  assert.match(router, /path: '\/admin\/guide', element: <PlatformGuidePage \/>/)
+  assert.match(router, /path: '\/business\/guide', element: <PlatformGuidePage \/>/)
+
+  assert.match(guidePage, /Guia de la plataforma/)
+  assert.match(guidePage, /Video aqui proximamente/)
+  assert.match(guidePage, /Guion en espanol/)
+  assert.match(guidePage, /Script base para grabar/)
+  assert.match(guidePage, /Storyboard con pantallas/)
+  assert.match(guidePage, /English version/)
+  assert.match(guidePage, /scriptsByLanguage/)
+  assert.match(guidePage, /guideContent/)
+  assert.match(guidePage, /useLanguage/)
+  assert.match(guidePage, /storyboard/)
+  assert.match(guidePage, /\/shop/)
+  assert.match(guidePage, /\/business\/dashboard/)
+  assert.match(guidePage, /\/admin\/portal#members/)
+
+  assert.match(publicLayout, /to: '\/guide', label: 'Guia'/)
+  assert.match(adminLayout, /to: '\/admin\/guide', label: 'Guia'/)
+  assert.match(adminLayout, /to="\/admin\/guide"/)
+  assert.match(businessLayout, /to: '\/business\/guide', label: 'Guia'/)
+  assert.match(businessPolicy, /'\/business\/guide'/)
+  assert.match(packageJson, /"test:guide": "node scripts\/run-guide-playwright\.mjs"/)
+  assert.match(packageJson, /"test:playwright": "node scripts\/run-playwright-local\.mjs"/)
+  assert.match(guideConfig, /defineConfig/)
+  assert.match(guideConfig, /Desktop Chrome/)
+  assert.doesNotMatch(guideConfig, /webServer/)
+  assert.match(localConfig, /defineConfig/)
+  assert.match(localConfig, /Desktop Chrome/)
+  assert.doesNotMatch(localConfig, /webServer/)
+  assert.match(guideRunner, /createServer/)
+  assert.match(guideRunner, /platform-guide\.spec\.ts/)
+  assert.match(guideRunner, /platform-guide-auth\.spec\.ts/)
+  assert.match(guideRunner, /E2E_AUTH_ENABLED/)
+  assert.match(guideRunner, /server\.close/)
+  assert.match(localRunner, /createServer/)
+  assert.match(localRunner, /process\.argv\.slice\(2\)/)
+  assert.match(localRunner, /playwright\.local\.config\.ts/)
+  assert.match(localRunner, /server\.close/)
+  assert.match(guideSpec, /public guide explains the platform with Spanish-first video-ready content/)
+  assert.match(guideSpec, /public guide follows the English language preference without Spanish guide copy/)
+  assert.match(guideSpec, /medellinrewards-language/)
+  assert.match(guideAuthSpec, /authenticated platform guide workflow/)
+  assert.match(guideAuthSpec, /workflowAuthEnabled/)
+})
+
+runTest('responsive audit covers mobile access across public and protected routes', () => {
+  const responsiveAudit = readFileSync('scripts/audit-responsive.mjs', 'utf8')
+  const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> }
+
+  assert.equal(packageJson.scripts?.['test:responsive'], 'node scripts/audit-responsive.mjs')
+  assert.match(responsiveAudit, /small-mobile/)
+  assert.match(responsiveAudit, /width:\s*360/)
+  assert.match(responsiveAudit, /clippedInteractiveElements/)
+  assert.match(responsiveAudit, /process\.exitCode = 1/)
+
+  for (const route of [
+    '/signin',
+    '/reset-password',
+    '/business/login',
+    '/admin',
+    '/promo/register',
+    '/ambassadors',
+    '/privacy',
+    '/reward-terms',
+    '/verification-policy',
+    '/cost-calculator',
+    '/shop',
+    '/dashboard',
+    '/wallet/gift-cards/demo-card',
+    '/admin/portal',
+    '/business/member-sale/demo-token',
+    '/business/members',
+    '/business/settings',
+  ]) {
+    assert.match(responsiveAudit, new RegExp(route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  }
+})
+
 runTest('member auth pages use the approved black and gold portal shell', () => {
   const authShell = readFileSync('src/features/auth/components/auth-portal-shell.tsx', 'utf8')
   const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
@@ -953,15 +1048,17 @@ runTest('customer mobile bottom nav exposes core routes and verification status'
   const bottomNav = readFileSync('src/components/customer-bottom-nav.tsx', 'utf8')
   const customerLayout = readFileSync('src/layouts/customer-layout.tsx', 'utf8')
 
-  for (const route of ['/dashboard', '/rewards', '/shop', '/activity', '/profile']) {
+  for (const route of ['/dashboard', '/shop', '/activity', '/profile']) {
     assert.match(bottomNav, new RegExp(`to: '${route}'`))
   }
 
-  for (const label of ['Home', 'Rewards', 'Shop', 'Activity', 'Profile']) {
+  for (const label of ['Home', 'Businesses', 'QR', 'Activity']) {
     assert.match(bottomNav, new RegExp(`label: '${label}'`))
   }
 
-  assert.match(bottomNav, /grid-cols-5/)
+  assert.match(bottomNav, /grid-cols-4/)
+  assert.doesNotMatch(bottomNav, /label: 'Shop'/)
+  assert.doesNotMatch(bottomNav, /ShoppingCart/)
   assert.match(bottomNav, /md:hidden/)
   assert.match(bottomNav, /verificationStatus\?: Profile\['verificationStatus'\] \| null/)
   assert.match(bottomNav, /\/profile#id-verification/)
@@ -970,10 +1067,34 @@ runTest('customer mobile bottom nav exposes core routes and verification status'
   assert.match(bottomNav, /Needs resubmission/)
   assert.match(bottomNav, /Verified/)
   assert.match(bottomNav, /pathname\.startsWith\(prefix\)/)
-  assert.match(bottomNav, /'\/redeem'/)
 
   assert.match(customerLayout, /<CustomerBottomNav verificationStatus=\{profile\?\.verificationStatus\} \/>/)
   assert.match(customerLayout, /pb-32/)
+})
+
+runTest('customer shop route is a partner business map', () => {
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const shopPage = readFileSync('src/features/shop/pages/shop-page.tsx', 'utf8')
+  const customerLayout = readFileSync('src/layouts/customer-layout.tsx', 'utf8')
+
+  assert.match(router, /path: '\/shop'[\s\S]*<ShopPage \/>/)
+  assert.match(shopPage, /Partner Map/)
+  assert.match(shopPage, /Explore Businesses/)
+  assert.match(shopPage, /MEDELLIN_BOUNDS/)
+  assert.match(shopPage, /PREVIEW_PIN_POSITIONS/)
+  assert.match(shopPage, /getMapPosition/)
+  assert.match(shopPage, /getPreviewMapPosition/)
+  assert.match(shopPage, /partnerBusinesses\.map/)
+  assert.match(shopPage, /Preview/)
+  assert.match(shopPage, /Partners without coordinates are shown with preview pins/)
+  assert.match(shopPage, /DialogContent/)
+  assert.match(shopPage, /useAddToCart/)
+  assert.match(shopPage, /useLoginGate/)
+  assert.match(shopPage, /selectedQuantity/)
+  assert.doesNotMatch(shopPage, /BusinessFilter/)
+  assert.doesNotMatch(shopPage, /Curated Social Catalog/)
+  assert.match(customerLayout, /label: 'Businesses'/)
+  assert.doesNotMatch(customerLayout, /label: 'Shop'/)
 })
 
 runTest('customer dashboard exposes a guided onboarding checklist', () => {
@@ -982,18 +1103,16 @@ runTest('customer dashboard exposes a guided onboarding checklist', () => {
 
   assert.match(dashboardPage, /CustomerOnboardingChecklist/)
   assert.match(dashboardPage, /verificationStatus=\{verificationStatus\}/)
-  assert.match(dashboardPage, /isMembershipActive=\{isMembershipActive\}/)
   assert.match(dashboardPage, /points=\{points\}/)
   assert.match(dashboardPage, /recentActivity=\{recentActivity\}/)
 
-  for (const label of ['Account created', 'Verify ID', 'Activate membership', 'Unlock member QR', 'Earn first reward']) {
+  for (const label of ['Account created', 'Verify ID', 'Unlock member QR', 'Make first QR sale', 'Review activity']) {
     assert.match(checklist, new RegExp(label))
   }
 
   assert.match(checklist, /\/profile#id-verification/)
-  assert.match(checklist, /\/membership/)
   assert.match(checklist, /\/profile/)
-  assert.match(checklist, /\/shop/)
+  assert.match(checklist, /\/activity/)
   assert.match(checklist, /Under review/)
   assert.match(checklist, /Needs resubmission/)
 })
@@ -1004,21 +1123,16 @@ runTest('customer dashboard exposes a guided wallet summary', () => {
 
   assert.match(dashboardPage, /CustomerWalletSummary/)
   assert.match(dashboardPage, /verificationStatus=\{verificationStatus\}/)
-  assert.match(dashboardPage, /isMembershipActive=\{isMembershipActive\}/)
   assert.match(dashboardPage, /points=\{points\}/)
-  assert.match(dashboardPage, /availableCredits=\{balance\?\.availableCredits \?\? 0\}/)
-  assert.match(dashboardPage, /activeGiftCardCount=\{activeGiftCardCount\}/)
 
-  for (const label of ['Verify ID', 'Activate membership', 'Redeem rewards', 'Browse businesses']) {
+  for (const label of ['Verify ID', 'Show member QR', 'Total Points', 'QR status', 'Account status']) {
     assert.match(walletSummary, new RegExp(label))
   }
 
   assert.match(walletSummary, /\/profile#id-verification/)
-  assert.match(walletSummary, /\/membership/)
-  assert.match(walletSummary, /\/rewards/)
-  assert.match(walletSummary, /\/shop/)
+  assert.match(walletSummary, /\/profile/)
   assert.match(walletSummary, /Reward wallet/)
-  assert.match(walletSummary, /Ready to redeem/)
+  assert.match(walletSummary, /Ready to earn/)
   assert.match(walletSummary, /Start earning/)
 
   assert.doesNotMatch(dashboardPage, /<MetricCard[\s\S]*Reward Credits/)
@@ -1105,7 +1219,7 @@ runTest('checkout and order pages explain purchase feedback and next actions', (
   const ordersPage = readFileSync('src/features/shop/pages/orders-page.tsx', 'utf8')
 
   assert.match(cartPage, /Pick products from participating businesses before checking out\./)
-  assert.match(cartPage, /Start shopping/)
+  assert.match(cartPage, /Browse businesses/)
 
   for (const label of [
     'Checkout summary',
@@ -1120,11 +1234,10 @@ runTest('checkout and order pages explain purchase feedback and next actions', (
 
   assert.match(confirmationPage, /to="\/orders"/)
   assert.match(confirmationPage, /to="\/shop"/)
-  assert.match(confirmationPage, /to="\/rewards"/)
-  assert.match(confirmationPage, /View rewards/)
+  assert.match(confirmationPage, /Explore businesses/)
 
-  assert.match(ordersPage, /Purchases and points earned after checkout will appear here\./)
-  assert.match(ordersPage, /Start shopping/)
+  assert.match(ordersPage, /Purchases placed from partner businesses will appear here together with their posted points\./)
+  assert.match(ordersPage, /Browse businesses/)
   assert.match(ordersPage, /to="\/shop"/)
 })
 
@@ -1173,11 +1286,47 @@ runTest('admin partner creation treats tax as percent and owner email as optiona
   const adminService = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
 
   assert.match(forms, /taxRate:[\s\S]*max\(50, 'Maximum 50% tax rate'\)/)
+  assert.match(forms, /address:[\s\S]*Keep the address under 180 characters/)
+  assert.match(forms, /latitude: optionalCoordinate\('Latitude', -90, 90\)/)
+  assert.match(forms, /longitude: optionalCoordinate\('Longitude', -180, 180\)/)
   assert.match(forms, /ownerEmail:[\s\S]*optional\(\)/)
   assert.match(adminService, /p_tax_rate:\s*input\.taxRate \/ 100/)
+  assert.match(adminService, /p_address:\s*input\.address/)
+  assert.match(adminService, /p_latitude:\s*input\.latitude/)
+  assert.match(adminService, /p_longitude:\s*input\.longitude/)
   assert.match(adminPage, /Tax Rate \(%\)/)
+  assert.match(adminPage, /Address/)
+  assert.match(adminPage, /Latitude/)
+  assert.match(adminPage, /Longitude/)
+  assert.match(adminPage, /Missing coordinates/)
   assert.match(adminPage, /values\.ownerEmail\.trim\(\)/)
   assert.match(adminPage, /Owner access unassigned/)
+})
+
+runTest('business location fields are migrated, typed, and seeded for the partner map', () => {
+  const migrations = getFilesByExtension('supabase/migrations', '.sql')
+    .map((file) => readFileSync(file, 'utf8'))
+    .join('\n')
+  const seed = readFileSync('supabase/seed.sql', 'utf8')
+  const domain = readFileSync('src/types/domain.ts', 'utf8')
+  const businessService = readFileSync('src/integrations/supabase/services/business-service.ts', 'utf8')
+
+  assert.match(migrations, /add column if not exists address text not null default ''/)
+  assert.match(migrations, /add column if not exists latitude numeric/)
+  assert.match(migrations, /add column if not exists longitude numeric/)
+  assert.match(migrations, /businesses_latitude_range/)
+  assert.match(migrations, /businesses_longitude_range/)
+  assert.match(migrations, /p_address text default ''/)
+  assert.match(migrations, /p_latitude numeric default null/)
+  assert.match(migrations, /p_longitude numeric default null/)
+  assert.match(seed, /address, latitude, longitude/)
+  assert.match(seed, /Cra\. 37 #10-32, El Poblado, Medellin/)
+  assert.match(seed, /Cl\. 10B #36-14, Provenza, Medellin/)
+  assert.match(domain, /address: string/)
+  assert.match(domain, /latitude: number \| null/)
+  assert.match(domain, /longitude: number \| null/)
+  assert.match(businessService, /toNullableNumber\(business\.latitude\)/)
+  assert.match(businessService, /toNullableNumber\(business\.longitude\)/)
 })
 
 runTest('admin member verification queue prioritizes submitted IDs and exposes review details', () => {
@@ -1189,6 +1338,91 @@ runTest('admin member verification queue prioritizes submitted IDs and exposes r
   assert.match(adminPage, /IDs awaiting review/)
   assert.match(adminPage, /Copy ID number/)
   assert.match(adminPage, /verificationIdNumber/)
+})
+
+runTest('admin and business owner operational lists expose compact search filters', () => {
+  const compactSearch = readFileSync('src/components/ui/compact-search.tsx', 'utf8')
+  const compactFilter = readFileSync('src/components/ui/compact-filter.tsx', 'utf8')
+  const searchHelper = readFileSync('src/lib/search.ts', 'utf8')
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const businessOwnerHooks = readFileSync('src/hooks/use-business-owner-data.ts', 'utf8')
+  const businessMembersPage = readFileSync('src/features/business-owner/pages/members-page.tsx', 'utf8')
+  const businessProductsPage = readFileSync('src/features/business-owner/pages/products-page.tsx', 'utf8')
+  const businessRewardsPage = readFileSync('src/features/business-owner/pages/rewards-page.tsx', 'utf8')
+  const businessPromotionsPage = readFileSync('src/features/business-owner/pages/promotions-page.tsx', 'utf8')
+  const businessPartnersPage = readFileSync('src/features/business-owner/pages/partners-page.tsx', 'utf8')
+
+  assert.match(compactSearch, /function CompactSearch/)
+  assert.match(compactFilter, /function CompactFilter/)
+  assert.match(compactFilter, /options: CompactFilterOption\[\]/)
+  assert.match(searchHelper, /function searchMatches/)
+
+  for (const token of [
+    'memberSearch',
+    'memberVerificationFilter',
+    'memberVerificationFilterOptions',
+    'matchesMemberVerificationFilter',
+    'filteredCustomerMembers',
+    'rewardSearch',
+    'filteredRewards',
+    'productSearch',
+    'filteredAdminProducts',
+    'promotionSearch',
+    'filteredPromotions',
+    'partnerSearch',
+    'partnerListFilter',
+    'partnerListFilterOptions',
+    'matchesPartnerListFilter',
+    'filteredBusinesses',
+    "placeholder={t('Search members')}",
+    "aria-label={t('Filter members by verification status')}",
+    "placeholder={t('Search partners')}",
+    "aria-label={t('Filter partners by status')}",
+    "label: t('Under review')",
+    "label: t('Approved')",
+    "label: t('Missing ID')",
+    "label: t('Missing coordinates')",
+  ]) {
+    assert.match(adminPage, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+  }
+
+  assert.match(businessOwnerHooks, /verificationStatus: profile\.verification_status/)
+
+  for (const [source, tokens] of [
+    [
+      businessMembersPage,
+      [
+        'memberSearch',
+        'customerStatusFilter',
+        'customerStatusFilterOptions',
+        'matchesCustomerStatusFilter',
+        'filteredMembers',
+        "placeholder={t('Search customers')}",
+        "aria-label={t('Filter customers by verification status')}",
+        'getVerificationStatusLabel',
+      ],
+    ],
+    [businessProductsPage, ['productSearch', 'filteredProducts', "placeholder={t('Search products')}"]],
+    [businessRewardsPage, ['rewardSearch', 'filteredRewards', "placeholder={t('Search rewards')}"]],
+    [businessPromotionsPage, ['campaignSearch', 'filteredPromotions', "placeholder={t('Search campaigns')}"]],
+    [
+      businessPartnersPage,
+      [
+        'leadSearch',
+        'visibleActiveAmbassadorLeads',
+        'partnerContactSearch',
+        'visibleActiveReferrers',
+        'referralSearch',
+        'filteredReferrals',
+        'creditSearch',
+        'filteredUnredeemedCredits',
+      ],
+    ],
+  ] as const) {
+    for (const token of tokens) {
+      assert.match(source, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
+    }
+  }
 })
 
 runTest('password reset uses configured public reset route and update-password page', () => {
@@ -1388,6 +1622,8 @@ runTest('package exposes focused workflow automation commands', () => {
   assert.equal(pkg.scripts?.['test:rewards'], 'playwright test tests/e2e/rewards-redemption.spec.ts')
   assert.equal(pkg.scripts?.['test:load'], 'playwright test tests/e2e/load.spec.ts')
   assert.equal(pkg.scripts?.['test:agreements'], 'playwright test tests/e2e/agreements.spec.ts')
+  assert.equal(pkg.scripts?.['test:playwright'], 'node scripts/run-playwright-local.mjs')
+  assert.equal(pkg.scripts?.['test:responsive'], 'node scripts/audit-responsive.mjs')
 })
 
 runTest('focused workflow suites cover referrals, onboarding, gift cards, rewards, agreements, and load', () => {

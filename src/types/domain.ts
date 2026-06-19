@@ -7,6 +7,9 @@ export interface Business {
   name: string
   slug: string
   description: string
+  address: string
+  latitude: number | null
+  longitude: number | null
   earnRate: number // points earned per $1 spent
   rewardRatePercent: number
   commissionRatePercent: number
@@ -22,6 +25,9 @@ export interface BusinessWithMetrics {
   name: string
   slug: string
   description: string | null
+  address: string
+  latitude: number | null
+  longitude: number | null
   earnRate: number
   rewardRatePercent: number
   commissionRatePercent: number

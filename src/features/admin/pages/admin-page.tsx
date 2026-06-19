@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy, MapPin } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -10,6 +10,8 @@ import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { RewardCard } from '@/features/rewards/components/reward-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CompactFilter } from '@/components/ui/compact-filter'
+import { CompactSearch } from '@/components/ui/compact-search'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
@@ -56,6 +58,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import { searchMatches } from '@/lib/search'
 import {
   getAmbassadorLeadStatusLabel,
   getEarlyAccessLeadStatusLabel,
@@ -96,6 +99,8 @@ const adminTabValues = [
 ] as const
 
 type AdminTabValue = (typeof adminTabValues)[number]
+type MemberVerificationFilter = 'all' | 'under_review' | 'approved' | 'missing_document' | 'rejected'
+type PartnerListFilter = 'all' | 'active' | 'inactive' | 'pinned' | 'missing_coordinates' | 'missing_owner'
 
 function isAdminTabValue(value: string): value is AdminTabValue {
   return adminTabValues.includes(value as AdminTabValue)
@@ -121,6 +126,17 @@ function isUniqueSlugError(error: unknown) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505'
 }
 
+function parseBusinessCoordinate(value: string, label: string, min: number, max: number) {
+  const trimmed = value.trim()
+  if (!trimmed) return null
+
+  const parsed = Number(trimmed)
+  if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
+    throw new Error(`${label} must be between ${min} and ${max}.`)
+  }
+  return parsed
+}
+
 function isAwaitingVerificationReview(profile: Profile) {
   return (
     profile.verificationStatus === 'submitted' ||
@@ -130,6 +146,41 @@ function isAwaitingVerificationReview(profile: Profile) {
       profile.verificationStatus !== 'rejected',
     )
   )
+}
+
+function matchesMemberVerificationFilter(profile: Profile, filter: MemberVerificationFilter) {
+  if (filter === 'all') return true
+  if (filter === 'under_review') return isAwaitingVerificationReview(profile)
+  if (filter === 'approved') return profile.verificationStatus === 'verified'
+  if (filter === 'rejected') return profile.verificationStatus === 'rejected'
+
+  return (
+    !isAwaitingVerificationReview(profile) &&
+    profile.verificationStatus !== 'verified' &&
+    profile.verificationStatus !== 'rejected'
+  )
+}
+
+function hasPinnedLocation(business: { latitude: number | null; longitude: number | null }) {
+  return business.latitude !== null && business.longitude !== null
+}
+
+function matchesPartnerListFilter(
+  business: {
+    active: boolean
+    latitude: number | null
+    longitude: number | null
+    ownerEmail?: string | null
+    ownerName?: string | null
+  },
+  filter: PartnerListFilter,
+) {
+  if (filter === 'all') return true
+  if (filter === 'active') return business.active
+  if (filter === 'inactive') return !business.active
+  if (filter === 'pinned') return hasPinnedLocation(business)
+  if (filter === 'missing_coordinates') return !hasPinnedLocation(business)
+  return !business.ownerEmail && !business.ownerName
 }
 
 function verificationPriority(profile: Profile) {
@@ -176,8 +227,18 @@ export function AdminPage() {
   const [businessPatch, setBusinessPatch] = useState({
     name: '',
     description: '',
+    address: '',
+    latitude: '',
+    longitude: '',
     logoUrl: '',
   })
+  const [memberSearch, setMemberSearch] = useState('')
+  const [memberVerificationFilter, setMemberVerificationFilter] = useState<MemberVerificationFilter>('all')
+  const [rewardSearch, setRewardSearch] = useState('')
+  const [productSearch, setProductSearch] = useState('')
+  const [promotionSearch, setPromotionSearch] = useState('')
+  const [partnerSearch, setPartnerSearch] = useState('')
+  const [partnerListFilter, setPartnerListFilter] = useState<PartnerListFilter>('all')
   
   const adjustRewards = useAdjustRewards(profile)
   const createReward = useCreateReward(profile)
@@ -250,6 +311,46 @@ export function AdminPage() {
   )
   const selectedProfileId = adjustmentForm.watch('profileId')
   const selectedMember = customerMembers.find(({ profile: member }) => member.id === selectedProfileId) ?? null
+  const memberVerificationFilterOptions = [
+    { value: 'all', label: t('All'), count: customerMembers.length },
+    {
+      value: 'under_review',
+      label: t('Under review'),
+      count: customerMembers.filter(({ profile: member }) => matchesMemberVerificationFilter(member, 'under_review')).length,
+    },
+    {
+      value: 'approved',
+      label: t('Approved'),
+      count: customerMembers.filter(({ profile: member }) => matchesMemberVerificationFilter(member, 'approved')).length,
+    },
+    {
+      value: 'missing_document',
+      label: t('Missing ID'),
+      count: customerMembers.filter(({ profile: member }) => matchesMemberVerificationFilter(member, 'missing_document')).length,
+    },
+    {
+      value: 'rejected',
+      label: t('Rejected'),
+      count: customerMembers.filter(({ profile: member }) => matchesMemberVerificationFilter(member, 'rejected')).length,
+    },
+  ]
+  const filteredCustomerMembers = customerMembers.filter(
+    ({ profile: member, balance }) =>
+      matchesMemberVerificationFilter(member, memberVerificationFilter) &&
+      searchMatches(memberSearch, [
+        member.fullName,
+        member.email,
+        member.phone,
+        member.location,
+        member.id,
+        member.referralCode,
+        member.verificationIdNumber,
+        member.verificationStatus,
+        getVerificationStatusLabel(member.verificationStatus),
+        balance?.points,
+        balance?.availableCredits,
+      ]),
+  )
 
   useEffect(() => {
     function syncTabFromHash() {
@@ -316,6 +417,9 @@ export function AdminPage() {
       name: '',
       slug: '',
       description: '',
+      address: '',
+      latitude: null,
+      longitude: null,
       logoUrl: '',
       earnRate: 1,
       taxRate: 0,
@@ -337,6 +441,9 @@ export function AdminPage() {
       name: '',
       slug: '',
       description: '',
+      address: '',
+      latitude: null,
+      longitude: null,
       logoUrl: '',
       earnRate: 1,
       taxRate: 0,
@@ -404,6 +511,9 @@ export function AdminPage() {
     id: string
     name: string
     description: string | null
+    address: string
+    latitude: number | null
+    longitude: number | null
     logoUrl: string | null
   }) => {
     setPartnerActionError(null)
@@ -411,12 +521,82 @@ export function AdminPage() {
     setBusinessPatch({
       name: business.name,
       description: business.description ?? '',
+      address: business.address,
+      latitude: business.latitude === null ? '' : String(business.latitude),
+      longitude: business.longitude === null ? '' : String(business.longitude),
       logoUrl: business.logoUrl ?? '',
     })
   }
 
   const businessNameById = new Map(
     (allBusinesses.data ?? []).map((business) => [business.id, business.name]),
+  )
+  const filteredRewards = (rewards.data ?? []).filter((reward) =>
+    searchMatches(rewardSearch, [
+      reward.title,
+      reward.description,
+      reward.category,
+      reward.highlight,
+      reward.pointsCost,
+      reward.inventory,
+      businessNameById.get(reward.businessId),
+    ]),
+  )
+  const filteredAdminProducts = (adminProducts.data ?? []).filter((product) =>
+    searchMatches(productSearch, [
+      product.title,
+      product.description,
+      product.category,
+      product.highlight,
+      product.inventory,
+      product.price,
+      businessNameById.get(product.businessId),
+    ]),
+  )
+  const filteredPromotions = (promotions.data ?? []).filter((promotion) =>
+    searchMatches(promotionSearch, [
+      promotion.title,
+      promotion.description,
+      promotion.badge,
+      promotion.cta,
+      promotion.audience,
+      promotion.expiresAt,
+      businessNameById.get(promotion.businessId),
+    ]),
+  )
+  const allBusinessRows = allBusinesses.data ?? []
+  const partnerListFilterOptions = [
+    { value: 'all', label: t('All'), count: allBusinessRows.length },
+    { value: 'active', label: t('Active only'), count: allBusinessRows.filter((business) => business.active).length },
+    { value: 'inactive', label: t('Inactive only'), count: allBusinessRows.filter((business) => !business.active).length },
+    { value: 'pinned', label: t('Pinned'), count: allBusinessRows.filter((business) => hasPinnedLocation(business)).length },
+    {
+      value: 'missing_coordinates',
+      label: t('Missing coordinates'),
+      count: allBusinessRows.filter((business) => !hasPinnedLocation(business)).length,
+    },
+    {
+      value: 'missing_owner',
+      label: t('Missing owner'),
+      count: allBusinessRows.filter((business) => !business.ownerEmail && !business.ownerName).length,
+    },
+  ]
+  const filteredBusinesses = allBusinessRows.filter(
+    (business) =>
+      matchesPartnerListFilter(business, partnerListFilter) &&
+      searchMatches(partnerSearch, [
+        business.name,
+        business.slug,
+        business.description,
+        business.address,
+        business.ownerName,
+        business.ownerEmail,
+        business.currency,
+        business.active ? 'active' : 'inactive',
+        hasPinnedLocation(business) ? 'pinned' : 'missing coordinates',
+        business.latitude,
+        business.longitude,
+      ]),
   )
   const accessDialogBusiness =
     allBusinesses.data?.find((business) => business.id === businessAccessDialog?.businessId) ?? null
@@ -823,13 +1003,31 @@ export function AdminPage() {
                     </p>
                   ) : null}
                 </div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-                  {customerMembers.length} {t('customers')}
-                </span>
+                <div className="flex flex-col gap-2 sm:items-end">
+                  <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+                    <CompactSearch
+                      value={memberSearch}
+                      onChange={(event) => setMemberSearch(event.target.value)}
+                      placeholder={t('Search members')}
+                      aria-label={t('Search members')}
+                      wrapperClassName="w-full sm:w-64"
+                    />
+                    <CompactFilter
+                      value={memberVerificationFilter}
+                      onChange={(event) => setMemberVerificationFilter(event.target.value as MemberVerificationFilter)}
+                      options={memberVerificationFilterOptions}
+                      aria-label={t('Filter members by verification status')}
+                      wrapperClassName="w-full sm:w-52"
+                    />
+                  </div>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
+                    {filteredCustomerMembers.length} / {customerMembers.length} {t('customers')}
+                  </span>
+                </div>
               </div>
 
               <div className="grid min-w-0 gap-4 pointer-events-auto">
-                {customerMembers.map(({ profile: member, balance }) => (
+                {filteredCustomerMembers.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
                     className={`rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm group flex min-w-0 flex-col gap-5 rounded-[2rem] p-5 transition-all sm:p-6 xl:flex-row xl:items-center xl:justify-between ${
@@ -915,6 +1113,12 @@ export function AdminPage() {
                     title={t('No customers yet')}
                     description={t('Customer accounts will appear here after signup.')}
                   />
+                ) : filteredCustomerMembers.length === 0 ? (
+                  <EmptyState
+                    icon={<Users className="size-8" />}
+                    title={t('No customers match this search')}
+                    description={t('Try a different search or status filter.')}
+                  />
                 ) : null}
               </div>
             </div>
@@ -929,30 +1133,45 @@ export function AdminPage() {
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Catalog</span>
                   <h2 className="font-serif text-3xl text-primary">Rewards</h2>
                 </div>
-                <div className="grid gap-2 max-w-sm">
-                  <Label htmlFor="reward-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                    Partner
-                  </Label>
-                  <select
-                    id="reward-business-filter"
-                    value={rewardBusinessId}
-                    onChange={(event) => {
-                      const nextBusinessId = event.target.value
-                      setRewardBusinessId(nextBusinessId)
-                      rewardForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
-                    }}
-                    className={adminNativeSelectClass}
-                  >
-                    {(allBusinesses.data ?? []).map((business) => (
-                      <option key={business.id} value={business.id}>
-                        {business.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,24rem)_minmax(0,18rem)]">
+                  <div className="grid gap-2">
+                    <Label htmlFor="reward-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                      Partner
+                    </Label>
+                    <select
+                      id="reward-business-filter"
+                      value={rewardBusinessId}
+                      onChange={(event) => {
+                        const nextBusinessId = event.target.value
+                        setRewardBusinessId(nextBusinessId)
+                        rewardForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
+                      }}
+                      className={adminNativeSelectClass}
+                    >
+                      {(allBusinesses.data ?? []).map((business) => (
+                        <option key={business.id} value={business.id}>
+                          {business.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="admin-reward-search" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                      Search
+                    </Label>
+                    <CompactSearch
+                      id="admin-reward-search"
+                      value={rewardSearch}
+                      onChange={(event) => setRewardSearch(event.target.value)}
+                      placeholder={t('Search rewards')}
+                      aria-label={t('Search rewards')}
+                      wrapperClassName="w-full"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="grid gap-8 sm:grid-cols-2">
-                {(rewards.data ?? []).map((reward) => (
+                {filteredRewards.map((reward) => (
                   <div key={reward.id} className="relative group">
                     <RewardCard reward={reward} balancePoints={9999} onRedeem={() => {}} />
                     <Badge variant="outline" className="absolute top-2 left-2 border-outline-variant/20 bg-white/90">
@@ -979,6 +1198,13 @@ export function AdminPage() {
                     icon={<Gift className="size-8" />}
                     title={t('No rewards yet')}
                     description={t('Create a reward for the selected partner.')}
+                  />
+                ) : !rewards.isLoading && filteredRewards.length === 0 ? (
+                  <EmptyState
+                    className="col-span-full"
+                    icon={<Gift className="size-8" />}
+                    title={t('No rewards match this search')}
+                    description={t('Try a reward title, category, or highlight.')}
                   />
                 ) : null}
               </div>
@@ -1115,30 +1341,45 @@ export function AdminPage() {
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Inventory</span>
                   <h2 className="font-serif text-3xl text-primary">Products</h2>
                 </div>
-                <div className="grid gap-2 max-w-sm">
-                  <Label htmlFor="product-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                    Partner
-                  </Label>
-                  <select
-                    id="product-business-filter"
-                    value={productBusinessId}
-                    onChange={(event) => {
-                      const nextBusinessId = event.target.value
-                      setProductBusinessId(nextBusinessId)
-                      productForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
-                    }}
-                    className={adminNativeSelectClass}
-                  >
-                    {(allBusinesses.data ?? []).map((business) => (
-                      <option key={business.id} value={business.id}>
-                        {business.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,24rem)_minmax(0,18rem)]">
+                  <div className="grid gap-2">
+                    <Label htmlFor="product-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                      Partner
+                    </Label>
+                    <select
+                      id="product-business-filter"
+                      value={productBusinessId}
+                      onChange={(event) => {
+                        const nextBusinessId = event.target.value
+                        setProductBusinessId(nextBusinessId)
+                        productForm.setValue('businessId', nextBusinessId, { shouldDirty: true })
+                      }}
+                      className={adminNativeSelectClass}
+                    >
+                      {(allBusinesses.data ?? []).map((business) => (
+                        <option key={business.id} value={business.id}>
+                          {business.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="admin-product-search" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                      Search
+                    </Label>
+                    <CompactSearch
+                      id="admin-product-search"
+                      value={productSearch}
+                      onChange={(event) => setProductSearch(event.target.value)}
+                      placeholder={t('Search products')}
+                      aria-label={t('Search products')}
+                      wrapperClassName="w-full"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="grid gap-3">
-                {(adminProducts.data ?? []).map((product) => (
+                {filteredAdminProducts.map((product) => (
                   <div
                     key={product.id}
                     className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg"
@@ -1187,6 +1428,12 @@ export function AdminPage() {
                     icon={<Store className="size-8" />}
                     title={t('No products yet')}
                     description={t('Create a product for the selected partner.')}
+                  />
+                ) : !adminProducts.isLoading && filteredAdminProducts.length === 0 ? (
+                  <EmptyState
+                    icon={<Store className="size-8" />}
+                    title={t('No products match this search')}
+                    description={t('Try a product title, category, or highlight.')}
                   />
                 ) : null}
               </div>
@@ -1333,26 +1580,41 @@ export function AdminPage() {
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Active</span>
                   <h2 className="font-serif text-3xl text-primary">Live Promotions</h2>
                 </div>
-                <div className="grid gap-2 max-w-sm">
-                  <Label htmlFor="promotion-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                    Partner
-                  </Label>
-                  <select
-                    id="promotion-business-filter"
-                    value={promotionBusinessId}
-                    onChange={(event) => setPromotionBusinessId(event.target.value)}
-                    className={adminNativeSelectClass}
-                  >
-                    {(allBusinesses.data ?? []).map((business) => (
-                      <option key={business.id} value={business.id}>
-                        {business.name}
-                      </option>
-                    ))}
-                  </select>
+                <div className="grid gap-4 sm:grid-cols-[minmax(0,24rem)_minmax(0,18rem)]">
+                  <div className="grid gap-2">
+                    <Label htmlFor="promotion-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                      Partner
+                    </Label>
+                    <select
+                      id="promotion-business-filter"
+                      value={promotionBusinessId}
+                      onChange={(event) => setPromotionBusinessId(event.target.value)}
+                      className={adminNativeSelectClass}
+                    >
+                      {(allBusinesses.data ?? []).map((business) => (
+                        <option key={business.id} value={business.id}>
+                          {business.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="admin-promotion-search" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
+                      Search
+                    </Label>
+                    <CompactSearch
+                      id="admin-promotion-search"
+                      value={promotionSearch}
+                      onChange={(event) => setPromotionSearch(event.target.value)}
+                      placeholder={t('Search campaigns')}
+                      aria-label={t('Search campaigns')}
+                      wrapperClassName="w-full"
+                    />
+                  </div>
                 </div>
               </div>
               <div className="grid gap-8">
-                {(promotions.data ?? []).map((promotion) => (
+                {filteredPromotions.map((promotion) => (
                   <div key={promotion.id} className="relative group">
                     <PromotionCard
                       promotion={promotion}
@@ -1378,6 +1640,12 @@ export function AdminPage() {
                     icon={<TrendingUp className="size-8" />}
                     title={t('No promotions yet')}
                     description={t('Create a promotion for the selected partner.')}
+                  />
+                ) : !promotions.isLoading && filteredPromotions.length === 0 ? (
+                  <EmptyState
+                    icon={<TrendingUp className="size-8" />}
+                    title={t('No campaigns match this search')}
+                    description={t('Try a campaign title, badge, or audience.')}
                   />
                 ) : null}
               </div>
@@ -1653,6 +1921,57 @@ export function AdminPage() {
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
+                    <Label htmlFor="create-partner-address">Address</Label>
+                    <Input
+                      id="create-partner-address"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="Cra. 37 #10-32, El Poblado, Medellin"
+                      {...createBusinessForm.register('address')}
+                    />
+                    {createBusinessForm.formState.errors.address ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.address.message}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-partner-latitude">Latitude</Label>
+                    <Input
+                      id="create-partner-latitude"
+                      type="number"
+                      step="0.0001"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="6.2088"
+                      {...createBusinessForm.register('latitude', {
+                        setValueAs: (value) => value === '' ? null : Number(value),
+                      })}
+                    />
+                    {createBusinessForm.formState.errors.latitude ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.latitude.message}</p>
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Optional. Use exact coordinates when available.</p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-3">
+                    <Label htmlFor="create-partner-longitude">Longitude</Label>
+                    <Input
+                      id="create-partner-longitude"
+                      type="number"
+                      step="0.0001"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="-75.5672"
+                      {...createBusinessForm.register('longitude', {
+                        setValueAs: (value) => value === '' ? null : Number(value),
+                      })}
+                    />
+                    {createBusinessForm.formState.errors.longitude ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.longitude.message}</p>
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Optional. Leave blank until the partner is pinned.</p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-3 md:col-span-2">
                     <Label htmlFor="create-partner-logo-url">Logo URL</Label>
                     <Input
                       id="create-partner-logo-url"
@@ -1796,20 +2115,39 @@ export function AdminPage() {
             </div>
 
             <div className="partner-management-table overflow-hidden rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card">
-              <div className="flex flex-col gap-2 border-b border-outline-variant/10 px-6 py-5 md:flex-row md:items-end md:justify-between">
+              <div className="flex flex-col gap-3 border-b border-outline-variant/10 px-6 py-5 md:flex-row md:items-end md:justify-between">
                 <div>
                   <h3 className="font-serif text-2xl text-primary">Partner Management</h3>
                   <p className="mt-1 text-sm text-on-surface-variant/75">Scan partner status, owner access, revenue, and commission from a denser list.</p>
                 </div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">
-                  {(allBusinesses.data ?? []).length} partners
-                </span>
+                <div className="flex flex-col gap-2 md:items-end">
+                  <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+                    <CompactSearch
+                      value={partnerSearch}
+                      onChange={(event) => setPartnerSearch(event.target.value)}
+                      placeholder={t('Search partners')}
+                      aria-label={t('Search partners')}
+                      wrapperClassName="w-full sm:w-64"
+                    />
+                    <CompactFilter
+                      value={partnerListFilter}
+                      onChange={(event) => setPartnerListFilter(event.target.value as PartnerListFilter)}
+                      options={partnerListFilterOptions}
+                      aria-label={t('Filter partners by status')}
+                      wrapperClassName="w-full sm:w-52"
+                    />
+                  </div>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">
+                    {filteredBusinesses.length} / {(allBusinesses.data ?? []).length} partners
+                  </span>
+                </div>
               </div>
 
               <ScrollArea className="w-full">
-                <div className="min-w-[980px]">
-                  <div className="grid grid-cols-[minmax(260px,1.4fr)_120px_120px_130px_130px_170px] gap-4 border-b border-outline-variant/10 bg-[var(--muted)] px-6 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                <div className="min-w-[1180px]">
+                  <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(220px,0.95fr)_100px_100px_130px_130px_170px] gap-4 border-b border-outline-variant/10 bg-[var(--muted)] px-6 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
                     <span>Partner</span>
+                    <span>Location</span>
                     <span>Members</span>
                     <span>QR Sales</span>
                     <span>Revenue</span>
@@ -1818,9 +2156,9 @@ export function AdminPage() {
                   </div>
 
                   <div className="divide-y divide-outline-variant/10">
-                    {(allBusinesses.data ?? []).map((business) => (
+                    {filteredBusinesses.map((business) => (
                       <div key={business.id}>
-                        <div className="grid grid-cols-[minmax(260px,1.4fr)_120px_120px_130px_130px_170px] gap-4 px-6 py-5 text-sm">
+                        <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(220px,0.95fr)_100px_100px_130px_130px_170px] gap-4 px-6 py-5 text-sm">
                           <div className="flex min-w-0 items-start gap-4">
                             {business.logoUrl ? (
                               <img
@@ -1852,6 +2190,24 @@ export function AdminPage() {
                                 Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
                               </p>
                             </div>
+                          </div>
+                          <div className="min-w-0 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <MapPin className="size-4 shrink-0 text-primary" />
+                              <span className="truncate text-xs font-semibold text-on-surface-variant/80">
+                                {business.address || 'No address yet'}
+                              </span>
+                            </div>
+                            <Badge
+                              variant="outline"
+                              className={
+                                business.latitude !== null && business.longitude !== null
+                                  ? 'border-success/20 bg-success/10 text-success'
+                                  : 'border-warning/20 bg-warning/10 text-warning'
+                              }
+                            >
+                              {business.latitude !== null && business.longitude !== null ? 'Pinned' : 'Missing coordinates'}
+                            </Badge>
                           </div>
                           <div className="font-semibold text-primary">{business.totalMembers}</div>
                           <div className="font-semibold text-primary">{business.memberTransactionCount}</div>
@@ -1911,11 +2267,16 @@ export function AdminPage() {
                               event.preventDefault()
                               try {
                                 setPartnerActionError(null)
+                                const latitude = parseBusinessCoordinate(businessPatch.latitude, 'Latitude', -90, 90)
+                                const longitude = parseBusinessCoordinate(businessPatch.longitude, 'Longitude', -180, 180)
                                 await updateBusiness.mutateAsync({
                                   id: business.id,
                                   patch: {
                                     name: businessPatch.name.trim(),
                                     description: businessPatch.description.trim(),
+                                    address: businessPatch.address.trim(),
+                                    latitude,
+                                    longitude,
                                     logoUrl: businessPatch.logoUrl.trim(),
                                   },
                                 })
@@ -1945,6 +2306,40 @@ export function AdminPage() {
                                 value={businessPatch.description}
                                 onChange={(event) =>
                                   setBusinessPatch((current) => ({ ...current, description: event.target.value }))
+                                }
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor={`partner-address-${business.id}`}>Address</Label>
+                              <Input
+                                id={`partner-address-${business.id}`}
+                                value={businessPatch.address}
+                                onChange={(event) =>
+                                  setBusinessPatch((current) => ({ ...current, address: event.target.value }))
+                                }
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor={`partner-latitude-${business.id}`}>Latitude</Label>
+                              <Input
+                                id={`partner-latitude-${business.id}`}
+                                type="number"
+                                step="0.0001"
+                                value={businessPatch.latitude}
+                                onChange={(event) =>
+                                  setBusinessPatch((current) => ({ ...current, latitude: event.target.value }))
+                                }
+                              />
+                            </div>
+                            <div className="grid gap-2">
+                              <Label htmlFor={`partner-longitude-${business.id}`}>Longitude</Label>
+                              <Input
+                                id={`partner-longitude-${business.id}`}
+                                type="number"
+                                step="0.0001"
+                                value={businessPatch.longitude}
+                                onChange={(event) =>
+                                  setBusinessPatch((current) => ({ ...current, longitude: event.target.value }))
                                 }
                               />
                             </div>
@@ -1996,6 +2391,12 @@ export function AdminPage() {
                   icon={<Store className="size-8" />}
                   title={t('No partners yet')}
                   description={t('Create a partner business before assigning owners or reviewing metrics.')}
+                />
+              ) : !allBusinesses.isLoading && filteredBusinesses.length === 0 ? (
+                <EmptyState
+                  icon={<Store className="size-8" />}
+                  title={t('No partners match this search')}
+                  description={t('Try a different search or partner filter.')}
                 />
               ) : null}
             </div>

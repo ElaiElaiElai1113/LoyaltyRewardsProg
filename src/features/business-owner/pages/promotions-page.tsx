@@ -5,6 +5,7 @@ import { useForm } from 'react-hook-form'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CompactSearch } from '@/components/ui/compact-search'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
@@ -14,6 +15,7 @@ import { useDeletePromotion, useUpdatePromotion } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData, useCreateOwnerPromotion } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { searchMatches } from '@/lib/search'
 import { formatDate } from '@/lib/utils'
 import type { Promotion } from '@/types/domain'
 import { promotionDraftSchema, type PromotionDraftFormValues } from '@/types/forms'
@@ -28,6 +30,7 @@ export function PromotionsPage() {
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [campaignSearch, setCampaignSearch] = useState('')
 
   const form = useForm<PromotionDraftFormValues>({
     resolver: zodResolver(promotionDraftSchema),
@@ -93,6 +96,16 @@ export function PromotionsPage() {
       setError(err instanceof Error ? err.message : t('Action failed.'))
     }
   })
+  const filteredPromotions = promotions.filter((promotion) =>
+    searchMatches(campaignSearch, [
+      promotion.title,
+      promotion.description,
+      promotion.badge,
+      promotion.cta,
+      promotion.audience,
+      promotion.expiresAt,
+    ]),
+  )
 
   return (
     <div className="space-y-16">
@@ -104,10 +117,18 @@ export function PromotionsPage() {
             {t('Create and manage promotions that engage customers and drive repeat purchases.')}
           </p>
         </div>
-        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate} disabled={!business}>
-          <Megaphone className="size-5 mr-2" />
-          {t('Create Campaign')}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end">
+          <CompactSearch
+            value={campaignSearch}
+            onChange={(event) => setCampaignSearch(event.target.value)}
+            placeholder={t('Search campaigns')}
+            aria-label={t('Search campaigns')}
+          />
+          <Button className="h-14 rounded-full px-8 font-semibold" onClick={handleOpenForCreate} disabled={!business}>
+            <Megaphone className="size-5 mr-2" />
+            {t('Create Campaign')}
+          </Button>
+        </div>
       </div>
       {!business ? (
         <p className="rounded-2xl border border-warning/25 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">
@@ -187,8 +208,15 @@ export function PromotionsPage() {
               </Button>
             }
           />
+        ) : filteredPromotions.length === 0 ? (
+          <EmptyState
+            className="col-span-full"
+            icon={<Megaphone className="size-8" />}
+            title={t('No campaigns match this search')}
+            description={t('Try a campaign title, badge, or audience.')}
+          />
         ) : (
-          promotions.map((promotion) => {
+          filteredPromotions.map((promotion) => {
             const active = isActive(promotion.expiresAt)
 
             return (

@@ -1,11 +1,13 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Archive, Copy, Download, Gift, Hotel, Megaphone, QrCode, UserRoundPlus, Users } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CompactSearch } from '@/components/ui/compact-search'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -24,6 +26,7 @@ import {
   useUpdateBusinessAmbassadorLeadStatus,
 } from '@/hooks/use-business-owner-data'
 import { useLanguage } from '@/lib/language'
+import { searchMatches } from '@/lib/search'
 import { getAmbassadorLeadStatusLabel, getPartnerReferralStatusLabel } from '@/lib/status-labels'
 import { partnerReferrerDraftSchema, type PartnerReferrerDraftFormValues } from '@/types/forms'
 
@@ -62,6 +65,10 @@ export function PartnersPage() {
   const archivePartnerReferrer = useArchivePartnerReferrer(business?.id)
   const redeemPartnerCredit = useRedeemPartnerCredit(business?.id)
   const updateAmbassadorLeadStatus = useUpdateBusinessAmbassadorLeadStatus(business?.id)
+  const [leadSearch, setLeadSearch] = useState('')
+  const [partnerContactSearch, setPartnerContactSearch] = useState('')
+  const [referralSearch, setReferralSearch] = useState('')
+  const [creditSearch, setCreditSearch] = useState('')
 
   const form = useForm<PartnerReferrerDraftFormValues>({
     resolver: zodResolver(partnerReferrerDraftSchema),
@@ -78,7 +85,6 @@ export function PartnersPage() {
   const redeemedCredits = performance.data?.reduce((sum, entry) => sum + entry.creditsRedeemed, 0) ?? 0
   const attributedCount = referrals.data?.length ?? 0
   const creditedCount = referrals.data?.filter((referral) => referral.status === 'credited').length ?? 0
-  const recentReferrals = (referrals.data ?? []).slice(0, 6)
   const unreedeemedCredits = (partnerCredits.data ?? []).filter((entry) => !entry.redeemedAt)
   const outstandingCredits = unreedeemedCredits.reduce((sum, entry) => sum + entry.creditUnits, 0)
   const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
@@ -88,6 +94,78 @@ export function PartnersPage() {
   const allAmbassadorLeads = ambassadorLeads.data ?? []
   const activeAmbassadorLeads = allAmbassadorLeads.filter((lead) => lead.status !== 'archived')
   const archivedAmbassadorLeads = allAmbassadorLeads.filter((lead) => lead.status === 'archived')
+  const visibleActiveAmbassadorLeads = activeAmbassadorLeads.filter((lead) =>
+    searchMatches(leadSearch, [
+      lead.fullName,
+      lead.email,
+      lead.phone,
+      lead.city,
+      lead.notes,
+      lead.status,
+      lead.socialLinks.instagram,
+      lead.socialLinks.tiktok,
+      lead.socialLinks.other,
+    ]),
+  )
+  const visibleArchivedAmbassadorLeads = archivedAmbassadorLeads.filter((lead) =>
+    searchMatches(leadSearch, [
+      lead.fullName,
+      lead.email,
+      lead.phone,
+      lead.city,
+      lead.notes,
+      lead.status,
+      lead.socialLinks.instagram,
+      lead.socialLinks.tiktok,
+      lead.socialLinks.other,
+    ]),
+  )
+  const visibleActiveReferrers = activeReferrers.filter((referrer) =>
+    searchMatches(partnerContactSearch, [
+      referrer.partnerName,
+      referrer.contactName,
+      referrer.contactEmail,
+      referrer.code,
+      referrer.notes,
+    ]),
+  )
+  const visibleArchivedReferrers = archivedReferrers.filter((referrer) =>
+    searchMatches(partnerContactSearch, [
+      referrer.partnerName,
+      referrer.contactName,
+      referrer.contactEmail,
+      referrer.code,
+      referrer.notes,
+    ]),
+  )
+  const filteredReferrals = (referrals.data ?? []).filter((referral) =>
+    searchMatches(referralSearch, [
+      referral.customer.fullName,
+      referral.customer.email,
+      referral.partnerReferrer.partnerName,
+      referral.partnerReferrer.contactName,
+      referral.partnerReferrer.code,
+      referral.status,
+      referral.firstOrder?.total,
+    ]),
+  )
+  const recentReferrals = filteredReferrals.slice(0, 6)
+  const filteredUnredeemedCredits = unreedeemedCredits.filter((entry) => {
+    const referral = referrals.data?.find((item) => item.id === entry.partnerReferralId)
+    return searchMatches(creditSearch, [
+      entry.partnerReferrerId,
+      entry.partnerReferralId,
+      entry.orderId,
+      entry.creditType,
+      entry.creditUnits,
+      entry.details,
+      referral?.partnerReferrer.partnerName,
+      referral?.partnerReferrer.contactName,
+      referral?.partnerReferrer.code,
+      referral?.customer.fullName,
+      referral?.customer.email,
+    ])
+  })
   const ambassadorUrl =
     business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/ambassadors?business=${business.id}`
@@ -201,9 +279,17 @@ export function PartnersPage() {
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Lead Follow-up</p>
               <h2 className="mt-1 font-serif text-3xl text-primary">Ambassador Leads</h2>
             </div>
-            <Badge variant="accent" className="w-fit border-primary-container/25 bg-primary-container/12 text-primary">
-              {activeAmbassadorLeads.length} active requests
-            </Badge>
+            <div className="flex flex-col gap-2 sm:items-end">
+              <CompactSearch
+                value={leadSearch}
+                onChange={(event) => setLeadSearch(event.target.value)}
+                placeholder={t('Search leads')}
+                aria-label={t('Search leads')}
+              />
+              <Badge variant="accent" className="w-fit border-primary-container/25 bg-primary-container/12 text-primary">
+                {activeAmbassadorLeads.length} active requests
+              </Badge>
+            </div>
           </div>
 
           <div className="divide-y divide-outline-variant/10">
@@ -214,8 +300,8 @@ export function PartnersPage() {
                   <Skeleton className="mt-3 h-4 w-64" />
                 </div>
               ))
-            ) : activeAmbassadorLeads.length ? (
-              activeAmbassadorLeads.slice(0, 6).map((lead) => (
+            ) : visibleActiveAmbassadorLeads.length ? (
+              visibleActiveAmbassadorLeads.slice(0, 6).map((lead) => (
                 <div key={lead.id} className="flex flex-col gap-4 p-6 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0">
                     <p className="font-serif text-2xl text-primary">{lead.fullName}</p>
@@ -253,6 +339,13 @@ export function PartnersPage() {
                   </select>
                 </div>
               ))
+            ) : activeAmbassadorLeads.length ? (
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Megaphone className="size-8" />}
+                title={t('No leads match this search')}
+                description={t('Try a name, email, city, or social handle.')}
+              />
             ) : (
               <EmptyState
                 className="border-0 shadow-none"
@@ -270,10 +363,10 @@ export function PartnersPage() {
                   <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Archived</p>
                   <h3 className="mt-1 font-serif text-2xl text-primary">Archived Leads</h3>
                 </div>
-                <Badge variant="outline">{archivedAmbassadorLeads.length}</Badge>
+                <Badge variant="outline">{visibleArchivedAmbassadorLeads.length}</Badge>
               </div>
               <div className="divide-y divide-outline-variant/10">
-                {archivedAmbassadorLeads.slice(0, 6).map((lead) => (
+                {visibleArchivedAmbassadorLeads.slice(0, 6).map((lead) => (
                   <div key={lead.id} className="flex flex-col gap-2 p-6">
                     <p className="font-serif text-xl text-primary">{lead.fullName}</p>
                     <p className="text-sm text-on-surface-variant/80">{lead.email}</p>
@@ -365,11 +458,19 @@ export function PartnersPage() {
         </div>
 
         <div className="space-y-8">
-          <div className="space-y-2 border-b border-outline-variant/10 pb-4">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Active Directory
-            </span>
-            <h2 className="font-serif text-3xl text-primary">Partner Contacts</h2>
+          <div className="flex flex-col gap-4 border-b border-outline-variant/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
+            <div className="space-y-2">
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
+                Active Directory
+              </span>
+              <h2 className="font-serif text-3xl text-primary">Partner Contacts</h2>
+            </div>
+            <CompactSearch
+              value={partnerContactSearch}
+              onChange={(event) => setPartnerContactSearch(event.target.value)}
+              placeholder={t('Search contacts')}
+              aria-label={t('Search contacts')}
+            />
           </div>
 
           {referrers.isLoading ? (
@@ -390,9 +491,9 @@ export function PartnersPage() {
                 </div>
               ))}
             </div>
-          ) : activeReferrers.length ? (
+          ) : visibleActiveReferrers.length ? (
             <div className="grid gap-5">
-              {activeReferrers.slice(0, 12).map((referrer) => {
+              {visibleActiveReferrers.slice(0, 12).map((referrer) => {
                 const stats = performance.data?.find((entry) => entry.partnerReferrerId === referrer.id)
                 const partnerUrl =
                   business?.id && typeof window !== 'undefined'
@@ -462,6 +563,13 @@ export function PartnersPage() {
                 )
               })}
             </div>
+          ) : activeReferrers.length ? (
+            <EmptyState
+              className="rounded-[2rem]"
+              icon={<Hotel className="size-8" />}
+              title={t('No contacts match this search')}
+              description={t('Try a contact name, code, email, or note.')}
+            />
           ) : (
             <EmptyState
               className="rounded-[2rem]"
@@ -480,7 +588,7 @@ export function PartnersPage() {
                 <h3 className="font-serif text-2xl text-primary">Archived Contacts</h3>
               </div>
               <div className="grid gap-4">
-                {archivedReferrers.slice(0, 6).map((referrer) => (
+                {visibleArchivedReferrers.slice(0, 6).map((referrer) => (
                   <div key={referrer.id} className="rounded-[2rem] border border-[var(--border)] bg-white p-5 shadow-sm">
                     <p className="font-serif text-2xl text-primary">{referrer.contactName}</p>
                     <p className="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">{referrer.code}</p>
@@ -500,16 +608,24 @@ export function PartnersPage() {
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="font-serif text-3xl text-primary">Attributed Customers</h2>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-fit rounded-full"
-                disabled={(referrals.data ?? []).length === 0}
-                onClick={handleExportReferrals}
-              >
-                <Download className="size-4" />
-                Export CSV
-              </Button>
+              <div className="flex flex-col gap-2 sm:items-end">
+                <CompactSearch
+                  value={referralSearch}
+                  onChange={(event) => setReferralSearch(event.target.value)}
+                  placeholder={t('Search referrals')}
+                  aria-label={t('Search referrals')}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-fit rounded-full"
+                  disabled={(referrals.data ?? []).length === 0}
+                  onClick={handleExportReferrals}
+                >
+                  <Download className="size-4" />
+                  Export CSV
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -546,6 +662,13 @@ export function PartnersPage() {
                   </p>
                 </div>
               ))
+            ) : (referrals.data ?? []).length ? (
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Users className="size-8" />}
+                title={t('No referrals match this search')}
+                description={t('Try a customer, email, source, code, or status.')}
+              />
             ) : (
               <EmptyState
                 className="border-0 shadow-none"
@@ -564,16 +687,24 @@ export function PartnersPage() {
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <h2 className="font-serif text-3xl text-primary">Outstanding Partner Credits</h2>
-              <Button
-                type="button"
-                variant="outline"
-                className="w-fit rounded-full"
-                disabled={(partnerCredits.data ?? []).length === 0}
-                onClick={handleExportCredits}
-              >
-                <Download className="size-4" />
-                Export CSV
-              </Button>
+              <div className="flex flex-col gap-2 sm:items-end">
+                <CompactSearch
+                  value={creditSearch}
+                  onChange={(event) => setCreditSearch(event.target.value)}
+                  placeholder={t('Search credits')}
+                  aria-label={t('Search credits')}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-fit rounded-full"
+                  disabled={(partnerCredits.data ?? []).length === 0}
+                  onClick={handleExportCredits}
+                >
+                  <Download className="size-4" />
+                  Export CSV
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -585,8 +716,8 @@ export function PartnersPage() {
                   <Skeleton className="mt-3 h-4 w-32" />
                 </div>
               ))
-            ) : unreedeemedCredits.length ? (
-              unreedeemedCredits.map((entry) => {
+            ) : filteredUnredeemedCredits.length ? (
+              filteredUnredeemedCredits.map((entry) => {
                 const referral = referrals.data?.find((item) => item.id === entry.partnerReferralId)
                 return (
                   <div key={entry.id} className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
@@ -609,6 +740,13 @@ export function PartnersPage() {
                   </div>
                 )
               })
+            ) : unreedeemedCredits.length ? (
+              <EmptyState
+                className="border-0 shadow-none"
+                icon={<Gift className="size-8" />}
+                title={t('No credits match this search')}
+                description={t('Try a referral source, credit type, or details.')}
+              />
             ) : (
               <EmptyState
                 className="border-0 shadow-none"

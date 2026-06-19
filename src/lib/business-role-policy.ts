@@ -14,6 +14,7 @@ export const businessStaffOperationalPaths = [
   '/business/member-sale',
   '/business/members',
   '/business/partners',
+  '/business/guide',
 ] as const
 
 export function isBusinessOwnerRole(role: UserRole | null | undefined) {

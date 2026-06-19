@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 import { Button } from '@/components/ui/button'
+import { CompactSearch } from '@/components/ui/compact-search'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
@@ -14,6 +15,7 @@ import { useBusinessOwnerData, useCreateOwnerProduct } from '@/hooks/use-busines
 import { useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { searchMatches } from '@/lib/search'
 import { formatCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
 import { ownerProductDraftSchema, type OwnerProductDraftFormValues } from '@/types/forms'
@@ -30,6 +32,7 @@ export function ProductsPage() {
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [productSearch, setProductSearch] = useState('')
 
   const form = useForm<OwnerProductDraftFormValues>({
     resolver: zodResolver(ownerProductDraftSchema),
@@ -101,6 +104,16 @@ export function ProductsPage() {
     business?.slug === 'velvet-brew'
       ? { primary: 'from-primary to-primary-container', light: 'from-primary/10 to-primary-container/10' }
       : { primary: 'from-tertiary to-primary-container', light: 'from-tertiary/10 to-primary-container/10' }
+  const filteredProducts = products.filter((product) =>
+    searchMatches(productSearch, [
+      product.title,
+      product.description,
+      product.category,
+      product.highlight,
+      product.inventory,
+      product.price,
+    ]),
+  )
 
   return (
     <div className="space-y-16">
@@ -112,10 +125,18 @@ export function ProductsPage() {
             {t('View and manage your product catalog and inventory.')}
           </p>
         </div>
-        <Button className="rounded-full h-14 px-8 font-semibold" onClick={handleOpenForCreate} disabled={!business}>
-          <Plus className="size-5 mr-2" />
-          {t('Add Product')}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center lg:justify-end">
+          <CompactSearch
+            value={productSearch}
+            onChange={(event) => setProductSearch(event.target.value)}
+            placeholder={t('Search products')}
+            aria-label={t('Search products')}
+          />
+          <Button className="h-14 rounded-full px-8 font-semibold" onClick={handleOpenForCreate} disabled={!business}>
+            <Plus className="size-5 mr-2" />
+            {t('Add Product')}
+          </Button>
+        </div>
       </div>
       {!business ? (
         <p className="rounded-2xl border border-warning/25 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">
@@ -227,8 +248,14 @@ export function ProductsPage() {
               </Button>
             }
           />
+        ) : filteredProducts.length === 0 ? (
+          <EmptyState
+            icon={<Package className="size-8" />}
+            title={t('No products match this search')}
+            description={t('Try a product title, category, or highlight.')}
+          />
         ) : (
-          products.map((product) => (
+          filteredProducts.map((product) => (
             <div
               key={product.id}
               className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg"

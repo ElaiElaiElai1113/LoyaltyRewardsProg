@@ -10,7 +10,7 @@ import type {
 } from '@/types/domain'
 import type { RewardAdjustmentFormValues } from '@/types/forms'
 import { MEMBER_VERIFICATION_BUCKET } from '@/lib/member-verification'
-import { requireSupabase, camelCaseRow, friendlySupabaseError, snakeCaseObj } from './shared'
+import { requireSupabase, camelCaseRow, friendlySupabaseError, snakeCaseObj, toNullableNumber } from './shared'
 
 function toTierProgress(points: number, target: number) {
   return Math.max(0, Math.min(100, Math.round((points / target) * 100)))
@@ -233,6 +233,9 @@ export const adminService = {
         name: business.name as string,
         slug: business.slug as string,
         description: (business.description as string | null) ?? null,
+        address: (business.address as string | null) ?? '',
+        latitude: toNullableNumber(business.latitude),
+        longitude: toNullableNumber(business.longitude),
         earnRate: Number(business.earnRate ?? 0),
         rewardRatePercent: Number(business.rewardRatePercent ?? 20),
         commissionRatePercent: Number(business.commissionRatePercent ?? 10),
@@ -451,7 +454,14 @@ export const adminService = {
 
   async updateBusiness(
     id: string,
-    patch: { name?: string; description?: string; logoUrl?: string },
+    patch: {
+      name?: string
+      description?: string
+      address?: string
+      latitude?: number | null
+      longitude?: number | null
+      logoUrl?: string
+    },
   ) {
     const sb = requireSupabase()
     const snakePatch = snakeCaseObj(patch as Record<string, unknown>)
@@ -484,6 +494,9 @@ export const adminService = {
     name: string
     slug: string
     description?: string
+    address?: string
+    latitude?: number | null
+    longitude?: number | null
     logoUrl?: string
     earnRate: number
     taxRate: number
@@ -496,6 +509,9 @@ export const adminService = {
       p_name: input.name.trim(),
       p_slug: input.slug.trim(),
       p_description: input.description?.trim() ?? '',
+      p_address: input.address?.trim() ?? '',
+      p_latitude: input.latitude ?? null,
+      p_longitude: input.longitude ?? null,
       p_logo_url: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
       p_earn_rate: input.earnRate,
       p_tax_rate: input.taxRate / 100,

@@ -20,6 +20,12 @@ export function snakeCaseObj<T extends Record<string, unknown>>(obj: T): Record<
   return out
 }
 
+export function toNullableNumber(value: unknown): number | null {
+  if (value === null || typeof value === 'undefined' || value === '') return null
+  const parsed = Number(value)
+  return Number.isFinite(parsed) ? parsed : null
+}
+
 /** Assert supabase is configured, throw a helpful error if not. */
 export function requireSupabase() {
   if (!supabase) {

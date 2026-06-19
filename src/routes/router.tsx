@@ -27,6 +27,7 @@ import { JoinRewardsPage } from '@/features/join/pages/join-rewards-page'
 import { LegalPage } from '@/features/legal/pages/legal-page'
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
+import { PlatformGuidePage } from '@/features/platform-guide/pages/platform-guide-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
 import { CheckoutPage } from '@/features/shop/pages/checkout-page'
 import { OrderConfirmationPage } from '@/features/shop/pages/order-confirmation-page'
@@ -426,6 +427,7 @@ const router = createBrowserRouter([
       {
         element: <PublicBrowseLayout />,
         children: [
+          { path: '/guide', element: <PlatformGuidePage /> },
           { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
           { path: '/cost-calculator', element: <CostCalculatorPage /> },
           { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
@@ -463,6 +465,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/admin/portal', element: <AdminPage /> },
           { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
+          { path: '/admin/guide', element: <PlatformGuidePage /> },
         ],
       },
       {
@@ -477,6 +480,7 @@ const router = createBrowserRouter([
           { path: '/business/promotions', element: <OwnerOnlyBusinessRoute><BusinessPromotionsPage /></OwnerOnlyBusinessRoute> },
           { path: '/business/members', element: <MembersPage /> },
           { path: '/business/partners', element: <PartnersPage /> },
+          { path: '/business/guide', element: <PlatformGuidePage /> },
           { path: '/business/settings', element: <OwnerOnlyBusinessRoute><SettingsPage /></OwnerOnlyBusinessRoute> },
         ],
       },

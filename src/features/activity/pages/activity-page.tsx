@@ -77,7 +77,7 @@ export function ActivityPage() {
         <ActivityList
           items={activities.data ?? []}
           emptyActionTo="/shop"
-          emptyActionLabel="Start shopping"
+          emptyActionLabel="Browse businesses"
         />
       </div>
     </div>

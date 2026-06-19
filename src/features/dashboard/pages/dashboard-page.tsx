@@ -98,7 +98,7 @@ export function DashboardPage() {
           </div>
         </div>
         <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-white p-2 shadow-sm">
-          <ActivityList items={recentActivity} emptyActionTo="/profile" emptyActionLabel="Show member QR" />
+          <ActivityList items={recentActivity} emptyActionTo="/shop" emptyActionLabel="Browse businesses" />
         </div>
       </section>
     </div>
