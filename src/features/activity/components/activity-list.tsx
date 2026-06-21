@@ -71,31 +71,31 @@ export function ActivityList({ items, emptyActionTo, emptyActionLabel }: Activit
         const activityKind = getActivityKind(item.type)
 
         return (
-          <div key={item.id} className="group relative flex flex-col gap-6 p-6 md:flex-row md:items-center md:justify-between bg-surface-low rounded-2xl transition-all hover:bg-surface-highest/40">
-            <div className="flex items-center gap-6">
-              <div className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-surface-lowest text-primary shadow-sm group-hover:shadow-md transition-all">
-                <Icon className="size-6" />
+          <div key={item.id} className="group relative flex flex-col gap-4 rounded-2xl bg-surface-low p-4 transition-all hover:bg-surface-highest/40 sm:p-5 md:flex-row md:items-center md:justify-between md:gap-6 md:p-6">
+            <div className="flex min-w-0 items-start gap-3 sm:gap-4 md:items-center md:gap-6">
+              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-surface-lowest text-primary shadow-sm transition-all group-hover:shadow-md sm:size-12 md:size-14">
+                <Icon className="size-5 md:size-6" />
               </div>
-              <div className="space-y-1">
-                <div className="flex flex-wrap items-center gap-3">
-                  <h3 className="font-serif text-xl tracking-tight text-primary leading-tight">{t(item.title)}</h3>
-                  <Badge variant="outline" className="rounded-full">
+              <div className="min-w-0 space-y-2">
+                <div className="flex flex-wrap items-center gap-2 md:gap-3">
+                  <h3 className="min-w-0 break-words font-serif text-lg leading-tight tracking-tight text-primary sm:text-xl">{t(item.title)}</h3>
+                  <Badge variant="outline" className="rounded-full px-2 py-1 text-[0.65rem] tracking-[0.08em] md:px-3">
                     {t(activityKind)}
                   </Badge>
-                  <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full">
+                  <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full px-2 py-1 text-[0.65rem] tracking-[0.08em] md:px-3">
                     {item.points >= 0 ? `+${formatPoints(item.points)} ${t('points')}` : `${formatPoints(item.points)} ${t('points')}`}
                   </Badge>
                   {item.status === 'pending' ? (
-                    <Badge variant="secondary" className="rounded-full">
+                    <Badge variant="secondary" className="rounded-full px-2 py-1 text-[0.65rem] tracking-[0.08em] md:px-3">
                       {t('Pending')}
                     </Badge>
                   ) : null}
                 </div>
-                <p className="text-sm font-medium text-on-surface-variant/80">{t(item.description)}</p>
+                <p className="break-words text-sm font-medium leading-6 text-on-surface-variant/80">{t(item.description)}</p>
               </div>
             </div>
 
-            <div className="flex items-center justify-between md:flex-col md:items-end gap-1">
+            <div className="flex items-center justify-between border-t border-outline-variant/10 pt-3 md:flex-col md:items-end md:gap-1 md:border-t-0 md:pt-0">
               <div className="flex flex-col md:items-end">
                 <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">{t('Date')}</span>
                 <p className="text-sm font-semibold text-on-surface-variant/70">{formatDate(item.createdAt)}</p>

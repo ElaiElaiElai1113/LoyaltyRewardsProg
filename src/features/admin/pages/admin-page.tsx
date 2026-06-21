@@ -279,7 +279,7 @@ export function AdminPage() {
       : 'bg-gradient-to-br from-tertiary to-primary-container'
   }
   const adminNativeSelectClass =
-    'h-12 rounded-2xl border border-outline-variant/20 bg-surface-highest px-4 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
+    'h-10 rounded-xl border border-outline-variant/20 bg-[var(--card)] px-3 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
   const adminTextareaClass =
     'min-h-28 rounded-2xl border-outline-variant/20 bg-surface-highest text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
 
@@ -2143,7 +2143,224 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <ScrollArea className="w-full">
+              <div className="space-y-3 p-3 md:hidden">
+                {filteredBusinesses.map((business) => (
+                  <div
+                    key={business.id}
+                    className="space-y-4 rounded-2xl border border-primary-container/15 bg-[var(--muted)] p-4"
+                  >
+                    <div className="flex min-w-0 items-start gap-3">
+                      {business.logoUrl ? (
+                        <img
+                          src={business.logoUrl}
+                          alt={business.name}
+                          className="size-12 shrink-0 rounded-2xl border border-outline-variant/10 object-cover"
+                        />
+                      ) : (
+                        <div className={`flex size-12 shrink-0 items-center justify-center rounded-2xl text-primary-foreground shadow-lg ${bizColorClass(business.id)}`}>
+                          <Store className="size-5" />
+                        </div>
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="min-w-0 truncate font-serif text-xl text-primary">{business.name}</p>
+                          <Badge
+                            variant="accent"
+                            className={
+                              business.active
+                                ? 'border-success/20 bg-success/10 text-success'
+                                : 'border-outline-variant/15 bg-outline-variant/10 text-on-surface-variant'
+                            }
+                          >
+                            {business.active ? 'Active' : 'Inactive'}
+                          </Badge>
+                        </div>
+                        <p className="mt-1 truncate text-xs text-on-surface-variant/75">{business.slug}</p>
+                        <p className="mt-2 break-words text-xs text-on-surface-variant/80">
+                          Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Members</p>
+                        <p className="mt-1 font-serif text-xl text-primary">{business.totalMembers}</p>
+                      </div>
+                      <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">QR Sales</p>
+                        <p className="mt-1 font-serif text-xl text-primary">{business.memberTransactionCount}</p>
+                      </div>
+                      <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Revenue</p>
+                        <p className="mt-1 truncate font-semibold text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
+                      </div>
+                      <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Commission</p>
+                        <p className="mt-1 truncate font-semibold text-primary">{formatCurrency(business.commissionOwed)}</p>
+                        <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} paid</p>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className="flex items-start gap-2 text-xs font-semibold text-on-surface-variant/80">
+                        <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
+                        <span className="min-w-0 break-words">{business.address || 'No address yet'}</span>
+                      </div>
+                      <Badge
+                        variant="outline"
+                        className={
+                          business.latitude !== null && business.longitude !== null
+                            ? 'border-success/20 bg-success/10 text-success'
+                            : 'border-warning/20 bg-warning/10 text-warning'
+                        }
+                      >
+                        {business.latitude !== null && business.longitude !== null ? 'Pinned' : 'Missing coordinates'}
+                      </Badge>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2 border-t border-outline-variant/15 pt-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-9 rounded-full px-2 text-xs"
+                        onClick={() => {
+                          setPartnerActionError(null)
+                          setBusinessAccessDialog({
+                            businessId: business.id,
+                            role: 'business-owner',
+                          })
+                        }}
+                      >
+                        Owner
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-9 rounded-full px-2 text-xs"
+                        onClick={() => {
+                          setPartnerActionError(null)
+                          setBusinessAccessDialog({
+                            businessId: business.id,
+                            role: 'business-staff',
+                          })
+                        }}
+                      >
+                        Staff
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="h-9 rounded-full px-2 text-xs"
+                        onClick={() =>
+                          editingBusinessId === business.id
+                            ? setEditingBusinessId(null)
+                            : beginBusinessEdit(business)
+                        }
+                      >
+                        {editingBusinessId === business.id ? 'Close' : 'Edit'}
+                      </Button>
+                    </div>
+
+                    {editingBusinessId === business.id ? (
+                      <form
+                        className="grid gap-3 rounded-2xl border border-primary-container/20 bg-primary-container/10 p-3"
+                        onSubmit={async (event) => {
+                          event.preventDefault()
+                          try {
+                            setPartnerActionError(null)
+                            const latitude = parseBusinessCoordinate(businessPatch.latitude, 'Latitude', -90, 90)
+                            const longitude = parseBusinessCoordinate(businessPatch.longitude, 'Longitude', -180, 180)
+                            await updateBusiness.mutateAsync({
+                              id: business.id,
+                              patch: {
+                                name: businessPatch.name.trim(),
+                                description: businessPatch.description.trim(),
+                                address: businessPatch.address.trim(),
+                                latitude,
+                                longitude,
+                                logoUrl: businessPatch.logoUrl.trim(),
+                              },
+                            })
+                            setEditingBusinessId(null)
+                            toast.success('Business updated.')
+                          } catch (error) {
+                            setPartnerActionError(
+                              error instanceof Error ? error.message : 'Failed to update partner info.',
+                            )
+                          }
+                        }}
+                      >
+                        <div className="grid gap-2">
+                          <Label htmlFor={`partner-name-mobile-${business.id}`}>Name</Label>
+                          <Input
+                            id={`partner-name-mobile-${business.id}`}
+                            value={businessPatch.name}
+                            onChange={(event) =>
+                              setBusinessPatch((current) => ({ ...current, name: event.target.value }))
+                            }
+                          />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor={`partner-address-mobile-${business.id}`}>Address</Label>
+                          <Input
+                            id={`partner-address-mobile-${business.id}`}
+                            value={businessPatch.address}
+                            onChange={(event) =>
+                              setBusinessPatch((current) => ({ ...current, address: event.target.value }))
+                            }
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="grid gap-2">
+                            <Label htmlFor={`partner-latitude-mobile-${business.id}`}>Latitude</Label>
+                            <Input
+                              id={`partner-latitude-mobile-${business.id}`}
+                              type="number"
+                              step="0.0001"
+                              value={businessPatch.latitude}
+                              onChange={(event) =>
+                                setBusinessPatch((current) => ({ ...current, latitude: event.target.value }))
+                              }
+                            />
+                          </div>
+                          <div className="grid gap-2">
+                            <Label htmlFor={`partner-longitude-mobile-${business.id}`}>Longitude</Label>
+                            <Input
+                              id={`partner-longitude-mobile-${business.id}`}
+                              type="number"
+                              step="0.0001"
+                              value={businessPatch.longitude}
+                              onChange={(event) =>
+                                setBusinessPatch((current) => ({ ...current, longitude: event.target.value }))
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
+                            {updateBusiness.isPending ? 'Saving...' : 'Save'}
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            className="rounded-full"
+                            onClick={() => setEditingBusinessId(null)}
+                            disabled={updateBusiness.isPending}
+                          >
+                            Cancel
+                          </Button>
+                          {partnerActionError ? (
+                            <p className="basis-full text-sm font-bold text-red-500">{partnerActionError}</p>
+                          ) : null}
+                        </div>
+                      </form>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
+
+              <ScrollArea className="hidden w-full md:block">
                 <div className="min-w-[1180px]">
                   <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(220px,0.95fr)_100px_100px_130px_130px_170px] gap-4 border-b border-outline-variant/10 bg-[var(--muted)] px-6 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
                     <span>Partner</span>
@@ -3115,22 +3332,22 @@ export function AdminPage() {
               </div>
               <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
-                  <div className="space-y-2 p-4">
+                  <div className="space-y-2 p-3 sm:p-4">
                     {(overview.data?.redemptions ?? []).map((redemption) => (
-                      <div key={redemption.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-5 border border-outline-variant/5 hover:border-outline-variant/10 transition-all">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-start gap-4">
-                            <div className="size-12 rounded-xl bg-tertiary/30 flex items-center justify-center text-primary shrink-0">
+                      <div key={redemption.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-4 border border-outline-variant/5 hover:border-outline-variant/10 transition-all sm:p-5">
+                        <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
+                          <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+                            <div className="size-11 rounded-xl bg-tertiary/30 flex items-center justify-center text-primary shrink-0 sm:size-12">
                               <Gift className="size-5" />
                             </div>
-                            <div className="space-y-1">
-                              <p className="font-serif text-xl tracking-tight text-primary">{redemption.rewardTitle}</p>
+                            <div className="min-w-0 space-y-1">
+                              <p className="font-serif text-lg tracking-tight text-primary sm:text-xl">{redemption.rewardTitle}</p>
                               <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">
                                 Member ID: {redemption.profileId.slice(0, 8)}...
                               </p>
                             </div>
                           </div>
-                          <div className="flex flex-col items-end gap-3">
+                          <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end sm:gap-3">
                             <Badge variant={redemption.status === 'ready' ? 'outline' : 'accent'} className={
                               redemption.status === 'ready'
                                 ? 'border-warning/50 text-warning bg-warning/10'
@@ -3152,12 +3369,12 @@ export function AdminPage() {
                             )}
                           </div>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-outline-variant/5 flex items-center justify-between">
+                        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/5 pt-4">
                            <div className="flex items-center gap-2">
                              <TrendingUp className="size-4 text-secondary" />
                              <span className="text-sm font-bold text-primary">{redemption.pointsCost} {t('points')}</span>
                            </div>
-                           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80 flex items-center gap-1">
+                           <span className="flex items-center gap-1 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
                              {formatDate(redemption.redeemedAt)}
                            </span>
                         </div>
@@ -3183,20 +3400,20 @@ export function AdminPage() {
               </div>
                <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
-                  <div className="space-y-2 p-4">
+                  <div className="space-y-2 p-3 sm:p-4">
                     {(overview.data?.adminLogs ?? []).map((log) => (
-                      <div key={log.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-5 border border-outline-variant/5 hover:border-outline-variant/10 transition-all">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-start gap-4">
-                            <div className="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                      <div key={log.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-4 border border-outline-variant/5 hover:border-outline-variant/10 transition-all sm:p-5">
+                        <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
+                          <div className="flex min-w-0 items-start gap-3 sm:gap-4">
+                            <div className="size-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 sm:size-12">
                               <Activity className="size-5" />
                             </div>
-                            <div className="space-y-1">
+                            <div className="min-w-0 space-y-1">
                               <p className="font-serif text-lg tracking-tight text-primary leading-tight">{log.action}</p>
-                              <p className="text-sm font-medium leading-relaxed text-on-surface-variant/85 mt-2">{log.details}</p>
+                              <p className="mt-2 break-words text-sm font-medium leading-relaxed text-on-surface-variant/85">{log.details}</p>
                             </div>
                           </div>
-                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 whitespace-nowrap">
+                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 sm:whitespace-nowrap">
                             {formatDate(log.createdAt)}
                           </span>
                         </div>
