@@ -3,12 +3,15 @@ import {
   Hotel,
   LayoutDashboard,
   LogOut,
+  Menu,
   MonitorPlay,
   Package,
   Settings,
   Sparkles,
   Users,
+  X,
 } from 'lucide-react'
+import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
@@ -21,7 +24,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { canAccessBusinessPath } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
-import { getInitials } from '@/lib/utils'
+import { cn, getInitials } from '@/lib/utils'
 
 const businessNavigationItems = [
   { to: '/business/dashboard', label: 'QR Sales', icon: LayoutDashboard },
@@ -38,6 +41,7 @@ export function BusinessOwnerLayout() {
   const { profile, signOut } = useAuth()
   const { business, isBusinessLoading, error } = useBusinessOwnerData()
   const { t } = useLanguage()
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   if (isBusinessLoading) {
     return (
@@ -89,18 +93,51 @@ export function BusinessOwnerLayout() {
 
   return (
     <div className="soft-luxe-shell flex min-h-screen">
-      <aside className="fixed inset-y-0 left-0 flex w-20 flex-col overflow-hidden border-r border-primary/15 bg-card/92 px-3 py-4 shadow-soft backdrop-blur-xl xl:w-72 xl:px-4">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="fixed left-4 top-4 z-50 border border-primary/15 bg-card/95 text-[var(--foreground)] shadow-soft backdrop-blur-xl xl:hidden"
+        onClick={() => setIsSidebarOpen(true)}
+        aria-label={t('Menu')}
+      >
+        <Menu className="size-5" />
+      </Button>
+
+      {isSidebarOpen ? (
+        <button
+          type="button"
+          className="fixed inset-0 z-40 bg-black/35 backdrop-blur-[2px] xl:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+          aria-label={t('Close menu')}
+        />
+      ) : null}
+
+      <aside
+        className={cn(
+          'fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-2rem))] flex-col overflow-hidden border-r border-primary/15 bg-card/95 px-4 py-4 shadow-soft backdrop-blur-xl transition-transform duration-200 xl:w-72 xl:translate-x-0',
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        )}
+      >
         {/* Business Logo/Identity */}
-        <div className="flex items-center justify-center gap-3 xl:justify-start">
+        <div className="flex items-center gap-3">
           <div className="luxe-art flex size-10 items-center justify-center rounded-[0.9rem]">
             <Package className="size-5" />
           </div>
-          <div className="hidden flex-col overflow-hidden xl:flex">
+          <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
             <span className="truncate text-lg font-semibold text-[var(--foreground)]">{business.name}</span>
             <span className="text-xs font-medium text-[var(--muted-foreground)]">
               {t('Business Overview')}
             </span>
           </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="shrink-0 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] xl:hidden"
+            onClick={() => setIsSidebarOpen(false)}
+            aria-label={t('Close menu')}
+          >
+            <X className="size-4" />
+          </Button>
         </div>
 
         {/* Navigation */}
@@ -112,8 +149,9 @@ export function BusinessOwnerLayout() {
               key={item.to}
               title={t(item.label)}
               to={item.to}
+              onClick={() => setIsSidebarOpen(false)}
               className={({ isActive }) =>
-                `group flex items-center justify-center rounded-[0.9rem] px-3 text-sm font-semibold transition-colors xl:justify-between ${
+                `group flex items-center justify-start rounded-[0.9rem] px-3 text-sm font-semibold transition-colors ${
                   isActive
                     ? 'bg-[var(--muted)] py-2 text-[var(--foreground)] shadow-soft'
                     : 'py-2 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
@@ -122,7 +160,7 @@ export function BusinessOwnerLayout() {
             >
               <div className="flex items-center gap-3">
                 <item.icon className="size-5 opacity-80 group-hover:opacity-100" />
-                <span className="hidden xl:inline">{t(item.label)}</span>
+                <span>{t(item.label)}</span>
               </div>
             </NavLink>
           ))}
@@ -132,13 +170,13 @@ export function BusinessOwnerLayout() {
         <div className="mt-4 shrink-0">
           <Separator className="bg-[var(--border)]" />
 
-          <div className="mt-3 flex items-center justify-center gap-3 px-2 xl:justify-start">
+          <div className="mt-3 flex items-center gap-3 px-2">
             <Avatar className="size-9 rounded-lg border border-[var(--border)]">
               <AvatarFallback className="rounded-lg bg-[var(--muted)] text-[var(--foreground)] font-semibold">
                 {getInitials(profile?.fullName ?? 'BO')}
               </AvatarFallback>
             </Avatar>
-            <div className="hidden flex-col overflow-hidden xl:flex">
+            <div className="flex min-w-0 flex-col overflow-hidden">
               <span className="truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
               <span className="text-xs text-[var(--muted-foreground)]">
                 {profile?.role === 'business-owner' ? t('Business Owner') : 'Business Staff'}
@@ -149,9 +187,9 @@ export function BusinessOwnerLayout() {
           <div className="mt-3 flex flex-col gap-2">
             <LanguagePicker
               compact
-              className="hidden w-full justify-between rounded-lg border border-[var(--border)] bg-card px-3 py-2 text-[var(--muted-foreground)] xl:inline-flex"
+              className="w-full justify-between rounded-lg border border-[var(--border)] bg-card px-3 py-2 text-[var(--muted-foreground)]"
             />
-            <div className="flex items-center justify-center xl:justify-start">
+            <div className="flex items-center justify-start">
               <ThemeToggle />
               <Button
                 variant="ghost"
@@ -169,8 +207,8 @@ export function BusinessOwnerLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="ml-20 min-h-screen min-w-0 flex-1 xl:ml-72">
-        <div className="mx-auto w-full max-w-7xl min-w-0 px-4 py-8 sm:px-6 lg:px-8 xl:px-10 xl:py-12">
+      <main className="min-h-screen min-w-0 flex-1 xl:ml-72">
+        <div className="mx-auto w-full max-w-7xl min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12">
           <Outlet />
         </div>
       </main>
