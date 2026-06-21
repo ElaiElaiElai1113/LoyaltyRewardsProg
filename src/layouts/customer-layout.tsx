@@ -38,10 +38,10 @@ export function CustomerLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
       <header className="fixed inset-x-0 top-0 z-50 shrink-0 border-b border-[var(--border)] bg-card/95 backdrop-blur">
-        <div className="mx-auto flex h-16 w-full items-center justify-between px-5 md:px-6 2xl:px-10">
-          <div className="flex items-center gap-12">
-            <NavLink to="/dashboard" className="flex items-center gap-3">
-              <span className="text-xl font-semibold text-[var(--foreground)]">
+        <div className="mx-auto flex min-h-16 w-full items-center justify-between gap-3 px-4 py-2 sm:px-5 md:px-6 2xl:px-10">
+          <div className="flex min-w-0 flex-1 items-center gap-6 lg:gap-12">
+            <NavLink to="/dashboard" className="flex min-w-0 items-center gap-3">
+              <span className="block max-w-36 truncate text-lg font-semibold leading-tight text-[var(--foreground)] sm:max-w-none sm:text-xl">
                 Medellin Rewards
               </span>
             </NavLink>
@@ -65,14 +65,14 @@ export function CustomerLayout() {
             </nav>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex shrink-0 items-center gap-2 md:gap-6">
             <div className="hidden flex-col items-end md:flex">
               <span className="text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
               <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Member')}</span>
             </div>
 
-            <div className="flex items-center gap-4">
-              <VerificationStatusPill status={profile?.verificationStatus} />
+            <div className="flex items-center gap-2 sm:gap-3 md:gap-4">
+              <VerificationStatusPill status={profile?.verificationStatus} className="hidden lg:inline-flex" />
               <NavLink
                 to="/cart"
                 className="relative rounded-full p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
@@ -88,7 +88,7 @@ export function CustomerLayout() {
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
 
-              <Avatar className="size-10 rounded-lg border border-[var(--border)]">
+              <Avatar className="hidden size-10 rounded-lg border border-[var(--border)] sm:flex">
                 <AvatarFallback className="rounded-lg bg-[var(--muted)] font-semibold text-[var(--foreground)]">
                   {getInitials(profile?.fullName ?? 'CC')}
                 </AvatarFallback>
@@ -97,7 +97,7 @@ export function CustomerLayout() {
               <Button
                 variant="ghost"
                 size="icon"
-                className="text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                className="hidden text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] sm:inline-flex"
                 onClick={() => void signOut()}
               >
                 <LogOut className="size-5" />

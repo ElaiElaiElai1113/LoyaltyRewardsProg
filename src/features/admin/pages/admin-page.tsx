@@ -699,46 +699,46 @@ export function AdminPage() {
       <Tabs value={activeAdminTab} onValueChange={handleAdminTabChange} className="min-w-0 space-y-12">
         <TabsContent value="members" className="space-y-12 outline-none">
           <div className="grid min-w-0 gap-8 2xl:grid-cols-[360px_minmax(0,1fr)]">
-            <div className="space-y-5">
+            <div className="min-w-0 space-y-5">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Member Profile')}</span>
-                <h2 className="font-serif text-3xl text-primary">{t('Adjust Points')}</h2>
+                <h2 className="font-serif text-3xl leading-tight text-primary">{t('Adjust Points')}</h2>
               </div>
 
-              <div className="member-action-panel rounded-[1.5rem] border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm space-y-5">
+              <div className="member-action-panel min-w-0 space-y-5 overflow-hidden rounded-[1.5rem] border border-[var(--border)] bg-card p-4 text-card-foreground shadow-sm">
                 {selectedMember ? (
-                  <div className="rounded-[1.25rem] border border-primary-container/15 bg-[var(--muted)] p-4 shadow-sm">
+                  <div className="min-w-0 overflow-hidden rounded-[1.25rem] border border-primary-container/15 bg-[var(--muted)] p-3 shadow-sm sm:p-4">
                     <div className="flex min-w-0 items-start gap-3">
-                      <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-black font-serif text-xl text-white shadow-sm">
+                      <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-black font-serif text-xl text-white shadow-sm sm:size-12">
                         {selectedMember.profile.fullName.charAt(0)}
                       </div>
                       <div className="min-w-0 flex-1 space-y-3">
-                        <div>
+                        <div className="min-w-0">
                           <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Profile Summary</p>
-                          <p className="mt-1 truncate font-serif text-2xl tracking-tight text-primary">
+                          <p className="mt-1 min-w-0 truncate font-serif text-xl tracking-tight text-primary sm:text-2xl">
                             {selectedMember.profile.fullName}
                           </p>
-                          <p className="break-all text-sm font-medium text-on-surface-variant/90">
+                          <p className="min-w-0 break-all text-sm font-medium leading-5 text-on-surface-variant/90">
                             {selectedMember.profile.email}
                           </p>
                         </div>
-                        <div className="member-stat-grid grid grid-cols-2 gap-2">
-                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                        <div className="member-stat-grid grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
+                          <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
                             <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Points</p>
                             <p className="mt-1 flex items-center gap-1 font-serif text-2xl text-primary">
                               <Gift className="size-3" />
                               {selectedMember.balance?.points ?? 0}
                             </p>
                           </div>
-                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                          <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
                             <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Credits</p>
                             <p className="mt-1 font-serif text-2xl text-primary">{selectedMember.balance?.availableCredits ?? 0}</p>
                           </div>
-                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                          <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
                             <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Recent Value</p>
                             <p className="mt-1 truncate text-sm font-semibold text-primary">{selectedMember.profile.location || t('Unknown')}</p>
                           </div>
-                          <div className="rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
+                          <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
                             <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Status</p>
                             <p className="mt-1 truncate text-sm font-semibold text-primary">{getVerificationStatusLabel(selectedMember.profile.verificationStatus)}</p>
                           </div>
@@ -752,11 +752,11 @@ export function AdminPage() {
                   </div>
                 )}
 
-                <Tabs defaultValue="award-points" className="member-action-tabs space-y-4 border-t border-outline-variant/20 pt-5">
-                  <TabsList className="grid h-auto grid-cols-[1fr_1fr_1fr] rounded-2xl bg-[var(--muted)] p-1">
-                    <TabsTrigger value="award-points" className="min-w-0 whitespace-normal rounded-xl px-2 text-center text-xs leading-tight">Award Points</TabsTrigger>
-                    <TabsTrigger value="use-credit" className="min-w-0 whitespace-normal rounded-xl px-2 text-center text-xs leading-tight">Use Credit</TabsTrigger>
-                    <TabsTrigger value="verification" className="min-w-0 whitespace-normal rounded-xl px-2 text-center text-xs leading-tight" title="Verification">ID</TabsTrigger>
+                <Tabs defaultValue="award-points" className="member-action-tabs min-w-0 space-y-4 border-t border-outline-variant/20 pt-5">
+                  <TabsList className="grid h-auto w-full min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.65fr)] rounded-2xl bg-[var(--muted)] p-1">
+                    <TabsTrigger value="award-points" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">Award Points</TabsTrigger>
+                    <TabsTrigger value="use-credit" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">Use Credit</TabsTrigger>
+                    <TabsTrigger value="verification" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs" title="Verification">ID</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="award-points" className="outline-none">
@@ -801,7 +801,7 @@ export function AdminPage() {
                       <p className="text-xs text-red-500">{adjustmentForm.formState.errors.profileId.message}</p>
                     ) : null}
                     {selectedMember ? (
-                      <p className="truncate text-xs text-on-surface-variant/80">
+                      <p className="break-words text-xs text-on-surface-variant/80">
                         {t('Selected')}: {selectedMember.profile.fullName} - {t('Current balance')}: {selectedMember.balance?.points ?? 0} {t('points')}
                       </p>
                     ) : null}
@@ -2897,7 +2897,108 @@ export function AdminPage() {
             </div>
 
             <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
-              <ScrollArea className="h-[620px]">
+              <div className="space-y-3 p-3 md:hidden">
+                {(allReferrals.data ?? []).map((referral) => {
+                  const referrer = referralProfileLabel(referral.referrerId, referral.referrer)
+                  const referee = referralProfileLabel(referral.refereeId, referral.referee)
+
+                  return (
+                    <div
+                      key={referral.id}
+                      className="space-y-4 rounded-2xl border border-primary-container/15 bg-[var(--muted)] p-4"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div>
+                          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                            Date
+                          </p>
+                          <p className="mt-1 text-sm font-semibold text-primary">{formatDate(referral.createdAt)}</p>
+                        </div>
+                        <Badge
+                          variant="accent"
+                          className={
+                            referral.status === 'approved'
+                              ? 'border-success/20 bg-success/10 text-success'
+                              : referral.status === 'rejected'
+                                ? 'border-red-200 bg-red-50 text-red-600'
+                                : 'border-warning/20 bg-warning/10 text-warning'
+                          }
+                        >
+                          {getReferralStatusLabel(referral.status)}
+                        </Badge>
+                      </div>
+
+                      <div className="grid gap-3">
+                        <div>
+                          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                            Referrer
+                          </p>
+                          <p className="mt-1 break-words font-semibold text-primary">{referrer.fullName}</p>
+                          <p className="break-all text-xs text-on-surface-variant/75">{referrer.email}</p>
+                        </div>
+                        <div>
+                          <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                            Referee
+                          </p>
+                          <p className="mt-1 break-words font-semibold text-primary">{referee.fullName}</p>
+                          <p className="break-all text-xs text-on-surface-variant/75">{referee.email}</p>
+                        </div>
+                      </div>
+
+                      <div className="border-t border-outline-variant/15 pt-3">
+                        {referral.status === 'pending' ? (
+                          <div className="grid grid-cols-2 gap-2">
+                            <Button
+                              type="button"
+                              size="sm"
+                              className="rounded-full bg-success/10 text-success hover:bg-success/15"
+                              disabled={approveReferral.isPending || rejectReferral.isPending || !profile?.id}
+                              onClick={() => {
+                                if (!profile?.id) return
+                                approveReferral.mutate({ id: referral.id, approverId: profile.id })
+                              }}
+                            >
+                              <CheckCircle className="size-4" />
+                              Approve
+                            </Button>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              size="sm"
+                              className="rounded-full border-red-200 text-red-600 hover:bg-red-50"
+                              disabled={approveReferral.isPending || rejectReferral.isPending}
+                              onClick={() => rejectReferral.mutate(referral.id)}
+                            >
+                              Reject
+                            </Button>
+                          </div>
+                        ) : (
+                          <span className="text-xs font-medium text-on-surface-variant/70">No action</span>
+                        )}
+                      </div>
+                    </div>
+                  )
+                })}
+
+                {allReferrals.isLoading ? (
+                  Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="rounded-2xl border border-primary-container/15 bg-[var(--muted)] p-4">
+                      <Skeleton className="h-28 w-full" />
+                    </div>
+                  ))
+                ) : null}
+
+                {!allReferrals.isLoading && (allReferrals.data?.length ?? 0) === 0 ? (
+                  <EmptyState
+                    className="border-0 shadow-none"
+                    icon={<Users className="size-8" />}
+                    title={t('No referrals found')}
+                    description={t('Customer referral records will appear here.')}
+                  />
+                ) : null}
+              </div>
+
+              <ScrollArea className="hidden h-[620px] md:block">
                 <div className="min-w-[760px]">
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
