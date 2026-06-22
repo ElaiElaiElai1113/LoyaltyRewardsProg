@@ -14,6 +14,93 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useLanguage, type Language } from '@/lib/language'
 
+const screenshotGalleryByLanguage: Record<Language, {
+  eyebrow: string
+  title: string
+  badge: string
+  items: Array<{
+    title: string
+    caption: string
+    imageSrc: string
+    route: string
+  }>
+}> = {
+  es: {
+    eyebrow: 'Fotos reales',
+    title: 'Pantallas para el walkthrough',
+    badge: 'Listas para traducir',
+    items: [
+      {
+        title: 'Guia publica',
+        caption: 'La pagina base para explicar Medellin Rewards y el orden de la demo.',
+        imageSrc: '/walkthrough-screenshots/guide.png',
+        route: '/guide',
+      },
+      {
+        title: 'Mapa de negocios',
+        caption: 'Los clientes exploran negocios aliados y eligen donde comprar.',
+        imageSrc: '/walkthrough-screenshots/public-map.png',
+        route: '/shop',
+      },
+      {
+        title: 'Pagina para negocios',
+        caption: 'El equipo explica el valor para aliados antes de entrar al portal.',
+        imageSrc: '/walkthrough-screenshots/business-page.png',
+        route: '/business',
+      },
+      {
+        title: 'Login negocio',
+        caption: 'Staff y duenos entran al portal para registrar ventas QR.',
+        imageSrc: '/walkthrough-screenshots/business-login.png',
+        route: '/business/login',
+      },
+      {
+        title: 'Login admin',
+        caption: 'El equipo operativo entra para revisar miembros, aliados y comisiones.',
+        imageSrc: '/walkthrough-screenshots/admin-login.png',
+        route: '/admin',
+      },
+    ],
+  },
+  en: {
+    eyebrow: 'Real photos',
+    title: 'Screens for the walkthrough',
+    badge: 'Translation-ready',
+    items: [
+      {
+        title: 'Public guide',
+        caption: 'The base page for explaining Medellin Rewards and the demo order.',
+        imageSrc: '/walkthrough-screenshots/guide.png',
+        route: '/guide',
+      },
+      {
+        title: 'Business map',
+        caption: 'Customers explore partner businesses and choose where to shop.',
+        imageSrc: '/walkthrough-screenshots/public-map.png',
+        route: '/shop',
+      },
+      {
+        title: 'Business page',
+        caption: 'The team explains partner value before entering the portal.',
+        imageSrc: '/walkthrough-screenshots/business-page.png',
+        route: '/business',
+      },
+      {
+        title: 'Business login',
+        caption: 'Staff and owners enter the portal to record QR sales.',
+        imageSrc: '/walkthrough-screenshots/business-login.png',
+        route: '/business/login',
+      },
+      {
+        title: 'Admin login',
+        caption: 'The operations team enters to review members, partners, and commissions.',
+        imageSrc: '/walkthrough-screenshots/admin-login.png',
+        route: '/admin',
+      },
+    ],
+  },
+}
+
 const scriptsByLanguage: Record<Language, Array<{ time: string; title: string; body: string }>> = {
   es: [
   {
@@ -278,6 +365,7 @@ export function PlatformGuidePage() {
   const { language } = useLanguage()
   const content = guideContent[language]
   const script = scriptsByLanguage[language]
+  const screenshotGallery = screenshotGalleryByLanguage[language]
 
   return (
     <div className="mx-auto max-w-7xl space-y-12 pb-10">
@@ -378,6 +466,42 @@ export function PlatformGuidePage() {
             ))}
           </div>
         </aside>
+      </section>
+
+      <section className="space-y-6">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
+              {screenshotGallery.eyebrow}
+            </p>
+            <h2 className="mt-2 font-serif text-3xl text-primary">{screenshotGallery.title}</h2>
+          </div>
+          <Badge variant="outline" className="w-fit rounded-full">
+            {screenshotGallery.badge}
+          </Badge>
+        </div>
+
+        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+          {screenshotGallery.items.map((screen) => (
+            <article key={screen.imageSrc} className="overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-sm">
+              <div className="aspect-[4/3] overflow-hidden bg-surface-low">
+                <img
+                  src={screen.imageSrc}
+                  alt={screen.title}
+                  loading="lazy"
+                  className="h-full w-full object-cover object-top"
+                />
+              </div>
+              <div className="p-5">
+                <h3 className="font-serif text-2xl text-primary">{screen.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-on-surface-variant/85">{screen.caption}</p>
+                <Button asChild variant="ghost" className="mt-4 w-full rounded-full">
+                  <Link to={screen.route}>{content.links.openView}</Link>
+                </Button>
+              </div>
+            </article>
+          ))}
+        </div>
       </section>
 
       <section className="space-y-6">
