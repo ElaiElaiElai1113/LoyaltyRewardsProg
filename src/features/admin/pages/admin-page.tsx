@@ -753,7 +753,7 @@ export function AdminPage() {
                 )}
 
                 <Tabs defaultValue="award-points" className="member-action-tabs min-w-0 space-y-4 border-t border-outline-variant/20 pt-5">
-                  <TabsList className="grid h-auto w-full min-w-0 grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.65fr)] rounded-2xl bg-[var(--muted)] p-1">
+                  <TabsList className="grid h-auto w-full min-w-0 grid-cols-[1fr_1fr_1fr] rounded-2xl bg-[var(--muted)] p-1">
                     <TabsTrigger value="award-points" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">Award Points</TabsTrigger>
                     <TabsTrigger value="use-credit" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">Use Credit</TabsTrigger>
                     <TabsTrigger value="verification" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs" title="Verification">ID</TabsTrigger>

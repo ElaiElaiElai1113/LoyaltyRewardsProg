@@ -238,6 +238,7 @@ const spanishTranslations: Record<string, string> = {
   English: 'Inglés',
   Español: 'Español',
   Menu: 'Menú',
+  'Close menu': 'Cerrar menú',
   Vault: 'Bóveda',
   Promotions: 'Promociones',
   Dashboard: 'Panel',
