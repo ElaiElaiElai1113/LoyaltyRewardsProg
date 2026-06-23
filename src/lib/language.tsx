@@ -122,6 +122,32 @@ const spanishTranslations: Record<string, string> = {
   Cart: 'Carrito',
   'Activate your member QR so staff can record purchases.':
     'Activa tu QR de miembro para que el personal pueda registrar compras.',
+  'Add this app to your phone home screen for quick access to QR, business, and admin tools.':
+    'Agrega esta app a la pantalla de inicio de tu telefono para abrir rapido el QR, negocio y herramientas admin.',
+  'Dismiss install prompt': 'Cerrar aviso de instalacion',
+  'Install app': 'Instalar app',
+  'Install Medellin Rewards': 'Instalar Medellin Rewards',
+  'If the camera is unavailable, paste the customer QR link or token here.':
+    'Si la camara no esta disponible, pega aqui el enlace o token del QR del cliente.',
+  'Live camera scanning is not available in this browser. Paste the QR link instead.':
+    'El escaneo con camara no esta disponible en este navegador. Pega el enlace del QR.',
+  'Manual fallback': 'Opcion manual',
+  'Medellin Rewards needs internet for account data, QR sale recording, rewards, and admin operations. Reconnect to continue.':
+    'Medellin Rewards necesita internet para datos de cuenta, ventas con QR, recompensas y operaciones admin. Reconectate para continuar.',
+  'Member QR detected. Opening the sale form.': 'QR de miembro detectado. Abriendo formulario de venta.',
+  'Member QR scanner': 'Escaner de QR de miembro',
+  'On iPhone, tap Share, then Add to Home Screen to use this like an app.':
+    'En iPhone, toca Compartir y luego Agregar a pantalla de inicio para usarlo como app.',
+  'Open sale form': 'Abrir formulario de venta',
+  'Paste QR link': 'Pegar enlace QR',
+  'Paste or scan a member QR first.': 'Primero pega o escanea un QR de miembro.',
+  'Point the camera at the customer member QR or upload a QR screenshot.':
+    'Apunta la camara al QR de miembro del cliente o sube una captura del QR.',
+  'Scan member QR': 'Escanear QR de miembro',
+  'That QR is not a Medellin Rewards member QR.': 'Ese QR no es un QR de miembro de Medellin Rewards.',
+  'Use the staff device camera, upload a screenshot, or paste the member QR link to open the sale form.':
+    'Usa la camara del dispositivo del personal, sube una captura o pega el enlace del QR de miembro para abrir el formulario de venta.',
+  'You are offline': 'Estas sin conexion',
   'Open the guided demo for the member QR, partner business scan, and admin follow-up flow.':
     'Abre la demo guiada para el QR de miembro, el escaneo del negocio aliado y el seguimiento admin.',
   'Open the guided demo for scanning a customer QR, recording the purchase, awarding points, and tracking commission.':

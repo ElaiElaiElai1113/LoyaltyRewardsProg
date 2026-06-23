@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
+import { App as CapacitorApp } from '@capacitor/app'
 import { Navigate, Outlet, RouterProvider, createBrowserRouter, useLocation, useNavigate } from 'react-router-dom'
 
 import { AdminPage } from '@/features/admin/pages/admin-page'
@@ -96,6 +97,32 @@ function RouteEffects() {
       { replace: true },
     )
   }, [location.hash, location.pathname, location.search, navigate])
+
+  useEffect(() => {
+    let isMounted = true
+    const listener = CapacitorApp.addListener('appUrlOpen', (event) => {
+      try {
+        const url = new URL(event.url)
+        const path =
+          url.protocol === 'medellinrewards:'
+            ? `/${url.host}${url.pathname}`
+            : `${url.pathname}${url.search}${url.hash}`
+
+        if (path.startsWith('/')) {
+          navigate(path)
+        }
+      } catch {
+        // Ignore malformed external URLs.
+      }
+    })
+
+    return () => {
+      isMounted = false
+      void listener.then((handle) => {
+        if (!isMounted) handle.remove()
+      })
+    }
+  }, [navigate])
 
   return <Outlet />
 }
