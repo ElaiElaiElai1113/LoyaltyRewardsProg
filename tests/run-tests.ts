@@ -683,6 +683,83 @@ runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   assert.match(guideAuthSpec, /workflowAuthEnabled/)
 })
 
+runTest('app version is installable as a PWA with online-required messaging', () => {
+  const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
+    devDependencies?: Record<string, string>
+  }
+  const manifest = JSON.parse(readFileSync('public/site.webmanifest', 'utf8')) as {
+    display?: string
+    orientation?: string
+    shortcuts?: Array<{ url?: string }>
+  }
+  const viteConfig = readFileSync('vite.config.ts', 'utf8')
+  const indexHtml = readFileSync('index.html', 'utf8')
+  const main = readFileSync('src/main.tsx', 'utf8')
+  const app = readFileSync('src/App.tsx', 'utf8')
+  const installPrompt = readFileSync('src/components/app-install-prompt.tsx', 'utf8')
+  const offlineNotice = readFileSync('src/components/offline-notice.tsx', 'utf8')
+
+  assert.ok(packageJson.devDependencies?.['vite-plugin-pwa'])
+  assert.match(viteConfig, /VitePWA/)
+  assert.match(viteConfig, /registerType: 'autoUpdate'/)
+  assert.match(viteConfig, /manifest: false/)
+  assert.match(viteConfig, /navigateFallback: '\/index\.html'/)
+  assert.match(main, /registerSW/)
+  assert.match(app, /<OfflineNotice \/>/)
+  assert.match(app, /<AppInstallPrompt \/>/)
+  assert.match(indexHtml, /apple-mobile-web-app-capable/)
+  assert.match(indexHtml, /apple-mobile-web-app-status-bar-style/)
+
+  assert.equal(manifest.display, 'standalone')
+  assert.equal(manifest.orientation, 'portrait')
+  assert.ok(manifest.shortcuts?.some((shortcut) => shortcut.url === '/profile?source=pwa-shortcut'))
+  assert.ok(manifest.shortcuts?.some((shortcut) => shortcut.url === '/business/dashboard?source=pwa-shortcut'))
+  assert.ok(manifest.shortcuts?.some((shortcut) => shortcut.url === '/guide?source=pwa-shortcut'))
+
+  assert.match(installPrompt, /beforeinstallprompt/)
+  assert.match(installPrompt, /Add to Home Screen/)
+  assert.match(installPrompt, /localStorage/)
+  assert.match(offlineNotice, /navigator\.onLine/)
+  assert.match(offlineNotice, /QR sale recording/)
+  assert.match(offlineNotice, /admin operations/)
+})
+
+runTest('native app wrapper is configured for Android and iOS distribution', () => {
+  const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
+    scripts?: Record<string, string>
+    devDependencies?: Record<string, string>
+  }
+  const capacitorConfig = readFileSync('capacitor.config.ts', 'utf8')
+  const router = readFileSync('src/routes/router.tsx', 'utf8')
+  const androidManifest = readFileSync('android/app/src/main/AndroidManifest.xml', 'utf8')
+  const androidStrings = readFileSync('android/app/src/main/res/values/strings.xml', 'utf8')
+  const iosInfo = readFileSync('ios/App/App/Info.plist', 'utf8')
+
+  for (const dependency of ['@capacitor/core', '@capacitor/cli', '@capacitor/android', '@capacitor/ios', '@capacitor/app']) {
+    assert.ok(packageJson.devDependencies?.[dependency])
+  }
+
+  assert.equal(packageJson.scripts?.['native:sync'], 'npm run build && cap sync')
+  assert.equal(packageJson.scripts?.['android:sync'], 'npm run build && cap sync android')
+  assert.equal(packageJson.scripts?.['ios:sync'], 'npm run build && cap sync ios')
+  assert.match(capacitorConfig, /appId: 'com\.medellinrewards\.app'/)
+  assert.match(capacitorConfig, /appName: 'Medellin Rewards'/)
+  assert.match(capacitorConfig, /webDir: 'dist'/)
+
+  assert.match(router, /@capacitor\/app/)
+  assert.match(router, /appUrlOpen/)
+  assert.match(router, /url\.protocol === 'medellinrewards:'/)
+  assert.match(router, /navigate\(path\)/)
+
+  assert.match(androidManifest, /android:name="android\.permission\.CAMERA"/)
+  assert.match(androidManifest, /android:screenOrientation="portrait"/)
+  assert.match(androidManifest, /android:scheme="medellinrewards"/)
+  assert.match(androidStrings, /<string name="custom_url_scheme">medellinrewards<\/string>/)
+  assert.match(iosInfo, /CFBundleURLTypes/)
+  assert.match(iosInfo, /<string>medellinrewards<\/string>/)
+  assert.match(iosInfo, /NSCameraUsageDescription/)
+})
+
 runTest('responsive audit covers mobile access across public and protected routes', () => {
   const responsiveAudit = readFileSync('scripts/audit-responsive.mjs', 'utf8')
   const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> }
@@ -948,6 +1025,26 @@ runTest('business member-sale page clearly blocks unverified scanned QR transact
   assert.match(page, /const isMemberVerified = member\.data\.verificationStatus === 'verified'/)
   assert.match(page, /disabled=\{!isMemberVerified \|\| !preview \|\| recordTransaction\.isPending\}/)
   assert.match(page, /This member QR is not active yet\. Ask the member to complete ID verification before recording rewards\./)
+})
+
+runTest('business dashboard exposes an in-app member QR scanner and deep link fallback', () => {
+  const dashboard = readFileSync('src/features/business-owner/pages/business-dashboard-page.tsx', 'utf8')
+  const sharedScanner = readFileSync('src/components/qr-scanner.tsx', 'utf8')
+  const giftCardScanner = readFileSync('src/features/gift-cards/components/qr-scanner.tsx', 'utf8')
+
+  assert.match(sharedScanner, /BarcodeDetector/)
+  assert.match(sharedScanner, /navigator\.mediaDevices\?\.getUserMedia/)
+  assert.match(sharedScanner, /createImageBitmap/)
+  assert.match(giftCardScanner, /export \{ QrScanner \} from '@\/components\/qr-scanner'/)
+
+  assert.match(dashboard, /import \{ QrScanner \} from '@\/components\/qr-scanner'/)
+  assert.match(dashboard, /const openMemberQrSale = \(input: string\) =>/)
+  assert.match(dashboard, /\/\^\\\/business\\\/member-sale\\\/\(\[\^\/\]\+\)\$\/\)/)
+  assert.match(dashboard, /navigate\(`\/business\/member-sale\/\$\{token\}`\)/)
+  assert.match(dashboard, /<QrScanner/)
+  assert.match(dashboard, /onDetected=\{openMemberQrSale\}/)
+  assert.match(dashboard, /Paste QR link/)
+  assert.match(dashboard, /Open sale form/)
 })
 
 runTest('router exposes protected business member-sale route', () => {

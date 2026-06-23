@@ -9,6 +9,7 @@ import {
   MonitorPlay,
   QrCode,
   ReceiptText,
+  ScanLine,
   ShoppingBag,
   Sparkles,
   TrendingUp,
@@ -17,10 +18,11 @@ import {
 import { useRef, useState } from 'react'
 import type { FormEvent } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
+import { QrScanner } from '@/components/qr-scanner'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
@@ -41,8 +43,10 @@ export function BusinessDashboardPage() {
   const { business, metrics, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const signupQrRef = useRef<HTMLDivElement | null>(null)
   const [redemptionCode, setRedemptionCode] = useState('')
+  const [memberQrInput, setMemberQrInput] = useState('')
   const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
   const [pendingFulfillmentId, setPendingFulfillmentId] = useState<string | null>(null)
   const fulfillRedemption = useFulfillRedemption(profile)
@@ -78,6 +82,33 @@ export function BusinessDashboardPage() {
   const partnerCreditsRedeemed = partnerSummaries.reduce((sum, entry) => sum + entry.creditsRedeemed, 0)
   const outstandingPartnerCredits = Math.max(partnerCreditsEarned - partnerCreditsRedeemed, 0)
   const pendingFulfillmentCount = redemptions.filter((redemption) => redemption.status === 'ready').length
+  const openMemberQrSale = (input: string) => {
+    const value = input.trim()
+    if (!value) {
+      toast.error(t('Paste or scan a member QR first.'))
+      return
+    }
+
+    try {
+      const url = new URL(value, window.location.origin)
+      const match = url.pathname.match(/^\/business\/member-sale\/([^/]+)$/)
+      const token = match?.[1]
+
+      if (token) {
+        navigate(`/business/member-sale/${token}`)
+        return
+      }
+    } catch {
+      // Fall through and treat the value as a raw token.
+    }
+
+    if (/^[A-Za-z0-9_-]{12,}$/.test(value)) {
+      navigate(`/business/member-sale/${value}`)
+      return
+    }
+
+    toast.error(t('That QR is not a Medellin Rewards member QR.'))
+  }
 
   const handleDownloadSignupQr = () => {
     const svg = signupQrRef.current?.querySelector('svg')
@@ -140,6 +171,57 @@ export function BusinessDashboardPage() {
             Applied to recorded QR sales and tracked as commission owed to Medellin Rewards.
           </p>
         </div>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
+          <div className="mb-6 flex items-start gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <ScanLine className="size-6" />
+            </div>
+            <div className="space-y-2">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member QR scanner')}</p>
+              <h2 className="font-serif text-3xl text-primary">{t('Scan member QR')}</h2>
+              <p className="max-w-2xl text-sm leading-6 text-on-surface-variant/80">
+                {t('Use the staff device camera, upload a screenshot, or paste the member QR link to open the sale form.')}
+              </p>
+            </div>
+          </div>
+          <QrScanner
+            idleMessage={t('Point the camera at the customer member QR or upload a QR screenshot.')}
+            detectedMessage={t('Member QR detected. Opening the sale form.')}
+            unavailableMessage={t('Live camera scanning is not available in this browser. Paste the QR link instead.')}
+            onDetected={openMemberQrSale}
+          />
+        </div>
+
+        <form
+          className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8"
+          onSubmit={(event) => {
+            event.preventDefault()
+            openMemberQrSale(memberQrInput)
+          }}
+        >
+          <div className="space-y-2">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Manual fallback')}</p>
+            <h2 className="font-serif text-3xl text-primary">{t('Paste QR link')}</h2>
+            <p className="text-sm leading-6 text-on-surface-variant/80">
+              {t('If the camera is unavailable, paste the customer QR link or token here.')}
+            </p>
+          </div>
+          <div className="mt-6 grid gap-3">
+            <Input
+              value={memberQrInput}
+              onChange={(event) => setMemberQrInput(event.target.value)}
+              placeholder="https://.../business/member-sale/token"
+              className="h-14 rounded-2xl bg-surface-lowest text-sm"
+            />
+            <Button type="submit" className="h-12 rounded-2xl">
+              <ScanLine className="size-4" />
+              {t('Open sale form')}
+            </Button>
+          </div>
+        </form>
       </div>
 
       <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
