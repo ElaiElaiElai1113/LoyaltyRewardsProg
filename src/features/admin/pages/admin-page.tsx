@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy, MapPin } from 'lucide-react'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy, MapPin, MonitorPlay } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -693,6 +694,29 @@ export function AdminPage() {
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-5 shadow-sm sm:p-6 xl:p-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-container/12 text-primary">
+              <MonitorPlay className="size-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Walkthrough demo')}</p>
+              <h2 className="mt-2 font-serif text-3xl leading-tight text-primary">{t('See the admin walkthrough')}</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant/80">
+                {t('Open the guided demo for member review, partner setup, verification, and commission operations.')}
+              </p>
+            </div>
+          </div>
+          <Button asChild className="shrink-0 rounded-full">
+            <Link to="/admin/guide">
+              <MonitorPlay className="size-4" />
+              {t('Open walkthrough')}
+            </Link>
+          </Button>
         </div>
       </div>
 

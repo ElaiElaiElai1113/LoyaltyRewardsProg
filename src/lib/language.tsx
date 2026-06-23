@@ -122,6 +122,17 @@ const spanishTranslations: Record<string, string> = {
   Cart: 'Carrito',
   'Activate your member QR so staff can record purchases.':
     'Activa tu QR de miembro para que el personal pueda registrar compras.',
+  'Open the guided demo for the member QR, partner business scan, and admin follow-up flow.':
+    'Abre la demo guiada para el QR de miembro, el escaneo del negocio aliado y el seguimiento admin.',
+  'Open the guided demo for scanning a customer QR, recording the purchase, awarding points, and tracking commission.':
+    'Abre la demo guiada para escanear el QR de un cliente, registrar la compra, otorgar puntos y rastrear comision.',
+  'Open the guided demo for member review, partner setup, verification, and commission operations.':
+    'Abre la demo guiada para revisar miembros, configurar aliados, verificar IDs y operar comisiones.',
+  'Open walkthrough': 'Abrir guia',
+  'See the admin walkthrough': 'Ver guia admin',
+  'See the business walkthrough': 'Ver guia negocio',
+  'See the customer walkthrough': 'Ver guia cliente',
+  'Walkthrough demo': 'Demo guiada',
   'Checkout blocked': 'Pago bloqueado',
   'Every recorded QR purchase, point award, and account update in one clear timeline.':
     'Cada compra con QR, punto otorgado y actualizacion de cuenta en una linea de tiempo clara.',

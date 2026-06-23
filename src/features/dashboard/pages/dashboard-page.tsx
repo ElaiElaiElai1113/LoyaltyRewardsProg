@@ -1,4 +1,4 @@
-import { History, QrCode, ShieldCheck } from 'lucide-react'
+import { History, MonitorPlay, QrCode, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -57,6 +57,30 @@ export function DashboardPage() {
         points={points}
         recentActivity={recentActivity}
       />
+
+      <section className="rounded-2xl border border-[var(--border)] bg-white p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 gap-4">
+            <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[var(--muted)] text-[var(--foreground)]">
+              <MonitorPlay className="size-5" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Walkthrough demo')}</p>
+              <h2 className="mt-1 text-xl font-semibold text-[var(--foreground)]">{t('See the customer walkthrough')}</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
+                {t('Open the guided demo for the member QR, partner business scan, and admin follow-up flow.')}
+              </p>
+            </div>
+          </div>
+          <Link
+            to="/guide"
+            className="inline-flex h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[var(--foreground)] px-4 text-sm font-semibold text-white transition-colors hover:bg-[var(--foreground)]/90"
+          >
+            <MonitorPlay className="size-4" />
+            {t('Open walkthrough')}
+          </Link>
+        </div>
+      </section>
 
       <section className="space-y-6">
         <div className="space-y-2">
