@@ -20,6 +20,28 @@ type AdjustmentContext = {
   businessId?: string
 }
 
+type CreateBusinessInput = {
+  name: string
+  slug: string
+  description?: string
+  address?: string
+  latitude?: number | null
+  longitude?: number | null
+  logoUrl?: string
+  earnRate: number
+  taxRate: number
+  currency: string
+  active: boolean
+}
+
+export type ProvisionPartnerOwnerResult = {
+  email: string
+  defaultPassword: string
+  userId: string
+  businessId: string
+  accountCreated: boolean
+}
+
 type AgreementStatusProfileRow = {
   id: string
   full_name: string | null
@@ -103,6 +125,34 @@ async function performRewardAdjustment(
   if (adjustmentError || !balance) {
     throw new Error(friendlySupabaseError(adjustmentError, 'Failed to adjust rewards.'))
   }
+}
+
+function normalizeCreateBusinessInput(input: CreateBusinessInput) {
+  return {
+    name: input.name.trim(),
+    slug: input.slug.trim(),
+    description: input.description?.trim() ?? '',
+    address: input.address?.trim() ?? '',
+    latitude: input.latitude ?? null,
+    longitude: input.longitude ?? null,
+    logoUrl: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
+    earnRate: input.earnRate,
+    taxRate: input.taxRate / 100,
+    currency: input.currency.trim().toUpperCase(),
+    active: input.active,
+  }
+}
+
+function isMissingCreateBusinessRpcError(error: unknown) {
+  if (!error || typeof error !== 'object') return false
+
+  const message = 'message' in error ? String((error as { message?: unknown }).message ?? '') : ''
+  const code = 'code' in error ? String((error as { code?: unknown }).code ?? '') : ''
+
+  return code === 'PGRST202' || (
+    message.includes('create_managed_business') &&
+    message.includes('schema cache')
+  )
 }
 
 export const adminService = {
@@ -490,40 +540,87 @@ export const adminService = {
     return camelCaseRow(data as Record<string, unknown>)
   },
 
-  async createBusiness(input: {
-    name: string
-    slug: string
-    description?: string
-    address?: string
-    latitude?: number | null
-    longitude?: number | null
-    logoUrl?: string
-    earnRate: number
-    taxRate: number
-    currency: string
-    active: boolean
-  }) {
+  async createBusiness(input: CreateBusinessInput) {
     const sb = requireSupabase()
+    const normalized = normalizeCreateBusinessInput(input)
 
     const { data, error } = await sb.rpc('create_managed_business', {
-      p_name: input.name.trim(),
-      p_slug: input.slug.trim(),
-      p_description: input.description?.trim() ?? '',
-      p_address: input.address?.trim() ?? '',
-      p_latitude: input.latitude ?? null,
-      p_longitude: input.longitude ?? null,
-      p_logo_url: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
-      p_earn_rate: input.earnRate,
-      p_tax_rate: input.taxRate / 100,
-      p_currency: input.currency.trim().toUpperCase(),
-      p_active: input.active,
+      p_name: normalized.name,
+      p_slug: normalized.slug,
+      p_description: normalized.description,
+      p_address: normalized.address,
+      p_latitude: normalized.latitude,
+      p_longitude: normalized.longitude,
+      p_logo_url: normalized.logoUrl,
+      p_earn_rate: normalized.earnRate,
+      p_tax_rate: normalized.taxRate,
+      p_currency: normalized.currency,
+      p_active: normalized.active,
     })
+
+    if (error && isMissingCreateBusinessRpcError(error)) {
+      const { data: insertedBusiness, error: insertError } = await sb
+        .from('businesses')
+        .insert({
+          name: normalized.name,
+          slug: normalized.slug,
+          description: normalized.description,
+          address: normalized.address,
+          latitude: normalized.latitude,
+          longitude: normalized.longitude,
+          logo_url: normalized.logoUrl,
+          earn_rate: normalized.earnRate,
+          tax_rate: normalized.taxRate,
+          currency: normalized.currency,
+          active: normalized.active,
+        })
+        .select('*')
+        .single()
+
+      if (insertError || !insertedBusiness) {
+        throw new Error(insertError?.message ?? 'Failed to create business.')
+      }
+
+      return camelCaseRow(insertedBusiness as Record<string, unknown>)
+    }
 
     if (error || !data) {
       throw new Error(error?.message ?? 'Failed to create business.')
     }
 
     return camelCaseRow(data as Record<string, unknown>)
+  },
+
+  async provisionPartnerOwner(input: {
+    businessId: string
+    businessName: string
+    email: string
+  }): Promise<ProvisionPartnerOwnerResult> {
+    const sb = requireSupabase()
+    const { data, error } = await sb.functions.invoke('provision-partner-owner', {
+      body: {
+        businessId: input.businessId,
+        businessName: input.businessName,
+        email: input.email.trim().toLowerCase(),
+      },
+    })
+
+    if (error) {
+      throw new Error(await readFunctionErrorMessage(error, 'Failed to provision partner owner account.'))
+    }
+
+    const result = data as Partial<ProvisionPartnerOwnerResult> | null
+    if (!result?.email || !result.defaultPassword || !result.userId || !result.businessId) {
+      throw new Error('Partner owner account was not provisioned.')
+    }
+
+    return {
+      email: result.email,
+      defaultPassword: result.defaultPassword,
+      userId: result.userId,
+      businessId: result.businessId,
+      accountCreated: Boolean(result.accountCreated),
+    }
   },
 
   async lookupUserByEmail(email: string): Promise<string | null> {

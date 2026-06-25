@@ -49,6 +49,7 @@ import {
   useDeleteReward,
   useFulfillRedemption,
   useOrdersForVerification,
+  useProvisionPartnerOwner,
   useReviewMemberVerification,
   useMarkMemberTransactionCommissionPaid,
   useUpdateAmbassadorLeadStatus,
@@ -248,7 +249,7 @@ export function AdminPage() {
   const fulfillRedemption = useFulfillRedemption(profile)
   const updateBusiness = useUpdateBusiness()
   const createBusiness = useCreateBusiness()
-  const assignBusinessOwner = useAssignBusinessOwner()
+  const provisionPartnerOwner = useProvisionPartnerOwner()
   const assignBusinessOwnerFromList = useAssignBusinessOwner()
   const assignBusinessStaffFromList = useAssignBusinessStaff()
   const deleteReward = useDeleteReward(profile?.fullName)
@@ -831,14 +832,14 @@ export function AdminPage() {
                     ) : null}
                   </div>
                   <div className="grid gap-4 sm:grid-cols-[0.65fr_1fr]">
-                    <div className="grid gap-2">
+                    <div className="grid grid-rows-[2.5rem_2.75rem_auto] gap-2">
                       <Label htmlFor="delta" className="text-sm font-semibold">{t('Points Adjustment')}</Label>
                       <Input id="delta" type="number" className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
                       {adjustmentForm.formState.errors.delta ? (
                         <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
                       ) : null}
                     </div>
-                    <div className="grid gap-2">
+                    <div className="grid grid-rows-[2.5rem_2.75rem_auto] gap-2">
                       <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
                       <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
                       {adjustmentForm.formState.errors.reason ? (
@@ -1846,7 +1847,7 @@ export function AdminPage() {
                 <DialogHeader>
                   <DialogTitle className="font-serif text-2xl text-primary">Create Partner</DialogTitle>
                   <DialogDescription className="text-sm text-on-surface-variant/80">
-                    Create a business and assign its owner in one flow. If the owner email is missing, the partner is still created.
+                    Create a business and provision its partner owner login in one flow. The owner email becomes the login email.
                   </DialogDescription>
                 </DialogHeader>
 
@@ -1861,24 +1862,15 @@ export function AdminPage() {
                           ...values,
                           ownerEmail,
                         })
-
-                        if (ownerEmail) {
-                          try {
-                            await assignBusinessOwner.mutateAsync({
-                              email: ownerEmail,
-                              businessId: business.id as string,
-                            })
-                            toast.success('Business created and owner assigned.')
-                          } catch (ownerError) {
-                            if (ownerError instanceof OwnerNotFoundError) {
-                              toast.warning('Business created. Owner access unassigned because that owner email was not found.')
-                            } else {
-                              toast.warning('Business created. Owner access unassigned because assignment failed.')
-                            }
-                          }
-                        } else {
-                          toast.success('Business created. Owner access unassigned.')
-                        }
+                        const ownerCredentials = await provisionPartnerOwner.mutateAsync({
+                          email: ownerEmail,
+                          businessId: business.id as string,
+                          businessName: values.name,
+                        })
+                        toast.success(
+                          `Partner created. Send login credentials to ${ownerCredentials.email}: password ${ownerCredentials.defaultPassword}`,
+                          { duration: 12000 },
+                        )
 
                         resetCreateBusinessForm()
                         setIsCreateBusinessDialogOpen(false)
@@ -1901,7 +1893,7 @@ export function AdminPage() {
                     },
                   )}
                 >
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-name">Name</Label>
                     <Input
                       id="create-partner-name"
@@ -1914,7 +1906,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-slug">Slug</Label>
                     <Input
                       id="create-partner-slug"
@@ -1957,7 +1949,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-latitude">Latitude</Label>
                     <Input
                       id="create-partner-latitude"
@@ -1976,7 +1968,7 @@ export function AdminPage() {
                     )}
                   </div>
 
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-longitude">Longitude</Label>
                     <Input
                       id="create-partner-longitude"
@@ -2008,7 +2000,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-earn-rate">Earn Rate</Label>
                     <Input
                       id="create-partner-earn-rate"
@@ -2022,7 +2014,7 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-tax-rate">Tax Rate (%)</Label>
                     <Input
                       id="create-partner-tax-rate"
@@ -2039,7 +2031,7 @@ export function AdminPage() {
                     )}
                   </div>
 
-                  <div className="grid gap-3">
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-currency">Currency</Label>
                     <Input
                       id="create-partner-currency"
@@ -2069,7 +2061,7 @@ export function AdminPage() {
                   </label>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-owner-email">Owner Email (optional)</Label>
+                    <Label htmlFor="create-partner-owner-email">Partner Login Email</Label>
                     <Input
                       id="create-partner-owner-email"
                       type="email"
@@ -2080,7 +2072,7 @@ export function AdminPage() {
                     {createBusinessForm.formState.errors.ownerEmail ? (
                       <p className="text-xs text-red-500">{createBusinessForm.formState.errors.ownerEmail.message}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">If this email is not an existing account, owner access stays unassigned.</p>
+                      <p className="text-xs text-on-surface-variant/70">The partner owner account will be created with this email and the default password. Send those credentials to the partner after saving.</p>
                     )}
                   </div>
 
@@ -2090,16 +2082,16 @@ export function AdminPage() {
                       variant="outline"
                       className="rounded-full"
                       onClick={resetCreateBusinessForm}
-                      disabled={createBusiness.isPending || assignBusinessOwner.isPending}
+                      disabled={createBusiness.isPending || provisionPartnerOwner.isPending}
                     >
                       Reset
                     </Button>
                     <Button
                       type="submit"
                       className="rounded-full"
-                      disabled={createBusiness.isPending || assignBusinessOwner.isPending}
+                      disabled={createBusiness.isPending || provisionPartnerOwner.isPending}
                     >
-                      {createBusiness.isPending || assignBusinessOwner.isPending ? 'Creating...' : 'Create Partner'}
+                      {createBusiness.isPending || provisionPartnerOwner.isPending ? 'Creating...' : 'Create Partner'}
                     </Button>
                   </div>
                   {createBusinessError ? <p className="text-sm font-bold text-red-500 md:col-span-2">{createBusinessError}</p> : null}

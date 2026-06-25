@@ -253,7 +253,9 @@ export async function getEarlyAccessLeadByEmail(client: AppSupabaseClient, email
     .from('early_access_leads')
     .select('id, full_name, email, whatsapp, status')
     .eq('email', email)
-    .single()
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
 
   if (error || !data) {
     throw new Error(`Early access lead not found for ${email}: ${error?.message ?? 'missing row'}`)

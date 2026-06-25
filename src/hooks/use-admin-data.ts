@@ -178,6 +178,24 @@ export function useCreateBusiness() {
   })
 }
 
+export function useProvisionPartnerOwner() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: {
+      businessId: string
+      businessName: string
+      email: string
+    }) => adminService.provisionPartnerOwner(values),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.users })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.businesses })
+      void queryClient.invalidateQueries({ queryKey: ['admin', 'businesses'] })
+      void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
+    },
+  })
+}
+
 export function useAssignBusinessOwner() {
   const queryClient = useQueryClient()
 

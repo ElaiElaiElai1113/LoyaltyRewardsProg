@@ -43,9 +43,9 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
 
     await signInCustomer(page, e2eAccounts.customer)
     await page.goto('/rewards')
-    await expect(page.locator('body')).toContainText(/Rewards Marketplace|Mercado de recompensas/i)
-    await expect(page.locator('body')).toContainText(/Available Points|Puntos disponibles/i)
-    await expect(page.locator('body')).toContainText(/Catalog summary|Resumen del catalogo/i)
+    await expect(page).toHaveURL(/\/dashboard$/)
+    await expect(page.locator('body')).toContainText(/QR de miembro|member QR|Billetera de recompensas/i)
+    await expect(page.locator('body')).toContainText(/Puntos totales|Total Points/i)
   })
 
   test('RW002 verified customer can redeem a reward and see activity', async ({ page }) => {
