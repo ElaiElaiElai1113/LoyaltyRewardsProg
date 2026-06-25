@@ -2195,6 +2195,16 @@ export function AdminPage() {
                         <p className="mt-2 break-words text-xs text-on-surface-variant/80">
                           Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
                         </p>
+                        {business.ownerEmail ? (
+                          <p className="mt-1 break-words text-xs text-on-surface-variant/80">
+                            Owner email: {business.ownerEmail}
+                          </p>
+                        ) : null}
+                        {business.staffEmails.length > 0 ? (
+                          <p className="mt-1 break-words text-xs text-on-surface-variant/80">
+                            Staff email{business.staffEmails.length === 1 ? '' : 's'}: {business.staffEmails.join(', ')}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
 
@@ -2422,6 +2432,19 @@ export function AdminPage() {
                               <p className="mt-2 truncate text-xs text-on-surface-variant/80">
                                 Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
                               </p>
+                              {business.ownerEmail ? (
+                                <p className="mt-1 truncate text-xs text-on-surface-variant/80" title={business.ownerEmail}>
+                                  Owner email: {business.ownerEmail}
+                                </p>
+                              ) : null}
+                              {business.staffEmails.length > 0 ? (
+                                <p
+                                  className="mt-1 truncate text-xs text-on-surface-variant/80"
+                                  title={business.staffEmails.join(', ')}
+                                >
+                                  Staff email{business.staffEmails.length === 1 ? '' : 's'}: {business.staffEmails.join(', ')}
+                                </p>
+                              ) : null}
                             </div>
                           </div>
                           <div className="min-w-0 space-y-2">

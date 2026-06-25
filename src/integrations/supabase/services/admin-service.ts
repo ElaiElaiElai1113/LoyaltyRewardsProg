@@ -237,6 +237,7 @@ export const adminService = {
     const businessIdByProfile = new Map<string, string>()
     const ownerByBusiness = new Map<string, { id: string; fullName: string; email: string }>()
     const staffCountByBusiness = new Map<string, number>()
+    const staffEmailsByBusiness = new Map<string, string[]>()
     for (const profile of profilesResult.data ?? []) {
       if (typeof profile.id === 'string' && typeof profile.business_id === 'string') {
         businessIdByProfile.set(profile.id, profile.business_id)
@@ -257,6 +258,10 @@ export const adminService = {
           profile.business_id,
           (staffCountByBusiness.get(profile.business_id) ?? 0) + 1,
         )
+        staffEmailsByBusiness.set(profile.business_id, [
+          ...(staffEmailsByBusiness.get(profile.business_id) ?? []),
+          profile.email as string,
+        ])
       }
     }
 
@@ -303,6 +308,7 @@ export const adminService = {
         ownerName: ownerByBusiness.get(businessId)?.fullName ?? null,
         ownerEmail: ownerByBusiness.get(businessId)?.email ?? null,
         staffCount: staffCountByBusiness.get(businessId) ?? 0,
+        staffEmails: staffEmailsByBusiness.get(businessId) ?? [],
       }
     })
   },
