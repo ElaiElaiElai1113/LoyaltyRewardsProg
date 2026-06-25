@@ -4,8 +4,11 @@ import { registerSW } from 'virtual:pwa-register'
 import App from '@/App'
 import './index.css'
 
-registerSW({
+const updateServiceWorker = registerSW({
   immediate: true,
+  onNeedRefresh() {
+    void updateServiceWorker(true)
+  },
   onRegisterError(error) {
     console.error('Service worker registration failed', error)
   },
