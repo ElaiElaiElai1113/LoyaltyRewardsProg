@@ -2391,21 +2391,21 @@ export function AdminPage() {
               </div>
 
               <ScrollArea className="hidden w-full lg:block" data-testid="partner-management-table-scroll">
-                <div className="min-w-[840px]">
-                  <div className="grid grid-cols-[minmax(170px,1.1fr)_minmax(140px,0.9fr)_56px_56px_86px_92px_136px] gap-3 border-b border-outline-variant/10 bg-[var(--muted)] px-4 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                <div className="min-w-[960px]">
+                  <div className="grid grid-cols-[minmax(190px,1.15fr)_minmax(160px,0.9fr)_76px_76px_104px_112px_136px] gap-3 border-b border-outline-variant/10 bg-[var(--muted)] px-4 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
                     <span>Partner</span>
                     <span>Location</span>
-                    <span>Members</span>
-                    <span>QR Sales</span>
-                    <span>Revenue</span>
-                    <span>Commission</span>
+                    <span className="whitespace-nowrap">Members</span>
+                    <span className="whitespace-nowrap">QR Sales</span>
+                    <span className="whitespace-nowrap">Revenue</span>
+                    <span className="whitespace-nowrap">Commission</span>
                     <span className="text-right">Actions</span>
                   </div>
 
                   <div className="divide-y divide-outline-variant/10">
                     {filteredBusinesses.map((business) => (
                       <div key={business.id}>
-                        <div className="grid grid-cols-[minmax(170px,1.1fr)_minmax(140px,0.9fr)_56px_56px_86px_92px_136px] gap-3 px-4 py-5 text-sm">
+                        <div className="grid grid-cols-[minmax(190px,1.15fr)_minmax(160px,0.9fr)_76px_76px_104px_112px_136px] gap-3 px-4 py-5 text-sm">
                           <div className="flex min-w-0 items-start gap-3">
                             {business.logoUrl ? (
                               <img
