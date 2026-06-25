@@ -2031,39 +2031,37 @@ export function AdminPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-currency">Currency</Label>
-                    <Input
-                      id="create-partner-currency"
-                      maxLength={3}
-                      className="h-12 rounded-2xl border-outline-variant/20 uppercase focus:border-primary/30"
-                      {...createBusinessForm.register('currency', {
-                        onChange: (event) => {
-                          createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
-                            shouldDirty: true,
-                            shouldValidate: true,
-                          })
-                        },
-                      })}
-                    />
-                    {createBusinessForm.formState.errors.currency ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
-                    ) : null}
-                  </div>
-
-                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <span aria-hidden="true" className="invisible text-sm font-medium">
-                      Active
-                    </span>
-                    <label className="flex h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
-                      <input
-                        type="checkbox"
-                        className="size-4 rounded border-outline-variant/30"
-                        {...createBusinessForm.register('active')}
+                  <div className="grid gap-5 md:col-span-2 md:grid-cols-2">
+                    <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
+                      <Label htmlFor="create-partner-currency">Currency</Label>
+                      <Input
+                        id="create-partner-currency"
+                        maxLength={3}
+                        className="h-12 rounded-2xl border-outline-variant/20 uppercase focus:border-primary/30"
+                        {...createBusinessForm.register('currency', {
+                          onChange: (event) => {
+                            createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                            })
+                          },
+                        })}
                       />
-                      Active
-                    </label>
-                    <span aria-hidden="true" />
+                      {createBusinessForm.formState.errors.currency ? (
+                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
+                      ) : null}
+                    </div>
+
+                    <div className="grid gap-3 md:pt-8">
+                      <label className="flex h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
+                        <input
+                          type="checkbox"
+                          className="size-4 rounded border-outline-variant/30"
+                          {...createBusinessForm.register('active')}
+                        />
+                        Active
+                      </label>
+                    </div>
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
