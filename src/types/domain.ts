@@ -45,6 +45,7 @@ export interface BusinessWithMetrics {
   ownerName: string | null
   ownerEmail: string | null
   staffCount: number
+  staffEmails: string[]
 }
 
 export interface Profile {

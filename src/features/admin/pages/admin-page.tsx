@@ -2159,7 +2159,7 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="space-y-3 p-3 md:hidden">
+              <div className="space-y-3 p-3 lg:hidden">
                 {filteredBusinesses.map((business) => (
                   <div
                     key={business.id}
@@ -2195,6 +2195,16 @@ export function AdminPage() {
                         <p className="mt-2 break-words text-xs text-on-surface-variant/80">
                           Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
                         </p>
+                        {business.ownerEmail ? (
+                          <p className="mt-1 break-words text-xs text-on-surface-variant/80">
+                            Owner email: {business.ownerEmail}
+                          </p>
+                        ) : null}
+                        {business.staffEmails.length > 0 ? (
+                          <p className="mt-1 break-words text-xs text-on-surface-variant/80">
+                            Staff email{business.staffEmails.length === 1 ? '' : 's'}: {business.staffEmails.join(', ')}
+                          </p>
+                        ) : null}
                       </div>
                     </div>
 
@@ -2376,9 +2386,9 @@ export function AdminPage() {
                 ))}
               </div>
 
-              <ScrollArea className="hidden w-full md:block">
-                <div className="min-w-[1180px]">
-                  <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(220px,0.95fr)_100px_100px_130px_130px_170px] gap-4 border-b border-outline-variant/10 bg-[var(--muted)] px-6 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+              <ScrollArea className="hidden w-full lg:block" data-testid="partner-management-table-scroll">
+                <div className="min-w-[840px]">
+                  <div className="grid grid-cols-[minmax(170px,1.1fr)_minmax(140px,0.9fr)_56px_56px_86px_92px_136px] gap-3 border-b border-outline-variant/10 bg-[var(--muted)] px-4 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
                     <span>Partner</span>
                     <span>Location</span>
                     <span>Members</span>
@@ -2391,22 +2401,22 @@ export function AdminPage() {
                   <div className="divide-y divide-outline-variant/10">
                     {filteredBusinesses.map((business) => (
                       <div key={business.id}>
-                        <div className="grid grid-cols-[minmax(260px,1.3fr)_minmax(220px,0.95fr)_100px_100px_130px_130px_170px] gap-4 px-6 py-5 text-sm">
-                          <div className="flex min-w-0 items-start gap-4">
+                        <div className="grid grid-cols-[minmax(170px,1.1fr)_minmax(140px,0.9fr)_56px_56px_86px_92px_136px] gap-3 px-4 py-5 text-sm">
+                          <div className="flex min-w-0 items-start gap-3">
                             {business.logoUrl ? (
                               <img
                                 src={business.logoUrl}
                                 alt={business.name}
-                                className="size-14 shrink-0 rounded-2xl border border-outline-variant/10 object-cover"
+                                className="size-12 shrink-0 rounded-2xl border border-outline-variant/10 object-cover"
                               />
                             ) : (
-                              <div className={`flex size-14 shrink-0 items-center justify-center rounded-2xl text-primary-foreground shadow-lg ${bizColorClass(business.id)}`}>
-                                <Store className="size-6" />
+                              <div className={`flex size-12 shrink-0 items-center justify-center rounded-2xl text-primary-foreground shadow-lg ${bizColorClass(business.id)}`}>
+                                <Store className="size-5" />
                               </div>
                             )}
                             <div className="min-w-0">
-                              <div className="flex flex-wrap items-center gap-2">
-                                <p className="truncate font-serif text-xl text-primary">{business.name}</p>
+                              <div className="flex flex-wrap items-center gap-1.5">
+                                <p className="truncate font-serif text-lg text-primary">{business.name}</p>
                                 <Badge
                                   variant="accent"
                                   className={
@@ -2419,9 +2429,22 @@ export function AdminPage() {
                                 </Badge>
                               </div>
                               <p className="mt-1 truncate text-xs text-on-surface-variant/75">{business.slug}</p>
-                              <p className="mt-2 text-xs text-on-surface-variant/80">
+                              <p className="mt-2 truncate text-xs text-on-surface-variant/80">
                                 Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
                               </p>
+                              {business.ownerEmail ? (
+                                <p className="mt-1 truncate text-xs text-on-surface-variant/80" title={business.ownerEmail}>
+                                  Owner email: {business.ownerEmail}
+                                </p>
+                              ) : null}
+                              {business.staffEmails.length > 0 ? (
+                                <p
+                                  className="mt-1 truncate text-xs text-on-surface-variant/80"
+                                  title={business.staffEmails.join(', ')}
+                                >
+                                  Staff email{business.staffEmails.length === 1 ? '' : 's'}: {business.staffEmails.join(', ')}
+                                </p>
+                              ) : null}
                             </div>
                           </div>
                           <div className="min-w-0 space-y-2">
@@ -2444,16 +2467,16 @@ export function AdminPage() {
                           </div>
                           <div className="font-semibold text-primary">{business.totalMembers}</div>
                           <div className="font-semibold text-primary">{business.memberTransactionCount}</div>
-                          <div className="font-semibold text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</div>
-                          <div>
-                            <p className="font-semibold text-primary">{formatCurrency(business.commissionOwed)}</p>
+                          <div className="truncate font-semibold text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</div>
+                          <div className="min-w-0">
+                            <p className="truncate font-semibold text-primary">{formatCurrency(business.commissionOwed)}</p>
                             <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} paid</p>
                           </div>
-                          <div className="flex flex-wrap justify-end gap-2">
+                          <div className="flex min-w-0 flex-wrap justify-end gap-1.5" data-testid="partner-row-actions">
                             <Button
                               type="button"
                               variant="outline"
-                              className="h-9 rounded-full px-3 text-xs"
+                              className="h-8 rounded-full px-2 text-xs"
                               onClick={() => {
                                 setPartnerActionError(null)
                                 setBusinessAccessDialog({
@@ -2467,7 +2490,7 @@ export function AdminPage() {
                             <Button
                               type="button"
                               variant="outline"
-                              className="h-9 rounded-full px-3 text-xs"
+                              className="h-8 rounded-full px-2 text-xs"
                               onClick={() => {
                                 setPartnerActionError(null)
                                 setBusinessAccessDialog({
@@ -2481,7 +2504,7 @@ export function AdminPage() {
                             <Button
                               type="button"
                               variant="outline"
-                              className="h-9 rounded-full px-3 text-xs"
+                              className="h-8 rounded-full px-2 text-xs"
                               onClick={() =>
                                 editingBusinessId === business.id
                                   ? setEditingBusinessId(null)
