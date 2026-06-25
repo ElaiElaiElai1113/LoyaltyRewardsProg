@@ -2051,14 +2051,20 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
-                  <label className="flex items-center gap-3 self-end rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 py-3 text-sm font-semibold text-on-surface">
-                    <input
-                      type="checkbox"
-                      className="size-4 rounded border-outline-variant/30"
-                      {...createBusinessForm.register('active')}
-                    />
-                    Active
-                  </label>
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
+                    <span aria-hidden="true" className="invisible text-sm font-medium">
+                      Active
+                    </span>
+                    <label className="flex h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
+                      <input
+                        type="checkbox"
+                        className="size-4 rounded border-outline-variant/30"
+                        {...createBusinessForm.register('active')}
+                      />
+                      Active
+                    </label>
+                    <span aria-hidden="true" />
+                  </div>
 
                   <div className="grid gap-3 md:col-span-2">
                     <Label htmlFor="create-partner-owner-email">Partner Login Email</Label>
