@@ -158,7 +158,7 @@ export const createBusinessSchema = z.object({
     .length(3, 'Use a 3-letter currency code')
     .regex(/^[A-Za-z]{3}$/, 'Use a 3-letter currency code'),
   active: z.boolean(),
-  ownerEmail: z.union([z.literal(''), z.email('Enter a valid owner email')]).optional(),
+  ownerEmail: z.email('Enter a valid partner owner email'),
 })
 
 export type CreateBusinessFormValues = z.infer<typeof createBusinessSchema>

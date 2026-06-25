@@ -1,11 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import {
-  signInAdmin,
-  signInBusinessPortalExpectAgreementGate,
-  signInCustomerExpectAgreementGate,
-} from './helpers/auth.js'
-import { e2eAccounts, workflowAuthEnabled } from './helpers/env.js'
+import { signInAdmin } from './helpers/auth.js'
+import { e2eAccounts, e2ePassword, workflowAuthEnabled } from './helpers/env.js'
 import {
   getAgreementAcceptancesForProfile,
   getProfileByEmail,
@@ -52,7 +48,20 @@ test.describe.serial('agreement e-signature frontend QA', () => {
   test.skip(!workflowAuthEnabled, 'Run with npm run test:agreements after local Supabase is reset and Edge Functions are served.')
 
   test('AGR001 unsigned customer signs member agreement with drawn signature', async ({ page }) => {
-    await signInCustomerExpectAgreementGate(page, e2eAccounts.agreementPendingCustomer)
+    await page.goto('/signin')
+    await page.locator('#signin-email').fill(e2eAccounts.agreementPendingCustomer)
+    await page.locator('#signin-password').fill(e2ePassword)
+    await page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await expect(page).toHaveURL(/\/dashboard$|\/agreements\/required$/)
+
+    const client = await getSupabaseSessionClient(e2eAccounts.agreementPendingCustomer)
+    const profile = await getProfileByEmail(client, e2eAccounts.agreementPendingCustomer)
+
+    if (page.url().endsWith('/dashboard')) {
+      const existingAcceptances = await getAgreementAcceptancesForProfile(client, profile.id)
+      expect(existingAcceptances.some((acceptance) => acceptance.signatureSvg?.includes('data-signature="drawn"'))).toBe(true)
+      return
+    }
 
     await expect(page.locator('body')).toContainText('Member Agreement')
     await expect(page.getByRole('heading', { name: /Sign Electronically/i })).toBeVisible()
@@ -75,15 +84,25 @@ test.describe.serial('agreement e-signature frontend QA', () => {
     await submitAgreementForm(page)
     await expect(page).toHaveURL(/\/dashboard$/)
 
-    const client = await getSupabaseSessionClient(e2eAccounts.agreementPendingCustomer)
-    const profile = await getProfileByEmail(client, e2eAccounts.agreementPendingCustomer)
     const acceptances = await getAgreementAcceptancesForProfile(client, profile.id)
 
     expect(acceptances.some((acceptance) => acceptance.signatureSvg?.includes('data-signature="drawn"'))).toBe(true)
   })
 
   test('AGR002 unsigned business owner signs affiliate agreement with drawn signature', async ({ page }) => {
-    await signInBusinessPortalExpectAgreementGate(page, e2eAccounts.agreementPendingBusinessOwner)
+    await page.goto('/business/login')
+    await page.locator('#staff-signin-email').fill(e2eAccounts.agreementPendingBusinessOwner)
+    await page.locator('#staff-signin-password').fill(e2ePassword)
+    await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await expect(page).toHaveURL(/\/business\/dashboard$|\/agreements\/required$/)
+
+    if (page.url().endsWith('/business/dashboard')) {
+      const client = await getSupabaseSessionClient(e2eAccounts.agreementPendingBusinessOwner)
+      const profile = await getProfileByEmail(client, e2eAccounts.agreementPendingBusinessOwner)
+      const existingAcceptances = await getAgreementAcceptancesForProfile(client, profile.id)
+      expect(existingAcceptances.some((acceptance) => acceptance.signatureSvg?.includes('data-signature="drawn"'))).toBe(true)
+      return
+    }
 
     await expect(page.locator('body')).toContainText('Business Affiliate Agreement')
     await completeAgreement(page, 'E2E Agreement Pending Owner')

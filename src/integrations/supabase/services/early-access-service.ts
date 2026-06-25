@@ -25,6 +25,24 @@ function mapEarlyAccessLead(row: Record<string, unknown>): EarlyAccessLead {
   }
 }
 
+async function createLeadViaSupabase(values: EarlyAccessLeadFormValues): Promise<EarlyAccessLead> {
+  const sb = requireSupabase()
+  const { data, error } = await sb.rpc('create_early_access_lead', {
+    p_full_name: values.fullName?.trim() || null,
+    p_email: values.email.trim() || null,
+    p_whatsapp: values.whatsapp?.trim() || null,
+    p_notes: values.notes?.trim() ?? '',
+    p_marketing_consent: values.marketingConsent,
+    p_source: 'early-access-page',
+  })
+
+  if (error || !data) {
+    throw new Error(error?.message ?? 'Unable to join the early access list.')
+  }
+
+  return mapEarlyAccessLead(data as Record<string, unknown>)
+}
+
 export const earlyAccessService = {
   async createLead(values: EarlyAccessLeadFormValues): Promise<EarlyAccessLead> {
     const fallbackMessage = 'Unable to join the early access list.'
@@ -46,7 +64,7 @@ export const earlyAccessService = {
       })
     } catch (error) {
       console.warn('Unable to reach early access lead API.', error)
-      throw new Error(fallbackMessage)
+      return createLeadViaSupabase(values)
     }
 
     let payload: EarlyAccessLeadApiResponse = {}
@@ -57,10 +75,12 @@ export const earlyAccessService = {
     }
 
     if (!response.ok || !payload.lead) {
+      if (response.status === 404 || response.status >= 500) {
+        return createLeadViaSupabase(values)
+      }
+
       const message =
-        response.status >= 500
-          ? fallbackMessage
-          : payload.error?.trim() || fallbackMessage
+        payload.error?.trim() || fallbackMessage
 
       throw new Error(message)
     }

@@ -22,7 +22,7 @@
     "test:unit": "vitest run src",
     "test:e2e": "playwright test",
     "test:playwright": "node scripts/run-playwright-local.mjs",
-    "test:e2e:workflows": "playwright test",
+    "test:e2e:workflows": "playwright test --workers=1",
     "test:referrals": "playwright test tests/e2e/referrals.spec.ts",
     "test:onboarding": "playwright test tests/e2e/onboarding.spec.ts",
     "test:gift-cards": "playwright test tests/e2e/gift-cards.spec.ts",

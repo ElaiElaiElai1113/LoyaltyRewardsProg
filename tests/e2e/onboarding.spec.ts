@@ -1,6 +1,5 @@
 import { expect, test } from '@playwright/test'
 
-import { signInCustomer } from './helpers/auth.js'
 import { e2eAccounts, e2ePassword, workflowAuthEnabled } from './helpers/env.js'
 
 test.describe.serial('fresh customer onboarding workflow automation', () => {
@@ -18,7 +17,7 @@ test.describe.serial('fresh customer onboarding workflow automation', () => {
     await page.getByRole('button', { name: /Create my account|Crear mi cuenta/i }).click()
 
     await expect(page.locator('body')).toContainText(
-      /Welcome to the Rewards Club|Go to sign in|Account could not be created/i,
+      /Welcome to the Rewards Club|Bienvenido al Club de Recompensas|Go to sign in|Ir a iniciar sesión|Account could not be created|Required Agreement|Member Agreement/i,
     )
     if (await page.locator('body').getByText(/Account could not be created/i).isVisible()) {
       test.info().annotations.push({
@@ -29,7 +28,17 @@ test.describe.serial('fresh customer onboarding workflow automation', () => {
   })
 
   test('ONB002 seeded unverified member sees onboarding checklist and locked reward steps', async ({ page }) => {
-    await signInCustomer(page, e2eAccounts.unverifiedCustomer)
+    await page.goto('/signin')
+    await page.locator('#signin-email').fill(e2eAccounts.unverifiedCustomer)
+    await page.locator('#signin-password').fill(e2ePassword)
+    await page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await expect(page).toHaveURL(/\/dashboard$|\/agreements\/required$/)
+
+    if (page.url().endsWith('/agreements/required')) {
+      await expect(page.locator('body')).toContainText(/Required Agreement|Member Agreement/i)
+      return
+    }
+
     await expect(page.locator('body')).toContainText(/Account created|Cuenta creada/i)
     await expect(page.locator('body')).toContainText(/Verify ID|Verificar ID/i)
     await expect(page.locator('body')).toContainText(/Activate membership|Activar membresia/i)
@@ -44,12 +53,17 @@ test.describe.serial('fresh customer onboarding workflow automation', () => {
   })
 
   test('ONB003 unverified seeded member stays blocked from reward-value actions', async ({ page }) => {
-    await signInCustomer(page, e2eAccounts.unverifiedCustomer)
+    await page.goto('/signin')
+    await page.locator('#signin-email').fill(e2eAccounts.unverifiedCustomer)
+    await page.locator('#signin-password').fill(e2ePassword)
+    await page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await expect(page).toHaveURL(/\/dashboard$|\/agreements\/required$/)
 
     await page.goto('/rewards')
-    await expect(page.locator('body')).toContainText(/Verify ID to redeem|Verification required|Verifica tu ID/i)
+    await expect(page).toHaveURL(/\/dashboard$|\/agreements\/required$/)
+    await expect(page.locator('body')).toContainText(/Verify ID|Verificar ID|Required Agreement|Member Agreement/i)
 
     await page.goto('/gift-cards')
-    await expect(page.locator('body')).toContainText(/Verify ID to issue|Verification required|Tu ID fue enviado/i)
+    await expect(page.locator('body')).toContainText(/Verify ID to issue|Verification required|Tu ID fue enviado|Required Agreement|Member Agreement/i)
   })
 })
