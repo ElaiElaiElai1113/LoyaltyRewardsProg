@@ -2031,39 +2031,37 @@ export function AdminPage() {
                     )}
                   </div>
 
-                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-currency">Currency</Label>
-                    <Input
-                      id="create-partner-currency"
-                      maxLength={3}
-                      className="h-12 rounded-2xl border-outline-variant/20 uppercase focus:border-primary/30"
-                      {...createBusinessForm.register('currency', {
-                        onChange: (event) => {
-                          createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
-                            shouldDirty: true,
-                            shouldValidate: true,
-                          })
-                        },
-                      })}
-                    />
-                    {createBusinessForm.formState.errors.currency ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
-                    ) : null}
-                  </div>
-
-                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <span aria-hidden="true" className="invisible text-sm font-medium">
-                      Active
-                    </span>
-                    <label className="flex h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
-                      <input
-                        type="checkbox"
-                        className="size-4 rounded border-outline-variant/30"
-                        {...createBusinessForm.register('active')}
+                  <div className="grid gap-5 md:col-span-2 md:grid-cols-2">
+                    <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
+                      <Label htmlFor="create-partner-currency">Currency</Label>
+                      <Input
+                        id="create-partner-currency"
+                        maxLength={3}
+                        className="h-12 rounded-2xl border-outline-variant/20 uppercase focus:border-primary/30"
+                        {...createBusinessForm.register('currency', {
+                          onChange: (event) => {
+                            createBusinessForm.setValue('currency', event.target.value.toUpperCase(), {
+                              shouldDirty: true,
+                              shouldValidate: true,
+                            })
+                          },
+                        })}
                       />
-                      Active
-                    </label>
-                    <span aria-hidden="true" />
+                      {createBusinessForm.formState.errors.currency ? (
+                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
+                      ) : null}
+                    </div>
+
+                    <div className="grid gap-3 md:pt-8">
+                      <label className="flex h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
+                        <input
+                          type="checkbox"
+                          className="size-4 rounded border-outline-variant/30"
+                          {...createBusinessForm.register('active')}
+                        />
+                        Active
+                      </label>
+                    </div>
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
@@ -2393,21 +2391,21 @@ export function AdminPage() {
               </div>
 
               <ScrollArea className="hidden w-full lg:block" data-testid="partner-management-table-scroll">
-                <div className="min-w-[840px]">
-                  <div className="grid grid-cols-[minmax(170px,1.1fr)_minmax(140px,0.9fr)_56px_56px_86px_92px_136px] gap-3 border-b border-outline-variant/10 bg-[var(--muted)] px-4 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                <div className="min-w-[960px]">
+                  <div className="grid grid-cols-[minmax(190px,1.15fr)_minmax(160px,0.9fr)_76px_76px_104px_112px_136px] gap-3 border-b border-outline-variant/10 bg-[var(--muted)] px-4 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
                     <span>Partner</span>
                     <span>Location</span>
-                    <span>Members</span>
-                    <span>QR Sales</span>
-                    <span>Revenue</span>
-                    <span>Commission</span>
+                    <span className="whitespace-nowrap">Members</span>
+                    <span className="whitespace-nowrap">QR Sales</span>
+                    <span className="whitespace-nowrap">Revenue</span>
+                    <span className="whitespace-nowrap">Commission</span>
                     <span className="text-right">Actions</span>
                   </div>
 
                   <div className="divide-y divide-outline-variant/10">
                     {filteredBusinesses.map((business) => (
                       <div key={business.id}>
-                        <div className="grid grid-cols-[minmax(170px,1.1fr)_minmax(140px,0.9fr)_56px_56px_86px_92px_136px] gap-3 px-4 py-5 text-sm">
+                        <div className="grid grid-cols-[minmax(190px,1.15fr)_minmax(160px,0.9fr)_76px_76px_104px_112px_136px] gap-3 px-4 py-5 text-sm">
                           <div className="flex min-w-0 items-start gap-3">
                             {business.logoUrl ? (
                               <img
