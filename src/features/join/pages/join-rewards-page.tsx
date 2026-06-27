@@ -333,7 +333,7 @@ export function CompactJoinRewardsPage() {
   )
 }
 
-export function JoinRewardsPage() {
+export function SplitJoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const { t } = useLanguage()
   const [signUpComplete, setSignUpComplete] = useState(false)
@@ -531,4 +531,8 @@ export function JoinRewardsPage() {
       </div>
     </div>
   )
+}
+
+export function JoinRewardsPage() {
+  return <CompactJoinRewardsPage />
 }

@@ -778,5 +778,5 @@ export function CompactAuthPage() {
 }
 
 export function AuthPage() {
-  return <LegacyAuthPage />
+  return <CompactAuthPage />
 }
