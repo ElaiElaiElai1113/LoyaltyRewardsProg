@@ -20,7 +20,6 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
-import { Badge } from '@/components/ui/badge'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
@@ -45,8 +44,6 @@ const authInputClass =
   'h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35'
 const authLabelClass = 'text-[12px] font-semibold text-[#8f8f8f]'
 const authErrorClass = 'text-center text-xs font-bold text-red-400'
-const authPanelTitleClass = 'font-serif text-4xl tracking-tight text-[var(--foreground)] md:text-5xl'
-const authPanelCopyClass = 'text-sm font-semibold text-[var(--on-surface-variant)]'
 
 function LoadingSpinner() {
   return (
@@ -347,60 +344,70 @@ export function LegacyAuthPage() {
   return (
     <div className="relative min-h-screen overflow-hidden bg-surface px-4 py-4 md:px-8 lg:px-10">
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--rose-brown)_18%,transparent),transparent_28%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--espresso)_28%,transparent),transparent_32%)]" />
-      <div className="mx-auto grid min-h-[calc(100svh-2rem)] max-w-[78rem] items-center gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(24rem,0.86fr)]">
-        <section className="relative flex h-auto min-h-0 flex-col justify-center overflow-hidden rounded-[1.25rem] border border-[var(--blush)]/18 bg-[linear-gradient(145deg,var(--espresso)_0%,color-mix(in_srgb,var(--espresso)_82%,var(--rose-brown))_58%,color-mix(in_srgb,var(--espresso)_68%,var(--rose-brown))_100%)] px-6 py-8 text-[var(--cream)] shadow-panel md:px-8 lg:px-10">
+      <div className="mx-auto flex min-h-[calc(100svh-2rem)] max-w-[74rem] flex-col justify-center gap-5">
+        <div className="relative z-10 ml-auto flex items-center gap-2 md:absolute md:right-8 md:top-4 lg:right-10">
+          <ThemeToggle className="rounded-full border border-[var(--champagne)]/24 bg-[var(--espresso)]/35 text-[var(--champagne)] hover:bg-[var(--espresso)]/55 hover:text-[var(--cream)]" />
+          <LanguagePicker className="text-on-surface-variant" />
+        </div>
+
+        <div className="space-y-2 text-center">
+          <h2 className="font-serif text-3xl tracking-tight text-[var(--foreground)] sm:text-4xl md:text-5xl">
+            {t('Member Access')}
+          </h2>
+          <p className="text-sm font-semibold text-[var(--muted-foreground)]">
+            {t('Sign in to manage your member rewards.')}
+          </p>
+        </div>
+
+        <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(27rem,0.72fr)]">
+          <section className="relative flex min-h-[31rem] flex-col justify-between overflow-hidden rounded-[1.6rem] border border-[var(--blush)]/18 bg-[linear-gradient(145deg,var(--espresso)_0%,color-mix(in_srgb,var(--espresso)_82%,var(--rose-brown))_58%,color-mix(in_srgb,var(--espresso)_68%,var(--rose-brown))_100%)] px-6 py-6 text-[var(--cream)] shadow-panel md:px-8 lg:px-9">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--blush)_12%,transparent),transparent_28%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--champagne)_18%,transparent),transparent_30%)]" />
-          <div className="absolute right-0 top-0 h-28 w-28 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-75" />
+          <div className="absolute right-0 top-0 h-28 w-28 rounded-bl-[4rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-75" />
           <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
 
-          <div className="relative z-10 space-y-6">
-            <Badge variant="default" className="w-fit border-[var(--champagne)]/55 bg-[linear-gradient(90deg,var(--cream),var(--champagne))] px-4 py-1.5 text-[var(--espresso)] shadow-soft">
-              {t('Medellin Rewards')}
-            </Badge>
-            <div className="space-y-3">
-              <h1 className="font-serif text-[clamp(2.25rem,4.2vw,3.5rem)] font-semibold leading-[0.96] text-[var(--cream)]">
-                {t('Sign in to your member account.')}
+          <div className="relative z-10 space-y-7">
+            <div className="flex size-14 items-center justify-center rounded-full border border-[var(--champagne)]/28 bg-[var(--champagne)]/16 text-[var(--champagne)] shadow-soft">
+              <Coins className="size-7" aria-hidden="true" />
+            </div>
+            <div className="space-y-5">
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-[var(--champagne)]">
+                {t('Private member access')}
+              </p>
+              <h1 className="font-serif text-[clamp(2.35rem,4.4vw,4rem)] font-semibold leading-[0.92] tracking-[0.01em] text-[var(--cream)]">
+                {t('Member portal')}{' '}
+                <span className="text-[var(--champagne)]">{t('sign in.')}</span>
               </h1>
-              <p className="max-w-md text-sm font-medium leading-6 text-[var(--cream)]/82">
+              <p className="max-w-2xl text-sm font-medium leading-6 text-[var(--cream)]/88">
                 {t('Track your rewards, gift-card value, and member activity in one verified account across the network.')}
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
-              <Coins className="size-5 text-[var(--champagne)]" aria-hidden="true" />
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--champagne)]">
-                {t('20–100% back on eligible spending')}
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-[0.9rem] border border-[var(--champagne)]/24 bg-[var(--espresso)]/34 p-4 transition hover:-translate-y-0.5 hover:border-[var(--champagne)]/55 hover:bg-[var(--espresso)]/52">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--champagne)]">
+                {t('Portal')}
+              </p>
+              <p className="mt-3 font-serif text-3xl text-[var(--cream)]">
+                {t('Member')}
               </p>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="rounded-[0.9rem] border border-[var(--champagne)]/24 bg-[var(--espresso)]/34 p-4 transition hover:-translate-y-0.5 hover:border-[var(--champagne)]/55 hover:bg-[var(--espresso)]/52">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[var(--champagne)]">
+                {t('Create account')}
+              </p>
               <Link
-                to="/"
-                className="inline-flex min-h-10 items-center justify-center rounded-full border border-[var(--blush)]/45 bg-[var(--espresso)]/35 px-5 py-2.5 text-xs font-bold uppercase tracking-[0.12em] text-[var(--cream)] shadow-soft transition hover:-translate-y-0.5 hover:bg-[var(--espresso)]/55"
+                to="/join"
+                className="mt-3 inline-flex text-sm font-semibold text-[var(--cream)] hover:text-[var(--champagne)]"
               >
-                {t('Back to landing page')}
+                {t('Join now')}
               </Link>
             </div>
           </div>
-
-          {error ? <p className="relative z-10 mt-8 text-sm font-bold text-red-300">{t(error)}</p> : null}
+          </div>
         </section>
 
-        <section className="flex min-h-0 flex-col justify-center py-4">
-          <div className="mb-6 flex justify-end gap-2">
-            <ThemeToggle className="rounded-full border border-[var(--champagne)]/24 bg-[var(--espresso)]/35 text-[var(--champagne)] hover:bg-[var(--espresso)]/55 hover:text-[var(--cream)]" />
-            <LanguagePicker className="text-on-surface-variant" />
-          </div>
-          <div className="space-y-5">
-            <div className="space-y-1.5 text-center">
-              <h2 className={authPanelTitleClass}>
-                {t('Welcome Back')}
-              </h2>
-              <p className={authPanelCopyClass}>
-                {t('Step back into your rewards ritual.')}
-              </p>
-            </div>
-
-            <div className="relative mx-auto min-h-[25.5rem] max-w-md overflow-hidden rounded-[1.25rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
-              <div className="absolute right-0 top-0 size-24 rounded-bl-[3rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
+        <section className="flex min-h-0 flex-col py-0">
+            <div className="relative flex min-h-[31rem] w-full flex-col justify-center overflow-hidden rounded-[1.6rem] border border-[var(--champagne)]/24 bg-[linear-gradient(145deg,color-mix(in_srgb,var(--espresso)_86%,var(--rose-brown)),var(--espresso))] p-8 text-[var(--cream)] shadow-panel">
+              <div className="absolute right-0 top-0 size-24 rounded-bl-[3.5rem] bg-[linear-gradient(135deg,var(--champagne),var(--blush))] opacity-55" />
               <div className="absolute bottom-0 left-0 h-1.5 w-full bg-[linear-gradient(90deg,var(--blush),var(--champagne),var(--rose-brown))]" />
               <div className="relative z-10">
                 {showForgotPassword ? (
@@ -555,14 +562,14 @@ export function LegacyAuthPage() {
                 )}
               </div>
             </div>
-          </div>
         </section>
       </div>
+    </div>
     </div>
   )
 }
 
-export function AuthPage() {
+export function CompactAuthPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { signIn } = useAuth()
@@ -768,4 +775,8 @@ export function AuthPage() {
       )}
     </AuthPortalShell>
   )
+}
+
+export function AuthPage() {
+  return <LegacyAuthPage />
 }
