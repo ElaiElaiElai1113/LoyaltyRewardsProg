@@ -134,31 +134,31 @@ export function BusinessDashboardPage() {
   }
 
   return (
-      <div className="space-y-10 xl:space-y-16">
+      <div className="space-y-5 xl:space-y-7">
       {/* Welcome Section */}
-      <div className="warm-hero-muted relative overflow-hidden rounded-[2rem] px-6 py-8 shadow-2xl xl:px-8 xl:py-12">
+      <div className="warm-hero-muted relative overflow-hidden rounded-[1.6rem] px-6 py-6 shadow-xl xl:px-7 xl:py-8">
         <div className="absolute inset-0 bg-[var(--muted)] bg-[length:36px_36px] opacity-25"></div>
         <div className="relative">
-          <p className="text-sm font-medium text-[var(--muted-foreground)] mb-3">{t('Business Overview')}</p>
-          <h1 className="font-serif text-[clamp(2.6rem,5vw,4rem)] tracking-tight text-white leading-[1.1]">
+          <p className="mb-2 text-sm font-medium text-[var(--muted-foreground)]">{t('Business Overview')}</p>
+          <h1 className="font-serif text-[clamp(2.2rem,4.4vw,3.5rem)] tracking-tight text-white leading-[1.05]">
             {business?.name} {t('Command Center')}
           </h1>
-          <p className="mt-4 text-lg text-white/80 font-medium">
+          <p className="mt-3 text-base font-medium text-white/80">
             {t('Scan customer member QR codes, record purchases, award points, and track commission from one workspace.')}
           </p>
         </div>
       </div>
 
-      <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+      <div className="rounded-3xl border border-primary/15 bg-card p-5 shadow-sm sm:p-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <MonitorPlay className="size-6" />
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <MonitorPlay className="size-5" />
             </div>
             <div className="min-w-0">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Walkthrough demo')}</p>
-              <h2 className="mt-2 font-serif text-3xl leading-tight text-primary">{t('See the business walkthrough')}</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant/80">
+              <h2 className="mt-1 font-serif text-2xl leading-tight text-primary">{t('See the business walkthrough')}</h2>
+              <p className="mt-1 max-w-2xl text-sm leading-5 text-on-surface-variant/80">
                 {t('Open the guided demo for scanning a customer QR, recording the purchase, awarding points, and tracking commission.')}
               </p>
             </div>
@@ -172,39 +172,39 @@ export function BusinessDashboardPage() {
         </div>
       </div>
 
-      <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
-        <div className="grid gap-6 border-b border-primary/10 pb-6 lg:grid-cols-[minmax(0,1fr)_220px]">
+      <div className="rounded-3xl border border-primary/15 bg-card p-5 shadow-sm sm:p-6">
+        <div className="grid gap-5 border-b border-primary/10 pb-5 lg:grid-cols-[minmax(0,1fr)_220px]">
           <div className="flex items-start gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <QrCode className="size-6" />
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <QrCode className="size-5" />
             </div>
-            <div className="space-y-3">
-              <h2 className="font-serif text-3xl text-primary">Customer QR Sales</h2>
-              <p className="max-w-3xl text-sm leading-6 text-on-surface-variant/80">
+            <div className="space-y-2">
+              <h2 className="font-serif text-2xl text-primary">Customer QR Sales</h2>
+              <p className="max-w-3xl text-sm leading-5 text-on-surface-variant/80">
                 Staff scan the customer QR from their profile, enter the purchase amount, and Medellin Rewards records the points plus the commission owed by this business.
               </p>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-primary/5 p-5">
+          <div className="rounded-2xl bg-primary/5 p-4">
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Commission Model</p>
-            <p className="mt-3 font-serif text-4xl text-primary">{business?.commissionRatePercent ?? 0}%</p>
-            <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
+            <p className="mt-2 font-serif text-3xl text-primary">{business?.commissionRatePercent ?? 0}%</p>
+            <p className="mt-1 text-sm leading-5 text-on-surface-variant/80">
               Tracked on recorded QR sales.
             </p>
           </div>
         </div>
 
-        <div className="grid gap-6 pt-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-5 pt-5 lg:grid-cols-[minmax(0,1fr)_300px]">
           <div className="min-w-0">
-            <div className="mb-6 flex items-start gap-4">
-              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                <ScanLine className="size-6" />
+            <div className="mb-4 flex items-start gap-4">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <ScanLine className="size-5" />
               </div>
-              <div className="space-y-2">
+              <div className="space-y-1">
                 <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member QR scanner')}</p>
-                <h2 className="font-serif text-3xl text-primary">{t('Scan member QR')}</h2>
-                <p className="max-w-2xl text-sm leading-6 text-on-surface-variant/80">
+                <h2 className="font-serif text-2xl text-primary">{t('Scan member QR')}</h2>
+                <p className="max-w-2xl text-sm leading-5 text-on-surface-variant/80">
                   {t('Use the staff device camera, upload a screenshot, or paste the member QR link to open the sale form.')}
                 </p>
               </div>
@@ -218,27 +218,27 @@ export function BusinessDashboardPage() {
           </div>
 
           <form
-            className="border-t border-primary/10 pt-6 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0"
+            className="border-t border-primary/10 pt-5 lg:border-l lg:border-t-0 lg:pl-5 lg:pt-0"
             onSubmit={(event) => {
               event.preventDefault()
               openMemberQrSale(memberQrInput)
             }}
           >
-            <div className="space-y-2">
+            <div className="space-y-1">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Manual fallback')}</p>
-              <h2 className="font-serif text-3xl text-primary">{t('Paste QR link')}</h2>
-              <p className="text-sm leading-6 text-on-surface-variant/80">
+              <h2 className="font-serif text-2xl text-primary">{t('Paste QR link')}</h2>
+              <p className="text-sm leading-5 text-on-surface-variant/80">
                 {t('If the camera is unavailable, paste the customer QR link or token here.')}
               </p>
             </div>
-            <div className="mt-6 grid gap-3">
+            <div className="mt-4 grid gap-3">
               <Input
                 value={memberQrInput}
                 onChange={(event) => setMemberQrInput(event.target.value)}
                 placeholder="https://.../business/member-sale/token"
-                className="h-14 rounded-2xl bg-surface-lowest text-sm"
+                className="h-12 rounded-2xl bg-surface-lowest text-sm"
               />
-              <Button type="submit" className="h-12 rounded-2xl">
+              <Button type="submit" className="h-11 rounded-2xl">
                 <ScanLine className="size-4" />
                 {t('Open sale form')}
               </Button>
@@ -248,7 +248,7 @@ export function BusinessDashboardPage() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <BusinessMetricCard
           title={t('Members Recruited')}
           value={metrics.totalMembers.toString()}
@@ -318,31 +318,31 @@ export function BusinessDashboardPage() {
       </div>
 
       {/* Points Overview */}
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8">
-          <div className="flex items-center justify-between mb-6">
+      <div className="grid gap-4 lg:grid-cols-2">
+        <div className="rounded-xl border border-[var(--border)] bg-card p-5 text-card-foreground shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
             <div className="space-y-1">
               <h3 className="font-serif text-2xl text-primary">{t('Points Issued')}</h3>
               <p className="text-sm text-on-surface-variant/70">{t('Total points awarded to customers')}</p>
             </div>
-            <div className="size-12 rounded-xl bg-success/10 flex items-center justify-center text-success">
-              <TrendingUp className="size-6" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-success/10 text-success">
+              <TrendingUp className="size-5" />
             </div>
           </div>
-          <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
+          <p className="font-serif text-4xl tracking-tight text-primary">{formatPoints(metrics.pointsIssued)}</p>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm p-8">
-          <div className="flex items-center justify-between mb-6">
+        <div className="rounded-xl border border-[var(--border)] bg-card p-5 text-card-foreground shadow-sm">
+          <div className="mb-4 flex items-center justify-between">
             <div className="space-y-1">
               <h3 className="font-serif text-2xl text-primary">{t('Points Redeemed')}</h3>
               <p className="text-sm text-on-surface-variant/70">{t('Total points spent on rewards')}</p>
             </div>
-            <div className="size-12 rounded-xl bg-secondary/10 flex items-center justify-center text-secondary">
-              <Gift className="size-6" />
+            <div className="flex size-10 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+              <Gift className="size-5" />
             </div>
           </div>
-          <p className="font-serif text-5xl tracking-tight text-primary">{formatPoints(metrics.pointsRedeemed)}</p>
+          <p className="font-serif text-4xl tracking-tight text-primary">{formatPoints(metrics.pointsRedeemed)}</p>
         </div>
       </div>
 

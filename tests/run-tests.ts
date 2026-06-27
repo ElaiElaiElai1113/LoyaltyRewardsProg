@@ -1067,6 +1067,8 @@ runTest('business dashboard exposes an in-app member QR scanner and deep link fa
   assert.match(dashboard, /onDetected=\{openMemberQrSale\}/)
   assert.match(dashboard, /Paste QR link/)
   assert.match(dashboard, /Open sale form/)
+  assert.match(dashboard, /space-y-5 xl:space-y-7/)
+  assert.match(dashboard, /grid gap-3 sm:grid-cols-2 xl:grid-cols-4/)
   assert.ok(
     dashboard.indexOf("t('See the business walkthrough')") <
       dashboard.indexOf('Customer QR Sales'),
