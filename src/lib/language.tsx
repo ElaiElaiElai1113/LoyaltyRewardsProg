@@ -688,7 +688,6 @@ const spanishTranslations: Record<string, string> = {
   'sign in.': 'inicia sesion.',
   'create account.': 'crea cuenta.',
   'Portal': 'Portal',
-  'Member': 'Miembro',
   'Member Portal': 'Portal de miembro',
   'Sign in to my account': 'Iniciar sesion en mi cuenta',
   "Don't have an account?": 'No tienes cuenta?',
