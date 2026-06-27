@@ -6,8 +6,9 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { useLanguage } from '@/lib/language'
 
 type AuthPortalShellProps = {
-  activeTab: 'signin' | 'signup'
+  activeTab?: 'signin' | 'signup'
   children: ReactNode
+  showTabs?: boolean
 }
 
 function tabClass(isActive: boolean) {
@@ -19,7 +20,7 @@ function tabClass(isActive: boolean) {
   ].join(' ')
 }
 
-export function AuthPortalShell({ activeTab, children }: AuthPortalShellProps) {
+export function AuthPortalShell({ activeTab, children, showTabs = true }: AuthPortalShellProps) {
   const { t } = useLanguage()
 
   return (
@@ -37,16 +38,18 @@ export function AuthPortalShell({ activeTab, children }: AuthPortalShellProps) {
           <ThemeToggle className="border border-[#d1ad4a]/45 bg-[color-mix(in_srgb,var(--surface-container-lowest)_86%,transparent)] text-[#d1ad4a] hover:bg-[#d1ad4a] hover:text-[#060606]" />
         </div>
 
-        <nav className="grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] p-0">
-          <Link to="/signin" className={tabClass(activeTab === 'signin')}>
-            {t('Sign in')}
-          </Link>
-          <Link to="/join" className={tabClass(activeTab === 'signup')}>
-            {t('Create account')}
-          </Link>
-        </nav>
+        {showTabs ? (
+          <nav className="grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] p-0">
+            <Link to="/signin" className={tabClass(activeTab === 'signin')}>
+              {t('Sign in')}
+            </Link>
+            <Link to="/join" className={tabClass(activeTab === 'signup')}>
+              {t('Create account')}
+            </Link>
+          </nav>
+        ) : null}
 
-        <section className="mt-8 w-full rounded-[12px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] px-8 pb-9 pt-9 text-[var(--foreground)] shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:px-8">
+        <section className={`${showTabs ? 'mt-8' : 'mt-4'} w-full rounded-[12px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] px-8 pb-9 pt-9 text-[var(--foreground)] shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:px-8`}>
           {children}
         </section>
       </div>

@@ -803,6 +803,7 @@ runTest('member auth pages use the approved portal layouts', () => {
   const authShell = readFileSync('src/features/auth/components/auth-portal-shell.tsx', 'utf8')
   const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const joinPage = readFileSync('src/features/join/pages/join-rewards-page.tsx', 'utf8')
+  const staffPage = readFileSync('src/features/auth/pages/staff-login-page.tsx', 'utf8')
 
   assert.match(authShell, /auth-portal-shell/)
   assert.match(authShell, /auth-portal-backdrop/)
@@ -821,6 +822,11 @@ runTest('member auth pages use the approved portal layouts', () => {
   assert.match(authPage, /export function AuthPage\(\) {\s*return <CompactAuthPage \/>/)
   assert.match(joinPage, /export function JoinRewardsPage\(\) {\s*return <CompactJoinRewardsPage \/>/)
   assert.match(joinPage, /activeTab="signup"/)
+  assert.match(staffPage, /AuthPortalShell showTabs=\{false\}/)
+  assert.match(staffPage, /t\('Admin Portal'\)/)
+  assert.match(staffPage, /t\('Business Portal'\)/)
+  assert.doesNotMatch(staffPage, /Business Access/)
+  assert.doesNotMatch(staffPage, /min-h-\[31rem\]/)
 })
 
 runTest('member sign in page follows the compact member portal layout', () => {
@@ -1676,12 +1682,23 @@ runTest('public business page header uses business onboarding actions', () => {
   assert.match(layout, /isBusinessOnboarding[\s\S]*Business Login/)
 })
 
-runTest('business login page does not point business users to customer sign in', () => {
+runTest('business and admin login pages follow the compact auth layout', () => {
   const page = readFileSync('src/features/auth/pages/staff-login-page.tsx', 'utf8')
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
 
-  assert.match(page, /businessSignInLink/)
-  assert.match(page, /businessSignInLink[\s\S]*\/business/)
+  assert.match(page, /AuthPortalShell showTabs=\{false\}/)
+  assert.match(page, /Medellin Rewards/)
+  assert.match(page, /portalLabel\.toUpperCase\(\)/)
+  assert.match(page, /id="staff-signin-email"/)
+  assert.match(page, /id="staff-signin-password"/)
+  assert.match(page, /t\('Forgot password\?'\)/)
+  assert.match(page, /t\('Sign in'\)/)
+  assert.match(page, /Eye/)
+  assert.match(language, /'Admin Portal': 'Portal admin'/)
+  assert.match(language, /'Business Portal': 'Portal de negocio'/)
   assert.doesNotMatch(page, /Public member sign in[\s\S]*to="\/signin"/)
+  assert.doesNotMatch(page, /Business Access/)
+  assert.doesNotMatch(page, /Private business access/)
 })
 
 runTest('staff permission migration keeps operational access but restricts catalog management', () => {

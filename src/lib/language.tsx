@@ -295,6 +295,7 @@ const spanishTranslations: Record<string, string> = {
   'Sign out': 'Cerrar sesión',
   Operations: 'Operaciones',
   'Admin Portal': 'Portal admin',
+  'Business Portal': 'Portal de negocio',
   'Game Ops': 'Operaciones del juego',
   'Operations Lead': 'Líder de operaciones',
   'Mission Control': 'Centro de control',
