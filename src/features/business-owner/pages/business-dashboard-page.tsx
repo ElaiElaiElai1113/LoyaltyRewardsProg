@@ -172,79 +172,79 @@ export function BusinessDashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
-        <div className="rounded-3xl border border-primary/15 bg-card p-8 shadow-sm">
+      <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
+        <div className="grid gap-6 border-b border-primary/10 pb-6 lg:grid-cols-[minmax(0,1fr)_220px]">
           <div className="flex items-start gap-4">
             <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
               <QrCode className="size-6" />
             </div>
             <div className="space-y-3">
               <h2 className="font-serif text-3xl text-primary">Customer QR Sales</h2>
-              <p className="text-sm leading-6 text-on-surface-variant/80">
+              <p className="max-w-3xl text-sm leading-6 text-on-surface-variant/80">
                 Staff scan the customer QR from their profile, enter the purchase amount, and Medellin Rewards records the points plus the commission owed by this business.
               </p>
             </div>
           </div>
-        </div>
 
-        <div className="rounded-3xl border border-primary/15 bg-primary/5 p-8 shadow-sm">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Commission Model</p>
-          <p className="mt-3 font-serif text-4xl text-primary">{business?.commissionRatePercent ?? 0}%</p>
-          <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
-            Applied to recorded QR sales and tracked as commission owed to Medellin Rewards.
-          </p>
-        </div>
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
-          <div className="mb-6 flex items-start gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <ScanLine className="size-6" />
-            </div>
-            <div className="space-y-2">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member QR scanner')}</p>
-              <h2 className="font-serif text-3xl text-primary">{t('Scan member QR')}</h2>
-              <p className="max-w-2xl text-sm leading-6 text-on-surface-variant/80">
-                {t('Use the staff device camera, upload a screenshot, or paste the member QR link to open the sale form.')}
-              </p>
-            </div>
-          </div>
-          <QrScanner
-            idleMessage={t('Point the camera at the customer member QR or upload a QR screenshot.')}
-            detectedMessage={t('Member QR detected. Opening the sale form.')}
-            unavailableMessage={t('Live camera scanning is not available in this browser. Paste the QR link instead.')}
-            onDetected={openMemberQrSale}
-          />
-        </div>
-
-        <form
-          className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8"
-          onSubmit={(event) => {
-            event.preventDefault()
-            openMemberQrSale(memberQrInput)
-          }}
-        >
-          <div className="space-y-2">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Manual fallback')}</p>
-            <h2 className="font-serif text-3xl text-primary">{t('Paste QR link')}</h2>
-            <p className="text-sm leading-6 text-on-surface-variant/80">
-              {t('If the camera is unavailable, paste the customer QR link or token here.')}
+          <div className="rounded-2xl bg-primary/5 p-5">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Commission Model</p>
+            <p className="mt-3 font-serif text-4xl text-primary">{business?.commissionRatePercent ?? 0}%</p>
+            <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
+              Tracked on recorded QR sales.
             </p>
           </div>
-          <div className="mt-6 grid gap-3">
-            <Input
-              value={memberQrInput}
-              onChange={(event) => setMemberQrInput(event.target.value)}
-              placeholder="https://.../business/member-sale/token"
-              className="h-14 rounded-2xl bg-surface-lowest text-sm"
+        </div>
+
+        <div className="grid gap-6 pt-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0">
+            <div className="mb-6 flex items-start gap-4">
+              <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                <ScanLine className="size-6" />
+              </div>
+              <div className="space-y-2">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member QR scanner')}</p>
+                <h2 className="font-serif text-3xl text-primary">{t('Scan member QR')}</h2>
+                <p className="max-w-2xl text-sm leading-6 text-on-surface-variant/80">
+                  {t('Use the staff device camera, upload a screenshot, or paste the member QR link to open the sale form.')}
+                </p>
+              </div>
+            </div>
+            <QrScanner
+              idleMessage={t('Point the camera at the customer member QR or upload a QR screenshot.')}
+              detectedMessage={t('Member QR detected. Opening the sale form.')}
+              unavailableMessage={t('Live camera scanning is not available in this browser. Paste the QR link instead.')}
+              onDetected={openMemberQrSale}
             />
-            <Button type="submit" className="h-12 rounded-2xl">
-              <ScanLine className="size-4" />
-              {t('Open sale form')}
-            </Button>
           </div>
-        </form>
+
+          <form
+            className="border-t border-primary/10 pt-6 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0"
+            onSubmit={(event) => {
+              event.preventDefault()
+              openMemberQrSale(memberQrInput)
+            }}
+          >
+            <div className="space-y-2">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Manual fallback')}</p>
+              <h2 className="font-serif text-3xl text-primary">{t('Paste QR link')}</h2>
+              <p className="text-sm leading-6 text-on-surface-variant/80">
+                {t('If the camera is unavailable, paste the customer QR link or token here.')}
+              </p>
+            </div>
+            <div className="mt-6 grid gap-3">
+              <Input
+                value={memberQrInput}
+                onChange={(event) => setMemberQrInput(event.target.value)}
+                placeholder="https://.../business/member-sale/token"
+                className="h-14 rounded-2xl bg-surface-lowest text-sm"
+              />
+              <Button type="submit" className="h-12 rounded-2xl">
+                <ScanLine className="size-4" />
+                {t('Open sale form')}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
 
       {/* Metrics Grid */}
