@@ -196,6 +196,22 @@ export function useProvisionPartnerOwner() {
   })
 }
 
+export function useCreateBusinessAgreement() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (values: {
+      businessId: string
+      businessName: string
+      title?: string
+      body: string
+    }) => adminService.createBusinessAgreement(values),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: adminKeys.agreementStatuses })
+    },
+  })
+}
+
 export function useAssignBusinessOwner() {
   const queryClient = useQueryClient()
 

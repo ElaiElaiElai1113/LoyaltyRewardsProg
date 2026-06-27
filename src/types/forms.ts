@@ -159,7 +159,15 @@ export const createBusinessSchema = z.object({
     .regex(/^[A-Za-z]{3}$/, 'Use a 3-letter currency code'),
   active: z.boolean(),
   ownerEmail: z.email('Enter a valid partner owner email'),
-})
+  contractTitle: z.string().trim().max(120, 'Keep the contract title under 120 characters').optional(),
+  contractBody: z.string().trim().max(30000, 'Keep the contract under 30000 characters').optional(),
+}).refine(
+  (values) => !values.contractBody?.trim() || values.contractBody.trim().length >= 20,
+  {
+    message: 'Enter at least 20 characters for the contract document',
+    path: ['contractBody'],
+  },
+)
 
 export type CreateBusinessFormValues = z.infer<typeof createBusinessSchema>
 

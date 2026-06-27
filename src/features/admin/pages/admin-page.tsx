@@ -41,6 +41,7 @@ import {
   useAssignBusinessOwner,
   useAssignBusinessStaff,
   useCreateBusiness,
+  useCreateBusinessAgreement,
   useCreateProduct,
   useCreatePromotion,
   useCreateReward,
@@ -249,6 +250,7 @@ export function AdminPage() {
   const fulfillRedemption = useFulfillRedemption(profile)
   const updateBusiness = useUpdateBusiness()
   const createBusiness = useCreateBusiness()
+  const createBusinessAgreement = useCreateBusinessAgreement()
   const provisionPartnerOwner = useProvisionPartnerOwner()
   const assignBusinessOwnerFromList = useAssignBusinessOwner()
   const assignBusinessStaffFromList = useAssignBusinessStaff()
@@ -428,6 +430,8 @@ export function AdminPage() {
       currency: 'USD',
       active: true,
       ownerEmail: '',
+      contractTitle: '',
+      contractBody: '',
     },
   })
 
@@ -452,6 +456,8 @@ export function AdminPage() {
       currency: 'USD',
       active: true,
       ownerEmail: '',
+      contractTitle: '',
+      contractBody: '',
     })
     setCreateBusinessError(null)
     setIsCreateSlugManual(false)
@@ -1862,6 +1868,14 @@ export function AdminPage() {
                           ...values,
                           ownerEmail,
                         })
+                        if (values.contractBody?.trim()) {
+                          await createBusinessAgreement.mutateAsync({
+                            businessId: business.id as string,
+                            businessName: values.name,
+                            title: values.contractTitle,
+                            body: values.contractBody,
+                          })
+                        }
                         const ownerCredentials = await provisionPartnerOwner.mutateAsync({
                           email: ownerEmail,
                           businessId: business.id as string,
@@ -2080,22 +2094,52 @@ export function AdminPage() {
                     )}
                   </div>
 
+                  <div className="grid gap-3 md:col-span-2">
+                    <Label htmlFor="create-partner-contract-title">Contract Title</Label>
+                    <Input
+                      id="create-partner-contract-title"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="Partner Business Contract"
+                      {...createBusinessForm.register('contractTitle')}
+                    />
+                    {createBusinessForm.formState.errors.contractTitle ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.contractTitle.message}</p>
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Optional. Leave blank to use the business name as the contract title.</p>
+                    )}
+                  </div>
+
+                  <div className="grid gap-3 md:col-span-2">
+                    <Label htmlFor="create-partner-contract-body">Contract Document To Sign</Label>
+                    <Textarea
+                      id="create-partner-contract-body"
+                      className="min-h-48 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="Paste the partner contract or special agreement terms here. The business owner must sign this before the dashboard unlocks."
+                      {...createBusinessForm.register('contractBody')}
+                    />
+                    {createBusinessForm.formState.errors.contractBody ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.contractBody.message}</p>
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Optional. If filled, this becomes a required e-signature agreement for this business owner.</p>
+                    )}
+                  </div>
+
                   <div className="flex flex-wrap items-center justify-end gap-3 md:col-span-2">
                     <Button
                       type="button"
                       variant="outline"
                       className="rounded-full"
                       onClick={resetCreateBusinessForm}
-                      disabled={createBusiness.isPending || provisionPartnerOwner.isPending}
+                      disabled={createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending}
                     >
                       Reset
                     </Button>
                     <Button
                       type="submit"
                       className="rounded-full"
-                      disabled={createBusiness.isPending || provisionPartnerOwner.isPending}
+                      disabled={createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending}
                     >
-                      {createBusiness.isPending || provisionPartnerOwner.isPending ? 'Creating...' : 'Create Partner'}
+                      {createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending ? 'Creating...' : 'Create Partner'}
                     </Button>
                   </div>
                   {createBusinessError ? <p className="text-sm font-bold text-red-500 md:col-span-2">{createBusinessError}</p> : null}

@@ -34,6 +34,13 @@ type CreateBusinessInput = {
   active: boolean
 }
 
+type CreateBusinessAgreementInput = {
+  businessId: string
+  businessName: string
+  title?: string
+  body: string
+}
+
 export type ProvisionPartnerOwnerResult = {
   email: string
   defaultPassword: string
@@ -54,6 +61,7 @@ type AgreementStatusVersionRow = {
   id: string
   kind: AgreementKind
   required_role: UserRole | null
+  business_id: string | null
   version: number
   title: string
   content_hash: string
@@ -153,6 +161,14 @@ function isMissingCreateBusinessRpcError(error: unknown) {
     message.includes('create_managed_business') &&
     message.includes('schema cache')
   )
+}
+
+async function sha256Hex(value: string) {
+  const encoded = new TextEncoder().encode(value)
+  const digest = await crypto.subtle.digest('SHA-256', encoded)
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')
 }
 
 export const adminService = {
@@ -378,7 +394,7 @@ export const adminService = {
         .order('full_name'),
       sb
         .from('agreement_versions')
-        .select('id, kind, required_role, version, title, content_hash, is_active')
+        .select('id, kind, required_role, business_id, version, title, content_hash, is_active')
         .eq('is_active', true)
         .not('required_role', 'is', null)
         .order('kind', { ascending: true })
@@ -408,7 +424,10 @@ export const adminService = {
 
     const records: AgreementStatusRecord[] = []
     for (const profile of profiles) {
-      const requiredAgreements = agreements.filter((agreement) => agreement.required_role === profile.role)
+      const requiredAgreements = agreements.filter((agreement) =>
+        agreement.required_role === profile.role &&
+        (!agreement.business_id || agreement.business_id === profile.business_id)
+      )
 
       for (const agreement of requiredAgreements) {
         const acceptance = acceptanceByProfileAndVersion.get(`${profile.id}:${agreement.id}`)
@@ -431,6 +450,7 @@ export const adminService = {
           role: profile.role,
           businessId: profile.business_id,
           agreementVersionId: agreement.id,
+          agreementBusinessId: agreement.business_id,
           agreementKind: agreement.kind,
           agreementTitle: agreement.title,
           agreementVersion: agreement.version,
@@ -592,6 +612,36 @@ export const adminService = {
 
     if (error || !data) {
       throw new Error(error?.message ?? 'Failed to create business.')
+    }
+
+    return camelCaseRow(data as Record<string, unknown>)
+  },
+
+  async createBusinessAgreement(input: CreateBusinessAgreementInput) {
+    const body = input.body.trim()
+    if (!body) return null
+
+    const sb = requireSupabase()
+    const title = input.title?.trim() || `${input.businessName.trim()} Partner Contract`
+    const contentHash = await sha256Hex(`${title}\n\n${body}`)
+
+    const { data, error } = await sb
+      .from('agreement_versions')
+      .insert({
+        kind: 'business_affiliate',
+        required_role: 'business-owner',
+        business_id: input.businessId,
+        version: 1,
+        title,
+        body,
+        content_hash: contentHash,
+        is_active: true,
+      })
+      .select('*')
+      .single()
+
+    if (error || !data) {
+      throw new Error(error?.message ?? 'Failed to create business contract.')
     }
 
     return camelCaseRow(data as Record<string, unknown>)

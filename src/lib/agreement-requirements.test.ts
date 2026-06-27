@@ -11,6 +11,7 @@ const activeMemberAgreement: AgreementVersion = {
   id: 'agreement-member-v1',
   kind: 'member',
   requiredRole: 'customer',
+  businessId: null,
   version: 1,
   title: 'Member Agreement',
   body: 'Member agreement body',
@@ -23,6 +24,7 @@ const activeAffiliateAgreement: AgreementVersion = {
   id: 'agreement-affiliate-v1',
   kind: 'business_affiliate',
   requiredRole: 'business-owner',
+  businessId: null,
   version: 1,
   title: 'Business Affiliate Agreement',
   body: 'Business affiliate agreement body',
@@ -35,6 +37,7 @@ const activeTradeDealAgreement: AgreementVersion = {
   id: 'agreement-trade-v1',
   kind: 'trade_deal',
   requiredRole: null,
+  businessId: null,
   version: 1,
   title: 'Trade Deal Agreement',
   body: 'Trade deal agreement body',
@@ -90,6 +93,33 @@ describe('agreement requirements', () => {
 
     expect(pendingCustomer).toEqual([activeMemberAgreement])
     expect(hasCompletedRequiredAgreements(pendingCustomer)).toBe(false)
+  })
+
+  it('requires business-specific contracts only for the matching business owner', () => {
+    const customBusinessContract: AgreementVersion = {
+      ...activeAffiliateAgreement,
+      id: 'agreement-affiliate-business-1',
+      businessId: 'business-1',
+      title: 'Harbor Roast Partner Contract',
+      contentHash: 'business-1-contract-hash',
+    }
+
+    const pendingForMatchingBusiness = getPendingRequiredAgreements({
+      role: 'business-owner',
+      businessId: 'business-1',
+      activeAgreements: [activeAffiliateAgreement, customBusinessContract],
+      acceptances: [accepted(activeAffiliateAgreement)],
+    })
+
+    const pendingForOtherBusiness = getPendingRequiredAgreements({
+      role: 'business-owner',
+      businessId: 'business-2',
+      activeAgreements: [activeAffiliateAgreement, customBusinessContract],
+      acceptances: [accepted(activeAffiliateAgreement)],
+    })
+
+    expect(pendingForMatchingBusiness).toEqual([customBusinessContract])
+    expect(pendingForOtherBusiness).toEqual([])
   })
 
   it('treats matching acceptance records as complete', () => {

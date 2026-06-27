@@ -155,6 +155,10 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ message: 'This agreement is not required for this account.' }, 403)
   }
 
+  if (agreement.business_id && agreement.business_id !== profile.business_id) {
+    return jsonResponse({ message: 'This agreement is not assigned to this business account.' }, 403)
+  }
+
   const { data: existing, error: existingError } = await admin
     .from('agreement_acceptances')
     .select('*')
@@ -174,6 +178,7 @@ Deno.serve(async (req: Request) => {
     const { data: updatedAcceptance, error: updateError } = await admin
       .from('agreement_acceptances')
       .update({
+        business_id: agreement.business_id ?? profile.business_id,
         typed_signature: typedSignature,
         signature_svg: signatureSvg,
         accepted_electronic_records: true,
@@ -197,7 +202,7 @@ Deno.serve(async (req: Request) => {
     .from('agreement_acceptances')
     .insert({
       profile_id: userResult.user.id,
-      business_id: profile.business_id,
+      business_id: agreement.business_id ?? profile.business_id,
       agreement_version_id: agreement.id,
       agreement_kind: agreement.kind,
       agreement_version: agreement.version,

@@ -9,6 +9,7 @@ const requiredAgreementsByRole: Record<UserRole, AgreementKind[]> = {
 
 type PendingAgreementInput = {
   role: UserRole
+  businessId?: string | null
   activeAgreements: AgreementVersion[]
   acceptances: AgreementAcceptance[]
 }
@@ -35,6 +36,7 @@ function hasMatchingAcceptance(
 
 export function getPendingRequiredAgreements({
   role,
+  businessId,
   activeAgreements,
   acceptances,
 }: PendingAgreementInput): AgreementVersion[] {
@@ -45,6 +47,7 @@ export function getPendingRequiredAgreements({
     (agreement) =>
       agreement.isActive &&
       agreement.requiredRole === role &&
+      (!agreement.businessId || agreement.businessId === businessId) &&
       requiredKinds.includes(agreement.kind) &&
       !hasMatchingAcceptance(agreement, acceptances),
   )

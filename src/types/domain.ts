@@ -420,6 +420,7 @@ export interface AgreementVersion {
   id: string
   kind: AgreementKind
   requiredRole: UserRole | null
+  businessId: string | null
   version: number
   title: string
   body: string
@@ -450,6 +451,7 @@ export interface AgreementStatusRecord {
   role: UserRole
   businessId: string | null
   agreementVersionId: string
+  agreementBusinessId: string | null
   agreementKind: AgreementKind
   agreementTitle: string
   agreementVersion: number

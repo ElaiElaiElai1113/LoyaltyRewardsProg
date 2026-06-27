@@ -1818,6 +1818,32 @@ runTest('agreement workflow QA has seeded signed and unsigned users', () => {
   assert.match(zeroBalanceMigration, /coalesce\(new\.available_credits, 0\) = 0/)
 })
 
+runTest('admin-created partners can receive business-specific required contracts', () => {
+  const forms = readFileSync('src/types/forms.ts', 'utf8')
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const adminService = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
+  const legalService = readFileSync('src/integrations/supabase/services/legal-service.ts', 'utf8')
+  const agreementRequirements = readFileSync('src/lib/agreement-requirements.ts', 'utf8')
+  const signAgreementFunction = readFileSync('supabase/functions/sign-agreement/index.ts', 'utf8')
+  const migration = readFileSync('supabase/migrations/20260627000000_business_specific_agreement_versions.sql', 'utf8')
+
+  assert.match(forms, /contractTitle/)
+  assert.match(forms, /contractBody/)
+  assert.match(adminPage, /create-partner-contract-title/)
+  assert.match(adminPage, /create-partner-contract-body/)
+  assert.match(adminPage, /useCreateBusinessAgreement/)
+  assert.match(adminPage, /createBusinessAgreement\.mutateAsync/)
+  assert.match(adminService, /createBusinessAgreement/)
+  assert.match(adminService, /business_id: input\.businessId/)
+  assert.match(adminService, /content_hash: contentHash/)
+  assert.match(legalService, /business_id: string \| null/)
+  assert.match(agreementRequirements, /agreement\.businessId === businessId/)
+  assert.match(signAgreementFunction, /agreement\.business_id && agreement\.business_id !== profile\.business_id/)
+  assert.match(migration, /add column if not exists business_id uuid references public\.businesses/)
+  assert.match(migration, /idx_active_required_business_agreement_versions/)
+  assert.match(migration, /av\.business_id = target_business_id/)
+})
+
 runTest('Supabase E2E helpers expose workflow assertion utilities', () => {
   const helper = readFileSync('tests/e2e/helpers/supabase.ts', 'utf8')
 

@@ -17,6 +17,7 @@ type AgreementVersionRow = {
   id: string
   kind: AgreementKind
   required_role: UserRole | null
+  business_id: string | null
   version: number
   title: string
   body: string
@@ -49,6 +50,7 @@ function toAgreementVersion(row: AgreementVersionRow): AgreementVersion {
     id: row.id,
     kind: row.kind,
     requiredRole: row.required_role,
+    businessId: row.business_id,
     version: row.version,
     title: row.title,
     body: row.body,
@@ -113,6 +115,7 @@ export const legalService = {
     const acceptances = ((acceptancesResult.data ?? []) as AgreementAcceptanceRow[]).map(toAgreementAcceptance)
     const pendingAgreements = getPendingRequiredAgreements({
       role: profile.role,
+      businessId: profile.businessId,
       activeAgreements,
       acceptances,
     })
