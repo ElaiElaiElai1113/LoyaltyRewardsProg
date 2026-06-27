@@ -1824,6 +1824,7 @@ runTest('admin-created partners can receive business-specific required contracts
   const adminService = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
   const legalService = readFileSync('src/integrations/supabase/services/legal-service.ts', 'utf8')
   const agreementRequirements = readFileSync('src/lib/agreement-requirements.ts', 'utf8')
+  const requiredAgreementsPage = readFileSync('src/features/auth/pages/required-agreements-page.tsx', 'utf8')
   const signAgreementFunction = readFileSync('supabase/functions/sign-agreement/index.ts', 'utf8')
   const migration = readFileSync('supabase/migrations/20260627000000_business_specific_agreement_versions.sql', 'utf8')
 
@@ -1838,6 +1839,8 @@ runTest('admin-created partners can receive business-specific required contracts
   assert.match(adminService, /content_hash: contentHash/)
   assert.match(legalService, /business_id: string \| null/)
   assert.match(agreementRequirements, /agreement\.businessId === businessId/)
+  assert.match(requiredAgreementsPage, /Pending agreements/)
+  assert.match(requiredAgreementsPage, /Business contract/)
   assert.match(signAgreementFunction, /agreement\.business_id && agreement\.business_id !== profile\.business_id/)
   assert.match(migration, /add column if not exists business_id uuid references public\.businesses/)
   assert.match(migration, /idx_active_required_business_agreement_versions/)

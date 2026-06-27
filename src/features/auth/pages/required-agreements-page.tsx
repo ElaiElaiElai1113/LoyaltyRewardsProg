@@ -38,6 +38,7 @@ export function RequiredAgreementsPage() {
 
   const pendingAgreements = requiredAgreements.data?.pendingAgreements ?? []
   const currentAgreement = pendingAgreements[0] ?? null
+  const remainingAgreementCount = Math.max(0, pendingAgreements.length - 1)
 
   useEffect(() => {
     if (!profile || requiredAgreements.isLoading || !requiredAgreements.data?.isComplete) {
@@ -106,9 +107,14 @@ export function RequiredAgreementsPage() {
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_420px]">
         <section className="space-y-8">
           <div className="space-y-4 border-b border-outline-variant/10 pb-8">
-            <Badge variant="accent" className="bg-secondary-container/20 text-secondary">
-              Required Agreement
-            </Badge>
+            <div className="flex flex-wrap items-center gap-3">
+              <Badge variant="accent" className="bg-secondary-container/20 text-secondary">
+                Required Agreement
+              </Badge>
+              <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary">
+                Agreement 1 of {pendingAgreements.length}
+              </Badge>
+            </div>
             <div className="space-y-3">
               <h1 className="font-serif text-5xl leading-tight text-primary md:text-6xl">
                 {currentAgreement.title}
@@ -116,6 +122,9 @@ export function RequiredAgreementsPage() {
               <p className="max-w-3xl text-sm font-medium leading-6 text-on-surface-variant/85">
                 Version {currentAgreement.version} effective{' '}
                 {new Date(currentAgreement.effectiveAt).toLocaleDateString()}
+                {remainingAgreementCount > 0 ? (
+                  <>. {remainingAgreementCount} more agreement{remainingAgreementCount === 1 ? '' : 's'} must be signed before access unlocks.</>
+                ) : null}
               </p>
             </div>
           </div>
@@ -143,6 +152,31 @@ export function RequiredAgreementsPage() {
                   <p className="text-sm leading-6 text-on-surface-variant/80">
                     Signed as {profile.fullName} using {profile.email}.
                   </p>
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-outline-variant/10 bg-surface-low p-4">
+                <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
+                  Pending agreements
+                </p>
+                <div className="mt-3 space-y-2">
+                  {pendingAgreements.map((agreement, index) => (
+                    <div
+                      key={agreement.id}
+                      className={`rounded-xl border px-3 py-2 text-sm ${
+                        agreement.id === currentAgreement.id
+                          ? 'border-primary/30 bg-primary/10 text-primary'
+                          : 'border-outline-variant/10 bg-[var(--card)] text-on-surface-variant'
+                      }`}
+                    >
+                      <p className="font-semibold">
+                        {index + 1}. {agreement.title}
+                      </p>
+                      <p className="mt-1 text-xs opacity-75">
+                        {agreement.businessId ? 'Business contract' : 'Platform agreement'}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
 
