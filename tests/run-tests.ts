@@ -1846,6 +1846,8 @@ runTest('admin-created partners can receive business-specific required contracts
   assert.match(agreementRequirements, /business_custom/)
   assert.match(requiredAgreementsPage, /Pending agreements/)
   assert.match(requiredAgreementsPage, /Business contract/)
+  assert.match(requiredAgreementsPage, /lg:grid-cols-\[minmax\(0,1fr\)_420px\]/)
+  assert.match(requiredAgreementsPage, /\[overflow-wrap:anywhere\]/)
   assert.match(signAgreementFunction, /agreement\.business_id && agreement\.business_id !== profile\.business_id/)
   assert.match(migration, /add column if not exists business_id uuid references public\.businesses/)
   assert.match(migration, /idx_active_required_business_agreement_versions/)

@@ -104,8 +104,8 @@ export function RequiredAgreementsPage() {
 
   return (
     <div className="min-h-screen bg-surface px-6 py-10">
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1fr_420px]">
-        <section className="space-y-8">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
+        <section className="min-w-0 space-y-8">
           <div className="space-y-4 border-b border-outline-variant/10 pb-8">
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="accent" className="bg-secondary-container/20 text-secondary">
@@ -116,7 +116,7 @@ export function RequiredAgreementsPage() {
               </Badge>
             </div>
             <div className="space-y-3">
-              <h1 className="font-serif text-5xl leading-tight text-primary md:text-6xl">
+              <h1 className="break-words font-serif text-5xl leading-tight text-primary md:text-6xl">
                 {currentAgreement.title}
               </h1>
               <p className="max-w-3xl text-sm font-medium leading-6 text-on-surface-variant/85">
@@ -129,10 +129,10 @@ export function RequiredAgreementsPage() {
             </div>
           </div>
 
-          <Card className="border border-outline-variant/10 bg-white shadow-sm">
+          <Card className="min-w-0 overflow-hidden border border-outline-variant/10 bg-white shadow-sm">
             <CardContent className="p-0">
               <ScrollArea className="h-[68vh]">
-                <pre className="whitespace-pre-wrap p-8 font-sans text-sm leading-7 text-on-surface">
+                <pre className="max-w-full whitespace-pre-wrap break-words p-8 font-sans text-sm leading-7 text-on-surface [overflow-wrap:anywhere]">
                   {currentAgreement.body}
                 </pre>
               </ScrollArea>
@@ -140,8 +140,8 @@ export function RequiredAgreementsPage() {
           </Card>
         </section>
 
-        <aside className="lg:sticky lg:top-10 lg:self-start">
-          <Card className="border border-outline-variant/10 bg-white shadow-sm">
+        <aside className="min-w-0 lg:sticky lg:top-10 lg:self-start">
+          <Card className="min-w-0 border border-outline-variant/10 bg-white shadow-sm">
             <CardContent className="space-y-8 p-8">
               <div className="flex items-start gap-4">
                 <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
