@@ -33,6 +33,19 @@ const activeAffiliateAgreement: AgreementVersion = {
   effectiveAt: '2026-06-01T00:00:00.000Z',
 }
 
+const activeCustomBusinessAgreement: AgreementVersion = {
+  id: 'agreement-custom-business-v1',
+  kind: 'business_custom',
+  requiredRole: 'business-owner',
+  businessId: 'business-1',
+  version: 1,
+  title: 'Updated Partner Terms',
+  body: 'Custom business agreement body',
+  contentHash: 'custom-business-hash-v1',
+  isActive: true,
+  effectiveAt: '2026-06-01T00:00:00.000Z',
+}
+
 const activeTradeDealAgreement: AgreementVersion = {
   id: 'agreement-trade-v1',
   kind: 'trade_deal',
@@ -69,7 +82,7 @@ function accepted(version: AgreementVersion): AgreementAcceptance {
 describe('agreement requirements', () => {
   it('maps required agreement kinds by role', () => {
     expect(getRequiredAgreementKindsForRole('customer')).toEqual(['member'])
-    expect(getRequiredAgreementKindsForRole('business-owner')).toEqual(['business_affiliate'])
+    expect(getRequiredAgreementKindsForRole('business-owner')).toEqual(['business_affiliate', 'business_custom'])
     expect(getRequiredAgreementKindsForRole('business-staff')).toEqual([])
     expect(getRequiredAgreementKindsForRole('platform-admin')).toEqual([])
   })
@@ -77,11 +90,12 @@ describe('agreement requirements', () => {
   it('ignores active trade-deal agreements for normal access gating', () => {
     const pending = getPendingRequiredAgreements({
       role: 'business-owner',
-      activeAgreements: [activeAffiliateAgreement, activeTradeDealAgreement],
+      businessId: 'business-1',
+      activeAgreements: [activeAffiliateAgreement, activeCustomBusinessAgreement, activeTradeDealAgreement],
       acceptances: [],
     })
 
-    expect(pending).toEqual([activeAffiliateAgreement])
+    expect(pending).toEqual([activeAffiliateAgreement, activeCustomBusinessAgreement])
   })
 
   it('requires signing every active required agreement version', () => {
@@ -97,8 +111,8 @@ describe('agreement requirements', () => {
 
   it('requires business-specific contracts only for the matching business owner', () => {
     const customBusinessContract: AgreementVersion = {
-      ...activeAffiliateAgreement,
-      id: 'agreement-affiliate-business-1',
+      ...activeCustomBusinessAgreement,
+      id: 'agreement-custom-business-1',
       businessId: 'business-1',
       title: 'Harbor Roast Partner Contract',
       contentHash: 'business-1-contract-hash',
@@ -120,6 +134,29 @@ describe('agreement requirements', () => {
 
     expect(pendingForMatchingBusiness).toEqual([customBusinessContract])
     expect(pendingForOtherBusiness).toEqual([])
+  })
+
+  it('requires every matching custom document added to an active business account', () => {
+    const secondCustomDocument: AgreementVersion = {
+      ...activeCustomBusinessAgreement,
+      id: 'agreement-custom-business-v2',
+      version: 2,
+      title: 'New Seasonal Participation Terms',
+      contentHash: 'custom-business-hash-v2',
+    }
+
+    const pending = getPendingRequiredAgreements({
+      role: 'business-owner',
+      businessId: 'business-1',
+      activeAgreements: [
+        activeAffiliateAgreement,
+        activeCustomBusinessAgreement,
+        secondCustomDocument,
+      ],
+      acceptances: [accepted(activeAffiliateAgreement), accepted(activeCustomBusinessAgreement)],
+    })
+
+    expect(pending).toEqual([secondCustomDocument])
   })
 
   it('treats matching acceptance records as complete', () => {

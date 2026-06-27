@@ -622,16 +622,29 @@ export const adminService = {
     if (!body) return null
 
     const sb = requireSupabase()
-    const title = input.title?.trim() || `${input.businessName.trim()} Partner Contract`
+    const title = input.title?.trim() || `${input.businessName.trim()} Required Document`
     const contentHash = await sha256Hex(`${title}\n\n${body}`)
+    const { data: existingVersions, error: versionError } = await sb
+      .from('agreement_versions')
+      .select('version')
+      .eq('kind', 'business_custom')
+      .eq('business_id', input.businessId)
+      .order('version', { ascending: false })
+      .limit(1)
+
+    if (versionError) {
+      throw new Error(versionError.message || 'Failed to prepare business document.')
+    }
+
+    const version = Number(existingVersions?.[0]?.version ?? 0) + 1
 
     const { data, error } = await sb
       .from('agreement_versions')
       .insert({
-        kind: 'business_affiliate',
+        kind: 'business_custom',
         required_role: 'business-owner',
         business_id: input.businessId,
-        version: 1,
+        version,
         title,
         body,
         content_hash: contentHash,

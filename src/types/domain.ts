@@ -1,6 +1,6 @@
 export type UserRole = 'customer' | 'platform-admin' | 'business-owner' | 'business-staff'
 
-export type AgreementKind = 'member' | 'business_affiliate' | 'trade_deal'
+export type AgreementKind = 'member' | 'business_affiliate' | 'business_custom' | 'trade_deal'
 
 export interface Business {
   id: string

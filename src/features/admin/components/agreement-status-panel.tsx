@@ -1,17 +1,35 @@
-import { useMemo, useState } from 'react'
-import { CheckCircle, Clock, FileSignature, XCircle } from 'lucide-react'
+import { useMemo, useState, type FormEvent } from 'react'
+import { CheckCircle, Clock, FilePlus2, FileSignature, XCircle } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Textarea } from '@/components/ui/textarea'
 import { formatDate } from '@/lib/utils'
 import type { AgreementStatusRecord } from '@/types/domain'
+
+type AgreementBusinessOption = {
+  id: string
+  name: string
+  ownerName?: string | null
+  ownerEmail?: string | null
+}
 
 type AgreementStatusPanelProps = {
   records: AgreementStatusRecord[]
   isLoading: boolean
+  businessOptions?: AgreementBusinessOption[]
+  isCreatingAgreement?: boolean
+  onCreateBusinessAgreement?: (values: {
+    businessId: string
+    businessName: string
+    title?: string
+    body: string
+  }) => Promise<void>
 }
 
 type AgreementStatusFilter = 'all' | 'unsigned' | 'signed'
@@ -20,8 +38,20 @@ function signatureDataUrl(signatureSvg: string) {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(signatureSvg)}`
 }
 
-export function AgreementStatusPanel({ records, isLoading }: AgreementStatusPanelProps) {
+export function AgreementStatusPanel({
+  records,
+  isLoading,
+  businessOptions = [],
+  isCreatingAgreement = false,
+  onCreateBusinessAgreement,
+}: AgreementStatusPanelProps) {
   const [filter, setFilter] = useState<AgreementStatusFilter>('all')
+  const [selectedBusinessId, setSelectedBusinessId] = useState('')
+  const [documentTitle, setDocumentTitle] = useState('')
+  const [documentBody, setDocumentBody] = useState('')
+  const [createError, setCreateError] = useState<string | null>(null)
+  const selectedBusiness =
+    businessOptions.find((business) => business.id === selectedBusinessId) ?? businessOptions[0] ?? null
 
   const signedCount = records.filter((record) => record.isSigned).length
   const unsignedCount = records.length - signedCount
@@ -30,6 +60,32 @@ export function AgreementStatusPanel({ records, isLoading }: AgreementStatusPane
     if (filter === 'unsigned') return records.filter((record) => !record.isSigned)
     return records
   }, [filter, records])
+
+  async function handleCreateDocumentSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault()
+    if (!onCreateBusinessAgreement || !selectedBusiness) return
+
+    const body = documentBody.trim()
+    if (body.length < 20) {
+      setCreateError('Add the document text the business owner needs to agree to.')
+      return
+    }
+
+    try {
+      setCreateError(null)
+      await onCreateBusinessAgreement({
+        businessId: selectedBusiness.id,
+        businessName: selectedBusiness.name,
+        title: documentTitle,
+        body,
+      })
+      setDocumentTitle('')
+      setDocumentBody('')
+      setSelectedBusinessId('')
+    } catch (error) {
+      setCreateError(error instanceof Error ? error.message : 'Failed to add required document.')
+    }
+  }
 
   return (
     <div className="space-y-8">
@@ -71,6 +127,84 @@ export function AgreementStatusPanel({ records, isLoading }: AgreementStatusPane
           <p className="mt-2 font-serif text-4xl text-warning">{unsignedCount}</p>
         </div>
       </div>
+
+      {onCreateBusinessAgreement ? (
+        <form
+          className="rounded-3xl border border-primary-container/18 bg-[var(--card)] p-5 shadow-card sm:p-6"
+          onSubmit={handleCreateDocumentSubmit}
+        >
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+            <div className="space-y-3">
+              <span className="inline-flex size-11 items-center justify-center rounded-2xl bg-primary-container/20 text-primary">
+                <FilePlus2 className="size-5" />
+              </span>
+              <div className="space-y-2">
+                <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
+                  Required Documents
+                </p>
+                <h3 className="font-serif text-2xl text-primary">Add document for signing</h3>
+                <p className="text-sm leading-relaxed text-on-surface-variant/80">
+                  Add another document to an active business account. The business owner must sign it before continuing.
+                </p>
+              </div>
+            </div>
+
+            <div className="grid gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="agreement-business">Business</Label>
+                <select
+                  id="agreement-business"
+                  className="h-11 rounded-2xl border border-outline-variant/20 bg-surface-highest px-3 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15"
+                  value={selectedBusiness?.id ?? ''}
+                  onChange={(event) => setSelectedBusinessId(event.target.value)}
+                  disabled={businessOptions.length === 0 || isCreatingAgreement}
+                >
+                  {businessOptions.map((business) => (
+                    <option key={business.id} value={business.id}>
+                      {business.name}
+                      {business.ownerEmail ? ` - ${business.ownerEmail}` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="agreement-document-title">Document Title</Label>
+                <Input
+                  id="agreement-document-title"
+                  className="h-11 rounded-2xl border-outline-variant/20 bg-surface-highest focus:border-primary/30"
+                  placeholder="Updated Partner Terms"
+                  value={documentTitle}
+                  onChange={(event) => setDocumentTitle(event.target.value)}
+                  disabled={isCreatingAgreement}
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label htmlFor="agreement-document-body">Document Text</Label>
+                <Textarea
+                  id="agreement-document-body"
+                  className="min-h-40 rounded-2xl border-outline-variant/20 bg-surface-highest text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15"
+                  placeholder="Paste the document or agreement text here."
+                  value={documentBody}
+                  onChange={(event) => setDocumentBody(event.target.value)}
+                  disabled={isCreatingAgreement}
+                />
+              </div>
+
+              {createError ? <p className="text-sm font-medium text-red-500">{createError}</p> : null}
+
+              <Button
+                type="submit"
+                className="h-11 rounded-full"
+                disabled={!selectedBusiness || isCreatingAgreement || businessOptions.length === 0}
+              >
+                {isCreatingAgreement ? 'Adding...' : 'Add Required Document'}
+              </Button>
+            </div>
+          </div>
+        </form>
+      ) : null}
 
       <div className="overflow-hidden rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card">
         <ScrollArea className="h-[680px]">

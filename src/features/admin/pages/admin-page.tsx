@@ -3407,6 +3407,17 @@ export function AdminPage() {
           <AgreementStatusPanel
             records={agreementStatuses.data ?? []}
             isLoading={agreementStatuses.isLoading}
+            businessOptions={allBusinessRows.map((business) => ({
+              id: business.id,
+              name: business.name,
+              ownerName: business.ownerName,
+              ownerEmail: business.ownerEmail,
+            }))}
+            isCreatingAgreement={createBusinessAgreement.isPending}
+            onCreateBusinessAgreement={async (values) => {
+              await createBusinessAgreement.mutateAsync(values)
+              toast.success('Required signing document added.')
+            }}
           />
         </TabsContent>
 

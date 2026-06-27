@@ -2,7 +2,7 @@ import type { AgreementAcceptance, AgreementKind, AgreementVersion, UserRole } f
 
 const requiredAgreementsByRole: Record<UserRole, AgreementKind[]> = {
   customer: ['member'],
-  'business-owner': ['business_affiliate'],
+  'business-owner': ['business_affiliate', 'business_custom'],
   'business-staff': [],
   'platform-admin': [],
 }
