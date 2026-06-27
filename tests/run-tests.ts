@@ -1067,6 +1067,11 @@ runTest('business dashboard exposes an in-app member QR scanner and deep link fa
   assert.match(dashboard, /onDetected=\{openMemberQrSale\}/)
   assert.match(dashboard, /Paste QR link/)
   assert.match(dashboard, /Open sale form/)
+  assert.ok(
+    dashboard.indexOf("t('See the business walkthrough')") <
+      dashboard.indexOf('Customer QR Sales'),
+    'Business walkthrough callout should render before QR sales content.',
+  )
 })
 
 runTest('router exposes protected business member-sale route', () => {

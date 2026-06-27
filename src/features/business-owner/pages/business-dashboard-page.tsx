@@ -149,6 +149,29 @@ export function BusinessDashboardPage() {
         </div>
       </div>
 
+      <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 gap-4">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+              <MonitorPlay className="size-6" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Walkthrough demo')}</p>
+              <h2 className="mt-2 font-serif text-3xl leading-tight text-primary">{t('See the business walkthrough')}</h2>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant/80">
+                {t('Open the guided demo for scanning a customer QR, recording the purchase, awarding points, and tracking commission.')}
+              </p>
+            </div>
+          </div>
+          <Button asChild className="shrink-0 rounded-full">
+            <Link to="/business/guide">
+              <MonitorPlay className="size-4" />
+              {t('Open walkthrough')}
+            </Link>
+          </Button>
+        </div>
+      </div>
+
       <div className="grid gap-6 lg:grid-cols-[1.25fr_0.75fr]">
         <div className="rounded-3xl border border-primary/15 bg-card p-8 shadow-sm">
           <div className="flex items-start gap-4">
@@ -222,29 +245,6 @@ export function BusinessDashboardPage() {
             </Button>
           </div>
         </form>
-      </div>
-
-      <div className="rounded-3xl border border-primary/15 bg-card p-6 shadow-sm sm:p-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <MonitorPlay className="size-6" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Walkthrough demo')}</p>
-              <h2 className="mt-2 font-serif text-3xl leading-tight text-primary">{t('See the business walkthrough')}</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant/80">
-                {t('Open the guided demo for scanning a customer QR, recording the purchase, awarding points, and tracking commission.')}
-              </p>
-            </div>
-          </div>
-          <Button asChild className="shrink-0 rounded-full">
-            <Link to="/business/guide">
-              <MonitorPlay className="size-4" />
-              {t('Open walkthrough')}
-            </Link>
-          </Button>
-        </div>
       </div>
 
       {/* Metrics Grid */}
