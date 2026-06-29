@@ -1,9 +1,22 @@
+import { existsSync, readFileSync } from 'node:fs'
+
 export const e2eBaseUrl = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:5175'
 
 export const e2ePassword = process.env.E2E_PASSWORD ?? 'demo1234'
 
-export const workflowAuthEnabled =
-  process.env.E2E_AUTH_ENABLED === 'true' ||
+function readDotEnvValue(name: string) {
+  if (!existsSync('.env')) return undefined
+
+  const line = readFileSync('.env', 'utf8')
+    .split(/\r?\n/)
+    .find((entry) => entry.trim().startsWith(`${name}=`))
+
+  return line?.split('=').slice(1).join('=').replace(/^"|"$/g, '').trim()
+}
+
+const configuredSupabaseUrl = process.env.VITE_SUPABASE_URL ?? readDotEnvValue('VITE_SUPABASE_URL') ?? ''
+const usesLocalSupabase = /^(http:\/\/)?(127\.0\.0\.1|localhost)(:\d+)?/i.test(configuredSupabaseUrl)
+const lifecycleAuthRequested =
   process.env.npm_lifecycle_event === 'test:e2e:workflows' ||
   process.env.npm_lifecycle_event === 'test:launch' ||
   process.env.npm_lifecycle_event === 'test:referrals' ||
@@ -11,6 +24,9 @@ export const workflowAuthEnabled =
   process.env.npm_lifecycle_event === 'test:gift-cards' ||
   process.env.npm_lifecycle_event === 'test:rewards' ||
   process.env.npm_lifecycle_event === 'test:agreements'
+const explicitAuthEnabled = process.env.E2E_AUTH_ENABLED === 'true'
+
+export const workflowAuthEnabled = explicitAuthEnabled || (lifecycleAuthRequested && usesLocalSupabase)
 
 export const e2eAccounts = {
   customer: process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test',

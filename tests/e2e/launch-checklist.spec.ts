@@ -61,6 +61,7 @@ test.describe.serial('platform launch checklist PT001-PT008', () => {
     await page.goto(`/business/member-sale/${memberProfile.memberQrToken}`)
     await expect(page.locator('body')).toContainText(/Record Member Sale|Purchase Details/i)
     await page.locator('#purchaseAmount').fill(String(purchaseAmount))
+    await page.locator('#receiptNumber').fill(`E2E-${transactionNote}`)
     await page.locator('#note').fill(transactionNote)
     await page.getByRole('button', { name: /Record Sale/i }).click()
     await expect(page.locator('body')).toContainText(/Transaction recorded/i)

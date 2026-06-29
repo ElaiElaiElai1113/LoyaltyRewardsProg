@@ -25,8 +25,19 @@ export function SettingsPage() {
           rewardRatePercent: business.rewardRatePercent,
           commissionRatePercent: business.commissionRatePercent,
           taxRate: business.taxRate,
+          taxIncludedInBill: business.taxIncludedInBill,
+          serviceChargeEnabled: business.serviceChargeEnabled,
+          serviceChargeRate: business.serviceChargeRate,
         }
-      : { earnRate: 10, rewardRatePercent: 20, commissionRatePercent: 10, taxRate: 0.0875 },
+      : {
+          earnRate: 10,
+          rewardRatePercent: 20,
+          commissionRatePercent: 10,
+          taxRate: 0.0875,
+          taxIncludedInBill: false,
+          serviceChargeEnabled: false,
+          serviceChargeRate: 0,
+        },
   })
 
   if (!business) {
@@ -161,6 +172,44 @@ export function SettingsPage() {
                   )}
                   <p className="text-xs text-on-surface-variant/60">
                     {t('Enter as decimal (e.g., 0.0875 for 8.75%)')}
+                  </p>
+                </div>
+
+                <label className="flex min-h-12 items-center gap-3 rounded-xl border border-outline-variant/20 bg-surface-low px-4 text-sm font-semibold text-on-surface">
+                  <input
+                    type="checkbox"
+                    className="size-4 rounded border-outline-variant/30"
+                    {...form.register('taxIncludedInBill')}
+                  />
+                  Tax is included in the customer bill
+                </label>
+
+                <label className="flex min-h-12 items-center gap-3 rounded-xl border border-outline-variant/20 bg-surface-low px-4 text-sm font-semibold text-on-surface">
+                  <input
+                    type="checkbox"
+                    className="size-4 rounded border-outline-variant/30"
+                    {...form.register('serviceChargeEnabled')}
+                  />
+                  This business adds a service charge
+                </label>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="service-charge-rate" className="flex items-center gap-2">
+                    <DollarSign className="size-4" />
+                    Service Charge Rate
+                  </Label>
+                  <Input
+                    id="service-charge-rate"
+                    type="number"
+                    step="0.001"
+                    className="rounded-xl h-12"
+                    {...form.register('serviceChargeRate', { valueAsNumber: true })}
+                  />
+                  {form.formState.errors.serviceChargeRate && (
+                    <p className="text-xs text-red-500">{form.formState.errors.serviceChargeRate.message}</p>
+                  )}
+                  <p className="text-xs text-on-surface-variant/60">
+                    Enter as decimal. Use 0 if the business does not add service charge.
                   </p>
                 </div>
 

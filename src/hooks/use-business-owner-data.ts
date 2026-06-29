@@ -338,7 +338,13 @@ export function useRecordMemberTransaction(businessId?: string, profileId?: stri
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (values: { token: string; purchaseAmount: number; note?: string; clientRequestId: string }) =>
+    mutationFn: (values: {
+      token: string
+      purchaseAmount: number
+      receiptNumber: string
+      note?: string
+      clientRequestId: string
+    }) =>
       memberTransactionsService.recordTransaction(values),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['member-transactions', businessId] })

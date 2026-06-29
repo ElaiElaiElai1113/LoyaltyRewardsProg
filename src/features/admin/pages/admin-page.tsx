@@ -427,6 +427,9 @@ export function AdminPage() {
       logoUrl: '',
       earnRate: 1,
       taxRate: 0,
+      taxIncludedInBill: false,
+      serviceChargeEnabled: false,
+      serviceChargeRate: 0,
       currency: 'USD',
       active: true,
       ownerEmail: '',
@@ -453,6 +456,9 @@ export function AdminPage() {
       logoUrl: '',
       earnRate: 1,
       taxRate: 0,
+      taxIncludedInBill: false,
+      serviceChargeEnabled: false,
+      serviceChargeRate: 0,
       currency: 'USD',
       active: true,
       ownerEmail: '',
@@ -2045,6 +2051,51 @@ export function AdminPage() {
                     )}
                   </div>
 
+                  <div className="grid gap-3">
+                    <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
+                      <input
+                        type="checkbox"
+                        className="size-4 rounded border-outline-variant/30"
+                        {...createBusinessForm.register('taxIncludedInBill')}
+                      />
+                      Tax is included in the bill
+                    </label>
+                    <p className="text-xs text-on-surface-variant/70">
+                      Leave unchecked when tax is added on top of the menu/subtotal price.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-3">
+                    <label className="flex min-h-12 items-center gap-3 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm font-semibold text-on-surface">
+                      <input
+                        type="checkbox"
+                        className="size-4 rounded border-outline-variant/30"
+                        {...createBusinessForm.register('serviceChargeEnabled')}
+                      />
+                      Business adds service charge
+                    </label>
+                    <p className="text-xs text-on-surface-variant/70">
+                      Rewards will not be issued on service charge.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
+                    <Label htmlFor="create-partner-service-charge-rate">Service Charge (%)</Label>
+                    <Input
+                      id="create-partner-service-charge-rate"
+                      type="number"
+                      step="0.01"
+                      className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
+                      placeholder="5"
+                      {...createBusinessForm.register('serviceChargeRate', { valueAsNumber: true })}
+                    />
+                    {createBusinessForm.formState.errors.serviceChargeRate ? (
+                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.serviceChargeRate.message}</p>
+                    ) : (
+                      <p className="text-xs text-on-surface-variant/70">Enter 5 for a 5% service charge. Use 0 when there is no service charge.</p>
+                    )}
+                  </div>
+
                   <div className="grid gap-5 md:col-span-2 md:grid-cols-2">
                     <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                       <Label htmlFor="create-partner-currency">Currency</Label>
@@ -3581,7 +3632,12 @@ export function AdminPage() {
                             <p className="font-semibold text-primary">{transaction.member?.fullName ?? 'Unknown member'}</p>
                             <p className="text-xs text-on-surface-variant/75">{transaction.member?.email ?? transaction.profileId}</p>
                           </td>
-                          <td className="px-6 py-4 font-semibold text-primary">{formatCurrency(transaction.purchaseAmount)}</td>
+                          <td className="px-6 py-4">
+                            <p className="font-semibold text-primary">{formatCurrency(transaction.purchaseAmount)}</p>
+                            <p className="text-xs text-on-surface-variant/75">
+                              Receipt: {transaction.receiptNumber ?? 'Not recorded'}
+                            </p>
+                          </td>
                           <td className="px-6 py-4">
                             <p className="font-semibold text-primary">{formatCurrency(transaction.rewardValue)}</p>
                             <p className="text-xs text-on-surface-variant/75">{transaction.pointsAwarded} points</p>

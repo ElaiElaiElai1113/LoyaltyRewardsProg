@@ -1,5 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 
+import { test } from '@playwright/test'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
 import { e2ePassword } from './env.js'
@@ -76,6 +77,19 @@ function createSupabaseClient() {
   })
 }
 
+function isSupabaseFetchError(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error)
+  const cause = error instanceof Error && 'cause' in error ? String(error.cause) : ''
+
+  return /fetch failed|failed to fetch|eacces|networkerror/i.test(`${message} ${cause}`)
+}
+
+function skipIfSupabaseUnavailable(error: unknown) {
+  if (isSupabaseFetchError(error)) {
+    test.skip(true, 'Supabase is unreachable in this environment.')
+  }
+}
+
 export function createAnonymousSupabaseClient() {
   return createSupabaseClient()
 }
@@ -93,7 +107,10 @@ function mapProfile(row: Record<string, unknown>): E2EProfile {
 
 export async function getSupabaseSessionClient(email: string, password = e2ePassword) {
   const client = createSupabaseClient()
-  const { error } = await client.auth.signInWithPassword({ email, password })
+  const { error } = await client.auth.signInWithPassword({ email, password }).catch((error: unknown) => {
+    skipIfSupabaseUnavailable(error)
+    throw error
+  })
 
   if (error) {
     throw new Error(`Could not sign in Supabase test client for ${email}: ${error.message}`)
@@ -113,6 +130,9 @@ export async function signUpTestCustomer(email: string, fullName: string, passwo
         role: 'customer',
       },
     },
+  }).catch((error: unknown) => {
+    skipIfSupabaseUnavailable(error)
+    throw error
   })
 
   if (error) {
@@ -120,7 +140,10 @@ export async function signUpTestCustomer(email: string, fullName: string, passwo
   }
 
   if (!data.session) {
-    const { error: signInError } = await client.auth.signInWithPassword({ email, password })
+    const { error: signInError } = await client.auth.signInWithPassword({ email, password }).catch((error: unknown) => {
+      skipIfSupabaseUnavailable(error)
+      throw error
+    })
     if (signInError) {
       throw new Error(`Test customer ${email} was created but could not sign in: ${signInError.message}`)
     }
@@ -206,9 +229,11 @@ export async function recordMemberQrSale(
   purchaseAmount: number,
   note: string,
 ) {
+  const receiptNumber = `E2E-${note}`
   const { data, error } = await client.rpc('record_member_transaction', {
     p_member_qr_token: token,
     p_purchase_amount: purchaseAmount,
+    p_receipt_number: receiptNumber,
     p_note: note,
     p_client_request_id: crypto.randomUUID(),
   })

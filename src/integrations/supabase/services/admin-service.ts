@@ -30,6 +30,9 @@ type CreateBusinessInput = {
   logoUrl?: string
   earnRate: number
   taxRate: number
+  taxIncludedInBill: boolean
+  serviceChargeEnabled: boolean
+  serviceChargeRate: number
   currency: string
   active: boolean
 }
@@ -146,6 +149,9 @@ function normalizeCreateBusinessInput(input: CreateBusinessInput) {
     logoUrl: input.logoUrl?.trim() ? input.logoUrl.trim() : null,
     earnRate: input.earnRate,
     taxRate: input.taxRate / 100,
+    taxIncludedInBill: input.taxIncludedInBill,
+    serviceChargeEnabled: input.serviceChargeEnabled,
+    serviceChargeRate: input.serviceChargeEnabled ? input.serviceChargeRate / 100 : 0,
     currency: input.currency.trim().toUpperCase(),
     active: input.active,
   }
@@ -160,6 +166,25 @@ function isMissingCreateBusinessRpcError(error: unknown) {
   return code === 'PGRST202' || (
     message.includes('create_managed_business') &&
     message.includes('schema cache')
+  )
+}
+
+function isMissingBusinessBillColumnsError(error: unknown) {
+  if (!error || typeof error !== 'object') return false
+
+  const message = 'message' in error ? String((error as { message?: unknown }).message ?? '') : ''
+  const code = 'code' in error ? String((error as { code?: unknown }).code ?? '') : ''
+
+  return (
+    code === 'PGRST204' ||
+    (
+      message.includes('schema cache') &&
+      (
+        message.includes('tax_included_in_bill') ||
+        message.includes('service_charge_enabled') ||
+        message.includes('service_charge_rate')
+      )
+    )
   )
 }
 
@@ -310,6 +335,9 @@ export const adminService = {
         earnRate: Number(business.earnRate ?? 0),
         rewardRatePercent: Number(business.rewardRatePercent ?? 20),
         commissionRatePercent: Number(business.commissionRatePercent ?? 10),
+        taxIncludedInBill: Boolean(business.taxIncludedInBill ?? false),
+        serviceChargeEnabled: Boolean(business.serviceChargeEnabled ?? false),
+        serviceChargeRate: Number(business.serviceChargeRate ?? 0),
         currency: (business.currency as string) || 'USD',
         active: Boolean(business.active),
         logoUrl: (business.logoUrl as string | null) ?? null,
@@ -569,8 +597,7 @@ export const adminService = {
   async createBusiness(input: CreateBusinessInput) {
     const sb = requireSupabase()
     const normalized = normalizeCreateBusinessInput(input)
-
-    const { data, error } = await sb.rpc('create_managed_business', {
+    const legacyRpcParams = {
       p_name: normalized.name,
       p_slug: normalized.slug,
       p_description: normalized.description,
@@ -582,24 +609,37 @@ export const adminService = {
       p_tax_rate: normalized.taxRate,
       p_currency: normalized.currency,
       p_active: normalized.active,
+    }
+    const legacyInsertPayload = {
+      name: normalized.name,
+      slug: normalized.slug,
+      description: normalized.description,
+      address: normalized.address,
+      latitude: normalized.latitude,
+      longitude: normalized.longitude,
+      logo_url: normalized.logoUrl,
+      earn_rate: normalized.earnRate,
+      tax_rate: normalized.taxRate,
+      currency: normalized.currency,
+      active: normalized.active,
+    }
+
+    const { data, error } = await sb.rpc('create_managed_business', {
+      ...legacyRpcParams,
+      p_tax_included_in_bill: normalized.taxIncludedInBill,
+      p_service_charge_enabled: normalized.serviceChargeEnabled,
+      p_service_charge_rate: normalized.serviceChargeRate,
     })
 
-    if (error && isMissingCreateBusinessRpcError(error)) {
+    if (error && (isMissingCreateBusinessRpcError(error) || isMissingBusinessBillColumnsError(error))) {
+      const { data: legacyData, error: legacyError } = await sb.rpc('create_managed_business', legacyRpcParams)
+      if (!legacyError && legacyData) {
+        return camelCaseRow(legacyData as Record<string, unknown>)
+      }
+
       const { data: insertedBusiness, error: insertError } = await sb
         .from('businesses')
-        .insert({
-          name: normalized.name,
-          slug: normalized.slug,
-          description: normalized.description,
-          address: normalized.address,
-          latitude: normalized.latitude,
-          longitude: normalized.longitude,
-          logo_url: normalized.logoUrl,
-          earn_rate: normalized.earnRate,
-          tax_rate: normalized.taxRate,
-          currency: normalized.currency,
-          active: normalized.active,
-        })
+        .insert(legacyInsertPayload)
         .select('*')
         .single()
 

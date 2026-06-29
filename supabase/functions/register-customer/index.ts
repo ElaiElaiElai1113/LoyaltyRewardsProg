@@ -48,18 +48,35 @@ function generateReferralCode() {
 
 async function hasRequiredAgreements(admin: ReturnType<typeof createClient>, profile: ProfileRow) {
   if (profile.role === 'platform-admin') return true
+  if (profile.role === 'business-staff') return true
+
+  const requiredKindsByRole = {
+    customer: ['member'],
+    'business-owner': ['business_affiliate', 'business_custom'],
+    'business-staff': [],
+    'platform-admin': [],
+  } as const
+  const requiredKinds = requiredKindsByRole[profile.role]
+  if (requiredKinds.length === 0) return true
 
   const { data: agreements, error: agreementsError } = await admin
     .from('agreement_versions')
     .select('*')
     .eq('is_active', true)
     .eq('required_role', profile.role)
+    .in('kind', [...requiredKinds])
 
   if (agreementsError) {
     throw new Error('Required agreements could not be loaded.')
   }
 
-  if (!agreements || agreements.length === 0) return true
+  const scopedAgreements = (agreements ?? []).filter(
+    (agreement) =>
+      !agreement.business_id ||
+      (profile.business_id && agreement.business_id === profile.business_id),
+  )
+
+  if (scopedAgreements.length === 0) return true
 
   const { data: acceptances, error: acceptancesError } = await admin
     .from('agreement_acceptances')
@@ -70,7 +87,7 @@ async function hasRequiredAgreements(admin: ReturnType<typeof createClient>, pro
     throw new Error('Agreement signatures could not be loaded.')
   }
 
-  return agreements.every((agreement) =>
+  return scopedAgreements.every((agreement) =>
     (acceptances ?? []).some(
       (acceptance) =>
         acceptance.agreement_version_id === agreement.id &&
@@ -146,7 +163,7 @@ Deno.serve(async (req: Request) => {
   }
 
   const actor = actorProfile as ProfileRow
-  if (actor.role !== 'business-owner' && actor.role !== 'platform-admin') {
+  if (actor.role !== 'business-owner' && actor.role !== 'business-staff' && actor.role !== 'platform-admin') {
     return jsonResponse({ message: 'Only staff accounts can register customers.' }, 403)
   }
 
@@ -162,7 +179,7 @@ Deno.serve(async (req: Request) => {
     )
   }
 
-  const businessId = actor.role === 'business-owner' ? actor.business_id : payload.businessId
+  const businessId = actor.role === 'platform-admin' ? payload.businessId : actor.business_id
   if (!businessId) {
     return jsonResponse({ message: 'No business context is available.' }, 400)
   }

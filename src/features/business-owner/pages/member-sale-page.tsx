@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckCircle, DollarSign, IdCard, ReceiptText } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 import { useParams } from 'react-router-dom'
 
@@ -12,7 +12,10 @@ import { Label } from '@/components/ui/label'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Textarea } from '@/components/ui/textarea'
 import { createClientRequestId } from '@/features/critical-flows/critical-flow'
-import { calculateMemberTransaction } from '@/features/critical-flows/member-transaction'
+import {
+  calculateMemberTransaction,
+  calculateRewardablePurchaseAmount,
+} from '@/features/critical-flows/member-transaction'
 import {
   useBusinessOwnerData,
   useRecordMemberTransaction,
@@ -22,17 +25,51 @@ import { formatCurrency, formatPoints } from '@/lib/utils'
 import { memberTransactionSchema, type MemberTransactionFormValues } from '@/types/forms'
 import type { MemberTransaction } from '@/types/domain'
 
+type GiftCardSaleContext = {
+  originalBill: number
+  giftCardAmount: number
+  giftCardCode?: string
+  receiptNumber?: string
+}
+
+const GIFT_CARD_SALE_CONTEXT_KEY = 'medellin-rewards:pending-gift-card-sale'
+
+function readGiftCardSaleContext(): GiftCardSaleContext | null {
+  if (typeof window === 'undefined') return null
+
+  const raw = window.sessionStorage.getItem(GIFT_CARD_SALE_CONTEXT_KEY)
+  if (!raw) return null
+
+  try {
+    const parsed = JSON.parse(raw) as Partial<GiftCardSaleContext>
+    const originalBill = Number(parsed.originalBill)
+    const giftCardAmount = Number(parsed.giftCardAmount)
+    if (!Number.isFinite(originalBill) || !Number.isFinite(giftCardAmount)) return null
+
+    return {
+      originalBill,
+      giftCardAmount,
+      giftCardCode: parsed.giftCardCode,
+      receiptNumber: parsed.receiptNumber,
+    }
+  } catch {
+    return null
+  }
+}
+
 export function MemberSalePage() {
   const { token = '' } = useParams()
   const { business } = useBusinessOwnerData()
   const member = useScannedMember(token)
   const [recordedTransaction, setRecordedTransaction] = useState<MemberTransaction | null>(null)
+  const [giftCardSaleContext, setGiftCardSaleContext] = useState<GiftCardSaleContext | null>(() => readGiftCardSaleContext())
   const recordTransaction = useRecordMemberTransaction(business?.id, member.data?.id)
 
   const form = useForm<MemberTransactionFormValues>({
     resolver: zodResolver(memberTransactionSchema),
     defaultValues: {
       purchaseAmount: 50,
+      receiptNumber: '',
       note: '',
     },
   })
@@ -41,15 +78,42 @@ export function MemberSalePage() {
     control: form.control,
     name: 'purchaseAmount',
   })
-  const preview = useMemo(() => {
+  const rewardableBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(purchaseAmount) || purchaseAmount <= 0) return null
 
+    return calculateRewardablePurchaseAmount({
+      receiptTotal: purchaseAmount,
+      taxRate: business.taxRate,
+      serviceChargeRate: business.serviceChargeRate,
+      serviceChargeEnabled: business.serviceChargeEnabled,
+      giftCardAmount: giftCardSaleContext?.giftCardAmount ?? 0,
+    })
+  }, [business, giftCardSaleContext?.giftCardAmount, purchaseAmount])
+
+  const preview = useMemo(() => {
+    if (!business || !rewardableBreakdown || rewardableBreakdown.rewardableAmount <= 0) return null
+
     return calculateMemberTransaction({
-      purchaseAmount,
+      purchaseAmount: rewardableBreakdown.rewardableAmount,
       rewardRatePercent: business.rewardRatePercent,
       commissionRatePercent: business.commissionRatePercent,
     })
-  }, [business, purchaseAmount])
+  }, [business, rewardableBreakdown])
+
+  useEffect(() => {
+    if (!giftCardSaleContext) return
+
+    form.setValue('purchaseAmount', giftCardSaleContext.originalBill, {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+    if (giftCardSaleContext.receiptNumber) {
+      form.setValue('receiptNumber', giftCardSaleContext.receiptNumber, {
+        shouldDirty: true,
+        shouldValidate: true,
+      })
+    }
+  }, [form, giftCardSaleContext])
 
   if (member.isLoading || !business) {
     return <LoadingState title="Loading member" description="Preparing the scanned member sale." />
@@ -100,8 +164,8 @@ export function MemberSalePage() {
             <div className="space-y-2">
               <h2 className="font-serif text-3xl text-primary">Transaction recorded</h2>
               <p className="text-on-surface-variant/85">
-                Awarded {formatPoints(recordedTransaction.pointsAwarded)} points from a{' '}
-                {formatCurrency(recordedTransaction.purchaseAmount)} purchase.
+                Awarded {formatPoints(recordedTransaction.pointsAwarded)} points from{' '}
+                {formatCurrency(recordedTransaction.purchaseAmount)} of rewardable bill.
               </p>
               <p className="font-mono text-xs text-on-surface-variant/70">ID: {recordedTransaction.id}</p>
             </div>
@@ -114,12 +178,23 @@ export function MemberSalePage() {
         onSubmit={form.handleSubmit(async (values) => {
           const transaction = await recordTransaction.mutateAsync({
             token,
-            purchaseAmount: values.purchaseAmount,
-            note: values.note,
+            purchaseAmount: rewardableBreakdown?.rewardableAmount ?? values.purchaseAmount,
+            receiptNumber: values.receiptNumber,
+            note: [
+              values.note,
+              rewardableBreakdown
+                ? `Receipt total: ${formatCurrency(rewardableBreakdown.originalReceiptTotal)}; gift card: ${formatCurrency(rewardableBreakdown.giftCardAmount)}; tax excluded: ${formatCurrency(rewardableBreakdown.taxableChargeAmount)}; service charge excluded: ${formatCurrency(rewardableBreakdown.serviceChargeAmount)}.`
+                : null,
+              giftCardSaleContext?.giftCardCode ? `Gift card code: ${giftCardSaleContext.giftCardCode}.` : null,
+            ].filter(Boolean).join(' '),
             clientRequestId: createClientRequestId(),
           })
           setRecordedTransaction(transaction)
-          form.reset({ purchaseAmount: 50, note: '' })
+          if (typeof window !== 'undefined') {
+            window.sessionStorage.removeItem(GIFT_CARD_SALE_CONTEXT_KEY)
+          }
+          setGiftCardSaleContext(null)
+          form.reset({ purchaseAmount: 50, receiptNumber: '', note: '' })
         })}
       >
         <div className="rounded-3xl border border-outline-variant/20 bg-card p-8 shadow-sm">
@@ -135,7 +210,7 @@ export function MemberSalePage() {
 
           <div className="grid gap-6">
             <div className="grid gap-3">
-              <Label htmlFor="purchaseAmount">Purchase Amount</Label>
+              <Label htmlFor="purchaseAmount">Original Receipt Total</Label>
               <Input
                 id="purchaseAmount"
                 type="number"
@@ -146,14 +221,45 @@ export function MemberSalePage() {
               />
               {form.formState.errors.purchaseAmount ? (
                 <p className="text-sm font-bold text-red-500">{form.formState.errors.purchaseAmount.message}</p>
-              ) : null}
+              ) : (
+                <p className="text-sm text-on-surface-variant/70">
+                  Enter the full amount on the receipt. Tax, service charge, and scanned gift card value are removed before points are calculated.
+                </p>
+              )}
+            </div>
+
+            {giftCardSaleContext ? (
+              <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4 text-sm">
+                <p className="font-bold text-primary">Gift card applied from staff scan</p>
+                <p className="mt-1 text-on-surface-variant/80">
+                  Original bill {formatCurrency(giftCardSaleContext.originalBill)} minus gift card{' '}
+                  {formatCurrency(giftCardSaleContext.giftCardAmount)}.
+                </p>
+              </div>
+            ) : null}
+
+            <div className="grid gap-3">
+              <Label htmlFor="receiptNumber">Receipt / Bill Number</Label>
+              <Input
+                id="receiptNumber"
+                className="h-14 rounded-2xl text-lg"
+                placeholder="Receipt #, factura #, POS bill #"
+                {...form.register('receiptNumber')}
+              />
+              {form.formState.errors.receiptNumber ? (
+                <p className="text-sm font-bold text-red-500">{form.formState.errors.receiptNumber.message}</p>
+              ) : (
+                <p className="text-sm text-on-surface-variant/70">
+                  Required. This prevents staff from recording the same bill more than once.
+                </p>
+              )}
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="note">Note</Label>
+              <Label htmlFor="note">Cashier Note</Label>
               <Textarea
                 id="note"
-                placeholder="Optional receipt number or cashier note"
+                placeholder="Optional cashier note"
                 className="min-h-28 rounded-2xl"
                 {...form.register('note')}
               />
@@ -176,6 +282,30 @@ export function MemberSalePage() {
                 <strong>{business.rewardRatePercent}%</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">Original receipt</span>
+                <strong>{formatCurrency(rewardableBreakdown?.originalReceiptTotal ?? purchaseAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">Gift card deducted</span>
+                <strong>-{formatCurrency(rewardableBreakdown?.giftCardAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">
+                  Tax excluded {business.taxRate > 0 ? `(${(business.taxRate * 100).toFixed(2)}%, ${business.taxIncludedInBill ? 'included' : 'added'})` : ''}
+                </span>
+                <strong>-{formatCurrency(rewardableBreakdown?.taxableChargeAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">
+                  Service charge excluded {business.serviceChargeEnabled ? `(${(business.serviceChargeRate * 100).toFixed(2)}%)` : ''}
+                </span>
+                <strong>-{formatCurrency(rewardableBreakdown?.serviceChargeAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">Rewardable bill</span>
+                <strong>{formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-4">
                 <span className="text-on-surface-variant/75">Reward value</span>
                 <strong>{formatCurrency(rewardValue)}</strong>
               </div>

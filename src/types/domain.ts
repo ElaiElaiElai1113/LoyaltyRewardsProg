@@ -14,6 +14,9 @@ export interface Business {
   rewardRatePercent: number
   commissionRatePercent: number
   taxRate: number // e.g. 0.0875 for 8.75%
+  taxIncludedInBill: boolean
+  serviceChargeEnabled: boolean
+  serviceChargeRate: number
   currency: string
   active: boolean
   logoUrl?: string | null
@@ -359,6 +362,7 @@ export interface MemberTransaction {
   commissionPaidBy: string | null
   commissionPaymentNote: string | null
   recordedBy: string | null
+  receiptNumber: string | null
   note: string | null
   clientRequestId: string | null
   createdAt: string

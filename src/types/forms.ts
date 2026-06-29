@@ -127,12 +127,20 @@ export const businessSettingsSchema = z.object({
   rewardRatePercent: z.number().min(0, 'Reward rate cannot be negative').max(100, 'Maximum 100% reward rate'),
   commissionRatePercent: z.number().min(10, 'Commission must be at least 10%').max(100, 'Maximum 100% commission'),
   taxRate: z.number().min(0).max(0.5, 'Maximum 50% tax rate'),
+  taxIncludedInBill: z.boolean(),
+  serviceChargeEnabled: z.boolean(),
+  serviceChargeRate: z.number().min(0, 'Service charge cannot be negative').max(0.5, 'Maximum 50% service charge'),
 })
 
 export type BusinessSettingsFormValues = z.infer<typeof businessSettingsSchema>
 
 export const memberTransactionSchema = z.object({
   purchaseAmount: z.number().min(0.01, 'Purchase amount must be greater than 0'),
+  receiptNumber: z
+    .string()
+    .trim()
+    .min(3, 'Enter the receipt or bill number')
+    .max(80, 'Keep the receipt number under 80 characters'),
   note: z.string().trim().max(180, 'Keep notes under 180 characters').optional(),
 })
 
@@ -152,6 +160,9 @@ export const createBusinessSchema = z.object({
   logoUrl: z.union([z.literal(''), z.url('Enter a valid logo URL')]).optional(),
   earnRate: z.number().min(0, 'Earn rate cannot be negative'),
   taxRate: z.number().min(0, 'Tax rate cannot be negative').max(50, 'Maximum 50% tax rate'),
+  taxIncludedInBill: z.boolean(),
+  serviceChargeEnabled: z.boolean(),
+  serviceChargeRate: z.number().min(0, 'Service charge cannot be negative').max(50, 'Maximum 50% service charge'),
   currency: z
     .string()
     .trim()

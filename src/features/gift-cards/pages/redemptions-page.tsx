@@ -14,6 +14,8 @@ import { useBusinessGiftCards, useRedeemGiftCard } from '../hooks/use-gift-cards
 
 type ValidationStatus = 'idle' | 'active' | 'redeemed' | 'expired' | 'wrong_business' | 'invalid'
 
+const GIFT_CARD_SALE_CONTEXT_KEY = 'medellin-rewards:pending-gift-card-sale'
+
 function extractTokenOrCode(input: string) {
   const value = input.trim()
   if (!value) return ''
@@ -27,16 +29,27 @@ function extractTokenOrCode(input: string) {
   }
 }
 
+function parseGiftCardValue(valueLabel?: string) {
+  if (!valueLabel) return 0
+
+  const match = valueLabel.replace(/,/g, '').match(/\d+(?:\.\d+)?/)
+  return match ? Number(match[0]) : 0
+}
+
 export function RedemptionsPage() {
   const { business } = useBusinessOwnerData()
   const [manualInput, setManualInput] = useState('')
   const [validationStatus, setValidationStatus] = useState<ValidationStatus>('idle')
   const [selectedCard, setSelectedCard] = useState<GiftCard | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const [originalBill, setOriginalBill] = useState<number>(0)
+  const [receiptNumber, setReceiptNumber] = useState('')
   const giftCards = useBusinessGiftCards(business?.id)
   const redeemGiftCard = useRedeemGiftCard(business?.id)
 
   const cards = useMemo(() => giftCards.data ?? [], [giftCards.data])
+  const selectedGiftCardValue = parseGiftCardValue(selectedCard?.catalog?.valueLabel)
+  const remainingBill = Math.max((Number.isFinite(originalBill) ? originalBill : 0) - selectedGiftCardValue, 0)
 
   function validate(input: string) {
     const needle = extractTokenOrCode(input)
@@ -71,6 +84,17 @@ export function RedemptionsPage() {
   async function redeem() {
     if (!selectedCard) return
     await redeemGiftCard.mutateAsync(selectedCard.id)
+    if (typeof window !== 'undefined' && originalBill > 0) {
+      window.sessionStorage.setItem(
+        GIFT_CARD_SALE_CONTEXT_KEY,
+        JSON.stringify({
+          originalBill,
+          giftCardAmount: selectedGiftCardValue,
+          giftCardCode: selectedCard.code,
+          receiptNumber: receiptNumber.trim(),
+        }),
+      )
+    }
     setConfirmOpen(false)
     setValidationStatus('redeemed')
   }
@@ -143,6 +167,46 @@ export function RedemptionsPage() {
                       <p className="text-xs uppercase tracking-widest text-on-surface-variant">Status</p>
                       <p className="font-semibold">{selectedCard.status === 'active' ? 'Active' : selectedCard.status === 'expired' ? 'Expired' : 'Redeemed'}</p>
                     </div>
+                  </div>
+                </div>
+
+                <div className="rounded border border-primary-container/20 bg-surface-low p-5">
+                  <h3 className="font-serif text-2xl text-primary-container">Bill After Gift Card</h3>
+                  <div className="mt-4 grid gap-3">
+                    <div className="grid gap-2">
+                      <Label htmlFor="original-bill">Original bill before gift card</Label>
+                      <Input
+                        id="original-bill"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={originalBill || ''}
+                        onChange={(event) => setOriginalBill(Number(event.target.value))}
+                        placeholder="2000"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="gift-card-receipt-number">Receipt / bill number</Label>
+                      <Input
+                        id="gift-card-receipt-number"
+                        value={receiptNumber}
+                        onChange={(event) => setReceiptNumber(event.target.value)}
+                        placeholder="Receipt #, factura #, POS bill #"
+                      />
+                    </div>
+                    <div className="grid gap-2 text-sm">
+                      <div className="flex items-center justify-between gap-4">
+                        <span className="text-on-surface-variant/75">Gift card value</span>
+                        <strong>{selectedCard.catalog?.valueLabel ?? 'Not set'}</strong>
+                      </div>
+                      <div className="flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-3">
+                        <span className="text-on-surface-variant/75">Amount to use for customer QR sale</span>
+                        <strong>{remainingBill.toLocaleString(undefined, { maximumFractionDigits: 2 })}</strong>
+                      </div>
+                    </div>
+                    <p className="text-xs text-on-surface-variant/70">
+                      After redeeming, scan the customer's member QR. The sale page will autofill this original bill, receipt number, and gift card deduction before points are calculated.
+                    </p>
                   </div>
                 </div>
 
