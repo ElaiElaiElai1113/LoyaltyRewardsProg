@@ -50,6 +50,7 @@ export function RedemptionsPage() {
   const cards = useMemo(() => giftCards.data ?? [], [giftCards.data])
   const selectedGiftCardValue = parseGiftCardValue(selectedCard?.catalog?.valueLabel)
   const remainingBill = Math.max((Number.isFinite(originalBill) ? originalBill : 0) - selectedGiftCardValue, 0)
+  const canRedeemSelectedCard = validationStatus === 'active' && originalBill > 0 && receiptNumber.trim().length >= 3
 
   function validate(input: string) {
     const needle = extractTokenOrCode(input)
@@ -207,6 +208,11 @@ export function RedemptionsPage() {
                     <p className="text-xs text-on-surface-variant/70">
                       After redeeming, scan the customer's member QR. The sale page will autofill this original bill, receipt number, and gift card deduction before points are calculated.
                     </p>
+                    {validationStatus === 'active' && !canRedeemSelectedCard ? (
+                      <p className="rounded-lg bg-warning/10 p-3 text-xs font-semibold text-warning">
+                        Add the original bill and receipt number before redeeming. That keeps the gift card and the QR rewards sale tied to the same receipt.
+                      </p>
+                    ) : null}
                   </div>
                 </div>
 
@@ -233,7 +239,7 @@ export function RedemptionsPage() {
                 <Button
                   type="button"
                   variant="secondary"
-                  disabled={validationStatus !== 'active'}
+                  disabled={!canRedeemSelectedCard}
                   onClick={() => setConfirmOpen(true)}
                 >
                   Redeem Gift Card

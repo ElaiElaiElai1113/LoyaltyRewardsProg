@@ -1,6 +1,6 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Gift, Sparkles } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Gift, Sparkles, WalletCards } from 'lucide-react'
 
 import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
@@ -71,16 +71,22 @@ export function GiftCardsPage() {
   return (
     <div className="space-y-12 pb-20">
       <div className="animate-soft-reveal flex flex-col gap-8 border-b border-primary-container/15 pb-10 lg:flex-row lg:items-end lg:justify-between">
-        <div className="max-w-2xl space-y-4">
+        <div className="max-w-3xl space-y-4">
           <Badge variant="accent">Gift Cards</Badge>
-          <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.02em] text-primary-container md:text-7xl">
-            Gift Card Catalog
+          <h1 className="font-serif text-4xl font-bold uppercase tracking-[0.02em] text-primary-container sm:text-5xl xl:text-7xl">
+            Gift Card Shop
           </h1>
           <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            Spend loyalty points on single-use gift cards from partner businesses.
+            Use points from member QR purchases to buy existing gift cards from partner businesses.
           </p>
+          <Button asChild variant="secondary" className="h-12 rounded-full px-5 font-semibold">
+            <Link to="/wallet/gift-cards">
+              <WalletCards className="size-4" />
+              {t('My Gift Cards')}
+            </Link>
+          </Button>
         </div>
-        <div className="luxe-card flex items-center gap-4 rounded-[1.5rem] px-6 py-4">
+        <div className="luxe-card flex w-full max-w-xs items-center gap-4 rounded-[1.5rem] px-6 py-4 lg:w-auto">
           <div className="luxe-art flex size-12 items-center justify-center rounded-[1rem]">
             <Gift className="size-6" />
           </div>
@@ -136,8 +142,11 @@ export function GiftCardsPage() {
           <div className="max-w-2xl">
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-primary">Giftable moments</p>
             <h2 className="mt-3 font-serif text-4xl leading-none text-primary-container md:text-5xl">
-              Pretty little credits that feel easy to send.
+              Buy a partner gift card with points, then show its QR at that business.
             </h2>
+            <p className="mt-4 max-w-2xl text-sm font-medium leading-6 text-on-surface-variant/80">
+              Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining rewardable bill after gift card, tax, and service charge deductions.
+            </p>
           </div>
           <div className="animate-float-soft flex size-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft">
             <Sparkles className="size-9" />

@@ -2034,6 +2034,13 @@ export function AdminPage() {
                     ) : null}
                   </div>
 
+                  <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4 md:col-span-2">
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Business onboarding</p>
+                    <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
+                      Ask whether tax is added on top of the bill or already included, and whether the business adds service charge. Rewards are issued only on the bill amount before tax and service charge.
+                    </p>
+                  </div>
+
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
                     <Label htmlFor="create-partner-tax-rate">Tax Rate (%)</Label>
                     <Input
@@ -2047,7 +2054,7 @@ export function AdminPage() {
                     {createBusinessForm.formState.errors.taxRate ? (
                       <p className="text-xs text-red-500">{createBusinessForm.formState.errors.taxRate.message}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Enter 12.5 for a 12.5% tax rate.</p>
+                      <p className="text-xs text-on-surface-variant/70">Example: 115 total with 100 bill, 10 tax, and 5 service charge awards points only on 100.</p>
                     )}
                   </div>
 

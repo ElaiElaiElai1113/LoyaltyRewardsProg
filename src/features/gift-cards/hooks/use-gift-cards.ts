@@ -114,6 +114,11 @@ export function useIssueGiftCard(customerId?: string) {
       return giftCardsService.issueGiftCard(catalogId, customerId!)
     },
     onSuccess: (giftCard) => {
+      queryClient.setQueryData(giftCardKeys.detail(giftCard.id), giftCard)
+      queryClient.setQueryData(giftCardKeys.myCards, (currentCards: unknown) => {
+        const cards = Array.isArray(currentCards) ? currentCards : []
+        return [giftCard, ...cards.filter((card) => typeof card === 'object' && card !== null && 'id' in card && card.id !== giftCard.id)]
+      })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.myCards })
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', customerId] })
       void queryClient.invalidateQueries({ queryKey: ['activities', customerId] })

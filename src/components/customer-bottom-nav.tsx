@@ -59,7 +59,7 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
   const StatusIcon = status.icon
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-primary/15 bg-card/95 px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-luxe backdrop-blur md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-primary/15 bg-card/95 px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-luxe backdrop-blur xl:hidden">
       <NavLink
         to={status.to}
         className={cn(

@@ -43,6 +43,12 @@ export function WalletGiftCardsPage() {
     return cards.filter((card) => card.status === status)
   }
 
+  function emptyDescription(status: GiftCardStatus) {
+    if (status === 'active') return 'Gift cards you can still use will appear here.'
+    if (status === 'redeemed') return 'Redeemed gift cards appear here after partner staff scan and redeem them.'
+    return 'Expired gift cards will appear here after their use-by date passes.'
+  }
+
   return (
     <div className="space-y-10 pb-20">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -60,9 +66,9 @@ export function WalletGiftCardsPage() {
 
       <Tabs defaultValue="active">
         <TabsList>
-          <TabsTrigger value="active">Active</TabsTrigger>
-          <TabsTrigger value="redeemed">Redeemed</TabsTrigger>
-          <TabsTrigger value="expired">Expired</TabsTrigger>
+          <TabsTrigger value="active">Active ({byStatus('active').length})</TabsTrigger>
+          <TabsTrigger value="redeemed">Redeemed ({byStatus('redeemed').length})</TabsTrigger>
+          <TabsTrigger value="expired">Expired ({byStatus('expired').length})</TabsTrigger>
         </TabsList>
         {(['active', 'redeemed', 'expired'] as const).map((status) => (
           <TabsContent key={status} value={status} className="space-y-4">
@@ -84,7 +90,14 @@ export function WalletGiftCardsPage() {
               <EmptyState
                 icon={<Gift className="size-8" />}
                 title={t('No gift cards here')}
-                description={t('Gift cards with this status will appear here.')}
+                description={t(emptyDescription(status))}
+                action={
+                  status === 'active' ? (
+                    <Button asChild variant="secondary" className="rounded-full">
+                      <Link to="/gift-cards">{t('Browse Gift Cards')}</Link>
+                    </Button>
+                  ) : undefined
+                }
               />
             ) : null}
           </TabsContent>

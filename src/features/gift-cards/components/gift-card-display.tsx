@@ -30,9 +30,9 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
 
   return (
     <div className="overflow-hidden rounded-xl border border-[var(--border)] bg-card p-6 text-card-foreground shadow-sm md:p-8">
-      <div className="grid gap-8 md:grid-cols-[280px,1fr]">
-        <div className="rounded-lg border border-[var(--border)] bg-[var(--muted)] p-4 text-[var(--foreground)]">
-          <QRCodeSVG value={publicUrl} size={248} className="h-auto w-full" />
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)] lg:items-start">
+        <div className="mx-auto flex w-full max-w-64 justify-center rounded-lg border border-[var(--border)] bg-[var(--muted)] p-4 text-[var(--foreground)] lg:mx-0">
+          <QRCodeSVG value={publicUrl} size={224} className="block size-56 max-h-[56vw] max-w-[56vw] shrink-0" />
         </div>
 
         <div className="flex min-w-0 flex-col gap-6">

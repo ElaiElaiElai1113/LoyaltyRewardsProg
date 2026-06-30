@@ -136,6 +136,7 @@ export type BusinessSettingsFormValues = z.infer<typeof businessSettingsSchema>
 
 export const memberTransactionSchema = z.object({
   purchaseAmount: z.number().min(0.01, 'Purchase amount must be greater than 0'),
+  giftCardAmount: z.number().min(0, 'Gift card amount cannot be negative').optional(),
   receiptNumber: z
     .string()
     .trim()

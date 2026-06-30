@@ -1,4 +1,4 @@
-import { History, MonitorPlay, QrCode, ShieldCheck } from 'lucide-react'
+import { Gift, History, MonitorPlay, QrCode, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -42,6 +42,12 @@ export function DashboardPage() {
       description: t('Review recorded visits, points earned, and account activity.'),
       icon: History,
       to: '/activity',
+    },
+    {
+      title: t('Buy gift cards'),
+      description: t('Use points to buy existing gift cards from partner businesses.'),
+      icon: Gift,
+      to: '/gift-cards',
     },
   ]
 
@@ -88,7 +94,7 @@ export function DashboardPage() {
             {t('Welcome back,')} {firstName}
           </h1>
           <p className="max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
-            {t('Show your member QR at partner businesses, earn points from recorded purchases, and track each visit in one place.')}
+            {t('Show your member QR at partner businesses, earn points from rewardable purchases, then use points for partner gift cards.')}
           </p>
         </div>
 
@@ -97,7 +103,7 @@ export function DashboardPage() {
           points={points}
         />
 
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {quickActions.map((action) => (
             <Link
               key={action.to}

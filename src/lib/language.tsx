@@ -176,11 +176,16 @@ const spanishTranslations: Record<string, string> = {
     'Las compras realizadas en negocios aliados apareceran aqui junto con sus puntos publicados.',
   'Review recorded visits, points earned, and account activity.':
     'Revisa visitas registradas, puntos ganados y actividad de cuenta.',
+  'Buy gift cards': 'Comprar gift cards',
+  'Use points to buy existing gift cards from partner businesses.':
+    'Usa puntos para comprar gift cards existentes de negocios aliados.',
   'Scan customer member QR codes, record purchases, award points, and track commission from one workspace.':
     'Escanea QR de miembros, registra compras, otorga puntos y rastrea comisiones desde un solo espacio.',
   'Show member QR': 'Mostrar QR de miembro',
   'Show your member QR at partner businesses, earn points from recorded purchases, and track each visit in one place.':
     'Muestra tu QR en negocios aliados, gana puntos por compras registradas y consulta cada visita en un solo lugar.',
+  'Show your member QR at partner businesses, earn points from rewardable purchases, then use points for partner gift cards.':
+    'Muestra tu QR en negocios aliados, gana puntos por compras que califican y usa esos puntos para gift cards de aliados.',
   'Use one member QR across partner businesses and keep every recorded purchase connected to your account.':
     'Usa un solo QR de miembro en negocios aliados y conserva cada compra registrada conectada a tu cuenta.',
   'Verify your ID first to activate the QR staff will scan at checkout.':
@@ -1496,6 +1501,7 @@ const spanishTranslations: Record<string, string> = {
   'Get $10 credit instantly + earn rewards.': 'Recibe $10 de credito al instante y gana recompensas.',
   'Get $10 reward credit immediately after subscribing.':
     'Recibe $10 de credito de recompensa inmediatamente despues de suscribirte.',
+  'Browse Gift Cards': 'Ver tarjetas de regalo',
   'Gift Cards': 'Tarjetas de regalo',
   'Gift cards from partner businesses will appear here when they are available.':
     'Las tarjetas de regalo de negocios aliados apareceran aqui cuando esten disponibles.',
@@ -1519,6 +1525,7 @@ const spanishTranslations: Record<string, string> = {
   'Mock Membership': 'Membresia demo',
   Monthly: 'Mensual',
   'Monthly Membership': 'Membresia mensual',
+  'My Gift Cards': 'Mis tarjetas de regalo',
   'Monthly price': 'Precio mensual',
   'Need a member account?': 'Necesitas una cuenta de miembro?',
   'No activity yet': 'Aun no hay actividad',

@@ -76,7 +76,48 @@ function mapPublicGiftCard(row: Record<string, unknown>): PublicGiftCard {
   }
 }
 
-const giftCardSelect = '*, gift_card_catalog(id, title, description, value_label, image_url), businesses(id, name, logo_url), profiles!gift_cards_customer_id_fkey(full_name)'
+const giftCardSelect = '*, gift_card_catalog(id, title, description, value_label, image_url), businesses(id, name, logo_url)'
+
+async function enrichGiftCardRows(rows: Record<string, unknown>[]): Promise<GiftCard[]> {
+  if (rows.length === 0) return []
+
+  const sb = requireSupabase()
+  const catalogIds = [...new Set(rows.map((row) => row.catalog_id).filter(Boolean) as string[])]
+  const businessIds = [...new Set(rows.map((row) => row.business_id).filter(Boolean) as string[])]
+
+  const [catalogResult, businessResult] = await Promise.all([
+    catalogIds.length > 0
+      ? sb
+          .from('gift_card_catalog')
+          .select('id, title, description, value_label, image_url')
+          .in('id', catalogIds)
+      : Promise.resolve({ data: [] }),
+    businessIds.length > 0
+      ? sb
+          .from('businesses')
+          .select('id, name, logo_url')
+          .in('id', businessIds)
+      : Promise.resolve({ data: [] }),
+  ])
+
+  const catalogById = new Map(
+    ((catalogResult.data ?? []) as Record<string, unknown>[]).map((catalog) => [catalog.id as string, catalog]),
+  )
+  const businessById = new Map(
+    ((businessResult.data ?? []) as Record<string, unknown>[]).map((business) => [business.id as string, business]),
+  )
+
+  return rows.map((row) => {
+    const enrichedRow = { ...row }
+    const catalog = catalogById.get(row.catalog_id as string)
+    const business = businessById.get(row.business_id as string)
+
+    if (catalog) enrichedRow.gift_card_catalog = catalog
+    if (business) enrichedRow.businesses = business
+
+    return mapGiftCard(enrichedRow)
+  })
+}
 
 export const giftCardsService = {
   async issueGiftCard(catalogId: string, customerId: string): Promise<GiftCard> {
@@ -90,10 +131,7 @@ export const giftCardsService = {
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
     if (error || !row) throw new Error(friendlySupabaseError(error, 'Failed to issue gift card.'))
 
-    return this.getGiftCardById(row.id as string).then((giftCard) => {
-      if (!giftCard) throw new Error('Issued gift card could not be loaded.')
-      return giftCard
-    })
+    return this.getGiftCardById(row.id as string).then((giftCard) => giftCard ?? mapGiftCard(row))
   },
 
   async redeemGiftCard(giftCardId: string, businessId: string): Promise<GiftCard> {
@@ -121,7 +159,16 @@ export const giftCardsService = {
       .select(giftCardSelect)
       .order('created_at', { ascending: false })
 
-    if (error) throw new Error('Failed to load your gift cards.')
+    if (error) {
+      const { data: plainData, error: plainError } = await sb
+        .from('gift_cards')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (plainError) throw new Error('Failed to load your gift cards.')
+      return enrichGiftCardRows((plainData ?? []) as Record<string, unknown>[])
+    }
+
     return ((data ?? []) as Record<string, unknown>[]).map(mapGiftCard)
   },
 
@@ -162,9 +209,43 @@ export const giftCardsService = {
       .from('gift_cards')
       .select(giftCardSelect)
       .eq('id', id)
-      .single()
+      .maybeSingle()
 
-    if (error || !data) return null
-    return mapGiftCard(data as Record<string, unknown>)
+    if (data) return mapGiftCard(data as Record<string, unknown>)
+    if (!error) return null
+
+    const { data: plainData, error: plainError } = await sb
+      .from('gift_cards')
+      .select('*')
+      .eq('id', id)
+      .maybeSingle()
+
+    if (plainError || !plainData) return null
+
+    const enrichedRow: Record<string, unknown> = { ...(plainData as Record<string, unknown>) }
+    const catalogId = enrichedRow.catalog_id as string | null | undefined
+    const businessId = enrichedRow.business_id as string | null | undefined
+
+    const [catalogResult, businessResult] = await Promise.all([
+      catalogId
+        ? sb
+            .from('gift_card_catalog')
+            .select('id, title, description, value_label, image_url')
+            .eq('id', catalogId)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+      businessId
+        ? sb
+            .from('businesses')
+            .select('id, name, logo_url')
+            .eq('id', businessId)
+            .maybeSingle()
+        : Promise.resolve({ data: null }),
+    ])
+
+    if (catalogResult.data) enrichedRow.gift_card_catalog = catalogResult.data
+    if (businessResult.data) enrichedRow.businesses = businessResult.data
+
+    return mapGiftCard(enrichedRow)
   },
 }

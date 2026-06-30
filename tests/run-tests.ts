@@ -1162,7 +1162,10 @@ runTest('customer layout exposes full desktop navigation in the header', () => {
   const headerMarkup = customerLayout.slice(headerStart, mainStart)
 
   assert.match(customerLayout, /customerNavigation/)
-  assert.match(headerMarkup, /hidden items-center gap-1 lg:flex/)
+  assert.match(customerLayout, /useLocation/)
+  assert.match(customerLayout, /pathname\.startsWith\('\/gift-cards'\)/)
+  assert.match(customerLayout, /to: '\/wallet\/gift-cards'/)
+  assert.match(headerMarkup, /hidden items-center gap-0\.5 xl:flex/)
   assert.match(headerMarkup, /customerNavigation\.map/)
   for (const path of ['/dashboard', '/shop', '/rewards', '/gift-cards', '/activity', '/profile']) {
     assert.match(headerMarkup, new RegExp(`to: '${path}'|to=\\{item\\.to\\}`))
@@ -1185,7 +1188,7 @@ runTest('customer mobile bottom nav exposes core routes and verification status'
   assert.match(bottomNav, /grid-cols-4/)
   assert.doesNotMatch(bottomNav, /label: 'Shop'/)
   assert.doesNotMatch(bottomNav, /ShoppingCart/)
-  assert.match(bottomNav, /md:hidden/)
+  assert.match(bottomNav, /xl:hidden/)
   assert.match(bottomNav, /verificationStatus\?: Profile\['verificationStatus'\] \| null/)
   assert.match(bottomNav, /\/profile#id-verification/)
   assert.match(bottomNav, /Verification required/)
@@ -1314,6 +1317,29 @@ runTest('gift card tiles explain ID verification locked issuance', () => {
 
   assert.match(giftCardTile, /Verify ID to issue/)
   assert.doesNotMatch(giftCardTile, /\? t\('Verify ID'\) : t\('Issue'\)/)
+})
+
+runTest('gift card issuing uses RPC row if private detail reload is unavailable', () => {
+  const service = readFileSync('src/integrations/supabase/services/gift-cards-service.ts', 'utf8')
+  const hook = readFileSync('src/features/gift-cards/hooks/use-gift-cards.ts', 'utf8')
+
+  assert.match(service, /giftCard \?\? mapGiftCard\(row\)/)
+  assert.doesNotMatch(service, /Issued gift card could not be loaded/)
+  assert.doesNotMatch(service, /profiles!gift_cards_customer_id_fkey/)
+  assert.match(service, /\.select\('\*'\)/)
+  assert.match(service, /enrichedRow\.gift_card_catalog/)
+  assert.match(service, /enrichedRow\.businesses/)
+  assert.match(hook, /queryClient\.setQueryData\(giftCardKeys\.detail\(giftCard\.id\), giftCard\)/)
+})
+
+runTest('gift card display keeps QR code bounded on customer screens', () => {
+  const display = readFileSync('src/features/gift-cards/components/gift-card-display.tsx', 'utf8')
+
+  assert.match(display, /max-w-64/)
+  assert.match(display, /size=\{224\}/)
+  assert.match(display, /size-56/)
+  assert.match(display, /max-w-\[56vw\]/)
+  assert.doesNotMatch(display, /QRCodeSVG[^>]+w-full/)
 })
 
 runTest('gift card catalog exposes claimable filtering and summary feedback', () => {
@@ -1886,6 +1912,39 @@ runTest('gift card issuing migration enables pgcrypto token generation', () => {
 
   assert.match(migration, /create extension if not exists pgcrypto/i)
   assert.match(migration, /gen_random_bytes/i)
+})
+
+runTest('gift card issuing migration relaxes legacy gift card code constraints', () => {
+  const migration = readFileSync('supabase/migrations/20260630000000_fix_legacy_gift_card_code_not_null.sql', 'utf8')
+
+  assert.match(migration, /column_name = 'gift_card_code'/)
+  assert.match(migration, /alter column gift_card_code drop not null/)
+  assert.match(migration, /code = coalesce\(code, gift_card_code\)/)
+})
+
+runTest('gift card issuing migration syncs legacy gift card code column', () => {
+  const migration = readFileSync('supabase/migrations/20260630010000_sync_legacy_gift_card_code.sql', 'utf8')
+
+  assert.match(migration, /create or replace function public\.sync_legacy_gift_card_code/)
+  assert.match(migration, /new\.gift_card_code := new\.code/)
+  assert.match(migration, /create trigger sync_legacy_gift_card_code/)
+})
+
+runTest('gift card issuing migration relaxes legacy gift card value cents constraint', () => {
+  const migration = readFileSync('supabase/migrations/20260630020000_fix_legacy_gift_card_value_cents.sql', 'utf8')
+
+  assert.match(migration, /column_name = 'gift_card_value_cents'/)
+  assert.match(migration, /alter column gift_card_value_cents set default 0/)
+  assert.match(migration, /alter column gift_card_value_cents drop not null/)
+  assert.match(migration, /new\.gift_card_value_cents :=/)
+})
+
+runTest('gift card issuing migration satisfies legacy gift card value cents check', () => {
+  const migration = readFileSync('supabase/migrations/20260630030000_fix_legacy_gift_card_value_check.sql', 'utf8')
+
+  assert.match(migration, /gift_card_value_cents <= 0/)
+  assert.match(migration, /alter column gift_card_value_cents set default 1/)
+  assert.match(migration, /greatest\(coalesce\(round\(parsed_value \* 100\)::integer, 1\), 1\)/)
 })
 
 runTest('workflow QA docs list focused automation commands', () => {

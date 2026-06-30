@@ -69,14 +69,20 @@ export function MemberSalePage() {
     resolver: zodResolver(memberTransactionSchema),
     defaultValues: {
       purchaseAmount: 50,
+      giftCardAmount: 0,
       receiptNumber: '',
       note: '',
     },
+    mode: 'onChange',
   })
 
   const purchaseAmount = useWatch({
     control: form.control,
     name: 'purchaseAmount',
+  })
+  const giftCardAmount = useWatch({
+    control: form.control,
+    name: 'giftCardAmount',
   })
   const rewardableBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(purchaseAmount) || purchaseAmount <= 0) return null
@@ -86,9 +92,9 @@ export function MemberSalePage() {
       taxRate: business.taxRate,
       serviceChargeRate: business.serviceChargeRate,
       serviceChargeEnabled: business.serviceChargeEnabled,
-      giftCardAmount: giftCardSaleContext?.giftCardAmount ?? 0,
+      giftCardAmount: giftCardAmount ?? 0,
     })
-  }, [business, giftCardSaleContext?.giftCardAmount, purchaseAmount])
+  }, [business, giftCardAmount, purchaseAmount])
 
   const preview = useMemo(() => {
     if (!business || !rewardableBreakdown || rewardableBreakdown.rewardableAmount <= 0) return null
@@ -104,6 +110,10 @@ export function MemberSalePage() {
     if (!giftCardSaleContext) return
 
     form.setValue('purchaseAmount', giftCardSaleContext.originalBill, {
+      shouldDirty: true,
+      shouldValidate: true,
+    })
+    form.setValue('giftCardAmount', giftCardSaleContext.giftCardAmount, {
       shouldDirty: true,
       shouldValidate: true,
     })
@@ -194,7 +204,7 @@ export function MemberSalePage() {
             window.sessionStorage.removeItem(GIFT_CARD_SALE_CONTEXT_KEY)
           }
           setGiftCardSaleContext(null)
-          form.reset({ purchaseAmount: 50, receiptNumber: '', note: '' })
+          form.reset({ purchaseAmount: 50, giftCardAmount: 0, receiptNumber: '', note: '' })
         })}
       >
         <div className="rounded-3xl border border-outline-variant/20 bg-card p-8 shadow-sm">
@@ -237,6 +247,25 @@ export function MemberSalePage() {
                 </p>
               </div>
             ) : null}
+
+            <div className="grid gap-3">
+              <Label htmlFor="giftCardAmount">Gift Card / Credit Applied</Label>
+              <Input
+                id="giftCardAmount"
+                type="number"
+                min="0"
+                step="0.01"
+                className="h-14 rounded-2xl text-lg"
+                {...form.register('giftCardAmount', { valueAsNumber: true })}
+              />
+              {form.formState.errors.giftCardAmount ? (
+                <p className="text-sm font-bold text-red-500">{form.formState.errors.giftCardAmount.message}</p>
+              ) : (
+                <p className="text-sm text-on-surface-variant/70">
+                  This autofills after a gift card scan. Leave 0 when no gift card was used.
+                </p>
+              )}
+            </div>
 
             <div className="grid gap-3">
               <Label htmlFor="receiptNumber">Receipt / Bill Number</Label>
@@ -288,6 +317,10 @@ export function MemberSalePage() {
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">Gift card deducted</span>
                 <strong>-{formatCurrency(rewardableBreakdown?.giftCardAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">Bill after gift card</span>
+                <strong>{formatCurrency(rewardableBreakdown?.amountAfterGiftCard ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">
