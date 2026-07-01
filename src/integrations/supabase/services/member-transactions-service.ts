@@ -23,6 +23,11 @@ function mapMemberTransaction(row: Record<string, unknown>): MemberTransaction {
   const transaction = camelCaseRow(row)
   const rawMember = row.profiles as Record<string, unknown> | undefined
   const rawBusiness = row.businesses as Record<string, unknown> | undefined
+  const memberFullName = (transaction.memberFullName ?? rawMember?.full_name) as string | undefined
+  const memberEmail = (transaction.memberEmail ?? rawMember?.email) as string | undefined
+  const memberVerificationStatus = (transaction.memberVerificationStatus ?? rawMember?.verification_status) as Profile['verificationStatus'] | undefined
+  const businessName = (transaction.businessName ?? rawBusiness?.name) as string | undefined
+  const businessCurrency = (transaction.businessCurrency ?? rawBusiness?.currency) as string | undefined
 
   return {
     id: transaction.id as string,
@@ -44,19 +49,19 @@ function mapMemberTransaction(row: Record<string, unknown>): MemberTransaction {
     clientRequestId: (transaction.clientRequestId as string | null) ?? null,
     createdAt: transaction.createdAt as string,
     updatedAt: transaction.updatedAt as string,
-    member: rawMember
+    member: memberFullName && memberEmail && memberVerificationStatus
       ? {
-          id: rawMember.id as string,
-          fullName: rawMember.full_name as string,
-          email: rawMember.email as string,
-          verificationStatus: rawMember.verification_status as Profile['verificationStatus'],
+          id: transaction.profileId as string,
+          fullName: memberFullName,
+          email: memberEmail,
+          verificationStatus: memberVerificationStatus,
         }
       : undefined,
-    business: rawBusiness
+    business: businessName && businessCurrency
       ? {
-          id: rawBusiness.id as string,
-          name: rawBusiness.name as string,
-          currency: rawBusiness.currency as string,
+          id: transaction.businessId as string,
+          name: businessName,
+          currency: businessCurrency,
         }
       : undefined,
   }
@@ -128,6 +133,16 @@ export const memberTransactionsService = {
 
   async getBusinessTransactions(businessId?: string): Promise<MemberTransaction[]> {
     const sb = requireSupabase()
+
+    if (businessId) {
+      const { data, error } = await sb.rpc('get_business_member_transactions', {
+        p_business_id: businessId,
+      })
+
+      if (!error) {
+        return ((data ?? []) as Record<string, unknown>[]).map((row) => mapMemberTransaction(row))
+      }
+    }
 
     let query = sb
       .from('member_transactions')

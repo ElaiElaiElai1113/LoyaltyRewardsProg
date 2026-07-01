@@ -1417,8 +1417,10 @@ runTest('gift card redemption validates pasted codes through token lookup', () =
 
 runTest('business transactions page shows transaction history with optional gift card usage', () => {
   const service = readFileSync('src/integrations/supabase/services/gift-cards-service.ts', 'utf8')
+  const memberTransactionsService = readFileSync('src/integrations/supabase/services/member-transactions-service.ts', 'utf8')
   const redemptionsPage = readFileSync('src/features/gift-cards/pages/redemptions-page.tsx', 'utf8')
   const migration = readFileSync('supabase/migrations/20260701000000_business_gift_card_history_rpc.sql', 'utf8')
+  const memberTransactionHistoryMigration = readFileSync('supabase/migrations/20260702020000_business_member_transaction_history_rpc.sql', 'utf8')
   const transactionMigration = readFileSync('supabase/migrations/20260701010000_redeem_gift_card_records_transaction.sql', 'utf8')
   const discountMigration = readFileSync('supabase/migrations/20260701020000_gift_card_discount_transaction_history.sql', 'utf8')
   const backfillMigration = readFileSync('supabase/migrations/20260701040000_backfill_gift_card_redemption_transactions.sql', 'utf8')
@@ -1447,6 +1449,11 @@ runTest('business transactions page shows transaction history with optional gift
   assert.match(redemptionsPage, /canProcessWithoutGiftCard/)
   assert.match(redemptionsPage, /refreshTransactionHistory/)
   assert.match(redemptionsPage, /recordStandardTransaction/)
+  assert.match(memberTransactionsService, /get_business_member_transactions/)
+  assert.match(memberTransactionsService, /memberFullName/)
+  assert.match(memberTransactionHistoryMigration, /create or replace function public\.get_business_member_transactions/)
+  assert.match(memberTransactionHistoryMigration, /from public\.member_transactions mt/)
+  assert.match(memberTransactionHistoryMigration, /actor_profile\.role not in \('business-owner', 'business-staff'\)/)
   assert.match(redemptionsPage, /useScannedMember/)
   assert.match(redemptionsPage, /useRecordMemberTransaction/)
   assert.match(redemptionsPage, /calculateRewardablePurchaseAmount/)
