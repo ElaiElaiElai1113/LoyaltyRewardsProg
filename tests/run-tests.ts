@@ -1122,30 +1122,33 @@ runTest('business member-sale page clearly blocks unverified scanned QR transact
   assert.match(page, /This member QR is not active yet\. Ask the member to complete ID verification before recording rewards\./)
 })
 
-runTest('business dashboard exposes an in-app member QR scanner and deep link fallback', () => {
+runTest('business dashboard keeps transaction scanning out of the dashboard tab', () => {
+  const layout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
   const dashboard = readFileSync('src/features/business-owner/pages/business-dashboard-page.tsx', 'utf8')
   const sharedScanner = readFileSync('src/components/qr-scanner.tsx', 'utf8')
   const giftCardScanner = readFileSync('src/features/gift-cards/components/qr-scanner.tsx', 'utf8')
+  const transactionsPage = readFileSync('src/features/gift-cards/pages/redemptions-page.tsx', 'utf8')
 
   assert.match(sharedScanner, /BarcodeDetector/)
   assert.match(sharedScanner, /navigator\.mediaDevices\?\.getUserMedia/)
   assert.match(sharedScanner, /createImageBitmap/)
   assert.match(giftCardScanner, /export \{ QrScanner \} from '@\/components\/qr-scanner'/)
+  assert.match(transactionsPage, /<QrScanner/)
+  assert.match(transactionsPage, /Point the camera at the customer member QR or gift card QR\./)
+  assert.match(layout, /label: 'Dashboard'/)
+  assert.doesNotMatch(layout, /label: 'QR Sales'/)
 
-  assert.match(dashboard, /import \{ QrScanner \} from '@\/components\/qr-scanner'/)
-  assert.match(dashboard, /const openMemberQrSale = \(input: string\) =>/)
-  assert.match(dashboard, /\/\^\\\/business\\\/member-sale\\\/\(\[\^\/\]\+\)\$\/\)/)
-  assert.match(dashboard, /navigate\(`\/business\/member-sale\/\$\{token\}`\)/)
-  assert.match(dashboard, /<QrScanner/)
-  assert.match(dashboard, /onDetected=\{openMemberQrSale\}/)
-  assert.match(dashboard, /Paste QR link/)
-  assert.match(dashboard, /Open sale form/)
+  assert.doesNotMatch(dashboard, /import \{ QrScanner \} from '@\/components\/qr-scanner'/)
+  assert.doesNotMatch(dashboard, /Customer QR Sales/)
+  assert.doesNotMatch(dashboard, /Reward Credit Scanner/)
+  assert.doesNotMatch(dashboard, /Validate Reward Credit/)
+  assert.doesNotMatch(dashboard, /<QrScanner/)
   assert.match(dashboard, /space-y-5 xl:space-y-7/)
   assert.match(dashboard, /grid gap-3 sm:grid-cols-2 xl:grid-cols-4/)
   assert.ok(
     dashboard.indexOf("t('See the business walkthrough')") <
-      dashboard.indexOf('Customer QR Sales'),
-    'Business walkthrough callout should render before QR sales content.',
+      dashboard.indexOf('{/* Metrics Grid */}'),
+    'Business walkthrough callout should render before dashboard metrics.',
   )
 })
 

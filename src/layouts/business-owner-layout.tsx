@@ -27,7 +27,7 @@ import { useLanguage } from '@/lib/language'
 import { cn, getInitials } from '@/lib/utils'
 
 const businessNavigationItems = [
-  { to: '/business/dashboard', label: 'QR Sales', icon: LayoutDashboard },
+  { to: '/business/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/business/redemptions', label: 'Transactions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
