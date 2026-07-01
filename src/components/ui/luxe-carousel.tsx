@@ -9,13 +9,19 @@ interface LuxeCarouselProps {
   description?: string
   children: ReactNode
   className?: string
+  density?: 'comfortable' | 'compact'
 }
 
-export function LuxeCarousel({ title, eyebrow, description, children, className }: LuxeCarouselProps) {
+export function LuxeCarousel({ title, eyebrow, description, children, className, density = 'comfortable' }: LuxeCarouselProps) {
   const carouselId = useId()
   const scrollerRef = useRef<HTMLDivElement>(null)
   const [activeIndex, setActiveIndex] = useState(0)
   const items = Children.toArray(children).filter(Boolean)
+  const slideWidth = density === 'compact'
+    ? 'min-w-[82%] sm:min-w-[calc((100%_-_1.25rem)_/_2)] lg:min-w-[calc((100%_-_2.5rem)_/_3)] xl:min-w-[calc((100%_-_3.75rem)_/_4)] min-[1900px]:min-w-[calc((100%_-_5rem)_/_5)]'
+    : items.length > 2
+      ? 'min-w-full sm:min-w-[calc((100%_-_1.25rem)_/_2)] lg:min-w-[calc((100%_-_2.5rem)_/_3)]'
+      : 'min-w-full sm:min-w-[calc((100%_-_1.25rem)_/_2)]'
 
   const scrollTo = (index: number) => {
     const nextIndex = Math.max(0, Math.min(index, items.length - 1))
@@ -32,7 +38,18 @@ export function LuxeCarousel({ title, eyebrow, description, children, className 
     const scroller = scrollerRef.current
     if (!scroller) return
 
-    const nextIndex = Math.round(scroller.scrollLeft / Math.max(scroller.clientWidth * 0.84, 1))
+    const nextIndex = Array.from(scroller.children).reduce(
+      (closestIndex, child, index) => {
+        const currentDistance = Math.abs((child as HTMLElement).offsetLeft - scroller.scrollLeft)
+        const closestDistance = Math.abs(
+          ((scroller.children.item(closestIndex) as HTMLElement | null)?.offsetLeft ?? 0) - scroller.scrollLeft,
+        )
+
+        return currentDistance < closestDistance ? index : closestIndex
+      },
+      0,
+    )
+
     setActiveIndex(Math.max(0, Math.min(nextIndex, items.length - 1)))
   }
 
@@ -79,13 +96,16 @@ export function LuxeCarousel({ title, eyebrow, description, children, className 
 
       <div
         ref={scrollerRef}
-        className="-mx-6 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-6 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="-mx-6 flex snap-x snap-mandatory items-stretch gap-5 overflow-x-auto scroll-smooth px-6 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         onScroll={handleScroll}
       >
         {items.map((item, index) => (
           <div
             key={index}
-            className="animate-carousel-enter min-w-[84%] snap-start sm:min-w-[62%] lg:min-w-[34%]"
+            className={cn(
+              'animate-carousel-enter flex snap-start',
+              slideWidth,
+            )}
             style={{ '--stagger': index } as CSSProperties}
           >
             {item}

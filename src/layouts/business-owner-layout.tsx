@@ -29,7 +29,7 @@ import { cn, getInitials } from '@/lib/utils'
 const businessNavigationItems = [
   { to: '/business/dashboard', label: 'QR Sales', icon: LayoutDashboard },
   { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
-  { to: '/business/redemptions', label: 'Redemptions', icon: CreditCard },
+  { to: '/business/redemptions', label: 'Transactions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
   { to: '/business/partners', label: 'Partners', icon: Hotel },

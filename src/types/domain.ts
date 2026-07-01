@@ -307,6 +307,9 @@ export interface GiftCard {
   redeemedAtBusiness: string | null
   createdAt: string
   updatedAt: string
+  redemptionOriginalBill?: number | null
+  redemptionGiftCardAmount?: number | null
+  redemptionReceiptNumber?: string | null
   catalog?: Pick<GiftCardCatalogItem, 'id' | 'title' | 'description' | 'valueLabel' | 'imageUrl'>
   business?: Pick<Business, 'id' | 'name' | 'logoUrl'>
   customerFirstName?: string

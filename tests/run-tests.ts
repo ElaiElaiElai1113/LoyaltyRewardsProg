@@ -36,7 +36,10 @@ import {
   landingWhyJoinItems,
 } from '../src/features/auth/landing-content.js'
 import { isPickupWindow, normalizeCheckoutItems } from '../src/features/critical-flows/critical-flow.js'
-import { calculateMemberTransaction } from '../src/features/critical-flows/member-transaction.js'
+import {
+  calculateMemberTransaction,
+  calculateRewardablePurchaseAmount,
+} from '../src/features/critical-flows/member-transaction.js'
 
 function runTest(name: string, fn: () => void) {
   try {
@@ -122,9 +125,61 @@ runTest('calculateMemberTransaction converts outside purchase amount into reward
 
   assert.deepEqual(result, {
     rewardValue: 10,
-    pointsAwarded: 1000,
+    pointsAwarded: 10,
     commissionAmount: 5,
   })
+})
+
+runTest('calculateRewardablePurchaseAmount adds included tax to customer total without rewarding tax', () => {
+  const result = calculateRewardablePurchaseAmount({
+    receiptTotal: 230,
+    taxRate: 0.126,
+    taxIncludedInBill: true,
+    serviceChargeRate: 0,
+    serviceChargeEnabled: false,
+    giftCardAmount: 0,
+  })
+
+  assert.deepEqual(result, {
+    originalReceiptTotal: 230,
+    giftCardAmount: 0,
+    amountAfterGiftCard: 230,
+    taxableChargeAmount: 28.98,
+    serviceChargeAmount: 0,
+    finalPriceAmount: 258.98,
+    rewardableAmount: 230,
+  })
+
+  assert.equal(calculateMemberTransaction({
+    purchaseAmount: result.rewardableAmount,
+    rewardRatePercent: 20,
+    commissionRatePercent: 10,
+  }).pointsAwarded, 46)
+
+  const resultWithGiftCard = calculateRewardablePurchaseAmount({
+    receiptTotal: 230,
+    taxRate: 0.126,
+    taxIncludedInBill: true,
+    serviceChargeRate: 0,
+    serviceChargeEnabled: false,
+    giftCardAmount: 230,
+  })
+
+  assert.deepEqual(resultWithGiftCard, {
+    originalReceiptTotal: 230,
+    giftCardAmount: 230,
+    amountAfterGiftCard: 0,
+    taxableChargeAmount: 28.98,
+    serviceChargeAmount: 0,
+    finalPriceAmount: 28.98,
+    rewardableAmount: 230,
+  })
+
+  assert.equal(calculateMemberTransaction({
+    purchaseAmount: resultWithGiftCard.rewardableAmount,
+    rewardRatePercent: 20,
+    commissionRatePercent: 10,
+  }).pointsAwarded, 46)
 })
 
 runTest('early access content preserves the approved conversion copy', () => {
@@ -630,6 +685,9 @@ runTest('client landing page is available at /landing-page', () => {
 runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const guidePage = readFileSync('src/features/platform-guide/pages/platform-guide-page.tsx', 'utf8')
+  const simpleWalkthrough = readFileSync('docs/spanish-team-walkthrough-copy-paste.md', 'utf8')
+  const completeWalkthrough = readFileSync('docs/complete-role-walkthrough.md', 'utf8')
+  const summaryWalkthrough = readFileSync('docs/spanish-team-walkthrough-summary.md', 'utf8')
   const publicLayout = readFileSync('src/layouts/public-browse-layout.tsx', 'utf8')
   const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
   const businessLayout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
@@ -657,8 +715,21 @@ runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   assert.match(guidePage, /useLanguage/)
   assert.match(guidePage, /storyboard/)
   assert.match(guidePage, /\/shop/)
-  assert.match(guidePage, /\/business\/dashboard/)
+  assert.match(guidePage, /\/business\/redemptions/)
+  assert.match(guidePage, /with or without a gift card/)
+  assert.match(guidePage, /bill before tax and service charge/)
+  assert.match(guidePage, /gift cards reduce the customer total/)
   assert.match(guidePage, /\/admin\/portal#members/)
+
+  for (const walkthrough of [simpleWalkthrough, completeWalkthrough, summaryWalkthrough]) {
+    assert.match(walkthrough, /\/business\/redemptions/)
+    assert.match(walkthrough, /Process Without Gift Card|without a gift card/i)
+    assert.match(walkthrough, /Process With Gift Card|gift-card sale|gift card sales/i)
+    assert.match(walkthrough, /Rewards Rate|reward rate/i)
+    assert.match(walkthrough, /tax/i)
+    assert.match(walkthrough, /service charge/i)
+    assert.match(walkthrough, /Transaction History/i)
+  }
 
   assert.match(publicLayout, /to: '\/guide', label: 'Guia'/)
   assert.match(adminLayout, /to: '\/admin\/guide', label: 'Guia'/)
@@ -992,6 +1063,7 @@ runTest('supabase seed can be rerun without duplicate seeded rows', () => {
 
 runTest('member transaction migration creates QR tokens, transaction ledger, and secure RPCs', () => {
   const migration = readFileSync('supabase/migrations/20260521000000_member_transactions.sql', 'utf8')
+  const rewardValueMigration = readFileSync('supabase/migrations/20260701050000_reward_points_are_reward_value.sql', 'utf8')
 
   assert.match(migration, /add column if not exists member_qr_token/i)
   assert.match(migration, /add column if not exists reward_rate_percent/i)
@@ -1008,7 +1080,8 @@ runTest('member transaction migration creates QR tokens, transaction ledger, and
   assert.match(migration, /member_profile\.verification_status::text <> 'verified'/)
   assert.match(migration, /raise exception 'identity_verification_required'/)
   assert.match(migration, /create or replace function public\.mark_member_transaction_commission_paid/)
-  assert.match(migration, /points_awarded_value := floor\(reward_value_value \* 100\)/i)
+  assert.match(rewardValueMigration, /points_awarded_value := floor\(reward_value_value\)/i)
+  assert.match(rewardValueMigration, /points_awarded <> floor\(reward_value\)::integer/i)
   assert.match(migration, /commission_rate_percent >= 10/i)
 })
 
@@ -1332,6 +1405,88 @@ runTest('gift card issuing uses RPC row if private detail reload is unavailable'
   assert.match(hook, /queryClient\.setQueryData\(giftCardKeys\.detail\(giftCard\.id\), giftCard\)/)
 })
 
+runTest('gift card redemption validates pasted codes through token lookup', () => {
+  const service = readFileSync('src/integrations/supabase/services/gift-cards-service.ts', 'utf8')
+  const redemptionsPage = readFileSync('src/features/gift-cards/pages/redemptions-page.tsx', 'utf8')
+
+  assert.match(service, /findGiftCardByTokenOrCode/)
+  assert.match(service, /getPublicGiftCard\(tokenOrCode\)/)
+  assert.match(redemptionsPage, /giftCardsService\.findGiftCardByTokenOrCode\(needle\)/)
+  assert.match(redemptionsPage, /preloadedCard \?\? await giftCardsService\.findGiftCardByTokenOrCode\(needle\)/)
+})
+
+runTest('business transactions page shows transaction history with optional gift card usage', () => {
+  const service = readFileSync('src/integrations/supabase/services/gift-cards-service.ts', 'utf8')
+  const redemptionsPage = readFileSync('src/features/gift-cards/pages/redemptions-page.tsx', 'utf8')
+  const migration = readFileSync('supabase/migrations/20260701000000_business_gift_card_history_rpc.sql', 'utf8')
+  const transactionMigration = readFileSync('supabase/migrations/20260701010000_redeem_gift_card_records_transaction.sql', 'utf8')
+  const discountMigration = readFileSync('supabase/migrations/20260701020000_gift_card_discount_transaction_history.sql', 'utf8')
+  const backfillMigration = readFileSync('supabase/migrations/20260701040000_backfill_gift_card_redemption_transactions.sql', 'utf8')
+  const rewardValueMigration = readFileSync('supabase/migrations/20260701050000_reward_points_are_reward_value.sql', 'utf8')
+  const giftCardAfterTaxMigration = readFileSync('supabase/migrations/20260701070000_gift_card_applies_after_tax_reward_base_bill.sql', 'utf8')
+
+  assert.match(service, /get_business_gift_cards/)
+  assert.match(service, /mapBusinessGiftCard/)
+  assert.match(redemptionsPage, /Business Transactions/)
+  assert.match(redemptionsPage, /Transaction History/)
+  assert.match(redemptionsPage, /transactionRows/)
+  assert.match(redemptionsPage, /gift_card_redemption/)
+  assert.match(redemptionsPage, /usedGiftCardCodes/)
+  assert.match(redemptionsPage, /extractGiftCardCode/)
+  assert.match(redemptionsPage, /Standard sale/)
+  assert.match(redemptionsPage, /Gift card used/)
+  assert.match(redemptionsPage, /Gift card redeemed/)
+  assert.match(redemptionsPage, /Process Without Gift Card/)
+  assert.match(redemptionsPage, /Process With Gift Card/)
+  assert.match(redemptionsPage, /New Transaction/)
+  assert.match(redemptionsPage, /recordStandardTransaction/)
+  assert.match(redemptionsPage, /useScannedMember/)
+  assert.match(redemptionsPage, /useRecordMemberTransaction/)
+  assert.match(redemptionsPage, /calculateRewardablePurchaseAmount/)
+  assert.match(redemptionsPage, /taxIncludedInBill: business\.taxIncludedInBill/)
+  assert.match(redemptionsPage, /Bill before tax\/service/)
+  assert.match(redemptionsPage, /Tax added to customer total/)
+  assert.match(redemptionsPage, /Tax not charged/)
+  assert.match(redemptionsPage, /Service charge added/)
+  assert.match(redemptionsPage, /Customer total/)
+  assert.match(redemptionsPage, /totalAmountLabel/)
+  assert.match(redemptionsPage, /discountLabel/)
+  assert.match(redemptionsPage, /finalPriceLabel/)
+  assert.match(redemptionsPage, /Gift Card Discount/)
+  assert.match(redemptionsPage, /Final Price/)
+  assert.match(redemptionsPage, /After staff redeem a gift card or scan a member QR/)
+  assert.match(redemptionsPage, /No transactions yet/)
+  assert.match(migration, /create or replace function public\.get_business_gift_cards/)
+  assert.match(migration, /actor_profile\.role not in \('business-owner', 'business-staff'\)/)
+  assert.match(migration, /gc\.redeemed_at/)
+  assert.match(service, /p_original_bill/)
+  assert.match(service, /p_receipt_number/)
+  assert.match(service, /p_gift_card_amount/)
+  assert.match(transactionMigration, /drop function if exists public\.redeem_gift_card\(uuid, uuid\)/)
+  assert.match(transactionMigration, /p_original_bill numeric default null/)
+  assert.match(transactionMigration, /insert into public\.member_transactions/)
+  assert.match(transactionMigration, /set points = points \+ points_awarded_value/)
+  assert.match(transactionMigration, /Gift card code: %s/)
+  assert.match(discountMigration, /redemption_original_bill/)
+  assert.match(discountMigration, /Final bill after gift card: %s\./)
+  assert.match(backfillMigration, /Backfilled from gift card redemption/)
+  assert.match(backfillMigration, /not exists \(/)
+  assert.match(backfillMigration, /set points = points \+ points_awarded_value/)
+  assert.match(rewardValueMigration, /tax_included_in_bill/)
+  assert.match(rewardValueMigration, /points_awarded_value := floor\(reward_value_value\)/)
+  assert.doesNotMatch(rewardValueMigration, /reward_value_value \* 100/)
+  assert.match(giftCardAfterTaxMigration, /tax_charge_value := case/)
+  assert.match(giftCardAfterTaxMigration, /original_bill_value \* coalesce\(business_row\.tax_rate, 0\)/)
+  assert.match(giftCardAfterTaxMigration, /total_before_gift_card_value := round\(\(original_bill_value \+ tax_charge_value \+ service_charge_value\)::numeric, 2\)/)
+  assert.match(giftCardAfterTaxMigration, /gift_card_amount_value := round\(least\(greatest\(coalesce\(p_gift_card_amount, 0\), 0\), total_before_gift_card_value\)::numeric, 2\)/)
+  assert.match(giftCardAfterTaxMigration, /final_bill_value := round\(greatest\(total_before_gift_card_value - gift_card_amount_value, 0\)::numeric, 2\)/)
+  assert.match(giftCardAfterTaxMigration, /if original_bill_value is not null and original_bill_value > 0 then/)
+  assert.match(giftCardAfterTaxMigration, /purchase_amount_value := original_bill_value/)
+  assert.match(giftCardAfterTaxMigration, /Tax added: %s/)
+  assert.doesNotMatch(giftCardAfterTaxMigration, /final_bill_value \/ charge_multiplier/)
+  assert.doesNotMatch(giftCardAfterTaxMigration, /purchase_amount_value := bill_after_gift_card_value/)
+})
+
 runTest('gift card display keeps QR code bounded on customer screens', () => {
   const display = readFileSync('src/features/gift-cards/components/gift-card-display.tsx', 'utf8')
 
@@ -1652,6 +1807,8 @@ runTest('business owner catalog and settings writes use owner-scoped RPCs', () =
   assert.doesNotMatch(giftCardsPage, /businessId: business\?\.id/)
   assert.match(settingsPage, /useUpdateOwnerBusinessSettings/)
   assert.match(settingsPage, /updateSettings\.error/)
+  assert.match(settingsPage, /Rewards Rate/)
+  assert.doesNotMatch(settingsPage, /Points Rate/)
   assert.match(productsService, /createOwnerProduct/)
   assert.match(promotionsService, /createOwnerPromotion/)
   assert.match(giftCardService, /createOwnerCatalogItem/)

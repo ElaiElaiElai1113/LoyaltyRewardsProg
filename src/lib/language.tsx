@@ -246,7 +246,9 @@ const spanishTranslations: Record<string, string> = {
   'Manage your business information and rewards settings.':
     'Administra la información de tu negocio y la configuración de recompensas.',
   'Rewards Program': 'Programa de recompensas',
-  'Points Rate (points per $1)': 'Tasa de puntos (puntos por $1)',
+  'Rewards Rate': 'Tasa de recompensas',
+  'Customers earn rewards from every eligible purchase.':
+    'Los clientes ganan recompensas por cada compra elegible.',
   'Customers earn this many points for every dollar spent.':
     'Los clientes ganan esta cantidad de puntos por cada dólar gastado.',
   'Award Points': 'Otorgar puntos',

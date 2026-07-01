@@ -320,6 +320,23 @@ update public.profiles
 set verification_status = 'verified'
 where id = '66666666-6666-6666-6666-666666666666';
 
+insert into public.reward_balances (
+  profile_id,
+  points,
+  next_reward_points,
+  available_credits
+)
+values (
+  '11111111-1111-1111-1111-111111111111',
+  50000,
+  1500,
+  0
+)
+on conflict (profile_id) do update
+set points = greatest(public.reward_balances.points, excluded.points),
+    next_reward_points = excluded.next_reward_points,
+    updated_at = now();
+
 with signed_agreement_profiles as (
   select p.id as profile_id, p.business_id, p.role, p.full_name
   from public.profiles p

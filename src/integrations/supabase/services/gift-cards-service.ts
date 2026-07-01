@@ -76,6 +76,77 @@ function mapPublicGiftCard(row: Record<string, unknown>): PublicGiftCard {
   }
 }
 
+function publicGiftCardToGiftCard(card: PublicGiftCard): GiftCard {
+  return {
+    id: card.id,
+    catalogId: card.catalogId,
+    businessId: card.businessId,
+    customerId: card.customerId,
+    issuedBy: null,
+    code: card.code,
+    publicToken: card.publicToken,
+    status: card.status,
+    pointsSpent: card.pointsSpent,
+    expiresAt: card.expiresAt,
+    redeemedAt: card.redeemedAt,
+    redeemedBy: null,
+    redeemedAtBusiness: null,
+    createdAt: card.createdAt,
+    updatedAt: card.updatedAt,
+    catalog: {
+      id: card.catalogId ?? card.id,
+      title: card.title,
+      description: card.description,
+      valueLabel: card.valueLabel,
+      imageUrl: card.imageUrl,
+    },
+    business: {
+      id: card.businessId,
+      name: card.businessName,
+      logoUrl: card.businessLogoUrl,
+    },
+    customerFirstName: card.customerFirstName,
+  }
+}
+
+function mapBusinessGiftCard(row: Record<string, unknown>): GiftCard {
+  const mapped = camelCaseRow(row)
+
+  return {
+    id: mapped.id as string,
+    catalogId: (mapped.catalogId as string | null) ?? null,
+    businessId: mapped.businessId as string,
+    customerId: mapped.customerId as string,
+    issuedBy: (mapped.issuedBy as string | null) ?? null,
+    code: mapped.code as string,
+    publicToken: mapped.publicToken as string,
+    status: mapped.status as GiftCard['status'],
+    pointsSpent: mapped.pointsSpent as number,
+    expiresAt: mapped.expiresAt as string,
+    redeemedAt: (mapped.redeemedAt as string | null) ?? null,
+    redeemedBy: (mapped.redeemedBy as string | null) ?? null,
+    redeemedAtBusiness: (mapped.redeemedAtBusiness as string | null) ?? null,
+    createdAt: mapped.createdAt as string,
+    updatedAt: mapped.updatedAt as string,
+    redemptionOriginalBill: (mapped.redemptionOriginalBill as number | null) ?? null,
+    redemptionGiftCardAmount: (mapped.redemptionGiftCardAmount as number | null) ?? null,
+    redemptionReceiptNumber: (mapped.redemptionReceiptNumber as string | null) ?? null,
+    catalog: {
+      id: ((mapped.catalogId as string | null) ?? mapped.id) as string,
+      title: mapped.catalogTitle as string,
+      description: mapped.catalogDescription as string,
+      valueLabel: mapped.catalogValueLabel as string,
+      imageUrl: (mapped.catalogImageUrl as string | null) ?? null,
+    },
+    business: {
+      id: mapped.businessId as string,
+      name: mapped.businessName as string,
+      logoUrl: (mapped.businessLogoUrl as string | null) ?? null,
+    },
+    customerFirstName: mapped.customerFirstName as string,
+  }
+}
+
 const giftCardSelect = '*, gift_card_catalog(id, title, description, value_label, image_url), businesses(id, name, logo_url)'
 
 async function enrichGiftCardRows(rows: Record<string, unknown>[]): Promise<GiftCard[]> {
@@ -134,12 +205,25 @@ export const giftCardsService = {
     return this.getGiftCardById(row.id as string).then((giftCard) => giftCard ?? mapGiftCard(row))
   },
 
-  async redeemGiftCard(giftCardId: string, businessId: string): Promise<GiftCard> {
+  async redeemGiftCard(
+    giftCardId: string,
+    businessId: string,
+    transaction?: {
+      originalBill: number
+      receiptNumber: string
+      giftCardAmount: number
+      clientRequestId: string
+    },
+  ): Promise<GiftCard> {
     const sb = requireSupabase()
 
     const { data, error } = await sb.rpc('redeem_gift_card', {
       p_gift_card_id: giftCardId,
       p_business_id: businessId,
+      p_original_bill: transaction?.originalBill ?? null,
+      p_receipt_number: transaction?.receiptNumber ?? null,
+      p_gift_card_amount: transaction?.giftCardAmount ?? null,
+      p_client_request_id: transaction?.clientRequestId ?? null,
     })
 
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
@@ -175,6 +259,14 @@ export const giftCardsService = {
   async getGiftCardsForBusiness(businessId?: string): Promise<GiftCard[]> {
     const sb = requireSupabase()
 
+    if (businessId) {
+      const { data, error } = await sb.rpc('get_business_gift_cards', {
+        p_business_id: businessId,
+      })
+
+      if (!error) return ((data ?? []) as Record<string, unknown>[]).map(mapBusinessGiftCard)
+    }
+
     let query = sb
       .from('gift_cards')
       .select(giftCardSelect)
@@ -200,6 +292,14 @@ export const giftCardsService = {
     if (error) throw new Error(error.message)
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
     return row ? mapPublicGiftCard(row) : null
+  },
+
+  async findGiftCardByTokenOrCode(input: string): Promise<GiftCard | null> {
+    const tokenOrCode = input.trim()
+    if (!tokenOrCode) return null
+
+    const publicCard = await this.getPublicGiftCard(tokenOrCode)
+    return publicCard ? publicGiftCardToGiftCard(publicCard) : null
   },
 
   async getGiftCardById(id: string): Promise<GiftCard | null> {

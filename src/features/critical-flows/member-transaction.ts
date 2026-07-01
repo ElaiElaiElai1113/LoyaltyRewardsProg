@@ -1,4 +1,4 @@
-export const MEMBER_TRANSACTION_POINTS_PER_REWARD_DOLLAR = 100
+export const MEMBER_TRANSACTION_POINTS_PER_REWARD_DOLLAR = 1
 
 export interface MemberTransactionCalculationInput {
   purchaseAmount: number
@@ -9,6 +9,7 @@ export interface MemberTransactionCalculationInput {
 export interface RewardablePurchaseCalculationInput {
   receiptTotal: number
   taxRate: number
+  taxIncludedInBill: boolean
   serviceChargeRate: number
   serviceChargeEnabled: boolean
   giftCardAmount?: number
@@ -20,6 +21,7 @@ export interface RewardablePurchaseCalculation {
   amountAfterGiftCard: number
   taxableChargeAmount: number
   serviceChargeAmount: number
+  finalPriceAmount: number
   rewardableAmount: number
 }
 
@@ -36,6 +38,7 @@ function roundCurrency(value: number) {
 export function calculateRewardablePurchaseAmount({
   receiptTotal,
   taxRate,
+  taxIncludedInBill,
   serviceChargeRate,
   serviceChargeEnabled,
   giftCardAmount = 0,
@@ -46,18 +49,21 @@ export function calculateRewardablePurchaseAmount({
   const safeServiceChargeRate = serviceChargeEnabled && Number.isFinite(serviceChargeRate)
     ? Math.max(serviceChargeRate, 0)
     : 0
-  const amountAfterGiftCard = roundCurrency(Math.max(safeReceiptTotal - safeGiftCardAmount, 0))
-  const chargeMultiplier = 1 + safeTaxRate + safeServiceChargeRate
-  const rewardableAmount = chargeMultiplier > 1
-    ? roundCurrency(amountAfterGiftCard / chargeMultiplier)
-    : amountAfterGiftCard
+  const rewardableAmount = roundCurrency(safeReceiptTotal)
+  const taxableChargeAmount = taxIncludedInBill ? roundCurrency(rewardableAmount * safeTaxRate) : 0
+  const serviceChargeAmount = roundCurrency(rewardableAmount * safeServiceChargeRate)
+  const totalBeforeGiftCard = roundCurrency(rewardableAmount + taxableChargeAmount + serviceChargeAmount)
+  const appliedGiftCardAmount = roundCurrency(Math.min(safeGiftCardAmount, totalBeforeGiftCard))
+  const amountAfterGiftCard = roundCurrency(Math.max(rewardableAmount - appliedGiftCardAmount, 0))
+  const finalPriceAmount = roundCurrency(Math.max(totalBeforeGiftCard - appliedGiftCardAmount, 0))
 
   return {
     originalReceiptTotal: roundCurrency(safeReceiptTotal),
-    giftCardAmount: roundCurrency(Math.min(safeGiftCardAmount, safeReceiptTotal)),
+    giftCardAmount: appliedGiftCardAmount,
     amountAfterGiftCard,
-    taxableChargeAmount: roundCurrency(rewardableAmount * safeTaxRate),
-    serviceChargeAmount: roundCurrency(rewardableAmount * safeServiceChargeRate),
+    taxableChargeAmount,
+    serviceChargeAmount,
+    finalPriceAmount,
     rewardableAmount,
   }
 }

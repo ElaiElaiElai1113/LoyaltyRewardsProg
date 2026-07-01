@@ -20,6 +20,7 @@ Authenticated screenshots to capture during a seeded demo:
 - Customer wallet: `/wallet/gift-cards`
 - Business dashboard: `/business/dashboard`
 - Business member sale: `/business/member-sale/:token`
+- Business transactions and gift card redemption: `/business/redemptions`
 - Business members: `/business/members`
 - Business partners: `/business/partners`
 - Admin members: `/admin/portal#members`
@@ -31,7 +32,7 @@ Authenticated screenshots to capture during a seeded demo:
 1. Start with public discovery and the guide.
 2. Walk through the full customer experience.
 3. Show the customer QR being used by business staff.
-4. Show the business staff operational tools.
+4. Show the business staff operational tools, including transactions with and without gift cards.
 5. Show the business owner management tools.
 6. Show the admin operations tools.
 7. Finish with the commission ledger so the business model is clear.
@@ -367,7 +368,8 @@ Steps:
 3. Open a gift card detail page.
 4. Copy or share the public gift card link.
 5. Show the gift card QR/display.
-6. Explain that staff redeem the gift card in the business portal.
+6. Explain that staff redeem the gift card in the business Transactions page.
+7. Explain that gift cards reduce the customer total, while reward points are still calculated from the eligible bill before tax and service charge.
 
 ### Activity
 
@@ -420,7 +422,7 @@ Accessible staff routes:
 Steps:
 
 1. Open the side navigation.
-2. Show QR Sales, Redemptions, Customers, Partners, and Guia.
+2. Show QR Sales, Transactions, Customers, Partners, and Guia.
 3. Explain that staff do not see Products, Rewards, Promotions, Gift Cards setup, or Settings.
 
 ### QR Sales Dashboard
@@ -458,19 +460,30 @@ Steps:
 7. Confirm transaction recorded.
 8. Explain that the customer receives points and admin can later review commission.
 
-### Gift Card Redemptions
+### Transactions and Gift Card Redemptions
 
 Route: `/business/redemptions`
 
 Steps:
 
-1. Open gift card redemptions.
-2. Scan a gift card QR with the camera scanner.
-3. Or upload a QR image.
-4. Or enter a gift card code or public URL manually.
-5. Validate the gift card.
-6. Confirm redemption.
-7. Explain that redeemed gift cards can be reviewed by admin.
+1. Open Transactions.
+2. Explain that this page handles normal member purchases and gift-card purchases.
+3. For a normal sale, scan or paste the customer's Member QR.
+4. Enter the bill before tax and service charge.
+5. Enter the receipt or bill number.
+6. Review the preview: reward rate, reward value, points awarded, tax, service charge, customer total, and commission.
+7. Click Process Without Gift Card.
+8. For a gift-card sale, scan, upload, paste, or enter the gift card code/public URL.
+9. Validate the gift card.
+10. Review the preview again:
+   - Gift card discount reduces the customer total.
+   - Tax is added only when the business setting says it is charged to the customer.
+   - Service charge is added only when enabled.
+   - Points are based on the bill before tax and service charge.
+11. Click Process With Gift Card.
+12. Click New Transaction to continue with the next customer.
+13. Review Transaction History and confirm it shows receipt, customer, total, gift-card discount, final price, points, and gift-card code.
+14. Explain that transaction history includes both normal sales and gift-card sales.
 
 ### Customers
 
@@ -595,7 +608,7 @@ Steps:
 4. Save the gift card item.
 5. Edit an existing item.
 6. Delete an existing item.
-7. Explain that customers can issue gift cards and staff can redeem them.
+7. Explain that customers can issue gift cards and staff can redeem them from the Transactions page.
 
 ### Settings
 
@@ -606,8 +619,14 @@ Steps:
 1. Open Settings.
 2. Review business details.
 3. Update business fields available to the owner.
-4. Save settings.
-5. Explain that admin manages platform-level partner assignment and deeper operations fields.
+4. Review Rewards Rate. This is the percentage used to calculate points from the eligible bill.
+5. Review tax settings:
+   - If the business does not charge tax, leave tax off.
+   - If tax is charged to the customer, turn on tax included in customer bill.
+6. Review service charge settings if the business uses service charge.
+7. Save settings.
+8. Explain that rewards are based on the bill before tax and service charge.
+9. Explain that admin manages platform-level partner assignment and deeper operations fields.
 
 ## Admin Walkthrough
 
@@ -727,7 +746,7 @@ Steps:
 
 1. Open Partners.
 2. Create a partner business.
-3. Enter business name, slug, description, address, latitude, longitude, logo URL, earn rate, tax rate, currency, active status, and owner email if available.
+3. Enter business name, slug, description, address, latitude, longitude, logo URL, reward rate, commission rate, tax rate, tax-included setting, service charge setting, currency, active status, and owner email if available.
 4. Save the partner.
 5. Search partners.
 6. Filter partners by all, active, inactive, pinned, missing coordinates, or missing owner.
@@ -804,9 +823,10 @@ Steps:
 1. Open Commissions.
 2. Review Member QR Transactions.
 3. Confirm each row includes date, business, member, purchase, reward value, points, and commission amount.
-4. Identify unpaid commission rows.
-5. Click Mark paid after payment is collected.
-6. Explain that this closes the loop: customer QR sale, business points award, and Medellin Rewards commission tracking.
+4. Confirm gift-card transactions still show points and commission when applicable.
+5. Identify unpaid commission rows.
+6. Click Mark paid after payment is collected.
+7. Explain that this closes the loop: customer QR sale, business points award, and Medellin Rewards commission tracking.
 
 ### Admin Gift Cards
 
@@ -820,6 +840,7 @@ Steps:
 4. Review issued gift cards.
 5. Open an issued gift card.
 6. Explain that admin can audit platform gift card issuance and usage.
+7. Explain that staff redemption activity also appears in business Transaction History and member transaction/commission records.
 
 ### Admin Guide
 
@@ -898,7 +919,9 @@ Business staff:
 - Business login
 - QR Sales dashboard
 - Member sale from scanned QR
-- Gift card redemptions
+- Transactions with or without gift cards
+- Gift card validation and redemption
+- Transaction history
 - Customers
 - Register new customer
 - Manual points/customer tools
@@ -916,6 +939,7 @@ Business owner:
 - Rewards catalog
 - Campaigns
 - Business gift card catalog
+- Rewards rate, tax, and service charge settings
 - Settings
 
 Admin:
@@ -943,4 +967,5 @@ Admin:
 - Commissions
 - Mark commission paid
 - Admin gift cards
+- Gift card transaction audit
 - Admin guide

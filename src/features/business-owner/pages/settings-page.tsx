@@ -139,7 +139,7 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="earn-rate" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    {t('Points Rate (points per $1)')}
+                    {t('Rewards Rate')}
                   </Label>
                   <Input
                     id="earn-rate"
@@ -151,7 +151,7 @@ export function SettingsPage() {
                     <p className="text-xs text-red-500">{form.formState.errors.earnRate.message}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    {t('Customers earn this many points for every dollar spent.')}
+                    {t('Customers earn rewards from every eligible purchase.')}
                   </p>
                 </div>
 

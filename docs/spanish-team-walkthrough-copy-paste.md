@@ -33,6 +33,7 @@ Some pages need new screenshots after logging in:
 - Customer activity: `/activity`
 - Business dashboard: `/business/dashboard`
 - Business QR sale page: `/business/member-sale/:token`
+- Business transactions page: `/business/redemptions`
 - Admin members page: `/admin/portal#members`
 - Admin partners page: `/admin/portal#partners`
 - Admin commissions page: `/admin/portal#commissions`
@@ -315,9 +316,10 @@ Steps:
 3. Customer shows QR code to staff.
 4. Staff scans the QR code.
 5. Staff enters the purchase amount.
-6. Staff records the sale.
-7. Customer receives points.
-8. Customer can check Activity to see the points.
+6. Staff enters the receipt number.
+7. Staff records the sale.
+8. Customer receives points.
+9. Customer can check Activity to see the points.
 
 ### 7. Partner Businesses
 
@@ -398,6 +400,7 @@ Steps:
 5. Customer opens one gift card.
 6. Customer can copy or share the gift card link.
 7. Business staff can redeem the gift card.
+8. Explain that the gift card can reduce what the customer pays, but the app still calculates points from the correct bill amount.
 
 ### 12. Activity
 
@@ -454,7 +457,7 @@ Staff can access:
 
 - QR Sales dashboard.
 - QR sale page.
-- Redemptions.
+- Transactions.
 - Customers.
 - Partners.
 - Business guide.
@@ -515,17 +518,38 @@ Steps:
 11. Customer gets points.
 12. Commission is tracked for Medellin Rewards.
 
-### 5. Gift Card Redemption
+### 5. Transactions Page
 
 Page: `/business/redemptions`
 
 Steps:
 
-1. Staff opens Redemptions.
-2. Staff scans gift card QR.
-3. Or staff enters gift card code manually.
-4. Staff validates the gift card.
-5. Staff confirms redemption.
+1. Staff opens Transactions.
+2. Staff can process a normal transaction without a gift card.
+3. Staff scans or pastes the customer's Member QR.
+4. Staff enters the bill before tax and service charge.
+5. Staff enters the receipt or bill number.
+6. Staff checks the reward preview:
+   - Bill before tax or service.
+   - Gift card discount if used.
+   - Tax added if the business setting says tax is included.
+   - Service charge if the business uses service charge.
+   - Customer total.
+   - Rewardable bill.
+   - Points awarded.
+7. Staff clicks Process Without Gift Card for a normal sale.
+8. If the customer has a gift card, staff scans or pastes the gift card code.
+9. Staff validates the gift card.
+10. Staff clicks Process With Gift Card.
+11. Staff clicks New Transaction to continue with the next customer.
+
+Important:
+
+- The gift card reduces the customer total.
+- Points are based on the bill before tax and service charge.
+- Tax and service charge do not create reward points.
+- Transaction History shows normal sales and gift card sales together.
+- Transaction History shows receipt, customer, total, discount, final price, points, and gift card code.
 
 ### 6. Customers
 
@@ -568,6 +592,7 @@ Steps:
 3. Owner reviews points.
 4. Owner reviews commission owed.
 5. Owner reviews performance metrics.
+6. Owner can review transaction history, including normal sales and gift-card sales.
 
 ### 2. Products
 
@@ -616,6 +641,7 @@ Steps:
 3. Owner enters gift card details.
 4. Owner saves the item.
 5. Owner can edit or delete gift card items.
+6. Explain that customers can issue these gift cards and staff redeem them from Transactions.
 
 ### 6. Settings
 
@@ -626,7 +652,18 @@ Steps:
 1. Owner opens Settings.
 2. Owner reviews business information.
 3. Owner updates business information.
-4. Owner saves changes.
+4. Owner checks Rewards Rate.
+5. Owner checks tax settings:
+   - If tax is not charged, leave tax off.
+   - If tax is charged to the customer, turn on tax included in customer bill.
+6. Owner checks service charge settings if the business uses service charge.
+7. Owner saves changes.
+
+Important:
+
+- Rewards Rate is a percentage.
+- Example: bill is 230 and Rewards Rate is 20%. Customer earns 46 points.
+- Tax and service charge can be added to the customer total, but rewards are based on the bill before tax and service charge.
 
 ## Admin Walkthrough
 
@@ -725,7 +762,10 @@ Steps:
    - Coordinates.
    - Logo.
    - Earn rate.
+   - Rewards rate.
    - Tax rate.
+   - Tax included in customer bill.
+   - Service charge settings.
    - Currency.
    - Owner email.
 4. Admin saves the partner.
@@ -800,6 +840,7 @@ Steps:
    - Purchase amount.
    - Points awarded.
    - Commission amount.
+   - Gift card code if used.
 4. Admin finds unpaid commission.
 5. Admin clicks Mark paid after payment is collected.
 6. Explain that this is how Medellin Rewards tracks money owed from businesses.
@@ -842,4 +883,3 @@ Please keep these words consistent in Spanish:
 - Under review
 - Verified
 - Needs resubmission
-

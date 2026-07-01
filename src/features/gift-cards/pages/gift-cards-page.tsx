@@ -6,7 +6,6 @@ import { BusinessFilter } from '@/components/business-filter'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
-import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
@@ -38,7 +37,6 @@ export function GiftCardsPage() {
     && !rewardActionsLocked
   )
   const visibleGiftCards = showClaimableOnly ? claimableGiftCards : catalogItems
-  const featuredCards = catalogItems.slice(0, 5)
   const selectedBusinessName = selectedBusiness
     ? businesses.data?.find((business) => business.id === selectedBusiness)?.name ?? t('Selected business')
     : t('All businesses')
@@ -145,7 +143,7 @@ export function GiftCardsPage() {
               Buy a partner gift card with points, then show its QR at that business.
             </h2>
             <p className="mt-4 max-w-2xl text-sm font-medium leading-6 text-on-surface-variant/80">
-              Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining rewardable bill after gift card, tax, and service charge deductions.
+              Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining bill before tax and service charge.
             </p>
           </div>
           <div className="animate-float-soft flex size-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft">
@@ -158,33 +156,22 @@ export function GiftCardsPage() {
         <BusinessFilter businesses={businesses.data ?? []} selected={selectedBusiness} onChange={setSelectedBusiness} />
       ) : null}
 
-      {featuredCards.length > 0 ? (
-        <LuxeCarousel
-          eyebrow="Gift card circle"
-          title="Featured gift cards"
-          description="A warm showcase for credits that feel personal, pretty, and quick to claim."
-        >
-          {featuredCards.map((item) => (
-            <GiftCardTile
-              key={item.id}
-              item={item}
-              balancePoints={balancePoints}
-              businessName={item.business?.name}
-              actionLocked={rewardActionsLocked}
-              onSelect={handleSelect}
-            />
-          ))}
-        </LuxeCarousel>
-      ) : null}
-
       {catalog.isLoading ? (
         <div className="space-y-6">
+          <div className="max-w-2xl space-y-2">
+            <h2 className="font-serif text-4xl font-semibold leading-none text-primary-container md:text-5xl">
+              Featured gift cards
+            </h2>
+            <p className="text-sm font-medium leading-6 text-on-surface-variant/85">
+              A warm showcase for credits that feel personal, pretty, and quick to claim.
+            </p>
+          </div>
           <LoadingState
             className="py-2"
             title={t('Loading')}
             description={t('Preparing gift cards.')}
           />
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))] gap-5">
             {Array.from({ length: 6 }).map((_, index) => (
               <Skeleton key={index} className="h-64 rounded-xl" />
             ))}
@@ -197,18 +184,29 @@ export function GiftCardsPage() {
           description={t(emptyStateDescription)}
         />
       ) : (
-        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-          {visibleGiftCards.map((item) => (
-            <GiftCardTile
-              key={item.id}
-              item={item}
-              balancePoints={balancePoints}
-              businessName={item.business?.name}
-              actionLocked={rewardActionsLocked}
-              onSelect={handleSelect}
-            />
-          ))}
-        </div>
+        <section className="space-y-5">
+          <div className="max-w-2xl space-y-2">
+            <h2 className="font-serif text-4xl font-semibold leading-none text-primary-container md:text-5xl">
+              Featured gift cards
+            </h2>
+            <p className="text-sm font-medium leading-6 text-on-surface-variant/85">
+              A warm showcase for credits that feel personal, pretty, and quick to claim.
+            </p>
+          </div>
+          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))] gap-5">
+            {visibleGiftCards.map((item) => (
+              <GiftCardTile
+                key={item.id}
+                item={item}
+                balancePoints={balancePoints}
+                businessName={item.business?.name}
+                actionLocked={rewardActionsLocked}
+                compact
+                onSelect={handleSelect}
+              />
+            ))}
+          </div>
+        </section>
       )}
 
       <IssueConfirmationDialog

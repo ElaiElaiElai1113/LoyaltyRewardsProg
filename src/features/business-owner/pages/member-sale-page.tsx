@@ -90,6 +90,7 @@ export function MemberSalePage() {
     return calculateRewardablePurchaseAmount({
       receiptTotal: purchaseAmount,
       taxRate: business.taxRate,
+      taxIncludedInBill: business.taxIncludedInBill,
       serviceChargeRate: business.serviceChargeRate,
       serviceChargeEnabled: business.serviceChargeEnabled,
       giftCardAmount: giftCardAmount ?? 0,
@@ -193,7 +194,7 @@ export function MemberSalePage() {
             note: [
               values.note,
               rewardableBreakdown
-                ? `Receipt total: ${formatCurrency(rewardableBreakdown.originalReceiptTotal)}; gift card: ${formatCurrency(rewardableBreakdown.giftCardAmount)}; tax excluded: ${formatCurrency(rewardableBreakdown.taxableChargeAmount)}; service charge excluded: ${formatCurrency(rewardableBreakdown.serviceChargeAmount)}.`
+                ? `Bill before tax/service: ${formatCurrency(rewardableBreakdown.originalReceiptTotal)}; gift card: ${formatCurrency(rewardableBreakdown.giftCardAmount)}; tax added: ${formatCurrency(rewardableBreakdown.taxableChargeAmount)}; service charge added: ${formatCurrency(rewardableBreakdown.serviceChargeAmount)}; customer total: ${formatCurrency(rewardableBreakdown.finalPriceAmount)}.`
                 : null,
               giftCardSaleContext?.giftCardCode ? `Gift card code: ${giftCardSaleContext.giftCardCode}.` : null,
             ].filter(Boolean).join(' '),
@@ -220,7 +221,7 @@ export function MemberSalePage() {
 
           <div className="grid gap-6">
             <div className="grid gap-3">
-              <Label htmlFor="purchaseAmount">Original Receipt Total</Label>
+              <Label htmlFor="purchaseAmount">Bill Before Tax/Service</Label>
               <Input
                 id="purchaseAmount"
                 type="number"
@@ -233,7 +234,7 @@ export function MemberSalePage() {
                 <p className="text-sm font-bold text-red-500">{form.formState.errors.purchaseAmount.message}</p>
               ) : (
                 <p className="text-sm text-on-surface-variant/70">
-                  Enter the full amount on the receipt. Tax, service charge, and scanned gift card value are removed before points are calculated.
+                  Enter the bill amount before tax and service charge. Tax and service charge can be added to the customer total, but rewards stay based on this bill amount after any gift card.
                 </p>
               )}
             </div>
@@ -311,7 +312,7 @@ export function MemberSalePage() {
                 <strong>{business.rewardRatePercent}%</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Original receipt</span>
+                <span className="text-on-surface-variant/75">Bill before tax/service</span>
                 <strong>{formatCurrency(rewardableBreakdown?.originalReceiptTotal ?? purchaseAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
@@ -324,15 +325,19 @@ export function MemberSalePage() {
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">
-                  Tax excluded {business.taxRate > 0 ? `(${(business.taxRate * 100).toFixed(2)}%, ${business.taxIncludedInBill ? 'included' : 'added'})` : ''}
+                  {business.taxIncludedInBill ? 'Tax added to customer total' : 'Tax not charged'} {business.taxRate > 0 ? `(${(business.taxRate * 100).toFixed(2)}%)` : ''}
                 </span>
-                <strong>-{formatCurrency(rewardableBreakdown?.taxableChargeAmount ?? 0)}</strong>
+                <strong>{business.taxIncludedInBill ? `+${formatCurrency(rewardableBreakdown?.taxableChargeAmount ?? 0)}` : formatCurrency(0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">
-                  Service charge excluded {business.serviceChargeEnabled ? `(${(business.serviceChargeRate * 100).toFixed(2)}%)` : ''}
+                  Service charge added {business.serviceChargeEnabled ? `(${(business.serviceChargeRate * 100).toFixed(2)}%)` : ''}
                 </span>
-                <strong>-{formatCurrency(rewardableBreakdown?.serviceChargeAmount ?? 0)}</strong>
+                <strong>+{formatCurrency(rewardableBreakdown?.serviceChargeAmount ?? 0)}</strong>
+              </div>
+              <div className="flex items-center justify-between gap-4">
+                <span className="text-on-surface-variant/75">Customer total</span>
+                <strong>{formatCurrency(rewardableBreakdown?.finalPriceAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">Rewardable bill</span>

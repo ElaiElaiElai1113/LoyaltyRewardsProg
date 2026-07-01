@@ -133,10 +133,20 @@ export function useRedeemGiftCard(businessId?: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (giftCardId: string) => giftCardsService.redeemGiftCard(giftCardId, businessId!),
+    mutationFn: (input: {
+      giftCardId: string
+      originalBill: number
+      receiptNumber: string
+      giftCardAmount: number
+      clientRequestId: string
+    }) => giftCardsService.redeemGiftCard(input.giftCardId, businessId!, input),
     onSuccess: (giftCard) => {
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.businessCards(businessId) })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.detail(giftCard.id) })
+      void queryClient.invalidateQueries({ queryKey: ['member-transactions', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance', giftCard.customerId] })
       void queryClient.invalidateQueries({ queryKey: ['activities', giftCard.customerId] })
       toast.success('Gift card redeemed')
     },
