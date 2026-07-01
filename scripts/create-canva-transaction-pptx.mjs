@@ -1,142 +1,130 @@
-import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
+import { copyFileSync, mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 
 const outDir = 'tmp-canva-transaction-pptx'
+const assetDir = 'docs/transaction-guide-screenshots'
 
 const slides = [
   {
     title: 'Business Transactions Training',
-    subtitle: 'How to process normal sales and gift-card sales in Medellin Rewards.',
+    subtitle: 'Process normal purchases and gift-card purchases from the Transactions page.',
     bullets: [
-      'Staff use the Transactions page.',
-      'Staff can process a sale with or without a gift card.',
+      'Dashboard is for business overview.',
+      'Transactions is where staff scan QR codes and record sales.',
       'The system calculates customer total, points, and commission.',
     ],
-    visual: 'Screenshot: /business/redemptions',
+    visual: 'business-login-live.png',
   },
   {
-    title: 'Before You Start',
-    subtitle: 'Have these details ready before processing a sale.',
+    title: 'Use Transactions, Not Dashboard',
+    subtitle: 'The old QR Sales tab is now Dashboard, and transaction work moved to Transactions.',
     bullets: [
-      'Customer Member QR.',
-      'Receipt or bill number.',
-      'Bill before tax and service charge.',
-      'Optional gift card QR, link, or code.',
+      'Open the Business Portal.',
+      'Click Transactions in the business navigation.',
+      'Use Dashboard only for metrics, signup QR, partners, and fulfillment review.',
     ],
-    visual: 'Visual: QR, receipt, bill amount, gift card.',
+    visual: 'transactions-overview.png',
   },
   {
-    title: 'Open the Transactions Page',
-    subtitle: 'Route: /business/redemptions',
+    title: 'One Scanner Handles Two QR Types',
+    subtitle: 'Staff do not need to choose the scanner type before scanning.',
     bullets: [
-      'Sign in to the Business Portal.',
-      'Open Transactions.',
-      'Use this page for normal transactions and gift-card transactions.',
+      'Scan the customer Member QR for normal sales.',
+      'Scan the gift card QR when a customer is paying with a gift card.',
+      'The form updates the correct field automatically.',
     ],
-    visual: 'Screenshot: business navigation with Transactions highlighted.',
+    visual: 'transactions-overview.png',
   },
   {
-    title: 'Step 1: Load the Customer',
-    subtitle: 'Normal transaction flow',
+    title: 'Start Every Sale With The Customer',
+    subtitle: 'Load the member first so points go to the correct account.',
     bullets: [
       'Scan the customer Member QR.',
-      'Or paste the Member QR link/token.',
-      'Click Load Member.',
-      'Confirm the customer name appears.',
+      'Or paste the Member QR link or token.',
+      'Click Load Member and confirm the customer name.',
     ],
-    visual: 'Callout: Member QR field and Load Member button.',
+    visual: 'transactions-overview.png',
   },
   {
-    title: 'Step 2: Enter Sale Details',
-    subtitle: 'Use the base purchase amount.',
+    title: 'Enter The Base Bill',
+    subtitle: 'Use the bill before tax and service charge as the reward base.',
     bullets: [
       'Enter the bill before tax and service charge.',
       'Enter the receipt or bill number.',
-      'Example: if the food bill is 230, enter 230.',
+      'Leave gift card blank for a normal transaction.',
     ],
-    visual: 'Screenshot: bill amount and receipt fields.',
+    visual: 'normal-transaction.png',
   },
   {
-    title: 'Step 3: Review the Calculation',
-    subtitle: 'Check the preview before processing.',
+    title: 'Review The Normal-Sale Math',
+    subtitle: 'Rewards are based on the base bill, while tax and service can still affect customer total.',
     bullets: [
-      'Reward rate, reward value, and points awarded.',
-      'Tax added, if enabled.',
-      'Service charge, if enabled.',
-      'Customer total and commission.',
-      'Rule: points are based on the bill before tax and service charge.',
-    ],
-    visual: 'Screenshot: Reward Calculation preview.',
-  },
-  {
-    title: 'Step 4: Process Without Gift Card',
-    subtitle: 'Use this when the customer is making a normal purchase.',
-    bullets: [
-      'Check the customer and receipt.',
-      'Check the reward preview.',
-      'Click Process Without Gift Card.',
-      'Wait for success.',
-      'Click New Transaction for the next customer.',
-    ],
-    visual: 'Circle: Process Without Gift Card and New Transaction.',
-  },
-  {
-    title: 'Gift Card Sale: Add the Gift Card',
-    subtitle: 'Only use this when the customer pays with a gift card.',
-    bullets: [
-      'Load the customer.',
-      'Enter bill amount.',
-      'Enter receipt number.',
-      'Scan, upload, paste, or type the gift card QR/link/code.',
-    ],
-    visual: 'Screenshot: optional gift card section.',
-  },
-  {
-    title: 'Validate the Gift Card',
-    subtitle: 'Confirm the gift card can be used.',
-    bullets: [
-      'Click Validate Gift Card.',
-      'Confirm status says Active.',
-      'Confirm it belongs to this business.',
-      'If not active, do not process the gift card.',
-    ],
-    visual: 'Circle: Validate Gift Card button and Active badge.',
-  },
-  {
-    title: 'How Gift Card Math Works',
-    subtitle: 'Simple rule for staff',
-    bullets: [
-      'Gift card reduces the customer total.',
-      'Points are still based on the bill before tax and service charge.',
+      'Reward rate applies to the bill before tax/service.',
       'Tax and service charge do not create reward points.',
-      'Example: 230 bill + 12.6% tax - 230 gift card = 28.98 customer total.',
-      'Reward rate 20% means 46 points awarded.',
+      'Use Process Without Gift Card only when no gift card is entered.',
     ],
-    visual: 'Visual: simple math graphic or Reward Calculation preview.',
+    visual: 'normal-transaction.png',
   },
   {
-    title: 'Process With Gift Card',
-    subtitle: 'After validation, process the gift-card transaction.',
+    title: 'Gift Card Is Optional',
+    subtitle: 'Only add a gift card when the customer is paying with one.',
     bullets: [
-      'Confirm gift card is Active.',
-      'Check gift card discount.',
-      'Check customer total.',
-      'Check points awarded.',
-      'Click Process With Gift Card.',
-      'Click New Transaction for the next customer.',
+      'Scan, upload, paste, or type the gift card QR/link/code.',
+      'Click Validate Gift Card.',
+      'Confirm the card is Active and belongs to this business.',
     ],
-    visual: 'Circle: Process With Gift Card button.',
+    visual: 'gift-card-transaction.png',
   },
   {
-    title: 'Review Transaction History',
-    subtitle: 'Use history for review and audit.',
+    title: 'Valid Gift Cards Change The Available Button',
+    subtitle: 'The page protects staff from processing the wrong transaction type.',
     bullets: [
-      'Receipt number, date, and customer.',
-      'Total, gift card discount, and final price.',
-      'Points, gift card code, and status.',
-      'Use this to confirm points and review gift card use.',
+      'Empty gift-card field shows Process Without Gift Card.',
+      'Gift-card field with a valid card shows Process With Gift Card.',
+      'Invalid or unvalidated gift cards cannot be processed.',
     ],
-    visual: 'Callouts: receipt/customer, money summary, points/gift-card code.',
+    visual: 'gift-card-transaction.png',
+  },
+  {
+    title: 'Gift Cards Reduce The Customer Total',
+    subtitle: 'The customer pays the remaining balance after discount, tax, and service rules.',
+    bullets: [
+      'Gift card discount reduces the amount due.',
+      'Tax included means tax is added to the customer total.',
+      'Rewards still use the base bill before tax and service.',
+    ],
+    visual: 'gift-card-transaction.png',
+  },
+  {
+    title: 'Finish And Continue',
+    subtitle: 'After a successful transaction, staff can immediately start the next one.',
+    bullets: [
+      'Click Process Without Gift Card for normal purchases.',
+      'Click Process With Gift Card for validated gift-card purchases.',
+      'Click New Transaction after success for the next customer.',
+    ],
+    visual: 'normal-transaction.png',
+  },
+  {
+    title: 'History Shows Every Transaction',
+    subtitle: 'Normal sales and gift-card sales appear together for review.',
+    bullets: [
+      'Receipt, date, and customer.',
+      'Total, gift-card discount, and final price.',
+      'Points awarded and gift-card code when used.',
+    ],
+    visual: 'transaction-history.png',
+  },
+  {
+    title: 'The Rule Staff Should Remember',
+    subtitle: 'Transactions is the only page staff need for purchase processing.',
+    bullets: [
+      'Scan or paste the customer Member QR.',
+      'Add a gift card only when the customer pays with one.',
+      'Review the preview before processing.',
+      'Check Transaction History when auditing or helping a customer.',
+    ],
+    visual: 'transaction-history.png',
   },
 ]
 
@@ -161,8 +149,8 @@ function textShape(id, name, x, y, cx, cy, text, size, color = '2c1a12', bold = 
 function bulletShape(id, x, y, cx, cy, bullets) {
   const paragraphs = bullets.map((bullet) => `
     <a:p>
-      <a:pPr marL="342900" indent="-171450"><a:buChar char="•"/></a:pPr>
-      <a:r><a:rPr lang="en-US" sz="2100"><a:solidFill><a:srgbClr val="2c1a12"/></a:solidFill></a:rPr><a:t>${esc(bullet)}</a:t></a:r>
+      <a:pPr marL="280000" indent="-140000"><a:buChar char="-"/></a:pPr>
+      <a:r><a:rPr lang="en-US" sz="1950"><a:solidFill><a:srgbClr val="2c1a12"/></a:solidFill></a:rPr><a:t>${esc(bullet)}</a:t></a:r>
     </a:p>`).join('')
 
   return `
@@ -176,7 +164,7 @@ function bulletShape(id, x, y, cx, cy, bullets) {
 function roundedBox(id, x, y, cx, cy, fill, line = 'c89a62') {
   return `
     <p:sp>
-      <p:nvSpPr><p:cNvPr id="${id}" name="Visual placeholder"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
+      <p:nvSpPr><p:cNvPr id="${id}" name="Decorative box"/><p:cNvSpPr/><p:nvPr/></p:nvSpPr>
       <p:spPr>
         <a:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm>
         <a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom>
@@ -186,8 +174,18 @@ function roundedBox(id, x, y, cx, cy, fill, line = 'c89a62') {
     </p:sp>`
 }
 
+function imageShape(id, name, relId, x, y, cx, cy) {
+  return `
+    <p:pic>
+      <p:nvPicPr><p:cNvPr id="${id}" name="${esc(name)}"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>
+      <p:blipFill><a:blip r:embed="${relId}"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>
+      <p:spPr><a:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst/></a:prstGeom><a:ln w="12700"><a:solidFill><a:srgbClr val="c89a62"/></a:solidFill></a:ln></p:spPr>
+    </p:pic>`
+}
+
 function slideXml(slide, index) {
   const slideNo = index + 1
+  const hasImage = Boolean(slide.visual)
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
   <p:cSld>
@@ -195,15 +193,15 @@ function slideXml(slide, index) {
     <p:spTree>
       <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
       <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>
-      ${roundedBox(2, 0, 0, 12192000, 685800, '5a351d', '5a351d')}
-      ${textShape(3, 'Deck label', 457200, 198120, 5486400, 304800, 'Medellin Rewards Staff Guide', 1600, 'fff6eb', true)}
-      ${textShape(4, 'Slide number', 10668000, 198120, 914400, 304800, `${slideNo}/12`, 1400, 'fff6eb', true)}
-      ${textShape(5, 'Title', 609600, 914400, 7620000, 914400, slide.title, 3600, '6b3b18', true)}
-      ${textShape(6, 'Subtitle', 609600, 1676400, 7620000, 457200, slide.subtitle, 1700, '7f654f')}
-      ${bulletShape(7, 731520, 2438400, 5334000, 2743200, slide.bullets)}
-      ${roundedBox(8, 6461760, 2209800, 4724400, 3002280, 'f4dfc8')}
-      ${textShape(9, 'Visual label', 6797040, 2468880, 3962400, 457200, 'Visual / Screenshot Placeholder', 1700, '6b3b18', true)}
-      ${textShape(10, 'Visual instruction', 6797040, 3154680, 3962400, 1371600, slide.visual, 1800, '2c1a12')}
+      ${roundedBox(2, 0, 0, 12192000, 609600, '5a351d', '5a351d')}
+      ${textShape(3, 'Deck label', 457200, 170000, 5486400, 280000, 'Medellin Rewards Staff Guide', 1500, 'fff6eb', true)}
+      ${textShape(4, 'Slide number', 10750000, 170000, 914400, 280000, `${slideNo}/12`, 1350, 'fff6eb', true)}
+      ${textShape(5, 'Title', 609600, 838200, 5029200, 1066800, slide.title, 3200, '6b3b18', true)}
+      ${textShape(6, 'Subtitle', 609600, 1737360, 5029200, 609600, slide.subtitle, 1550, '7f654f')}
+      ${bulletShape(7, 731520, 2590800, 4541520, 2743200, slide.bullets)}
+      ${roundedBox(8, 5930000, 914400, 5486400, 4216400, 'fffaf2')}
+      ${hasImage ? imageShape(9, slide.visual, 'rId2', 6130000, 1112520, 5086400, 3225800) : ''}
+      ${textShape(10, 'Visual note', 6130000, 4510000, 5086400, 548640, 'Training visual uses sample data for staff practice.', 1300, '7f654f')}
       ${roundedBox(11, 609600, 5943600, 10972800, 304800, 'c89a62', 'c89a62')}
     </p:spTree>
   </p:cSld>
@@ -211,10 +209,13 @@ function slideXml(slide, index) {
 </p:sld>`
 }
 
-function slideRelsXml() {
+function slideRelsXml(imageIndex) {
+  const imageRel = imageIndex
+    ? `\n  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image${imageIndex}.png"/>`
+    : ''
   return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout" Target="../slideLayouts/slideLayout1.xml"/>${imageRel}
 </Relationships>`
 }
 
@@ -225,6 +226,7 @@ for (const dir of [
   'ppt/_rels',
   'ppt/slides/_rels',
   'ppt/slides',
+  'ppt/media',
   'ppt/slideLayouts/_rels',
   'ppt/slideLayouts',
   'ppt/slideMasters/_rels',
@@ -234,10 +236,19 @@ for (const dir of [
   mkdirSync(join(outDir, dir), { recursive: true })
 }
 
+const imageMap = new Map()
+for (const slide of slides) {
+  if (!slide.visual || imageMap.has(slide.visual)) continue
+  const next = imageMap.size + 1
+  imageMap.set(slide.visual, next)
+  copyFileSync(join(assetDir, slide.visual), join(outDir, 'ppt/media', `image${next}.png`))
+}
+
 writeFileSync(join(outDir, '[Content_Types].xml'), `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
   <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
   <Default Extension="xml" ContentType="application/xml"/>
+  <Default Extension="png" ContentType="image/png"/>
   <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>
   <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>
   <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>
@@ -315,7 +326,7 @@ writeFileSync(join(outDir, 'ppt/theme/theme1.xml'), `<?xml version="1.0" encodin
 
 slides.forEach((slide, index) => {
   writeFileSync(join(outDir, `ppt/slides/slide${index + 1}.xml`), slideXml(slide, index))
-  writeFileSync(join(outDir, `ppt/slides/_rels/slide${index + 1}.xml.rels`), slideRelsXml())
+  writeFileSync(join(outDir, `ppt/slides/_rels/slide${index + 1}.xml.rels`), slideRelsXml(imageMap.get(slide.visual)))
 })
 
 console.log(outDir)
