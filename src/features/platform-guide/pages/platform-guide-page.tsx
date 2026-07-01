@@ -1,12 +1,9 @@
 import {
-  BadgeCheck,
-  ClipboardCheck,
   MapPinned,
   MonitorPlay,
   QrCode,
   ScanLine,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
@@ -101,73 +98,6 @@ const screenshotGalleryByLanguage: Record<Language, {
   },
 }
 
-const scriptsByLanguage: Record<Language, Array<{ time: string; title: string; body: string }>> = {
-  es: [
-  {
-    time: '00:00',
-    title: 'Que es Medellin Rewards',
-    body:
-      'Medellin Rewards conecta clientes, negocios aliados y el equipo de operaciones en una sola plataforma. El cliente tiene un QR personal, el negocio registra compras con ese QR y el equipo puede ver actividad, puntos, socios y comisiones.',
-  },
-  {
-    time: '00:35',
-    title: 'Experiencia del cliente',
-    body:
-      'El cliente entra a su cuenta, completa su perfil y muestra su QR en un negocio aliado. Tambien puede explorar negocios, revisar su actividad y ver sus puntos o beneficios disponibles.',
-  },
-  {
-    time: '01:20',
-    title: 'Flujo para negocios',
-    body:
-      'El equipo del negocio abre Transacciones, escanea o ingresa el QR del cliente, escribe la cuenta antes de impuestos y servicio, y procesa la venta con o sin gift card. La plataforma calcula total del cliente, puntos, valor de recompensa y comision para Medellin Rewards.',
-  },
-  {
-    time: '02:10',
-    title: 'Flujo para administradores',
-    body:
-      'El equipo de Colombia puede crear negocios aliados, agregar direccion o coordenadas, revisar miembros, verificar IDs, manejar campañas y seguir comisiones pendientes.',
-  },
-  {
-    time: '03:00',
-    title: 'Como explicarlo en una demo',
-    body:
-      'Empieza con el QR del cliente, despues muestra una venta QR en el portal del negocio y termina con la vista admin para que el cliente vea control, trazabilidad y soporte operativo.',
-  },
-  ],
-  en: [
-  {
-    time: '00:00',
-    title: 'What the platform does',
-    body:
-      'Medellin Rewards connects members, partner businesses, and the operations team. Members use a personal QR, businesses record purchases from that QR, and admins monitor partners, points, and commissions.',
-  },
-  {
-    time: '00:35',
-    title: 'Customer flow',
-    body:
-      'Customers sign in, complete their profile, show their QR at a partner business, explore participating businesses, and review their points activity.',
-  },
-  {
-    time: '01:20',
-    title: 'Business flow',
-    body:
-      'Business staff open Transactions, scan or enter the customer QR, enter the bill before tax and service charge, and process the sale with or without a gift card. Customer total, rewards, points, and commission are calculated automatically.',
-  },
-  {
-    time: '02:10',
-    title: 'Admin flow',
-    body:
-      'Admins create partner businesses, configure reward rate, tax, and service charge settings, review members, verify IDs, audit gift cards, publish campaigns, and track commission owed.',
-  },
-  {
-    time: '03:00',
-    title: 'How to present it in a demo',
-    body:
-      'Start with the member QR, show a QR sale in the business portal, and close with the admin view so the audience sees control, traceability, and operational support.',
-  },
-  ],
-}
-
 const guideContent = {
   es: {
     eyebrow: 'Guia interna y para clientes',
@@ -183,16 +113,6 @@ const guideContent = {
     videoTitle: 'Video aqui proximamente',
     videoBody: 'Este bloque se reemplazara por el video oficial de entrenamiento.',
     chapters: ['Introduccion', 'Demo cliente', 'Demo negocio', 'Demo admin'],
-    scriptEyebrow: 'Guion en espanol',
-    scriptTitle: 'Script base para grabar',
-    notesTitle: 'Notas para presentar',
-    notes: [
-      'Mostrar primero el valor para el cliente: un QR sencillo y una cuenta donde se guarda todo.',
-      'Despues explicar el valor para el negocio: transacciones con o sin gift card, puntos automaticos y seguimiento.',
-      'Explicar la regla simple: puntos sobre la cuenta antes de impuestos y service charge; gift card baja el total del cliente.',
-      'Cerrar con confianza operativa: admin puede verificar IDs, crear aliados, auditar gift cards y revisar comisiones.',
-      'Cuando exista el video final, reemplazar el bloque superior y dejar este guion como referencia interna.',
-    ],
     storyboardEyebrow: 'Storyboard con pantallas',
     storyboardTitle: 'Que screenshots usar en el video',
     storyboardBadge: 'Version texto primero',
@@ -233,7 +153,7 @@ const guideContent = {
     nextEyebrow: 'Proximo paso',
     nextTitle: 'Cuando el video este listo',
     nextBody:
-      'Subir el archivo o link embed en el bloque superior. Este guion puede quedarse como material de apoyo para ventas, onboarding y entrenamiento interno.',
+      'El bloque superior se reemplazara por el video oficial para que clientes, negocios y admins puedan ver la guia directamente en la plataforma.',
     badges: ['Espanol primero', 'Video listo despues'],
   },
   en: {
@@ -250,16 +170,6 @@ const guideContent = {
     videoTitle: 'Video coming soon',
     videoBody: 'This block will be replaced by the official training video.',
     chapters: ['Introduction', 'Customer demo', 'Business demo', 'Admin demo'],
-    scriptEyebrow: 'English script',
-    scriptTitle: 'Recording script',
-    notesTitle: 'Presentation notes',
-    notes: [
-      'Start with customer value: one simple QR and an account where everything is saved.',
-      'Then explain business value: transactions with or without gift cards, automatic points, and tracking.',
-      'Explain the simple rule: points are based on the bill before tax and service charge; gift cards reduce the customer total.',
-      'Close with operational confidence: admins can verify IDs, create partners, audit gift cards, and review commissions.',
-      'When the final video exists, replace the top video block and keep this script as internal reference.',
-    ],
     storyboardEyebrow: 'Screen storyboard',
     storyboardTitle: 'Which screenshots to use in the video',
     storyboardBadge: 'Text-first version',
@@ -300,7 +210,7 @@ const guideContent = {
     nextEyebrow: 'Next step',
     nextTitle: 'When the video is ready',
     nextBody:
-      'Upload the file or embed link in the top block. This script can remain as support material for sales, onboarding, and internal training.',
+      'The top block will be replaced by the official video so customers, businesses, and admins can watch the guide directly in the platform.',
     badges: ['English version', 'Video ready later'],
   },
 } satisfies Record<Language, {
@@ -316,10 +226,6 @@ const guideContent = {
   videoTitle: string
   videoBody: string
   chapters: string[]
-  scriptEyebrow: string
-  scriptTitle: string
-  notesTitle: string
-  notes: string[]
   storyboardEyebrow: string
   storyboardTitle: string
   storyboardBadge: string
@@ -366,7 +272,6 @@ function ScreenshotMockup({ items }: { items: string[] }) {
 export function PlatformGuidePage() {
   const { language } = useLanguage()
   const content = guideContent[language]
-  const script = scriptsByLanguage[language]
   const screenshotGallery = screenshotGalleryByLanguage[language]
 
   return (
@@ -425,49 +330,6 @@ export function PlatformGuidePage() {
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-        <div className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-6 shadow-card lg:p-8">
-          <div className="flex items-start gap-4">
-            <div className="flex size-12 items-center justify-center rounded-2xl bg-primary-container/12 text-primary">
-              <ClipboardCheck className="size-5" />
-            </div>
-            <div>
-              <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-                {content.scriptEyebrow}
-              </p>
-              <h2 className="mt-2 font-serif text-3xl text-primary">{content.scriptTitle}</h2>
-            </div>
-          </div>
-
-          <div className="mt-8 space-y-5">
-            {script.map((step) => (
-              <article key={step.title} className="grid gap-4 rounded-2xl border border-outline-variant/16 bg-surface-low p-5 md:grid-cols-[5rem_minmax(0,1fr)]">
-                <span className="font-mono text-sm font-bold text-primary-container">{step.time}</span>
-                <div>
-                  <h3 className="font-serif text-2xl text-primary">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-7 text-on-surface-variant/85">{step.body}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <aside className="rounded-[2rem] border border-secondary-container/25 bg-secondary-container/12 p-6">
-          <div className="flex items-center gap-3">
-            <Sparkles className="size-5 text-secondary" />
-            <h2 className="font-serif text-2xl text-primary">{content.notesTitle}</h2>
-          </div>
-          <div className="mt-6 space-y-4">
-            {content.notes.map((item) => (
-              <div key={item} className="flex gap-3">
-                <BadgeCheck className="mt-1 size-4 shrink-0 text-secondary" />
-                <p className="text-sm leading-6 text-on-surface-variant/85">{item}</p>
-              </div>
-            ))}
-          </div>
-        </aside>
       </section>
 
       <section className="space-y-6">
