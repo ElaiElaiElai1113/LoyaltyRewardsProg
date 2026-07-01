@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { Camera, ImageUp, RefreshCw, ScanLine } from 'lucide-react'
+import jsQR from 'jsqr'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 
 type BarcodeDetectorLike = {
-  detect: (source: ImageBitmap | HTMLVideoElement) => Promise<Array<{ rawValue?: string }>>
+  detect: (source: ImageBitmap | HTMLCanvasElement | HTMLVideoElement) => Promise<Array<{ rawValue?: string }>>
 }
 
 type BarcodeDetectorCtor = new (options?: { formats?: string[] }) => BarcodeDetectorLike
@@ -35,6 +36,7 @@ export function QrScanner({
   const scanIntervalRef = useRef<number | null>(null)
   const detectorRef = useRef<BarcodeDetectorLike | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
     return () => {
@@ -61,10 +63,38 @@ export function QrScanner({
     onDetected(value)
   }
 
-  async function startCamera() {
-    const BarcodeDetector = getBarcodeDetectorCtor()
+  function getCanvas() {
+    canvasRef.current = canvasRef.current ?? document.createElement('canvas')
+    return canvasRef.current
+  }
 
-    if (!navigator.mediaDevices?.getUserMedia || !BarcodeDetector) {
+  async function detectQrCode(source: ImageBitmap | HTMLVideoElement) {
+    const BarcodeDetector = getBarcodeDetectorCtor()
+    if (BarcodeDetector) {
+      detectorRef.current = detectorRef.current ?? new BarcodeDetector({ formats: ['qr_code'] })
+      const codes = await detectorRef.current.detect(source)
+      const rawValue = codes.find((code) => code.rawValue)?.rawValue
+      if (rawValue) return rawValue
+    }
+
+    const width = source instanceof HTMLVideoElement ? source.videoWidth : source.width
+    const height = source instanceof HTMLVideoElement ? source.videoHeight : source.height
+    if (!width || !height) return null
+
+    const canvas = getCanvas()
+    canvas.width = width
+    canvas.height = height
+
+    const context = canvas.getContext('2d', { willReadFrequently: true })
+    if (!context) return null
+
+    context.drawImage(source, 0, 0, width, height)
+    const imageData = context.getImageData(0, 0, width, height)
+    return jsQR(imageData.data, width, height, { inversionAttempts: 'attemptBoth' })?.data ?? null
+  }
+
+  async function startCamera() {
+    if (!navigator.mediaDevices?.getUserMedia) {
       setMessage(unavailableMessage)
       return
     }
@@ -78,7 +108,6 @@ export function QrScanner({
       })
 
       streamRef.current = stream
-      detectorRef.current = detectorRef.current ?? new BarcodeDetector({ formats: ['qr_code'] })
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream
@@ -89,13 +118,11 @@ export function QrScanner({
       setMessage('Scanning for QR code...')
 
       scanIntervalRef.current = window.setInterval(() => {
-        const detector = detectorRef.current
         const video = videoRef.current
 
-        if (!detector || !video || video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return
+        if (!video || video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return
 
-        void detector.detect(video).then((codes) => {
-          const rawValue = codes.find((code) => code.rawValue)?.rawValue
+        void detectQrCode(video).then((rawValue) => {
           if (rawValue) handleDetected(rawValue)
         })
       }, 900)
@@ -111,19 +138,11 @@ export function QrScanner({
     event.target.value = ''
     if (!file) return
 
-    const BarcodeDetector = getBarcodeDetectorCtor()
-    if (!BarcodeDetector) {
-      toast.error('QR image upload scanning is not available in this browser.')
-      return
-    }
-
     try {
-      detectorRef.current = detectorRef.current ?? new BarcodeDetector({ formats: ['qr_code'] })
       const bitmap = await createImageBitmap(file)
-      const codes = await detectorRef.current.detect(bitmap)
+      const rawValue = await detectQrCode(bitmap)
       bitmap.close()
 
-      const rawValue = codes.find((code) => code.rawValue)?.rawValue
       if (!rawValue) {
         toast.error('No QR code was found in that image.')
         return
