@@ -66,6 +66,20 @@ function extractTokenOrCode(input: string) {
   }
 }
 
+function isGiftCardQrValue(input: string) {
+  const value = input.trim()
+  if (!value) return false
+
+  if (/^GC-/i.test(value)) return true
+
+  try {
+    const url = new URL(value)
+    return url.pathname.split('/').filter(Boolean).at(0)?.toLowerCase() === 'g'
+  } catch {
+    return false
+  }
+}
+
 function parseGiftCardValue(valueLabel?: string) {
   if (!valueLabel) return 0
 
@@ -314,6 +328,16 @@ export function RedemptionsPage() {
     setMemberToken(token)
   }
 
+  function scanTransactionQr(value: string) {
+    if (isGiftCardQrValue(value)) {
+      setManualInput(value)
+      void validate(value)
+      return
+    }
+
+    scanMember(value)
+  }
+
   return (
     <div className="space-y-8">
       <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
@@ -356,10 +380,14 @@ export function RedemptionsPage() {
           <CardHeader>
             <Badge variant="outline" className="w-fit">Customer transaction</Badge>
             <CardTitle>Process Transaction</CardTitle>
-            <CardDescription>Scan the member QR for normal sales. Validate a gift card only when the customer is paying with one.</CardDescription>
+            <CardDescription>Scan the customer member QR, or scan the gift card QR when the customer is paying with one.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
-            <QrScanner onDetected={scanMember} />
+            <QrScanner
+              idleMessage="Point the camera at the customer member QR or gift card QR."
+              detectedMessage="QR detected. The transaction form was updated."
+              onDetected={scanTransactionQr}
+            />
             <div className="grid gap-3">
               <Label htmlFor="member-qr-token">Member QR link or token</Label>
               <div className="flex flex-col gap-3 sm:flex-row">
