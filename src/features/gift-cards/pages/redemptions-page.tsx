@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useQueryClient } from '@tanstack/react-query'
 import { AlertTriangle, CheckCircle2, History, ReceiptText, ShieldCheck } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -114,6 +115,7 @@ function currencyLabel(currency: string | undefined, value: number) {
 }
 
 export function RedemptionsPage() {
+  const queryClient = useQueryClient()
   const { business, memberTransactions } = useBusinessOwnerData()
   const [manualInput, setManualInput] = useState('')
   const [memberInput, setMemberInput] = useState('')
@@ -220,6 +222,7 @@ export function RedemptionsPage() {
     })
   }, [business, originalBill, selectedGiftCardValue])
   const taxIsIncludedInCustomerBill = Boolean(business?.taxIncludedInBill)
+  const hasGiftCardEntry = manualInput.trim().length > 0
   const preview = useMemo(() => {
     if (!business || !rewardableBreakdown || rewardableBreakdown.rewardableAmount <= 0) return null
 
@@ -229,6 +232,25 @@ export function RedemptionsPage() {
       commissionRatePercent: business.commissionRatePercent,
     })
   }, [business, rewardableBreakdown])
+  const canProcessWithGiftCard = hasGiftCardEntry && Boolean(selectedCard) && canRedeemSelectedCard && !redeemGiftCard.isPending
+  const canProcessWithoutGiftCard =
+    !hasGiftCardEntry &&
+    Boolean(scannedMember.data) &&
+    Boolean(preview) &&
+    receiptNumber.trim().length >= 3 &&
+    !recordTransaction.isPending
+
+  async function refreshTransactionHistory() {
+    await Promise.all([
+      queryClient.invalidateQueries({ queryKey: ['member-transactions', business?.id] }),
+      queryClient.invalidateQueries({ queryKey: ['gift-cards', 'business', business?.id ?? 'missing'] }),
+      queryClient.invalidateQueries({ queryKey: ['metrics', business?.id] }),
+    ])
+    await Promise.all([
+      queryClient.refetchQueries({ queryKey: ['member-transactions', business?.id], type: 'active' }),
+      queryClient.refetchQueries({ queryKey: ['gift-cards', 'business', business?.id ?? 'missing'], type: 'active' }),
+    ])
+  }
 
   async function validate(input: string) {
     const needle = extractTokenOrCode(input)
@@ -286,6 +308,7 @@ export function RedemptionsPage() {
       giftCardAmount: selectedGiftCardValue,
       clientRequestId: createClientRequestId(),
     })
+    await refreshTransactionHistory()
     setConfirmOpen(false)
     setValidationStatus('redeemed')
     setTransactionComplete(true)
@@ -307,6 +330,7 @@ export function RedemptionsPage() {
       ].join(' '),
       clientRequestId: createClientRequestId(),
     })
+    await refreshTransactionHistory()
     setTransactionComplete(true)
   }
 
@@ -326,6 +350,21 @@ export function RedemptionsPage() {
     const token = extractTokenOrCode(value)
     setMemberInput(value)
     setMemberToken(token)
+  }
+
+  function updateGiftCardInput(value: string) {
+    setManualInput(value)
+
+    if (!value.trim()) {
+      setSelectedCard(null)
+      setValidationStatus('idle')
+      return
+    }
+
+    if (selectedCard && extractTokenOrCode(value) !== selectedCard.publicToken && extractTokenOrCode(value).toLowerCase() !== selectedCard.code.toLowerCase()) {
+      setSelectedCard(null)
+      setValidationStatus('idle')
+    }
   }
 
   function scanTransactionQr(value: string) {
@@ -453,7 +492,7 @@ export function RedemptionsPage() {
                 <Input
                   id="gift-card-code"
                   value={manualInput}
-                  onChange={(event) => setManualInput(event.target.value)}
+                  onChange={(event) => updateGiftCardInput(event.target.value)}
                   placeholder="GC-260429-A1B2C3 or gift card QR link"
                 />
                 <Button type="button" disabled={isValidating} onClick={() => void validate(manualInput)}>
@@ -543,26 +582,24 @@ export function RedemptionsPage() {
               ) : null}
 
               <div className="flex flex-col gap-3 pt-2 sm:flex-row">
-                <Button
-                  type="button"
-                  variant="secondary"
-                  disabled={!selectedCard || !canRedeemSelectedCard || redeemGiftCard.isPending}
-                  onClick={() => setConfirmOpen(true)}
-                >
-                  {redeemGiftCard.isPending ? 'Processing...' : 'Process With Gift Card'}
-                </Button>
-                <Button
-                  type="button"
-                  disabled={
-                    !scannedMember.data ||
-                    !preview ||
-                    receiptNumber.trim().length < 3 ||
-                    recordTransaction.isPending
-                  }
-                  onClick={() => void recordStandardTransaction()}
-                >
-                  {recordTransaction.isPending ? 'Processing...' : 'Process Without Gift Card'}
-                </Button>
+                {hasGiftCardEntry ? (
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={!canProcessWithGiftCard}
+                    onClick={() => setConfirmOpen(true)}
+                  >
+                    {redeemGiftCard.isPending ? 'Processing...' : 'Process With Gift Card'}
+                  </Button>
+                ) : (
+                  <Button
+                    type="button"
+                    disabled={!canProcessWithoutGiftCard}
+                    onClick={() => void recordStandardTransaction()}
+                  >
+                    {recordTransaction.isPending ? 'Processing...' : 'Process Without Gift Card'}
+                  </Button>
+                )}
               </div>
             </div>
           </CardContent>
