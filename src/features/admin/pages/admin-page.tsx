@@ -1193,55 +1193,57 @@ export function AdminPage() {
               }
             }}
           >
-            <DialogContent className="max-w-lg rounded-3xl border border-red-200 bg-[var(--card)] text-on-surface shadow-card">
-              <DialogHeader>
+            <DialogContent className="max-w-lg rounded-3xl border border-red-200 bg-[var(--card)] p-6 text-on-surface shadow-card sm:p-8">
+              <DialogHeader className="mb-5 pr-8">
                 <DialogTitle className="font-serif text-2xl text-red-600">Remove Customer</DialogTitle>
                 <DialogDescription className="text-sm leading-6 text-on-surface-variant/85">
                   This permanently removes the customer account, login access, rewards, orders, activity, gift cards, and related customer records from the database. This cannot be undone.
                 </DialogDescription>
               </DialogHeader>
-              {customerPendingDelete ? (
-                <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                  <p className="font-bold">{customerPendingDelete.fullName}</p>
-                  <p className="mt-1 break-all">{customerPendingDelete.email}</p>
-                </div>
-              ) : null}
-              <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="rounded-full"
-                  disabled={deleteCustomer.isPending}
-                  onClick={() => setCustomerPendingDelete(null)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  className="rounded-full bg-red-600 text-white hover:bg-red-700"
-                  disabled={deleteCustomer.isPending || !customerPendingDelete}
-                  onClick={async () => {
-                    if (!customerPendingDelete) return
+              <div className="space-y-5">
+                {customerPendingDelete ? (
+                  <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                    <p className="font-bold">{customerPendingDelete.fullName}</p>
+                    <p className="mt-1 break-all">{customerPendingDelete.email}</p>
+                  </div>
+                ) : null}
+                <div className="flex flex-col-reverse gap-3 border-t border-red-100 pt-5 sm:flex-row sm:justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="rounded-full"
+                    disabled={deleteCustomer.isPending}
+                    onClick={() => setCustomerPendingDelete(null)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    className="rounded-full bg-red-600 text-white hover:bg-red-700"
+                    disabled={deleteCustomer.isPending || !customerPendingDelete}
+                    onClick={async () => {
+                      if (!customerPendingDelete) return
 
-                    const deletingId = customerPendingDelete.id
-                    try {
-                      await deleteCustomer.mutateAsync(deletingId)
-                      if (selectedProfileId === deletingId) {
-                        adjustmentForm.reset({
-                          profileId: '',
-                          delta: 50,
-                          reason: '',
-                        })
+                      const deletingId = customerPendingDelete.id
+                      try {
+                        await deleteCustomer.mutateAsync(deletingId)
+                        if (selectedProfileId === deletingId) {
+                          adjustmentForm.reset({
+                            profileId: '',
+                            delta: 50,
+                            reason: '',
+                          })
+                        }
+                        setCustomerPendingDelete(null)
+                      } catch {
+                        // The mutation hook displays the error toast.
                       }
-                      setCustomerPendingDelete(null)
-                    } catch {
-                      // The mutation hook displays the error toast.
-                    }
-                  }}
-                >
-                  <Trash2 className="size-4" />
-                  {deleteCustomer.isPending ? 'Removing...' : 'Remove Customer'}
-                </Button>
+                    }}
+                  >
+                    <Trash2 className="size-4" />
+                    {deleteCustomer.isPending ? 'Removing...' : 'Remove Customer'}
+                  </Button>
+                </div>
               </div>
             </DialogContent>
           </Dialog>
