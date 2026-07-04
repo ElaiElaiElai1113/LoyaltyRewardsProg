@@ -103,6 +103,16 @@ export function CustomerLayout() {
               </NavLink>
               <LanguagePicker className="text-[var(--muted-foreground)]" compact />
               <ThemeToggle />
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--destructive)] xl:hidden"
+                onClick={() => void signOut()}
+                title={t('Sign out')}
+                aria-label={t('Sign out')}
+              >
+                <LogOut className="size-5" />
+              </Button>
 
               <Avatar className="hidden size-10 rounded-lg border border-[var(--border)] xl:flex">
                 <AvatarFallback className="rounded-lg bg-[var(--muted)] font-semibold text-[var(--foreground)]">

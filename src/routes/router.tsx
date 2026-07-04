@@ -168,7 +168,7 @@ function LandingRoute() {
 }
 
 function RootRoute() {
-  return <EarlyAccessPage />
+  return <Navigate replace to="/landing-page" />
 }
 
 function ProtectedCustomerRoute() {

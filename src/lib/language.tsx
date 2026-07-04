@@ -35,6 +35,28 @@ const spanishTranslations: Record<string, string> = {
     'Obtén más valor de compras recurrentes, referidos y promociones por tiempo limitado.',
   'Create your member account and start earning points after your membership is active.':
     'Crea tu cuenta de miembro y empieza a ganar puntos cuando tu membresia este activa.',
+  'WhatsApp or phone': 'WhatsApp o telefono',
+  'Contact details': 'Datos de contacto',
+  'Contact details required': 'Datos de contacto requeridos',
+  'Add contact details': 'Agregar datos de contacto',
+  'Add contact details to place order': 'Agrega datos de contacto para hacer el pedido',
+  'Add contact details to renew': 'Agrega datos de contacto para renovar',
+  'Add contact details to subscribe': 'Agrega datos de contacto para suscribirte',
+  'Add WhatsApp or phone in your profile before earning rewards':
+    'Agrega WhatsApp o telefono en tu perfil antes de ganar recompensas',
+  'Add WhatsApp or phone in your profile before using membership rewards.':
+    'Agrega WhatsApp o telefono en tu perfil antes de usar recompensas de membresia.',
+  'Add your WhatsApp or phone first so staff can contact you about reward support.':
+    'Agrega primero tu WhatsApp o telefono para que el equipo pueda ayudarte con tus recompensas.',
+  'Full name, email, and WhatsApp or phone are enough to start. ID checks may be added later for extra security.':
+    'Nombre completo, email y WhatsApp o telefono son suficientes para empezar. Mas adelante podemos pedir ID para mas seguridad.',
+  'Keep your WhatsApp or phone updated so we can support reward use.':
+    'Mantén actualizado tu WhatsApp o telefono para poder ayudarte con tus recompensas.',
+  'Launch ready': 'Listo para lanzamiento',
+  'Use these steps to start earning with your member QR.':
+    'Usa estos pasos para empezar a ganar con tu QR de miembro.',
+  'Your account is created. Sign in to use your member QR and rewards. We will use your contact details for reward updates and account support.':
+    'Tu cuenta esta creada. Inicia sesion para usar tu QR de miembro y recompensas. Usaremos tus datos de contacto para avisos y soporte.',
   'Network Member': 'Miembro de la red',
   'Rewards account': 'Cuenta de recompensas',
   'Earn points, redeem rewards, and stay connected across partner businesses.':
