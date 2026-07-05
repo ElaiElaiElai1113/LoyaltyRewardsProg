@@ -245,6 +245,27 @@ runTest('global CSS restores the brand theme outside early access', () => {
   assert.match(css, /\.early-access-neutral/)
 })
 
+runTest('Medellin Rewards logo assets use the transparent gold mark', () => {
+  const fullLogo = readFileSync('public/medellin-rewards-logo.svg', 'utf8')
+  const markLogo = readFileSync('public/medellin-rewards-mark.svg', 'utf8')
+  const favicon = readFileSync('public/favicon.svg', 'utf8')
+  const manifest = readFileSync('public/site.webmanifest', 'utf8')
+  const brandLogo = readFileSync('src/components/brand-logo.tsx', 'utf8')
+
+  assert.equal(existsSync('public/medellin-rewards-logo.png'), true)
+  assert.match(fullLogo, /MEDELLIN/)
+  assert.match(fullLogo, /REWARDS/)
+  assert.match(markLogo, /linearGradient id="gold"/)
+  assert.match(favicon, /linearGradient id="gold"/)
+  assert.match(manifest, /\/medellin-rewards-mark\.svg/)
+  assert.match(manifest, /"theme_color": "#F6F7F8"/)
+  assert.doesNotMatch(fullLogo, /fill="#000"|fill="black"|bg-\[#000000\]/)
+  assert.doesNotMatch(markLogo, /fill="#000"|fill="black"|bg-\[#000000\]/)
+  assert.doesNotMatch(favicon, /fill="#000"|fill="black"|bg-\[#000000\]/)
+  assert.match(brandLogo, /\/medellin-rewards-mark\.svg/)
+  assert.match(brandLogo, /sr-only">Medellin Rewards/)
+})
+
 runTest('admin portal header uses the restored warm theme', () => {
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
   const headerStart = adminPage.indexOf('warm-hero-muted relative min-w-0')
@@ -1917,15 +1938,34 @@ runTest('business staff owner-only routes are guarded and hidden from navigation
   assert.doesNotMatch(layout, /\.filter\(\(item\) => !item\.ownerOnly \|\| profile\?\.role === 'business-owner'\)/)
 })
 
-runTest('public business page header uses business onboarding actions', () => {
+runTest('public business page follows the clean landing-page format', () => {
   const layout = readFileSync('src/layouts/public-browse-layout.tsx', 'utf8')
+  const page = readFileSync('src/features/business/pages/for-businesses-page.tsx', 'utf8')
 
   assert.match(layout, /useLocation/)
   assert.match(layout, /isBusinessOnboarding/)
-  assert.match(layout, /href="#book-demo"/)
-  assert.match(layout, /to="\/business\/login"/)
+  assert.match(layout, /bg-\[#ffffff\]/)
+  assert.match(layout, /max-w-\[1336px\]/)
+  assert.match(layout, /How it works/)
+  assert.match(layout, /Business tools/)
+  assert.match(layout, /md:hidden/)
+  assert.match(layout, /Start Onboarding/)
+  assert.match(layout, /Business Login/)
+  assert.match(layout, /<Outlet \/>/)
+  assert.doesNotMatch(layout, /headerContainerClassName = isBusinessOnboarding/)
+
+  assert.match(page, /screenshot-landing/)
+  assert.match(page, /Business onboarding/)
+  assert.match(page, /Join the <span className="text-\[#cfaa44\]">rewards network<\/span>/)
+  assert.match(page, /id="how-it-works"/)
+  assert.match(page, /id="business-tools"/)
+  assert.match(page, /id="faq"/)
+  assert.match(page, /href="#book-demo"/)
+  assert.match(page, /to="\/business\/login"/)
   assert.match(layout, /isBusinessOnboarding[\s\S]*Start Onboarding/)
   assert.match(layout, /isBusinessOnboarding[\s\S]*Business Login/)
+  assert.doesNotMatch(page, /ornate-page/)
+  assert.doesNotMatch(page, /ornate-frame/)
 })
 
 runTest('business and admin login pages follow the compact auth layout', () => {

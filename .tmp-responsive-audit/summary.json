@@ -4,17 +4,22 @@
     "name": "home",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\home-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -30,13 +35,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1328,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 426,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro inicia sesion."
-    ],
+    "bodyTextLength": 198,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -73,13 +75,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -95,13 +94,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1288,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -110,17 +106,22 @@
     "name": "agreements-required",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\agreements-required-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -157,9 +158,9 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1260,
+    "documentHeight": 1363,
     "overflowX": 0,
-    "bodyTextLength": 312,
+    "bodyTextLength": 332,
     "headings": [
       "Crea tu cuenta de recompensas.",
       "Crear cuenta"
@@ -204,13 +205,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1332,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 383,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro crea cuenta."
-    ],
+    "bodyTextLength": 186,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -266,7 +264,7 @@
     "documentWidth": 360,
     "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 1554,
+    "bodyTextLength": 1571,
     "headings": [
       "Earn a free vacation every year - doing what you already do",
       "Early adopter monthly subscription",
@@ -422,13 +420,11 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 8825,
+    "documentHeight": 6527,
     "overflowX": 0,
-    "bodyTextLength": 3580,
+    "bodyTextLength": 2012,
     "headings": [
       "Guia de la plataforma",
-      "Script base para grabar",
-      "Notas para presentar",
       "Pantallas para el walkthrough",
       "Que screenshots usar en el video",
       "Cuando el video este listo"
@@ -450,7 +446,7 @@
     "documentWidth": 360,
     "documentHeight": 970,
     "overflowX": 0,
-    "bodyTextLength": 161,
+    "bodyTextLength": 178,
     "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
@@ -469,7 +465,7 @@
     "documentWidth": 360,
     "documentHeight": 4748,
     "overflowX": 0,
-    "bodyTextLength": 1939,
+    "bodyTextLength": 1956,
     "headings": [
       "Show the real food cost behind reward-funded growth."
     ],
@@ -490,7 +486,7 @@
     "documentWidth": 360,
     "documentHeight": 4748,
     "overflowX": 0,
-    "bodyTextLength": 1939,
+    "bodyTextLength": 1956,
     "headings": [
       "Show the real food cost behind reward-funded growth."
     ],
@@ -511,7 +507,7 @@
     "documentWidth": 360,
     "documentHeight": 1179,
     "overflowX": 0,
-    "bodyTextLength": 318,
+    "bodyTextLength": 335,
     "headings": [
       "Explorar negocios"
     ],
@@ -530,13 +526,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1328,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 426,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro inicia sesion."
-    ],
+    "bodyTextLength": 198,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -552,16 +545,16 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 6644,
+    "documentHeight": 4792,
     "overflowX": 0,
-    "bodyTextLength": 2730,
+    "bodyTextLength": 2544,
     "headings": [
-      "Join the rewards network members already want to use.",
+      "Join the rewards network members already want to use",
+      "How business onboarding works",
       "What we prepare with you",
-      "A clear path from presentation to live rewards.",
-      "Everything needed before the business portal goes live.",
+      "Everything needed before the business portal goes live",
       "Request the presentation and signup process",
-      "Calculate real reward costs before launch."
+      "Frequently asked questions"
     ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
@@ -578,16 +571,16 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 6644,
+    "documentHeight": 4792,
     "overflowX": 0,
-    "bodyTextLength": 2730,
+    "bodyTextLength": 2544,
     "headings": [
-      "Join the rewards network members already want to use.",
+      "Join the rewards network members already want to use",
+      "How business onboarding works",
       "What we prepare with you",
-      "A clear path from presentation to live rewards.",
-      "Everything needed before the business portal goes live.",
+      "Everything needed before the business portal goes live",
       "Request the presentation and signup process",
-      "Calculate real reward costs before launch."
+      "Frequently asked questions"
     ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
@@ -606,7 +599,7 @@
     "documentWidth": 360,
     "documentHeight": 2304,
     "overflowX": 0,
-    "bodyTextLength": 453,
+    "bodyTextLength": 470,
     "headings": [
       "Promociones que convierten visitas en clientes recurrentes.",
       "Gana más puntos con negocios participantes."
@@ -619,17 +612,22 @@
     "name": "customer-dashboard-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-dashboard-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -638,17 +636,22 @@
     "name": "customer-gift-cards-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-gift-cards-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -657,17 +660,22 @@
     "name": "customer-wallet-gift-cards-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-wallet-gift-cards-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -676,17 +684,22 @@
     "name": "customer-wallet-gift-card-detail-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-wallet-gift-card-detail-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -695,17 +708,22 @@
     "name": "customer-cart-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-cart-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -714,17 +732,22 @@
     "name": "customer-checkout-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-checkout-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -733,17 +756,22 @@
     "name": "customer-order-confirmation-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-order-confirmation-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -752,17 +780,22 @@
     "name": "customer-orders-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-orders-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -771,17 +804,22 @@
     "name": "customer-membership-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-membership-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -790,17 +828,22 @@
     "name": "customer-redeem-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-redeem-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -809,17 +852,22 @@
     "name": "customer-activity-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-activity-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -828,17 +876,22 @@
     "name": "customer-profile-protected",
     "viewport": "small-mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\customer-profile-protected-small-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1112,
+    "documentHeight": 2991,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -854,13 +907,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1288,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -876,13 +926,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1288,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -898,13 +945,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1288,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -920,13 +964,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -942,13 +983,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -964,13 +1002,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -986,13 +1021,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1008,13 +1040,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1030,13 +1059,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1052,13 +1078,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1074,13 +1097,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1096,13 +1116,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1118,13 +1135,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1140,13 +1154,10 @@
     "viewportWidth": 360,
     "viewportHeight": 780,
     "documentWidth": 360,
-    "documentHeight": 1277,
+    "documentHeight": 780,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1176,17 +1187,22 @@
     "name": "home",
     "viewport": "mobile",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\home-mobile.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 1080,
+    "documentHeight": 2825,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1571,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1202,13 +1218,10 @@
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 1308,
+    "documentHeight": 844,
     "overflowX": 0,
-    "bodyTextLength": 426,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro inicia sesion."
-    ],
+    "bodyTextLength": 198,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1245,13 +1258,10 @@
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 1253,
+    "documentHeight": 844,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1267,13 +1277,10 @@
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 1253,
+    "documentHeight": 844,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1314,13 +1321,10 @@
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 1288,
+    "documentHeight": 844,
     "overflowX": 0,
-    "bodyTextLength": 383,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro crea cuenta."
-    ],
+    "bodyTextLength": 186,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1357,7 +1361,7 @@
     "documentWidth": 390,
     "documentHeight": 2825,
     "overflowX": 0,
-    "bodyTextLength": 1554,
+    "bodyTextLength": 1571,
     "headings": [
       "Earn a free vacation every year - doing what you already do",
       "Early adopter monthly subscription",
@@ -1427,13 +1431,11 @@
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 8798,
+    "documentHeight": 6620,
     "overflowX": 0,
-    "bodyTextLength": 3580,
+    "bodyTextLength": 2012,
     "headings": [
       "Guia de la plataforma",
-      "Script base para grabar",
-      "Notas para presentar",
       "Pantallas para el walkthrough",
       "Que screenshots usar en el video",
       "Cuando el video este listo"
@@ -1455,7 +1457,7 @@
     "documentWidth": 390,
     "documentHeight": 4467,
     "overflowX": 0,
-    "bodyTextLength": 1939,
+    "bodyTextLength": 1956,
     "headings": [
       "Show the real food cost behind reward-funded growth."
     ],
@@ -1476,7 +1478,7 @@
     "documentWidth": 390,
     "documentHeight": 1179,
     "overflowX": 0,
-    "bodyTextLength": 318,
+    "bodyTextLength": 335,
     "headings": [
       "Explorar negocios"
     ],
@@ -1495,16 +1497,16 @@
     "viewportWidth": 390,
     "viewportHeight": 844,
     "documentWidth": 390,
-    "documentHeight": 6263,
+    "documentHeight": 4539,
     "overflowX": 0,
-    "bodyTextLength": 2730,
+    "bodyTextLength": 2544,
     "headings": [
-      "Join the rewards network members already want to use.",
+      "Join the rewards network members already want to use",
+      "How business onboarding works",
       "What we prepare with you",
-      "A clear path from presentation to live rewards.",
-      "Everything needed before the business portal goes live.",
+      "Everything needed before the business portal goes live",
       "Request the presentation and signup process",
-      "Calculate real reward costs before launch."
+      "Frequently asked questions"
     ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
@@ -1523,7 +1525,7 @@
     "documentWidth": 390,
     "documentHeight": 2226,
     "overflowX": 0,
-    "bodyTextLength": 453,
+    "bodyTextLength": 470,
     "headings": [
       "Promociones que convierten visitas en clientes recurrentes.",
       "Gana más puntos con negocios participantes."
@@ -1557,17 +1559,22 @@
     "name": "home",
     "viewport": "tablet",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\home-tablet.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 1024,
+    "documentHeight": 2248,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1608,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1583,13 +1590,10 @@
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 1144,
+    "documentHeight": 1024,
     "overflowX": 0,
-    "bodyTextLength": 426,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro inicia sesion."
-    ],
+    "bodyTextLength": 198,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1626,13 +1630,10 @@
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 1144,
+    "documentHeight": 1024,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1648,13 +1649,10 @@
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 1144,
+    "documentHeight": 1024,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1695,13 +1693,10 @@
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 1144,
+    "documentHeight": 1024,
     "overflowX": 0,
-    "bodyTextLength": 383,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro crea cuenta."
-    ],
+    "bodyTextLength": 186,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1738,7 +1733,7 @@
     "documentWidth": 768,
     "documentHeight": 2248,
     "overflowX": 0,
-    "bodyTextLength": 1591,
+    "bodyTextLength": 1608,
     "headings": [
       "Earn a free vacation every year - doing what you already do",
       "Early adopter monthly subscription",
@@ -1808,13 +1803,11 @@
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 5658,
+    "documentHeight": 4284,
     "overflowX": 0,
-    "bodyTextLength": 3605,
+    "bodyTextLength": 2037,
     "headings": [
       "Guia de la plataforma",
-      "Script base para grabar",
-      "Notas para presentar",
       "Pantallas para el walkthrough",
       "Que screenshots usar en el video",
       "Cuando el video este listo"
@@ -1836,7 +1829,7 @@
     "documentWidth": 768,
     "documentHeight": 2730,
     "overflowX": 0,
-    "bodyTextLength": 1964,
+    "bodyTextLength": 1981,
     "headings": [
       "Show the real food cost behind reward-funded growth."
     ],
@@ -1857,7 +1850,7 @@
     "documentWidth": 768,
     "documentHeight": 1024,
     "overflowX": 0,
-    "bodyTextLength": 343,
+    "bodyTextLength": 360,
     "headings": [
       "Explorar negocios"
     ],
@@ -1876,16 +1869,16 @@
     "viewportWidth": 768,
     "viewportHeight": 1024,
     "documentWidth": 768,
-    "documentHeight": 4204,
+    "documentHeight": 3096,
     "overflowX": 0,
-    "bodyTextLength": 2733,
+    "bodyTextLength": 2576,
     "headings": [
-      "Join the rewards network members already want to use.",
+      "Join the rewards network members already want to use",
+      "How business onboarding works",
       "What we prepare with you",
-      "A clear path from presentation to live rewards.",
-      "Everything needed before the business portal goes live.",
+      "Everything needed before the business portal goes live",
       "Request the presentation and signup process",
-      "Calculate real reward costs before launch."
+      "Frequently asked questions"
     ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
@@ -1904,7 +1897,7 @@
     "documentWidth": 768,
     "documentHeight": 2026,
     "overflowX": 0,
-    "bodyTextLength": 478,
+    "bodyTextLength": 495,
     "headings": [
       "Promociones que convierten visitas en clientes recurrentes.",
       "Gana más puntos con negocios participantes."
@@ -1938,17 +1931,22 @@
     "name": "home",
     "viewport": "desktop",
     "status": "ok",
-    "finalUrl": "/",
+    "finalUrl": "/landing-page",
     "screenshotPath": ".tmp-responsive-audit\\home-desktop.png",
     "consoleErrors": [],
     "pageErrors": [],
     "viewportWidth": 1440,
     "viewportHeight": 1000,
     "documentWidth": 1440,
-    "documentHeight": 1000,
+    "documentHeight": 2025,
     "overflowX": 0,
-    "bodyTextLength": 788,
-    "headings": [],
+    "bodyTextLength": 1608,
+    "headings": [
+      "Earn a free vacation every year - doing what you already do",
+      "Early adopter monthly subscription",
+      "How it works",
+      "Frequently asked questions"
+    ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -1966,11 +1964,8 @@
     "documentWidth": 1440,
     "documentHeight": 1000,
     "overflowX": 0,
-    "bodyTextLength": 426,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro inicia sesion."
-    ],
+    "bodyTextLength": 198,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -2009,11 +2004,8 @@
     "documentWidth": 1440,
     "documentHeight": 1000,
     "overflowX": 0,
-    "bodyTextLength": 374,
-    "headings": [
-      "Business Access",
-      "Business portal sign in."
-    ],
+    "bodyTextLength": 111,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -2031,11 +2023,8 @@
     "documentWidth": 1440,
     "documentHeight": 1000,
     "overflowX": 0,
-    "bodyTextLength": 351,
-    "headings": [
-      "Staff Access",
-      "Platform operations sign in."
-    ],
+    "bodyTextLength": 106,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -2078,11 +2067,8 @@
     "documentWidth": 1440,
     "documentHeight": 1000,
     "overflowX": 0,
-    "bodyTextLength": 383,
-    "headings": [
-      "Acceso de miembro",
-      "Portal de miembro crea cuenta."
-    ],
+    "bodyTextLength": 186,
+    "headings": [],
     "oversizedElements": [],
     "clippedInteractiveElements": []
   },
@@ -2119,7 +2105,7 @@
     "documentWidth": 1440,
     "documentHeight": 2025,
     "overflowX": 0,
-    "bodyTextLength": 1591,
+    "bodyTextLength": 1608,
     "headings": [
       "Earn a free vacation every year - doing what you already do",
       "Early adopter monthly subscription",
@@ -2189,13 +2175,11 @@
     "viewportWidth": 1440,
     "viewportHeight": 1000,
     "documentWidth": 1440,
-    "documentHeight": 3896,
+    "documentHeight": 2892,
     "overflowX": 0,
-    "bodyTextLength": 3650,
+    "bodyTextLength": 2082,
     "headings": [
       "Guia de la plataforma",
-      "Script base para grabar",
-      "Notas para presentar",
       "Pantallas para el walkthrough",
       "Que screenshots usar en el video",
       "Cuando el video este listo"
@@ -2217,7 +2201,7 @@
     "documentWidth": 1440,
     "documentHeight": 1929,
     "overflowX": 0,
-    "bodyTextLength": 2009,
+    "bodyTextLength": 2026,
     "headings": [
       "Show the real food cost behind reward-funded growth."
     ],
@@ -2238,7 +2222,7 @@
     "documentWidth": 1440,
     "documentHeight": 1000,
     "overflowX": 0,
-    "bodyTextLength": 388,
+    "bodyTextLength": 405,
     "headings": [
       "Explorar negocios"
     ],
@@ -2257,16 +2241,16 @@
     "viewportWidth": 1440,
     "viewportHeight": 1000,
     "documentWidth": 1440,
-    "documentHeight": 2966,
+    "documentHeight": 2520,
     "overflowX": 0,
-    "bodyTextLength": 2778,
+    "bodyTextLength": 2576,
     "headings": [
-      "Join the rewards network members already want to use.",
+      "Join the rewards network members already want to use",
+      "How business onboarding works",
       "What we prepare with you",
-      "A clear path from presentation to live rewards.",
-      "Everything needed before the business portal goes live.",
+      "Everything needed before the business portal goes live",
       "Request the presentation and signup process",
-      "Calculate real reward costs before launch."
+      "Frequently asked questions"
     ],
     "oversizedElements": [],
     "clippedInteractiveElements": []
@@ -2285,7 +2269,7 @@
     "documentWidth": 1440,
     "documentHeight": 1658,
     "overflowX": 0,
-    "bodyTextLength": 523,
+    "bodyTextLength": 540,
     "headings": [
       "Promociones que convierten visitas en clientes recurrentes.",
       "Gana más puntos con negocios participantes."

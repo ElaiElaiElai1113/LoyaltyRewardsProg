@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="220" height="180" fill="none" viewBox="0 0 220 180" role="img" aria-labelledby="medellin-mark-title">
+  <title id="medellin-mark-title">Medellin Rewards mark</title>
+  <defs>
+    <linearGradient id="gold" x1="24" x2="196" y1="8" y2="164" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff3b8"/>
+      <stop offset=".25" stop-color="#f2cd64"/>
+      <stop offset=".5" stop-color="#b88120"/>
+      <stop offset=".72" stop-color="#f8df86"/>
+      <stop offset="1" stop-color="#8d5f12"/>
+    </linearGradient>
+  </defs>
+  <path
+    stroke="url(#gold)"
+    stroke-linecap="square"
+    stroke-width="9"
+    d="M33 94C43 36 86 9 110 9c38 0 69 11 94 34m-7 31c15 39 7 74-19 100"
+  />
+  <path
+    fill="url(#gold)"
+    d="M58 124V58h19l33 39 33-39h19v66h-19V88l-27 32h-12L77 88v36H58Z"
+  />
+  <path
+    fill="url(#gold)"
+    d="m10 136 55-42 27 29 21-20 37 38-25-12-14-16-17 24-25-29-59 47v-19Zm106 5 36-38 20 20 30-29 58 42v19l-61-47-25 29-17-24-14 16-27 12Z"
+  />
+</svg>

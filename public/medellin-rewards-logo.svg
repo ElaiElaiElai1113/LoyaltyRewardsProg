@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="220" fill="none" viewBox="0 0 520 220" role="img" aria-labelledby="medellin-logo-title">
+  <title id="medellin-logo-title">Medellin Rewards</title>
+  <defs>
+    <linearGradient id="gold" x1="74" x2="446" y1="18" y2="190" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff3b8"/>
+      <stop offset=".25" stop-color="#f2cd64"/>
+      <stop offset=".5" stop-color="#b88120"/>
+      <stop offset=".72" stop-color="#f8df86"/>
+      <stop offset="1" stop-color="#8d5f12"/>
+    </linearGradient>
+    <linearGradient id="gold-soft" x1="136" x2="384" y1="150" y2="202" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8d5f12"/>
+      <stop offset=".45" stop-color="#f7d978"/>
+      <stop offset="1" stop-color="#a16f1b"/>
+    </linearGradient>
+  </defs>
+  <path
+    stroke="url(#gold)"
+    stroke-linecap="square"
+    stroke-width="10"
+    d="M139 93C151 43 199 20 260 20c42 0 77 12 105 35m49 30c22 42 14 91-18 123"
+  />
+  <path
+    fill="url(#gold)"
+    d="M172 136V72h20l68 78 68-78h20v64h-20V99l-61 69h-14l-61-69v37h-20Z"
+  />
+  <path
+    fill="url(#gold)"
+    d="m72 148 70-44 34 32 27-21 48 43-32-13-19-17-21 28-31-34-76 50v-24Zm193 8 46-41 25 21 38-32 74 44v24l-78-50-31 34-21-28-19 17-34 11Z"
+  />
+  <path
+    stroke="url(#gold-soft)"
+    stroke-linecap="square"
+    stroke-width="4"
+    d="M214 198h92"
+  />
+  <text
+    fill="url(#gold)"
+    font-family="Manrope, Arial, sans-serif"
+    font-size="32"
+    font-weight="500"
+    letter-spacing="14"
+    text-anchor="middle"
+    x="260"
+    y="185"
+  >
+    MEDELLIN
+  </text>
+  <text
+    fill="url(#gold)"
+    font-family="Manrope, Arial, sans-serif"
+    font-size="21"
+    font-weight="500"
+    letter-spacing="13"
+    text-anchor="middle"
+    x="260"
+    y="214"
+  >
+    REWARDS
+  </text>
+</svg>

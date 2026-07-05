@@ -20,6 +20,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 
+import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
@@ -132,8 +133,8 @@ export function LandingPage() {
     <main className="screenshot-landing min-h-screen overflow-x-hidden bg-[#f6f7f8] text-[#242426]">
       <header className="sticky top-0 z-40 flex min-h-[61px] items-center border-b border-[#e1e4e8] bg-[#ffffff] px-8">
         <div className="mx-auto flex w-full max-w-[1336px] items-center justify-between gap-4">
-          <Link to="/landing-page" className="font-serif text-[23px] font-bold leading-none tracking-[-0.01em] text-[#202023]">
-            Medellin <span className="text-[#c9a84c]">Rewards</span>
+          <Link to="/landing-page" className="min-w-0">
+            <BrandLogo markClassName="h-9" textClassName="text-[23px] text-[#202023]" />
           </Link>
           <nav className="hidden items-center gap-[30px] text-[14px] font-medium leading-none text-[#687282] md:flex">
             <a href="#how-it-works" className="transition hover:text-[#202023]">
