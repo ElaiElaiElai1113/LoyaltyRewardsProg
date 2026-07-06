@@ -245,7 +245,7 @@ runTest('global CSS restores the brand theme outside early access', () => {
   assert.match(css, /\.early-access-neutral/)
 })
 
-runTest('Medellin Rewards logo assets use the transparent gold mark', () => {
+runTest('Medellin Rewards logo assets use the transparent black-ring badge', () => {
   const fullLogo = readFileSync('public/medellin-rewards-logo.svg', 'utf8')
   const markLogo = readFileSync('public/medellin-rewards-mark.svg', 'utf8')
   const favicon = readFileSync('public/favicon.svg', 'utf8')
@@ -257,12 +257,15 @@ runTest('Medellin Rewards logo assets use the transparent gold mark', () => {
   assert.match(fullLogo, /REWARDS/)
   assert.match(markLogo, /linearGradient id="gold"/)
   assert.match(favicon, /linearGradient id="gold"/)
-  assert.match(manifest, /\/medellin-rewards-mark\.svg/)
+  assert.match(fullLogo, /stroke="#030303"/)
+  assert.match(markLogo, /stroke="#030303"/)
+  assert.match(favicon, /stroke="#030303"/)
+  assert.doesNotMatch(fullLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
+  assert.doesNotMatch(markLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
+  assert.match(manifest, /\/medellin-rewards-logo\.svg/)
   assert.match(manifest, /"theme_color": "#F6F7F8"/)
-  assert.doesNotMatch(fullLogo, /fill="#000"|fill="black"|bg-\[#000000\]/)
-  assert.doesNotMatch(markLogo, /fill="#000"|fill="black"|bg-\[#000000\]/)
-  assert.doesNotMatch(favicon, /fill="#000"|fill="black"|bg-\[#000000\]/)
-  assert.match(brandLogo, /\/medellin-rewards-mark\.svg/)
+  assert.match(brandLogo, /\/medellin-rewards-logo\.svg/)
+  assert.doesNotMatch(brandLogo, /Medellin <span/)
   assert.match(brandLogo, /sr-only">Medellin Rewards/)
 })
 

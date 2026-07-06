@@ -1,61 +1,38 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="520" height="220" fill="none" viewBox="0 0 520 220" role="img" aria-labelledby="medellin-logo-title">
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" fill="none" viewBox="0 0 1024 1024" role="img" aria-labelledby="medellin-logo-title">
   <title id="medellin-logo-title">Medellin Rewards</title>
   <defs>
-    <linearGradient id="gold" x1="74" x2="446" y1="18" y2="190" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff3b8"/>
-      <stop offset=".25" stop-color="#f2cd64"/>
-      <stop offset=".5" stop-color="#b88120"/>
-      <stop offset=".72" stop-color="#f8df86"/>
-      <stop offset="1" stop-color="#8d5f12"/>
+    <linearGradient id="gold" x1="288" x2="722" y1="222" y2="742" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff2a8"/>
+      <stop offset=".2" stop-color="#f6d65e"/>
+      <stop offset=".44" stop-color="#b77a13"/>
+      <stop offset=".68" stop-color="#f8df78"/>
+      <stop offset="1" stop-color="#8e5a0b"/>
     </linearGradient>
-    <linearGradient id="gold-soft" x1="136" x2="384" y1="150" y2="202" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#8d5f12"/>
-      <stop offset=".45" stop-color="#f7d978"/>
-      <stop offset="1" stop-color="#a16f1b"/>
+    <linearGradient id="gold-edge" x1="188" x2="836" y1="214" y2="774" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6a4108"/>
+      <stop offset=".35" stop-color="#f6dc75"/>
+      <stop offset=".65" stop-color="#9c650d"/>
+      <stop offset="1" stop-color="#f4d979"/>
     </linearGradient>
+    <radialGradient id="black-badge" cx="0" cy="0" r="1" gradientTransform="matrix(0 422 -422 0 512 503)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1c1c1a"/>
+      <stop offset=".58" stop-color="#10100f"/>
+      <stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+    <filter id="soft-shadow" x="70" y="66" width="884" height="884" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="8" flood-color="#000" flood-opacity=".16" stdDeviation="8"/>
+    </filter>
   </defs>
-  <path
-    stroke="url(#gold)"
-    stroke-linecap="square"
-    stroke-width="10"
-    d="M139 93C151 43 199 20 260 20c42 0 77 12 105 35m49 30c22 42 14 91-18 123"
-  />
-  <path
-    fill="url(#gold)"
-    d="M172 136V72h20l68 78 68-78h20v64h-20V99l-61 69h-14l-61-69v37h-20Z"
-  />
-  <path
-    fill="url(#gold)"
-    d="m72 148 70-44 34 32 27-21 48 43-32-13-19-17-21 28-31-34-76 50v-24Zm193 8 46-41 25 21 38-32 74 44v24l-78-50-31 34-21-28-19 17-34 11Z"
-  />
-  <path
-    stroke="url(#gold-soft)"
-    stroke-linecap="square"
-    stroke-width="4"
-    d="M214 198h92"
-  />
-  <text
-    fill="url(#gold)"
-    font-family="Manrope, Arial, sans-serif"
-    font-size="32"
-    font-weight="500"
-    letter-spacing="14"
-    text-anchor="middle"
-    x="260"
-    y="185"
-  >
-    MEDELLIN
-  </text>
-  <text
-    fill="url(#gold)"
-    font-family="Manrope, Arial, sans-serif"
-    font-size="21"
-    font-weight="500"
-    letter-spacing="13"
-    text-anchor="middle"
-    x="260"
-    y="214"
-  >
-    REWARDS
-  </text>
+  <g filter="url(#soft-shadow)">
+    <circle cx="512" cy="512" r="425" fill="url(#black-badge)"/>
+    <circle cx="512" cy="512" r="424" stroke="#030303" stroke-width="16"/>
+    <circle cx="512" cy="512" r="404" stroke="#f3d25c" stroke-width="8"/>
+    <circle cx="512" cy="512" r="391" stroke="#8d5a10" stroke-width="5"/>
+    <circle cx="512" cy="512" r="382" stroke="#030303" stroke-width="10"/>
+  </g>
+  <path fill="url(#gold)" stroke="#231b0c" stroke-width="2" d="M335 309h63l114 151 114-151h63c15 0 28-3 39-9v5c-28 7-43 19-43 36v160h-58V361L520 516h-16L397 361v140h-58V341c0-17-14-29-43-36v-5c11 6 24 9 39 9Z"/>
+  <path fill="url(#gold)" stroke="#231b0c" stroke-width="2" d="m161 641 147-117 20 29 25-54 75 84 32-30 63 75-84-43-12 28-49-50-37 42-16-64-15 42-12-27-137 85Zm348-13 65-75 31 30 74-84 26 54 19-29 146 117-137-85-12 27-15-42-16 64-37-42-49 50-12-28-83 43Z"/>
+  <text fill="url(#gold-edge)" stroke="#1a150a" stroke-width="1" font-family="Georgia, 'Times New Roman', serif" font-size="72" font-weight="500" letter-spacing="29" text-anchor="middle" x="512" y="745">MEDELLIN</text>
+  <text fill="url(#gold-edge)" stroke="#1a150a" stroke-width="1" font-family="Arial, Helvetica, sans-serif" font-size="45" font-weight="500" letter-spacing="24" text-anchor="middle" x="512" y="811">REWARDS</text>
+  <path stroke="url(#gold-edge)" stroke-linecap="square" stroke-width="6" d="M451 858h122"/>
 </svg>

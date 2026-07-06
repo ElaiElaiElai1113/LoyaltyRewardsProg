@@ -7,20 +7,14 @@ type BrandLogoProps = {
   showText?: boolean
 }
 
-export function BrandLogo({ className, markClassName, textClassName, showText = true }: BrandLogoProps) {
+export function BrandLogo({ className, markClassName }: BrandLogoProps) {
   return (
-    <span className={cn('inline-flex min-w-0 items-center gap-2.5', className)}>
+    <span className={cn('inline-flex min-w-0 items-center', className)}>
       <img
-        src="/medellin-rewards-mark.svg"
-        alt=""
-        className={cn('h-10 w-auto shrink-0 object-contain', markClassName)}
-        aria-hidden="true"
+        src="/medellin-rewards-logo.svg"
+        alt="Medellin Rewards"
+        className={cn('h-14 w-auto shrink-0 object-contain', markClassName)}
       />
-      {showText ? (
-        <span className={cn('truncate font-serif font-bold leading-none tracking-[-0.01em]', textClassName)}>
-          Medellin <span className="text-[#c9a84c]">Rewards</span>
-        </span>
-      ) : null}
       <span className="sr-only">Medellin Rewards</span>
     </span>
   )

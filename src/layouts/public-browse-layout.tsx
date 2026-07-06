@@ -42,6 +42,9 @@ export function PublicBrowseLayout() {
               <a href="#faq" className="transition hover:text-[#202023]">
                 FAQ
               </a>
+              <NavLink to="/guide" className="transition hover:text-[#202023]">
+                Guia
+              </NavLink>
               <NavLink to="/business/login" className="transition hover:text-[#202023]">
                 Business Login
               </NavLink>
@@ -61,6 +64,12 @@ export function PublicBrowseLayout() {
                 className="inline-flex min-h-9 items-center justify-center rounded-[8px] border border-[#dfe3e8] bg-[#ffffff] px-3 text-xs font-bold text-[#4f5866]"
               >
                 Business Login
+              </NavLink>
+              <NavLink
+                to="/guide"
+                className="col-span-2 inline-flex min-h-9 items-center justify-center rounded-[8px] border border-[#dfe3e8] bg-[#ffffff] px-3 text-xs font-bold text-[#4f5866]"
+              >
+                Guia
               </NavLink>
             </div>
           </div>
