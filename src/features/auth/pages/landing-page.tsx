@@ -2,17 +2,14 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   BadgeCheck,
   BarChart3,
-  Car,
+  Check,
+  ChevronDown,
   Coins,
   DollarSign,
   Eye,
   EyeOff,
-  FileText,
-  Gift,
-  Hotel,
-  KeyRound,
-  Leaf,
   MapPin,
+  Play,
   ShoppingCart,
   Users,
 } from 'lucide-react'
@@ -29,7 +26,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
-import { useLanguage } from '@/lib/language'
+import { useLanguage, type Language } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -45,6 +42,314 @@ const authInputClass =
   'h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35'
 const authLabelClass = 'text-[12px] font-semibold text-[#8f8f8f]'
 const authErrorClass = 'text-center text-xs font-bold text-red-400'
+
+const featureCardIcons = [Users, BarChart3, ShoppingCart] as const
+const faqIcons = [MapPin, Users, BadgeCheck, DollarSign] as const
+
+const landingCopy: Record<Language, {
+  nav: {
+    howItWorks: string
+    businesses: string
+    faq: string
+    joinNow: string
+  }
+  video: {
+    ariaLabel: string
+    label: string
+    script: string
+  }
+  hero: {
+    eyebrow: string
+    firstAccent: string
+    middle: string
+    secondAccent: string
+    secondLine: string
+    bodyPrefix: string
+    bodySuffix: string
+    bodyAccent: string
+    subcopy: string
+    pills: string[]
+    cta: string
+  }
+  featureCards: Array<{
+    title: string
+    body: string
+  }>
+  membership: {
+    eyebrow: string
+    headingPrefix: string
+    headingAccent: string
+    featuredBadge: string
+    plans: Array<{
+      title: string
+      body: string
+      bullets: string[]
+      cta: string
+      to: string
+      featured: boolean
+    }>
+  }
+  steps: {
+    eyebrow: string
+    headingPrefix: string
+    headingAccent: string
+    items: Array<{
+      title: string
+      body: string
+    }>
+  }
+  faq: {
+    heading: string
+    items: Array<{
+      question: string
+      answer: string
+    }>
+  }
+  businessCta: {
+    title: string
+    body: string
+    cta: string
+  }
+  footer: {
+    tagline: string
+    quickLinks: string
+  }
+}> = {
+  en: {
+    nav: {
+      howItWorks: 'How it works',
+      businesses: 'Businesses',
+      faq: 'FAQ',
+      joinNow: 'Join now',
+    },
+    video: {
+      ariaLabel: 'Play landing page video',
+      label: 'Hero video - 16:9 - autoplay',
+      script: 'Script idea: a member spending, earning, and redeeming rewards toward a trip - same beats as the reward walkthrough on the sign-up flow.',
+    },
+    hero: {
+      eyebrow: 'Medellin Rewards',
+      firstAccent: 'Earn',
+      middle: 'Amazing',
+      secondAccent: 'Rewards',
+      secondLine: 'While Supporting Local Businesses',
+      bodyPrefix: "Every time you shop, dine, or spend at a business in our network, you're supporting a local business and earning",
+      bodySuffix: '.',
+      bodyAccent: 'Rewards',
+      subcopy: 'Join free and earn 10% back automatically - or upgrade to earn between 20% and 100% back - every time you spend with the businesses in our network.',
+      pills: ['Everyday spending', '20% - 100% back', 'Any business, anywhere'],
+      cta: 'Join Medellin Rewards',
+    },
+    featureCards: [
+      {
+        title: 'Support the local businesses every time you spend.',
+        body: '',
+      },
+      {
+        title: 'Earn between 20% - 100% back',
+        body: 'Simply spending at amazing businesses within our platform.',
+      },
+      {
+        title: 'Earn from almost any purchase',
+        body: 'Restaurants, hotels, coffee shops, salons, cars, real estate, and more.',
+      },
+    ],
+    membership: {
+      eyebrow: 'Membership',
+      headingPrefix: 'Choose How You',
+      headingAccent: 'Earn',
+      featuredBadge: 'Works out to be free',
+      plans: [
+        {
+          title: 'Free membership',
+          body: '',
+          bullets: ['No cost to join', 'Earn 10% back automatically on every purchase'],
+          cta: 'Join Free',
+          to: '/join',
+          featured: false,
+        },
+        {
+          title: 'Regular Membership',
+          body: 'Cost $100,000 COP and earn $100,000 COP in Rewards',
+          bullets: [
+            'Earn minimum 20% - 100% back on almost all purchases',
+            'Earn $40,000 COP in Rewards for every member your refer that joins',
+            'Earn a minimum of $200,000 COP in Rewards for referring a business that joins.',
+          ],
+          cta: 'Upgrade',
+          to: '/join',
+          featured: true,
+        },
+      ],
+    },
+    steps: {
+      eyebrow: 'How it works',
+      headingPrefix: 'Three steps to start',
+      headingAccent: 'earning',
+      items: [
+        {
+          title: 'Join',
+          body: 'Sign up as a member - free, in under a minute.',
+        },
+        {
+          title: 'Spend & Earn',
+          body: 'Shop, dine, and buy at any business in our network. Earn 10% back for free, or 20-100% back on our paid tier.',
+        },
+        {
+          title: 'Redeem',
+          body: 'Use your Rewards to purchase your dream vacation, or anything available in our Rewards Store.',
+        },
+      ],
+    },
+    faq: {
+      heading: 'Frequently asked questions',
+      items: [
+        {
+          question: 'Where can I use my Rewards?',
+          answer: 'You can use your Rewards with many partnered businesses, either by going to the Rewards Store or by messaging us for more options.',
+        },
+        {
+          question: 'Can I have more than one Rewards account?',
+          answer: 'No, each person can have one Rewards account, tied to your full name, email, and phone number.',
+        },
+        {
+          question: 'Can I transfer Rewards to another account?',
+          answer: 'Rewards are tied to your member account and must be used and cannot be transferred.',
+        },
+        {
+          question: 'Can Rewards be exchanged for money?',
+          answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+        },
+      ],
+    },
+    businessCta: {
+      title: "Don't see one of your favorite businesses?",
+      body: 'Refer them to us and if they join you will earn Rewards!',
+      cta: 'Suggest a business',
+    },
+    footer: {
+      tagline: 'Earn Amazing Rewards While Supporting Local Businesses.',
+      quickLinks: 'Quick links',
+    },
+  },
+  es: {
+    nav: {
+      howItWorks: 'Como funciona',
+      businesses: 'Negocios',
+      faq: 'Preguntas frecuentes',
+      joinNow: 'Unirme ahora',
+    },
+    video: {
+      ariaLabel: 'Reproducir video de la pagina principal',
+      label: 'Video principal - 16:9 - autoplay',
+      script: 'Idea del guion: un miembro compra, gana y canjea recompensas para un viaje, siguiendo los mismos pasos del recorrido de registro.',
+    },
+    hero: {
+      eyebrow: 'Medellin Rewards',
+      firstAccent: 'Gana',
+      middle: 'Recompensas',
+      secondAccent: 'Increibles',
+      secondLine: 'Mientras Apoyas Negocios Locales',
+      bodyPrefix: 'Cada vez que compras, comes o gastas en un negocio de nuestra red, apoyas a un negocio local y ganas',
+      bodySuffix: '.',
+      bodyAccent: 'Recompensas',
+      subcopy: 'Unete gratis y gana 10% de vuelta automaticamente, o mejora tu membresia para ganar entre 20% y 100% de vuelta cada vez que compres con los negocios de nuestra red.',
+      pills: ['Compras diarias', '20% - 100% de vuelta', 'Cualquier negocio, en cualquier lugar'],
+      cta: 'Unirme a Medellin Rewards',
+    },
+    featureCards: [
+      {
+        title: 'Apoya negocios locales cada vez que compras.',
+        body: '',
+      },
+      {
+        title: 'Gana entre 20% - 100% de vuelta',
+        body: 'Simplemente comprando en negocios increibles dentro de nuestra plataforma.',
+      },
+      {
+        title: 'Gana con casi cualquier compra',
+        body: 'Restaurantes, hoteles, cafes, salones, carros, bienes raices y mas.',
+      },
+    ],
+    membership: {
+      eyebrow: 'Membresia',
+      headingPrefix: 'Elige Como',
+      headingAccent: 'Ganar',
+      featuredBadge: 'Puede salir gratis',
+      plans: [
+        {
+          title: 'Membresia gratis',
+          body: '',
+          bullets: ['No cuesta unirse', 'Gana 10% de vuelta automaticamente en cada compra'],
+          cta: 'Unirme Gratis',
+          to: '/join',
+          featured: false,
+        },
+        {
+          title: 'Membresia Regular',
+          body: 'Cuesta $100,000 COP y recibes $100,000 COP en Recompensas',
+          bullets: [
+            'Gana minimo 20% - 100% de vuelta en casi todas las compras',
+            'Gana $40,000 COP en Recompensas por cada miembro referido que se una',
+            'Gana minimo $200,000 COP en Recompensas por referir un negocio que se una.',
+          ],
+          cta: 'Mejorar',
+          to: '/join',
+          featured: true,
+        },
+      ],
+    },
+    steps: {
+      eyebrow: 'Como funciona',
+      headingPrefix: 'Tres pasos para empezar a',
+      headingAccent: 'ganar',
+      items: [
+        {
+          title: 'Unete',
+          body: 'Registrate como miembro gratis, en menos de un minuto.',
+        },
+        {
+          title: 'Compra y Gana',
+          body: 'Compra, come y gasta en cualquier negocio de nuestra red. Gana 10% de vuelta gratis, o 20-100% de vuelta con nuestra membresia paga.',
+        },
+        {
+          title: 'Canjea',
+          body: 'Usa tus Recompensas para comprar el viaje de tus suenos o cualquier cosa disponible en nuestra tienda de Recompensas.',
+        },
+      ],
+    },
+    faq: {
+      heading: 'Preguntas frecuentes',
+      items: [
+        {
+          question: 'Donde puedo usar mis Recompensas?',
+          answer: 'Puedes usar tus Recompensas con muchos negocios aliados, entrando a la tienda de Recompensas o escribiendonos para mas opciones.',
+        },
+        {
+          question: 'Puedo tener mas de una cuenta de Recompensas?',
+          answer: 'No, cada persona puede tener una sola cuenta de Recompensas, conectada a su nombre completo, email y telefono.',
+        },
+        {
+          question: 'Puedo transferir Recompensas a otra cuenta?',
+          answer: 'Las Recompensas estan conectadas a tu cuenta de miembro, deben usarse desde esa cuenta y no se pueden transferir.',
+        },
+        {
+          question: 'Las Recompensas se pueden cambiar por dinero?',
+          answer: 'No, las Recompensas son para beneficios de miembros, compras, viajes, experiencias y ofertas aliadas dentro de Medellin Rewards, no para cambio por efectivo.',
+        },
+      ],
+    },
+    businessCta: {
+      title: 'No ves uno de tus negocios favoritos?',
+      body: 'Refierelo a nosotros y si se une ganaras Recompensas!',
+      cta: 'Sugerir un negocio',
+    },
+    footer: {
+      tagline: 'Gana Recompensas Increibles Mientras Apoyas Negocios Locales.',
+      quickLinks: 'Enlaces rapidos',
+    },
+  },
+}
 
 function LoadingSpinner() {
   return (
@@ -65,228 +370,225 @@ function LoadingSpinner() {
 }
 
 export function LandingPage() {
-  const featureRows = [
-    {
-      icon: BarChart3,
-      text: (
-        <>
-          Earn between <strong className="font-semibold text-[#28292b]">20% - 100%</strong> by simply spending at amazing businesses within our platform
-        </>
-      ),
-    },
-    {
-      icon: ShoppingCart,
-      text: 'Earn from purchasing almost any type of product or service from going to a restaurant or hotel to buying a car or home.',
-    },
-  ] as const
-
-  const categoryPills = [
-    { icon: Hotel, label: 'Restaurants & hotels' },
-    { icon: Car, label: 'Cars & real estate' },
-    { icon: Gift, label: '20% - 100% back' },
-    { icon: Leaf, label: 'Any product or service' },
-  ] as const
-
-  const steps = [
-    {
-      title: 'Join',
-      body: 'Sign up as a member and receive your $100k early adopter bonus rewards.',
-    },
-    {
-      title: 'Spend',
-      body: 'Shop, dine, and buy services at any business in our network.',
-    },
-    {
-      title: 'Earn',
-      body: 'Automatically earn 20%-100% back in rewards on every purchase.',
-    },
-    {
-      title: 'Redeem',
-      body: 'Use your rewards for travel, experiences, and more - free vacation every year.',
-    },
-  ] as const
-
-  const faqs = [
-    {
-      icon: MapPin,
-      question: 'Where can I use my rewards?',
-      answer: 'You can use your rewards with partnered businesses inside the Medellin Rewards network. As the network grows, more places to earn and redeem will become available to members.',
-    },
-    {
-      icon: Users,
-      question: 'Can I have more than one rewards account?',
-      answer: 'No. Each person can have one rewards account. Medellin Rewards uses ID verification to keep rewards fair, protect member value, and prevent duplicate accounts.',
-    },
-    {
-      icon: BadgeCheck,
-      question: 'Can I transfer rewards to another account?',
-      answer: 'Rewards are tied to your verified member account and cannot be transferred. This helps protect your balance and keeps the program secure for every member.',
-    },
-    {
-      icon: DollarSign,
-      question: 'Can rewards be exchanged for money?',
-      answer: 'No. Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards program, not cash exchange.',
-    },
-  ] as const
+  const { language } = useLanguage()
+  const copy = landingCopy[language]
+  const featureCards = copy.featureCards.map((item, index) => ({
+    ...item,
+    icon: featureCardIcons[index]!,
+  }))
+  const faqs = copy.faq.items.map((item, index) => ({
+    ...item,
+    icon: faqIcons[index]!,
+  }))
 
   return (
-    <main className="screenshot-landing min-h-screen overflow-x-hidden bg-[#f6f7f8] text-[#242426]">
-      <header className="sticky top-0 z-40 flex min-h-[61px] items-center border-b border-[#e1e4e8] bg-[#ffffff] px-8">
-        <div className="mx-auto flex w-full max-w-[1336px] items-center justify-between gap-4">
-          <Link to="/landing-page" className="min-w-0">
-            <BrandLogo markClassName="h-9" textClassName="text-[23px] text-[#202023]" />
+    <main className="screenshot-landing min-h-screen overflow-x-hidden bg-[#ffffff] text-[#1f2023]">
+      <header className="sticky top-0 z-40 flex min-h-[62px] items-center border-b border-[#eeeeee] bg-[#ffffff]/95 px-4 backdrop-blur sm:px-6 lg:px-8">
+        <div className="mx-auto flex w-full max-w-[1180px] items-center justify-between gap-4">
+          <Link to="/landing-page" className="inline-flex min-w-0 items-center gap-[8px]">
+            <BrandLogo markClassName="h-7" />
+            <span className="text-[13px] font-extrabold tracking-normal text-[#202126]">
+              <span className="text-[#c5a142]">Medellin</span> Rewards
+            </span>
           </Link>
-          <nav className="hidden items-center gap-[30px] text-[14px] font-medium leading-none text-[#687282] md:flex">
+          <div className="flex min-w-0 items-center gap-3">
+          <nav className="hidden items-center gap-[28px] text-[12px] font-semibold leading-none text-[#4f545d] md:flex">
             <a href="#how-it-works" className="transition hover:text-[#202023]">
-              How it works
+              {copy.nav.howItWorks}
             </a>
             <Link to="/business" className="transition hover:text-[#202023]">
-              Businesses
+              {copy.nav.businesses}
             </Link>
             <a href="#faq" className="transition hover:text-[#202023]">
-              FAQ
+              {copy.nav.faq}
             </a>
-            <Link to="/invitation" className="font-semibold text-[#caa747] transition hover:text-[#a87916]">
-              Join now
+            <LanguagePicker className="text-[#4f545d]" compact />
+            <Link
+              to="/join"
+              className="inline-flex min-h-[32px] items-center justify-center rounded-full bg-[#c9a546] px-[20px] text-[12px] font-bold text-[#ffffff] shadow-[0_8px_20px_rgba(201,165,70,0.24)] transition hover:bg-[#b58f32]"
+            >
+              {copy.nav.joinNow}
             </Link>
           </nav>
+          <LanguagePicker className="text-[#4f545d] md:hidden" compact />
+          </div>
         </div>
       </header>
 
-      <section className="border-b border-[#e1e4e8] px-4 pb-[38px] pt-[52px] sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-[790px] flex-col items-center text-center">
-          <p className="landing-soft-gold-border inline-flex min-h-[32px] items-center rounded-full border border-[#dcc070] bg-[#fffaf0] px-[18px] text-[12px] font-semibold uppercase leading-none tracking-[0.22em] text-[#a47713]">
-            The world's highest paying rewards program
-          </p>
-
-          <h1 className="mt-[24px] max-w-[700px] font-serif text-[38px] font-bold leading-[1.11] tracking-normal text-[#202023] sm:text-[44px]">
-            Earn a <span className="text-[#cfaa44]">free vacation</span> every year - doing what you already do
-          </h1>
-
-          <div className="mt-[22px] max-w-[610px] space-y-[18px] text-[17px] font-medium leading-[1.55] text-[#687282]">
-            <p>
-              Imagine being able to earn enough rewards every year for a free vacation by doing what you already do,
-              with Medellin Rewards you can do exactly that!
-            </p>
-            <p>
-              Medellin Rewards pays a minimum of 20% to a maximum of 100% in Rewards when you spend your money
-              with the businesses that are within our network.
+      <section className="px-4 pb-[52px] pt-[78px] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="mx-auto max-w-[900px]">
+            <div className="relative aspect-video overflow-hidden rounded-[14px] bg-[#000000] shadow-[0_24px_45px_rgba(15,15,18,0.22)]">
+              <button
+                type="button"
+                className="absolute left-1/2 top-1/2 flex size-[58px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-[#c7a347] text-[#ffffff] shadow-[0_0_0_14px_rgba(199,163,71,0.22)] transition hover:bg-[#d2b158]"
+                aria-label={copy.video.ariaLabel}
+              >
+                <Play className="ml-1 size-[22px]" fill="currentColor" strokeWidth={1.5} aria-hidden="true" />
+              </button>
+              <p className="absolute bottom-[20px] left-[22px] text-[11px] font-semibold text-[#ffffff]">
+                {copy.video.label}
+              </p>
+              <span className="absolute bottom-[18px] right-[18px] rounded-[4px] bg-[#c7a347] px-[8px] py-[3px] text-[10px] font-bold text-[#111111]">
+                0:20-0:30
+              </span>
+            </div>
+            <p className="mx-auto mt-[14px] max-w-[620px] text-center text-[11px] font-medium leading-[1.6] text-[#8a8d94]">
+              {copy.video.script}
             </p>
           </div>
 
-          <div className="mt-[30px] grid w-full max-w-[700px] gap-[14px]">
-            {featureRows.map((item) => {
-              const Icon = item.icon
-
-              return (
-                <div key={String(item.text)} className="flex min-h-[55px] items-center gap-4 rounded-[10px] border border-[#dfe3e8] bg-[#ffffff] px-[21px] text-left text-[14px] font-medium leading-5 text-[#687282] shadow-[0_2px_4px_rgba(16,24,40,0.04)]">
-                  <Icon className="size-[17px] shrink-0 text-[#caa747]" strokeWidth={1.9} aria-hidden="true" />
-                  <span>{item.text}</span>
-                </div>
-              )
-            })}
-          </div>
-
-          <div className="mt-[28px] flex max-w-[800px] flex-wrap items-center justify-center gap-[10px]">
-            {categoryPills.map((item) => {
-              const Icon = item.icon
-
-              return (
-                <span key={item.label} className="inline-flex min-h-[38px] items-center gap-[10px] rounded-full border border-[#dfe3e8] bg-[#ffffff] px-[20px] text-[13px] font-medium text-[#545b66]">
-                  <Icon className="size-[15px] text-[#caa747]" strokeWidth={1.8} aria-hidden="true" />
-                  {item.label}
-                </span>
-              )
-            })}
-          </div>
-
-          <Link
-            to="/invitation"
-            className="mt-[26px] inline-flex min-h-[54px] min-w-[278px] items-center justify-center rounded-[8px] bg-[#d1ad4a] px-8 text-[15px] font-bold text-[#121212] transition hover:bg-[#c29f3d]"
-          >
-            Join Medellin Rewards
-          </Link>
-        </div>
-      </section>
-
-      <section className="border-b border-[#e1e4e8] bg-[#ffffff] px-4 py-[34px] sm:px-6 lg:px-8">
-        <div className="mx-auto flex max-w-[520px] flex-col items-center text-center">
-          <h2 className="font-serif text-[30px] font-bold leading-none text-[#202023]">
-            Early adopter monthly subscription
-          </h2>
-
-          <div className="landing-gold-border mt-[30px] w-full max-w-[352px] rounded-[10px] border-2 border-[#d1ad4a] bg-[#ffffff] px-[30px] pb-[22px] pt-[38px]">
-            <p className="mx-auto -mt-[50px] flex h-[28px] w-[200px] items-center justify-center rounded-full bg-[#d1ad4a] text-[12px] font-bold uppercase tracking-[0.18em] text-[#202023]">
-              Early adopter offer
-            </p>
-            <p className="mt-[22px] text-[15px] font-bold uppercase tracking-[0.22em] text-[#7a8291]">
-              Monthly subscription
+          <div className="mx-auto mt-[86px] flex max-w-[760px] flex-col items-center text-center">
+            <p className="inline-flex min-h-[22px] items-center rounded-full bg-[#f5ecd6] px-[12px] text-[10px] font-bold uppercase tracking-[0.14em] text-[#b78f34]">
+              {copy.hero.eyebrow}
             </p>
 
-            <div className="mt-[13px] rounded-[8px] bg-[#f8f9fb] px-4 py-[14px]">
-              <p className="text-[12px] font-bold uppercase tracking-[0.05em] text-[#9aa2af]">$100,000 Bonus 100%</p>
-              <p className="mt-[10px] text-[25px] font-bold leading-none text-[#d0a63d]">$100,000 in Rewards</p>
+            <h1 className="mt-[22px] max-w-[760px] text-[42px] font-extrabold leading-[0.96] tracking-normal text-[#202126] sm:text-[60px]">
+              <span className="text-[#c5a142]">{copy.hero.firstAccent}</span> {copy.hero.middle}{' '}
+              <span className="text-[#c5a142]">{copy.hero.secondAccent}</span>
+              <br />
+              {copy.hero.secondLine}
+            </h1>
+
+            <div className="mt-[28px] max-w-[560px] space-y-[19px] text-[14px] font-medium leading-[1.65] text-[#6f747d]">
+              <p>
+                {copy.hero.bodyPrefix} <span className="font-semibold text-[#c5a142]">{copy.hero.bodyAccent}</span>{copy.hero.bodySuffix}
+              </p>
+              <p className="text-[12px] leading-[1.7] text-[#8c9198]">
+                {copy.hero.subcopy}
+              </p>
             </div>
 
-            <Link
-              to="/invitation"
-              className="mt-[14px] flex min-h-[44px] w-full items-center justify-center rounded-[8px] bg-[#d1ad4a] text-[15px] font-bold text-[#121212] transition hover:bg-[#c29f3d]"
-            >
-              Join now
-            </Link>
-
-            <p className="mt-[14px] flex items-center justify-center gap-[5px] text-[12px] font-medium text-[#7a8291]">
-              <FileText className="size-[13px]" strokeWidth={1.7} aria-hidden="true" />
-              Member agreement applies
-            </p>
+            <div className="mt-[27px] flex flex-wrap justify-center gap-[12px]">
+              {copy.hero.pills.map((label) => (
+                <span
+                  key={label}
+                  className="inline-flex min-h-[31px] items-center rounded-full bg-[#f0f0f0] px-[19px] text-[11px] font-bold text-[#4d5158]"
+                >
+                  {label}
+                </span>
+              ))}
+            </div>
           </div>
 
-          <Link
-            to="/reward-terms"
-            className="mt-[22px] inline-flex min-h-[48px] items-center justify-center gap-[12px] rounded-[8px] border border-[#dfe3e8] bg-[#ffffff] px-[27px] text-[14px] font-semibold text-[#4f5866] shadow-[0_2px_4px_rgba(16,24,40,0.04)] transition hover:border-[#d1ad4a]"
-          >
-            <KeyRound className="size-[17px] text-[#caa747]" strokeWidth={1.8} aria-hidden="true" />
-            View Agreement
-          </Link>
+          <div className="mt-[48px] grid gap-[26px] md:grid-cols-3">
+            {featureCards.map((item) => {
+              const Icon = item.icon
+
+              return (
+                <article key={item.title} className="min-h-[204px] rounded-[8px] border border-[#dedfe3] bg-[#ffffff] px-[28px] py-[32px] shadow-[0_1px_2px_rgba(16,24,40,0.02)]">
+                  <Icon className="size-[21px] text-[#c5a142]" strokeWidth={1.8} aria-hidden="true" />
+                  <h3 className="mt-[27px] text-[13px] font-medium leading-[1.55] text-[#3d424a]">{item.title}</h3>
+                  {item.body ? <p className="mt-[8px] text-[12px] font-medium leading-[1.6] text-[#737780]">{item.body}</p> : null}
+                </article>
+              )
+            })}
+          </div>
+
+          <div className="mt-[74px] flex justify-center">
+            <Link
+              to="/join"
+              className="inline-flex min-h-[54px] min-w-[260px] items-center justify-center rounded-full bg-[#c9a546] px-8 text-[13px] font-bold text-[#ffffff] shadow-[0_12px_24px_rgba(201,165,70,0.22)] transition hover:bg-[#b58f32]"
+            >
+              {copy.hero.cta}
+            </Link>
+          </div>
         </div>
       </section>
 
-      <section id="how-it-works" className="border-b border-[#e1e4e8] px-4 py-[34px] sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-[1280px] text-center">
-          <h2 className="font-serif text-[30px] font-bold leading-none text-[#202023]">How it works</h2>
-          <p className="mt-[14px] text-[15px] font-medium text-[#687282]">Three simple steps to start earning rewards</p>
+      <section className="bg-[#f8f8f8] px-4 py-[92px] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[960px]">
+          <div className="text-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a546]">{copy.membership.eyebrow}</p>
+            <h2 className="mt-[18px] text-[39px] font-extrabold leading-tight text-[#202126]">
+              {copy.membership.headingPrefix} <span className="text-[#c5a142]">{copy.membership.headingAccent}</span>
+            </h2>
+          </div>
 
-          <div className="mt-[24px] grid gap-[16px] md:grid-cols-2 lg:grid-cols-4">
-            {steps.map((step, index) => (
-              <article key={step.title} className="flex min-h-[132px] flex-col items-center rounded-[10px] border border-[#dfe3e8] bg-[#ffffff] px-[28px] py-[16px]">
-                <div className="landing-soft-gold-border flex size-[36px] items-center justify-center rounded-full border border-[#dfc477] bg-[#fffaf0] text-[16px] font-semibold text-[#a47713]">
-                  {index + 1}
-                </div>
-                <h3 className="mt-[15px] text-[15px] font-bold text-[#202023]">{step.title}</h3>
-                <p className="mt-[11px] text-[13px] font-medium leading-[1.55] text-[#687282]">{step.body}</p>
+          <div className="mt-[52px] grid gap-[40px] md:grid-cols-2">
+            {copy.membership.plans.map((plan) => (
+              <article
+                key={plan.title}
+                className={`flex min-h-[570px] flex-col rounded-[14px] bg-[#ffffff] px-[34px] pb-[28px] pt-[44px] ${
+                  plan.featured
+                    ? 'border-2 border-[#9f7b19] shadow-[0_16px_35px_rgba(42,35,18,0.08)]'
+                    : 'border border-[#dedfe3]'
+                }`}
+              >
+                {plan.featured ? (
+                  <div className="mb-[28px] flex justify-end">
+                    <span className="rounded-full bg-[#c9a546] px-[11px] py-[5px] text-[9px] font-bold uppercase text-[#ffffff]">
+                      {copy.membership.featuredBadge}
+                    </span>
+                  </div>
+                ) : null}
+                <h3 className="text-[22px] font-extrabold text-[#202126]">{plan.title}</h3>
+                {plan.body ? <p className="mt-[8px] text-[13px] font-medium leading-[1.6] text-[#6f747d]">{plan.body}</p> : null}
+
+                <ul className="mt-[16px] flex flex-1 flex-col gap-[17px]">
+                  {plan.bullets.map((bullet) => (
+                    <li key={bullet} className="flex gap-[10px] text-[12px] font-medium leading-[1.6] text-[#464b54]">
+                      <Check className="mt-[2px] size-[14px] shrink-0 text-[#9b812e]" strokeWidth={2} aria-hidden="true" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
+                </ul>
+
+                <Link
+                  to={plan.to}
+                  className={`mt-[28px] inline-flex min-h-[52px] items-center justify-center rounded-[7px] text-[12px] font-bold transition ${
+                    plan.featured
+                      ? 'bg-[#c9a546] text-[#ffffff] shadow-[0_10px_22px_rgba(201,165,70,0.22)] hover:bg-[#b58f32]'
+                      : 'border border-[#c9a546] bg-[#ffffff] text-[#c9a546] hover:bg-[#fff8e5]'
+                  }`}
+                >
+                  {plan.cta} {'->'}
+                </Link>
               </article>
             ))}
           </div>
         </div>
       </section>
 
-      <section id="faq" className="border-b border-[#e1e4e8] px-4 pb-[34px] pt-[38px] sm:px-6 lg:px-8">
+      <section id="how-it-works" className="px-4 py-[86px] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
+          <div className="text-center">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a546]">{copy.steps.eyebrow}</p>
+            <h2 className="mt-[18px] font-serif text-[43px] font-bold leading-tight text-[#202126]">
+              {copy.steps.headingPrefix} <span className="text-[#c5a142]">{copy.steps.headingAccent}</span>
+            </h2>
+          </div>
+
+          <div className="mt-[64px] grid gap-[42px] md:grid-cols-3">
+            {copy.steps.items.map((step, index) => (
+              <article key={step.title} className="min-h-[138px]">
+                <p className="text-[18px] font-medium text-[#c5a142]">{index + 1}</p>
+                <h3 className="mt-[24px] text-[13px] font-extrabold text-[#202126]">{step.title}</h3>
+                <p className="mt-[16px] text-[12px] font-medium leading-[1.8] text-[#858990]">{step.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" className="bg-[#f8f8f8] px-4 py-[90px] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-[700px]">
-          <h2 className="text-center font-serif text-[30px] font-bold leading-none text-[#202023]">
-            Frequently asked questions
+          <h2 className="text-center text-[40px] font-extrabold leading-tight text-[#202126]">
+            {copy.faq.heading}
           </h2>
 
-          <div className="mt-[24px] space-y-[11px]">
+          <div className="mt-[54px] space-y-[16px]">
             {faqs.map((item) => {
               const Icon = item.icon
 
               return (
-                <details key={item.question} className="group rounded-[7px] border border-[#dfe3e8] bg-[#ffffff] px-[20px] text-[#2f3339]">
-                  <summary className="flex min-h-[58px] cursor-pointer list-none items-center gap-[13px] text-[14px] font-bold [&::-webkit-details-marker]:hidden">
-                    <Icon className="size-[15px] shrink-0 text-[#caa747]" strokeWidth={1.7} aria-hidden="true" />
-                    <span>{item.question}</span>
+                <details key={item.question} open className="group rounded-[10px] border border-[#dedfe3] bg-[#ffffff] px-[22px] py-[18px] text-[#202126]">
+                  <summary className="flex cursor-pointer list-none items-center gap-[10px] text-[13px] font-extrabold [&::-webkit-details-marker]:hidden">
+                    <Icon className="size-[14px] shrink-0 text-[#c5a142]" strokeWidth={2} aria-hidden="true" />
+                    <span className="flex-1">{item.question}</span>
+                    <ChevronDown className="size-[14px] shrink-0 text-[#92969d] transition group-open:rotate-180" strokeWidth={2} aria-hidden="true" />
                   </summary>
-                  <p className="pb-[18px] pl-[28px] pr-[10px] text-[13px] font-medium leading-[1.65] text-[#687282]">
+                  <p className="mt-[14px] pl-[24px] text-[12px] font-medium leading-[1.7] text-[#747982]">
                     {item.answer}
                   </p>
                 </details>
@@ -296,18 +598,42 @@ export function LandingPage() {
         </div>
       </section>
 
-      <footer className="flex min-h-[86px] items-center bg-[#ffffff] px-8">
-        <div className="mx-auto grid w-full max-w-[1336px] gap-4 text-center md:grid-cols-[1fr_auto_1fr] md:items-center md:text-left">
-          <p className="font-serif text-[20px] font-bold leading-none tracking-[-0.01em] text-[#202023]">
-            Medellin <span className="text-[#c9a84c]">Rewards</span>
-          </p>
-          <p className="text-[12px] font-medium text-[#687282]">The world's highest paying rewards program</p>
-          <nav className="flex flex-wrap items-center justify-center gap-[16px] text-[12px] font-medium text-[#687282] md:justify-end">
-            <Link to="/reward-terms" className="transition hover:text-[#202023]">Member agreement</Link>
-            <span className="text-[#c5cad2]">|</span>
-            <Link to="/privacy" className="transition hover:text-[#202023]">Privacy policy</Link>
-            <span className="text-[#c5cad2]">|</span>
-            <Link to="/terms" className="transition hover:text-[#202023]">Contact</Link>
+      <section id="business-cta" className="px-4 py-[88px] sm:px-6 lg:px-8">
+        <div className="mx-auto flex max-w-[1180px] flex-col gap-[22px] rounded-[26px] border border-[#dedfe3] bg-[#ffffff] px-[34px] py-[46px] shadow-[0_16px_40px_rgba(16,24,40,0.08)] md:flex-row md:items-center md:justify-between md:px-[60px]">
+          <div>
+            <h2 className="text-[26px] font-extrabold leading-tight text-[#202126]">{copy.businessCta.title}</h2>
+            <p className="mt-[14px] text-[14px] font-medium text-[#6f747d]">{copy.businessCta.body}</p>
+          </div>
+          <Link
+            to="/business"
+            className="inline-flex min-h-[50px] items-center justify-center rounded-full bg-[#c9a546] px-[28px] text-[12px] font-bold text-[#ffffff] shadow-[0_10px_22px_rgba(201,165,70,0.22)] transition hover:bg-[#b58f32]"
+          >
+            {copy.businessCta.cta} {'->'}
+          </Link>
+        </div>
+      </section>
+
+      <footer className="border-t border-[#eeeeee] bg-[#ffffff] px-4 py-[70px] sm:px-6 lg:px-8">
+        <div className="mx-auto grid max-w-[1180px] gap-[44px] md:grid-cols-[1fr_0.9fr]">
+          <div>
+            <div className="inline-flex items-center gap-[8px]">
+              <BrandLogo markClassName="h-7" />
+              <span className="text-[13px] font-extrabold tracking-normal text-[#202126]">
+                <span className="text-[#c5a142]">Medellin</span> Rewards
+              </span>
+            </div>
+            <p className="mt-[28px] max-w-[260px] text-[12px] font-medium leading-[1.7] text-[#8a8d94]">
+              {copy.footer.tagline}
+            </p>
+          </div>
+          <nav className="md:justify-self-center">
+            <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#202126]">{copy.footer.quickLinks}</p>
+            <div className="mt-[20px] grid gap-[14px] text-[12px] font-medium text-[#747982]">
+              <a href="#how-it-works" className="transition hover:text-[#202126]">{copy.nav.howItWorks}</a>
+              <Link to="/business" className="transition hover:text-[#202126]">{copy.nav.businesses}</Link>
+              <a href="#faq" className="transition hover:text-[#202126]">{copy.nav.faq}</a>
+              <Link to="/join" className="transition hover:text-[#202126]">{copy.nav.joinNow}</Link>
+            </div>
           </nav>
         </div>
       </footer>

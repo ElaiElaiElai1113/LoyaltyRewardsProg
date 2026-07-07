@@ -34,10 +34,10 @@ export function PublicBrowseLayout() {
             </NavLink>
             <nav className="hidden items-center gap-[30px] text-[14px] font-medium leading-none text-[#687282] md:flex">
               <a href="#how-it-works" className="transition hover:text-[#202023]">
-                How it works
+                {t('How it works')}
               </a>
               <a href="#business-tools" className="transition hover:text-[#202023]">
-                Business tools
+                {t('Business tools')}
               </a>
               <a href="#faq" className="transition hover:text-[#202023]">
                 FAQ
@@ -46,24 +46,26 @@ export function PublicBrowseLayout() {
                 Guia
               </NavLink>
               <NavLink to="/business/login" className="transition hover:text-[#202023]">
-                Business Login
+                {t('Business Login')}
               </NavLink>
+              <LanguagePicker className="text-[#687282]" compact />
               <a href="#book-demo" className="font-semibold text-[#caa747] transition hover:text-[#a87916]">
-                Start onboarding
+                {t('Start Onboarding')}
               </a>
             </nav>
             <div className="grid w-full grid-cols-2 gap-2 sm:w-auto md:hidden">
+              <LanguagePicker className="col-span-2 justify-center text-[#687282]" compact />
               <a
                 href="#book-demo"
                 className="inline-flex min-h-9 items-center justify-center rounded-[8px] bg-[#d1ad4a] px-3 text-xs font-bold text-[#121212]"
               >
-                Start Onboarding
+                {t('Start Onboarding')}
               </a>
               <NavLink
                 to="/business/login"
                 className="inline-flex min-h-9 items-center justify-center rounded-[8px] border border-[#dfe3e8] bg-[#ffffff] px-3 text-xs font-bold text-[#4f5866]"
               >
-                Business Login
+                {t('Business Login')}
               </NavLink>
               <NavLink
                 to="/guide"

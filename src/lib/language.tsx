@@ -415,6 +415,7 @@ const spanishTranslations: Record<string, string> = {
     'Una cuenta verificada por persona ayuda a proteger el valor de recompensas en toda la red.',
   'For Businesses': 'Para negocios',
   'For businesses': 'Para negocios',
+  'Business tools': 'Herramientas para negocios',
   'Business Login': 'Acceso para negocios',
   'Start Onboarding': 'Iniciar onboarding',
   'Browse rewards': 'Ver recompensas',

@@ -1,6 +1,5 @@
-import { Globe2 } from 'lucide-react'
+import { ChevronDown, Globe2 } from 'lucide-react'
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { languageLabels, type Language, useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'
 
@@ -15,24 +14,24 @@ export function LanguagePicker({ className, compact = false }: LanguagePickerPro
   return (
     <div className={cn('flex min-w-0 items-center gap-2', className)}>
       <Globe2 className="size-4 shrink-0 text-current" aria-hidden="true" />
-      <Select value={language} onValueChange={(value) => setLanguage(value as Language)}>
-        <SelectTrigger
+      <div className={cn('relative min-w-0', compact ? 'w-[5.25rem]' : 'w-[8.75rem] max-w-full')}>
+        <select
           aria-label={t('Language')}
+          value={language}
+          onChange={(event) => setLanguage(event.target.value as Language)}
           className={cn(
-            'h-10 min-w-0 border-primary-container/25 bg-primary-container/8 text-xs font-bold uppercase tracking-[0.08em] text-current shadow-none focus-visible:ring-primary-container/40',
-            compact ? 'w-[5.25rem] px-3' : 'w-[8.75rem] max-w-full',
+            'h-10 w-full min-w-0 appearance-none rounded-2xl border border-primary-container/25 bg-primary-container/8 text-xs font-bold uppercase tracking-[0.08em] text-current shadow-none outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary-container/40',
+            compact ? 'px-3 pr-8' : 'px-4 pr-9',
           )}
         >
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
           {(['es', 'en'] as Language[]).map((option) => (
-            <SelectItem key={option} value={option}>
+            <option key={option} value={option}>
               {compact ? option.toUpperCase() : t(languageLabels[option])}
-            </SelectItem>
+            </option>
           ))}
-        </SelectContent>
-      </Select>
+        </select>
+        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-current opacity-70" />
+      </div>
     </div>
   )
 }
