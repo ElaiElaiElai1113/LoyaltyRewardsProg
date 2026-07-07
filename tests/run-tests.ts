@@ -418,36 +418,38 @@ runTest('landing page FAQs are clickable and include answers', () => {
   assert.match(landingPage, /<summary/)
   assert.match(landingPage, /faqs\.map/)
   assert.match(landingPage, /answer:/)
-  assert.match(landingPage, /partnered businesses inside the Medellin Rewards network/)
-  assert.match(landingPage, /ID verification/)
+  assert.match(landingPage, /many partnered businesses/)
+  assert.match(landingPage, /Rewards Store/)
 })
 
-runTest('landing FAQ and footer follow the Figma lower page', () => {
+runTest('landing FAQ and footer follow the screenshot lower page', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /id="faq"/)
   assert.match(landingPage, /max-w-\[700px\]/)
-  assert.match(landingPage, /min-h-\[58px\]/)
-  assert.match(landingPage, /rounded-\[7px\] border border-\[#dfe3e8\] bg-\[#ffffff\]/)
+  assert.match(landingPage, /Frequently asked questions/)
+  assert.match(landingPage, /rounded-\[10px\] border border-\[#dedfe3\] bg-\[#ffffff\]/)
   assert.match(landingPage, /MapPin/)
   assert.match(landingPage, /Users/)
   assert.match(landingPage, /BadgeCheck/)
   assert.match(landingPage, /DollarSign/)
   assert.doesNotMatch(landingPage, /ChevronRight/)
-  assert.match(landingPage, /min-h-\[86px\]/)
-  assert.match(landingPage, /md:grid-cols-\[1fr_auto_1fr\]/)
-  assert.match(landingPage, /max-w-\[1336px\]/)
+  assert.match(landingPage, /business-cta/)
+  assert.match(landingPage, /Quick links/)
+  assert.match(landingPage, /max-w-\[1180px\]/)
 })
 
 runTest('client landing page renders the screenshot sections', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /free vacation<\/span>/)
-  assert.match(landingPage, /Early adopter monthly subscription/)
-  assert.match(landingPage, /\$100,000 in Rewards/)
+  assert.match(landingPage, /Hero video - 16:9 - autoplay/)
+  assert.match(landingPage, /Choose How You/)
+  assert.match(landingPage, /Regular Membership/)
   assert.match(landingPage, /id="how-it-works"/)
-  assert.match(landingPage, /steps\.map/)
+  assert.match(landingPage, /copy\.steps\.items\.map/)
   assert.match(landingPage, /faqs\.map/)
+  assert.match(landingPage, /landingCopy/)
+  assert.match(landingPage, /LanguagePicker/)
 })
 
 runTest('landing Figma reference asset is stored with app assets', () => {
@@ -531,46 +533,45 @@ runTest('new customer auth trigger allows account creation before ID submission'
   assert.match(launchMigration, /coalesce\(new_phone, ''\)/)
 })
 
-runTest('landing Join CTAs go to invitation', () => {
+runTest('landing Join CTAs go to customer account creation', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const authPageStart = landingPage.indexOf('export function LegacyAuthPage')
   const landingMarkup = landingPage.slice(0, authPageStart)
 
-  assert.ok((landingMarkup.match(/to="\/invitation"/g) ?? []).length >= 2)
+  assert.ok((landingMarkup.match(/to="\/join"/g) ?? []).length >= 2)
   assert.doesNotMatch(landingMarkup, /to="\/early-access"/)
-  assert.doesNotMatch(landingMarkup, /to="\/join"/)
-  assert.match(landingPage, /min-h-\[61px\]/)
+  assert.doesNotMatch(landingMarkup, /to="\/invitation"/)
+  assert.match(landingPage, /min-h-\[62px\]/)
   assert.match(landingPage, /How it works/)
   assert.match(landingPage, /Businesses/)
   assert.match(landingPage, /FAQ/)
   assert.match(landingPage, /Join now/)
   assert.match(landingPage, /Join Medellin Rewards/)
-  assert.match(landingPage, /Early adopter monthly subscription/)
+  assert.match(landingPage, /Regular Membership/)
   assert.doesNotMatch(landingPage, /leadModalOpen/)
   assert.doesNotMatch(landingPage, /memberLeadSchema/)
 })
 
-runTest('landing early subscriber section follows the client-focused design', () => {
+runTest('landing membership section follows the client-focused design', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
-  assert.match(landingPage, /Early adopter monthly subscription/)
-  assert.match(landingPage, /Early adopter offer/)
-  assert.match(landingPage, /Monthly subscription/)
-  assert.match(landingPage, /\$100,000 Bonus 100%/)
-  assert.match(landingPage, /Member agreement applies/)
-  assert.match(landingPage, /View Agreement/)
+  assert.match(landingPage, /Membership/)
+  assert.match(landingPage, /Choose How You/)
+  assert.match(landingPage, /Free membership/)
+  assert.match(landingPage, /Regular Membership/)
+  assert.match(landingPage, /Works out to be free/)
+  assert.match(landingPage, /Cost \$100,000 COP and earn \$100,000 COP in Rewards/)
 })
 
 runTest('landing rewards system section explains the flow and disclaimer', () => {
   const landingPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
 
   assert.match(landingPage, /id="how-it-works"/)
-  assert.match(landingPage, /steps\.map/)
-  assert.match(landingPage, /lg:grid-cols-4/)
-  assert.match(landingPage, /rounded-\[10px\] border border-\[#dfe3e8\] bg-\[#ffffff\]/)
-  assert.match(landingPage, /size-\[36px\]/)
-  assert.match(landingPage, /Three simple steps to start earning rewards/)
-  assert.match(landingPage, /Use your rewards for travel, experiences, and more - free vacation every year\./)
+  assert.match(landingPage, /copy\.steps\.items\.map/)
+  assert.match(landingPage, /md:grid-cols-3/)
+  assert.match(landingPage, /Three steps to start/)
+  assert.match(landingPage, /Spend & Earn/)
+  assert.match(landingPage, /Use your Rewards to purchase your dream vacation/)
 })
 
 runTest('early access CTA opens a lead capture modal', () => {
@@ -1951,6 +1952,7 @@ runTest('public business page follows the clean landing-page format', () => {
   assert.match(layout, /max-w-\[1336px\]/)
   assert.match(layout, /How it works/)
   assert.match(layout, /Business tools/)
+  assert.match(layout, /LanguagePicker/)
   assert.match(layout, /md:hidden/)
   assert.match(layout, /Start Onboarding/)
   assert.match(layout, /Business Login/)
@@ -1958,8 +1960,12 @@ runTest('public business page follows the clean landing-page format', () => {
   assert.doesNotMatch(layout, /headerContainerClassName = isBusinessOnboarding/)
 
   assert.match(page, /screenshot-landing/)
+  assert.match(page, /pageCopy/)
+  assert.match(page, /LanguagePicker/)
   assert.match(page, /Business onboarding/)
-  assert.match(page, /Join the <span className="text-\[#cfaa44\]">rewards network<\/span>/)
+  assert.match(page, /heroTitleBefore: 'Join the '/)
+  assert.match(page, /heroTitleHighlight: 'rewards network'/)
+  assert.match(page, /heroTitleAfter: ' members already want to use'/)
   assert.match(page, /id="how-it-works"/)
   assert.match(page, /id="business-tools"/)
   assert.match(page, /id="faq"/)
