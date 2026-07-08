@@ -88,6 +88,16 @@ function parseGiftCardValue(valueLabel?: string) {
   return match ? Number(match[0]) : 0
 }
 
+function getGiftCardInitialBalance(card?: GiftCard | null) {
+  if (!card) return 0
+  return card.initialBalance ?? parseGiftCardValue(card.catalog?.valueLabel)
+}
+
+function getGiftCardAvailableBalance(card?: GiftCard | null) {
+  if (!card) return 0
+  return Math.max(card.remainingBalance ?? getGiftCardInitialBalance(card), 0)
+}
+
 function formatDateTime(value?: string | null) {
   if (!value) return 'Not recorded'
 
@@ -163,10 +173,10 @@ export function RedemptionsPage() {
     })
 
     const standaloneGiftCardRows: TransactionHistoryItem[] = cards
-      .filter((card) => card.status === 'redeemed' && card.redeemedAt && !usedGiftCardCodes.has(card.code))
+      .filter((card) => (card.redemptionGiftCardAmount ?? 0) > 0 && !usedGiftCardCodes.has(card.code))
       .map((card) => {
         const currency = business?.currency ?? 'PHP'
-        const giftCardValue = card.redemptionGiftCardAmount ?? parseGiftCardValue(card.catalog?.valueLabel)
+        const giftCardValue = card.redemptionGiftCardAmount ?? 0
         const originalTotal = card.redemptionOriginalBill ?? giftCardValue
         const fallbackBreakdown = business
           ? calculateRewardablePurchaseAmount({
@@ -206,9 +216,22 @@ export function RedemptionsPage() {
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
   }, [business, cards, memberTransactions])
-  const selectedGiftCardValue = parseGiftCardValue(selectedCard?.catalog?.valueLabel)
+  const selectedGiftCardAvailableBalance = getGiftCardAvailableBalance(selectedCard)
+  const baseBreakdown = useMemo(() => {
+    if (!business || !Number.isFinite(originalBill) || originalBill <= 0) return null
+
+    return calculateRewardablePurchaseAmount({
+      receiptTotal: originalBill,
+      taxRate: business.taxRate,
+      taxIncludedInBill: business.taxIncludedInBill,
+      serviceChargeRate: business.serviceChargeRate,
+      serviceChargeEnabled: business.serviceChargeEnabled,
+      giftCardAmount: 0,
+    })
+  }, [business, originalBill])
+  const selectedGiftCardValue = Math.min(selectedGiftCardAvailableBalance, baseBreakdown?.finalPriceAmount ?? Math.max(Number.isFinite(originalBill) ? originalBill : 0, 0))
   const remainingBill = Math.max((Number.isFinite(originalBill) ? originalBill : 0) - selectedGiftCardValue, 0)
-  const canRedeemSelectedCard = validationStatus === 'active' && originalBill > 0 && receiptNumber.trim().length >= 3
+  const canRedeemSelectedCard = validationStatus === 'active' && selectedGiftCardAvailableBalance > 0 && originalBill > 0 && receiptNumber.trim().length >= 3
   const rewardableBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(originalBill) || originalBill <= 0) return null
 
@@ -285,6 +308,11 @@ export function RedemptionsPage() {
         return
       }
 
+      if (getGiftCardAvailableBalance(card) <= 0) {
+        setValidationStatus('redeemed')
+        return
+      }
+
       if (card.status !== 'active' || new Date(card.expiresAt) <= new Date()) {
         setValidationStatus('expired')
         return
@@ -301,7 +329,7 @@ export function RedemptionsPage() {
 
   async function redeem() {
     if (!selectedCard) return
-    await redeemGiftCard.mutateAsync({
+    const updatedCard = await redeemGiftCard.mutateAsync({
       giftCardId: selectedCard.id,
       originalBill,
       receiptNumber: receiptNumber.trim(),
@@ -310,7 +338,8 @@ export function RedemptionsPage() {
     })
     await refreshTransactionHistory()
     setConfirmOpen(false)
-    setValidationStatus('redeemed')
+    setSelectedCard(updatedCard)
+    setValidationStatus(updatedCard.status === 'active' && getGiftCardAvailableBalance(updatedCard) > 0 ? 'active' : 'redeemed')
     setTransactionComplete(true)
   }
 
@@ -401,9 +430,11 @@ export function RedemptionsPage() {
               <div>
                 <p className="font-serif text-2xl text-primary">Transaction complete</p>
                 <p className="text-sm text-on-surface-variant/75">
-                  {preview
-                    ? `Rewards issued from ${formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0)} rewardable bill.`
-                    : 'Gift card covered the full bill, so no points were awarded.'}
+                  {selectedCard
+                    ? `Gift card charged ${formatCurrency(rewardableBreakdown?.giftCardAmount ?? selectedGiftCardValue)}. Remaining balance: ${formatCurrency(getGiftCardAvailableBalance(selectedCard))}.`
+                    : preview
+                      ? `Rewards issued from ${formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0)} rewardable bill.`
+                      : 'Gift card covered the full bill, so no points were awarded.'}
                 </p>
               </div>
             </div>
@@ -565,6 +596,11 @@ export function RedemptionsPage() {
                 <div className="rounded border border-primary-container/20 bg-surface-low p-3">
                   <p className="font-semibold text-primary-container">{selectedCard.catalog?.title ?? 'Gift card'}</p>
                   <p className="mt-1 break-all font-mono text-xs text-on-surface-variant">{selectedCard.code}</p>
+                  <div className="mt-3 grid gap-2 text-xs font-semibold text-on-surface-variant sm:grid-cols-3">
+                    <span>Original value: {formatCurrency(getGiftCardInitialBalance(selectedCard))}</span>
+                    <span>Available: {formatCurrency(selectedGiftCardAvailableBalance)}</span>
+                    <span>After sale: {formatCurrency(Math.max(selectedGiftCardAvailableBalance - selectedGiftCardValue, 0))}</span>
+                  </div>
                 </div>
               ) : null}
 

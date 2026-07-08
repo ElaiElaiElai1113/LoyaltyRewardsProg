@@ -21,15 +21,15 @@ export function RedemptionConfirmationDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Redeem gift card</DialogTitle>
+          <DialogTitle>Charge gift card</DialogTitle>
           <DialogDescription>
-            {giftCard ? `Redeem ${giftCard.catalog?.title ?? giftCard.code} for ${giftCard.customerFirstName ?? 'this customer'}? This cannot be undone.` : ''}
+            {giftCard ? `Charge ${giftCard.catalog?.title ?? giftCard.code} for ${giftCard.customerFirstName ?? 'this customer'}? The card will stay active if a balance remains.` : ''}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
           <Button type="button" variant="secondary" disabled={!giftCard || isSubmitting} isLoading={isSubmitting} onClick={onConfirm}>
-            {isSubmitting ? 'Redeeming...' : 'Redeem'}
+            {isSubmitting ? 'Charging...' : 'Charge Card'}
           </Button>
         </DialogFooter>
       </DialogContent>

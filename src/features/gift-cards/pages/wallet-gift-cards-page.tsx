@@ -11,7 +11,17 @@ import { useLanguage } from '@/lib/language'
 import type { GiftCard, GiftCardStatus } from '@/types/domain'
 import { useMyGiftCards } from '../hooks/use-gift-cards'
 
+function parseGiftCardValue(valueLabel?: string) {
+  if (!valueLabel) return 0
+
+  const match = valueLabel.replace(/,/g, '').match(/\d+(?:\.\d+)?/)
+  return match ? Number(match[0]) : 0
+}
+
 function GiftCardRow({ card }: { card: GiftCard }) {
+  const originalBalance = card.initialBalance ?? parseGiftCardValue(card.catalog?.valueLabel)
+  const remainingBalance = Math.max(card.remainingBalance ?? originalBalance, 0)
+
   return (
     <Link
       to={`/wallet/gift-cards/${card.id}`}
@@ -27,6 +37,9 @@ function GiftCardRow({ card }: { card: GiftCard }) {
           </h3>
           <p className="text-sm text-on-surface-variant">{card.business?.name}</p>
           <p className="mt-2 font-mono text-sm text-on-surface">{card.code}</p>
+          <p className="mt-2 text-sm font-semibold text-on-surface">
+            Balance: {remainingBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+          </p>
         </div>
       </div>
       <Badge variant={card.status === 'active' ? 'accent' : 'outline'}>{card.status}</Badge>

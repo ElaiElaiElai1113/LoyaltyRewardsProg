@@ -10,6 +10,17 @@ function formatDate(value: string) {
   return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value))
 }
 
+function parseGiftCardValue(valueLabel?: string) {
+  if (!valueLabel) return 0
+
+  const match = valueLabel.replace(/,/g, '').match(/\d+(?:\.\d+)?/)
+  return match ? Number(match[0]) : 0
+}
+
+function formatBalance(value: number) {
+  return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
+}
+
 interface GiftCardDisplayProps {
   giftCard: GiftCard | PublicGiftCard
   publicUrl: string
@@ -21,6 +32,8 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
   const displayTitle = title ?? giftCard.catalog?.title ?? 'Gift card'
   const displayValue = 'valueLabel' in giftCard ? giftCard.valueLabel : giftCard.catalog?.valueLabel
   const displayBusiness = businessName ?? ('businessName' in giftCard ? giftCard.businessName : giftCard.business?.name)
+  const initialBalance = giftCard.initialBalance ?? parseGiftCardValue(displayValue)
+  const remainingBalance = Math.max(giftCard.remainingBalance ?? initialBalance, 0)
   const isActive = giftCard.status === 'active' && new Date(giftCard.expiresAt) > new Date()
 
   async function copyLink() {
@@ -46,8 +59,9 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
             </div>
             {displayValue ? (
               <div className="rounded-lg bg-[var(--muted)] px-5 py-3 text-[var(--foreground)]">
-                <span className="text-xs font-medium text-[var(--muted-foreground)]">Value</span>
-                <p className="text-2xl font-semibold">{displayValue}</p>
+                <span className="text-xs font-medium text-[var(--muted-foreground)]">Available Balance</span>
+                <p className="text-2xl font-semibold">{formatBalance(remainingBalance)}</p>
+                <p className="text-xs font-medium text-[var(--muted-foreground)]">Original value: {displayValue}</p>
               </div>
             ) : null}
           </div>
@@ -62,8 +76,8 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
               <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatDate(giftCard.expiresAt)}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Points Spent</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{giftCard.pointsSpent}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">Remaining</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatBalance(remainingBalance)} of {formatBalance(initialBalance)}</p>
             </div>
           </div>
 

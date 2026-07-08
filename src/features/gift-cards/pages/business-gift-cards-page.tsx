@@ -8,15 +8,17 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
-import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useBusinessMembers, useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import type { GiftCardCatalogItem } from '@/types/domain'
 import { ownerGiftCardCatalogItemSchema, type OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 import {
   useCreateOwnerGiftCardCatalogItem,
   useDeleteGiftCardCatalogItem,
   useGiftCardCatalog,
+  useIssueGiftCardToCustomer,
   useUpdateGiftCardCatalogItem,
 } from '../hooks/use-gift-cards'
 
@@ -24,9 +26,13 @@ export function BusinessGiftCardsPage() {
   const { profile } = useAuth()
   const { business } = useBusinessOwnerData()
   const catalog = useGiftCardCatalog(business?.id)
+  const members = useBusinessMembers(business?.id)
   const createItem = useCreateOwnerGiftCardCatalogItem(business?.id)
   const updateItem = useUpdateGiftCardCatalogItem()
   const deleteItem = useDeleteGiftCardCatalogItem()
+  const [issueCatalogId, setIssueCatalogId] = useState('')
+  const [issueCustomerId, setIssueCustomerId] = useState('')
+  const issueGiftCard = useIssueGiftCardToCustomer(issueCustomerId, business?.id)
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
@@ -96,6 +102,13 @@ export function BusinessGiftCardsPage() {
     }
   })
 
+  async function issueToCustomer() {
+    if (!issueCatalogId || !issueCustomerId) return
+    await issueGiftCard.mutateAsync(issueCatalogId)
+    setIssueCatalogId('')
+    setIssueCustomerId('')
+  }
+
   return (
     <div className="space-y-12">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -113,6 +126,56 @@ export function BusinessGiftCardsPage() {
           Business context is still loading.
         </p>
       ) : null}
+
+      <section className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+          <div>
+            <Badge variant="outline">Issue gift card</Badge>
+            <h2 className="mt-3 font-serif text-3xl text-primary-container">Give a customer a gift card</h2>
+            <p className="mt-2 text-sm text-on-surface-variant">
+              Business-issued cards start with the catalog value and do not deduct customer points.
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-12 rounded-full px-6"
+            disabled={!issueCatalogId || !issueCustomerId || issueGiftCard.isPending}
+            onClick={() => void issueToCustomer()}
+          >
+            <Gift className="size-4" />
+            {issueGiftCard.isPending ? 'Issuing...' : 'Issue Card'}
+          </Button>
+        </div>
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="grid gap-2">
+            <Label>Gift card</Label>
+            <Select value={issueCatalogId} onValueChange={setIssueCatalogId} disabled={!business}>
+              <SelectTrigger>
+                <SelectValue placeholder="Choose a catalog item" />
+              </SelectTrigger>
+              <SelectContent>
+                {(catalog.data ?? []).filter((item) => item.isActive).map((item) => (
+                  <SelectItem key={item.id} value={item.id}>{item.title} - {item.valueLabel}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="grid gap-2">
+            <Label>Customer</Label>
+            <Select value={issueCustomerId} onValueChange={setIssueCustomerId} disabled={!business || members.isLoading}>
+              <SelectTrigger>
+                <SelectValue placeholder={members.isLoading ? 'Loading customers...' : 'Choose a customer'} />
+              </SelectTrigger>
+              <SelectContent>
+                {(members.data ?? []).map((member) => (
+                  <SelectItem key={member.id} value={member.id}>{member.fullName} - {member.email}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </section>
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-lg">

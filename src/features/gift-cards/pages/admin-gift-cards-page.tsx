@@ -1,17 +1,37 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { Gift } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAdminAllBusinesses } from '@/hooks/use-admin-data'
-import { useGiftCardCatalog, useBusinessGiftCards } from '../hooks/use-gift-cards'
+import { useBusinessMembers } from '@/hooks/use-business-owner-data'
+import { useGiftCardCatalog, useBusinessGiftCards, useIssueGiftCardToCustomer } from '../hooks/use-gift-cards'
 
 export function AdminGiftCardsPage() {
   const businesses = useAdminAllBusinesses()
   const [businessId, setBusinessId] = useState<string | undefined>(undefined)
+  const [issueCatalogId, setIssueCatalogId] = useState('')
+  const [issueCustomerId, setIssueCustomerId] = useState('')
   const catalog = useGiftCardCatalog(businessId)
   const giftCards = useBusinessGiftCards(businessId)
+  const members = useBusinessMembers(businessId)
+  const issueGiftCard = useIssueGiftCardToCustomer(issueCustomerId, businessId)
+
+  function changeBusiness(value: string) {
+    setBusinessId(value === 'all' ? undefined : value)
+    setIssueCatalogId('')
+    setIssueCustomerId('')
+  }
+
+  async function issueToCustomer() {
+    if (!issueCatalogId || !issueCustomerId) return
+    await issueGiftCard.mutateAsync(issueCatalogId)
+    setIssueCatalogId('')
+    setIssueCustomerId('')
+  }
 
   return (
     <div className="space-y-10">
@@ -21,7 +41,7 @@ export function AdminGiftCardsPage() {
           <p className="text-lg text-on-surface-variant/85">Review catalog items and issued cards across the platform.</p>
         </div>
         <div className="w-full sm:w-80">
-          <Select value={businessId ?? 'all'} onValueChange={(value) => setBusinessId(value === 'all' ? undefined : value)}>
+          <Select value={businessId ?? 'all'} onValueChange={changeBusiness}>
             <SelectTrigger>
               <SelectValue placeholder="All businesses" />
             </SelectTrigger>
@@ -52,6 +72,58 @@ export function AdminGiftCardsPage() {
         </div>
       </section>
 
+      {businessId ? (
+        <section className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <div>
+              <Badge variant="outline">Admin issue</Badge>
+              <h2 className="mt-3 font-serif text-3xl text-primary-container">Issue a Gift Card</h2>
+              <p className="mt-2 text-sm text-on-surface-variant">
+                Admin-issued cards use the catalog value and do not deduct customer points.
+              </p>
+            </div>
+            <Button
+              type="button"
+              variant="secondary"
+              className="h-12 rounded-full px-6"
+              disabled={!issueCatalogId || !issueCustomerId || issueGiftCard.isPending}
+              onClick={() => void issueToCustomer()}
+            >
+              <Gift className="size-4" />
+              {issueGiftCard.isPending ? 'Issuing...' : 'Issue Card'}
+            </Button>
+          </div>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div className="grid gap-2">
+              <Label>Gift card</Label>
+              <Select value={issueCatalogId} onValueChange={setIssueCatalogId}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Choose a catalog item" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(catalog.data ?? []).filter((item) => item.isActive).map((item) => (
+                    <SelectItem key={item.id} value={item.id}>{item.title} - {item.valueLabel}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-2">
+              <Label>Customer</Label>
+              <Select value={issueCustomerId} onValueChange={setIssueCustomerId} disabled={members.isLoading}>
+                <SelectTrigger>
+                  <SelectValue placeholder={members.isLoading ? 'Loading customers...' : 'Choose a customer'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {(members.data ?? []).map((member) => (
+                    <SelectItem key={member.id} value={member.id}>{member.fullName} - {member.email}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       <section className="space-y-4">
         <h2 className="font-serif text-3xl text-primary-container">Catalog</h2>
         <div className="grid gap-4">
@@ -76,6 +148,9 @@ export function AdminGiftCardsPage() {
                 <div>
                   <h3 className="font-serif text-2xl text-primary-container">{card.catalog?.title ?? card.code}</h3>
                   <p className="font-mono text-sm text-on-surface-variant">{card.code}</p>
+                  <p className="mt-1 text-sm font-semibold text-on-surface-variant">
+                    Balance: {(card.remainingBalance ?? card.initialBalance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                  </p>
                 </div>
                 <Button asChild variant="outline">
                   <Link to={`/wallet/gift-cards/${card.id}`}>Open</Link>

@@ -301,6 +301,8 @@ export interface GiftCard {
   publicToken: string
   status: GiftCardStatus
   pointsSpent: number
+  initialBalance?: number | null
+  remainingBalance?: number | null
   expiresAt: string
   redeemedAt: string | null
   redeemedBy: string | null

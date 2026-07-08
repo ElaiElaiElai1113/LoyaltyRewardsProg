@@ -132,6 +132,34 @@ export function useIssueGiftCard(customerId?: string) {
   })
 }
 
+export function useIssueGiftCardToCustomer(customerId?: string, businessId?: string) {
+  const queryClient = useQueryClient()
+  const { profile } = useAuth()
+
+  return useMutation({
+    mutationFn: (catalogId: string) => {
+      if (!profile?.id) {
+        throw new Error('Sign in before issuing gift cards.')
+      }
+      if (!customerId) {
+        throw new Error('Choose a customer before issuing the gift card.')
+      }
+      return giftCardsService.issueGiftCard(catalogId, customerId)
+    },
+    onSuccess: (giftCard) => {
+      queryClient.setQueryData(giftCardKeys.detail(giftCard.id), giftCard)
+      void queryClient.invalidateQueries({ queryKey: giftCardKeys.businessCards(giftCard.businessId) })
+      void queryClient.invalidateQueries({ queryKey: giftCardKeys.businessCards(businessId) })
+      void queryClient.invalidateQueries({ queryKey: ['reward-balance', giftCard.customerId] })
+      void queryClient.invalidateQueries({ queryKey: ['activities', giftCard.customerId] })
+      void queryClient.invalidateQueries({ queryKey: ['businessMembers', giftCard.businessId] })
+      toast.success('Gift card issued')
+      return giftCard
+    },
+    onError: (error: Error) => toast.error(error.message),
+  })
+}
+
 export function useRedeemGiftCard(businessId?: string) {
   const queryClient = useQueryClient()
 
