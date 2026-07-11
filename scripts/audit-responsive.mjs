@@ -4,7 +4,7 @@ import { chromium } from '@playwright/test'
 import { createServer } from 'vite'
 
 const host = '127.0.0.1'
-const port = 5176
+const port = 5276
 const baseUrl = `http://${host}:${port}`
 const outputDir = '.tmp-responsive-audit'
 
