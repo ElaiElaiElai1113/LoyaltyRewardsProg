@@ -180,6 +180,14 @@ export function ShopPage() {
     setSelectedQuantity(1)
   }
 
+  const getDirectionsUrl = (business: Business) => {
+    if (hasExactMapPin(business)) {
+      return `https://www.google.com/maps/search/?api=1&query=${business.latitude},${business.longitude}`
+    }
+
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name} Medellin Colombia`)}`
+  }
+
   const chooseProduct = (product: Product) => {
     requireAuth(() => {
       setSelectedProduct(product)
@@ -261,16 +269,23 @@ export function ShopPage() {
                   <button
                     key={business.id}
                     type="button"
-                    className="group absolute z-10 -translate-x-1/2 -translate-y-1/2"
+                    className="group absolute z-10 -translate-x-1/2 -translate-y-1/2 rounded-[1.25rem] outline-none focus-visible:ring-4 focus-visible:ring-primary/45"
                     style={position as CSSProperties}
                     onClick={() => openBusiness(business)}
                     aria-label={`${t('Open business')} ${business.name}`}
+                    aria-pressed={selectedBusinessId === business.id}
                   >
                     <span
-                      className="absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/18 opacity-70 transition group-hover:scale-125 group-hover:opacity-100"
+                      className={`absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/18 opacity-70 transition group-hover:scale-125 group-hover:opacity-100 ${
+                        selectedBusinessId === business.id ? 'scale-125 opacity-100 ring-4 ring-primary/30' : ''
+                      }`}
                       style={{ animationDelay: `${index * 120}ms` }}
                     />
-                    <span className="relative flex size-14 items-center justify-center rounded-[1.15rem] border border-white/35 bg-[var(--card)] text-primary shadow-luxe transition group-hover:-translate-y-1 group-hover:scale-105">
+                    <span
+                      className={`relative flex size-14 items-center justify-center rounded-[1.15rem] border border-white/35 bg-[var(--card)] text-primary shadow-luxe transition group-hover:-translate-y-1 group-hover:scale-105 ${
+                        selectedBusinessId === business.id ? '-translate-y-1 scale-105 bg-primary text-primary-foreground' : ''
+                      }`}
+                    >
                       {business.logoUrl ? (
                         <img src={business.logoUrl} alt="" className="size-10 rounded-xl object-cover" />
                       ) : (
@@ -307,8 +322,13 @@ export function ShopPage() {
                     <button
                       key={business.id}
                       type="button"
-                      className="w-full rounded-2xl border border-primary/12 bg-[var(--muted)] p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card"
+                      className={`w-full rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                        selectedBusinessId === business.id
+                          ? 'border-primary/45 bg-card shadow-soft'
+                          : 'border-primary/12 bg-[var(--muted)]'
+                      }`}
                       onClick={() => openBusiness(business)}
+                      aria-pressed={selectedBusinessId === business.id}
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
@@ -368,6 +388,15 @@ export function ShopPage() {
                   {selectedBusiness.address || selectedBusiness.description}
                 </DialogDescription>
               </DialogHeader>
+
+              <div className="flex flex-wrap gap-3">
+                <Button asChild variant="secondary" size="sm">
+                  <a href={getDirectionsUrl(selectedBusiness)} target="_blank" rel="noreferrer">
+                    <Navigation className="size-4" />
+                    {t('Directions')}
+                  </a>
+                </Button>
+              </div>
 
               <div className="grid gap-3 sm:grid-cols-3">
                 <div className="rounded-2xl border border-primary/12 bg-[var(--muted)] p-4">

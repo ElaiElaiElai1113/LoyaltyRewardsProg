@@ -496,7 +496,7 @@ export function LandingPage() {
         </div>
       </section>
 
-      <section className="bg-[#f8f8f8] px-4 py-[92px] sm:px-6 lg:px-8">
+      <section className="bg-[#f8f8f8] px-4 py-[72px] sm:px-6 lg:px-8">
         <div className="mx-auto max-w-[960px]">
           <div className="text-center">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#c9a546]">{copy.membership.eyebrow}</p>
@@ -505,18 +505,18 @@ export function LandingPage() {
             </h2>
           </div>
 
-          <div className="mt-[52px] grid gap-[40px] md:grid-cols-2">
+          <div className="mt-[38px] grid gap-[24px] md:grid-cols-2">
             {copy.membership.plans.map((plan) => (
               <article
                 key={plan.title}
-                className={`flex min-h-[570px] flex-col rounded-[14px] bg-[#ffffff] px-[34px] pb-[28px] pt-[44px] ${
+                className={`flex min-h-[390px] flex-col rounded-[14px] bg-[#ffffff] px-[28px] pb-[24px] pt-[30px] ${
                   plan.featured
                     ? 'border-2 border-[#9f7b19] shadow-[0_16px_35px_rgba(42,35,18,0.08)]'
                     : 'border border-[#dedfe3]'
                 }`}
               >
                 {plan.featured ? (
-                  <div className="mb-[28px] flex justify-end">
+                  <div className="mb-[18px] flex justify-end">
                     <span className="rounded-full bg-[#c9a546] px-[11px] py-[5px] text-[9px] font-bold uppercase text-[#ffffff]">
                       {copy.membership.featuredBadge}
                     </span>
@@ -525,7 +525,7 @@ export function LandingPage() {
                 <h3 className="text-[22px] font-extrabold text-[#202126]">{plan.title}</h3>
                 {plan.body ? <p className="mt-[8px] text-[13px] font-medium leading-[1.6] text-[#6f747d]">{plan.body}</p> : null}
 
-                <ul className="mt-[16px] flex flex-1 flex-col gap-[17px]">
+                <ul className="mt-[16px] flex flex-1 flex-col gap-[12px]">
                   {plan.bullets.map((bullet) => (
                     <li key={bullet} className="flex gap-[10px] text-[12px] font-medium leading-[1.6] text-[#464b54]">
                       <Check className="mt-[2px] size-[14px] shrink-0 text-[#9b812e]" strokeWidth={2} aria-hidden="true" />
@@ -536,7 +536,7 @@ export function LandingPage() {
 
                 <Link
                   to={plan.to}
-                  className={`mt-[28px] inline-flex min-h-[52px] items-center justify-center rounded-[7px] text-[12px] font-bold transition ${
+                  className={`mt-[22px] inline-flex min-h-[48px] items-center justify-center rounded-[7px] text-[12px] font-bold transition ${
                     plan.featured
                       ? 'bg-[#c9a546] text-[#ffffff] shadow-[0_10px_22px_rgba(201,165,70,0.22)] hover:bg-[#b58f32]'
                       : 'border border-[#c9a546] bg-[#ffffff] text-[#c9a546] hover:bg-[#fff8e5]'
@@ -605,7 +605,7 @@ export function LandingPage() {
             <p className="mt-[14px] text-[14px] font-medium text-[#6f747d]">{copy.businessCta.body}</p>
           </div>
           <Link
-            to="/business"
+            to="/business#book-demo"
             className="inline-flex min-h-[50px] items-center justify-center rounded-full bg-[#c9a546] px-[28px] text-[12px] font-bold text-[#ffffff] shadow-[0_10px_22px_rgba(201,165,70,0.22)] transition hover:bg-[#b58f32]"
           >
             {copy.businessCta.cta} {'->'}
@@ -613,8 +613,8 @@ export function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-[#eeeeee] bg-[#ffffff] px-4 py-[70px] sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-[1180px] gap-[44px] md:grid-cols-[1fr_0.9fr]">
+      <footer className="border-t border-[#eeeeee] bg-[#ffffff] px-4 py-[44px] sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-[1180px]">
           <div>
             <div className="inline-flex items-center gap-[8px]">
               <BrandLogo markClassName="h-7" />
@@ -626,15 +626,6 @@ export function LandingPage() {
               {copy.footer.tagline}
             </p>
           </div>
-          <nav className="md:justify-self-center">
-            <p className="text-[11px] font-extrabold uppercase tracking-[0.14em] text-[#202126]">{copy.footer.quickLinks}</p>
-            <div className="mt-[20px] grid gap-[14px] text-[12px] font-medium text-[#747982]">
-              <a href="#how-it-works" className="transition hover:text-[#202126]">{copy.nav.howItWorks}</a>
-              <Link to="/business" className="transition hover:text-[#202126]">{copy.nav.businesses}</Link>
-              <a href="#faq" className="transition hover:text-[#202126]">{copy.nav.faq}</a>
-              <Link to="/join" className="transition hover:text-[#202126]">{copy.nav.joinNow}</Link>
-            </div>
-          </nav>
         </div>
       </footer>
     </main>
