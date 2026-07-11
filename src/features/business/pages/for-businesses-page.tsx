@@ -18,6 +18,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
+import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { useLanguage, type Language } from '@/lib/language'
 
 const businessPillIcons = [QrCode, Handshake, Gift, ShieldCheck] as const
@@ -130,7 +131,7 @@ const pageCopy: Record<Language, {
     costCalculator: 'Open Cost Calculator',
     formBadge: 'Start onboarding',
     formHeading: 'Request the presentation and signup process',
-    formLead: 'This request is saved on this device for now. No payment or backend lead submission is connected.',
+    formLead: 'Submit your details and the Medellin Rewards team will receive your onboarding request in the admin lead pipeline.',
     nameLabel: 'Your Name',
     namePlaceholder: 'Alex Rivera',
     businessLabel: 'Business Name',
@@ -141,7 +142,7 @@ const pageCopy: Record<Language, {
     phonePlaceholder: 'Optional',
     notesLabel: 'What should we know before onboarding?',
     notesPlaceholder: 'Business type, expected reward offer, staff needs, partner referrals...',
-    submittedMessage: 'Onboarding request saved. We can connect this to a lead backend later.',
+    submittedMessage: 'Onboarding request sent. The team can now review it from the admin lead dashboard.',
     helperText: 'Best for member-friendly businesses with clear repeat purchase or referral potential.',
     requestButton: 'Request Onboarding',
     faqHeading: 'Frequently asked questions',
@@ -223,7 +224,7 @@ const pageCopy: Record<Language, {
     costCalculator: 'Abrir calculadora de costos',
     formBadge: 'Iniciar onboarding',
     formHeading: 'Solicitar la presentacion y el proceso de registro',
-    formLead: 'Esta solicitud se guarda en este dispositivo por ahora. No hay pago ni envio a backend conectado.',
+    formLead: 'Envia tus datos y el equipo de Medellin Rewards recibira tu solicitud en el panel de leads del admin.',
     nameLabel: 'Tu nombre',
     namePlaceholder: 'Alex Rivera',
     businessLabel: 'Nombre del negocio',
@@ -234,7 +235,7 @@ const pageCopy: Record<Language, {
     phonePlaceholder: 'Opcional',
     notesLabel: 'Que debemos saber antes del onboarding?',
     notesPlaceholder: 'Tipo de negocio, oferta de recompensa esperada, necesidades del equipo, referidos de aliados...',
-    submittedMessage: 'Solicitud de onboarding guardada. Podemos conectarla a un backend de leads mas adelante.',
+    submittedMessage: 'Solicitud de onboarding enviada. El equipo ya puede revisarla en el panel de leads del admin.',
     helperText: 'Ideal para negocios amigables con miembros y con buen potencial de recompra o referidos.',
     requestButton: 'Solicitar onboarding',
     faqHeading: 'Preguntas frecuentes',
@@ -259,6 +260,8 @@ export function ForBusinessesPage() {
   const { language } = useLanguage()
   const copy = pageCopy[language]
   const [submitted, setSubmitted] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const heroRows = [
     {
@@ -305,8 +308,9 @@ export function ForBusinessesPage() {
     })
   }, [])
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
+    const form = event.currentTarget
     const formData = new FormData(event.currentTarget)
     const lead = {
       name: String(formData.get('name') ?? '').trim(),
@@ -314,12 +318,35 @@ export function ForBusinessesPage() {
       email: String(formData.get('email') ?? '').trim(),
       phone: String(formData.get('phone') ?? '').trim(),
       notes: String(formData.get('notes') ?? '').trim(),
-      createdAt: new Date().toISOString(),
     }
 
-    window.localStorage.setItem('medellinRewardsDemoLead', JSON.stringify(lead))
-    event.currentTarget.reset()
-    setSubmitted(true)
+    setIsSubmitting(true)
+    setSubmitError(null)
+
+    try {
+      await earlyAccessService.createLead(
+        {
+          fullName: lead.name,
+          email: lead.email,
+          whatsapp: lead.phone,
+          notes: [
+            'Business onboarding request',
+            `Business name: ${lead.businessName}`,
+            lead.phone ? `Phone: ${lead.phone}` : null,
+            lead.notes ? `Notes: ${lead.notes}` : null,
+          ].filter(Boolean).join('\n'),
+          marketingConsent: true,
+        },
+        { source: 'business-onboarding-page' },
+      )
+
+      form.reset()
+      setSubmitted(true)
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to submit onboarding request.')
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -492,12 +519,20 @@ export function ForBusinessesPage() {
                 <p className="min-w-0 text-sm font-bold leading-5 text-success sm:max-w-[260px]">
                   {copy.submittedMessage}
                 </p>
+              ) : submitError ? (
+                <p className="min-w-0 text-sm font-bold leading-5 text-error sm:max-w-[260px]">
+                  {submitError}
+                </p>
               ) : (
                 <p className="min-w-0 text-[13px] font-medium leading-5 text-[#687282] sm:max-w-[260px]">
                   {copy.helperText}
                 </p>
               )}
-              <Button type="submit" className="min-h-[44px] w-full shrink-0 rounded-[8px] bg-[#d1ad4a] px-6 text-[#121212] hover:bg-[#c29f3d] sm:w-auto sm:min-w-[172px]">
+              <Button
+                type="submit"
+                className="min-h-[44px] w-full shrink-0 rounded-[8px] bg-[#d1ad4a] px-6 text-[#121212] hover:bg-[#c29f3d] sm:w-auto sm:min-w-[172px]"
+                isLoading={isSubmitting}
+              >
                 {copy.requestButton}
               </Button>
             </div>
