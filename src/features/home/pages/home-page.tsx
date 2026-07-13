@@ -7,7 +7,7 @@ import coffeeRewards from '@/assets/landing/coffee-rewards.png'
 import dinnerRewards from '@/assets/landing/dinner-rewards.png'
 import realEstateRewards from '@/assets/landing/real-estate-rewards.png'
 import salonRewards from '@/assets/landing/salon-rewards.png'
-import vacationBanner from '@/assets/landing/vacation-banner.png'
+import vacationBanner from '@/assets/landing/vacation-banner.jpg'
 
 import './home-page.css'
 
