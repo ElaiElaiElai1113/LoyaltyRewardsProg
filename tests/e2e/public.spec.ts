@@ -32,6 +32,21 @@ test.describe('public acquisition workflow', () => {
     ).toBeVisible()
   })
 
+  test('homepage uses approved landing typography and clean media assets', async ({ page }) => {
+    await page.goto('/')
+
+    await expect(page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }))
+      .toHaveCSS('font-family', /Fraunces/)
+    await expect(page.getByText("Every time you shop, dine, or spend at a business in our network", { exact: false }))
+      .toHaveCSS('font-family', /Inter/)
+
+    const carCard = page.locator('figure').filter({ hasText: 'Cars' })
+    await expect(carCard.locator('img')).toHaveAttribute('src', /car-rewards-clean\.png/)
+
+    const vacationBanner = page.locator('#vacation')
+    await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean\.webp/)
+  })
+
   test('early access invitation page renders', async ({ page }) => {
     await page.goto('/invitation')
     await expect(page.locator('body')).toContainText(/Medell[ií]n Rewards/)

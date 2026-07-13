@@ -1,13 +1,13 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 
-import carRewards from '@/assets/landing/car-rewards.png'
+import carRewards from '@/assets/landing/car-rewards-clean.png'
 import coffeeMember from '@/assets/landing/coffee-member.png'
 import coffeeRewards from '@/assets/landing/coffee-rewards.png'
 import dinnerRewards from '@/assets/landing/dinner-rewards.png'
 import realEstateRewards from '@/assets/landing/real-estate-rewards.png'
 import salonRewards from '@/assets/landing/salon-rewards.png'
-import vacationBanner from '@/assets/landing/vacation-banner.jpg'
+import vacationBanner from '@/assets/landing/vacation-beach-clean.webp'
 
 import './home-page.css'
 

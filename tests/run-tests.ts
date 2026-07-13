@@ -719,6 +719,22 @@ runTest('Figma homepage is also available at /landing-page', () => {
   assert.match(router, /element: <HomePage \/>/)
 })
 
+runTest('Figma homepage uses the approved typography and clean photography assets', () => {
+  const indexHtml = readFileSync('index.html', 'utf8')
+  const homePage = readFileSync('src/features/home/pages/home-page.tsx', 'utf8')
+  const homeStyles = readFileSync('src/features/home/pages/home-page.css', 'utf8')
+
+  assert.match(indexHtml, /family=Fraunces/)
+  assert.match(indexHtml, /family=Inter/)
+  assert.match(homeStyles, /--home-display-font: 'Fraunces'/)
+  assert.match(homeStyles, /--home-body-font: 'Inter'/)
+  assert.match(homeStyles, /font-family: var\(--home-display-font\)/)
+  assert.match(homeStyles, /font-family: var\(--home-body-font\)/)
+  assert.doesNotMatch(homeStyles, /Cormorant Garamond|Manrope/)
+  assert.match(homePage, /car-rewards-clean\.png/)
+  assert.match(homePage, /vacation-beach-clean\.webp/)
+})
+
 runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const guidePage = readFileSync('src/features/platform-guide/pages/platform-guide-page.tsx', 'utf8')

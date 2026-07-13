@@ -11,11 +11,13 @@
   --home-paper: #f1f0ec;
   --home-white: #fffefd;
   --home-line: #dfddd8;
+  --home-display-font: 'Fraunces', Georgia, serif;
+  --home-body-font: 'Inter', Arial, sans-serif;
   min-width: 0;
   overflow-x: hidden;
   background: var(--home-white);
   color: var(--home-ink);
-  font-family: Manrope, Arial, sans-serif;
+  font-family: var(--home-body-font);
   font-size: 16px;
   line-height: 1.6;
 }
@@ -43,7 +45,7 @@
 .figma-home h1,
 .figma-home h2,
 .figma-home h3 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-weight: 700;
 }
 
@@ -83,7 +85,7 @@
   align-items: center;
   gap: 14px;
   color: #c99f16;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.1em;
@@ -260,7 +262,7 @@
 
 .figma-home__reward-badge strong {
   color: #856506;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-size: 36px;
   line-height: 0.9;
 }
@@ -493,7 +495,7 @@
   border-top-color: var(--home-gold);
   border-radius: 50%;
   color: #886709;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-size: 20px;
   font-weight: 700;
 }
@@ -504,7 +506,7 @@
 
 .figma-home__price {
   margin-top: 50px !important;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-size: 44px;
   font-weight: 700;
   line-height: 1;
@@ -595,7 +597,7 @@
 
 .figma-home__step-number {
   color: #856609;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-size: 19px;
   font-weight: 700;
 }
@@ -682,7 +684,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
-  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-family: var(--home-display-font);
   font-size: 24px;
   font-weight: 700;
   list-style: none;
