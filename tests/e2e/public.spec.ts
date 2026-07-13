@@ -45,6 +45,7 @@ test.describe('public acquisition workflow', () => {
 
     const vacationBanner = page.locator('#vacation')
     await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean\.webp/)
+    await expect(vacationBanner).toHaveCSS('background-position', '50% 0%')
   })
 
   test('early access invitation page renders', async ({ page }) => {

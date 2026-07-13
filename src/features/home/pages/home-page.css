@@ -619,7 +619,7 @@
   min-height: 655px;
   overflow: hidden;
   background-image: var(--vacation-art);
-  background-position: center;
+  background-position: center top;
   background-size: cover;
   color: white;
 }
