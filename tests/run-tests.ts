@@ -702,23 +702,21 @@ runTest('welcome email API uses server-only Hostinger SMTP settings', () => {
   }
 })
 
-runTest('root route redirects to the actual landing page', () => {
+runTest('root route renders the Figma homepage', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const rootRouteStart = router.indexOf('function RootRoute()')
   const protectedRouteStart = router.indexOf('function ProtectedCustomerRoute()')
   const rootRoute = router.slice(rootRouteStart, protectedRouteStart)
 
-  assert.match(rootRoute, /<Navigate replace to="\/landing-page" \/>/)
+  assert.match(rootRoute, /<HomePage \/>/)
   assert.doesNotMatch(rootRoute, /<EarlyAccessPage \/>/)
-  assert.doesNotMatch(rootRoute, /<LandingPage \/>/)
-  assert.doesNotMatch(rootRoute, /landing-header-figma/)
 })
 
-runTest('client landing page is available at /landing-page', () => {
+runTest('Figma homepage is also available at /landing-page', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
 
   assert.match(router, /path: '\/landing-page'/)
-  assert.match(router, /element: <LandingPage \/>/)
+  assert.match(router, /element: <HomePage \/>/)
 })
 
 runTest('platform guide is a Spanish-first video-ready onboarding page', () => {

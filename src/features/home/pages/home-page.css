@@ -625,7 +625,7 @@
 .figma-home__vacation-shade {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg, rgb(43 25 13 / 88%) 0%, rgb(46 26 13 / 76%) 43%, rgb(32 18 9 / 22%) 72%, transparent 100%);
+  background: linear-gradient(90deg, #4b2e1b 0%, #4b2e1b 42%, rgb(54 31 15 / 94%) 50%, rgb(32 18 9 / 28%) 72%, transparent 100%);
 }
 
 .figma-home__vacation-content {
