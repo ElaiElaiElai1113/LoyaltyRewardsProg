@@ -48,6 +48,83 @@ test.describe('public acquisition workflow', () => {
     await expect(vacationBanner).toHaveCSS('background-position', '50% 0%')
   })
 
+  test('all homepage FAQs expand and show approved answers', async ({ page }) => {
+    await page.goto('/')
+
+    const faqItems = [
+      {
+        question: 'Where can I use my Rewards?',
+        answer: 'You can use your Rewards with many partnered businesses, either by going to the Rewards Store or by messaging us for more options.',
+      },
+      {
+        question: 'Can I have more than one Rewards account?',
+        answer: 'No. Each person can have one Rewards account, tied to your full name, email, and phone number.',
+      },
+      {
+        question: 'Can I transfer Rewards to another account?',
+        answer: 'Rewards are tied to your member account and must be used and cannot be transferred.',
+      },
+      {
+        question: 'Can Rewards be exchanged for money?',
+        answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+      },
+    ] as const
+
+    await expect(page.locator('#faq details')).toHaveCount(faqItems.length)
+
+    for (const faq of faqItems) {
+      const item = page.locator('#faq details').filter({ hasText: faq.question })
+      if ((await item.getAttribute('open')) === null) {
+        await item.locator('summary').click()
+      }
+
+      await expect(item).toHaveAttribute('open', '')
+      await expect(item.locator('p')).toHaveText(faq.answer)
+      await expect(item.locator('p')).toBeVisible()
+    }
+  })
+
+  test('business page follows the supplied local partner reference', async ({ page }) => {
+    await page.goto('/business')
+
+    await expect(
+      page.getByRole('heading', { name: 'Helping local businesses grow, while giving amazing Rewards to our members.' }),
+    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'A steady stream of loyal, spending customers' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Three steps. That’s it.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Sign the agreement. We’ll take it from there.' })).toBeVisible()
+
+    await expect(page.getByRole('link', { name: 'Business Login' })).toHaveAttribute('href', '/business/login')
+    await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how-it-works')
+    await expect(page.getByRole('link', { name: 'Partner With Us' })).toHaveAttribute('href', '#get-started')
+
+    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Medellín Rewards members' }))
+      .toHaveAttribute('src', /local-business-owner\.png/)
+    await expect(page.getByRole('img', { name: 'Hotel partner welcoming a Medellín Rewards member' }))
+      .toHaveAttribute('src', /hotel-partner\.png/)
+    await expect(page.getByRole('img', { name: 'Salon partner serving Medellín Rewards members' }))
+      .toHaveAttribute('src', /salon-partner\.png/)
+    await expect(page.getByRole('img', { name: 'Staff member scanning a customer QR code at checkout' }))
+      .toHaveAttribute('src', /staff-qr-checkout\.png/)
+  })
+
+  test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/business')
+
+    await expect(
+      page.getByRole('heading', { name: 'Helping local businesses grow, while giving amazing Rewards to our members.' }),
+    ).toBeVisible()
+    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Medellín Rewards members' }))
+      .toBeVisible()
+
+    const dimensions = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
+  })
+
   test('early access invitation page renders', async ({ page }) => {
     await page.goto('/invitation')
     await expect(page.locator('body')).toContainText(/Medell[ií]n Rewards/)

@@ -92,15 +92,27 @@ const processSteps = [
 ] as const
 
 const faqs = [
-  { icon: '📍', question: 'Where can I use my Rewards?' },
+  {
+    icon: '📍',
+    question: 'Where can I use my Rewards?',
+    answer: 'You can use your Rewards with many partnered businesses, either by going to the Rewards Store or by messaging us for more options.',
+  },
   {
     icon: '👤',
     question: 'Can I have more than one Rewards account?',
     answer: 'No. Each person can have one Rewards account, tied to your full name, email, and phone number.',
     open: true,
   },
-  { icon: '✅', question: 'Can I transfer Rewards to another account?' },
-  { icon: '$', question: 'Can Rewards be exchanged for money?' },
+  {
+    icon: '✅',
+    question: 'Can I transfer Rewards to another account?',
+    answer: 'Rewards are tied to your member account and must be used and cannot be transferred.',
+  },
+  {
+    icon: '$',
+    question: 'Can Rewards be exchanged for money?',
+    answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+  },
 ] as const
 
 function Brand() {
