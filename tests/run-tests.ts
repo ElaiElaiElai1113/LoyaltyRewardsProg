@@ -75,6 +75,24 @@ function getFilesByExtension(directory: string, extension: string): string[] {
   })
 }
 
+runTest('membership charges $25 USD monthly and keeps the $10 instant credit', () => {
+  const page = readFileSync('src/features/membership/pages/membership-page.tsx', 'utf8')
+  const banner = readFileSync('src/features/membership/components/membership-banner.tsx', 'utf8')
+  const gate = readFileSync('src/features/membership/components/earn-redeem-gate.tsx', 'utf8')
+  const pricing = readFileSync('src/features/membership/membership-pricing.ts', 'utf8')
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
+  const migration = readFileSync('supabase/migrations/20260714000000_membership_price_25_usd.sql', 'utf8')
+
+  assert.match(pricing, /MEMBERSHIP_PRICE_CENTS = 2500/)
+  assert.match(pricing, /MEMBERSHIP_REWARD_CREDIT_CENTS = 1000/)
+  assert.match(page, /\$25\/mo flat/)
+  assert.match(banner, /\$25\/mo membership, \$10 credit instantly/)
+  assert.match(gate, /formatCurrency\(MEMBERSHIP_PRICE_USD\)/)
+  assert.match(language, /'\$25\/mo flat': '\$25\/mes fijo'/)
+  assert.match(migration, /price_cents = 2500/)
+  assert.match(migration, /grant_membership_credit\(actor_id, 1000\)/)
+})
+
 runTest('normalizeCheckoutItems aggregates duplicate products for one business', () => {
   const result = normalizeCheckoutItems([
     { productId: 'prod-1', businessId: 'biz-1', quantity: 1 },
