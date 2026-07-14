@@ -701,6 +701,13 @@
   margin: 12px 0 0;
 }
 
+.business-landing__question-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
 @media (max-width: 1000px) {
   .business-landing__hero {
     padding-top: 72px;
@@ -952,6 +959,10 @@
     justify-content: center;
     padding-bottom: 44px;
     padding-top: 44px;
+  }
+
+  .business-landing__question-actions {
+    justify-content: flex-start;
   }
 
   .business-public-shell__brand {

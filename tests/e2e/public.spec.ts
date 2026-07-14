@@ -95,6 +95,8 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('heading', { name: 'Sign the agreement. We’ll take it from there.' })).toBeVisible()
 
     await expect(page.getByRole('link', { name: 'Business Login' })).toHaveAttribute('href', '/business/login')
+    await expect(page.getByRole('link', { name: 'Cost Calculator' })).toHaveAttribute('href', '/cost-calculator')
+    await expect(page.getByRole('link', { name: 'Calculate Your Costs' })).toHaveAttribute('href', '/cost-calculator')
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how-it-works')
     await expect(page.getByRole('link', { name: 'Partner With Us' })).toHaveAttribute('href', '#get-started')
 

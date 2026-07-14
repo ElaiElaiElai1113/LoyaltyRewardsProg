@@ -7,6 +7,7 @@ import {
   RefreshCw,
   ShoppingBag,
 } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import ctaOverlay from '@/assets/business/cta-overlay.png'
 import hotelPartner from '@/assets/business/hotel-partner.png'
@@ -233,9 +234,14 @@ export function ForBusinessesPage() {
             <h2 id="business-questions-title">Have questions before you sign?</h2>
             <p>Talk to our team and we’ll walk you through commission rates,<br className="business-landing__desktop-break" /> onboarding, and what to expect.</p>
           </div>
-          <a className="business-landing__button" href="mailto:info@medellinrewards.com">
-            Talk to us <ArrowRight aria-hidden="true" />
-          </a>
+          <div className="business-landing__question-actions">
+            <Link className="business-landing__button business-landing__button--outline" to="/cost-calculator">
+              Calculate Your Costs <ArrowRight aria-hidden="true" />
+            </Link>
+            <a className="business-landing__button" href="mailto:info@medellinrewards.com">
+              Talk to us <ArrowRight aria-hidden="true" />
+            </a>
+          </div>
         </div>
       </section>
     </div>

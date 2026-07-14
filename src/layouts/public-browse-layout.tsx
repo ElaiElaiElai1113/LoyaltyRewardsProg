@@ -40,6 +40,7 @@ export function PublicBrowseLayout() {
             <nav className="business-public-shell__nav" aria-label="Business page navigation">
               <a href="#benefits">Benefits</a>
               <a href="#how-it-works">How It Works</a>
+              <NavLink to="/cost-calculator">Cost Calculator</NavLink>
               <a href="#get-started">Get Started</a>
             </nav>
 
