@@ -203,7 +203,7 @@
   box-shadow: none;
 }
 
-.figma-home__hero-pills {
+.figma-home .figma-home__hero-pills {
   display: flex;
   max-width: 520px;
   flex-wrap: wrap;
@@ -910,7 +910,7 @@
     width: 100%;
   }
 
-  .figma-home__hero-pills {
+  .figma-home .figma-home__hero-pills {
     margin-top: 38px;
   }
 

@@ -48,6 +48,20 @@ test.describe('public acquisition workflow', () => {
     await expect(vacationBanner).toHaveCSS('background-position', '50% 0%')
   })
 
+  test('mobile homepage separates the hero actions from the benefit pills', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/')
+
+    const secondaryAction = page.getByRole('link', { name: 'See how it works' })
+    const benefitPills = page.getByRole('list', { name: 'Membership benefits' })
+    const secondaryBox = await secondaryAction.boundingBox()
+    const pillsBox = await benefitPills.boundingBox()
+
+    expect(secondaryBox).not.toBeNull()
+    expect(pillsBox).not.toBeNull()
+    expect(pillsBox!.y - (secondaryBox!.y + secondaryBox!.height)).toBeGreaterThanOrEqual(28)
+  })
+
   test('all homepage FAQs expand and show approved answers', async ({ page }) => {
     await page.goto('/')
 
