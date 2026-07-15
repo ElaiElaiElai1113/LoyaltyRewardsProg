@@ -382,21 +382,6 @@
   object-position: center;
 }
 
-.figma-home__category-card figcaption {
-  position: absolute;
-  bottom: 24px;
-  left: 24px;
-  display: inline-flex;
-  min-height: 42px;
-  align-items: center;
-  border-radius: 999px;
-  background: #fff;
-  box-shadow: 0 5px 15px rgb(0 0 0 / 10%);
-  font-size: 13px;
-  font-weight: 800;
-  padding: 0 22px;
-}
-
 .figma-home__membership {
   padding: 170px 0 200px;
   background: #fff;

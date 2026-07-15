@@ -40,8 +40,9 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByText("Every time you shop, dine, or spend at a business in our network", { exact: false }))
       .toHaveCSS('font-family', /Inter/)
 
-    const carCard = page.locator('figure').filter({ hasText: 'Cars' })
-    await expect(carCard.locator('img')).toHaveAttribute('src', /car-rewards-clean\.png/)
+    await expect(page.getByRole('img', { name: 'Family celebrating a car purchase' }))
+      .toHaveAttribute('src', /car-rewards-clean\.png/)
+    await expect(page.locator('.figma-home__category-card figcaption')).toHaveCount(0)
 
     const vacationBanner = page.locator('#vacation')
     await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean\.webp/)

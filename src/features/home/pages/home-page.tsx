@@ -33,31 +33,26 @@ const categoryImages = [
   {
     src: coffeeRewards,
     alt: 'Member earning rewards at a local coffee shop',
-    label: 'Coffee runs',
     className: 'figma-home__category-card--coffee',
   },
   {
     src: dinnerRewards,
     alt: 'Friends dining together in Medellín',
-    label: 'Dining out',
     className: 'figma-home__category-card--dining',
   },
   {
     src: salonRewards,
     alt: 'Member enjoying a day at a local hair salon',
-    label: 'Salon days',
     className: 'figma-home__category-card--salon',
   },
   {
     src: carRewards,
     alt: 'Family celebrating a car purchase',
-    label: 'Cars',
     className: 'figma-home__category-card--cars',
   },
   {
     src: realEstateRewards,
     alt: 'Couple earning rewards on a real estate purchase',
-    label: 'Real estate',
     className: 'figma-home__category-card--real-estate',
   },
 ] as const
@@ -213,9 +208,8 @@ export function HomePage() {
 
           <div className="figma-home__category-grid">
             {categoryImages.map((item) => (
-              <figure className={`figma-home__category-card ${item.className}`} key={item.label}>
+              <figure className={`figma-home__category-card ${item.className}`} key={item.alt}>
                 <img src={item.src} alt={item.alt} />
-                <figcaption>{item.label}</figcaption>
               </figure>
             ))}
           </div>
