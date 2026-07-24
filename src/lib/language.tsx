@@ -17,6 +17,8 @@ const languageLabels: Record<Language, string> = {
 }
 
 const spanishTranslations: Record<string, string> = {
+  Back: 'Volver',
+  Directions: 'Cómo llegar',
   'Multi-business rewards platform': 'Plataforma de recompensas para múltiples negocios',
   'Earn across': 'Gana en toda',
   'the network': 'la red',

@@ -310,7 +310,7 @@ runTest('admin portal exposes early access lead workflow', () => {
   const adminHooks = readFileSync('src/hooks/use-admin-data.ts', 'utf8')
 
   assert.match(adminPage, /value="early-access"/)
-  assert.match(adminPage, /Early Access Leads/)
+  assert.match(adminPage, /Lead Pipeline/)
   assert.match(adminPage, /earlyAccessLeadStatusOptions/)
   assert.match(earlyAccessService, /async getLeads\(/)
   assert.match(earlyAccessService, /async updateLeadStatus\(/)
@@ -2098,7 +2098,10 @@ runTest('workflow QA docs record staff operational policy and seeded workflow co
 runTest('package exposes a launch checklist test command', () => {
   const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> }
 
-  assert.equal(pkg.scripts?.['test:launch'], 'playwright test tests/e2e/launch-checklist.spec.ts')
+  assert.equal(
+    pkg.scripts?.['test:launch'],
+    'node scripts/run-playwright-local.mjs tests/e2e/launch-checklist.spec.ts',
+  )
 })
 
 runTest('launch checklist Playwright suite maps to PT001 through PT008', () => {
@@ -2143,12 +2146,12 @@ runTest('workflow QA docs explain the automated launch checklist command', () =>
 runTest('package exposes focused workflow automation commands', () => {
   const pkg = JSON.parse(readFileSync('package.json', 'utf8')) as { scripts?: Record<string, string> }
 
-  assert.equal(pkg.scripts?.['test:referrals'], 'playwright test tests/e2e/referrals.spec.ts')
-  assert.equal(pkg.scripts?.['test:onboarding'], 'playwright test tests/e2e/onboarding.spec.ts')
-  assert.equal(pkg.scripts?.['test:gift-cards'], 'playwright test tests/e2e/gift-cards.spec.ts')
-  assert.equal(pkg.scripts?.['test:rewards'], 'playwright test tests/e2e/rewards-redemption.spec.ts')
-  assert.equal(pkg.scripts?.['test:load'], 'playwright test tests/e2e/load.spec.ts')
-  assert.equal(pkg.scripts?.['test:agreements'], 'playwright test tests/e2e/agreements.spec.ts')
+  assert.equal(pkg.scripts?.['test:referrals'], 'node scripts/run-playwright-local.mjs tests/e2e/referrals.spec.ts')
+  assert.equal(pkg.scripts?.['test:onboarding'], 'node scripts/run-playwright-local.mjs tests/e2e/onboarding.spec.ts')
+  assert.equal(pkg.scripts?.['test:gift-cards'], 'node scripts/run-playwright-local.mjs tests/e2e/gift-cards.spec.ts')
+  assert.equal(pkg.scripts?.['test:rewards'], 'node scripts/run-playwright-local.mjs tests/e2e/rewards-redemption.spec.ts')
+  assert.equal(pkg.scripts?.['test:load'], 'node scripts/run-playwright-local.mjs tests/e2e/load.spec.ts')
+  assert.equal(pkg.scripts?.['test:agreements'], 'node scripts/run-playwright-local.mjs tests/e2e/agreements.spec.ts')
   assert.equal(pkg.scripts?.['test:playwright'], 'node scripts/run-playwright-local.mjs')
   assert.equal(pkg.scripts?.['test:responsive'], 'node scripts/audit-responsive.mjs')
 })
