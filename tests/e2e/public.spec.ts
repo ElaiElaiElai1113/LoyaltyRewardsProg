@@ -1,31 +1,33 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('public acquisition workflow', () => {
-  test('Figma homepage is the main public landing page', async ({ page }) => {
+  test('Figma homepage is the Spanish-first main public landing page', async ({ page }) => {
     await page.goto('/')
 
     await expect(
-      page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
+      page.getByRole('heading', { name: 'Gana increíbles recompensas mientras apoyas a los negocios locales' }),
     ).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Every purchase becomes a Reward' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Choose how you earn' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Cada compra se convierte en una recompensa' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Elige cómo quieres ganar' })).toBeVisible()
     await expect(page.getByText('$100,000 COP', { exact: true })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'How it works' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Your dream vacation. Already paid for.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '/business')
-    await expect(page.getByRole('link', { name: 'Join now' }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('heading', { name: 'Cómo funciona' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Tus vacaciones soñadas. Ya están pagadas.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Preguntas frecuentes' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Negocios' })).toHaveAttribute('href', '/business')
+    await expect(page.getByRole('link', { name: 'Únete ahora' }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('button', { name: 'Switch to English' })).toHaveText('English')
 
-    const expandedFaq = page.locator('details').filter({ hasText: 'Can I have more than one Rewards account?' })
+    const expandedFaq = page.locator('details').filter({ hasText: '¿Puedo tener más de una cuenta de recompensas?' })
     await expect(expandedFaq).toHaveAttribute('open', '')
     await expect(
       page.getByText(
-        'No. Each person can have one Rewards account, tied to your full name, email, and phone number.',
+        'No. Cada persona puede tener una sola cuenta asociada con su nombre completo, correo y teléfono.',
       ),
     ).toBeVisible()
   })
 
   test('legacy landing URL renders the Figma homepage', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
     await page.goto('/landing-page')
     await expect(
       page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
@@ -33,6 +35,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('homepage uses approved landing typography and clean media assets', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
     await page.goto('/')
 
     await expect(page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }))
@@ -51,6 +54,7 @@ test.describe('public acquisition workflow', () => {
 
   test('mobile homepage separates the hero actions from the benefit pills', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
+    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
     await page.goto('/')
 
     const secondaryAction = page.getByRole('link', { name: 'See how it works' })
@@ -64,6 +68,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('all homepage FAQs expand and show approved answers', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
     await page.goto('/')
 
     const faqItems = [

@@ -54,7 +54,7 @@ test.describe('platform guide workflow', () => {
   })
 
   test('public navigation exposes the guide link', async ({ page }) => {
-    await page.goto('/business')
+    await page.goto('/shop')
 
     await expect(page.getByRole('link', { name: 'Guia' })).toHaveAttribute('href', '/guide')
     await page.getByRole('link', { name: 'Guia' }).click()
