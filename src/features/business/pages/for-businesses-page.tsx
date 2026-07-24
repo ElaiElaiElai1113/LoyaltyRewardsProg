@@ -167,7 +167,10 @@ export function ForBusinessesPage() {
 
           <div className="business-landing__category-grid">
             {partnerCategories.map((category) => (
-              <figure className="business-landing__category-card" key={category.label}>
+              <figure
+                className={`business-landing__category-card business-landing__category-card--${category.label.toLowerCase()}`}
+                key={category.label}
+              >
                 <img src={category.src} alt={category.alt} />
                 <figcaption>{category.label}</figcaption>
               </figure>
