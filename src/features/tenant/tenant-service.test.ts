@@ -1,8 +1,14 @@
 import { describe, expect, it } from 'vitest'
 
-import { getFallbackProgram, seededPrograms } from '@/features/tenant/tenant-service'
+import { canUseTenantPreviewOverride, getFallbackProgram, seededPrograms } from '@/features/tenant/tenant-service'
 
 describe('tenant resolution fallback', () => {
+  it('allows this project preview hosts without trusting unrelated Vercel deployments', () => {
+    expect(canUseTenantPreviewOverride('loyalty-rewards-prog-7xkl2hro-elaielaielai1113s-projects.vercel.app')).toBe(true)
+    expect(canUseTenantPreviewOverride('attacker-project.vercel.app')).toBe(false)
+    expect(canUseTenantPreviewOverride('unknown.example.com')).toBe(false)
+  })
+
   it.each([
     ['medellinrewards.com', 'medellin'],
     ['guatemala.rewardsplatform.app', 'guatemala'],

@@ -80,6 +80,14 @@ function inferSlug(hostname: string) {
   return Object.keys(programs).find((slug) => host.includes(slug)) ?? 'medellin'
 }
 
+export function canUseTenantPreviewOverride(hostname: string) {
+  const host = hostname.toLowerCase().split(':')[0]
+  return host === 'localhost'
+    || host.startsWith('127.')
+    || host.endsWith('.rewardsplatform.app')
+    || (host.startsWith('loyalty-rewards-prog-') && host.endsWith('-elaielaielai1113s-projects.vercel.app'))
+}
+
 export function getFallbackProgram(hostname = window.location.hostname) {
   return programs[inferSlug(hostname)] ?? programs.medellin
 }
@@ -120,9 +128,7 @@ export async function resolveProgram(hostname: string): Promise<Program> {
   const queryTenant = typeof window === 'undefined'
     ? null
     : new URLSearchParams(window.location.search).get('tenant')
-  const canUseTenantOverride = hostname === 'localhost'
-    || hostname.startsWith('127.')
-    || hostname.endsWith('.rewardsplatform.app')
+  const canUseTenantOverride = canUseTenantPreviewOverride(hostname)
   const resolutionHostname = queryTenant && canUseTenantOverride
     ? `${queryTenant.toLowerCase()}.rewardsplatform.app`
     : hostname
