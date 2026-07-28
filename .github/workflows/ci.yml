@@ -66,6 +66,12 @@ jobs:
       - name: Operations readiness contract
         run: npm run test:operations-readiness
 
+      - name: Tenant migration packages
+        run: npm run test:tenant-packages
+
+      - name: Mobile wrapper readiness
+        run: npm run test:mobile-readiness
+
       - name: Migration release manifest
         run: npm run ops:migrations:validate
 
