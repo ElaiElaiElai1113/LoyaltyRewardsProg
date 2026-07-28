@@ -51,9 +51,27 @@ test.describe('white-label tenant resolution', () => {
   test('tenant administration remains protected for signed-out visitors', async ({ page }) => {
     const errors = collectRuntimeErrors(page)
     await page.goto('/program/settings?tenant=guatemala')
-    await expect(page).toHaveURL(/\/signin\?redirect=%2Fprogram%2Fsettings$/)
+    await expect(page).toHaveURL(/\/signin\?redirect=%2Fprogram%2Fsettings&tenant=guatemala$/)
     await expect(page.locator('#signin-email')).toBeVisible()
     await expect(page).toHaveTitle('Guatemala Rewards')
+    expect(errors).toEqual([])
+  })
+
+  test('self-service program onboarding requires authentication', async ({ page }) => {
+    const errors = collectRuntimeErrors(page)
+    await page.goto('/onboarding/program?tenant=davao')
+    await expect(page).toHaveURL(/\/signin\?redirect=%2Fonboarding%2Fprogram&tenant=davao/)
+    await expect(page.locator('#signin-email')).toBeVisible()
+    await expect(page).toHaveTitle('Davao Rewards')
+    expect(errors).toEqual([])
+  })
+
+  test('early-access copy follows the selected tenant', async ({ page }) => {
+    const errors = collectRuntimeErrors(page)
+    await page.goto('/invitation?tenant=guatemala')
+    await expect(page).toHaveTitle('Guatemala Rewards')
+    await expect(page.locator('main')).toContainText('Guatemala Rewards')
+    await expect(page.locator('main')).not.toContainText('Medellin Rewards')
     expect(errors).toEqual([])
   })
 })

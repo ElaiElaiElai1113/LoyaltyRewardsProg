@@ -117,8 +117,17 @@ function mapProgram(row: Record<string, unknown>): Program {
 
 export async function resolveProgram(hostname: string): Promise<Program> {
   if (!supabase) return getFallbackProgram(hostname)
+  const queryTenant = typeof window === 'undefined'
+    ? null
+    : new URLSearchParams(window.location.search).get('tenant')
+  const canUseTenantOverride = hostname === 'localhost'
+    || hostname.startsWith('127.')
+    || hostname.endsWith('.rewardsplatform.app')
+  const resolutionHostname = queryTenant && canUseTenantOverride
+    ? `${queryTenant.toLowerCase()}.rewardsplatform.app`
+    : hostname
   const { data, error } = await supabase.rpc('resolve_program_by_hostname', {
-    p_hostname: hostname.split(':')[0].toLowerCase(),
+    p_hostname: resolutionHostname.split(':')[0].toLowerCase(),
   })
   if (error || !data || !Array.isArray(data) || !data[0]) return getFallbackProgram(hostname)
   return mapProgram(data[0] as Record<string, unknown>)

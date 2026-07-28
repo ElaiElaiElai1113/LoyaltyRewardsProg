@@ -7,6 +7,10 @@ const authProvisioning = readFileSync(
   'supabase/migrations/20260726000000_allow_auth_user_tenant_provisioning.sql',
   'utf8',
 )
+const limitsAndStorage = readFileSync(
+  'supabase/migrations/20260728000000_tenant_limits_and_storage_isolation.sql',
+  'utf8',
+)
 
 describe('tenant database migrations', () => {
   it('creates all four seeded programs and tenant identity tables', () => {
@@ -40,5 +44,13 @@ describe('tenant database migrations', () => {
     expect(guards).toContain('get_plan_entitlements')
     expect(guards).toContain('administrator_limit_reached')
     expect(guards).toContain('create table public.stripe_webhook_events')
+  })
+
+  it('prepares approval-gated plan limits and tenant-isolated storage policies', () => {
+    expect(limitsAndStorage).toContain("enforce_program_resource_limit('customDomains')")
+    expect(limitsAndStorage).toContain("enforce_program_resource_limit('businesses')")
+    expect(limitsAndStorage).toContain("enforce_program_resource_limit('members')")
+    expect(limitsAndStorage).toContain('(storage.foldername(name))[2]')
+    expect(limitsAndStorage).toContain('Program admins view tenant verification IDs')
   })
 })

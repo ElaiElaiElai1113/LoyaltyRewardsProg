@@ -98,7 +98,7 @@ export function AmbassadorsPage() {
                   {ambassadorVipHeadline}
                 </h1>
                 <p className="max-w-2xl text-sm font-medium leading-6 text-[var(--cream)]/78 xl:text-base">
-                  {ambassadorVipSupportingCopy}
+                  {ambassadorVipSupportingCopy.replaceAll('Medellin Rewards', program.name)}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {ambassadorCreatorSignals.map((signal) => (

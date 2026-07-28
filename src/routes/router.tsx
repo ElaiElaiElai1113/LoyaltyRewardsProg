@@ -1,54 +1,7 @@
-import { useEffect, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import { App as CapacitorApp } from '@capacitor/app'
 import { Navigate, Outlet, RouterProvider, createBrowserRouter, useLocation, useNavigate } from 'react-router-dom'
 
-import { AdminPage } from '@/features/admin/pages/admin-page'
-import { AmbassadorsPage } from '@/features/ambassadors/pages/ambassadors-page'
-import { AuthPage } from '@/features/auth/pages/landing-page'
-import { RequiredAgreementsPage } from '@/features/auth/pages/required-agreements-page'
-import { ResetPasswordPage } from '@/features/auth/pages/reset-password-page'
-import { StaffLoginPage } from '@/features/auth/pages/staff-login-page'
-import { CostCalculatorPage } from '@/features/business/pages/cost-calculator-page'
-import { ForBusinessesPage } from '@/features/business/pages/for-businesses-page'
-import { ActivityPage } from '@/features/activity/pages/activity-page'
-import { DashboardPage } from '@/features/dashboard/pages/dashboard-page'
-import { EarlyAccessPage } from '@/features/early-access/pages/early-access-page'
-import { HomePage } from '@/features/home/pages/home-page'
-import { ProfilePage } from '@/features/profile/pages/profile-page'
-import { PromotionsPage } from '@/features/promotions/pages/promotions-page'
-import { PromoPage } from '@/features/referrals/pages/promo-page'
-import { ReferralRegisterPage } from '@/features/referrals/pages/referral-register-page'
-import { AdminGiftCardsPage } from '@/features/gift-cards/pages/admin-gift-cards-page'
-import { BusinessGiftCardsPage } from '@/features/gift-cards/pages/business-gift-cards-page'
-import { GiftCardDetailPage } from '@/features/gift-cards/pages/gift-card-detail-page'
-import { GiftCardsPage } from '@/features/gift-cards/pages/gift-cards-page'
-import { PublicGiftCardPage } from '@/features/gift-cards/pages/public-gift-card-page'
-import { RedemptionsPage } from '@/features/gift-cards/pages/redemptions-page'
-import { WalletGiftCardsPage } from '@/features/gift-cards/pages/wallet-gift-cards-page'
-import { JoinRewardsPage } from '@/features/join/pages/join-rewards-page'
-import { LegalPage } from '@/features/legal/pages/legal-page'
-import { MembershipPage } from '@/features/membership/pages/membership-page'
-import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
-import { PlatformGuidePage } from '@/features/platform-guide/pages/platform-guide-page'
-import { PlatformProgramsPage } from '@/features/platform/pages/platform-programs-page'
-import { ProgramSettingsPage } from '@/features/program/pages/program-settings-page'
-import { ProgramTeamPage } from '@/features/program/pages/program-team-page'
-import { ProgramBillingPage } from '@/features/program/pages/program-billing-page'
-import { CartPage } from '@/features/shop/pages/cart-page'
-import { CheckoutPage } from '@/features/shop/pages/checkout-page'
-import { OrderConfirmationPage } from '@/features/shop/pages/order-confirmation-page'
-import { OrdersPage } from '@/features/shop/pages/orders-page'
-import { ShopPage } from '@/features/shop/pages/shop-page'
-import {
-  BusinessDashboardPage,
-  MemberSalePage,
-  MembersPage,
-  PartnersPage,
-  ProductsPage,
-  PromotionsPage as BusinessPromotionsPage,
-  RewardsPage as BusinessRewardsPage,
-  SettingsPage,
-} from '@/features/business-owner/pages'
 import { LanguagePicker } from '@/components/language-picker'
 import { useAuth } from '@/hooks/use-auth'
 import { AdminLayout } from '@/layouts/admin-layout'
@@ -65,7 +18,60 @@ import { getHomePathForRole } from '@/lib/role-routes'
 import { useCurrentProgramMembership } from '@/hooks/use-program-access'
 import { canAccessProgramAdmin } from '@/lib/program-access'
 
+const AdminPage = lazy(() => import('@/features/admin/pages/admin-page').then((module) => ({ default: module.AdminPage })))
+const AmbassadorsPage = lazy(() => import('@/features/ambassadors/pages/ambassadors-page').then((module) => ({ default: module.AmbassadorsPage })))
+const AuthPage = lazy(() => import('@/features/auth/pages/landing-page').then((module) => ({ default: module.AuthPage })))
+const RequiredAgreementsPage = lazy(() => import('@/features/auth/pages/required-agreements-page').then((module) => ({ default: module.RequiredAgreementsPage })))
+const ResetPasswordPage = lazy(() => import('@/features/auth/pages/reset-password-page').then((module) => ({ default: module.ResetPasswordPage })))
+const StaffLoginPage = lazy(() => import('@/features/auth/pages/staff-login-page').then((module) => ({ default: module.StaffLoginPage })))
+const CostCalculatorPage = lazy(() => import('@/features/business/pages/cost-calculator-page').then((module) => ({ default: module.CostCalculatorPage })))
+const ForBusinessesPage = lazy(() => import('@/features/business/pages/for-businesses-page').then((module) => ({ default: module.ForBusinessesPage })))
+const ActivityPage = lazy(() => import('@/features/activity/pages/activity-page').then((module) => ({ default: module.ActivityPage })))
+const DashboardPage = lazy(() => import('@/features/dashboard/pages/dashboard-page').then((module) => ({ default: module.DashboardPage })))
+const EarlyAccessPage = lazy(() => import('@/features/early-access/pages/early-access-page').then((module) => ({ default: module.EarlyAccessPage })))
+const HomePage = lazy(() => import('@/features/home/pages/home-page').then((module) => ({ default: module.HomePage })))
+const ProfilePage = lazy(() => import('@/features/profile/pages/profile-page').then((module) => ({ default: module.ProfilePage })))
+const PromotionsPage = lazy(() => import('@/features/promotions/pages/promotions-page').then((module) => ({ default: module.PromotionsPage })))
+const PromoPage = lazy(() => import('@/features/referrals/pages/promo-page').then((module) => ({ default: module.PromoPage })))
+const ReferralRegisterPage = lazy(() => import('@/features/referrals/pages/referral-register-page').then((module) => ({ default: module.ReferralRegisterPage })))
+const AdminGiftCardsPage = lazy(() => import('@/features/gift-cards/pages/admin-gift-cards-page').then((module) => ({ default: module.AdminGiftCardsPage })))
+const BusinessGiftCardsPage = lazy(() => import('@/features/gift-cards/pages/business-gift-cards-page').then((module) => ({ default: module.BusinessGiftCardsPage })))
+const GiftCardDetailPage = lazy(() => import('@/features/gift-cards/pages/gift-card-detail-page').then((module) => ({ default: module.GiftCardDetailPage })))
+const GiftCardsPage = lazy(() => import('@/features/gift-cards/pages/gift-cards-page').then((module) => ({ default: module.GiftCardsPage })))
+const PublicGiftCardPage = lazy(() => import('@/features/gift-cards/pages/public-gift-card-page').then((module) => ({ default: module.PublicGiftCardPage })))
+const RedemptionsPage = lazy(() => import('@/features/gift-cards/pages/redemptions-page').then((module) => ({ default: module.RedemptionsPage })))
+const WalletGiftCardsPage = lazy(() => import('@/features/gift-cards/pages/wallet-gift-cards-page').then((module) => ({ default: module.WalletGiftCardsPage })))
+const JoinRewardsPage = lazy(() => import('@/features/join/pages/join-rewards-page').then((module) => ({ default: module.JoinRewardsPage })))
+const LegalPage = lazy(() => import('@/features/legal/pages/legal-page').then((module) => ({ default: module.LegalPage })))
+const MembershipPage = lazy(() => import('@/features/membership/pages/membership-page').then((module) => ({ default: module.MembershipPage })))
+const NotFoundPage = lazy(() => import('@/features/not-found/pages/not-found-page').then((module) => ({ default: module.NotFoundPage })))
+const PlatformGuidePage = lazy(() => import('@/features/platform-guide/pages/platform-guide-page').then((module) => ({ default: module.PlatformGuidePage })))
+const PlatformProgramsPage = lazy(() => import('@/features/platform/pages/platform-programs-page').then((module) => ({ default: module.PlatformProgramsPage })))
+const ProgramSettingsPage = lazy(() => import('@/features/program/pages/program-settings-page').then((module) => ({ default: module.ProgramSettingsPage })))
+const ProgramTeamPage = lazy(() => import('@/features/program/pages/program-team-page').then((module) => ({ default: module.ProgramTeamPage })))
+const ProgramBillingPage = lazy(() => import('@/features/program/pages/program-billing-page').then((module) => ({ default: module.ProgramBillingPage })))
+const ProgramOnboardingPage = lazy(() => import('@/features/program/pages/program-onboarding-page').then((module) => ({ default: module.ProgramOnboardingPage })))
+const CartPage = lazy(() => import('@/features/shop/pages/cart-page').then((module) => ({ default: module.CartPage })))
+const CheckoutPage = lazy(() => import('@/features/shop/pages/checkout-page').then((module) => ({ default: module.CheckoutPage })))
+const OrderConfirmationPage = lazy(() => import('@/features/shop/pages/order-confirmation-page').then((module) => ({ default: module.OrderConfirmationPage })))
+const OrdersPage = lazy(() => import('@/features/shop/pages/orders-page').then((module) => ({ default: module.OrdersPage })))
+const ShopPage = lazy(() => import('@/features/shop/pages/shop-page').then((module) => ({ default: module.ShopPage })))
+const BusinessDashboardPage = lazy(() => import('@/features/business-owner/pages/business-dashboard-page').then((module) => ({ default: module.BusinessDashboardPage })))
+const MemberSalePage = lazy(() => import('@/features/business-owner/pages/member-sale-page').then((module) => ({ default: module.MemberSalePage })))
+const MembersPage = lazy(() => import('@/features/business-owner/pages/members-page').then((module) => ({ default: module.MembersPage })))
+const PartnersPage = lazy(() => import('@/features/business-owner/pages/partners-page').then((module) => ({ default: module.PartnersPage })))
+const ProductsPage = lazy(() => import('@/features/business-owner/pages/products-page').then((module) => ({ default: module.ProductsPage })))
+const BusinessPromotionsPage = lazy(() => import('@/features/business-owner/pages/promotions-page').then((module) => ({ default: module.PromotionsPage })))
+const BusinessRewardsPage = lazy(() => import('@/features/business-owner/pages/rewards-page').then((module) => ({ default: module.RewardsPage })))
+const SettingsPage = lazy(() => import('@/features/business-owner/pages/settings-page').then((module) => ({ default: module.SettingsPage })))
+
 const portalAccessErrorKey = 'portalAccessError'
+
+function getSignInPath() {
+  const tenant = new URLSearchParams(window.location.search).get('tenant')
+  const tenantQuery = tenant ? `&tenant=${encodeURIComponent(tenant)}` : ''
+  return `/signin?redirect=${encodeURIComponent(window.location.pathname)}${tenantQuery}`
+}
 
 function RouteLoading() {
   const { t } = useLanguage()
@@ -283,9 +289,16 @@ function ProtectedProgramAdminRoute() {
   const { profile, isLoading } = useAuth()
   const membership = useCurrentProgramMembership()
   if (isLoading || membership.isLoading) return <RouteLoading />
-  if (!profile) return <Navigate replace to={`/signin?redirect=${encodeURIComponent(window.location.pathname)}`} />
+  if (!profile) return <Navigate replace to={getSignInPath()} />
   if (!canAccessProgramAdmin(profile.role, membership.data)) return <Navigate replace to={getHomePathForRole(profile.role)} />
   return <ProgramAdminLayout />
+}
+
+function ProtectedAuthenticatedRoute() {
+  const { profile, isLoading } = useAuth()
+  if (isLoading) return <RouteLoading />
+  if (!profile) return <Navigate replace to={getSignInPath()} />
+  return <Outlet />
 }
 
 function ProtectedBusinessOwnerRoute() {
@@ -505,6 +518,12 @@ const router = createBrowserRouter([
         ],
       },
       {
+        element: <ProtectedAuthenticatedRoute />,
+        children: [
+          { path: '/onboarding/program', element: <ProgramOnboardingPage /> },
+        ],
+      },
+      {
         element: <ProtectedAdminRoute />,
         children: [
           { path: '/admin/portal', element: <AdminPage /> },
@@ -547,5 +566,9 @@ const router = createBrowserRouter([
 ])
 
 export function AppRouter() {
-  return <RouterProvider router={router} />
+  return (
+    <Suspense fallback={<RouteLoading />}>
+      <RouterProvider router={router} />
+    </Suspense>
+  )
 }

@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
+import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage, type Language } from '@/lib/language'
 import { authSchema, type AuthFormValues } from '@/types/forms'
@@ -371,7 +372,11 @@ function LoadingSpinner() {
 
 export function LandingPage() {
   const { language } = useLanguage()
-  const copy = landingCopy[language]
+  const { program } = useTenant()
+  const baseCopy = landingCopy[language]
+  const copy = JSON.parse(
+    JSON.stringify(baseCopy).replaceAll('Medellin Rewards', program.name),
+  ) as typeof baseCopy
   const featureCards = copy.featureCards.map((item, index) => ({
     ...item,
     icon: featureCardIcons[index]!,
@@ -388,7 +393,7 @@ export function LandingPage() {
           <Link to="/landing-page" className="inline-flex min-w-0 items-center gap-[8px]">
             <BrandLogo markClassName="h-7" />
             <span className="text-[13px] font-extrabold tracking-normal text-[#202126]">
-              <span className="text-[#c5a142]">Medellin</span> Rewards
+              {program.name}
             </span>
           </Link>
           <div className="flex min-w-0 items-center gap-3">
@@ -619,7 +624,7 @@ export function LandingPage() {
             <div className="inline-flex items-center gap-[8px]">
               <BrandLogo markClassName="h-7" />
               <span className="text-[13px] font-extrabold tracking-normal text-[#202126]">
-                <span className="text-[#c5a142]">Medellin</span> Rewards
+                {program.name}
               </span>
             </div>
             <p className="mt-[28px] max-w-[260px] text-[12px] font-medium leading-[1.7] text-[#8a8d94]">
@@ -888,6 +893,7 @@ export function LegacyAuthPage() {
 }
 
 export function CompactAuthPage() {
+  const { program } = useTenant()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { signIn } = useAuth()
@@ -920,7 +926,7 @@ export function CompactAuthPage() {
     <AuthPortalShell activeTab="signin">
       <div className="mb-7 text-center">
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
-          Medellin Rewards
+          {program.name}
         </p>
         <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
           {t('Member Portal').toUpperCase()}
@@ -1086,7 +1092,7 @@ export function CompactAuthPage() {
           <p className="text-center text-[11px] font-medium text-[#8aa0bc]">
             {t("Don't have an account?")}{' '}
             <Link to="/join" className="font-bold text-[#d1ad4a] transition hover:text-[#f0ca62]">
-              {t('Join Medellin Rewards')}
+              {t('Join {program}', { program: program.name })}
             </Link>
           </p>
         </form>

@@ -1746,7 +1746,6 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'es'
   const stored = window.localStorage.getItem(tenantStorageKey('language'))
-    ?? window.localStorage.getItem('medellinrewards-language')
   return stored === 'en' ? 'en' : 'es'
 }
 

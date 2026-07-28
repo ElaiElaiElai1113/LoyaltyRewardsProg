@@ -65,6 +65,10 @@ export const platformService = {
     currency: string
     timezone: string
     planCode: string
+    primaryColor?: string
+    accentColor?: string
+    logoUrl?: string
+    supportEmail?: string
   }) {
     if (!supabase) throw new Error('Supabase must be configured to provision a program.')
     const { data, error } = await supabase.rpc('create_program', {
@@ -77,7 +81,23 @@ export const platformService = {
       p_plan_code: input.planCode,
     })
     if (error) throw new Error(error.message)
-    return data as string
+    const programId = data as string
+    if (input.primaryColor && input.accentColor && input.supportEmail) {
+      const { error: settingsError } = await supabase.rpc('update_program_brand_settings', {
+        p_program_id: programId,
+        p_name: input.name,
+        p_country_code: input.countryCode,
+        p_locale: input.locale,
+        p_currency: input.currency,
+        p_timezone: input.timezone,
+        p_primary_color: input.primaryColor,
+        p_accent_color: input.accentColor,
+        p_logo_url: input.logoUrl ?? '',
+        p_support_email: input.supportEmail,
+      })
+      if (settingsError) throw new Error(settingsError.message)
+    }
+    return programId
   },
 
   async startCheckout(programId: string) {
