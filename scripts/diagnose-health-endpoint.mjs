@@ -23,4 +23,4 @@ try {
 }
 const report = { origin, checkedAt: new Date().toISOString(), passed: checks.every((check) => check.passed), checks }
 console.log(JSON.stringify(report, null, 2))
-process.exit(report.passed ? 0 : 1)
+process.exitCode = report.passed ? 0 : 1
