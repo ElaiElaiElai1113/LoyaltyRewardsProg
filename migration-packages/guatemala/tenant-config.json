@@ -1,0 +1,17 @@
+{
+  "slug": "guatemala",
+  "programName": "Guatemala Rewards",
+  "sourceSystem": "",
+  "locale": "es-GT",
+  "currency": "GTQ",
+  "timezone": "America/Guatemala",
+  "primaryDomain": "guatemalarewards.com",
+  "emailFromName": "Guatemala Rewards",
+  "emailFromAddress": "",
+  "mapCenter": {
+    "latitude": null,
+    "longitude": null
+  },
+  "legalDocumentsReceived": false,
+  "brandingAssetsReceived": false
+}

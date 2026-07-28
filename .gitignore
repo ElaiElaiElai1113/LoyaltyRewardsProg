@@ -12,6 +12,9 @@ node_modules
 backups/
 dist
 .tmp-tests
+.tmp-tenant-*/
+.tmp-tenant-*.json
+email-previews/
 test-results
 supabase/.temp/
 dist-ssr

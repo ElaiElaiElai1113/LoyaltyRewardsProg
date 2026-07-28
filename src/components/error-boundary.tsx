@@ -1,6 +1,7 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
 
 import { useLanguage } from '@/lib/language'
+import { reportMonitoringEvent } from '@/lib/monitoring'
 
 interface Props {
   children: ReactNode
@@ -24,7 +25,12 @@ class ErrorBoundaryFallback extends Component<Props & ErrorBoundaryContent, Stat
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('Uncaught error:', error, info)
+    reportMonitoringEvent({
+      level: 'error',
+      name: 'react_error_boundary',
+      message: error.message,
+      context: { stack: error.stack, componentStack: info.componentStack },
+    })
   }
 
   render() {

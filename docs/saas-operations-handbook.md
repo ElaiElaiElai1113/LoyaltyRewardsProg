@@ -49,3 +49,23 @@
 ## Migration Approval
 
 Every approval must name the hosted project and exact migration files. Approval to review, commit, or push code is not approval to alter the hosted database.
+
+## Monitoring
+
+The React error boundary emits structured events containing release, hostname, route, and tenant context. Events remain visible in browser logs by default. Set `VITE_MONITORING_ENDPOINT` to forward them to an approved collector using `sendBeacon` without delaying navigation.
+
+API responses expose `X-Request-Id`; retain this value in support cases and correlate it with deployment logs. Alert on repeated health-check failures, authentication failures, tenant resolution failures, email delivery failures, and reconciliation differences.
+
+## Tenant Suspension and Offboarding
+
+1. Suspend the program to prevent new tenant writes.
+2. Preserve authentication identities shared with other programs.
+3. Export tenant-owned records and produce counts and financial totals.
+4. Reconcile the export and record its SHA-256 hash.
+5. Remove domain routing only after the export is accepted.
+6. Retain financial and audit records according to the agreed policy.
+7. Never remove memberships, balances, or identities belonging to another program.
+
+## Incident Record
+
+Record the incident start and end, affected program IDs and domains, request IDs, detected symptoms, write exposure, containment actions, reconciliation results, recovery decision, owner, and follow-up work. For suspected isolation failure, suspend affected programs and preserve logs before attempting data repair.
