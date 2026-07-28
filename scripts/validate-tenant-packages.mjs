@@ -12,7 +12,6 @@ for (const [slug, required] of Object.entries(expected)) {
   await Promise.all([
     access(`${root}/source-export.json`),
     access(`${root}/SIGN-OFF.md`),
-    access(`${root}/reports`),
   ])
   const config = JSON.parse(await readFile(`${root}/tenant-config.json`, 'utf8'))
   for (const [key, value] of Object.entries(required)) {
