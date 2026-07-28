@@ -749,7 +749,7 @@ runTest('Figma homepage uses the approved typography and clean photography asset
   assert.match(homeStyles, /font-family: var\(--home-display-font\)/)
   assert.match(homeStyles, /font-family: var\(--home-body-font\)/)
   assert.doesNotMatch(homeStyles, /Cormorant Garamond|Manrope/)
-  assert.match(homePage, /car-rewards-clean\.png/)
+  assert.match(homePage, /car-rewards-clean\.webp/)
   assert.match(homePage, /vacation-beach-clean\.webp/)
 })
 

@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "programs": [
+    {
+      "slug": "medellin",
+      "status": "ready",
+      "hostname": "medellinrewards.com",
+      "senderEmail": "rewards@medellinrewards.com"
+    },
+    {
+      "slug": "guatemala",
+      "status": "ready",
+      "hostname": "guatemalarewards.com",
+      "senderEmail": "rewards@guatemalarewards.com"
+    },
+    {
+      "slug": "synergize",
+      "status": "pending",
+      "hostname": "synergizerewards.com",
+      "senderEmail": "rewards@synergizerewards.com"
+    },
+    {
+      "slug": "davao",
+      "status": "pending",
+      "hostname": "davaorewards.com",
+      "senderEmail": "rewards@davaorewards.com"
+    }
+  ],
+  "redirectPaths": [
+    "/auth/confirm",
+    "/auth/reset-password",
+    "/accept-invitation"
+  ]
+}

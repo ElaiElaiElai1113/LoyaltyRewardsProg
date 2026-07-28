@@ -15,7 +15,7 @@ import hotelPartner from '@/assets/business/hotel-partner.png'
 import localBusinessOwner from '@/assets/business/local-business-owner.png'
 import salonPartner from '@/assets/business/salon-partner.png'
 import staffQrCheckout from '@/assets/business/staff-qr-checkout.png'
-import restaurantPartner from '@/assets/landing/dinner-rewards.png'
+import restaurantPartner from '@/assets/landing/dinner-rewards.webp'
 import ctaPhoto from '@/assets/medellinrewards-hero.webp'
 
 import './for-businesses-page.css'

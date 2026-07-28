@@ -54,6 +54,15 @@ jobs:
       - name: White-label branding audit
         run: npm run audit:tenant-branding
 
+      - name: Deployment routing contract
+        run: npm run test:deployment-routing
+
+      - name: Marketing image delivery
+        run: npm run test:image-delivery
+
+      - name: Email configuration contract
+        run: npm run test:email-readiness
+
       - name: Build
         run: npm run build
 

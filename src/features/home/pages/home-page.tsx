@@ -3,12 +3,18 @@ import { Link } from 'react-router-dom'
 
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
-import carRewards from '@/assets/landing/car-rewards-clean.png'
-import coffeeMember from '@/assets/landing/coffee-member.png'
-import coffeeRewards from '@/assets/landing/coffee-rewards.png'
-import dinnerRewards from '@/assets/landing/dinner-rewards.png'
-import realEstateRewards from '@/assets/landing/real-estate-rewards.png'
-import salonRewards from '@/assets/landing/salon-rewards.png'
+import carRewards from '@/assets/landing/car-rewards-clean.webp'
+import carRewardsSmall from '@/assets/landing/car-rewards-clean-768.webp'
+import coffeeMember from '@/assets/landing/coffee-member.webp'
+import coffeeMemberSmall from '@/assets/landing/coffee-member-768.webp'
+import coffeeRewards from '@/assets/landing/coffee-rewards.webp'
+import coffeeRewardsSmall from '@/assets/landing/coffee-rewards-768.webp'
+import dinnerRewards from '@/assets/landing/dinner-rewards.webp'
+import dinnerRewardsSmall from '@/assets/landing/dinner-rewards-768.webp'
+import realEstateRewards from '@/assets/landing/real-estate-rewards.webp'
+import realEstateRewardsSmall from '@/assets/landing/real-estate-rewards-768.webp'
+import salonRewards from '@/assets/landing/salon-rewards.webp'
+import salonRewardsSmall from '@/assets/landing/salon-rewards-768.webp'
 import vacationBanner from '@/assets/landing/vacation-beach-clean.webp'
 
 import './home-page.css'
@@ -123,26 +129,31 @@ const valueItems = [
 const categoryImages = [
   {
     src: coffeeRewards,
+    srcSmall: coffeeRewardsSmall,
     alt: 'Member earning rewards at a local coffee shop',
     className: 'figma-home__category-card--coffee',
   },
   {
     src: dinnerRewards,
+    srcSmall: dinnerRewardsSmall,
     alt: 'Friends dining together in Medellín',
     className: 'figma-home__category-card--dining',
   },
   {
     src: salonRewards,
+    srcSmall: salonRewardsSmall,
     alt: 'Member enjoying a day at a local hair salon',
     className: 'figma-home__category-card--salon',
   },
   {
     src: carRewards,
+    srcSmall: carRewardsSmall,
     alt: 'Family celebrating a car purchase',
     className: 'figma-home__category-card--cars',
   },
   {
     src: realEstateRewards,
+    srcSmall: realEstateRewardsSmall,
     alt: 'Couple earning rewards on a real estate purchase',
     className: 'figma-home__category-card--real-estate',
   },
@@ -286,7 +297,13 @@ export function HomePage() {
             </div>
 
             <div className="figma-home__hero-visual">
-              <img src={coffeeMember} alt="Member enjoying rewards at a local coffee shop" />
+              <img
+                src={coffeeMember}
+                srcSet={`${coffeeMemberSmall} 768w, ${coffeeMember} 1024w`}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                alt="Member enjoying rewards at a local coffee shop"
+                fetchPriority="high"
+              />
               <div className="figma-home__reward-badge" aria-label="More than fifty percent back today">
                 <strong>+50%</strong>
                 <span>{tx('BACK TODAY')}</span>
@@ -313,7 +330,14 @@ export function HomePage() {
           <div className="figma-home__category-grid">
             {categoryImages.map((item) => (
               <figure className={`figma-home__category-card ${item.className}`} key={item.alt}>
-                <img src={item.src} alt={item.alt} />
+                <img
+                  src={item.src}
+                  srcSet={`${item.srcSmall} 768w, ${item.src} 1024w`}
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  alt={item.alt}
+                  loading="lazy"
+                  decoding="async"
+                />
               </figure>
             ))}
           </div>

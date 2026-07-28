@@ -44,7 +44,7 @@ test.describe('public acquisition workflow', () => {
       .toHaveCSS('font-family', /Inter/)
 
     await expect(page.getByRole('img', { name: 'Family celebrating a car purchase' }))
-      .toHaveAttribute('src', /car-rewards-clean\.png/)
+      .toHaveAttribute('src', /car-rewards-clean[^"]*\.webp/)
     await expect(page.locator('.figma-home__category-card figcaption')).toHaveCount(0)
 
     const vacationBanner = page.locator('#vacation')
