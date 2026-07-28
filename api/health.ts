@@ -1,7 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createClient } from '@supabase/supabase-js'
+import { applyRequestContext } from './_request-context.js'
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const requestId = applyRequestContext(request, response)
   if (request.method !== 'GET' && request.method !== 'HEAD') {
     response.setHeader('Allow', 'GET, HEAD')
     response.status(405).json({ ok: false, status: 'method_not_allowed' })
@@ -17,6 +19,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     response.status(503).json({
       ok: false,
       status: 'configuration_missing',
+      requestId,
       timestamp: new Date().toISOString(),
     })
     return
@@ -36,6 +39,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
       latencyMs: Date.now() - startedAt,
       timestamp: new Date().toISOString(),
       version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? 'local',
+      requestId,
     }
     if (request.method === 'HEAD') {
       response.status(200).end()
@@ -46,6 +50,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
     response.status(503).json({
       ok: false,
       status: 'database_unreachable',
+      requestId,
       database: 'unreachable',
       latencyMs: Date.now() - startedAt,
       timestamp: new Date().toISOString(),

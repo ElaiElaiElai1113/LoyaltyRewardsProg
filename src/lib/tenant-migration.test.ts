@@ -15,6 +15,10 @@ const platformOperations = readFileSync(
   'supabase/migrations/20260729000000_program_state_usage_and_audit.sql',
   'utf8',
 )
+const tenantOperations = readFileSync(
+  'supabase/migrations/20260730000000_domain_team_and_import_operations.sql',
+  'utf8',
+)
 
 describe('tenant database migrations', () => {
   it('creates all four seeded programs and tenant identity tables', () => {
@@ -64,5 +68,12 @@ describe('tenant database migrations', () => {
     expect(platformOperations).toContain('enforce_program_feature')
     expect(platformOperations).toContain('program_status_changed')
     expect(platformOperations).toContain('platform_admin_required')
+  })
+
+  it('prepares secure domain, team, and idempotent import operations', () => {
+    expect(tenantOperations).toContain('request_program_domain')
+    expect(tenantOperations).toContain('verified_domain_required')
+    expect(tenantOperations).toContain('last_program_admin')
+    expect(tenantOperations).toContain('unique (program_id, idempotency_key)')
   })
 })

@@ -1,14 +1,23 @@
-import { AlertTriangle, CheckCircle2, FileJson, Upload } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, Download, FileJson, Upload } from 'lucide-react'
 import { type ChangeEvent, useState } from 'react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { analyzeTenantImport, tenantImportCollections, type TenantImportAnalysis } from '@/lib/tenant-import'
 
+const targetFields: Partial<Record<(typeof tenantImportCollections)[number], string[]>> = {
+  users: ['id', 'email', 'fullName', 'phone'],
+  businesses: ['id', 'slug', 'name', 'address'],
+  balances: ['id', 'userId', 'points', 'availableCredits'],
+  transactions: ['id', 'userId', 'businessId', 'purchaseAmount'],
+  giftCards: ['id', 'userId', 'businessId', 'status', 'remainingValue'],
+}
+
 export function TenantImportPage() {
   const [fileName, setFileName] = useState('')
   const [analysis, setAnalysis] = useState<TenantImportAnalysis | null>(null)
   const [parseError, setParseError] = useState<string | null>(null)
+  const [mappings, setMappings] = useState<Record<string, string>>({})
 
   async function inspectFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
@@ -17,10 +26,30 @@ export function TenantImportPage() {
     setParseError(null)
     try {
       setAnalysis(analyzeTenantImport(JSON.parse(await file.text())))
+      setMappings({})
     } catch {
       setAnalysis(null)
       setParseError('The selected file is not valid JSON.')
     }
+  }
+
+  function download(format: 'json' | 'csv') {
+    if (!analysis) return
+    const content = format === 'json'
+      ? JSON.stringify({ fileName, generatedAt: new Date().toISOString(), mappings, ...analysis }, null, 2)
+      : [
+          'collection,count,columns',
+          ...tenantImportCollections.map((collection) => `${collection},${analysis.counts[collection]},"${analysis.sourceColumns[collection].join('|')}"`),
+          `balancePoints,${analysis.totals.balancePoints},`,
+          `transactionValue,${analysis.totals.transactionValue},`,
+          `giftCardOutstanding,${analysis.totals.giftCardOutstanding},`,
+        ].join('\n')
+    const blob = new Blob([content], { type: format === 'json' ? 'application/json' : 'text/csv' })
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = `tenant-import-report.${format}`
+    link.click()
+    URL.revokeObjectURL(link.href)
   }
 
   return (
@@ -66,6 +95,27 @@ export function TenantImportPage() {
             </div>
           </section>
 
+          <section>
+            <h2 className="text-xl font-semibold">Column mapping</h2>
+            <p className="mt-1 text-sm text-[var(--muted-foreground)]">Map source columns to the canonical import fields. These choices are included in the downloaded dry-run report.</p>
+            <div className="mt-4 divide-y divide-[var(--border)] border-y border-[var(--border)]">
+              {Object.entries(targetFields).flatMap(([collection, fields]) => (fields ?? []).map((target) => {
+                const key = `${collection}.${target}`
+                const columns = analysis.sourceColumns[collection as keyof typeof analysis.sourceColumns]
+                return (
+                  <label className="grid gap-2 py-3 md:grid-cols-[140px_180px_1fr] md:items-center" key={key}>
+                    <span className="font-semibold capitalize">{collection}</span>
+                    <span className="text-sm">{target}</span>
+                    <select className="h-10 border border-[var(--border)] bg-[var(--card)] px-3 text-sm" value={mappings[key] ?? (columns.includes(target) ? target : '')} onChange={(event) => setMappings((current) => ({ ...current, [key]: event.target.value }))}>
+                      <option value="">Not mapped</option>
+                      {columns.map((column) => <option value={column} key={column}>{column}</option>)}
+                    </select>
+                  </label>
+                )
+              }))}
+            </div>
+          </section>
+
           {analysis.errors.length || analysis.warnings.length ? (
             <section>
               <h2 className="text-xl font-semibold">Findings</h2>
@@ -76,7 +126,11 @@ export function TenantImportPage() {
             </section>
           ) : null}
 
-          <Button disabled title={analysis.valid ? 'Import execution requires an approved import RPC.' : 'Resolve dry-run errors first.'}>Create import batch</Button>
+          <div className="flex flex-wrap gap-3">
+            <Button type="button" variant="outline" onClick={() => download('json')}><Download className="size-4" />JSON report</Button>
+            <Button type="button" variant="outline" onClick={() => download('csv')}><Download className="size-4" />CSV report</Button>
+            <Button disabled title={analysis.valid ? 'Import execution requires an approved import RPC.' : 'Resolve dry-run errors first.'}>Create import batch</Button>
+          </div>
         </>
       ) : null}
     </div>

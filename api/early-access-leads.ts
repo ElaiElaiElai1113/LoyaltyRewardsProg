@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createClient } from '@supabase/supabase-js'
+import { applyRequestContext } from './_request-context.js'
 
 type EarlyAccessLeadRequest = {
   fullName?: unknown
@@ -47,6 +48,7 @@ function getSupabaseConfig() {
 }
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const requestId = applyRequestContext(request, response)
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST')
     sendJson(response, 405, { ok: false, error: 'Method not allowed' })
@@ -107,6 +109,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   if (error || !data) {
     console.error('Failed to create early access lead.', {
+      requestId,
       message: error?.message ?? 'No lead returned',
     })
     sendJson(response, 502, { ok: false, error: error?.message ?? 'Unable to join the early access list.' })

@@ -1,5 +1,5 @@
 import { ArrowLeft, ArrowRight, Check, Palette, Settings2 } from 'lucide-react'
-import { type FormEvent, useState } from 'react'
+import { type FormEvent, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { platformService } from '@/features/platform/platform-service'
+import { tenantStorageKey } from '@/lib/tenant-storage'
 
 const initialValues = {
   name: '',
@@ -24,10 +25,22 @@ const initialValues = {
 
 export function ProgramOnboardingPage() {
   const [step, setStep] = useState(0)
-  const [values, setValues] = useState(initialValues)
+  const [values, setValues] = useState<typeof initialValues>(() => {
+    if (typeof window === 'undefined') return initialValues
+    try {
+      const stored = window.localStorage.getItem(tenantStorageKey('program-onboarding-draft'))
+      return stored ? { ...initialValues, ...JSON.parse(stored) } : initialValues
+    } catch {
+      return initialValues
+    }
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [created, setCreated] = useState<{ id: string; hostname: string } | null>(null)
   const steps = ['Identity', 'Brand', 'Review']
+
+  useEffect(() => {
+    window.localStorage.setItem(tenantStorageKey('program-onboarding-draft'), JSON.stringify(values))
+  }, [values])
 
   function update(key: keyof typeof values, value: string) {
     setValues((current) => ({ ...current, [key]: value }))
@@ -42,6 +55,7 @@ export function ProgramOnboardingPage() {
     setIsSubmitting(true)
     try {
       const id = await platformService.createProgram(values)
+      window.localStorage.removeItem(tenantStorageKey('program-onboarding-draft'))
       setCreated({ id, hostname: `${values.slug}.rewardsplatform.app` })
       toast.success(`${values.name} was created.`)
     } catch (error) {
@@ -79,6 +93,7 @@ export function ProgramOnboardingPage() {
         <header>
           <p className="text-sm font-semibold uppercase text-[var(--muted-foreground)]">New rewards program</p>
           <h1 className="mt-2 text-3xl font-semibold">Set up your program</h1>
+          {values.name ? <p className="mt-2 text-sm text-[var(--muted-foreground)]">Draft progress is saved automatically on this device.</p> : null}
         </header>
 
         <div className="mt-8 grid grid-cols-3 border-y border-[var(--border)]">

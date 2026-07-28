@@ -23,7 +23,7 @@
     "test:e2e": "node scripts/run-playwright-local.mjs",
     "test:e2e:doctor": "node scripts/check-e2e-readiness.mjs",
     "test:e2e:hosted-safe": "node scripts/run-playwright-local.mjs tests/e2e/hosted-safe.spec.ts --workers=1",
-    "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts --workers=2",
+    "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts tests/e2e/accessibility.spec.ts --workers=2",
     "test:playwright": "node scripts/run-playwright-local.mjs",
     "test:e2e:workflows": "node scripts/run-playwright-local.mjs --workers=1",
     "test:referrals": "node scripts/run-playwright-local.mjs tests/e2e/referrals.spec.ts",
@@ -39,6 +39,7 @@
     "ops:supabase:backup:validate": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate-supabase-backup.ps1",
     "ops:supabase:reconcile": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/reconcile-linked-supabase.ps1",
     "ops:health": "node scripts/check-health.mjs",
+    "ops:smoke": "node scripts/deployment-smoke.mjs",
     "test:launch": "node scripts/run-playwright-local.mjs tests/e2e/launch-checklist.spec.ts",
     "test:e2e:ui": "playwright test --ui"
   },
