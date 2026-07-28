@@ -8,6 +8,14 @@
 4. Run `npm run typecheck`, `npm run lint`, `npm run test:unit`, and `npm run test:e2e:hosted-safe`.
 5. Run `npx supabase migration list` before proposing any hosted schema change.
 
+For a complete local evidence bundle, run:
+
+```text
+npm run ops:launch:gates
+```
+
+Add `-- --hosted` only in an environment configured for hosted security tests. Reports are written to `artifacts/launch-evidence` with the commit SHA, gate results, durations, output tails, and a report SHA-256.
+
 Authenticated workflow commands fail immediately with a readiness report when Supabase is not configured. The public `npm run test:e2e` command remains usable without backend credentials.
 
 ## Hosted Database Change
@@ -15,9 +23,13 @@ Authenticated workflow commands fail immediately with a readiness report when Su
 1. Run `npm run ops:supabase:backup` and retain the `.dump` and `.manifest.json` files together.
 2. Run `npm run ops:supabase:backup:validate -- -BackupFile <dump-path>`.
 3. Run `npm run ops:supabase:reconcile` and retain the pre-change report.
-4. Review pending migration SQL and request explicit approval naming the hosted project and migrations.
-5. Apply only after approval, then rerun migration status, reconciliation, unit tests, and hosted-safe Playwright.
-6. Never pass the database password on the command line or store it in the repository.
+   Set `SUPABASE_DB_PASSWORD` only in a protected CI secret when a noninteractive run is required. Local runs continue to prompt securely.
+4. Run `supabase/preflight/tenant-launch-preflight.sql` read-only and resolve every reported tenant integrity issue.
+5. Review pending migration SQL and request explicit approval naming the hosted project and migrations.
+6. Apply only after approval, then rerun migration status, reconciliation, unit tests, and hosted-safe Playwright.
+7. Never pass the database password on the command line or store it in the repository.
+
+Emergency containment SQL is stored under `supabase/rollback-guides`. These files preserve tenant, financial, import, and audit records and are intentionally outside the migrations directory.
 
 ## Tenant Migration
 

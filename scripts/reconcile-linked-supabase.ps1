@@ -18,7 +18,11 @@ $projectRef = if (Test-Path -LiteralPath $projectRefFile) {
 } else {
   $null
 }
-$securePassword = Read-Host 'Supabase database password' -AsSecureString
+$securePassword = if ($env:SUPABASE_DB_PASSWORD) {
+  ConvertTo-SecureString $env:SUPABASE_DB_PASSWORD -AsPlainText -Force
+} else {
+  Read-Host 'Supabase database password' -AsSecureString
+}
 $passwordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword)
 
 $sql = @'

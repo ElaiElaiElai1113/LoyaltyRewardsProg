@@ -11,6 +11,7 @@ node_modules
 .tools/
 backups/
 dist
+artifacts/
 .tmp-tests
 .tmp-tenant-*/
 .tmp-tenant-*.json

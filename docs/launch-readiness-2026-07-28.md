@@ -16,6 +16,9 @@ Branch: `agent/four-brand-saas-foundation`
 - Backup size is 702,856 bytes with 968 archive entries.
 - Backup SHA-256 is `BE478D6061E3EEC60C3BF95327034E57CED36ADB03CDD9BCED6096D416693139`.
 - Tenant fixture import validation, failure-case testing, and branding audit pass.
+- Tenant migration security contract checks pass.
+- The consolidated 12-gate launch report passes and produces SHA-256-stamped JSON evidence.
+- PWA precache was reduced from approximately 11.35 MB to 1.96 MB by loading large photography on demand.
 - Restore rehearsal tooling can parse and validate the backup and manifest.
 - No restore was attempted against the hosted database.
 
@@ -43,7 +46,7 @@ The backup and manifest pass preflight. A genuine restore is blocked because the
 - HTTPS root responds successfully.
 - Tenant title, favicon, and manifest references are present.
 - Manifest identifies Guatemala Rewards.
-- `/api/health` returns HTML instead of the expected JSON health response.
+- `/api/health` is rewritten to `index.html` and returns `text/html` instead of the expected JSON health response. API routing must run before the SPA fallback.
 - DNS ownership and record state still require confirmation by the domain owner.
 
 ### Davao Rewards

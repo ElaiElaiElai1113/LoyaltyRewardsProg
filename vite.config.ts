@@ -25,7 +25,7 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: true,
         navigateFallback: '/index.html',
-        globPatterns: ['**/*.{css,html,ico,js,png,svg,webmanifest}'],
+        globPatterns: ['**/*.{css,html,ico,js,svg,webmanifest}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

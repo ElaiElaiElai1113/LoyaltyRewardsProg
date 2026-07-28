@@ -48,6 +48,9 @@ jobs:
       - name: Tenant migration tool regression tests
         run: npm run test:tenant-tools
 
+      - name: Tenant migration security contracts
+        run: npm run test:migration-contracts
+
       - name: White-label branding audit
         run: npm run audit:tenant-branding
 
