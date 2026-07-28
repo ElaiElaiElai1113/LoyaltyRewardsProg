@@ -227,9 +227,9 @@ export function CompactJoinRewardsPage() {
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
           {program.name}
         </p>
-        <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
+        <h1 className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
           {t('Member Portal').toUpperCase()}
-        </p>
+        </h1>
       </div>
 
       {signUpComplete ? (
@@ -238,9 +238,9 @@ export function CompactJoinRewardsPage() {
             <BadgeCheck className="size-7" />
           </div>
           <div className="space-y-3">
-            <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">
+            <h2 className="font-serif text-[22px] font-bold text-[#d1ad4a]">
               {t('Welcome to the Rewards Club.')}
-            </h1>
+            </h2>
             <p className="text-[12px] font-medium leading-5 text-[#8f8f8f]">
               {t('Your account is created. Sign in to use your member QR and rewards. We will use your contact details for reward updates and account support.')}
             </p>

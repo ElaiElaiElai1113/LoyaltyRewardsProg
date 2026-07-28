@@ -17,6 +17,7 @@ if (offlineRun) {
 const authenticatedLifecycleCommands = new Set([
   'test:e2e:hosted-safe',
   'test:e2e:workflows',
+  'test:e2e:acceptance',
   'test:launch',
   'test:referrals',
   'test:onboarding',

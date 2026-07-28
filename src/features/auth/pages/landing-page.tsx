@@ -928,9 +928,9 @@ export function CompactAuthPage() {
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
           {program.name}
         </p>
-        <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
+        <h1 className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
           {t('Member Portal').toUpperCase()}
-        </p>
+        </h1>
       </div>
 
       {showForgotPassword ? (

@@ -1,0 +1,18 @@
+{
+  "projectRef": "retfuxpfstatpdsunkgj",
+  "approvalRequired": true,
+  "migrations": [
+    {
+      "file": "supabase/migrations/20260728000000_tenant_limits_and_storage_isolation.sql",
+      "rollbackGuide": "supabase/rollback-guides/20260728000000_safe_disable.sql"
+    },
+    {
+      "file": "supabase/migrations/20260729000000_program_state_usage_and_audit.sql",
+      "rollbackGuide": "supabase/rollback-guides/20260729000000_safe_disable.sql"
+    },
+    {
+      "file": "supabase/migrations/20260730000000_domain_team_and_import_operations.sql",
+      "rollbackGuide": "supabase/rollback-guides/20260730000000_safe_disable.sql"
+    }
+  ]
+}

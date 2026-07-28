@@ -63,6 +63,12 @@ jobs:
       - name: Email configuration contract
         run: npm run test:email-readiness
 
+      - name: Operations readiness contract
+        run: npm run test:operations-readiness
+
+      - name: Migration release manifest
+        run: npm run ops:migrations:validate
+
       - name: Build
         run: npm run build
 
@@ -74,6 +80,9 @@ jobs:
 
       - name: Non-destructive E2E
         run: npm run test:e2e:ci
+
+      - name: Browser performance and accessibility acceptance
+        run: npm run test:e2e:quality
 
       - name: Tenant console responsive access gates
         run: npm run test:tenant-console

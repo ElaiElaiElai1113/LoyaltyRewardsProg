@@ -1,6 +1,7 @@
 name: Post-deployment verification
 
 on:
+  deployment_status:
   workflow_dispatch:
     inputs:
       deployment_url:
@@ -17,8 +18,11 @@ permissions:
 
 jobs:
   verify:
+    if: github.event_name == 'workflow_dispatch' || github.event.deployment_status.state == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      DEPLOYMENT_URL: ${{ github.event.deployment_status.environment_url || inputs.deployment_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -27,9 +31,9 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Deployment smoke
-        run: npm run ops:smoke -- "${{ inputs.deployment_url }}"
+        run: npm run ops:smoke -- "$DEPLOYMENT_URL"
       - name: Health contract and SPA routing
-        run: npm run ops:health:diagnose -- "${{ inputs.deployment_url }}"
+        run: npm run ops:health:diagnose -- "$DEPLOYMENT_URL"
       - name: Verify tenant domains
         if: inputs.tenant_domains != ''
         shell: bash

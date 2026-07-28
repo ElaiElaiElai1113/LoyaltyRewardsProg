@@ -1,0 +1,17 @@
+import { readFile } from 'node:fs/promises'
+
+const required = {
+  '.github/workflows/operations.yml': ['schedule:', 'ops:monitor', 'supabase db dump', 'retention-days: 14'],
+  '.github/workflows/post-deployment.yml': ['deployment_url', 'ops:smoke', 'ops:health:diagnose'],
+  'docs/platform-administrator-guide.md': ['Program suspension', 'Migration approval', 'Incident response'],
+  'docs/tenant-administrator-guide.md': ['Branding', 'Team access', 'Data export'],
+  'docs/privacy-operations-runbook.md': ['Access export', 'Account deletion', 'Financial records'],
+  'docs/incident-and-cutover-runbook.md': ['Rollback', 'Reconciliation', 'Domain cutover'],
+}
+const failures = []
+for (const [file, needles] of Object.entries(required)) {
+  const content = await readFile(file, 'utf8').catch(() => '')
+  for (const needle of needles) if (!content.includes(needle)) failures.push(`${file}: missing ${needle}`)
+}
+console.log(JSON.stringify({ passed: failures.length === 0, failures }, null, 2))
+process.exit(failures.length ? 1 : 0)
