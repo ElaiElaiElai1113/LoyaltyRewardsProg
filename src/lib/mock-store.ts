@@ -13,9 +13,10 @@ import type {
   SessionUser,
   UserRole,
 } from '@/types/domain'
+import { tenantStorageKey } from '@/lib/tenant-storage'
 
-const STORAGE_KEY = 'medellinrewards-store-v3'
-const CART_KEY = 'medellinrewards-cart-v1'
+const storeKey = () => tenantStorageKey('mock-store-v3')
+const cartKey = () => tenantStorageKey('cart-v1')
 
 // ─── Businesses ────────────────────────────────────────────────
 
@@ -492,17 +493,17 @@ export function readStore(): MockStore {
     return cloneStore(fallback)
   }
 
-  const raw = window.localStorage.getItem(STORAGE_KEY)
+  const raw = window.localStorage.getItem(storeKey())
 
   if (!raw) {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback))
+    window.localStorage.setItem(storeKey(), JSON.stringify(fallback))
     return cloneStore(fallback)
   }
 
   try {
     return { ...fallback, ...JSON.parse(raw) } as MockStore
   } catch {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(fallback))
+    window.localStorage.setItem(storeKey(), JSON.stringify(fallback))
     return cloneStore(fallback)
   }
 }
@@ -512,7 +513,7 @@ export function writeStore(store: MockStore) {
     return store
   }
 
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
+  window.localStorage.setItem(storeKey(), JSON.stringify(store))
   return store
 }
 
@@ -533,7 +534,7 @@ export function setSession(session: SessionUser | null) {
 
 export function readCart(): CartItem[] {
   if (!canUseStorage()) return []
-  const raw = window.localStorage.getItem(CART_KEY)
+  const raw = window.localStorage.getItem(cartKey())
   if (!raw) return []
   try {
     return JSON.parse(raw) as CartItem[]
@@ -544,10 +545,10 @@ export function readCart(): CartItem[] {
 
 export function writeCart(items: CartItem[]) {
   if (!canUseStorage()) return
-  window.localStorage.setItem(CART_KEY, JSON.stringify(items))
+  window.localStorage.setItem(cartKey(), JSON.stringify(items))
 }
 
 export function clearCart() {
   if (!canUseStorage()) return
-  window.localStorage.removeItem(CART_KEY)
+  window.localStorage.removeItem(cartKey())
 }

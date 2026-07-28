@@ -1,4 +1,4 @@
-package com.medellinrewards.app;
+package com.rewardsplatform.app;
 
 import com.getcapacitor.BridgeActivity;
 

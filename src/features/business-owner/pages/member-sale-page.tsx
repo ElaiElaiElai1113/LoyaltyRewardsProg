@@ -24,6 +24,8 @@ import {
 import { formatCurrency, formatPoints } from '@/lib/utils'
 import { memberTransactionSchema, type MemberTransactionFormValues } from '@/types/forms'
 import type { MemberTransaction } from '@/types/domain'
+import { tenantStorageKey } from '@/lib/tenant-storage'
+import { useTenant } from '@/hooks/use-tenant'
 
 type GiftCardSaleContext = {
   originalBill: number
@@ -32,12 +34,10 @@ type GiftCardSaleContext = {
   receiptNumber?: string
 }
 
-const GIFT_CARD_SALE_CONTEXT_KEY = 'medellin-rewards:pending-gift-card-sale'
-
 function readGiftCardSaleContext(): GiftCardSaleContext | null {
   if (typeof window === 'undefined') return null
 
-  const raw = window.sessionStorage.getItem(GIFT_CARD_SALE_CONTEXT_KEY)
+  const raw = window.sessionStorage.getItem(tenantStorageKey('pending-gift-card-sale'))
   if (!raw) return null
 
   try {
@@ -58,6 +58,7 @@ function readGiftCardSaleContext(): GiftCardSaleContext | null {
 }
 
 export function MemberSalePage() {
+  const { program } = useTenant()
   const { token = '' } = useParams()
   const { business } = useBusinessOwnerData()
   const member = useScannedMember(token)
@@ -202,7 +203,7 @@ export function MemberSalePage() {
           })
           setRecordedTransaction(transaction)
           if (typeof window !== 'undefined') {
-            window.sessionStorage.removeItem(GIFT_CARD_SALE_CONTEXT_KEY)
+            window.sessionStorage.removeItem(tenantStorageKey('pending-gift-card-sale'))
           }
           setGiftCardSaleContext(null)
           form.reset({ purchaseAmount: 50, giftCardAmount: 0, receiptNumber: '', note: '' })
@@ -215,7 +216,7 @@ export function MemberSalePage() {
             </div>
             <div>
               <h2 className="font-serif text-3xl text-primary">Purchase Details</h2>
-              <p className="text-sm text-on-surface-variant/70">Payment is handled outside Medellin Rewards.</p>
+              <p className="text-sm text-on-surface-variant/70">Payment is handled outside {program.name}.</p>
             </div>
           </div>
 

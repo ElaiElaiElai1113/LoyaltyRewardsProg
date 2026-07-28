@@ -7,6 +7,8 @@ import {
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 import { BrandLogo } from '@/components/brand-logo'
+import { ProgramSwitcher } from '@/components/program-switcher'
+import { ProgramInvitations } from '@/components/program-invitations'
 import { CustomerBottomNav } from '@/components/customer-bottom-nav'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
@@ -76,6 +78,7 @@ export function CustomerLayout() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 xl:gap-5">
+            <ProgramSwitcher className="hidden lg:flex" />
             <div className="hidden flex-col items-end xl:flex">
               <span className="text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
               <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Member')}</span>
@@ -137,6 +140,7 @@ export function CustomerLayout() {
 
       <main className="w-full flex-1 px-5 pb-32 pt-24 md:px-8 lg:px-10 xl:pb-8 2xl:px-12">
         <div className="mx-auto w-full">
+        <ProgramInvitations />
         <Outlet />
         </div>
       </main>

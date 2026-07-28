@@ -1,5 +1,6 @@
 import type { Profile, RewardBalance } from '@/types/domain'
 import type { MemberVerificationSubmission, ProfileFormValues } from '@/types/forms'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import {
   getVerificationDocumentExtension,
   MEMBER_VERIFICATION_BUCKET,
@@ -83,7 +84,7 @@ export const profileService = {
     }
 
     const extension = getVerificationDocumentExtension(values.verificationDocument)
-    const documentPath = `pending/${crypto.randomUUID()}.${extension}`
+    const documentPath = `pending/${getActiveProgram().id}/${crypto.randomUUID()}.${extension}`
 
     const { error: uploadError } = await sb.storage
       .from(MEMBER_VERIFICATION_BUCKET)

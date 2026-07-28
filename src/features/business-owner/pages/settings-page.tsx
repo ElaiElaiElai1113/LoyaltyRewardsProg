@@ -8,11 +8,13 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useBusinessOwnerData, useUpdateOwnerBusinessSettings } from '@/hooks/use-business-owner-data'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { businessSettingsSchema, type BusinessSettingsFormValues } from '@/types/forms'
 
 export function SettingsPage() {
   const { business } = useBusinessOwnerData()
+  const { program } = useTenant()
   const { t } = useLanguage()
   const updateSettings = useUpdateOwnerBusinessSettings(business?.id)
   const [saved, setSaved] = useState(false)
@@ -236,7 +238,7 @@ export function SettingsPage() {
                 <div className="grid gap-2">
                   <Label htmlFor="commission-rate-percent" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    Medellin Rewards Commission %
+                    {program.name} Commission %
                   </Label>
                   <Input
                     id="commission-rate-percent"

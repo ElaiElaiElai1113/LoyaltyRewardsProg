@@ -39,17 +39,62 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm run test
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Tenant import validator
+        run: npm run validate:tenant-import -- docs/tenant-import-template.json
+
+      - name: Tenant migration tool regression tests
+        run: npm run test:tenant-tools
+
+      - name: Tenant migration security contracts
+        run: npm run test:migration-contracts
+
+      - name: White-label branding audit
+        run: npm run audit:tenant-branding
+
+      - name: Deployment routing contract
+        run: npm run test:deployment-routing
+
+      - name: Marketing image delivery
+        run: npm run test:image-delivery
+
+      - name: Email configuration contract
+        run: npm run test:email-readiness
+
+      - name: Operations readiness contract
+        run: npm run test:operations-readiness
+
+      - name: Tenant migration packages
+        run: npm run test:tenant-packages
+
+      - name: Mobile wrapper readiness
+        run: npm run test:mobile-readiness
+
+      - name: Migration release manifest
+        run: npm run ops:migrations:validate
 
       - name: Build
         run: npm run build
 
+      - name: Enforce production bundle budgets
+        run: npm run build:budget
+
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Public E2E smoke
-        run: npm run test:e2e
+      - name: Non-destructive E2E
+        run: npm run test:e2e:ci
+
+      - name: Browser performance and accessibility acceptance
+        run: npm run test:e2e:quality
+
+      - name: Tenant console responsive access gates
+        run: npm run test:tenant-console
+
+      - name: Concurrent load smoke
+        run: npm run test:load
 
       - name: Upload production build
         uses: actions/upload-artifact@v4
@@ -114,3 +159,51 @@ jobs:
           done
 
           echo "Validated ${#files[@]} Supabase migration files."
+
+  security:
+    name: Security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Production dependency audit
+        run: npm audit --omit=dev --audit-level=critical
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  hosted-tenant-security:
+    name: Hosted tenant security
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Require hosted test secrets
+        run: test -n "$VITE_SUPABASE_URL" && test -n "$VITE_SUPABASE_ANON_KEY"
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+      - name: Run adversarial tenant checks
+        run: npm run test:tenant-security

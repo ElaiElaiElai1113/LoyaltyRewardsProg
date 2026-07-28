@@ -1,0 +1,15 @@
+{
+  "slug": "synergize",
+  "programName": "Synergize",
+  "sourceSystem": "",
+  "locale": "en",
+  "primaryDomain": "",
+  "emailFromName": "",
+  "emailFromAddress": "",
+  "mapCenter": {
+    "latitude": null,
+    "longitude": null
+  },
+  "legalDocumentsReceived": false,
+  "brandingAssetsReceived": false
+}

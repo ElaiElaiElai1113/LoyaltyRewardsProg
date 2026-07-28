@@ -2,8 +2,10 @@ import { WifiOff } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 
 export function OfflineNotice() {
+  const { program } = useTenant()
   const { t } = useLanguage()
   const [isOnline, setIsOnline] = useState(() =>
     typeof navigator === 'undefined' ? true : navigator.onLine,
@@ -38,7 +40,7 @@ export function OfflineNotice() {
         <div className="min-w-0">
           <p className="text-sm font-bold text-[var(--foreground)]">{t('You are offline')}</p>
           <p className="mt-1 text-sm leading-5 text-[var(--muted-foreground)]">
-            {t('Medellin Rewards needs internet for account data, QR sale recording, rewards, and admin operations. Reconnect to continue.')}
+            {t(`${program.name} needs internet for account data, QR sale recording, rewards, and admin operations. Reconnect to continue.`)}
           </p>
         </div>
       </div>

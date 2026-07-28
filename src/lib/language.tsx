@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { tenantStorageKey } from '@/lib/tenant-storage'
 
 type Language = 'en' | 'es'
 
@@ -395,6 +396,7 @@ const spanishTranslations: Record<string, string> = {
     'Tu cuenta esta creada. Inicia sesion y verifica tu ID desde tu perfil para desbloquear ganancias, canjes, membresias, tarjetas de regalo y recompensas QR.',
   'Join now': 'Unete ahora',
   'Join Medellin Rewards': 'Unete a Medellin Rewards',
+  'Join {program}': 'Unete a {program}',
   'One membership for participating local businesses': 'Una membresia para negocios locales participantes',
   'Earn rewards every time you shop locally.': 'Gana recompensas cada vez que compras localmente.',
   'Join Medellin Rewards to earn member value with participating local businesses, track rewards in one account, and redeem perks when you are ready.':
@@ -1744,7 +1746,8 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'es'
-  return window.localStorage.getItem('medellinrewards-language') === 'en' ? 'en' : 'es'
+  const stored = window.localStorage.getItem(tenantStorageKey('language'))
+  return stored === 'en' ? 'en' : 'es'
 }
 
 function applyValues(text: string, values?: TranslationValues) {
@@ -1760,7 +1763,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = language
-    window.localStorage.setItem('medellinrewards-language', language)
+    window.localStorage.setItem(tenantStorageKey('language'), language)
   }, [language])
 
   const value = useMemo<LanguageContextValue>(

@@ -5,6 +5,7 @@ import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 
 const navigation = [
   { to: '/guide', label: 'Guia' },
@@ -20,6 +21,7 @@ const legalLinks = [
 ]
 
 export function PublicBrowseLayout() {
+  const { program } = useTenant()
   const { t } = useLanguage()
   const location = useLocation()
   const isBusinessOnboarding = location.pathname === '/business'
@@ -29,7 +31,7 @@ export function PublicBrowseLayout() {
       <div className="business-public-shell">
         <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
-            <NavLink to="/" className="business-public-shell__brand" aria-label="Medellín Rewards member homepage">
+            <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
               <img src="/favicon.svg" alt="" aria-hidden="true" />
               <span>
                 MEDELLÍN REWARDS
@@ -58,7 +60,7 @@ export function PublicBrowseLayout() {
           <div className="business-public-shell__container">
             <div className="business-public-shell__footer-top">
               <div>
-                <NavLink to="/" className="business-public-shell__brand" aria-label="Medellín Rewards member homepage">
+                <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
                   <img src="/favicon.svg" alt="" aria-hidden="true" />
                   <span>MEDELLÍN REWARDS</span>
                 </NavLink>
@@ -66,12 +68,12 @@ export function PublicBrowseLayout() {
               </div>
               <nav aria-label="Business footer navigation">
                 <NavLink to="/privacy">Privacy policy</NavLink>
-                <a href="mailto:info@medellinrewards.com">Contact</a>
+                <a href={`mailto:${program.supportEmail}`}>Contact</a>
                 <NavLink to="/">Member site</NavLink>
               </nav>
             </div>
             <div className="business-public-shell__footer-bottom">
-              <span>© 2026 Medellín Rewards. All rights reserved.</span>
+              <span>© 2026 {program.name}. All rights reserved.</span>
               <span>Made for businesses in Medellín, Colombia</span>
             </div>
           </div>
@@ -137,7 +139,7 @@ export function PublicBrowseLayout() {
       </main>
       <footer className="border-t border-primary/15 bg-card px-4 py-8 sm:px-6 lg:px-8 2xl:px-12">
         <div className="mx-auto flex w-full flex-col justify-between gap-4 text-sm text-[var(--muted-foreground)] md:flex-row md:items-center">
-          <span className="font-semibold text-[var(--foreground)]">Medellin Rewards</span>
+          <span className="font-semibold text-[var(--foreground)]">{program.name}</span>
           <nav className="flex flex-wrap gap-4">
             {legalLinks.map((link) => (
               <NavLink key={link.to} to={link.to} className="transition-colors hover:text-[var(--foreground)]">

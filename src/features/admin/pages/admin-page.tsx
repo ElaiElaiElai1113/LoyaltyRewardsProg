@@ -2048,7 +2048,7 @@ export function AdminPage() {
                     <Input
                       id="create-partner-address"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
-                      placeholder="Cra. 37 #10-32, El Poblado, Medellin"
+                      placeholder="Business street address"
                       {...createBusinessForm.register('address')}
                     />
                     {createBusinessForm.formState.errors.address ? (

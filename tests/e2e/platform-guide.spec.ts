@@ -27,7 +27,7 @@ test.describe('platform guide workflow', () => {
 
   test('public guide follows the English language preference without Spanish guide copy', async ({ page }) => {
     await page.addInitScript(() => {
-      window.localStorage.setItem('medellinrewards-language', 'en')
+      window.localStorage.setItem('rewards:medellin:language', 'en')
     })
 
     await page.goto('/guide')

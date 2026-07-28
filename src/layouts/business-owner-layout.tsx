@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
+import { ProgramSwitcher } from '@/components/program-switcher'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
@@ -139,6 +140,7 @@ export function BusinessOwnerLayout() {
             <X className="size-4" />
           </Button>
         </div>
+        <ProgramSwitcher className="mt-4 w-full" />
 
         {/* Navigation */}
         <nav className="mt-7 grid min-h-0 flex-1 content-start gap-1 overflow-y-auto pr-1">

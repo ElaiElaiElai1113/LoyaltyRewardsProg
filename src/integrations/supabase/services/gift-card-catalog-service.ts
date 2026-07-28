@@ -1,6 +1,7 @@
 import type { GiftCardCatalogItem } from '@/types/domain'
 import type { GiftCardCatalogItemFormValues, OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 import { camelCaseRow, requireSupabase, snakeCaseObj } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 
 function mapCatalogItem(row: Record<string, unknown>): GiftCardCatalogItem {
   const mapped = camelCaseRow(row)
@@ -36,6 +37,7 @@ export const giftCardCatalogService = {
     let query = sb
       .from('gift_card_catalog')
       .select('*, businesses(id, name, logo_url)')
+      .eq('program_id', getActiveProgram().id)
       .order('created_at', { ascending: false })
 
     if (businessId) {
@@ -54,6 +56,7 @@ export const giftCardCatalogService = {
     const { data, error } = await sb
       .from('gift_card_catalog')
       .select('*, businesses(id, name, logo_url)')
+      .eq('program_id', getActiveProgram().id)
       .eq('id', id)
       .single()
 
@@ -69,6 +72,7 @@ export const giftCardCatalogService = {
       .from('gift_card_catalog')
       .insert({
         ...snakeValues,
+        program_id: getActiveProgram().id,
         image_url: values.imageUrl || null,
         created_by: createdBy ?? null,
       })

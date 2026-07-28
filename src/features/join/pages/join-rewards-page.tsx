@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 
 const defaultValues: MemberSignUpFormValues = {
@@ -35,6 +36,7 @@ function homePathForRole(role: string) {
 export function LegacyJoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const [signUpComplete, setSignUpComplete] = useState(false)
   const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -55,7 +57,7 @@ export function LegacyJoinRewardsPage() {
           <div className="space-y-6">
             <div className="flex items-center justify-between gap-4">
               <p className="text-sm font-black uppercase tracking-[0.18em] text-primary">
-                {t('Medellin Rewards')}
+                {program.name}
               </p>
               <Link to="/" className="rounded-full px-4 py-2 text-sm font-bold text-primary transition hover:bg-[var(--muted)]">
                 {t('Back to landing page')}
@@ -204,6 +206,7 @@ export function LegacyJoinRewardsPage() {
 export function CompactJoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const [signUpComplete, setSignUpComplete] = useState(false)
   const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -222,11 +225,11 @@ export function CompactJoinRewardsPage() {
     <AuthPortalShell activeTab="signup">
       <div className="mb-7 text-center">
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
-          Medellin Rewards
+          {program.name}
         </p>
-        <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
+        <h1 className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
           {t('Member Portal').toUpperCase()}
-        </p>
+        </h1>
       </div>
 
       {signUpComplete ? (
@@ -235,9 +238,9 @@ export function CompactJoinRewardsPage() {
             <BadgeCheck className="size-7" />
           </div>
           <div className="space-y-3">
-            <h1 className="font-serif text-[22px] font-bold text-[#d1ad4a]">
+            <h2 className="font-serif text-[22px] font-bold text-[#d1ad4a]">
               {t('Welcome to the Rewards Club.')}
-            </h1>
+            </h2>
             <p className="text-[12px] font-medium leading-5 text-[#8f8f8f]">
               {t('Your account is created. Sign in to use your member QR and rewards. We will use your contact details for reward updates and account support.')}
             </p>

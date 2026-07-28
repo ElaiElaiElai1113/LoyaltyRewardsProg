@@ -1,6 +1,8 @@
 import type { Membership, Profile, UserRole } from '@/types/domain'
 import type { AuthFormValues, MemberSignUpSubmission } from '@/types/forms'
 import { requireSupabase, camelCaseRow } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
+import { isSupabaseConfigured } from '@/integrations/supabase/client'
 
 let pendingSignInRole: AuthFormValues['role'] | null = null
 
@@ -83,6 +85,7 @@ async function getProfileByUserId(userId: string): Promise<Profile | null> {
       .from('memberships')
       .select('*')
       .eq('profile_id', userId)
+      .eq('program_id', getActiveProgram().id)
       .maybeSingle(),
   ])
 
@@ -114,6 +117,7 @@ export const authService = {
   },
 
   async getSessionProfile(): Promise<Profile | null> {
+    if (!isSupabaseConfigured) return null
     const sb = requireSupabase()
 
     const { data: { session } } = await sb.auth.getSession()
@@ -197,6 +201,7 @@ export const authService = {
         data: {
           full_name: name,
           phone,
+          active_program_id: getActiveProgram().id,
         },
       },
     })

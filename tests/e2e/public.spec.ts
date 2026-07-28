@@ -27,7 +27,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('legacy landing URL renders the Figma homepage', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
     await page.goto('/landing-page')
     await expect(
       page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
@@ -35,7 +35,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('homepage uses approved landing typography and clean media assets', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
     await page.goto('/')
 
     await expect(page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }))
@@ -44,7 +44,7 @@ test.describe('public acquisition workflow', () => {
       .toHaveCSS('font-family', /Inter/)
 
     await expect(page.getByRole('img', { name: 'Family celebrating a car purchase' }))
-      .toHaveAttribute('src', /car-rewards-clean\.png/)
+      .toHaveAttribute('src', /car-rewards-clean[^"]*\.webp/)
     await expect(page.locator('.figma-home__category-card figcaption')).toHaveCount(0)
 
     const vacationBanner = page.locator('#vacation')
@@ -54,7 +54,7 @@ test.describe('public acquisition workflow', () => {
 
   test('mobile homepage separates the hero actions from the benefit pills', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
     await page.goto('/')
 
     const secondaryAction = page.getByRole('link', { name: 'See how it works' })
@@ -68,7 +68,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('all homepage FAQs expand and show approved answers', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('medellinrewards-language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
     await page.goto('/')
 
     const faqItems = [

@@ -1,8 +1,10 @@
 import {
   Activity,
+  Building2,
   FileSignature,
   LayoutDashboard,
   CreditCard,
+  Database,
   Hotel,
   LogOut,
   Mail,
@@ -29,6 +31,8 @@ import { useLanguage } from '@/lib/language'
 import { cn, getInitials } from '@/lib/utils'
 
 const navigation = [
+  { to: '/admin/programs', label: 'Programs', icon: Building2 },
+  { to: '/admin/import', label: 'Tenant Import', icon: Database },
   { to: '/admin/portal', label: 'Operations', icon: LayoutDashboard },
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/admin/guide', label: 'Guia', icon: MonitorPlay },

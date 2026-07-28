@@ -1,0 +1,91 @@
+import { type ReactNode, useCallback, useEffect, useState } from 'react'
+import { AlertTriangle, RotateCw } from 'lucide-react'
+
+import { Button } from '@/components/ui/button'
+import { TenantContext } from '@/features/tenant/tenant-context'
+import { getFallbackProgram, resolveProgram, setActiveProgram } from '@/features/tenant/tenant-service'
+import type { Program } from '@/types/domain'
+
+function applyProgram(program: Program) {
+  setActiveProgram(program)
+  const root = document.documentElement
+  root.style.setProperty('--tenant-accent', program.primaryColor)
+  root.style.setProperty('--tenant-accent-soft', `color-mix(in srgb, ${program.accentColor} 24%, transparent)`)
+  document.title = program.name
+  document.documentElement.lang = program.locale.split('-')[0]
+  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', program.primaryColor)
+  document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', program.name)
+  document.querySelector('meta[property="og:title"]')?.setAttribute('content', program.name)
+  document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', program.name)
+  document.querySelector('meta[name="description"]')?.setAttribute('content', `${program.name} rewards and local business benefits.`)
+  const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
+  if (icon && program.logoUrl) icon.href = program.logoUrl
+  const manifest = {
+    name: program.name,
+    short_name: program.name,
+    start_url: '/',
+    display: 'standalone',
+    background_color: '#ffffff',
+    theme_color: program.primaryColor,
+    icons: [
+      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+  }
+  document.querySelector<HTMLLinkElement>('link[rel="manifest"]')?.setAttribute(
+    'href',
+    `data:application/manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`,
+  )
+}
+
+export function TenantProvider({ children }: { children: ReactNode }) {
+  const [program, setProgram] = useState(() => getFallbackProgram())
+  const [isLoading, setIsLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  const refresh = useCallback(async () => {
+    setIsLoading(true)
+    try {
+      const resolved = await resolveProgram(window.location.hostname)
+      setProgram(resolved)
+      applyProgram(resolved)
+      setError(null)
+    } catch (nextError) {
+      setError(nextError instanceof Error ? nextError.message : 'Program could not be loaded.')
+    } finally {
+      setIsLoading(false)
+    }
+  }, [])
+
+  useEffect(() => {
+    void refresh()
+  }, [refresh])
+
+  return (
+    <TenantContext.Provider value={{ program, isLoading, error, refresh }}>
+      {isLoading ? (
+        <div className="flex min-h-screen items-center justify-center bg-[var(--background)] text-sm text-[var(--muted-foreground)]">
+          Loading rewards program...
+        </div>
+      ) : error ? <TenantUnavailable error={error} onRetry={() => void refresh()} /> : children}
+    </TenantContext.Provider>
+  )
+}
+
+function TenantUnavailable({ error, onRetry }: { error: string; onRetry: () => void }) {
+  const content = error === 'program_suspended'
+    ? { title: 'Program temporarily unavailable', body: 'This rewards program has been suspended. Contact the program administrator for assistance.' }
+    : error === 'domain_pending'
+      ? { title: 'Domain connection pending', body: 'This domain has not completed ownership verification yet.' }
+      : { title: 'Rewards program not found', body: 'This hostname is not connected to an active rewards program.' }
+  return (
+    <main className="flex min-h-screen items-center justify-center bg-[var(--background)] px-5 text-[var(--foreground)]">
+      <div className="max-w-lg text-center">
+        <AlertTriangle className="mx-auto size-10 text-[var(--muted-foreground)]" />
+        <h1 className="mt-5 text-3xl font-semibold">{content.title}</h1>
+        <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">{content.body}</p>
+        <Button className="mt-6" variant="outline" onClick={onRetry}><RotateCw className="size-4" />Try again</Button>
+      </div>
+    </main>
+  )
+}

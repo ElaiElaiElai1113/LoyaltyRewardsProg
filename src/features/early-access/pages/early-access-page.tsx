@@ -6,6 +6,7 @@ import { z } from 'zod'
 import { LanguagePicker } from '@/components/language-picker'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import {
   earlyAccessMessageLines,
@@ -37,6 +38,8 @@ const earlyAccessParagraphClass = 'max-w-3xl text-[1.125rem] font-medium leading
 
 export function EarlyAccessPage() {
   const { t } = useLanguage()
+  const { program } = useTenant()
+  const tenantText = (text: string) => t(text).replaceAll('Medellin Rewards', program.name)
   const [leadModalOpen, setLeadModalOpen] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
@@ -62,7 +65,7 @@ export function EarlyAccessPage() {
           <div className="space-y-5">
             {earlyAccessMessageLines.slice(0, 6).map((line) => (
               <p key={line} className={earlyAccessParagraphClass}>
-                {t(line)}
+                {tenantText(line)}
               </p>
             ))}
 
@@ -70,7 +73,7 @@ export function EarlyAccessPage() {
               <div className="max-w-xl space-y-3 border-l-2 border-black pl-4">
                 <h2 className="text-xl font-semibold leading-tight text-black">{t("You're on the early list.")}</h2>
                 <p className="text-base font-medium leading-7 text-neutral-700">
-                  {t('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
+                  {tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
                 </p>
               </div>
             ) : (
@@ -87,7 +90,7 @@ export function EarlyAccessPage() {
           <div className="space-y-1">
             {earlyAccessMessageLines.slice(6, 8).map((line) => (
               <p key={line} className={earlyAccessParagraphClass}>
-                {t(line)}
+                {tenantText(line)}
               </p>
             ))}
           </div>
@@ -130,7 +133,7 @@ export function EarlyAccessPage() {
             <DialogHeader>
               <DialogTitle className="text-xl font-bold text-black">{t('Join early access')}</DialogTitle>
               <DialogDescription className="text-sm font-semibold leading-6 text-neutral-700">
-                {t('Leave your details and we will contact you when Medellin Rewards opens.')}
+                {tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
               </DialogDescription>
             </DialogHeader>
 
@@ -142,7 +145,7 @@ export function EarlyAccessPage() {
 
             <div className="grid gap-3">
               <label htmlFor="early-access-whatsapp" className={labelClass}>WhatsApp</label>
-              <input id="early-access-whatsapp" className={inputClass} placeholder="+57 300 000 0000" {...leadForm.register('whatsapp')} />
+              <input id="early-access-whatsapp" className={inputClass} placeholder="International phone number" {...leadForm.register('whatsapp')} />
               {leadForm.formState.errors.whatsapp ? <p className={errorClass}>{t(leadForm.formState.errors.whatsapp.message ?? '')}</p> : null}
             </div>
 

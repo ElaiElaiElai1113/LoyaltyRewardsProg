@@ -1,6 +1,7 @@
 type EarlyAccessWelcomeEmailInput = {
   fullName?: string | null
   email: string
+  hostname?: string
 }
 
 export async function sendEarlyAccessWelcomeEmail(input: EarlyAccessWelcomeEmailInput): Promise<void> {
@@ -12,6 +13,7 @@ export async function sendEarlyAccessWelcomeEmail(input: EarlyAccessWelcomeEmail
     body: JSON.stringify({
       fullName: input.fullName ?? '',
       email: input.email,
+      hostname: input.hostname ?? window.location.hostname,
     }),
   })
 

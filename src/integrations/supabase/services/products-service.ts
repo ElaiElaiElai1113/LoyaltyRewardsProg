@@ -1,12 +1,13 @@
 import type { Product } from '@/types/domain'
 import type { OwnerProductDraftFormValues, ProductDraftFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 
 export const productsService = {
   async getProducts(businessId?: string): Promise<Product[]> {
     const sb = requireSupabase()
 
-    let query = sb.from('products').select('*')
+    let query = sb.from('products').select('*').eq('program_id', getActiveProgram().id)
     if (businessId) {
       query = query.eq('business_id', businessId)
     }
@@ -25,6 +26,7 @@ export const productsService = {
     const { data, error } = await sb
       .from('products')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('id', productId)
       .single()
 
@@ -42,7 +44,7 @@ export const productsService = {
 
     const { data, error } = await sb
       .from('products')
-      .insert({ ...snakeValues, featured: false })
+      .insert({ ...snakeValues, featured: false, program_id: getActiveProgram().id })
       .select('*')
       .single()
 
@@ -53,6 +55,7 @@ export const productsService = {
     const product = camelCaseRow(data) as unknown as Product
 
     const { error: logError } = await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Product created',
       details: `Added ${product.title} to the shop.`,
@@ -87,6 +90,7 @@ export const productsService = {
     const product = camelCaseRow(data as Record<string, unknown>) as unknown as Product
 
     const { error: logError } = await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Product created',
       details: `Added ${product.title} to the shop.`,
@@ -113,6 +117,7 @@ export const productsService = {
     }
 
     await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Product deleted',
       details: `Removed ${product.title} from the shop.`,
@@ -141,6 +146,7 @@ export const productsService = {
     const product = camelCaseRow(data) as unknown as Product
 
     await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Product updated',
       details: `Updated details for ${product.title}.`,

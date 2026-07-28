@@ -1,5 +1,43 @@
 export type UserRole = 'customer' | 'platform-admin' | 'business-owner' | 'business-staff'
 
+export type ProgramStatus = 'draft' | 'active' | 'suspended' | 'archived'
+export type ProgramRole = 'program-admin' | 'member' | 'business-owner' | 'business-staff'
+
+export interface Program {
+  id: string
+  name: string
+  slug: string
+  status: ProgramStatus
+  countryCode: string
+  locale: string
+  currency: string
+  timezone: string
+  primaryColor: string
+  accentColor: string
+  logoUrl: string | null
+  supportEmail: string
+  mapCenter: { latitude: number; longitude: number }
+  featureFlags: Record<string, boolean>
+}
+
+export interface ProgramMembership {
+  id: string
+  programId: string
+  profileId: string
+  role: ProgramRole
+  status: 'invited' | 'active' | 'suspended'
+  businessId: string | null
+}
+
+export interface PlanEntitlements {
+  administrators: number
+  businesses: number
+  members: number
+  storageMb: number
+  customDomains: number
+  features: Record<string, boolean>
+}
+
 export type AgreementKind = 'member' | 'business_affiliate' | 'business_custom' | 'trade_deal'
 
 export interface Business {

@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createClient } from '@supabase/supabase-js'
+import { applyRequestContext } from './_request-context.js'
 
 type EarlyAccessLeadRequest = {
   fullName?: unknown
@@ -8,6 +9,7 @@ type EarlyAccessLeadRequest = {
   notes?: unknown
   marketingConsent?: unknown
   source?: unknown
+  hostname?: unknown
 }
 
 function sendJson(response: VercelResponse, status: number, body: Record<string, unknown>) {
@@ -46,6 +48,7 @@ function getSupabaseConfig() {
 }
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
+  const requestId = applyRequestContext(request, response)
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST')
     sendJson(response, 405, { ok: false, error: 'Method not allowed' })
@@ -66,6 +69,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   const whatsapp = cleanOptionalString(body.whatsapp)
   const notes = cleanOptionalString(body.notes)
   const source = cleanOptionalString(body.source) || 'early-access-page'
+  const hostname = cleanOptionalString(body.hostname).toLowerCase()
 
   if (!email && !whatsapp) {
     sendJson(response, 400, { ok: false, error: 'Add an email or WhatsApp number.' })
@@ -84,7 +88,17 @@ export default async function handler(request: VercelRequest, response: VercelRe
     },
   })
 
-  const { data, error } = await supabase.rpc('create_early_access_lead', {
+  const { data: programs, error: programError } = await supabase.rpc('resolve_program_by_hostname', {
+    p_hostname: hostname,
+  })
+  const programId = Array.isArray(programs) ? programs[0]?.id : null
+  if (programError || !programId) {
+    sendJson(response, 404, { ok: false, error: 'Rewards program was not found.' })
+    return
+  }
+
+  const { data, error } = await supabase.rpc('create_program_early_access_lead', {
+    p_program_id: programId,
     p_full_name: fullName || null,
     p_email: email || null,
     p_whatsapp: whatsapp || null,
@@ -95,6 +109,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   if (error || !data) {
     console.error('Failed to create early access lead.', {
+      requestId,
       message: error?.message ?? 'No lead returned',
     })
     sendJson(response, 502, { ok: false, error: error?.message ?? 'Unable to join the early access list.' })

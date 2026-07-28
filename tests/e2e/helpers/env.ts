@@ -17,6 +17,7 @@ function readDotEnvValue(name: string) {
 const configuredSupabaseUrl = process.env.VITE_SUPABASE_URL ?? readDotEnvValue('VITE_SUPABASE_URL') ?? ''
 const usesLocalSupabase = /^(http:\/\/)?(127\.0\.0\.1|localhost)(:\d+)?/i.test(configuredSupabaseUrl)
 const lifecycleAuthRequested =
+  process.env.npm_lifecycle_event === 'test:e2e:hosted-safe' ||
   process.env.npm_lifecycle_event === 'test:e2e:workflows' ||
   process.env.npm_lifecycle_event === 'test:launch' ||
   process.env.npm_lifecycle_event === 'test:referrals' ||

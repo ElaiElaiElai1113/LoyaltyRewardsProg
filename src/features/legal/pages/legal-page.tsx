@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 
 type LegalPageKind = 'terms' | 'privacy' | 'reward-terms' | 'verification-policy'
 
@@ -87,14 +88,18 @@ interface LegalPageProps {
 
 export function LegalPage({ kind }: LegalPageProps) {
   const { t } = useLanguage()
+  const { program } = useTenant()
   const page = legalPages[kind]
+  const tenantText = (text: string) => t(text)
+    .replaceAll('Medellin Rewards', program.name)
+    .replaceAll('support@medellinrewards.com', program.supportEmail)
 
   return (
     <main className="min-h-screen bg-[#fffaf4] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-8">
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <Link to="/" className="font-serif text-2xl font-bold text-[#21140d]">
-            Medellin Rewards
+            {program.name}
           </Link>
           <Button asChild variant="outline" className="w-full rounded-full border-[#9c6a22]/35 bg-[#fffdf8] sm:w-auto">
             <Link to="/join">{t('Join Rewards Club')}</Link>
@@ -104,14 +109,14 @@ export function LegalPage({ kind }: LegalPageProps) {
         <section className="rounded-[1.5rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft sm:p-8">
           <Badge className="border-[#d9b365]/45 bg-[#5e3327] text-[#fff7ea]">{t('Customer trust')}</Badge>
           <h1 className="mt-5 font-serif text-5xl font-semibold leading-none text-[#21140d]">{t(page.title)}</h1>
-          <p className="mt-4 text-base font-semibold leading-7 text-[#6f4f3d]">{t(page.intro)}</p>
+          <p className="mt-4 text-base font-semibold leading-7 text-[#6f4f3d]">{tenantText(page.intro)}</p>
         </section>
 
         <section className="grid gap-4">
           {page.sections.map((section) => (
             <article key={section.title} className="rounded-[1.25rem] border border-[#d8b98c]/50 bg-[#fffdf8] p-6 shadow-soft">
               <h2 className="font-serif text-3xl leading-none text-[#21140d]">{t(section.title)}</h2>
-              <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{t(section.body)}</p>
+              <p className="mt-3 text-sm font-semibold leading-6 text-[#6f4f3d]">{tenantText(section.body)}</p>
             </article>
           ))}
         </section>

@@ -2,6 +2,7 @@ import { createClientRequestId, isPickupWindow } from '@/features/critical-flows
 import type { Redemption, Reward } from '@/types/domain'
 import type { RedeemFormValues, RewardDraftFormValues } from '@/types/forms'
 import { camelCaseRow, friendlySupabaseError, requireSupabase, snakeCaseObj } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 
 interface RedeemInput extends RedeemFormValues {
   profileId: string
@@ -12,7 +13,7 @@ export const rewardsService = {
   async getRewards(businessId?: string): Promise<Reward[]> {
     const sb = requireSupabase()
 
-    let query = sb.from('rewards').select('*')
+    let query = sb.from('rewards').select('*').eq('program_id', getActiveProgram().id)
     if (businessId) {
       query = query.eq('business_id', businessId)
     }
@@ -31,6 +32,7 @@ export const rewardsService = {
     const { data, error } = await sb
       .from('rewards')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('id', rewardId)
       .single()
 
@@ -84,7 +86,7 @@ export const rewardsService = {
 
     const { data, error } = await sb
       .from('rewards')
-      .insert({ ...snakeValues, inventory: 30, featured: false })
+      .insert({ ...snakeValues, inventory: 30, featured: false, program_id: getActiveProgram().id })
       .select('*')
       .single()
 
@@ -95,6 +97,7 @@ export const rewardsService = {
     const reward = camelCaseRow(data) as unknown as Reward
 
     const { error: logError } = await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Reward created',
       details: `Added ${reward.title} to the catalog.`,
@@ -120,6 +123,7 @@ export const rewardsService = {
     }
 
     await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Reward deleted',
       details: `Removed ${reward.title} from the catalog.`,
@@ -148,6 +152,7 @@ export const rewardsService = {
     const reward = camelCaseRow(data) as unknown as Reward
 
     await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Reward updated',
       details: `Updated details for ${reward.title}.`,

@@ -11,6 +11,7 @@ import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 type StaffPortal = 'admin' | 'business'
@@ -42,6 +43,7 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
   const [searchParams] = useSearchParams()
   const { signIn } = useAuth()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const [error, setError] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
 
@@ -77,7 +79,7 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
     <AuthPortalShell showTabs={false}>
       <div className="mb-7 text-center">
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
-          Medellin Rewards
+          {program.name}
         </p>
         <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
           {portalLabel.toUpperCase()}

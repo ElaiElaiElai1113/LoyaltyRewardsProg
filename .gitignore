@@ -8,8 +8,15 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+.tools/
+backups/
 dist
+artifacts/
 .tmp-tests
+.tmp-tenant-*/
+.tmp-tenant-*.json
+.tmp-restore-*.json
+email-previews/
 test-results
 supabase/.temp/
 dist-ssr

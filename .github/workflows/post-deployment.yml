@@ -1,0 +1,44 @@
+name: Post-deployment verification
+
+on:
+  deployment_status:
+  workflow_dispatch:
+    inputs:
+      deployment_url:
+        description: HTTPS deployment origin
+        required: true
+        type: string
+      tenant_domains:
+        description: Comma-separated tenant domains
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    if: github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DEPLOYMENT_URL: ${{ github.event.deployment_status.environment_url || inputs.deployment_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Deployment smoke
+        run: npm run ops:smoke -- "$DEPLOYMENT_URL"
+      - name: Health contract and SPA routing
+        run: npm run ops:health:diagnose -- "$DEPLOYMENT_URL"
+      - name: Verify tenant domains
+        if: inputs.tenant_domains != ''
+        shell: bash
+        run: |
+          IFS=',' read -ra domains <<< "${{ inputs.tenant_domains }}"
+          for domain in "${domains[@]}"; do
+            npm run ops:domain:check -- "$(echo "$domain" | xargs)"
+          done

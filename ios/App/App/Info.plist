@@ -19,7 +19,7 @@
 			<string>Medellin Rewards</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>medellinrewards</string>
+				<string>rewardsplatform</string>
 			</array>
 		</dict>
 	</array>
