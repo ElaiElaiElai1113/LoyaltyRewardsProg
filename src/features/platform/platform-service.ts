@@ -41,6 +41,13 @@ function fallbackRows(): PlatformProgram[] {
 }
 
 export const platformService = {
+  async isProgramSlugAvailable(slug: string) {
+    if (!supabase) return true
+    const { data, error } = await supabase.from('programs').select('id').eq('slug', slug.trim().toLowerCase()).limit(1)
+    if (error) throw new Error('Program slug could not be checked.')
+    return (data?.length ?? 0) === 0
+  },
+
   async listPrograms(): Promise<PlatformProgram[]> {
     if (!supabase) return fallbackRows()
     const sb = supabase

@@ -23,6 +23,12 @@ const initialValues = {
   planCode: 'launch',
 }
 
+const planOptions = {
+  launch: { administrators: 2, businesses: 10, members: 1000, domains: 1, storage: '2 GB' },
+  growth: { administrators: 10, businesses: 100, members: 10000, domains: 3, storage: '10 GB' },
+  scale: { administrators: 50, businesses: 1000, members: 100000, domains: 10, storage: '50 GB' },
+} as const
+
 export function ProgramOnboardingPage() {
   const [step, setStep] = useState(0)
   const [values, setValues] = useState<typeof initialValues>(() => {
@@ -49,6 +55,20 @@ export function ProgramOnboardingPage() {
   async function submit(event: FormEvent) {
     event.preventDefault()
     if (step < steps.length - 1) {
+      if (step === 0) {
+        setIsSubmitting(true)
+        try {
+          if (!await platformService.isProgramSlugAvailable(values.slug)) {
+            toast.error('That platform slug is already in use.')
+            return
+          }
+        } catch (error) {
+          toast.error(error instanceof Error ? error.message : 'Program slug could not be checked.')
+          return
+        } finally {
+          setIsSubmitting(false)
+        }
+      }
       setStep((current) => current + 1)
       return
     }
@@ -142,6 +162,14 @@ export function ProgramOnboardingPage() {
                   <option value="scale">Scale</option>
                 </select>
               </Field>
+              <div className="grid gap-3 sm:grid-cols-3">
+                {Object.entries(planOptions).map(([code, plan]) => (
+                  <button type="button" className={`border p-4 text-left ${values.planCode === code ? 'border-[var(--tenant-accent)] bg-[var(--tenant-accent-soft)]' : 'border-[var(--border)]'}`} key={code} onClick={() => update('planCode', code)}>
+                    <span className="font-semibold capitalize">{code}</span>
+                    <span className="mt-3 block text-xs leading-5 text-[var(--muted-foreground)]">{plan.administrators} admins<br />{plan.businesses.toLocaleString()} businesses<br />{plan.members.toLocaleString()} members<br />{plan.domains} domains<br />{plan.storage} storage</span>
+                  </button>
+                ))}
+              </div>
               <dl className="divide-y divide-[var(--border)] border-y border-[var(--border)]">
                 <Result label="Program" value={values.name} />
                 <Result label="Platform hostname" value={`${values.slug}.rewardsplatform.app`} />

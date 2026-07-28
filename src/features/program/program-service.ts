@@ -49,6 +49,17 @@ export interface ProgramDomain {
   verifiedAt: string | null
 }
 
+export interface ProgramReport {
+  members: number
+  businesses: number
+  transactions: number
+  purchaseVolume: number
+  pointsAwarded: number
+  commissionOwed: number
+  giftCards: number
+  giftCardPoints: number
+}
+
 export const programService = {
   async listAccessiblePrograms(profileId: string): Promise<AccessibleProgram[]> {
     const sb = requireSupabase()
@@ -266,5 +277,33 @@ export const programService = {
     const sb = requireSupabase()
     const { error } = await sb.from('program_domains').delete().eq('id', domain.id).eq('program_id', getActiveProgram().id)
     if (error) throw new Error(error.message)
+  },
+
+  async getReport(): Promise<ProgramReport> {
+    const sb = requireSupabase()
+    const programId = getActiveProgram().id
+    const [
+      { count: members, error: membersError },
+      { count: businesses, error: businessesError },
+      { data: transactions, error: transactionsError },
+      { data: giftCards, error: giftCardsError },
+    ] = await Promise.all([
+      sb.from('program_memberships').select('id', { count: 'exact', head: true }).eq('program_id', programId).eq('role', 'member').eq('status', 'active'),
+      sb.from('businesses').select('id', { count: 'exact', head: true }).eq('program_id', programId),
+      sb.from('member_transactions').select('purchase_amount,points_awarded,commission_amount,commission_status').eq('program_id', programId),
+      sb.from('gift_cards').select('points_spent').eq('program_id', programId),
+    ])
+    const error = membersError ?? businessesError ?? transactionsError ?? giftCardsError
+    if (error) throw new Error(error.message)
+    return {
+      members: members ?? 0,
+      businesses: businesses ?? 0,
+      transactions: transactions?.length ?? 0,
+      purchaseVolume: transactions?.reduce((sum, row) => sum + Number(row.purchase_amount), 0) ?? 0,
+      pointsAwarded: transactions?.reduce((sum, row) => sum + Number(row.points_awarded), 0) ?? 0,
+      commissionOwed: transactions?.filter((row) => row.commission_status === 'commission_unpaid').reduce((sum, row) => sum + Number(row.commission_amount), 0) ?? 0,
+      giftCards: giftCards?.length ?? 0,
+      giftCardPoints: giftCards?.reduce((sum, row) => sum + Number(row.points_spent), 0) ?? 0,
+    }
   },
 }

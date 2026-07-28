@@ -1,5 +1,6 @@
 import { Building2, CheckCircle2, Globe2, Plus, Search, Users } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
@@ -20,12 +21,15 @@ const defaults = {
 }
 
 export function PlatformProgramsPage() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [programs, setPrograms] = useState<PlatformProgram[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [showForm, setShowForm] = useState(false)
-  const [query, setQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [query, setQuery] = useState(searchParams.get('q') ?? '')
+  const [statusFilter, setStatusFilter] = useState(searchParams.get('status') ?? 'all')
+  const [sort, setSort] = useState(searchParams.get('sort') ?? 'name')
+  const [page, setPage] = useState(Math.max(1, Number(searchParams.get('page') ?? 1)))
   const [selected, setSelected] = useState<PlatformProgram | null>(null)
   const [form, setForm] = useState(defaults)
 
@@ -38,6 +42,14 @@ export function PlatformProgramsPage() {
   useEffect(() => {
     void loadPrograms()
   }, [])
+  useEffect(() => {
+    const next = new URLSearchParams()
+    if (query) next.set('q', query)
+    if (statusFilter !== 'all') next.set('status', statusFilter)
+    if (sort !== 'name') next.set('sort', sort)
+    if (page > 1) next.set('page', String(page))
+    setSearchParams(next, { replace: true })
+  }, [page, query, setSearchParams, sort, statusFilter])
 
   async function submit(event: FormEvent) {
     event.preventDefault()
@@ -70,11 +82,18 @@ export function PlatformProgramsPage() {
     }
   }
 
-  const visiblePrograms = programs.filter((program) => {
+  const filteredPrograms = programs.filter((program) => {
     const matchesQuery = `${program.name} ${program.slug} ${program.primaryDomain ?? ''}`.toLowerCase().includes(query.trim().toLowerCase())
     const matchesStatus = statusFilter === 'all' || program.status === statusFilter
     return matchesQuery && matchesStatus
-  })
+  }).sort((left, right) => sort === 'status'
+    ? left.status.localeCompare(right.status) || left.name.localeCompare(right.name)
+    : sort === 'plan'
+      ? left.planName.localeCompare(right.planName) || left.name.localeCompare(right.name)
+      : left.name.localeCompare(right.name))
+  const pageSize = 10
+  const totalPages = Math.max(1, Math.ceil(filteredPrograms.length / pageSize))
+  const visiblePrograms = filteredPrograms.slice((Math.min(page, totalPages) - 1) * pageSize, Math.min(page, totalPages) * pageSize)
 
   return (
     <div className="space-y-8">
@@ -127,14 +146,19 @@ export function PlatformProgramsPage() {
       <div className="flex flex-col gap-3 border-y border-[var(--border)] py-4 sm:flex-row">
         <label className="relative flex-1">
           <Search className="pointer-events-none absolute left-3 top-3.5 size-4 text-[var(--muted-foreground)]" />
-          <Input aria-label="Search programs" className="pl-9" placeholder="Search program, slug, or domain" value={query} onChange={(event) => setQuery(event.target.value)} />
+          <Input aria-label="Search programs" className="pl-9" placeholder="Search program, slug, or domain" value={query} onChange={(event) => { setQuery(event.target.value); setPage(1) }} />
         </label>
-        <select aria-label="Filter program status" className="h-12 border border-[var(--border)] bg-[var(--card)] px-3 text-sm" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+        <select aria-label="Filter program status" className="h-12 border border-[var(--border)] bg-[var(--card)] px-3 text-sm" value={statusFilter} onChange={(event) => { setStatusFilter(event.target.value); setPage(1) }}>
           <option value="all">All statuses</option>
           <option value="draft">Draft</option>
           <option value="active">Active</option>
           <option value="suspended">Suspended</option>
           <option value="archived">Archived</option>
+        </select>
+        <select aria-label="Sort programs" className="h-12 border border-[var(--border)] bg-[var(--card)] px-3 text-sm" value={sort} onChange={(event) => { setSort(event.target.value); setPage(1) }}>
+          <option value="name">Sort: Name</option>
+          <option value="status">Sort: Status</option>
+          <option value="plan">Sort: Plan</option>
         </select>
       </div>
 
@@ -163,6 +187,7 @@ export function PlatformProgramsPage() {
           </div>
         </CardContent>
       </Card>
+      {filteredPrograms.length > pageSize ? <div className="flex items-center justify-between"><p className="text-sm text-[var(--muted-foreground)]">Page {Math.min(page, totalPages)} of {totalPages}</p><div className="flex gap-2"><Button variant="outline" disabled={page <= 1} onClick={() => setPage((value) => value - 1)}>Previous</Button><Button variant="outline" disabled={page >= totalPages} onClick={() => setPage((value) => value + 1)}>Next</Button></div></div> : null}
 
       {selected ? (
         <section className="border-y border-[var(--border)] py-6" aria-label={`${selected.name} usage`}>

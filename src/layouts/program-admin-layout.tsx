@@ -1,4 +1,4 @@
-import { CreditCard, LogOut, Settings, Users } from 'lucide-react'
+import { BarChart3, CreditCard, LogOut, Settings, Users } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { BrandLogo } from '@/components/brand-logo'
@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/use-auth'
 const links = [
   { to: '/program/settings', label: 'Settings', icon: Settings },
   { to: '/program/team', label: 'Team', icon: Users },
+  { to: '/program/reports', label: 'Reports', icon: BarChart3 },
   { to: '/program/billing', label: 'Billing', icon: CreditCard },
 ]
 

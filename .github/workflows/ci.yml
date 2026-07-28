@@ -117,3 +117,24 @@ jobs:
           done
 
           echo "Validated ${#files[@]} Supabase migration files."
+
+  security:
+    name: Security checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Production dependency audit
+        run: npm audit --omit=dev --audit-level=critical
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2

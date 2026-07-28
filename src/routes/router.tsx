@@ -52,6 +52,7 @@ const ProgramSettingsPage = lazy(() => import('@/features/program/pages/program-
 const ProgramTeamPage = lazy(() => import('@/features/program/pages/program-team-page').then((module) => ({ default: module.ProgramTeamPage })))
 const ProgramBillingPage = lazy(() => import('@/features/program/pages/program-billing-page').then((module) => ({ default: module.ProgramBillingPage })))
 const ProgramOnboardingPage = lazy(() => import('@/features/program/pages/program-onboarding-page').then((module) => ({ default: module.ProgramOnboardingPage })))
+const ProgramReportsPage = lazy(() => import('@/features/program/pages/program-reports-page').then((module) => ({ default: module.ProgramReportsPage })))
 const CartPage = lazy(() => import('@/features/shop/pages/cart-page').then((module) => ({ default: module.CartPage })))
 const CheckoutPage = lazy(() => import('@/features/shop/pages/checkout-page').then((module) => ({ default: module.CheckoutPage })))
 const OrderConfirmationPage = lazy(() => import('@/features/shop/pages/order-confirmation-page').then((module) => ({ default: module.OrderConfirmationPage })))
@@ -540,6 +541,7 @@ const router = createBrowserRouter([
           { path: '/program', element: <Navigate replace to="/program/settings" /> },
           { path: '/program/settings', element: <ProgramSettingsPage /> },
           { path: '/program/team', element: <ProgramTeamPage /> },
+          { path: '/program/reports', element: <ProgramReportsPage /> },
           { path: '/program/billing', element: <ProgramBillingPage /> },
         ],
       },
