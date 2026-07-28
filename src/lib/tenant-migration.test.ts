@@ -11,6 +11,10 @@ const limitsAndStorage = readFileSync(
   'supabase/migrations/20260728000000_tenant_limits_and_storage_isolation.sql',
   'utf8',
 )
+const platformOperations = readFileSync(
+  'supabase/migrations/20260729000000_program_state_usage_and_audit.sql',
+  'utf8',
+)
 
 describe('tenant database migrations', () => {
   it('creates all four seeded programs and tenant identity tables', () => {
@@ -52,5 +56,13 @@ describe('tenant database migrations', () => {
     expect(limitsAndStorage).toContain("enforce_program_resource_limit('members')")
     expect(limitsAndStorage).toContain('(storage.foldername(name))[2]')
     expect(limitsAndStorage).toContain('Program admins view tenant verification IDs')
+  })
+
+  it('prepares status-aware resolution, platform usage, and lifecycle auditing', () => {
+    expect(platformOperations).toContain('resolve_program_host_state')
+    expect(platformOperations).toContain('get_platform_program_usage')
+    expect(platformOperations).toContain('enforce_program_feature')
+    expect(platformOperations).toContain('program_status_changed')
+    expect(platformOperations).toContain('platform_admin_required')
   })
 })

@@ -126,11 +126,24 @@ export async function resolveProgram(hostname: string): Promise<Program> {
   const resolutionHostname = queryTenant && canUseTenantOverride
     ? `${queryTenant.toLowerCase()}.rewardsplatform.app`
     : hostname
+  if (import.meta.env.VITE_TENANT_STATE_RPC_ENABLED === 'true') {
+    const { data: stateData, error: stateError } = await supabase.rpc('resolve_program_host_state', {
+      p_hostname: resolutionHostname.split(':')[0].toLowerCase(),
+    })
+    if (!stateError && Array.isArray(stateData) && stateData[0]) {
+      const state = stateData[0] as Record<string, unknown>
+      if (state.domain_verification_status !== 'verified') throw new Error('domain_pending')
+      if (state.status === 'suspended') throw new Error('program_suspended')
+      if (state.status !== 'active') throw new Error('program_unavailable')
+      return mapProgram(state)
+    }
+  }
   const { data, error } = await supabase.rpc('resolve_program_by_hostname', {
     p_hostname: resolutionHostname.split(':')[0].toLowerCase(),
   })
-  if (error || !data || !Array.isArray(data) || !data[0]) return getFallbackProgram(hostname)
-  return mapProgram(data[0] as Record<string, unknown>)
+  if (!error && data && Array.isArray(data) && data[0]) return mapProgram(data[0] as Record<string, unknown>)
+  if (canUseTenantOverride) return getFallbackProgram(hostname)
+  throw new Error('program_not_found')
 }
 
 export const seededPrograms = Object.values(programs)

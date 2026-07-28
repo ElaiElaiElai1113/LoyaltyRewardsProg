@@ -1,4 +1,4 @@
-import { Building2, CheckCircle2, Globe2, Plus, Users } from 'lucide-react'
+import { Building2, CheckCircle2, Globe2, Plus, Search, Users } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -24,6 +24,9 @@ export function PlatformProgramsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [isCreating, setIsCreating] = useState(false)
   const [showForm, setShowForm] = useState(false)
+  const [query, setQuery] = useState('')
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [selected, setSelected] = useState<PlatformProgram | null>(null)
   const [form, setForm] = useState(defaults)
 
   async function loadPrograms() {
@@ -57,6 +60,7 @@ export function PlatformProgramsPage() {
 
   async function toggleStatus(program: PlatformProgram) {
     const nextStatus = program.status === 'active' ? 'suspended' : 'active'
+    if (nextStatus === 'suspended' && !window.confirm(`Suspend ${program.name}? Members and tenant administrators will lose operational access.`)) return
     try {
       await platformService.updateProgramStatus(program.id, nextStatus)
       toast.success(`${program.name} is now ${nextStatus}.`)
@@ -65,6 +69,12 @@ export function PlatformProgramsPage() {
       toast.error(error instanceof Error ? error.message : 'Program status could not be updated.')
     }
   }
+
+  const visiblePrograms = programs.filter((program) => {
+    const matchesQuery = `${program.name} ${program.slug} ${program.primaryDomain ?? ''}`.toLowerCase().includes(query.trim().toLowerCase())
+    const matchesStatus = statusFilter === 'all' || program.status === statusFilter
+    return matchesQuery && matchesStatus
+  })
 
   return (
     <div className="space-y-8">
@@ -114,6 +124,20 @@ export function PlatformProgramsPage() {
         </Card>
       ) : null}
 
+      <div className="flex flex-col gap-3 border-y border-[var(--border)] py-4 sm:flex-row">
+        <label className="relative flex-1">
+          <Search className="pointer-events-none absolute left-3 top-3.5 size-4 text-[var(--muted-foreground)]" />
+          <Input aria-label="Search programs" className="pl-9" placeholder="Search program, slug, or domain" value={query} onChange={(event) => setQuery(event.target.value)} />
+        </label>
+        <select aria-label="Filter program status" className="h-12 border border-[var(--border)] bg-[var(--card)] px-3 text-sm" value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+          <option value="all">All statuses</option>
+          <option value="draft">Draft</option>
+          <option value="active">Active</option>
+          <option value="suspended">Suspended</option>
+          <option value="archived">Archived</option>
+        </select>
+      </div>
+
       <Card className="overflow-hidden rounded-lg">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
@@ -122,7 +146,7 @@ export function PlatformProgramsPage() {
                 <tr><th className="px-5 py-3">Program</th><th className="px-5 py-3">Region</th><th className="px-5 py-3">Domain</th><th className="px-5 py-3">Plan</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Access</th></tr>
               </thead>
               <tbody>
-                {programs.map((program) => (
+                {visiblePrograms.map((program) => (
                   <tr key={program.id} className="border-b border-[var(--border)] last:border-0">
                     <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="size-3 rounded-full" style={{ backgroundColor: program.primaryColor }} /><div><p className="font-semibold">{program.name}</p><p className="text-xs text-[var(--muted-foreground)]">{program.slug}</p></div></div></td>
                     <td className="px-5 py-4">{program.countryCode} · {program.currency}</td>
@@ -130,15 +154,34 @@ export function PlatformProgramsPage() {
                     <td className="px-5 py-4">{program.planName}</td>
                     <td className="px-5 py-4 capitalize">{program.subscriptionStatus.replace('_', ' ')}</td>
                     <td className="px-5 py-4"><Badge variant={program.status === 'active' ? 'tenant' : 'secondary'}>{program.status}</Badge></td>
-                    <td className="px-5 py-4"><Button variant="ghost" size="sm" onClick={() => void toggleStatus(program)}>{program.status === 'active' ? 'Suspend' : 'Activate'}</Button></td>
+                    <td className="px-5 py-4"><div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => setSelected(program)}>Details</Button><Button variant="ghost" size="sm" onClick={() => void toggleStatus(program)}>{program.status === 'active' ? 'Suspend' : 'Activate'}</Button></div></td>
                   </tr>
                 ))}
-                {!isLoading && programs.length === 0 ? <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--muted-foreground)]">No programs found.</td></tr> : null}
+                {!isLoading && visiblePrograms.length === 0 ? <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--muted-foreground)]">No programs match these filters.</td></tr> : null}
               </tbody>
             </table>
           </div>
         </CardContent>
       </Card>
+
+      {selected ? (
+        <section className="border-y border-[var(--border)] py-6" aria-label={`${selected.name} usage`}>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div><p className="text-sm text-[var(--muted-foreground)]">Tenant usage</p><h2 className="text-2xl font-semibold">{selected.name}</h2></div>
+            <Button size="icon" variant="ghost" title="Close tenant details" onClick={() => setSelected(null)}>×</Button>
+          </div>
+          <div className="mt-6 grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+            <Usage label="Administrators" value={selected.usage.administrators} limit={selected.entitlements.administrators} />
+            <Usage label="Businesses" value={selected.usage.businesses} limit={selected.entitlements.businesses} />
+            <Usage label="Members" value={selected.usage.members} limit={selected.entitlements.members} />
+            <Usage label="Custom domains" value={selected.usage.customDomains} limit={selected.entitlements.customDomains} />
+            <Usage label="Storage" value={selected.usage.storageMb} limit={selected.entitlements.storageMb} unit=" MB" />
+          </div>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {Object.entries(selected.entitlements.features).map(([feature, enabled]) => <Badge key={feature} variant={enabled ? 'success' : 'outline'}>{feature}: {enabled ? 'on' : 'off'}</Badge>)}
+          </div>
+        </section>
+      ) : null}
     </div>
   )
 }
@@ -149,4 +192,10 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Metric({ label, value, icon: Icon }: { label: string; value: number; icon: typeof Users }) {
   return <div className="flex items-center gap-4 border-b border-[var(--border)] py-4"><Icon className="size-5 text-[var(--tenant-accent)]" /><div><p className="text-2xl font-semibold">{value}</p><p className="text-xs text-[var(--muted-foreground)]">{label}</p></div></div>
+}
+
+function Usage({ label, value, limit, unit = '' }: { label: string; value: number | null; limit: number; unit?: string }) {
+  const knownValue = value ?? 0
+  const percentage = limit > 0 ? Math.min(100, Math.round((knownValue / limit) * 100)) : 0
+  return <div><div className="flex justify-between gap-3 text-sm"><span>{label}</span><span className="font-semibold">{value === null ? 'Unavailable' : `${value}${unit} / ${limit}${unit}`}</span></div><div className="mt-2 h-2 overflow-hidden bg-[var(--muted)]"><div className="h-full bg-[var(--tenant-accent)]" style={{ width: `${percentage}%` }} /></div></div>
 }

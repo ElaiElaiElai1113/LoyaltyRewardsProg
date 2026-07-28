@@ -39,8 +39,11 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Test
-        run: npm run test
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Tenant import validator
+        run: npm run validate:tenant-import -- docs/tenant-import-template.json
 
       - name: Build
         run: npm run build
@@ -48,8 +51,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps chromium
 
-      - name: Public E2E smoke
-        run: npm run test:e2e
+      - name: Non-destructive E2E
+        run: npm run test:e2e:ci
 
       - name: Upload production build
         uses: actions/upload-artifact@v4

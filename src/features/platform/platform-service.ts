@@ -1,12 +1,31 @@
 import { seededPrograms } from '@/features/tenant/tenant-service'
 import { supabase } from '@/integrations/supabase/client'
-import type { Program } from '@/types/domain'
+import type { PlanEntitlements, Program } from '@/types/domain'
+
+export interface ProgramUsage {
+  administrators: number
+  businesses: number
+  members: number
+  customDomains: number
+  storageMb: number | null
+}
 
 export interface PlatformProgram extends Program {
   primaryDomain: string | null
   domainStatus: string
   subscriptionStatus: string
   planName: string
+  entitlements: PlanEntitlements
+  usage: ProgramUsage
+}
+
+const fallbackEntitlements: PlanEntitlements = {
+  administrators: 2,
+  businesses: 10,
+  members: 1000,
+  storageMb: 2048,
+  customDomains: 1,
+  features: { giftCards: true, referrals: true },
 }
 
 function fallbackRows(): PlatformProgram[] {
@@ -16,24 +35,33 @@ function fallbackRows(): PlatformProgram[] {
     domainStatus: program.slug === 'medellin' ? 'verified' : 'pending',
     subscriptionStatus: program.slug === 'medellin' ? 'active' : 'incomplete',
     planName: program.slug === 'medellin' ? 'Growth' : 'Launch',
+    entitlements: fallbackEntitlements,
+    usage: { administrators: 0, businesses: 0, members: 0, customDomains: 0, storageMb: null },
   }))
 }
 
 export const platformService = {
   async listPrograms(): Promise<PlatformProgram[]> {
     if (!supabase) return fallbackRows()
-    const { data, error } = await supabase
+    const sb = supabase
+    const { data, error } = await sb
       .from('programs')
-      .select('*, program_domains(hostname,is_primary,verification_status), program_subscriptions(status,subscription_plans(name))')
+      .select('*, program_domains(hostname,is_primary,verification_status), program_subscriptions(status,subscription_plans(name,entitlements))')
       .order('created_at')
     if (error || !data) return fallbackRows()
-    return data.map((row) => {
+    return Promise.all(data.map(async (row) => {
       const domains = (row.program_domains ?? []) as Array<Record<string, unknown>>
       const domain = domains.find((item) => item.is_primary) ?? domains[0]
       const subscription = Array.isArray(row.program_subscriptions)
         ? row.program_subscriptions[0]
         : row.program_subscriptions
       const plan = subscription?.subscription_plans
+      const planValue = Array.isArray(plan) ? plan[0] : plan
+      const [{ count: administrators }, { count: members }, { count: businesses }] = await Promise.all([
+        sb.from('program_memberships').select('id', { count: 'exact', head: true }).eq('program_id', row.id).eq('role', 'program-admin').in('status', ['active', 'invited']),
+        sb.from('program_memberships').select('id', { count: 'exact', head: true }).eq('program_id', row.id).eq('role', 'member').eq('status', 'active'),
+        sb.from('businesses').select('id', { count: 'exact', head: true }).eq('program_id', row.id),
+      ])
       return {
         id: row.id,
         name: row.name,
@@ -52,9 +80,17 @@ export const platformService = {
         primaryDomain: (domain?.hostname as string) ?? null,
         domainStatus: (domain?.verification_status as string) ?? 'pending',
         subscriptionStatus: (subscription?.status as string) ?? 'incomplete',
-        planName: (Array.isArray(plan) ? plan[0]?.name : plan?.name) ?? 'No plan',
+        planName: planValue?.name ?? 'No plan',
+        entitlements: (planValue?.entitlements as PlanEntitlements | null) ?? fallbackEntitlements,
+        usage: {
+          administrators: administrators ?? 0,
+          businesses: businesses ?? 0,
+          members: members ?? 0,
+          customDomains: domains.filter((item) => !String(item.hostname).endsWith('.rewardsplatform.app')).length,
+          storageMb: null,
+        },
       } as PlatformProgram
-    })
+    }))
   },
 
   async createProgram(input: {
@@ -117,6 +153,15 @@ export const platformService = {
 
   async updateProgramStatus(programId: string, status: Program['status']) {
     if (!supabase) throw new Error('Supabase must be configured to update a program.')
+    const { error: rpcError } = await supabase.rpc('set_program_status', {
+      p_program_id: programId,
+      p_status: status,
+      p_reason: 'Platform console lifecycle action',
+    })
+    if (!rpcError) return
+    if (rpcError.code !== 'PGRST202' && !rpcError.message.includes('Could not find the function')) {
+      throw new Error(rpcError.message)
+    }
     const { error } = await supabase.from('programs').update({ status }).eq('id', programId)
     if (error) throw new Error(error.message)
   },
