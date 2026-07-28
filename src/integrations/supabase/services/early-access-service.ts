@@ -1,6 +1,7 @@
 import type { EarlyAccessLead, EarlyAccessLeadStatus } from '@/types/domain'
 import type { EarlyAccessLeadFormValues } from '@/types/forms'
 import { camelCaseRow, requireSupabase } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 
 type EarlyAccessLeadApiResponse = {
   ok?: boolean
@@ -31,7 +32,8 @@ function mapEarlyAccessLead(row: Record<string, unknown>): EarlyAccessLead {
 
 async function createLeadViaSupabase(values: EarlyAccessLeadFormValues, options?: CreateLeadOptions): Promise<EarlyAccessLead> {
   const sb = requireSupabase()
-  const { data, error } = await sb.rpc('create_early_access_lead', {
+  const { data, error } = await sb.rpc('create_program_early_access_lead', {
+    p_program_id: getActiveProgram().id,
     p_full_name: values.fullName?.trim() || null,
     p_email: values.email.trim() || null,
     p_whatsapp: values.whatsapp?.trim() || null,
@@ -66,6 +68,7 @@ export const earlyAccessService = {
           notes: values.notes?.trim() ?? '',
           marketingConsent: values.marketingConsent,
           source,
+          hostname: window.location.hostname,
         }),
       })
     } catch (error) {

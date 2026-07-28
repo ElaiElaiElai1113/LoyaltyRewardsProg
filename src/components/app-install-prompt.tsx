@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
+import { tenantStorageKey } from '@/lib/tenant-storage'
 
 declare global {
   interface Navigator {
@@ -14,8 +16,6 @@ interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>
 }
-
-const installPromptDismissedKey = 'medellinRewardsInstallPromptDismissed'
 
 function isStandaloneDisplay() {
   if (typeof window === 'undefined') return false
@@ -38,10 +38,11 @@ function isIosSafari() {
 }
 
 export function AppInstallPrompt() {
+  const { program } = useTenant()
   const { t } = useLanguage()
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null)
   const [isDismissed, setIsDismissed] = useState(() =>
-    typeof window === 'undefined' ? true : window.localStorage.getItem(installPromptDismissedKey) === 'true',
+    typeof window === 'undefined' ? true : window.localStorage.getItem(tenantStorageKey('install-prompt-dismissed')) === 'true',
   )
   const [isStandalone, setIsStandalone] = useState(isStandaloneDisplay)
   const showIosInstructions = useMemo(() => isIosSafari(), [])
@@ -55,7 +56,7 @@ export function AppInstallPrompt() {
     function handleAppInstalled() {
       setIsStandalone(true)
       setInstallEvent(null)
-      window.localStorage.setItem(installPromptDismissedKey, 'true')
+      window.localStorage.setItem(tenantStorageKey('install-prompt-dismissed'), 'true')
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -71,7 +72,7 @@ export function AppInstallPrompt() {
 
   const dismissPrompt = () => {
     setIsDismissed(true)
-    window.localStorage.setItem(installPromptDismissedKey, 'true')
+    window.localStorage.setItem(tenantStorageKey('install-prompt-dismissed'), 'true')
   }
 
   const installApp = async () => {
@@ -92,7 +93,7 @@ export function AppInstallPrompt() {
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="text-sm font-bold text-[var(--foreground)]">{t('Install Medellin Rewards')}</p>
+              <p className="text-sm font-bold text-[var(--foreground)]">{t(`Install ${program.name}`)}</p>
               <p className="mt-1 text-sm leading-5 text-[var(--muted-foreground)]">
                 {showIosInstructions && !installEvent
                   ? t('On iPhone, tap Share, then Add to Home Screen to use this like an app.')

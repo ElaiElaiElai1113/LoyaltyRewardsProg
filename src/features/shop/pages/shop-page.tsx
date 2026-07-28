@@ -10,15 +10,9 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 import { formatCurrency } from '@/lib/utils'
 import type { Business, Product } from '@/types/domain'
-
-const MEDELLIN_BOUNDS = {
-  minLat: 6.17,
-  maxLat: 6.31,
-  minLng: -75.62,
-  maxLng: -75.52,
-}
 
 const PREVIEW_PIN_POSITIONS = [
   { left: 28, top: 34 },
@@ -50,15 +44,25 @@ function getPreviewMapPosition(index: number) {
   }
 }
 
-function getMapPosition(business: Business, index: number) {
+function getMapPosition(
+  business: Business,
+  index: number,
+  center: { latitude: number; longitude: number },
+) {
   if (!hasExactMapPin(business)) {
     return getPreviewMapPosition(index)
   }
 
-  const longitude = business.longitude ?? MEDELLIN_BOUNDS.minLng
-  const latitude = business.latitude ?? MEDELLIN_BOUNDS.minLat
-  const x = ((longitude - MEDELLIN_BOUNDS.minLng) / (MEDELLIN_BOUNDS.maxLng - MEDELLIN_BOUNDS.minLng)) * 100
-  const y = ((MEDELLIN_BOUNDS.maxLat - latitude) / (MEDELLIN_BOUNDS.maxLat - MEDELLIN_BOUNDS.minLat)) * 100
+  const bounds = {
+    minLat: center.latitude - 0.08,
+    maxLat: center.latitude + 0.08,
+    minLng: center.longitude - 0.08,
+    maxLng: center.longitude + 0.08,
+  }
+  const longitude = business.longitude ?? bounds.minLng
+  const latitude = business.latitude ?? bounds.minLat
+  const x = ((longitude - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * 100
+  const y = ((bounds.maxLat - latitude) / (bounds.maxLat - bounds.minLat)) * 100
 
   return {
     left: `${clamp(x, 8, 92)}%`,
@@ -159,6 +163,7 @@ function PartnerMapBackdrop() {
 export function ShopPage() {
   const requireAuth = useLoginGate()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const businesses = useBusinesses()
   const products = useProducts()
   const addToCart = useAddToCart()
@@ -185,7 +190,7 @@ export function ShopPage() {
       return `https://www.google.com/maps/search/?api=1&query=${business.latitude},${business.longitude}`
     }
 
-    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name} Medellin Colombia`)}`
+    return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${business.name} ${program.countryCode}`)}`
   }
 
   const chooseProduct = (product: Product) => {
@@ -221,7 +226,7 @@ export function ShopPage() {
               {t('Explore Businesses')}
             </h1>
             <p className="max-w-2xl text-base font-medium leading-7 text-on-surface-variant/85 sm:text-lg">
-              {t('Find partner businesses around Medellin and open their products from the map.')}
+              {t(`Find partner businesses in ${program.name} and open their products from the map.`)}
             </p>
           </div>
 
@@ -257,13 +262,13 @@ export function ShopPage() {
               <div className="absolute left-5 top-5 rounded-2xl border border-primary/20 bg-card/88 px-4 py-3 text-primary shadow-soft backdrop-blur">
                 <div className="flex items-center gap-2">
                   <Compass className="size-4 text-primary" />
-                  <span className="text-xs font-bold uppercase tracking-[0.18em]">{t('Medellin')}</span>
+                  <span className="text-xs font-bold uppercase tracking-[0.18em]">{program.name}</span>
                 </div>
               </div>
 
               {partnerBusinesses.map((business, index) => {
                 const isExactPin = hasExactMapPin(business)
-                const position = getMapPosition(business, index)
+                const position = getMapPosition(business, index, program.mapCenter)
 
                 return (
                   <button

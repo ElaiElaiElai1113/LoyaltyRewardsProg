@@ -8,6 +8,7 @@ import {
   ShoppingBag,
 } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { useTenant } from '@/hooks/use-tenant'
 
 import ctaOverlay from '@/assets/business/cta-overlay.png'
 import hotelPartner from '@/assets/business/hotel-partner.png'
@@ -83,6 +84,8 @@ function SectionEyebrow({ children }: { children: string }) {
 }
 
 export function ForBusinessesPage() {
+  const { program } = useTenant()
+  const tenantText = (text: string) => text.replaceAll('Medellin Rewards', program.name)
   return (
     <div className="business-landing">
       <section className="business-landing__hero" aria-labelledby="business-hero-title">
@@ -97,7 +100,7 @@ export function ForBusinessesPage() {
               members.
             </h1>
             <p className="business-landing__hero-intro">
-              Join the Medellin Rewards network and turn every member purchase into a new regular.
+              Join the {program.name} network and turn every member purchase into a new regular.
             </p>
 
             <div className="business-landing__hero-actions">
@@ -191,7 +194,7 @@ export function ForBusinessesPage() {
                   <span className="business-landing__step-number">{step.number}</span>
                   <div>
                     <h3>{step.title}</h3>
-                    <p>{step.body}</p>
+                    <p>{tenantText(step.body)}</p>
                   </div>
                 </li>
               ))}
@@ -225,7 +228,7 @@ export function ForBusinessesPage() {
             scheduled for a short interview to see if your<br className="business-landing__desktop-break" />
             business will qualify.
           </p>
-          <a className="business-landing__button" href="mailto:info@medellinrewards.com">
+          <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
             Get Started Today <ArrowRight aria-hidden="true" />
           </a>
         </div>
@@ -241,7 +244,7 @@ export function ForBusinessesPage() {
             <Link className="business-landing__button business-landing__button--outline" to="/cost-calculator">
               Calculate Your Costs <ArrowRight aria-hidden="true" />
             </Link>
-            <a className="business-landing__button" href="mailto:info@medellinrewards.com">
+            <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
               Talk to us <ArrowRight aria-hidden="true" />
             </a>
           </div>

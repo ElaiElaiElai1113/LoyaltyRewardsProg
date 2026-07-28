@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
-  appId: 'com.medellinrewards.app',
-  appName: 'Medellin Rewards',
+  appId: 'com.rewardsplatform.app',
+  appName: 'Rewards Platform',
   webDir: 'dist',
   bundledWebRuntime: false,
   server: {

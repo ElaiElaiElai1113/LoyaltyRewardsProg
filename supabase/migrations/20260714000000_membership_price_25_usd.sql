@@ -1,11 +1,17 @@
 alter table public.memberships
   alter column price_cents set default 2500;
 
+alter table public.memberships
+  disable trigger enforce_memberships_verified_profile;
+
 update public.memberships
 set price_cents = 2500
 where provider = 'mock'
   and currency = 'USD'
   and price_cents = 1000;
+
+alter table public.memberships
+  enable trigger enforce_memberships_verified_profile;
 
 create or replace function public.mock_subscribe()
 returns public.memberships

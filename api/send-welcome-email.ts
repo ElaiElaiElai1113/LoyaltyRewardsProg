@@ -4,7 +4,10 @@ import { createTransport } from 'nodemailer'
 type WelcomeEmailRequest = {
   fullName?: unknown
   email?: unknown
+  hostname?: unknown
 }
+
+type EmailBrand = { name: string; hostname: string }
 
 type SmtpConfig = {
   host: string
@@ -155,6 +158,30 @@ function buildHtmlEmail(fullName: string): string {
 </html>`
 }
 
+async function resolveEmailBrand(hostname: string): Promise<EmailBrand> {
+  const fallback = { name: 'Medellin Rewards', hostname: 'medellinrewards.com' }
+  const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
+  const key = process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY
+  if (!url || !key || !hostname) return fallback
+  try {
+    const result = await fetch(`${url}/rest/v1/rpc/resolve_program_by_hostname`, {
+      method: 'POST',
+      headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ p_hostname: hostname }),
+    })
+    const rows = await result.json() as Array<{ name?: string }>
+    return result.ok && rows[0]?.name ? { name: rows[0].name, hostname } : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function applyEmailBrand(content: string, brand: EmailBrand) {
+  return content
+    .replaceAll('Medellin Rewards', brand.name)
+    .replaceAll('medellinrewards.com', brand.hostname)
+}
+
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST')
@@ -165,6 +192,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   const body = parseRequestBody(request.body)
   const email = typeof body.email === 'string' ? body.email.trim().toLowerCase() : ''
   const fullName = typeof body.fullName === 'string' ? body.fullName.trim() : ''
+  const hostname = typeof body.hostname === 'string' ? body.hostname.trim().toLowerCase() : ''
 
   if (!emailPattern.test(email)) {
     sendJson(response, 400, { ok: false, error: 'Valid email is required' })
@@ -180,6 +208,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   }
 
   try {
+    const brand = await resolveEmailBrand(hostname)
     const transporter = createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
@@ -193,9 +222,9 @@ export default async function handler(request: VercelRequest, response: VercelRe
     await transporter.sendMail({
       from: smtpConfig.from,
       to: email,
-      subject: 'Welcome to Medellin Rewards',
-      text: buildTextEmail(fullName),
-      html: buildHtmlEmail(fullName),
+      subject: `Welcome to ${brand.name}`,
+      text: applyEmailBrand(buildTextEmail(fullName), brand),
+      html: applyEmailBrand(buildHtmlEmail(fullName), brand),
     })
 
     sendJson(response, 200, { ok: true })

@@ -1,6 +1,7 @@
 import type { Business } from '@/types/domain'
 import type { BusinessSettingsFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow, snakeCaseObj, toNullableNumber } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 
 function isMissingBusinessBillSettingsRpc(error: unknown) {
   if (!error || typeof error !== 'object') return false
@@ -45,6 +46,7 @@ export const businessService = {
     let query = sb
       .from('businesses')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
 
     if (!includeInactive) {
       query = query.eq('active', true)
@@ -62,6 +64,7 @@ export const businessService = {
     let query = sb
       .from('businesses')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('active', true)
 
     if (businessId) {
@@ -85,6 +88,7 @@ export const businessService = {
     const { data, error } = await sb
       .from('businesses')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('id', businessId)
       .single()
 

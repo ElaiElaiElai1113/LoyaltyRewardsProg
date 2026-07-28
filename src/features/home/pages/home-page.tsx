@@ -2,6 +2,7 @@ import type { CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 import carRewards from '@/assets/landing/car-rewards-clean.png'
 import coffeeMember from '@/assets/landing/coffee-member.png'
 import coffeeRewards from '@/assets/landing/coffee-rewards.png'
@@ -201,10 +202,11 @@ const faqs = [
 ] as const
 
 function Brand() {
+  const { program } = useTenant()
   return (
     <span className="figma-home__brand">
-      <img src="/favicon.svg" alt="" aria-hidden="true" />
-      <span>MEDELLÍN REWARDS</span>
+      {program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : null}
+      <span>{program.name.toUpperCase()}</span>
     </span>
   )
 }
@@ -215,6 +217,7 @@ function SectionEyebrow({ children }: { children: string }) {
 
 export function HomePage() {
   const { language, setLanguage } = useLanguage()
+  const { program } = useTenant()
   const tx = (text: string) => language === 'es' ? spanishHomeCopy[text] ?? text : text
 
   return (
@@ -222,7 +225,7 @@ export function HomePage() {
       <div className="figma-home__paper">
         <header className="figma-home__header">
           <div className="figma-home__container figma-home__header-inner">
-            <a href="#top" className="figma-home__brand-link" aria-label="Medellín Rewards home">
+            <a href="#top" className="figma-home__brand-link" aria-label={`${program.name} home`}>
               <Brand />
             </a>
 
@@ -271,7 +274,7 @@ export function HomePage() {
               </div>
 
               <div className="figma-home__hero-actions">
-                <Link className="figma-home__button" to="/join">{tx('Join Medellín Rewards')}</Link>
+                <Link className="figma-home__button" to="/join">{language === 'es' ? `Únete a ${program.name}` : `Join ${program.name}`}</Link>
                 <a className="figma-home__button figma-home__button--secondary" href="#how-it-works">{tx('See how it works')}</a>
               </div>
 
@@ -432,8 +435,8 @@ export function HomePage() {
             </nav>
           </div>
           <div className="figma-home__footer-bottom">
-            <p>© 2026 Medellín Rewards. {tx('All rights reserved.')}</p>
-            <p>{tx('Made for members in Medellín, Colombia')}</p>
+            <p>© 2026 {program.name}. {tx('All rights reserved.')}</p>
+            <p>{program.countryCode}</p>
           </div>
         </div>
       </footer>

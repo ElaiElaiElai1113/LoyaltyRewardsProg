@@ -1,12 +1,13 @@
 import type { Promotion } from '@/types/domain'
 import type { PromotionDraftFormValues } from '@/types/forms'
 import { requireSupabase, camelCaseRow, snakeCaseObj } from './shared'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 
 export const promotionsService = {
   async getPromotions(businessId?: string): Promise<Promotion[]> {
     const sb = requireSupabase()
 
-    let query = sb.from('promotions').select('*')
+    let query = sb.from('promotions').select('*').eq('program_id', getActiveProgram().id)
     if (businessId) {
       query = query.eq('business_id', businessId)
     }
@@ -30,7 +31,7 @@ export const promotionsService = {
 
     const { data, error } = await sb
       .from('promotions')
-      .insert({ ...snakeValues, expires_at: expiresAt })
+      .insert({ ...snakeValues, expires_at: expiresAt, program_id: getActiveProgram().id })
       .select('*')
       .single()
 
@@ -41,6 +42,7 @@ export const promotionsService = {
     const promotion = camelCaseRow(data) as unknown as Promotion
 
     const { error: logError } = await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Promotion created',
       details: `Created ${promotion.title}.`,
@@ -74,6 +76,7 @@ export const promotionsService = {
     const promotion = camelCaseRow(data as Record<string, unknown>) as unknown as Promotion
 
     const { error: logError } = await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Promotion created',
       details: `Created ${promotion.title}.`,
@@ -96,6 +99,7 @@ export const promotionsService = {
     }
 
     await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Promotion deleted',
       details: `Removed promotion ID: ${promotionId}.`,
@@ -124,6 +128,7 @@ export const promotionsService = {
     const promotion = camelCaseRow(data) as unknown as Promotion
 
     await sb.from('admin_logs').insert({
+      program_id: getActiveProgram().id,
       actor_name: actorName,
       action: 'Promotion updated',
       details: `Updated details for ${promotion.title}.`,

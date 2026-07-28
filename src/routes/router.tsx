@@ -30,6 +30,10 @@ import { LegalPage } from '@/features/legal/pages/legal-page'
 import { MembershipPage } from '@/features/membership/pages/membership-page'
 import { NotFoundPage } from '@/features/not-found/pages/not-found-page'
 import { PlatformGuidePage } from '@/features/platform-guide/pages/platform-guide-page'
+import { PlatformProgramsPage } from '@/features/platform/pages/platform-programs-page'
+import { ProgramSettingsPage } from '@/features/program/pages/program-settings-page'
+import { ProgramTeamPage } from '@/features/program/pages/program-team-page'
+import { ProgramBillingPage } from '@/features/program/pages/program-billing-page'
 import { CartPage } from '@/features/shop/pages/cart-page'
 import { CheckoutPage } from '@/features/shop/pages/checkout-page'
 import { OrderConfirmationPage } from '@/features/shop/pages/order-confirmation-page'
@@ -51,12 +55,15 @@ import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
 import { PublicBrowseLayout } from '@/layouts/public-browse-layout'
+import { ProgramAdminLayout } from '@/layouts/program-admin-layout'
 import { useRequiredAgreements } from '@/hooks/use-legal-agreements'
 import { LoadingState } from '@/components/ui/loading-state'
 import { getAgreementGateDecision } from '@/lib/agreement-gate'
 import { isBusinessOwnerRole } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
 import { getHomePathForRole } from '@/lib/role-routes'
+import { useCurrentProgramMembership } from '@/hooks/use-program-access'
+import { canAccessProgramAdmin } from '@/lib/program-access'
 
 const portalAccessErrorKey = 'portalAccessError'
 
@@ -105,7 +112,7 @@ function RouteEffects() {
       try {
         const url = new URL(event.url)
         const path =
-          url.protocol === 'medellinrewards:'
+          url.protocol === 'medellinrewards:' || url.protocol === 'rewardsplatform:'
             ? `/${url.host}${url.pathname}`
             : `${url.pathname}${url.search}${url.hash}`
 
@@ -270,6 +277,15 @@ function ProtectedAdminRoute() {
   }
 
   return <AdminLayout />
+}
+
+function ProtectedProgramAdminRoute() {
+  const { profile, isLoading } = useAuth()
+  const membership = useCurrentProgramMembership()
+  if (isLoading || membership.isLoading) return <RouteLoading />
+  if (!profile) return <Navigate replace to={`/signin?redirect=${encodeURIComponent(window.location.pathname)}`} />
+  if (!canAccessProgramAdmin(profile.role, membership.data)) return <Navigate replace to={getHomePathForRole(profile.role)} />
+  return <ProgramAdminLayout />
 }
 
 function ProtectedBusinessOwnerRoute() {
@@ -492,8 +508,18 @@ const router = createBrowserRouter([
         element: <ProtectedAdminRoute />,
         children: [
           { path: '/admin/portal', element: <AdminPage /> },
+          { path: '/admin/programs', element: <PlatformProgramsPage /> },
           { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
           { path: '/admin/guide', element: <PlatformGuidePage /> },
+        ],
+      },
+      {
+        element: <ProtectedProgramAdminRoute />,
+        children: [
+          { path: '/program', element: <Navigate replace to="/program/settings" /> },
+          { path: '/program/settings', element: <ProgramSettingsPage /> },
+          { path: '/program/team', element: <ProgramTeamPage /> },
+          { path: '/program/billing', element: <ProgramBillingPage /> },
         ],
       },
       {

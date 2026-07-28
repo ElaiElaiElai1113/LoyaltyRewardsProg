@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { useTenant } from '@/hooks/use-tenant'
 
 type BrandLogoProps = {
   className?: string
@@ -7,15 +8,28 @@ type BrandLogoProps = {
   showText?: boolean
 }
 
-export function BrandLogo({ className, markClassName }: BrandLogoProps) {
+export function BrandLogo({ className, markClassName, textClassName, showText = true }: BrandLogoProps) {
+  const { program } = useTenant()
   return (
-    <span className={cn('inline-flex min-w-0 items-center', className)}>
-      <img
-        src="/medellin-rewards-logo.svg"
-        alt="Medellin Rewards"
-        className={cn('h-14 w-auto shrink-0 object-contain', markClassName)}
-      />
-      <span className="sr-only">Medellin Rewards</span>
+    <span className={cn('inline-flex min-w-0 items-center gap-2', className)}>
+      {program.logoUrl ? (
+        <img
+          src={program.logoUrl}
+          alt={program.name}
+          className={cn('h-14 w-auto shrink-0 object-contain', markClassName)}
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          className={cn('flex size-10 shrink-0 items-center justify-center rounded-md bg-tenant text-lg font-bold', markClassName)}
+        >
+          {program.name.charAt(0)}
+        </span>
+      )}
+      {showText && !program.logoUrl ? (
+        <span className={cn('truncate font-semibold text-[var(--foreground)]', textClassName)}>{program.name}</span>
+      ) : null}
+      <span className="sr-only">{program.name}</span>
     </span>
   )
 }

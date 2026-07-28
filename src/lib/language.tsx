@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { tenantStorageKey } from '@/lib/tenant-storage'
 
 type Language = 'en' | 'es'
 
@@ -1744,7 +1745,9 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'es'
-  return window.localStorage.getItem('medellinrewards-language') === 'en' ? 'en' : 'es'
+  const stored = window.localStorage.getItem(tenantStorageKey('language'))
+    ?? window.localStorage.getItem('medellinrewards-language')
+  return stored === 'en' ? 'en' : 'es'
 }
 
 function applyValues(text: string, values?: TranslationValues) {
@@ -1760,7 +1763,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = language
-    window.localStorage.setItem('medellinrewards-language', language)
+    window.localStorage.setItem(tenantStorageKey('language'), language)
   }, [language])
 
   const value = useMemo<LanguageContextValue>(
