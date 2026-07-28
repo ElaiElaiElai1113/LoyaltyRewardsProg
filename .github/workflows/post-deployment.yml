@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
-      DEPLOYMENT_URL: ${{ github.event.deployment_status.environment_url || inputs.deployment_url }}
+      DEPLOYMENT_URL: ${{ inputs.deployment_url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
