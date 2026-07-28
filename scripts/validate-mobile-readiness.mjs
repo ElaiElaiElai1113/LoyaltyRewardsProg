@@ -16,8 +16,10 @@ const checks = [
   ['android namespace', files.android.includes('com.rewardsplatform.app')],
   ['android activity package', files.androidActivity.includes('package com.rewardsplatform.app;')],
   ['android internet permission', files.androidManifest.includes('android.permission.INTERNET')],
+  ['android deep-link scheme', files.androidManifest.includes('android:scheme="rewardsplatform"')],
   ['ios display name', files.ios.includes('CFBundleDisplayName')],
   ['ios bundle identifier', files.iosProject.includes('PRODUCT_BUNDLE_IDENTIFIER = com.rewardsplatform.app;')],
+  ['ios deep-link scheme', files.ios.includes('<string>rewardsplatform</string>')],
   ['ios icon catalog', JSON.parse(files.icons).images.length > 0],
 ]
 const failures = checks.filter(([, passed]) => !passed).map(([name]) => name)
