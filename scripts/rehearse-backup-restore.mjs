@@ -9,7 +9,10 @@ if (!backupArg || !manifestArg) {
 const backupPath = resolve(backupArg)
 const manifestPath = resolve(manifestArg)
 await Promise.all([access(backupPath), access(manifestPath)])
-const [backup, manifest] = await Promise.all([stat(backupPath), readFile(manifestPath, 'utf8').then(JSON.parse)])
+const [backup, manifest] = await Promise.all([
+  stat(backupPath),
+  readFile(manifestPath, 'utf8').then((content) => JSON.parse(content.replace(/^\uFEFF/, ''))),
+])
 const checks = [
   { name: 'backup-nonempty', passed: backup.size > 0, detail: `${backup.size} bytes` },
   { name: 'manifest-readable', passed: Boolean(manifest), detail: manifestPath },

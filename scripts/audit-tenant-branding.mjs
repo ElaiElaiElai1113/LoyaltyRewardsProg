@@ -27,6 +27,7 @@ const permitted = [
   /public\/site\.webmanifest$/,
   /platform-service\.ts$/,
   /router\.tsx$/,
+  /tenant-email-templates\.test\.ts$/,
 ]
 const findings = []
 for (const file of files) {

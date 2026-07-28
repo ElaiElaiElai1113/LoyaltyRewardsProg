@@ -14,6 +14,7 @@ dist
 .tmp-tests
 .tmp-tenant-*/
 .tmp-tenant-*.json
+.tmp-restore-*.json
 email-previews/
 test-results
 supabase/.temp/
