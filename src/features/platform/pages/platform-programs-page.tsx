@@ -1,4 +1,4 @@
-import { Building2, CheckCircle2, CircleDollarSign, Globe2, Plus, Users } from 'lucide-react'
+import { Building2, CheckCircle2, Globe2, Plus, Users } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
@@ -45,7 +45,9 @@ export function PlatformProgramsPage() {
       setForm(defaults)
       setShowForm(false)
       await loadPrograms()
-      await platformService.startCheckout(programId)
+      toast.message(`Program ID: ${programId}`, {
+        description: 'Billing is deferred. The platform subdomain can be configured now.',
+      })
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Program could not be created.')
     } finally {
@@ -84,7 +86,7 @@ export function PlatformProgramsPage() {
         <Metric label="Programs" value={programs.length} icon={Building2} />
         <Metric label="Active" value={programs.filter((item) => item.status === 'active').length} icon={CheckCircle2} />
         <Metric label="Verified domains" value={programs.filter((item) => item.domainStatus === 'verified').length} icon={Globe2} />
-        <Metric label="Paid subscriptions" value={programs.filter((item) => item.subscriptionStatus === 'active').length} icon={CircleDollarSign} />
+        <Metric label="Configured plans" value={programs.filter((item) => item.planName !== 'No plan').length} icon={Users} />
       </div>
 
       {showForm ? (
@@ -117,7 +119,7 @@ export function PlatformProgramsPage() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[800px] text-left text-sm">
               <thead className="border-b border-[var(--border)] bg-[var(--muted)]/50 text-[var(--muted-foreground)]">
-                <tr><th className="px-5 py-3">Program</th><th className="px-5 py-3">Region</th><th className="px-5 py-3">Domain</th><th className="px-5 py-3">Plan</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Billing</th></tr>
+                <tr><th className="px-5 py-3">Program</th><th className="px-5 py-3">Region</th><th className="px-5 py-3">Domain</th><th className="px-5 py-3">Plan</th><th className="px-5 py-3">Subscription</th><th className="px-5 py-3">Status</th><th className="px-5 py-3">Access</th></tr>
               </thead>
               <tbody>
                 {programs.map((program) => (
@@ -128,7 +130,7 @@ export function PlatformProgramsPage() {
                     <td className="px-5 py-4">{program.planName}</td>
                     <td className="px-5 py-4 capitalize">{program.subscriptionStatus.replace('_', ' ')}</td>
                     <td className="px-5 py-4"><Badge variant={program.status === 'active' ? 'tenant' : 'secondary'}>{program.status}</Badge></td>
-                    <td className="px-5 py-4"><div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => void platformService.startCheckout(program.id).catch((error) => toast.error(error instanceof Error ? error.message : 'Billing could not start.'))}>Billing</Button><Button variant="ghost" size="sm" onClick={() => void toggleStatus(program)}>{program.status === 'active' ? 'Suspend' : 'Activate'}</Button></div></td>
+                    <td className="px-5 py-4"><Button variant="ghost" size="sm" onClick={() => void toggleStatus(program)}>{program.status === 'active' ? 'Suspend' : 'Activate'}</Button></td>
                   </tr>
                 ))}
                 {!isLoading && programs.length === 0 ? <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--muted-foreground)]">No programs found.</td></tr> : null}

@@ -30,12 +30,14 @@ import {
   usePartnerReferrals,
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useTenant } from '@/hooks/use-tenant'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
 import { useLanguage } from '@/lib/language'
 import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/status-labels'
 import { formatCurrency, formatDate, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
+  const { program } = useTenant()
   const { business, metrics, promotions, redemptions } = useBusinessOwnerData()
   const { profile } = useAuth()
   const { t } = useLanguage()
@@ -197,7 +199,7 @@ export function BusinessDashboardPage() {
           title="Commission Owed"
           value={formatCurrency(metrics.commissionOwed ?? 0)}
           icon={<TrendingUp className="size-6" />}
-          helper="Unpaid Medellin Rewards commission"
+          helper={`Unpaid ${program.name} commission`}
         />
         <BusinessMetricCard
           title={t('Pending Fulfillment')}

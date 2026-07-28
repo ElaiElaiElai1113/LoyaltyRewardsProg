@@ -2,15 +2,14 @@ import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { tenantStorageKey } from '@/lib/tenant-storage'
 import { cn } from '@/lib/utils'
 
 type Theme = 'light' | 'dark'
 
-const storageKey = 'medellinrewards-theme'
-
 function getInitialTheme(): Theme {
   if (typeof window === 'undefined') return 'light'
-  return window.localStorage.getItem(storageKey) === 'dark' ? 'dark' : 'light'
+  return window.localStorage.getItem(tenantStorageKey('theme')) === 'dark' ? 'dark' : 'light'
 }
 
 function applyTheme(theme: Theme) {
@@ -22,7 +21,7 @@ export function ThemeToggle({ className }: { className?: string }) {
 
   useEffect(() => {
     applyTheme(theme)
-    window.localStorage.setItem(storageKey, theme)
+    window.localStorage.setItem(tenantStorageKey('theme'), theme)
   }, [theme])
 
   const isDark = theme === 'dark'

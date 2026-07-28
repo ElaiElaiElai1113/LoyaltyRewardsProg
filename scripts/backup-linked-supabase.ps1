@@ -44,9 +44,34 @@ try {
 
   $backup = Get-Item -LiteralPath $backupFile
   $hash = Get-FileHash -LiteralPath $backupFile -Algorithm SHA256
+  $archiveEntries = (& $pgRestore --list $backupFile | Where-Object { $_ -and -not $_.StartsWith(';') }).Count
+  $projectRefFile = Join-Path $repoRoot 'supabase\.temp\project-ref'
+  $projectRef = if (Test-Path -LiteralPath $projectRefFile) {
+    (Get-Content -LiteralPath $projectRefFile -Raw).Trim()
+  } else {
+    $null
+  }
+  $manifestFile = "$backupFile.manifest.json"
+  $manifest = [ordered]@{
+    created_at_utc = (Get-Date).ToUniversalTime().ToString('o')
+    project_ref = $projectRef
+    dump_file = $backup.Name
+    bytes = $backup.Length
+    sha256 = $hash.Hash
+    archive_entries = $archiveEntries
+    pg_dump_version = (& $pgDump --version)
+    pg_restore_version = (& $pgRestore --version)
+    format = 'custom'
+    no_owner = $true
+    no_acl = $true
+  }
+  $manifest | ConvertTo-Json -Depth 4 | Set-Content -LiteralPath $manifestFile -Encoding utf8
+
   Write-Output "Backup verified: $($backup.FullName)"
   Write-Output "Bytes: $($backup.Length)"
   Write-Output "SHA256: $($hash.Hash)"
+  Write-Output "Archive entries: $archiveEntries"
+  Write-Output "Manifest: $manifestFile"
 }
 finally {
   Remove-Item Env:PGPASSWORD -ErrorAction SilentlyContinue

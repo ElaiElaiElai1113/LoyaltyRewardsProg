@@ -1,6 +1,7 @@
 import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { requireSupabase } from '@/integrations/supabase/services/shared'
-import type { ProgramMembership, ProgramRole } from '@/types/domain'
+import { getCustomDomainCount, isValidProgramHostname, normalizeProgramHostname } from '@/lib/program-domain'
+import type { PlanEntitlements, ProgramMembership, ProgramRole } from '@/types/domain'
 
 export interface AccessibleProgram {
   id: string
@@ -37,6 +38,15 @@ export interface ProgramTeamMember {
   status: string
   businessId: string | null
   createdAt: string
+}
+
+export interface ProgramDomain {
+  id: string
+  hostname: string
+  isPrimary: boolean
+  verificationStatus: 'pending' | 'verified' | 'failed'
+  verificationToken: string
+  verifiedAt: string | null
 }
 
 export const programService = {
@@ -204,5 +214,57 @@ export const programService = {
       .single()
     if (error) throw new Error('Billing details could not be loaded.')
     return data
+  },
+
+  async listDomains(): Promise<{ domains: ProgramDomain[]; entitlements: PlanEntitlements }> {
+    const sb = requireSupabase()
+    const programId = getActiveProgram().id
+    const [{ data: domains, error: domainsError }, { data: entitlements, error: entitlementsError }] = await Promise.all([
+      sb.from('program_domains').select('*').eq('program_id', programId).order('is_primary', { ascending: false }).order('created_at'),
+      sb.rpc('get_plan_entitlements', { p_program_id: programId }),
+    ])
+    if (domainsError || entitlementsError) {
+      throw new Error(domainsError?.message ?? entitlementsError?.message ?? 'Domains could not be loaded.')
+    }
+    return {
+      domains: (domains ?? []).map((row) => ({
+        id: row.id,
+        hostname: row.hostname,
+        isPrimary: row.is_primary,
+        verificationStatus: row.verification_status,
+        verificationToken: row.verification_token,
+        verifiedAt: row.verified_at,
+      })),
+      entitlements: entitlements as PlanEntitlements,
+    }
+  },
+
+  async addDomain(hostname: string) {
+    const sb = requireSupabase()
+    const programId = getActiveProgram().id
+    const normalizedHostname = normalizeProgramHostname(hostname)
+    if (!isValidProgramHostname(normalizedHostname)) {
+      throw new Error('Enter a valid hostname without a path.')
+    }
+    const { domains, entitlements } = await this.listDomains()
+    const customDomainCount = getCustomDomainCount(domains.map((domain) => domain.hostname))
+    if (customDomainCount >= Number(entitlements.customDomains ?? 0)) {
+      throw new Error('This plan has reached its custom-domain limit.')
+    }
+    const { error } = await sb.from('program_domains').insert({
+      program_id: programId,
+      hostname: normalizedHostname,
+      is_primary: false,
+    })
+    if (error) throw new Error(error.message)
+  },
+
+  async removeDomain(domain: ProgramDomain) {
+    if (domain.isPrimary || domain.hostname.endsWith('.rewardsplatform.app')) {
+      throw new Error('The primary platform domain cannot be removed.')
+    }
+    const sb = requireSupabase()
+    const { error } = await sb.from('program_domains').delete().eq('id', domain.id).eq('program_id', getActiveProgram().id)
+    if (error) throw new Error(error.message)
   },
 }

@@ -12,6 +12,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { useBusinesses } from '@/hooks/use-customer-data'
+import { useTenant } from '@/hooks/use-tenant'
 import { ambassadorLeadSchema, type AmbassadorLeadFormValues } from '@/types/forms'
 import {
   ambassadorCreatorSignals,
@@ -44,6 +45,7 @@ const compactTextareaClass = 'min-h-14 rounded-xl border-[var(--border)] bg-[var
 const compactErrorClass = 'text-[0.62rem] font-bold leading-3 text-error'
 
 export function AmbassadorsPage() {
+  const { program } = useTenant()
   const [searchParams] = useSearchParams()
   const businesses = useBusinesses()
   const businessId = searchParams.get('business')
@@ -187,7 +189,7 @@ export function AmbassadorsPage() {
 
                   <div className="grid gap-1">
                     <Label htmlFor="ambassador-city" className={compactLabelClass}>Location</Label>
-                    <Input id="ambassador-city" className={compactInputClass} placeholder="Medellin" {...form.register('city')} />
+                    <Input id="ambassador-city" className={compactInputClass} placeholder={program.name.replace(/\s+Rewards$/i, '')} {...form.register('city')} />
                     {form.formState.errors.city ? <p className={compactErrorClass}>{form.formState.errors.city.message}</p> : null}
                   </div>
                 </div>

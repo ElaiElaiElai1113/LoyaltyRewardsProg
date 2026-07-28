@@ -34,6 +34,9 @@
     "test:responsive": "node scripts/audit-responsive.mjs",
     "test:load": "node scripts/run-playwright-local.mjs tests/e2e/load.spec.ts",
     "validate:tenant-import": "node scripts/validate-tenant-import.mjs",
+    "ops:supabase:backup": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/backup-linked-supabase.ps1",
+    "ops:supabase:backup:validate": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/validate-supabase-backup.ps1",
+    "ops:supabase:reconcile": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/reconcile-linked-supabase.ps1",
     "test:launch": "node scripts/run-playwright-local.mjs tests/e2e/launch-checklist.spec.ts",
     "test:e2e:ui": "playwright test --ui"
   },

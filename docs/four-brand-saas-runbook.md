@@ -2,13 +2,22 @@
 
 ## Environment
 
-1. Start Docker Desktop and run `npx supabase db reset`.
-2. Copy `.env.example` to `.env`, configure the keys, and run `npm run test:e2e:doctor`.
-3. Run `npm run typecheck`, `npm run lint`, `npm run test:unit`, and `npm run test:e2e:workflows`.
-4. Configure staging Supabase, Stripe test keys, the service-role key, and the Stripe webhook.
-5. Populate `subscription_plans.stripe_price_id` with test-mode prices.
+1. Run `npx supabase projects list` and confirm the intended hosted project.
+2. Run `npx supabase link --project-ref <project-ref>` only when the repository is not already linked.
+3. Copy `.env.example` to `.env`, configure the Supabase keys, and run `npm run test:e2e:doctor`.
+4. Run `npm run typecheck`, `npm run lint`, `npm run test:unit`, and `npm run test:e2e:hosted-safe`.
+5. Run `npx supabase migration list` before proposing any hosted schema change.
 
 Authenticated workflow commands fail immediately with a readiness report when Supabase is not configured. The public `npm run test:e2e` command remains usable without backend credentials.
+
+## Hosted Database Change
+
+1. Run `npm run ops:supabase:backup` and retain the `.dump` and `.manifest.json` files together.
+2. Run `npm run ops:supabase:backup:validate -- -BackupFile <dump-path>`.
+3. Run `npm run ops:supabase:reconcile` and retain the pre-change report.
+4. Review pending migration SQL and request explicit approval naming the hosted project and migrations.
+5. Apply only after approval, then rerun migration status, reconciliation, unit tests, and hosted-safe Playwright.
+6. Never pass the database password on the command line or store it in the repository.
 
 ## Tenant Migration
 
@@ -26,11 +35,14 @@ Authenticated workflow commands fail immediately with a readiness report when Su
 1. Keep the previous site and database read-only during the parallel period.
 2. Lower DNS TTL before cutover.
 3. If reconciliation or smoke tests fail, restore DNS to the previous deployment.
-4. Suspend the new program to prevent writes.
-5. Export all post-import writes before correcting or removing imported records.
-6. Never delete financial records as a rollback mechanism.
+4. Suspend the affected program to prevent writes.
+5. Export and reconcile all post-import writes before correcting imported records.
+6. Restore a database archive only into a disposable environment first and validate it.
+7. Never delete financial records as a rollback mechanism.
 
 ## Stripe
+
+Stripe is deferred. Program provisioning, platform subdomains, configuration, and access administration must remain usable without it.
 
 1. Register `/api/stripe-webhook` for Checkout and subscription lifecycle events.
 2. Confirm signature verification and idempotent event claims in staging.

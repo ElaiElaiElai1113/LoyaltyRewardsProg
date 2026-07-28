@@ -25,6 +25,7 @@ import { formatCurrency, formatPoints } from '@/lib/utils'
 import { memberTransactionSchema, type MemberTransactionFormValues } from '@/types/forms'
 import type { MemberTransaction } from '@/types/domain'
 import { tenantStorageKey } from '@/lib/tenant-storage'
+import { useTenant } from '@/hooks/use-tenant'
 
 type GiftCardSaleContext = {
   originalBill: number
@@ -57,6 +58,7 @@ function readGiftCardSaleContext(): GiftCardSaleContext | null {
 }
 
 export function MemberSalePage() {
+  const { program } = useTenant()
   const { token = '' } = useParams()
   const { business } = useBusinessOwnerData()
   const member = useScannedMember(token)
@@ -214,7 +216,7 @@ export function MemberSalePage() {
             </div>
             <div>
               <h2 className="font-serif text-3xl text-primary">Purchase Details</h2>
-              <p className="text-sm text-on-surface-variant/70">Payment is handled outside Medellin Rewards.</p>
+              <p className="text-sm text-on-surface-variant/70">Payment is handled outside {program.name}.</p>
             </div>
           </div>
 

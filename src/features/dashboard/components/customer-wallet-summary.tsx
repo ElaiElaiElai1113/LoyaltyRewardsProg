@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
@@ -15,9 +16,11 @@ interface CustomerWalletSummaryProps {
 function getPrimaryAction({
   isVerified,
   points,
+  programName,
 }: {
   isVerified: boolean
   points: number
+  programName: string
 }) {
   void isVerified
 
@@ -26,7 +29,7 @@ function getPrimaryAction({
       label: 'Show member QR',
       to: '/profile',
       status: 'Ready to earn',
-      helper: 'Show your QR at a Medellin Rewards partner business so staff can award points.',
+      helper: `Show your QR at a ${programName} partner business so staff can award points.`,
     }
   }
 
@@ -43,9 +46,10 @@ export function CustomerWalletSummary({
   points,
 }: CustomerWalletSummaryProps) {
   const { t } = useLanguage()
+  const { program } = useTenant()
   void verificationStatus
   const isVerified = true
-  const primaryAction = getPrimaryAction({ isVerified, points })
+  const primaryAction = getPrimaryAction({ isVerified, points, programName: program.name })
 
   const stats = [
     {

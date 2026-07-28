@@ -64,4 +64,22 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rolldownOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('@supabase')) return 'vendor-supabase'
+            if (id.includes('react') || id.includes('@tanstack')) return 'vendor-react'
+            if (id.includes('lucide-react') || id.includes('@radix-ui')) return 'vendor-ui'
+            return 'vendor'
+          }
+
+          const feature = id.match(/[\\/]src[\\/]features[\\/]([^\\/]+)/)
+          if (feature) return `feature-${feature[1]}`
+          return undefined
+        },
+      },
+    },
+  },
 })
