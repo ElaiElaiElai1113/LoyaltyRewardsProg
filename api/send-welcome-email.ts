@@ -1,13 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createTransport } from 'nodemailer'
+import { buildTenantEmail, type TenantEmailBrand } from './_tenant-email-templates.js'
 
 type WelcomeEmailRequest = {
   fullName?: unknown
   email?: unknown
   hostname?: unknown
 }
-
-type EmailBrand = { name: string; hostname: string }
 
 type SmtpConfig = {
   host: string
@@ -68,118 +67,43 @@ function getSmtpConfig(): SmtpConfig | null {
   }
 }
 
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-}
-
-function getGreetingName(fullName: string): string {
-  const firstName = fullName.trim().split(/\s+/)[0]
-  return firstName || 'there'
-}
-
-function buildTextEmail(fullName: string): string {
-  return [
-    `Hi ${getGreetingName(fullName)},`,
-    '',
-    'Welcome to Medellin Rewards. Your early access request has been received.',
-    '',
-    'We are creating a private rewards experience for women who enjoy beautiful places, elevated moments, and getting more from the lifestyle they already love.',
-    '',
-    'As we prepare to open access, you will be among the first to receive selected invitations, rewards opportunities, and member updates.',
-    '',
-    'Thank you for joining us early. We are excited to share what is coming.',
-    '',
-    'Medellin Rewards',
-    'medellinrewards.com',
-  ].join('\n')
-}
-
-function buildHtmlEmail(fullName: string): string {
-  const greetingName = escapeHtml(getGreetingName(fullName))
-
-  return `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Welcome to Medellin Rewards</title>
-  </head>
-  <body style="margin:0;background:#f7f1e8;font-family:Arial,Helvetica,sans-serif;color:#24190f;">
-    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f7f1e8;padding:32px 16px;">
-      <tr>
-        <td align="center">
-          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#ffffff;border:1px solid #eadfce;border-radius:14px;overflow:hidden;">
-            <tr>
-              <td style="background:#24190f;padding:28px 28px 24px;text-align:left;">
-                <div style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:#f2c978;font-weight:700;">Medellin Rewards</div>
-                <h1 style="margin:12px 0 0;font-size:30px;line-height:1.2;color:#fff8ec;">Welcome to early access</h1>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:32px 28px;">
-                <p style="margin:0 0 18px;font-size:18px;line-height:1.6;color:#24190f;">Hi ${greetingName},</p>
-                <p style="margin:0 0 18px;font-size:16px;line-height:1.7;color:#443426;">
-                  Your early access request has been received.
-                </p>
-                <p style="margin:0 0 22px;font-size:16px;line-height:1.7;color:#443426;">
-                  We are creating a private rewards experience for women who enjoy beautiful places, elevated moments, and getting more from the lifestyle they already love.
-                </p>
-                <p style="margin:0 0 22px;font-size:16px;line-height:1.7;color:#443426;">
-                  As we prepare to open access, you will be among the first to receive selected invitations, rewards opportunities, and member updates.
-                </p>
-                <div style="border-left:4px solid #16a34a;background:#f3faf4;padding:16px 18px;margin:24px 0;">
-                  <p style="margin:0;font-size:15px;line-height:1.6;color:#24422b;">
-                    Your request has been received. Selected invitations and early rewards opportunities will be shared as access opens.
-                  </p>
-                </div>
-                <p style="margin:24px 0 0;font-size:16px;line-height:1.7;color:#443426;">
-                  Thank you for joining us early. We are excited to share what is coming.
-                </p>
-                <p style="margin:10px 0 0;font-size:16px;line-height:1.7;color:#443426;">Medellin Rewards Team</p>
-              </td>
-            </tr>
-            <tr>
-              <td style="border-top:1px solid #eadfce;padding:18px 28px;background:#fffaf2;">
-                <p style="margin:0;font-size:13px;line-height:1.6;color:#7a6752;">
-                  medellinrewards.com
-                </p>
-              </td>
-            </tr>
-          </table>
-        </td>
-      </tr>
-    </table>
-  </body>
-</html>`
-}
-
-async function resolveEmailBrand(hostname: string): Promise<EmailBrand> {
-  const fallback = { name: 'Medellin Rewards', hostname: 'medellinrewards.com' }
+async function resolveEmailBrand(hostname: string): Promise<TenantEmailBrand> {
+  const fallback = {
+    name: 'Medellin Rewards',
+    hostname: 'medellinrewards.com',
+    supportEmail: 'support@medellinrewards.com',
+    primaryColor: '#24190f',
+    accentColor: '#f2c978',
+  }
   const url = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
   const key = process.env.SUPABASE_ANON_KEY ?? process.env.VITE_SUPABASE_ANON_KEY
   if (!url || !key || !hostname) return fallback
   try {
-    const result = await fetch(`${url}/rest/v1/rpc/resolve_program_by_hostname`, {
+    const result = await fetch(`${url}/rest/v1/rpc/resolve_program_email_brand`, {
       method: 'POST',
       headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       body: JSON.stringify({ p_hostname: hostname }),
     })
-    const rows = await result.json() as Array<{ name?: string }>
-    return result.ok && rows[0]?.name ? { name: rows[0].name, hostname } : fallback
+    const rows = await result.json() as Array<{
+      name?: string
+      support_email?: string
+      primary_color?: string
+      accent_color?: string
+      email_from_name?: string
+      email_from_address?: string
+    }>
+    return result.ok && rows[0]?.name ? {
+      name: rows[0].name,
+      hostname,
+      supportEmail: rows[0].support_email || fallback.supportEmail,
+      primaryColor: rows[0].primary_color || fallback.primaryColor,
+      accentColor: rows[0].accent_color || fallback.accentColor,
+      emailFromName: rows[0].email_from_name || rows[0].name,
+      emailFromAddress: rows[0].email_from_address || '',
+    } : fallback
   } catch {
     return fallback
   }
-}
-
-function applyEmailBrand(content: string, brand: EmailBrand) {
-  return content
-    .replaceAll('Medellin Rewards', brand.name)
-    .replaceAll('medellinrewards.com', brand.hostname)
 }
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
@@ -209,6 +133,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
 
   try {
     const brand = await resolveEmailBrand(hostname)
+    const content = buildTenantEmail({ kind: 'welcome', brand, recipientName: fullName })
     const transporter = createTransport({
       host: smtpConfig.host,
       port: smtpConfig.port,
@@ -220,11 +145,13 @@ export default async function handler(request: VercelRequest, response: VercelRe
     })
 
     await transporter.sendMail({
-      from: smtpConfig.from,
+      from: brand.emailFromAddress
+        ? `${brand.emailFromName || brand.name} <${brand.emailFromAddress}>`
+        : smtpConfig.from,
       to: email,
-      subject: `Welcome to ${brand.name}`,
-      text: applyEmailBrand(buildTextEmail(fullName), brand),
-      html: applyEmailBrand(buildHtmlEmail(fullName), brand),
+      subject: content.subject,
+      text: content.text,
+      html: content.html,
     })
 
     sendJson(response, 200, { ok: true })

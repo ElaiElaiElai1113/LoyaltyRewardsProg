@@ -1,0 +1,23 @@
+{
+  "users": [
+    { "id": "user-1", "email": "member@example.test", "fullName": "Migration Member" }
+  ],
+  "businesses": [
+    { "id": "business-1", "slug": "migration-cafe", "name": "Migration Cafe" }
+  ],
+  "balances": [
+    { "id": "balance-1", "userId": "user-1", "points": 1250 }
+  ],
+  "transactions": [
+    { "id": "transaction-1", "userId": "user-1", "businessId": "business-1", "total": 75.5 }
+  ],
+  "giftCards": [
+    { "id": "gift-card-1", "userId": "user-1", "status": "active", "value": 100, "remainingValue": 62.25 }
+  ],
+  "agreements": [
+    { "id": "agreement-1", "userId": "user-1", "status": "signed", "signedAt": "2026-07-01T00:00:00.000Z" }
+  ],
+  "referrals": [
+    { "id": "referral-1", "referrerId": "user-1", "status": "pending" }
+  ]
+}

@@ -396,6 +396,7 @@ const spanishTranslations: Record<string, string> = {
     'Tu cuenta esta creada. Inicia sesion y verifica tu ID desde tu perfil para desbloquear ganancias, canjes, membresias, tarjetas de regalo y recompensas QR.',
   'Join now': 'Unete ahora',
   'Join Medellin Rewards': 'Unete a Medellin Rewards',
+  'Join {program}': 'Unete a {program}',
   'One membership for participating local businesses': 'Una membresia para negocios locales participantes',
   'Earn rewards every time you shop locally.': 'Gana recompensas cada vez que compras localmente.',
   'Join Medellin Rewards to earn member value with participating local businesses, track rewards in one account, and redeem perks when you are ready.':

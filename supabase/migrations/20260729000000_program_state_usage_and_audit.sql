@@ -37,6 +37,38 @@ $$;
 
 grant execute on function public.resolve_program_host_state(text) to anon, authenticated;
 
+create or replace function public.resolve_program_email_brand(p_hostname text)
+returns table (
+  name text,
+  support_email text,
+  primary_color text,
+  accent_color text,
+  email_from_name text,
+  email_from_address text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select
+    p.name,
+    p.support_email,
+    p.primary_color,
+    p.accent_color,
+    s.email_from_name,
+    s.email_from_address
+  from public.programs p
+  join public.program_domains d on d.program_id = p.id
+  join public.program_settings s on s.program_id = p.id
+  where d.hostname = lower(split_part(p_hostname, ':', 1))
+    and d.verification_status = 'verified'
+    and p.status = 'active'
+  limit 1;
+$$;
+
+grant execute on function public.resolve_program_email_brand(text) to anon, authenticated;
+
 create or replace function public.get_platform_program_usage()
 returns table (
   program_id uuid,

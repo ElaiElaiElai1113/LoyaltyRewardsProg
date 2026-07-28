@@ -104,8 +104,11 @@ begin
     p_program_id, auth.uid(), p_idempotency_key, trim(p_source_filename), coalesce(p_manifest, '{}'::jsonb)
   )
   on conflict (program_id, idempotency_key)
-  do update set source_filename = excluded.source_filename
+  do update set updated_at = public.tenant_import_batches.updated_at
+  where public.tenant_import_batches.source_filename = excluded.source_filename
+    and public.tenant_import_batches.manifest = excluded.manifest
   returning id into v_batch_id;
+  if v_batch_id is null then raise exception 'idempotency_payload_mismatch'; end if;
   return v_batch_id;
 end;
 $$;

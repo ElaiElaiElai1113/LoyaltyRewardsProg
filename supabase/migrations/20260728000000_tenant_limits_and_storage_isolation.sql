@@ -112,11 +112,12 @@ create policy "Program admins view tenant verification IDs"
   on storage.objects for select to authenticated
   using (
     bucket_id = 'member-verification-ids'
+    and (storage.foldername(name))[1] = 'pending'
     and exists (
       select 1 from public.profiles p
       where p.verification_document_path = name
         and public.is_program_member(
-          p.program_id,
+          ((storage.foldername(name))[2])::uuid,
           array['program-admin']::public.program_role[]
         )
     )

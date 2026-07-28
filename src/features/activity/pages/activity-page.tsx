@@ -3,15 +3,15 @@ import { ChartNoAxesColumn, Gift, History, Wallet } from 'lucide-react'
 import { MetricCard } from '@/components/metric-card'
 import { Badge } from '@/components/ui/badge'
 import { ActivityList } from '@/features/activity/components/activity-list'
-import { useActivities, useRewardBalance } from '@/hooks/use-customer-data'
+import { useActivityRewardBalance, useActivityTimeline } from '@/hooks/use-activity-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
 
 export function ActivityPage() {
   const { profile } = useAuth()
   const { t } = useLanguage()
-  const activities = useActivities(profile?.id)
-  const rewardBalance = useRewardBalance(profile?.id)
+  const activities = useActivityTimeline(profile?.id)
+  const rewardBalance = useActivityRewardBalance(profile?.id)
 
   const postedCount = activities.data?.filter((item) => item.status === 'posted').length ?? 0
   const earnedThisMonth =
