@@ -2,7 +2,7 @@ import type { CapacitorConfig } from '@capacitor/cli'
 
 const config: CapacitorConfig = {
   appId: 'com.rewardsplatform.app',
-  appName: 'Rewards Platform',
+  appName: 'Pinas Rewards',
   webDir: 'dist',
   bundledWebRuntime: false,
   server: {
@@ -11,7 +11,7 @@ const config: CapacitorConfig = {
   plugins: {
     SplashScreen: {
       launchAutoHide: true,
-      backgroundColor: '#2F2014',
+      backgroundColor: '#11100E',
       androidSplashResourceName: 'splash',
       showSpinner: false,
     },

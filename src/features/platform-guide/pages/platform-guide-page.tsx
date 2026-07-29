@@ -9,9 +9,10 @@ import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage, type Language } from '@/lib/language'
 
-const screenshotGalleryByLanguage: Record<Language, {
+const screenshotGalleryByLanguage: Record<Exclude<Language, 'tl'>, {
   eyebrow: string
   title: string
   badge: string
@@ -213,7 +214,7 @@ const guideContent = {
       'The top block will be replaced by the official video so customers, businesses, and admins can watch the guide directly in the platform.',
     badges: ['English version', 'Video ready later'],
   },
-} satisfies Record<Language, {
+} satisfies Record<Exclude<Language, 'tl'>, {
   eyebrow: string
   title: string
   intro: string
@@ -271,8 +272,24 @@ function ScreenshotMockup({ items }: { items: string[] }) {
 
 export function PlatformGuidePage() {
   const { language } = useLanguage()
-  const content = guideContent[language]
-  const screenshotGallery = screenshotGalleryByLanguage[language]
+  const { program } = useTenant()
+  const resolvedLanguage = language === 'tl' ? 'en' : language
+  const tenantize = <T,>(value: T): T => {
+    if (typeof value === 'string') {
+      return value
+        .replaceAll('Medellin Rewards', program.name)
+        .replaceAll('Medellín Rewards', program.name) as T
+    }
+    if (Array.isArray(value)) return value.map((item) => tenantize(item)) as T
+    if (value && typeof value === 'object' && !('$$typeof' in value)) {
+      return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [key, tenantize(item)]),
+      ) as T
+    }
+    return value
+  }
+  const content = tenantize(guideContent[resolvedLanguage])
+  const screenshotGallery = tenantize(screenshotGalleryByLanguage[resolvedLanguage])
 
   return (
     <div className="mx-auto max-w-7xl space-y-12 pb-10">

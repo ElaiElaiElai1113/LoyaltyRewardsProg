@@ -3,7 +3,7 @@ import { access, readFile } from 'node:fs/promises'
 const expected = {
   guatemala: { programName: 'Guatemala Rewards', locale: 'es-GT', currency: 'GTQ', timezone: 'America/Guatemala' },
   synergize: { programName: 'Synergize', locale: 'en' },
-  davao: { programName: 'Davao Rewards', locale: 'en-PH', currency: 'PHP', timezone: 'Asia/Manila' },
+  pinas: { programName: 'Pinas Rewards', locale: 'en-PH', currency: 'PHP', timezone: 'Asia/Manila' },
 }
 const blockers = []
 

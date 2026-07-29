@@ -7,6 +7,9 @@ export function ProgramSwitcher({ className = '' }: { className?: string }) {
   const { program } = useTenant()
   const programs = useAccessiblePrograms()
   if (!programs.data || programs.data.length < 2) return null
+  const prioritizedPrograms = [...programs.data].sort((left, right) =>
+    left.slug === 'pinas' ? -1 : right.slug === 'pinas' ? 1 : left.name.localeCompare(right.name),
+  )
 
   function changeProgram(slug: string) {
     const next = programs.data?.find((item) => item.slug === slug)
@@ -27,7 +30,7 @@ export function ProgramSwitcher({ className = '' }: { className?: string }) {
         onChange={(event) => changeProgram(event.target.value)}
         className="h-9 min-w-0 appearance-none rounded-md border border-[var(--border)] bg-card py-1 pl-2 pr-8 text-sm font-semibold text-[var(--foreground)]"
       >
-        {programs.data.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
+        {prioritizedPrograms.map((item) => <option key={item.id} value={item.slug}>{item.name}</option>)}
       </select>
       <ChevronDown className="pointer-events-none absolute right-2 size-3.5 text-[var(--muted-foreground)]" />
     </label>

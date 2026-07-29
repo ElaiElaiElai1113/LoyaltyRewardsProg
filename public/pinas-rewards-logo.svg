@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024" role="img" aria-labelledby="pinas-logo-title">
+  <title id="pinas-logo-title">Pinas Rewards</title>
+  <defs>
+    <linearGradient id="pr-gold" x1="220" x2="800" y1="170" y2="850" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f8df83"/>
+      <stop offset=".32" stop-color="#d9ad20"/>
+      <stop offset=".62" stop-color="#a67608"/>
+      <stop offset="1" stop-color="#f1cf62"/>
+    </linearGradient>
+    <radialGradient id="pr-black" cx="0" cy="0" r="1" gradientTransform="matrix(0 450 -450 0 512 500)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#262019"/>
+      <stop offset=".7" stop-color="#11100e"/>
+      <stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+  </defs>
+  <circle cx="512" cy="512" r="438" fill="url(#pr-black)"/>
+  <circle cx="512" cy="512" r="420" fill="none" stroke="url(#pr-gold)" stroke-width="8"/>
+  <circle cx="512" cy="512" r="402" fill="none" stroke="#7d5c0b" stroke-width="3"/>
+  <g fill="url(#pr-gold)">
+    <path d="M512 194 530 248 586 248 541 281 558 335 512 302 466 335 483 281 438 248 494 248Z"/>
+    <path d="M322 358h214c98 0 166 54 166 141 0 91-74 147-182 147h-47v87c0 42 17 59 67 65v12H312v-12c48-8 64-24 64-65V431c0-39-14-55-54-63Zm151 38v213h40c59 0 91-39 91-108 0-68-32-105-91-105Z"/>
+    <path d="M263 753h498v5H263z"/>
+  </g>
+  <text x="512" y="875" fill="url(#pr-gold)" font-family="Georgia, 'Times New Roman', serif" font-size="55" letter-spacing="19" text-anchor="middle">PINAS REWARDS</text>
+</svg>

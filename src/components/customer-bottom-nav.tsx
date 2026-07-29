@@ -44,6 +44,7 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
   return (
     <nav className="fixed inset-x-0 bottom-0 z-50 border-t border-primary/15 bg-card/95 px-3 pb-[max(env(safe-area-inset-bottom),0.5rem)] pt-2 shadow-luxe backdrop-blur xl:hidden">
       <NavLink
+        key="member-qr-status"
         to={status.to}
         className={cn(
           'mb-2 flex items-center justify-center gap-2 rounded-full border px-3 py-2 text-xs font-bold',
@@ -59,7 +60,7 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
 
           return (
             <NavLink
-              key={item.to}
+              key={`customer-tab-${item.to}`}
               to={item.to}
               className={cn(
                 'relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-[1rem] text-xs font-semibold transition-all',

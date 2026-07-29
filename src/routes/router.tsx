@@ -120,7 +120,7 @@ function RouteEffects() {
       try {
         const url = new URL(event.url)
         const path =
-          url.protocol === 'medellinrewards:' || url.protocol === 'rewardsplatform:'
+          url.protocol === 'pinasrewards:' || url.protocol === 'medellinrewards:' || url.protocol === 'rewardsplatform:'
             ? `/${url.host}${url.pathname}`
             : `${url.pathname}${url.search}${url.hash}`
 

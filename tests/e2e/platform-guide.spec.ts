@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 test.describe('platform guide workflow', () => {
   test('public guide explains the platform with Spanish-first video-ready content', async ({ page }) => {
+    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'es'))
     await page.goto('/guide')
 
     await expect(page).toHaveURL(/\/guide$/)
@@ -27,7 +28,7 @@ test.describe('platform guide workflow', () => {
 
   test('public guide follows the English language preference without Spanish guide copy', async ({ page }) => {
     await page.addInitScript(() => {
-      window.localStorage.setItem('rewards:medellin:language', 'en')
+      window.localStorage.setItem('rewards:pinas:language', 'en')
     })
 
     await page.goto('/guide')
@@ -59,7 +60,7 @@ test.describe('platform guide workflow', () => {
     await expect(page.getByRole('link', { name: 'Guia' })).toHaveAttribute('href', '/guide')
     await page.getByRole('link', { name: 'Guia' }).click()
     await expect(page).toHaveURL(/\/guide$/)
-    await expect(page.getByRole('heading', { name: 'Guia de la plataforma' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Platform guide' })).toBeVisible()
   })
 
 })

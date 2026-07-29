@@ -108,6 +108,39 @@ const spanishHomeCopy: Record<string, string> = {
   Spanish: 'Español',
 }
 
+const tagalogHomeCopy: Record<string, string> = {
+  'How it works': 'Paano ito gumagana',
+  Businesses: 'Mga Negosyo',
+  'Join now': 'Sumali ngayon',
+  'Earn Amazing': 'Kumita ng Malalaking',
+  'Rewards While': 'Reward Habang',
+  'Supporting Local': 'Sinusuportahan ang Lokal',
+  'Businesses headline': 'na mga Negosyo',
+  "Every time you shop, dine, or spend at a business in our network, you're supporting a local business â€” and earning Rewards you can actually use.":
+    'Sa bawat pamimili, pagkain, o paggastos sa aming network, sinusuportahan mo ang lokal na negosyo at kumikita ng Rewards na magagamit mo.',
+  'See how it works': 'Tingnan kung paano',
+  'Everyday spending': 'Araw-araw na gastos',
+  'Any business, anywhere': 'Iba’t ibang lokal na negosyo',
+  'Every purchase becomes a Reward': 'Bawat pagbili ay nagiging Reward',
+  'Support local, automatically': 'Awtomatikong suportahan ang lokal',
+  'Support the local businesses you already love, every single time you spend.':
+    'Suportahan ang mga lokal na negosyong mahal mo sa bawat paggastos.',
+  'Almost anything counts': 'Halos lahat ay kasama',
+  MEMBERSHIP: 'MEMBERSHIP',
+  'Choose how you earn': 'Piliin kung paano ka kikita',
+  'No cost to join': 'Walang bayad sa pagsali',
+  'THE PROCESS': 'ANG PROSESO',
+  Join: 'Sumali',
+  'Spend & earn': 'Gumastos at kumita',
+  Redeem: 'Gamitin',
+  'Start earning today': 'Magsimulang kumita ngayon',
+  'GOOD TO KNOW': 'MAHALAGANG MALAMAN',
+  'Frequently asked questions': 'Mga madalas itanong',
+  'Privacy policy': 'Patakaran sa Privacy',
+  Contact: 'Makipag-ugnayan',
+  'All rights reserved.': 'Lahat ng karapatan ay nakalaan.',
+}
+
 const valueItems = [
   {
     icon: '🏠',
@@ -229,7 +262,23 @@ function SectionEyebrow({ children }: { children: string }) {
 export function HomePage() {
   const { language, setLanguage } = useLanguage()
   const { program } = useTenant()
-  const tx = (text: string) => language === 'es' ? spanishHomeCopy[text] ?? text : text
+  const isPinas = program.slug === 'pinas'
+  const tx = (text: string) => (
+    language === 'es'
+      ? spanishHomeCopy[text] ?? text
+      : language === 'tl'
+        ? tagalogHomeCopy[text] ?? text
+        : text
+  )
+    .replaceAll('Medellin Rewards', program.name)
+    .replaceAll('Medellín Rewards', program.name)
+  const paidBenefits = isPinas
+    ? [
+        'Earn a minimum of 20% – 100% back on almost all purchases',
+        'Earn rewards for every member you refer who joins',
+        'Earn even more when a business you refer joins the network',
+      ]
+    : regularBenefits
 
   return (
     <main className="figma-home" id="top">
@@ -250,10 +299,12 @@ export function HomePage() {
               <button
                 className="figma-home__language-toggle"
                 type="button"
-                onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
-                aria-label={language === 'es' ? 'Switch to English' : 'Cambiar a español'}
+                onClick={() => setLanguage(isPinas ? (language === 'tl' ? 'en' : 'tl') : (language === 'es' ? 'en' : 'es'))}
+                aria-label={isPinas
+                  ? (language === 'tl' ? 'Switch to English' : 'Lumipat sa Tagalog')
+                  : language === 'es' ? 'Switch to English' : 'Cambiar a español'}
               >
-                {language === 'es' ? 'English' : 'Español'}
+                {isPinas ? (language === 'tl' ? 'English' : 'Tagalog') : language === 'es' ? 'English' : 'Español'}
               </button>
               <Link className="figma-home__button figma-home__button--header" to="/join">
                 {tx('Join now')}
@@ -369,13 +420,15 @@ export function HomePage() {
             <article className="figma-home__membership-card figma-home__membership-card--regular">
               <span className="figma-home__free-ribbon">{tx('WORKS OUT TO BE FREE')}</span>
               <div className="figma-home__membership-heading">
-                <h3>{tx('Regular Membership')}</h3>
+                <h3>{isPinas ? 'Gold Membership' : tx('Regular Membership')}</h3>
                 <span className="figma-home__percentage figma-home__percentage--regular">100%</span>
               </div>
-              <p className="figma-home__price">$100,000 COP</p>
-              <p className="figma-home__price-note">{tx('Earn 100,000 COP back in rewards')}</p>
+              <p className="figma-home__price">{isPinas ? '₱4,000 / Year' : '$100,000 COP'}</p>
+              <p className="figma-home__price-note">
+                {isPinas ? 'Get the full ₱4,000 back in Rewards credit' : tx('Earn 100,000 COP back in rewards')}
+              </p>
               <ul className="figma-home__benefit-list">
-                {regularBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
+                {paidBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
               </ul>
               <Link className="figma-home__membership-button" to="/join">{tx('Upgrade →')}</Link>
             </article>

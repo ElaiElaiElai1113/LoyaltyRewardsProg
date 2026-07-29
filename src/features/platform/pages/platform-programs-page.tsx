@@ -86,7 +86,11 @@ export function PlatformProgramsPage() {
     const matchesQuery = `${program.name} ${program.slug} ${program.primaryDomain ?? ''}`.toLowerCase().includes(query.trim().toLowerCase())
     const matchesStatus = statusFilter === 'all' || program.status === statusFilter
     return matchesQuery && matchesStatus
-  }).sort((left, right) => sort === 'status'
+  }).sort((left, right) => left.slug === 'pinas'
+    ? -1
+    : right.slug === 'pinas'
+      ? 1
+      : sort === 'status'
     ? left.status.localeCompare(right.status) || left.name.localeCompare(right.name)
     : sort === 'plan'
       ? left.planName.localeCompare(right.planName) || left.name.localeCompare(right.name)
@@ -172,7 +176,7 @@ export function PlatformProgramsPage() {
               <tbody>
                 {visiblePrograms.map((program) => (
                   <tr key={program.id} className="border-b border-[var(--border)] last:border-0">
-                    <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="size-3 rounded-full" style={{ backgroundColor: program.primaryColor }} /><div><p className="font-semibold">{program.name}</p><p className="text-xs text-[var(--muted-foreground)]">{program.slug}</p></div></div></td>
+                    <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="size-3 rounded-full" style={{ backgroundColor: program.primaryColor }} /><div><p className="font-semibold">{program.name}{program.slug === 'pinas' ? <Badge className="ml-2 align-middle" variant="tenant">Flagship</Badge> : null}</p><p className="text-xs text-[var(--muted-foreground)]">{program.slug}</p></div></div></td>
                     <td className="px-5 py-4">{program.countryCode} · {program.currency}</td>
                     <td className="px-5 py-4"><p>{program.primaryDomain ?? 'Not assigned'}</p><p className="text-xs capitalize text-[var(--muted-foreground)]">{program.domainStatus}</p></td>
                     <td className="px-5 py-4">{program.planName}</td>

@@ -24,7 +24,7 @@ export function LanguagePicker({ className, compact = false }: LanguagePickerPro
             compact ? 'px-3 pr-8' : 'px-4 pr-9',
           )}
         >
-          {(['es', 'en'] as Language[]).map((option) => (
+          {(['en', 'tl', 'es'] as Language[]).map((option) => (
             <option key={option} value={option}>
               {compact ? option.toUpperCase() : t(languageLabels[option])}
             </option>

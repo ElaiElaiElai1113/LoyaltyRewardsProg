@@ -3,9 +3,9 @@ import { describe, expect, it } from 'vitest'
 import { buildTenantEmail, tenantActionUrl, type TenantEmailBrand } from '../../api/_tenant-email-templates'
 
 const brand: TenantEmailBrand = {
-  name: 'Davao Rewards',
-  hostname: 'davaorewards.com',
-  supportEmail: 'support@davaorewards.com',
+  name: 'Pinas Rewards',
+  hostname: 'pinasrewards.ph',
+  supportEmail: 'support@pinasrewards.ph',
   primaryColor: '#176b45',
   accentColor: '#d7a832',
 }

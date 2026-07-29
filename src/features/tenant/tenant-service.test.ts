@@ -13,13 +13,14 @@ describe('tenant resolution fallback', () => {
     ['medellinrewards.com', 'medellin'],
     ['guatemala.rewardsplatform.app', 'guatemala'],
     ['synergize.example', 'synergize'],
-    ['davao.localhost', 'davao'],
+    ['pinas.localhost', 'pinas'],
+    ['pinas-rewards.vercel.app', 'pinas'],
   ])('maps %s to %s', (hostname, slug) => {
     expect(getFallbackProgram(hostname).slug).toBe(slug)
   })
 
-  it('uses Medellin for an unknown domain', () => {
-    expect(getFallbackProgram('localhost').slug).toBe('medellin')
+  it('uses Pinas Rewards for an unknown domain', () => {
+    expect(getFallbackProgram('localhost').slug).toBe('pinas')
   })
 
   it('ships four distinct seeded programs', () => {

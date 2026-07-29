@@ -1,4 +1,4 @@
-# davao Migration Sign-Off
+# Pinas Rewards Migration Sign-Off
 
 ## Inputs
 - [ ] Source export received and frozen

@@ -1,0 +1,25 @@
+.git
+.github
+.claude
+.agents
+.codex
+.tmp-*
+.tools
+android
+ios
+artifacts
+backups
+docs
+email-previews
+figma images
+migration-packages
+node_modules
+ops
+stitch_medellinrewards
+test-results
+tests
+*.docx
+*.log
+*.png
+!public/**/*.png
+!src/**/*.png

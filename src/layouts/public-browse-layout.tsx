@@ -34,7 +34,7 @@ export function PublicBrowseLayout() {
             <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
               <img src="/favicon.svg" alt="" aria-hidden="true" />
               <span>
-                MEDELLÍN REWARDS
+                {program.name.toUpperCase()}
                 <small>FOR BUSINESSES</small>
               </span>
             </NavLink>
@@ -62,7 +62,7 @@ export function PublicBrowseLayout() {
               <div>
                 <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
                   <img src="/favicon.svg" alt="" aria-hidden="true" />
-                  <span>MEDELLÍN REWARDS</span>
+                  <span>{program.name.toUpperCase()}</span>
                 </NavLink>
                 <p>Helping local businesses grow while<br />giving amazing Rewards to our members.</p>
               </div>
@@ -74,7 +74,7 @@ export function PublicBrowseLayout() {
             </div>
             <div className="business-public-shell__footer-bottom">
               <span>© 2026 {program.name}. All rights reserved.</span>
-              <span>Made for businesses in Medellín, Colombia</span>
+              <span>{program.countryCode === 'PH' ? 'Made for businesses in the Philippines' : `Made for businesses in ${program.countryCode}`}</span>
             </div>
           </div>
         </footer>

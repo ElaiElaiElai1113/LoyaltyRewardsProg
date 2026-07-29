@@ -1,33 +1,33 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('public acquisition workflow', () => {
-  test('Figma homepage is the Spanish-first main public landing page', async ({ page }) => {
+  test('Pinas homepage is the English-first main public landing page', async ({ page }) => {
     await page.goto('/')
 
     await expect(
-      page.getByRole('heading', { name: 'Gana increíbles recompensas mientras apoyas a los negocios locales' }),
+      page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
     ).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Cada compra se convierte en una recompensa' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Elige cómo quieres ganar' })).toBeVisible()
-    await expect(page.getByText('$100,000 COP', { exact: true })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Cómo funciona' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Tus vacaciones soñadas. Ya están pagadas.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Preguntas frecuentes' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Negocios' })).toHaveAttribute('href', '/business')
-    await expect(page.getByRole('link', { name: 'Únete ahora' }).first()).toHaveAttribute('href', '/join')
-    await expect(page.getByRole('button', { name: 'Switch to English' })).toHaveText('English')
+    await expect(page.getByRole('heading', { name: 'Every purchase becomes a Reward' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Choose how you earn' })).toBeVisible()
+    await expect(page.getByText('₱4,000 / Year', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'How it works' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Your dream vacation. Already paid for.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '/business')
+    await expect(page.getByRole('link', { name: 'Join now' }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('button', { name: 'Lumipat sa Tagalog' })).toHaveText('Tagalog')
 
-    const expandedFaq = page.locator('details').filter({ hasText: '¿Puedo tener más de una cuenta de recompensas?' })
+    const expandedFaq = page.locator('details').filter({ hasText: 'Can I have more than one Rewards account?' })
     await expect(expandedFaq).toHaveAttribute('open', '')
     await expect(
       page.getByText(
-        'No. Cada persona puede tener una sola cuenta asociada con su nombre completo, correo y teléfono.',
+        'No. Each person can have one Rewards account, tied to your full name, email, and phone number.',
       ),
     ).toBeVisible()
   })
 
   test('legacy landing URL renders the Figma homepage', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
     await page.goto('/landing-page')
     await expect(
       page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
@@ -35,7 +35,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('homepage uses approved landing typography and clean media assets', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
     await page.goto('/')
 
     await expect(page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }))
@@ -54,7 +54,7 @@ test.describe('public acquisition workflow', () => {
 
   test('mobile homepage separates the hero actions from the benefit pills', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
-    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
     await page.goto('/')
 
     const secondaryAction = page.getByRole('link', { name: 'See how it works' })
@@ -68,7 +68,7 @@ test.describe('public acquisition workflow', () => {
   })
 
   test('all homepage FAQs expand and show approved answers', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('rewards:medellin:language', 'en'))
+    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
     await page.goto('/')
 
     const faqItems = [
@@ -86,7 +86,7 @@ test.describe('public acquisition workflow', () => {
       },
       {
         question: 'Can Rewards be exchanged for money?',
-        answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+        answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Pinas Rewards Program - not cash exchange.',
       },
     ] as const
 
@@ -120,11 +120,11 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how-it-works')
     await expect(page.getByRole('link', { name: 'Partner With Us' })).toHaveAttribute('href', '#get-started')
 
-    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Medellín Rewards members' }))
+    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Pinas Rewards members' }))
       .toHaveAttribute('src', /local-business-owner\.png/)
-    await expect(page.getByRole('img', { name: 'Hotel partner welcoming a Medellín Rewards member' }))
+    await expect(page.getByRole('img', { name: 'Hotel partner welcoming a rewards member' }))
       .toHaveAttribute('src', /hotel-partner\.png/)
-    await expect(page.getByRole('img', { name: 'Salon partner serving Medellín Rewards members' }))
+    await expect(page.getByRole('img', { name: 'Salon partner serving rewards members' }))
       .toHaveAttribute('src', /salon-partner\.png/)
     await expect(page.getByRole('img', { name: 'Staff member scanning a customer QR code at checkout' }))
       .toHaveAttribute('src', /staff-qr-checkout\.png/)
@@ -137,7 +137,7 @@ test.describe('public acquisition workflow', () => {
     await expect(
       page.getByRole('heading', { name: 'Helping local businesses grow, while giving amazing Rewards to our members.' }),
     ).toBeVisible()
-    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Medellín Rewards members' }))
+    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Pinas Rewards members' }))
       .toBeVisible()
 
     const dimensions = await page.evaluate(() => ({
@@ -149,7 +149,7 @@ test.describe('public acquisition workflow', () => {
 
   test('early access invitation page renders', async ({ page }) => {
     await page.goto('/invitation')
-    await expect(page.locator('body')).toContainText(/Medell[ií]n Rewards/)
+    await expect(page.locator('body')).toContainText(/Pinas Rewards/)
     await expect(page.locator('body')).toContainText(/Suscribirse|Subscribe/i)
     await page.getByRole('button', { name: /Suscribirse|Subscribe/i }).click()
     await page.getByRole('button', { name: /Suscribirse|Subscribe/i }).click()

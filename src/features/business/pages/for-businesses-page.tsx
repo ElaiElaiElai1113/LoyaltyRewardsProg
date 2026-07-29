@@ -46,17 +46,17 @@ const partnerBenefits = [
 const partnerCategories = [
   {
     src: hotelPartner,
-    alt: 'Hotel partner welcoming a Medellín Rewards member',
+    alt: 'Hotel partner welcoming a rewards member',
     label: 'Hotels',
   },
   {
     src: restaurantPartner,
-    alt: 'Restaurant partner serving Medellín Rewards members',
+    alt: 'Restaurant partner serving rewards members',
     label: 'Restaurants',
   },
   {
     src: salonPartner,
-    alt: 'Salon partner serving Medellín Rewards members',
+    alt: 'Salon partner serving rewards members',
     label: 'Salons',
   },
 ] as const
@@ -125,7 +125,7 @@ export function ForBusinessesPage() {
             <span className="business-landing__hero-ring business-landing__hero-ring--inner" aria-hidden="true" />
             <img
               src={localBusinessOwner}
-              alt="Local business owner ready to welcome Medellín Rewards members"
+              alt={`Local business owner ready to welcome ${program.name} members`}
             />
             <div className="business-landing__cost-badge" aria-label="Zero percent upfront cost">
               <strong>0%</strong>

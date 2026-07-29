@@ -15,7 +15,7 @@ test.describe('customer workflow smoke test', () => {
 
     for (const path of ['/membership', '/profile', '/cart']) {
       await page.goto(path)
-      await expect(page.locator('body')).toContainText('Medellin Rewards')
+      await expect(page.locator('body')).toContainText('Pinas Rewards')
       await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`))
     }
 

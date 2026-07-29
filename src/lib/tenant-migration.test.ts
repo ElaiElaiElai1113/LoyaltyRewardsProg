@@ -19,12 +19,18 @@ const tenantOperations = readFileSync(
   'supabase/migrations/20260730000000_domain_team_and_import_operations.sql',
   'utf8',
 )
+const pinasRename = readFileSync(
+  'supabase/migrations/20260730010000_rename_davao_to_pinas.sql',
+  'utf8',
+)
 
 describe('tenant database migrations', () => {
   it('creates all four seeded programs and tenant identity tables', () => {
-    for (const name of ['Medellin Rewards', 'Guatemala Rewards', 'Synergize', 'Davao Rewards']) {
+    for (const name of ['Medellin Rewards', 'Guatemala Rewards', 'Synergize']) {
       expect(foundation).toContain(name)
     }
+    expect(pinasRename).toContain('Pinas Rewards')
+    expect(pinasRename).toContain("slug = 'pinas'")
     expect(foundation).toContain('create table public.program_memberships')
     expect(foundation).toContain('create table public.program_subscriptions')
   })

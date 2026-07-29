@@ -1,5 +1,5 @@
 {
-  "name": "medellinrewards",
+  "name": "pinas-rewards",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -41,6 +41,7 @@
     "test:tenant-console": "node scripts/run-playwright-local.mjs tests/e2e/tenant-console-accessibility.spec.ts --workers=1",
     "validate:tenant-import": "node scripts/validate-tenant-import.mjs",
     "audit:tenant-branding": "node scripts/audit-tenant-branding.mjs",
+    "assets:pinas-qr": "node scripts/generate-pinas-qr.mjs",
     "test:tenant-tools": "node scripts/validate-tenant-tooling.mjs",
     "test:migration-contracts": "node scripts/validate-tenant-migration-contracts.mjs",
     "test:deployment-routing": "node scripts/validate-deployment-routing.mjs",

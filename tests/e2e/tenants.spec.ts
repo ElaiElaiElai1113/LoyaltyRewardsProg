@@ -4,7 +4,7 @@ const tenants = [
   { slug: 'medellin', name: 'Medellin Rewards', color: '#9c6a22' },
   { slug: 'guatemala', name: 'Guatemala Rewards', color: '#176b5b' },
   { slug: 'synergize', name: 'Synergize', color: '#2357a5' },
-  { slug: 'davao', name: 'Davao Rewards', color: '#176b45' },
+  { slug: 'pinas', name: 'Pinas Rewards', color: '#a67608' },
 ] as const
 
 function collectRuntimeErrors(page: Page) {
@@ -33,10 +33,10 @@ test.describe('white-label tenant resolution', () => {
 
   test('tenant selection survives navigation to the public business catalog', async ({ page }) => {
     const errors = collectRuntimeErrors(page)
-    await page.goto('/?tenant=davao')
+    await page.goto('/?tenant=pinas')
     await page.locator('a[href="/business"]').first().click()
     await expect(page).toHaveURL(/\/business/)
-    await expect(page).toHaveTitle('Davao Rewards')
+    await expect(page).toHaveTitle('Pinas Rewards')
     expect(errors).toEqual([])
   })
 
@@ -59,10 +59,10 @@ test.describe('white-label tenant resolution', () => {
 
   test('self-service program onboarding requires authentication', async ({ page }) => {
     const errors = collectRuntimeErrors(page)
-    await page.goto('/onboarding/program?tenant=davao')
-    await expect(page).toHaveURL(/\/signin\?redirect=%2Fonboarding%2Fprogram&tenant=davao/)
+    await page.goto('/onboarding/program?tenant=pinas')
+    await expect(page).toHaveURL(/\/signin\?redirect=%2Fonboarding%2Fprogram&tenant=pinas/)
     await expect(page.locator('#signin-email')).toBeVisible()
-    await expect(page).toHaveTitle('Davao Rewards')
+    await expect(page).toHaveTitle('Pinas Rewards')
     expect(errors).toEqual([])
   })
 

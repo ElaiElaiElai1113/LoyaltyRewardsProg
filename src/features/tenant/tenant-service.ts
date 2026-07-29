@@ -30,7 +30,7 @@ const programs: Record<string, Program> = {
     timezone: 'America/Guatemala',
     primaryColor: '#176b5b',
     accentColor: '#f2b134',
-    logoUrl: null,
+    logoUrl: '/pinas-rewards-logo.svg',
     supportEmail: 'support@guatemalarewards.com',
     mapCenter: { latitude: 14.6349, longitude: -90.5069 },
     featureFlags: {},
@@ -51,20 +51,20 @@ const programs: Record<string, Program> = {
     mapCenter: { latitude: 40.7128, longitude: -74.006 },
     featureFlags: {},
   },
-  davao: {
+  pinas: {
     id: '10000000-0000-4000-8000-000000000004',
-    name: 'Davao Rewards',
-    slug: 'davao',
+    name: 'Pinas Rewards',
+    slug: 'pinas',
     status: 'active',
     countryCode: 'PH',
     locale: 'en-PH',
     currency: 'PHP',
     timezone: 'Asia/Manila',
-    primaryColor: '#176b45',
-    accentColor: '#f4c542',
+    primaryColor: '#a67608',
+    accentColor: '#d9ad20',
     logoUrl: null,
-    supportEmail: 'support@davaorewards.com',
-    mapCenter: { latitude: 7.1907, longitude: 125.4553 },
+    supportEmail: 'support@pinasrewards.ph',
+    mapCenter: { latitude: 12.8797, longitude: 121.774 },
     featureFlags: {},
   },
 }
@@ -77,19 +77,20 @@ function inferSlug(hostname: string) {
     ? null
     : new URLSearchParams(window.location.search).get('tenant')
   if (queryTenant && programs[queryTenant]) return queryTenant
-  return Object.keys(programs).find((slug) => host.includes(slug)) ?? 'medellin'
+  return Object.keys(programs).find((slug) => host.includes(slug)) ?? 'pinas'
 }
 
 export function canUseTenantPreviewOverride(hostname: string) {
   const host = hostname.toLowerCase().split(':')[0]
   return host === 'localhost'
     || host.startsWith('127.')
+    || host === 'pinas-rewards.vercel.app'
     || host.endsWith('.rewardsplatform.app')
     || (host.startsWith('loyalty-rewards-prog-') && host.endsWith('-elaielaielai1113s-projects.vercel.app'))
 }
 
 export function getFallbackProgram(hostname = window.location.hostname) {
-  return programs[inferSlug(hostname)] ?? programs.medellin
+  return programs[inferSlug(hostname)] ?? programs.pinas
 }
 
 export function setActiveProgram(program: Program) {

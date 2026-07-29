@@ -47,7 +47,7 @@ const authErrorClass = 'text-center text-xs font-bold text-red-400'
 const featureCardIcons = [Users, BarChart3, ShoppingCart] as const
 const faqIcons = [MapPin, Users, BadgeCheck, DollarSign] as const
 
-const landingCopy: Record<Language, {
+const landingCopy: Record<Exclude<Language, 'tl'>, {
   nav: {
     howItWorks: string
     businesses: string
@@ -373,7 +373,7 @@ function LoadingSpinner() {
 export function LandingPage() {
   const { language } = useLanguage()
   const { program } = useTenant()
-  const baseCopy = landingCopy[language]
+  const baseCopy = landingCopy[language === 'tl' ? 'en' : language]
   const copy = JSON.parse(
     JSON.stringify(baseCopy).replaceAll('Medellin Rewards', program.name),
   ) as typeof baseCopy

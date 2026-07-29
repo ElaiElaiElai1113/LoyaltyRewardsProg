@@ -1,7 +1,7 @@
 {
-  "name": "Medellin Rewards",
-  "short_name": "Medellin",
-  "description": "Install Medellin Rewards to show your member QR, record partner purchases, and manage rewards from your phone.",
+  "name": "Pinas Rewards",
+  "short_name": "Pinas",
+  "description": "Install Pinas Rewards to show your member QR, earn with local businesses, and manage rewards from your phone.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -13,7 +13,7 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/medellin-rewards-logo.svg",
+      "src": "/pinas-rewards-logo.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
@@ -31,8 +31,8 @@
       "purpose": "any maskable"
     }
   ],
-  "theme_color": "#F6F7F8",
-  "background_color": "#F6F7F8",
+  "theme_color": "#A67608",
+  "background_color": "#FAF8F3",
   "shortcuts": [
     {
       "name": "Member QR",

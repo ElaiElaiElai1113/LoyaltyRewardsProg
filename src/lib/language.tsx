@@ -2,7 +2,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 
-type Language = 'en' | 'es'
+type Language = 'en' | 'es' | 'tl'
 
 type TranslationValues = Record<string, string | number>
 
@@ -14,6 +14,7 @@ interface LanguageContextValue {
 
 const languageLabels: Record<Language, string> = {
   en: 'English',
+  tl: 'Tagalog',
   es: 'Español',
 }
 
@@ -1742,12 +1743,111 @@ const spanishTranslations: Record<string, string> = {
     'tu saldo esta protegido. Vuelve a suscribirte para empezar a ganar otra vez.',
 }
 
+const tagalogTranslations: Record<string, string> = {
+  Account: 'Account',
+  Activity: 'Aktibidad',
+  Add: 'Idagdag',
+  Admin: 'Admin',
+  Amount: 'Halaga',
+  Apply: 'Ilapat',
+  Approve: 'Aprubahan',
+  Back: 'Bumalik',
+  Balance: 'Balanse',
+  Browse: 'Tingnan',
+  Business: 'Negosyo',
+  'Business Login': 'Login ng Negosyo',
+  Businesses: 'Mga Negosyo',
+  Cancel: 'Kanselahin',
+  Claim: 'Kunin',
+  Claimable: 'Maaaring Kunin',
+  Close: 'Isara',
+  Confirm: 'Kumpirmahin',
+  Contact: 'Makipag-ugnayan',
+  Continue: 'Magpatuloy',
+  Create: 'Gumawa',
+  Customer: 'Customer',
+  Dashboard: 'Dashboard',
+  Delete: 'Burahin',
+  Details: 'Mga Detalye',
+  Directions: 'Direksyon',
+  Edit: 'I-edit',
+  Email: 'Email',
+  English: 'Ingles',
+  FAQ: 'Mga Madalas Itanong',
+  Filter: 'Salain',
+  'Frequently asked questions': 'Mga madalas itanong',
+  'Gift Cards': 'Mga Gift Card',
+  History: 'Kasaysayan',
+  Home: 'Home',
+  Join: 'Sumali',
+  Language: 'Wika',
+  Loading: 'Naglo-load',
+  Login: 'Mag-login',
+  Logout: 'Mag-logout',
+  Members: 'Mga Miyembro',
+  Name: 'Pangalan',
+  Next: 'Susunod',
+  'No results': 'Walang resulta',
+  'Not now': 'Hindi muna',
+  Orders: 'Mga Order',
+  Partner: 'Katuwang',
+  Partners: 'Mga Katuwang',
+  Password: 'Password',
+  Payment: 'Bayad',
+  Pending: 'Naghihintay',
+  Previous: 'Nakaraan',
+  Products: 'Mga Produkto',
+  Profile: 'Profile',
+  Promotions: 'Mga Promosyon',
+  Redeem: 'Gamitin',
+  Referrals: 'Mga Referral',
+  Register: 'Mag-register',
+  Remove: 'Alisin',
+  Rewards: 'Mga Reward',
+  Save: 'I-save',
+  'Save changes': 'I-save ang mga pagbabago',
+  Search: 'Maghanap',
+  Select: 'Pumili',
+  Settings: 'Mga Setting',
+  'Sign in': 'Mag-sign in',
+  'Sign out': 'Mag-sign out',
+  Status: 'Katayuan',
+  Submit: 'Isumite',
+  Success: 'Tagumpay',
+  Total: 'Kabuuan',
+  Update: 'I-update',
+  Verified: 'Beripikado',
+  View: 'Tingnan',
+  Wallet: 'Wallet',
+  'View Rewards': 'Tingnan ang Mga Reward',
+  'Explore Businesses': 'Tuklasin ang Mga Negosyo',
+  'Earn Points': 'Kumita ng Points',
+  'Redeem Rewards': 'Gamitin ang Mga Reward',
+  'Partner Businesses': 'Mga Katuwang na Negosyo',
+  'Business Directory': 'Direktoryo ng mga Negosyo',
+  'Member QR': 'QR ng Miyembro',
+  'Rewards account': 'Rewards account',
+  'Rewards Catalog': 'Katalogo ng Mga Reward',
+  'Rewards Marketplace': 'Rewards Marketplace',
+  'Privacy policy': 'Patakaran sa Privacy',
+  'Member agreement': 'Kasunduan ng Miyembro',
+  'You are offline': 'Wala kang koneksyon',
+  'Install app': 'I-install ang app',
+  'Install Medellin Rewards': 'I-install ang Pinas Rewards',
+  'Create Rewards Account': 'Gumawa ng Rewards Account',
+  'Preparing your workspace.': 'Inihahanda ang iyong workspace.',
+  'Page not found': 'Hindi makita ang pahina',
+  'Start earning': 'Magsimulang kumita',
+  'Start shopping': 'Magsimulang mamili',
+  'View history': 'Tingnan ang kasaysayan',
+}
+
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 function getStoredLanguage(): Language {
-  if (typeof window === 'undefined') return 'es'
+  if (typeof window === 'undefined') return 'en'
   const stored = window.localStorage.getItem(tenantStorageKey('language'))
-  return stored === 'en' ? 'en' : 'es'
+  return stored === 'es' || stored === 'tl' ? stored : 'en'
 }
 
 function applyValues(text: string, values?: TranslationValues) {
@@ -1771,7 +1871,11 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
       language,
       setLanguage: setLanguageState,
       t: (text, values) => {
-        const translated = language === 'es' ? spanishTranslations[text] ?? text : text
+        const translated = language === 'es'
+          ? spanishTranslations[text] ?? text
+          : language === 'tl'
+            ? tagalogTranslations[text] ?? text
+            : text
         return applyValues(translated, values)
       },
     }),

@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process'
 const files = execFileSync('git', ['ls-files', 'src', 'api', 'public', 'index.html', 'vite.config.ts'], { encoding: 'utf8' })
   .split(/\r?\n/)
   .filter(Boolean)
-const patterns = [/Medellin Rewards/g, /medellinrewards\.com/g, /\bMedellin\b/g]
+const patterns = [/Davao Rewards/g, /davaorewards\.com/g, /\bDavao\b/g]
 const permitted = [
   /tenant-service(?:\.test)?\.ts$/,
   /tenant-migration\.test\.ts$/,
@@ -22,12 +22,7 @@ const permitted = [
   /platform-guide-page\.tsx$/,
   /mock-store\.ts$/,
   /send-welcome-email\.ts$/,
-  /public\/favicon\.svg$/,
-  /public\/medellin-rewards-(?:logo|mark)\.svg$/,
-  /public\/site\.webmanifest$/,
-  /platform-service\.ts$/,
-  /router\.tsx$/,
-  /tenant-email-templates\.test\.ts$/,
+  /tenant-migration\.test\.ts$/,
 ]
 const findings = []
 for (const file of files) {

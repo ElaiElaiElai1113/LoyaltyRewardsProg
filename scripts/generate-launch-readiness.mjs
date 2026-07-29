@@ -20,7 +20,7 @@ const report = {
   productionOrigin,
   hostedSchemaChanged: false,
   migrations,
-  tenantPackages: ['guatemala', 'synergize', 'davao'],
+  tenantPackages: ['pinas', 'guatemala', 'synergize'],
   emailDomains: email.programs.map(({ slug, status, hostname }) => ({ slug, status, hostname })),
   validationCommands: [
     'npm run ops:migrations:validate',
