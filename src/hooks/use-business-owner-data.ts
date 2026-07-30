@@ -582,10 +582,14 @@ export function useRegisterCustomer(businessId?: string) {
       if (!businessId) throw new Error('No business context.')
       return adminService.registerCustomer(name, email, businessId)
     },
-    onSuccess: () => {
+    onSuccess: (customer) => {
       void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
       void queryClient.invalidateQueries({ queryKey: ['metrics', businessId] })
-      toast.success('Customer invited. They must sign the Member Agreement on first access.')
+      toast.success(
+        customer.existing
+          ? 'Existing customer linked to this business.'
+          : 'Customer invited. They must sign the Member Agreement on first access.',
+      )
     },
     onError: (error: Error) => {
       toast.error(`Registration failed: ${error.message}`)

@@ -264,8 +264,19 @@ Deno.serve(async (req: Request) => {
   }
 
   if (existingProfile) {
-    if (existingProfile.registered_by_business_id !== businessId) {
+    if (existingProfile.registered_by_business_id && existingProfile.registered_by_business_id !== businessId) {
       return jsonResponse({ message: 'A customer with this email already exists.' }, 409)
+    }
+
+    if (!existingProfile.registered_by_business_id) {
+      const { error: linkExistingError } = await admin
+        .from('profiles')
+        .update({ registered_by_business_id: businessId })
+        .eq('id', existingProfile.id)
+
+      if (linkExistingError) {
+        return jsonResponse({ message: linkExistingError.message }, 500)
+      }
     }
 
     const [existingMembershipError, existingBalanceError] = await Promise.all([
@@ -285,6 +296,7 @@ Deno.serve(async (req: Request) => {
         id: existingProfile.id,
         email: existingProfile.email,
         fullName: existingProfile.full_name,
+        existing: true,
       },
     })
   }
@@ -368,6 +380,7 @@ Deno.serve(async (req: Request) => {
       id: created.user.id,
       email: created.user.email,
       fullName: name,
+      existing: false,
     },
   })
 })

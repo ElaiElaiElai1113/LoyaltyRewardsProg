@@ -30,7 +30,7 @@ import {
 } from '@/types/forms'
 
 type CustomerStatusFilter = 'all' | 'under_review' | 'approved' | 'missing_document' | 'rejected'
-type RegisteredCustomer = { id: string; email?: string; fullName: string }
+type RegisteredCustomer = { id: string; email?: string; fullName: string; existing?: boolean }
 
 function matchesCustomerStatusFilter(
   member: { verificationStatus?: 'not_submitted' | 'pending_document' | 'submitted' | 'verified' | 'rejected' },
@@ -326,6 +326,7 @@ export function MembersPage() {
                     id: customer.id,
                     email: customer.email,
                     fullName: values.fullName,
+                    existing: customer.existing,
                   })
                   setCustomerLookup(customer.email ?? customer.id)
                   form.setValue('profileId', customer.id, { shouldValidate: true })
@@ -386,7 +387,11 @@ export function MembersPage() {
                   <div className="flex items-start gap-3">
                     <Check className="mt-0.5 size-5 shrink-0 text-success" />
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-primary">Customer registered and selected</p>
+                      <p className="font-semibold text-primary">
+                        {registeredCustomer.existing
+                          ? 'Existing customer linked and selected'
+                          : 'Customer registered and selected'}
+                      </p>
                       <p className="mt-1 text-sm text-on-surface-variant/85">
                         {registeredCustomer.fullName} · {registeredCustomer.email}
                       </p>

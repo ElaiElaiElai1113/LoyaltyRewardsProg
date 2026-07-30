@@ -809,7 +809,7 @@ export const adminService = {
       throw new Error(await readFunctionErrorMessage(error, 'Customer invitation could not be sent.'))
     }
 
-    const user = (data as { user?: { id: string; email?: string } } | null)?.user
+    const user = (data as { user?: { id: string; email?: string; fullName?: string; existing?: boolean } } | null)?.user
     if (!user) {
       throw new Error('Customer invitation was sent but user data was not returned.')
     }
