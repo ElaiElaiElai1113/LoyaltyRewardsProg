@@ -117,6 +117,11 @@ export function ForBusinessesPage() {
               <li>15–25% commission</li>
               <li>Setup in days, not weeks</li>
             </ul>
+            {program.slug === 'pinas' ? (
+              <p className="business-landing__commercial-note">
+                Final commission and settlement terms are confirmed in each signed partner agreement.
+              </p>
+            ) : null}
           </div>
 
           <div className="business-landing__hero-art">

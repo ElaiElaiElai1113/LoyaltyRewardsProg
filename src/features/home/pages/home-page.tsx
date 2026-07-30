@@ -400,6 +400,11 @@ export function HomePage() {
           <SectionEyebrow>{tx('MEMBERSHIP')}</SectionEyebrow>
           <h2 id="membership-title">{tx('Choose how you earn')}</h2>
           <p className="figma-home__section-intro">{tx('Start free, or upgrade and get 100% of it back in Rewards credit.')}</p>
+          {isPinas ? (
+            <p className="figma-home__section-note">
+              Proposed launch pricing and reward rates are subject to the final membership terms and each participating offer.
+            </p>
+          ) : null}
 
           <div className="figma-home__membership-grid">
             <article className="figma-home__membership-card">

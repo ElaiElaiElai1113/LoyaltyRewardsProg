@@ -42,6 +42,7 @@
     "validate:tenant-import": "node scripts/validate-tenant-import.mjs",
     "audit:tenant-branding": "node scripts/audit-tenant-branding.mjs",
     "assets:pinas-qr": "node scripts/generate-pinas-qr.mjs",
+    "qa:reset-passwords": "node scripts/reset-e2e-account-passwords.mjs",
     "test:tenant-tools": "node scripts/validate-tenant-tooling.mjs",
     "test:migration-contracts": "node scripts/validate-tenant-migration-contracts.mjs",
     "test:deployment-routing": "node scripts/validate-deployment-routing.mjs",
