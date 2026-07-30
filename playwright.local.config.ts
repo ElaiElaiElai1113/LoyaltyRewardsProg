@@ -4,6 +4,7 @@ import { e2eBaseUrl } from './tests/e2e/helpers/env.js'
 
 export default defineConfig({
   testDir: './tests/e2e',
+  testIgnore: process.env.E2E_INCLUDE_MEDELLIN_DEMO === 'true' ? [] : ['medellin-demo.spec.ts'],
   timeout: 30_000,
   expect: {
     timeout: 10_000,

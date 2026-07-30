@@ -1,4 +1,5 @@
 import type { GiftCard, PublicGiftCard } from '@/types/domain'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 function mapGiftCard(row: Record<string, unknown>): GiftCard {
@@ -249,12 +250,14 @@ export const giftCardsService = {
     const { data, error } = await sb
       .from('gift_cards')
       .select(giftCardSelect)
+      .eq('program_id', getActiveProgram().id)
       .order('created_at', { ascending: false })
 
     if (error) {
       const { data: plainData, error: plainError } = await sb
         .from('gift_cards')
         .select('*')
+        .eq('program_id', getActiveProgram().id)
         .order('created_at', { ascending: false })
 
       if (plainError) throw new Error('Failed to load your gift cards.')
@@ -316,6 +319,7 @@ export const giftCardsService = {
     const { data, error } = await sb
       .from('gift_cards')
       .select(giftCardSelect)
+      .eq('program_id', getActiveProgram().id)
       .eq('id', id)
       .maybeSingle()
 
@@ -325,6 +329,7 @@ export const giftCardsService = {
     const { data: plainData, error: plainError } = await sb
       .from('gift_cards')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('id', id)
       .maybeSingle()
 

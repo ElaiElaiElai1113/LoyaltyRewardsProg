@@ -44,6 +44,7 @@ export const membershipService = {
     const { data, error } = await sb
       .from('memberships')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .maybeSingle()
 
     if (error) {

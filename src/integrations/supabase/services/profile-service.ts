@@ -32,6 +32,7 @@ export const profileService = {
     const { data, error } = await sb
       .from('reward_balances')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('profile_id', profileId)
       .single()
 
@@ -119,7 +120,7 @@ export const profileService = {
 
     const { data, error } = await sb
       .from('reward_balances')
-      .insert({ profile_id: profileId })
+      .insert({ program_id: getActiveProgram().id, profile_id: profileId })
       .select('*')
       .single()
 

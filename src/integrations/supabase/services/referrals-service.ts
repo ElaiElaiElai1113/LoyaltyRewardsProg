@@ -1,4 +1,5 @@
 import type { ReferralWithProfiles } from '@/types/domain'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 type ProfileSummary = {
@@ -104,6 +105,7 @@ export const referralsService = {
       sb
         .from('reward_balances')
         .select('available_credits')
+        .eq('program_id', getActiveProgram().id)
         .eq('profile_id', profileId)
         .single(),
     ])

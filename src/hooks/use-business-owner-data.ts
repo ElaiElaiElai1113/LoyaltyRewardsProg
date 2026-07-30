@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { adminService } from '@/integrations/supabase/services/admin-service'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
@@ -262,6 +263,7 @@ export function useBusinessMembers(businessId?: string) {
       const { data: balanceRows, error: balError } = await sb
         .from('reward_balances')
         .select('*')
+        .eq('program_id', getActiveProgram().id)
 
       if (balError) throw new Error('Failed to load balances.')
 

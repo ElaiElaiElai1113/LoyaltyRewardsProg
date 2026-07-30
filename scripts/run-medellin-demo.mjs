@@ -24,6 +24,7 @@ const child = spawn(
     env: {
       ...process.env,
       E2E_BASE_URL: baseUrl,
+      E2E_INCLUDE_MEDELLIN_DEMO: 'true',
     },
     stdio: 'inherit',
   },

@@ -1,4 +1,5 @@
 import type { Activity } from '@/types/domain'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { requireSupabase, camelCaseRow } from './shared'
 
 export const activityService = {
@@ -8,6 +9,7 @@ export const activityService = {
     const { data, error } = await sb
       .from('activities')
       .select('*')
+      .eq('program_id', getActiveProgram().id)
       .eq('profile_id', profileId)
       .order('created_at', { ascending: false })
 

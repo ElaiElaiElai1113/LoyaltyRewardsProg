@@ -1,5 +1,6 @@
 import type { CheckoutPayloadItem } from '@/features/critical-flows/critical-flow'
 import { createClientRequestId, normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { clearCart } from '@/lib/mock-store'
 import type { Order, OrderLineItem } from '@/types/domain'
 import { partnerService } from './partner-service'
@@ -42,6 +43,7 @@ export const ordersService = {
     const { data, error } = await sb
       .from('orders')
       .select('*, order_line_items(*)')
+      .eq('program_id', getActiveProgram().id)
       .eq('profile_id', profileId)
       .order('created_at', { ascending: false })
 
@@ -56,6 +58,7 @@ export const ordersService = {
     const { data, error } = await sb
       .from('orders')
       .select('*, order_line_items(*)')
+      .eq('program_id', getActiveProgram().id)
       .eq('id', orderId)
       .single()
 
