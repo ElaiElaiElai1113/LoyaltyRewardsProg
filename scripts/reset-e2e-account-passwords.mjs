@@ -35,11 +35,26 @@ const accounts = [
   { email: process.env.E2E_UNVERIFIED_CUSTOMER_EMAIL ?? 'unverified@medellin.test', role: 'customer', name: 'E2E Unverified Customer' },
   { email: process.env.E2E_BUSINESS_STAFF_EMAIL ?? 'staff@velvetbrew.test', role: 'business-staff', name: 'E2E Pinas Staff' },
   { email: process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'owner@velvetbrew.test', role: 'business-owner', name: 'E2E Pinas Owner' },
+  { email: 'owner@velvetbrew.co', role: 'business-owner', name: 'Velvet Brew Owner' },
+  { email: 'businesstest2@gmail.com', role: 'business-owner', name: 'Business Test 2 Owner' },
   { email: process.env.E2E_ADMIN_EMAIL ?? 'admin@medellin.test', role: 'platform-admin', name: 'E2E Platform Admin' },
   { email: process.env.E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL ?? 'agreement-pending-customer@medellin.test', role: 'customer', name: 'E2E Agreement Pending Customer' },
   { email: process.env.E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL ?? 'agreement-pending-owner@velvetbrew.test', role: 'business-owner', name: 'E2E Agreement Pending Owner' },
   { email: process.env.E2E_AGREEMENT_UNSIGNED_CUSTOMER_EMAIL ?? 'agreement-unsigned-customer@medellin.test', role: 'customer', name: 'E2E Unsigned Agreement Customer' },
 ]
+const requestedEmails = new Set(
+  (process.env.QA_ACCOUNT_EMAILS ?? '')
+    .split(',')
+    .map((email) => email.trim().toLowerCase())
+    .filter(Boolean),
+)
+const selectedAccounts = requestedEmails.size
+  ? accounts.filter((account) => requestedEmails.has(account.email.toLowerCase()))
+  : accounts
+
+if (requestedEmails.size && selectedAccounts.length !== requestedEmails.size) {
+  throw new Error('QA_ACCOUNT_EMAILS contains an address outside the approved fixture allowlist.')
+}
 
 const client = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
@@ -51,6 +66,33 @@ for (let page = 1; ; page += 1) {
   if (error) throw error
   for (const user of data.users) usersByEmail.set(user.email?.toLowerCase(), user)
   if (data.users.length < 100) break
+}
+
+if (process.env.QA_LIST_ROLE) {
+  const role = process.env.QA_LIST_ROLE
+  const matches = [...usersByEmail.values()]
+    .filter((user) => user.app_metadata?.role === role)
+  const ids = matches.map((user) => user.id)
+  const { data: profiles, error } = await client
+    .from('profiles')
+    .select('id,email,business_id,businesses!profiles_business_id_fkey(name,slug)')
+    .in('id', ids)
+  if (error) throw error
+  const details = (profiles ?? [])
+    .map((profile) => `${profile.email}\t${profile.businesses?.name ?? 'No business'}\t${profile.businesses?.slug ?? '-'}`)
+    .sort()
+  console.log(details.join('\n'))
+  process.exit(0)
+}
+
+if (process.env.QA_LIST_PROGRAM_DOMAINS === 'true') {
+  const { data, error } = await client
+    .from('program_domains')
+    .select('hostname,is_primary,verification_status,programs(name,slug)')
+    .order('hostname')
+  if (error) throw error
+  console.log(JSON.stringify(data, null, 2))
+  process.exit(0)
 }
 
 const qaProgramSlug = process.env.QA_PROGRAM_SLUG ?? 'pinas'
@@ -88,13 +130,16 @@ if (!qaBusiness && process.env.QA_ALLOW_BUSINESS_CREATE === 'true') {
   qaBusiness = data
 }
 
-const provisionableAccounts = qaBusiness
-  ? accounts
-  : accounts.filter((account) => !account.role.startsWith('business-'))
+const passwordOnly = process.env.QA_PASSWORD_ONLY === 'true'
+const provisionableAccounts = passwordOnly
+  ? selectedAccounts
+  : qaBusiness
+  ? selectedAccounts
+  : selectedAccounts.filter((account) => !account.role.startsWith('business-'))
 
-for (const account of accounts) {
+for (const account of selectedAccounts) {
   if (!provisionableAccounts.includes(account)) continue
-  const businessId = account.role.startsWith('business-') ? qaBusiness.id : undefined
+  const businessId = account.role.startsWith('business-') ? qaBusiness?.id : undefined
   let user = usersByEmail.get(account.email.toLowerCase())
 
   if (!user) {
@@ -112,7 +157,10 @@ for (const account of accounts) {
     if (error) throw new Error(`Could not create ${account.email}: ${error.message}`)
     user = data.user
   } else {
-    const { error } = await client.auth.admin.updateUserById(user.id, {
+    const { error } = await client.auth.admin.updateUserById(user.id, passwordOnly ? {
+      password,
+      email_confirm: true,
+    } : {
       password,
       email_confirm: true,
       app_metadata: { role: account.role, ...(businessId ? { business_id: businessId } : {}) },
@@ -120,11 +168,13 @@ for (const account of accounts) {
     if (error) throw new Error(`Could not reset ${account.email}: ${error.message}`)
   }
 
-  const { error: profileError } = await client
-    .from('profiles')
-    .update({ role: account.role, business_id: businessId ?? null })
-    .eq('id', user.id)
-  if (profileError) throw profileError
+  if (!passwordOnly) {
+    const { error: profileError } = await client
+      .from('profiles')
+      .update({ role: account.role, business_id: businessId ?? null })
+      .eq('id', user.id)
+    if (profileError) throw profileError
+  }
 
   if (account.role !== 'platform-admin' && process.env.QA_ASSIGN_PROGRAM_MEMBERSHIPS === 'true') {
     const programRole = account.role === 'customer' ? 'member' : account.role
@@ -165,4 +215,18 @@ for (const account of accounts) {
 console.log(`Provisioned or reset ${provisionableAccounts.length} isolated QA accounts without changing real user accounts.`)
 if (!qaBusiness) {
   console.warn('Skipped business QA accounts because no designated Pinas business exists and plan limits must not be bypassed.')
+}
+
+if (process.env.QA_VERIFY_LOGIN === 'true') {
+  const anonKey = process.env.VITE_SUPABASE_ANON_KEY
+  if (!anonKey) throw new Error('VITE_SUPABASE_ANON_KEY is required when QA_VERIFY_LOGIN=true.')
+  const authClient = createClient(supabaseUrl, anonKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  })
+  for (const account of provisionableAccounts) {
+    const { error } = await authClient.auth.signInWithPassword({ email: account.email, password })
+    if (error) throw new Error(`Login verification failed for ${account.email}: ${error.message}`)
+    await authClient.auth.signOut()
+  }
+  console.log(`Verified password login for ${provisionableAccounts.length} selected QA accounts.`)
 }
