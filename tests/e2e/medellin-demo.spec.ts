@@ -26,6 +26,8 @@ test('Medellin member can sign in and open demo pages', async ({ page }) => {
 
   await page.goto('/profile')
   await expect(page.locator('#fullName')).toHaveValue('E2E Verified Customer')
+  await expect(page.getByText(/^Frozen$/i)).toHaveCount(0)
+  await expect(page.getByText(/^Active$/i).first()).toBeVisible()
   await page.locator('#phone').fill('+57 300 555 0101')
   await page.locator('#location').fill('')
   await page.locator('#favoriteOrder').fill('')
