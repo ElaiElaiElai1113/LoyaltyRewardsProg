@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Gift, Search, Users } from 'lucide-react'
+import { Check, Copy, Gift, Search, Users } from 'lucide-react'
 import { useState } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
 
@@ -30,6 +30,7 @@ import {
 } from '@/types/forms'
 
 type CustomerStatusFilter = 'all' | 'under_review' | 'approved' | 'missing_document' | 'rejected'
+type RegisteredCustomer = { id: string; email?: string; fullName: string }
 
 function matchesCustomerStatusFilter(
   member: { verificationStatus?: 'not_submitted' | 'pending_document' | 'submitted' | 'verified' | 'rejected' },
@@ -52,8 +53,10 @@ export function MembersPage() {
   const [actionError, setActionError] = useState<string | null>(null)
   const [registerActionError, setRegisterActionError] = useState<string | null>(null)
   const [purchaseAmount, setPurchaseAmount] = useState<string>('')
+  const [customerLookup, setCustomerLookup] = useState('')
   const [memberSearch, setMemberSearch] = useState('')
   const [customerStatusFilter, setCustomerStatusFilter] = useState<CustomerStatusFilter>('all')
+  const [registeredCustomer, setRegisteredCustomer] = useState<RegisteredCustomer | null>(null)
 
   const form = useForm<RewardAdjustmentFormValues>({
     resolver: zodResolver(rewardAdjustmentSchema),
@@ -152,6 +155,7 @@ export function MembersPage() {
                     delta: 10,
                     reason: '',
                   })
+                  setCustomerLookup('')
                   setPurchaseAmount('')
                 } catch (error) {
                   setActionError(error instanceof Error ? error.message : t('Failed to award points.'))
@@ -159,23 +163,36 @@ export function MembersPage() {
               })}
             >
               <div className="grid gap-3">
-                <Label htmlFor="profileId" className="text-sm font-semibold">
+                <Label htmlFor="customerLookup" className="text-sm font-semibold">
                   {t('Customer')}
                 </Label>
                 <div className="relative">
                   <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant/55" />
                   <Input
-                    id="profileId"
+                    id="customerLookup"
                     list="business-member-options"
-                    placeholder={t('Search by customer ID')}
+                    placeholder="Search by name, email, or customer ID"
                     className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] pl-11 text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
-                    {...form.register('profileId')}
+                    value={customerLookup}
+                    onChange={(event) => {
+                      const value = event.target.value
+                      const normalized = value.trim().toLowerCase()
+                      const match = memberRows.find(
+                        (member) =>
+                          member.id.toLowerCase() === normalized ||
+                          member.email.toLowerCase() === normalized ||
+                          member.fullName.toLowerCase() === normalized,
+                      )
+                      setCustomerLookup(value)
+                      form.setValue('profileId', match?.id ?? '', { shouldValidate: Boolean(match) })
+                    }}
                   />
+                  <input type="hidden" {...form.register('profileId')} />
                 </div>
                 <datalist id="business-member-options">
                   {(members.data ?? []).map((member) => (
-                    <option key={member.id} value={member.id}>
-                      {member.fullName} - {member.email}
+                    <option key={member.id} value={member.email}>
+                      {member.fullName} - ID: {member.id}
                     </option>
                   ))}
                 </datalist>
@@ -301,10 +318,17 @@ export function MembersPage() {
               onSubmit={registerForm.handleSubmit(async (values) => {
                 try {
                   setRegisterActionError(null)
-                  await registerCustomer.mutateAsync({
+                  const customer = await registerCustomer.mutateAsync({
                     name: values.fullName,
                     email: values.email,
                   })
+                  setRegisteredCustomer({
+                    id: customer.id,
+                    email: customer.email,
+                    fullName: values.fullName,
+                  })
+                  setCustomerLookup(customer.email ?? customer.id)
+                  form.setValue('profileId', customer.id, { shouldValidate: true })
                   registerForm.reset({
                     fullName: '',
                     email: '',
@@ -356,6 +380,32 @@ export function MembersPage() {
               </Button>
               {registerActionError ? (
                 <p className="text-sm font-bold text-red-500">{registerActionError}</p>
+              ) : null}
+              {registeredCustomer ? (
+                <div className="rounded-2xl border border-success/25 bg-success/10 p-4" role="status">
+                  <div className="flex items-start gap-3">
+                    <Check className="mt-0.5 size-5 shrink-0 text-success" />
+                    <div className="min-w-0 flex-1">
+                      <p className="font-semibold text-primary">Customer registered and selected</p>
+                      <p className="mt-1 text-sm text-on-surface-variant/85">
+                        {registeredCustomer.fullName} · {registeredCustomer.email}
+                      </p>
+                      <p className="mt-2 break-all font-mono text-xs text-primary">
+                        Customer ID: {registeredCustomer.id}
+                      </p>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="mt-3"
+                        onClick={() => void navigator.clipboard.writeText(registeredCustomer.id)}
+                      >
+                        <Copy className="size-4" />
+                        Copy customer ID
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               ) : null}
             </form>
           </div>
@@ -458,7 +508,10 @@ export function MembersPage() {
                           !selected &&
                             'border-primary-container/30 bg-[var(--card)] text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary',
                         )}
-                        onClick={() => form.setValue('profileId', member.id, { shouldValidate: true })}
+                        onClick={() => {
+                          form.setValue('profileId', member.id, { shouldValidate: true })
+                          setCustomerLookup(member.email)
+                        }}
                       >
                         {selected ? t('Selected') : t('Select')}
                       </Button>

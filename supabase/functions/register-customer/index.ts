@@ -184,6 +184,18 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ message: 'No business context is available.' }, 400)
   }
 
+  const { data: business, error: businessError } = await admin
+    .from('businesses')
+    .select('id, program_id')
+    .eq('id', businessId)
+    .single()
+
+  if (businessError || !business?.program_id) {
+    return jsonResponse({ message: 'The business program could not be resolved.' }, 400)
+  }
+
+  const programId = business.program_id as string
+
   const redirectTo = req.headers.get('origin') ?? Deno.env.get('SITE_URL') ?? undefined
   const { data: created, error: createError } = await admin.auth.admin.inviteUserByEmail(email, {
     redirectTo,
@@ -246,16 +258,34 @@ Deno.serve(async (req: Request) => {
     }
   }
 
+  const { error: programMembershipError } = await admin
+    .from('program_memberships')
+    .upsert(
+      {
+        program_id: programId,
+        profile_id: created.user.id,
+        role: 'member',
+        business_id: null,
+        status: 'active',
+      },
+      { onConflict: 'program_id,profile_id,role' },
+    )
+
+  if (programMembershipError) {
+    return jsonResponse({ message: programMembershipError.message }, 500)
+  }
+
   const { error: balanceError } = await admin
     .from('reward_balances')
     .upsert(
       {
+        program_id: programId,
         profile_id: created.user.id,
         points: 0,
         next_reward_points: 300,
         available_credits: 0,
       },
-      { onConflict: 'profile_id', ignoreDuplicates: true },
+      { onConflict: 'program_id,profile_id', ignoreDuplicates: true },
     )
 
   if (balanceError) {
@@ -266,6 +296,7 @@ Deno.serve(async (req: Request) => {
     user: {
       id: created.user.id,
       email: created.user.email,
+      fullName: name,
     },
   })
 })
