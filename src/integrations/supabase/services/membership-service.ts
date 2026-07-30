@@ -1,4 +1,5 @@
 import type { Membership } from '@/types/domain'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 function mapMembership(row: Record<string, unknown>): Membership {
@@ -23,7 +24,7 @@ function mapMembership(row: Record<string, unknown>): Membership {
 
 async function callMembershipRpc(name: 'mock_subscribe' | 'mock_renew' | 'mock_cancel'): Promise<Membership> {
   const sb = requireSupabase()
-  const { data, error } = await sb.rpc(name)
+  const { data, error } = await sb.rpc(name, { p_program_id: getActiveProgram().id })
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
 
   if (error || !row) {

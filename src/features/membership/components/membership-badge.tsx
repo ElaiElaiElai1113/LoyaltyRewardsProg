@@ -9,6 +9,7 @@ export function MembershipBadge() {
   const { t } = useLanguage()
   const { membership, isActive, isLoading } = useMembership()
   const isFrozen = Boolean(membership) && !isActive
+  const effectiveStatus = isActive ? 'Active' : isFrozen ? 'Frozen' : 'Not active'
 
   return (
     <div className="rounded-2xl border border-primary/20 bg-tenant-soft px-6 py-4 text-foreground shadow-card flex items-center gap-4">
@@ -24,7 +25,7 @@ export function MembershipBadge() {
         </span>
         {membership ? (
           <Badge variant={isActive ? 'success' : 'outline'} className="w-fit">
-            {membership.status}
+            {t(effectiveStatus)}
           </Badge>
         ) : null}
       </div>
