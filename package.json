@@ -24,6 +24,7 @@
     "test:e2e": "node scripts/run-playwright-local.mjs",
     "test:e2e:doctor": "node scripts/check-e2e-readiness.mjs",
     "test:e2e:hosted-safe": "node scripts/run-playwright-local.mjs tests/e2e/hosted-safe.spec.ts --workers=1",
+    "test:e2e:medellin-demo": "node scripts/run-medellin-demo.mjs",
     "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts tests/e2e/accessibility.spec.ts --workers=2",
     "test:e2e:quality": "node scripts/run-playwright-local.mjs tests/e2e/performance-accessibility.spec.ts --workers=1",
     "test:playwright": "node scripts/run-playwright-local.mjs",
