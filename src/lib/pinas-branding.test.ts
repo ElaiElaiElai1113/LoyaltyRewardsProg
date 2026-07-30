@@ -6,6 +6,8 @@ const homePage = readFileSync('src/features/home/pages/home-page.tsx', 'utf8')
 const businessPage = readFileSync('src/features/business/pages/for-businesses-page.tsx', 'utf8')
 const manifest = readFileSync('public/site.webmanifest', 'utf8')
 const indexHtml = readFileSync('index.html', 'utf8')
+const robots = readFileSync('public/robots.txt', 'utf8')
+const sitemap = readFileSync('public/sitemap.xml', 'utf8')
 
 describe('Pinas Rewards flagship branding', () => {
   it('does not hardcode the Medellin wordmark in public page chrome', () => {
@@ -22,5 +24,9 @@ describe('Pinas Rewards flagship branding', () => {
     expect(manifest).toContain('"name": "Pinas Rewards"')
     expect(manifest).not.toContain('Medellin Rewards')
     expect(indexHtml).toContain('https://pinas-rewards.vercel.app/')
+    expect(indexHtml).toContain('application/ld+json')
+    expect(indexHtml).toContain('og:image:alt')
+    expect(robots).toContain('https://pinas-rewards.vercel.app/sitemap.xml')
+    expect(sitemap).toContain('https://pinas-rewards.vercel.app/for-businesses')
   })
 })

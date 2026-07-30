@@ -1,6 +1,19 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('public acquisition workflow', () => {
+  test('search metadata exposes only public launch routes', async ({ request }) => {
+    const robots = await request.get('/robots.txt')
+    expect(robots.ok()).toBeTruthy()
+    expect(await robots.text()).toContain('Sitemap: https://pinas-rewards.vercel.app/sitemap.xml')
+
+    const sitemap = await request.get('/sitemap.xml')
+    expect(sitemap.ok()).toBeTruthy()
+    const xml = await sitemap.text()
+    expect(xml).toContain('https://pinas-rewards.vercel.app/for-businesses')
+    expect(xml).not.toContain('/admin/')
+    expect(xml).not.toContain('/business/dashboard')
+  })
+
   test('Pinas homepage is the English-first main public landing page', async ({ page }) => {
     await page.goto('/')
 
