@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useState } from 'react'
+import { type ReactNode, useEffect, useRef, useState } from 'react'
 
 import { AuthContext, type SignUpResult } from '@/features/auth/auth-context'
 import { authService } from '@/integrations/supabase/services/auth-service'
@@ -41,9 +41,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [session, setSession] = useState<SessionUser | null>(null)
   const [isLoading, setIsLoading] = useState(true)
+  const authRevision = useRef(0)
 
   useEffect(() => {
     let isActive = true
+    const restoreRevision = authRevision.current
 
     function syncSession(nextProfile: Profile | null) {
       if (!isActive) return
@@ -86,9 +88,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
     void authService
       .getSessionProfile()
       .then((sessionProfile) => {
+        if (authRevision.current !== restoreRevision) return
         handleResolvedProfile(sessionProfile)
       })
       .catch((error) => {
+        if (authRevision.current !== restoreRevision) return
         handleProfileError('Failed to restore auth session:', error)
       })
       .finally(() => {
@@ -105,6 +109,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+      authRevision.current += 1
       if (!nextSession) {
         authService.clearPendingSignInRole()
         queryClient.clear()
@@ -157,6 +162,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     isLoading,
     async signIn(values: AuthFormValues) {
       const sessionProfile = await authService.signIn(values)
+      authRevision.current += 1
       queryClient.clear()
       setProfile(sessionProfile)
       setSession({
@@ -168,6 +174,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     async signUp(values: MemberSignUpSubmission): Promise<SignUpResult> {
       const sessionProfile = await authService.signUp(values)
+      authRevision.current += 1
       const attributionWarnings: string[] = []
 
       try {
@@ -202,6 +209,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     async continueAsDemo(role: UserRole) {
       const sessionProfile = await authService.continueAsDemo(role)
+      authRevision.current += 1
       queryClient.clear()
       setProfile(sessionProfile)
       setSession({
@@ -213,6 +221,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     },
     async signOut(options?: { redirectTo?: string; skipRedirect?: boolean }) {
       const redirectTo = options?.redirectTo ?? getSignOutRedirectPath(profile?.role)
+      authRevision.current += 1
       setIsLoading(true)
       try {
         await authService.signOut()

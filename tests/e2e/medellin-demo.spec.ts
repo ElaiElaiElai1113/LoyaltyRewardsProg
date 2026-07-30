@@ -57,6 +57,10 @@ test('Medellin business owner can sign in and open demo pages', async ({ page })
   await page.locator('#staff-signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
   await expect(page).toHaveURL(/\/business\/dashboard$/)
+  await page.reload()
+  await expect(page).toHaveURL(/\/business\/dashboard$/)
+  await page.goto('/business/login')
+  await expect(page).toHaveURL(/\/business\/dashboard$/)
 
   for (const path of [
     '/business/member-sale',
