@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { signAgreementSchema } from './forms'
+import { profileSchema, signAgreementSchema } from './forms'
 
 const drawnSignatureSvg =
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 220" data-signature="drawn"><path d="M 10 10 L 60 45" fill="none" stroke="#111827" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>'
@@ -59,5 +59,16 @@ describe('signAgreementSchema', () => {
     })
 
     expect(result.success).toBe(true)
+  })
+})
+
+describe('profileSchema', () => {
+  it('allows a member to save required contact details without optional preferences', () => {
+    expect(profileSchema.safeParse({
+      fullName: 'E2E Verified Customer',
+      phone: '+57 300 123 4567',
+      location: '',
+      favoriteOrder: '',
+    }).success).toBe(true)
   })
 })

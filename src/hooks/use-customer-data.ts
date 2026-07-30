@@ -247,9 +247,11 @@ export function useUpdateProfile(profileId?: string) {
 
   return useMutation({
     mutationFn: (values: ProfileFormValues) => profileService.updateProfile(profileId!, values),
-    onSuccess: () => {
+    onSuccess: (updatedProfile) => {
       if (!profileId) return
+      queryClient.setQueryData(customerKeys.profile(profileId), updatedProfile)
       void queryClient.invalidateQueries({ queryKey: customerKeys.profile(profileId) })
+      toast.success('Profile saved')
     },
   })
 }

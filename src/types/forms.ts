@@ -36,10 +36,10 @@ export type MemberVerificationSubmission = MemberVerificationFormValues & {
 }
 
 export const profileSchema = z.object({
-  fullName: z.string().min(2, 'Enter your full name'),
-  phone: z.string().min(8, 'Enter a phone number'),
-  location: z.string().min(2, 'Enter a location'),
-  favoriteOrder: z.string().min(2, 'Enter a favorite order'),
+  fullName: z.string().trim().min(2, 'Enter your full name'),
+  phone: z.string().trim().min(8, 'Enter a phone number'),
+  location: z.string().trim(),
+  favoriteOrder: z.string().trim(),
 })
 
 export type ProfileFormValues = z.infer<typeof profileSchema>

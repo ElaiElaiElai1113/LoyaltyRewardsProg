@@ -24,6 +24,20 @@ test('Medellin member can sign in and open demo pages', async ({ page }) => {
   await expect(page).toHaveURL(/\/dashboard$/)
   await expect(page.locator('body')).toContainText('Medellin Rewards')
 
+  await page.goto('/profile')
+  await page.locator('#phone').fill('+57 300 555 0101')
+  await page.locator('#location').fill('')
+  await page.locator('#favoriteOrder').fill('')
+  await page.getByRole('button', { name: /save changes/i }).click()
+  await expect(page.getByText(/profile saved/i)).toBeVisible()
+  await page.reload()
+  await expect(page.locator('#phone')).toHaveValue('+57 300 555 0101')
+  await expect(page.locator('body')).toContainText('+57 300 555 0101')
+
+  await page.goto('/gift-cards')
+  await expect(page.getByRole('button', { name: /add contact details/i })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: /^issue$/i }).first()).toBeVisible()
+
   for (const path of ['/profile', '/shop', '/membership', '/activity', '/cart']) {
     await page.goto(path)
     await expect(page).toHaveURL(new RegExp(`${path.replaceAll('/', '\\/')}$`))

@@ -287,22 +287,34 @@ export function ProfilePage() {
               <div className="grid gap-3">
                 <Label htmlFor="fullName">{t('Full Name')}</Label>
                 <Input id="fullName" placeholder={t('Your name')} {...form.register('fullName')} />
+                {form.formState.errors.fullName ? (
+                  <p className="text-xs font-bold text-red-500">{form.formState.errors.fullName.message}</p>
+                ) : null}
               </div>
 
               <div className="grid gap-8 md:grid-cols-2">
                 <div className="grid gap-3">
                   <Label htmlFor="phone">{t('Phone Number')}</Label>
                   <Input id="phone" placeholder="+1 (555) 000-0000" {...form.register('phone')} />
+                  {form.formState.errors.phone ? (
+                    <p className="text-xs font-bold text-red-500">{form.formState.errors.phone.message}</p>
+                  ) : null}
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="location">{t('Home Business')}</Label>
                   <Input id="location" placeholder="e.g., Downtown" {...form.register('location')} />
+                  {form.formState.errors.location ? (
+                    <p className="text-xs font-bold text-red-500">{form.formState.errors.location.message}</p>
+                  ) : null}
                 </div>
               </div>
 
               <div className="grid gap-3">
                 <Label htmlFor="favoriteOrder">{t('Favorite Order')}</Label>
                 <Input id="favoriteOrder" placeholder={t('Your favorite drink...')} {...form.register('favoriteOrder')} />
+                {form.formState.errors.favoriteOrder ? (
+                  <p className="text-xs font-bold text-red-500">{form.formState.errors.favoriteOrder.message}</p>
+                ) : null}
                 <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">{t('This helps staff prepare your order.')}</p>
               </div>
 
