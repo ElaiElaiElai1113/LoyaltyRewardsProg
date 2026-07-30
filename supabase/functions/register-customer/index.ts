@@ -102,6 +102,63 @@ async function hasRequiredAgreements(admin: ReturnType<typeof createClient>, pro
   )
 }
 
+async function ensureMemberProgramAccess(
+  admin: ReturnType<typeof createClient>,
+  programId: string,
+  profileId: string,
+) {
+  const { data: existing, error: readError } = await admin
+    .from('program_memberships')
+    .select('id')
+    .eq('program_id', programId)
+    .eq('profile_id', profileId)
+    .eq('role', 'member')
+    .is('business_id', null)
+    .maybeSingle()
+
+  if (readError) return readError
+
+  if (existing) return null
+
+  const { error } = await admin
+    .from('program_memberships')
+    .insert({
+      program_id: programId,
+      profile_id: profileId,
+      role: 'member',
+      business_id: null,
+      status: 'active',
+    })
+  return error
+}
+
+async function ensureRewardBalance(
+  admin: ReturnType<typeof createClient>,
+  programId: string,
+  profileId: string,
+) {
+  const { data: existing, error: readError } = await admin
+    .from('reward_balances')
+    .select('id')
+    .eq('program_id', programId)
+    .eq('profile_id', profileId)
+    .maybeSingle()
+
+  if (readError) return readError
+  if (existing) return null
+
+  const { error } = await admin
+    .from('reward_balances')
+    .insert({
+      program_id: programId,
+      profile_id: profileId,
+      points: 0,
+      next_reward_points: 300,
+      available_credits: 0,
+    })
+  return error
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -196,6 +253,42 @@ Deno.serve(async (req: Request) => {
 
   const programId = business.program_id as string
 
+  const { data: existingProfile, error: existingProfileError } = await admin
+    .from('profiles')
+    .select('id, full_name, email, registered_by_business_id')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (existingProfileError) {
+    return jsonResponse({ message: existingProfileError.message }, 500)
+  }
+
+  if (existingProfile) {
+    if (existingProfile.registered_by_business_id !== businessId) {
+      return jsonResponse({ message: 'A customer with this email already exists.' }, 409)
+    }
+
+    const [existingMembershipError, existingBalanceError] = await Promise.all([
+      ensureMemberProgramAccess(admin, programId, existingProfile.id),
+      ensureRewardBalance(admin, programId, existingProfile.id),
+    ])
+
+    if (existingMembershipError || existingBalanceError) {
+      return jsonResponse(
+        { message: existingMembershipError?.message ?? existingBalanceError?.message },
+        500,
+      )
+    }
+
+    return jsonResponse({
+      user: {
+        id: existingProfile.id,
+        email: existingProfile.email,
+        fullName: existingProfile.full_name,
+      },
+    })
+  }
+
   const redirectTo = req.headers.get('origin') ?? Deno.env.get('SITE_URL') ?? undefined
   const { data: created, error: createError } = await admin.auth.admin.inviteUserByEmail(email, {
     redirectTo,
@@ -258,35 +351,13 @@ Deno.serve(async (req: Request) => {
     }
   }
 
-  const { error: programMembershipError } = await admin
-    .from('program_memberships')
-    .upsert(
-      {
-        program_id: programId,
-        profile_id: created.user.id,
-        role: 'member',
-        business_id: null,
-        status: 'active',
-      },
-      { onConflict: 'program_id,profile_id,role' },
-    )
+  const programMembershipError = await ensureMemberProgramAccess(admin, programId, created.user.id)
 
   if (programMembershipError) {
     return jsonResponse({ message: programMembershipError.message }, 500)
   }
 
-  const { error: balanceError } = await admin
-    .from('reward_balances')
-    .upsert(
-      {
-        program_id: programId,
-        profile_id: created.user.id,
-        points: 0,
-        next_reward_points: 300,
-        available_credits: 0,
-      },
-      { onConflict: 'program_id,profile_id', ignoreDuplicates: true },
-    )
+  const balanceError = await ensureRewardBalance(admin, programId, created.user.id)
 
   if (balanceError) {
     return jsonResponse({ message: balanceError.message }, 500)
