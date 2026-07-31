@@ -88,6 +88,19 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.guatemalarewards.com"
+        }
+      ],
+      "destination": "https://guatemalarewards.com/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api(?:/|$)).*)",
