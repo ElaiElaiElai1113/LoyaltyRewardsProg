@@ -29,6 +29,29 @@ export interface ProgramMembership {
   businessId: string | null
 }
 
+export type BusinessCustomerLinkSource =
+  | 'registration'
+  | 'order'
+  | 'transaction'
+  | 'legacy-attribution'
+
+export interface BusinessCustomerLink {
+  programId: string
+  businessId: string
+  profileId: string
+  linkedBy: string | null
+  source: BusinessCustomerLinkSource
+  createdAt: string
+}
+
+export interface BusinessCustomer {
+  id: string
+  fullName: string
+  email: string
+  points: number
+  verificationStatus: Profile['verificationStatus']
+}
+
 export interface PlanEntitlements {
   administrators: number
   businesses: number
@@ -351,7 +374,7 @@ export interface GiftCard {
   redemptionGiftCardAmount?: number | null
   redemptionReceiptNumber?: string | null
   catalog?: Pick<GiftCardCatalogItem, 'id' | 'title' | 'description' | 'valueLabel' | 'imageUrl'>
-  business?: Pick<Business, 'id' | 'name' | 'logoUrl'>
+  business?: Pick<Business, 'id' | 'name' | 'logoUrl'> & Partial<Pick<Business, 'currency'>>
   customerFirstName?: string
 }
 

@@ -21,7 +21,7 @@ import {
   useRecordMemberTransaction,
   useScannedMember,
 } from '@/hooks/use-business-owner-data'
-import { formatCurrency, formatPoints } from '@/lib/utils'
+import { formatCurrency as formatBaseCurrency, formatPoints } from '@/lib/utils'
 import { memberTransactionSchema, type MemberTransactionFormValues } from '@/types/forms'
 import type { MemberTransaction } from '@/types/domain'
 import { tenantStorageKey } from '@/lib/tenant-storage'
@@ -61,6 +61,11 @@ export function MemberSalePage() {
   const { program } = useTenant()
   const { token = '' } = useParams()
   const { business } = useBusinessOwnerData()
+  const formatCurrency = (value: number) => formatBaseCurrency(
+    value,
+    business?.currency ?? program.currency,
+    program.locale,
+  )
   const member = useScannedMember(token)
   const [recordedTransaction, setRecordedTransaction] = useState<MemberTransaction | null>(null)
   const [giftCardSaleContext, setGiftCardSaleContext] = useState<GiftCardSaleContext | null>(() => readGiftCardSaleContext())

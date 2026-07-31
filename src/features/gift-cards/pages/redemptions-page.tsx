@@ -18,8 +18,10 @@ import {
   useRecordMemberTransaction,
   useScannedMember,
 } from '@/hooks/use-business-owner-data'
+import { useTenant } from '@/hooks/use-tenant'
 import { giftCardsService } from '@/integrations/supabase/services/gift-cards-service'
-import { formatCurrency, formatPoints } from '@/lib/utils'
+import { formatTenantCurrency } from '@/lib/tenant-commerce'
+import { formatPoints } from '@/lib/utils'
 import type { GiftCard } from '@/types/domain'
 import { QrScanner } from '../components/qr-scanner'
 import { RedemptionConfirmationDialog } from '../components/redemption-confirmation-dialog'
@@ -120,13 +122,14 @@ function extractMoneyFromNote(note: string | null | undefined, label: string) {
   return Number.isFinite(value) ? value : null
 }
 
-function currencyLabel(currency: string | undefined, value: number) {
-  return `${currency ?? 'PHP'} ${value.toLocaleString(undefined, { maximumFractionDigits: 2 })}`
-}
-
 export function RedemptionsPage() {
   const queryClient = useQueryClient()
+  const { program } = useTenant()
   const { business, memberTransactions } = useBusinessOwnerData()
+  const formatCurrency = (value: number) => formatTenantCurrency(value, {
+    currency: business?.currency ?? program.currency,
+    locale: program.locale,
+  })
   const [manualInput, setManualInput] = useState('')
   const [memberInput, setMemberInput] = useState('')
   const [memberToken, setMemberToken] = useState('')
@@ -152,7 +155,8 @@ export function RedemptionsPage() {
 
     const saleRows: TransactionHistoryItem[] = memberTransactions.map((transaction) => {
       const giftCardCode = extractGiftCardCode(transaction.note)
-      const currency = transaction.business?.currency ?? business?.currency ?? 'PHP'
+      const currency = transaction.business?.currency ?? business?.currency ?? program.currency
+      const currencyContext = { currency, locale: program.locale }
       const giftCardValue = extractMoneyFromNote(transaction.note, 'Gift card value') ?? 0
       const originalTotal = extractMoneyFromNote(transaction.note, 'Original receipt total') ?? transaction.purchaseAmount + giftCardValue
       const finalPrice = extractMoneyFromNote(transaction.note, 'Final bill after gift card') ?? Math.max(originalTotal - giftCardValue, 0)
@@ -163,9 +167,11 @@ export function RedemptionsPage() {
         createdAt: transaction.createdAt,
         receiptNumber: transaction.receiptNumber,
         customer: transaction.member?.fullName ?? transaction.profileId,
-        totalAmountLabel: currencyLabel(currency, originalTotal),
-        discountLabel: giftCardValue > 0 ? `-${currencyLabel(currency, giftCardValue)}` : currencyLabel(currency, 0),
-        finalPriceLabel: currencyLabel(currency, finalPrice),
+        totalAmountLabel: formatTenantCurrency(originalTotal, currencyContext),
+        discountLabel: giftCardValue > 0
+          ? `-${formatTenantCurrency(giftCardValue, currencyContext)}`
+          : formatTenantCurrency(0, currencyContext),
+        finalPriceLabel: formatTenantCurrency(finalPrice, currencyContext),
         pointsLabel: transaction.pointsAwarded.toLocaleString(),
         giftCardCode,
         statusLabel: giftCardCode ? 'Gift card used' : 'Standard sale',
@@ -175,7 +181,10 @@ export function RedemptionsPage() {
     const standaloneGiftCardRows: TransactionHistoryItem[] = cards
       .filter((card) => (card.redemptionGiftCardAmount ?? 0) > 0 && !usedGiftCardCodes.has(card.code))
       .map((card) => {
-        const currency = business?.currency ?? 'PHP'
+        const currencyContext = {
+          currency: business?.currency ?? program.currency,
+          locale: program.locale,
+        }
         const giftCardValue = card.redemptionGiftCardAmount ?? 0
         const originalTotal = card.redemptionOriginalBill ?? giftCardValue
         const fallbackBreakdown = business
@@ -203,9 +212,11 @@ export function RedemptionsPage() {
           createdAt: card.redeemedAt ?? card.updatedAt,
           receiptNumber: card.redemptionReceiptNumber ?? null,
           customer: card.customerFirstName ?? card.customerId,
-          totalAmountLabel: currencyLabel(currency, originalTotal),
-          discountLabel: giftCardValue > 0 ? `-${currencyLabel(currency, giftCardValue)}` : currencyLabel(currency, 0),
-          finalPriceLabel: currencyLabel(currency, finalPrice),
+          totalAmountLabel: formatTenantCurrency(originalTotal, currencyContext),
+          discountLabel: giftCardValue > 0
+            ? `-${formatTenantCurrency(giftCardValue, currencyContext)}`
+            : formatTenantCurrency(0, currencyContext),
+          finalPriceLabel: formatTenantCurrency(finalPrice, currencyContext),
           pointsLabel: fallbackPreview ? formatPoints(fallbackPreview.pointsAwarded) : 'Not recorded',
           giftCardCode: card.code,
           statusLabel: 'Gift card redeemed',
@@ -215,7 +226,7 @@ export function RedemptionsPage() {
     return [...saleRows, ...standaloneGiftCardRows].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
-  }, [business, cards, memberTransactions])
+  }, [business, cards, memberTransactions, program.currency, program.locale])
   const selectedGiftCardAvailableBalance = getGiftCardAvailableBalance(selectedCard)
   const baseBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(originalBill) || originalBill <= 0) return null
@@ -329,14 +340,24 @@ export function RedemptionsPage() {
 
   async function redeem() {
     if (!selectedCard) return
-    const updatedCard = await redeemGiftCard.mutateAsync({
-      giftCardId: selectedCard.id,
-      originalBill,
-      receiptNumber: receiptNumber.trim(),
-      giftCardAmount: selectedGiftCardValue,
-      clientRequestId: createClientRequestId(),
-    })
-    await refreshTransactionHistory()
+    let updatedCard: GiftCard
+    try {
+      updatedCard = await redeemGiftCard.mutateAsync({
+        giftCardId: selectedCard.id,
+        originalBill,
+        receiptNumber: receiptNumber.trim(),
+        giftCardAmount: selectedGiftCardValue,
+        clientRequestId: createClientRequestId(),
+      })
+    } catch {
+      // Mutation failures are already reported by the owning hook.
+      return
+    }
+    try {
+      await refreshTransactionHistory()
+    } catch {
+      // Mutation invalidation still refreshes the data after a transient explicit refetch failure.
+    }
     setConfirmOpen(false)
     setSelectedCard(updatedCard)
     setValidationStatus(updatedCard.status === 'active' && getGiftCardAvailableBalance(updatedCard) > 0 ? 'active' : 'redeemed')
@@ -346,20 +367,29 @@ export function RedemptionsPage() {
   async function recordStandardTransaction() {
     if (!business || !scannedMember.data || !rewardableBreakdown || !preview) return
 
-    await recordTransaction.mutateAsync({
-      token: memberToken,
-      purchaseAmount: rewardableBreakdown.rewardableAmount,
-      receiptNumber: receiptNumber.trim(),
-      note: [
-        `Original receipt total: ${originalBill.toFixed(2)}.`,
-        `Gift card value: 0.00.`,
-        `Final bill after gift card: ${rewardableBreakdown.finalPriceAmount.toFixed(2)}.`,
-        `Tax added: ${rewardableBreakdown.taxableChargeAmount.toFixed(2)}.`,
-        `Service charge added: ${rewardableBreakdown.serviceChargeAmount.toFixed(2)}.`,
-      ].join(' '),
-      clientRequestId: createClientRequestId(),
-    })
-    await refreshTransactionHistory()
+    try {
+      await recordTransaction.mutateAsync({
+        token: memberToken,
+        purchaseAmount: rewardableBreakdown.rewardableAmount,
+        receiptNumber: receiptNumber.trim(),
+        note: [
+          `Original receipt total: ${originalBill.toFixed(2)}.`,
+          `Gift card value: 0.00.`,
+          `Final bill after gift card: ${rewardableBreakdown.finalPriceAmount.toFixed(2)}.`,
+          `Tax added: ${rewardableBreakdown.taxableChargeAmount.toFixed(2)}.`,
+          `Service charge added: ${rewardableBreakdown.serviceChargeAmount.toFixed(2)}.`,
+        ].join(' '),
+        clientRequestId: createClientRequestId(),
+      })
+    } catch {
+      // Mutation failures are already reported by the owning hook.
+      return
+    }
+    try {
+      await refreshTransactionHistory()
+    } catch {
+      // Mutation invalidation still refreshes the data after a transient explicit refetch failure.
+    }
     setTransactionComplete(true)
   }
 

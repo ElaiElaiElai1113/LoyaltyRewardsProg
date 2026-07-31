@@ -19,8 +19,16 @@ for (const program of matrix.programs) {
   }
   hostnames.add(program.hostname)
 
-  const senderDomain = program.senderEmail?.split('@')[1]
-  if (senderDomain !== program.hostname) {
+  if ('monitor' in program && typeof program.monitor !== 'boolean') {
+    throw new Error(`${program.slug} monitor must be a boolean when configured.`)
+  }
+
+  if (program.status === 'ready' && !program.senderEmail) {
+    throw new Error(`${program.slug} is marked ready without a sender email.`)
+  }
+
+  const senderDomain = program.senderEmail?.split('@')[1] ?? null
+  if (senderDomain !== null && senderDomain !== program.hostname) {
     throw new Error(`${program.slug} sender must use its configured hostname.`)
   }
 }

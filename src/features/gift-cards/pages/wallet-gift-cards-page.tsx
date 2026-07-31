@@ -7,7 +7,9 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import type { GiftCard, GiftCardStatus } from '@/types/domain'
 import { useMyGiftCards } from '../hooks/use-gift-cards'
 
@@ -18,9 +20,13 @@ function parseGiftCardValue(valueLabel?: string) {
   return match ? Number(match[0]) : 0
 }
 
-function GiftCardRow({ card }: { card: GiftCard }) {
+function GiftCardRow({ card, locale, programCurrency }: { card: GiftCard; locale: string; programCurrency: string }) {
   const originalBalance = card.initialBalance ?? parseGiftCardValue(card.catalog?.valueLabel)
   const remainingBalance = Math.max(card.remainingBalance ?? originalBalance, 0)
+  const formattedBalance = formatTenantCurrency(remainingBalance, {
+    currency: card.business?.currency ?? programCurrency,
+    locale,
+  })
 
   return (
     <Link
@@ -38,7 +44,7 @@ function GiftCardRow({ card }: { card: GiftCard }) {
           <p className="text-sm text-on-surface-variant">{card.business?.name}</p>
           <p className="mt-2 font-mono text-sm text-on-surface">{card.code}</p>
           <p className="mt-2 text-sm font-semibold text-on-surface">
-            Balance: {remainingBalance.toLocaleString(undefined, { maximumFractionDigits: 2 })}
+            Balance: {formattedBalance}
           </p>
         </div>
       </div>
@@ -49,6 +55,7 @@ function GiftCardRow({ card }: { card: GiftCard }) {
 
 export function WalletGiftCardsPage() {
   const { t } = useLanguage()
+  const { program } = useTenant()
   const giftCards = useMyGiftCards()
   const cards = giftCards.data ?? []
 
@@ -97,7 +104,14 @@ export function WalletGiftCardsPage() {
                 ))}
               </>
             ) : (
-              byStatus(status).map((card) => <GiftCardRow key={card.id} card={card} />)
+              byStatus(status).map((card) => (
+                <GiftCardRow
+                  key={card.id}
+                  card={card}
+                  locale={program.locale}
+                  programCurrency={program.currency}
+                />
+              ))
             )}
             {!giftCards.isLoading && byStatus(status).length === 0 ? (
               <EmptyState

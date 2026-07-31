@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
+import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import carRewards from '@/assets/landing/car-rewards-clean.webp'
 import carRewardsSmall from '@/assets/landing/car-rewards-clean-768.webp'
 import coffeeMember from '@/assets/landing/coffee-member.webp'
@@ -30,20 +31,36 @@ const spanishHomeCopy: Record<string, string> = {
     'Cada vez que compras, comes o gastas en un negocio de nuestra red, apoyas a un negocio local y ganas recompensas que realmente puedes usar.',
   'Join free and earn 10% back automatically — or upgrade to earn between 20% and 100% back — every time you spend with the businesses in our network.':
     'Únete gratis y recibe automáticamente un 10% de vuelta, o mejora tu membresía para ganar entre un 20% y un 100% cada vez que compras en nuestra red.',
+  'Create an account and earn Rewards on eligible purchases. Current rates and upgrade benefits are set by this program.':
+    'Crea una cuenta y gana recompensas en compras elegibles. Este programa define las tasas y los beneficios de cada plan.',
   'Join Medellín Rewards': 'Únete a Medellín Rewards',
   'See how it works': 'Descubre cómo funciona',
   'Everyday spending': 'Compras de todos los días',
   '20% – 100% back': '20% – 100% de vuelta',
   'Any business, anywhere': 'Cualquier negocio, en cualquier lugar',
+  'Eligible spending': 'Compras elegibles',
+  'Program-set reward rates': 'Tasas definidas por el programa',
+  'Participating businesses': 'Negocios participantes',
   'BACK TODAY': 'DE VUELTA HOY',
+  REWARDS: 'RECOMPENSAS',
+  'ON ELIGIBLE PURCHASES': 'EN COMPRAS ELEGIBLES',
   'Every purchase becomes a Reward': 'Cada compra se convierte en una recompensa',
+  'Eligible purchases can earn Rewards': 'Las compras elegibles pueden generar recompensas',
   'Support local, automatically': 'Apoya lo local, automáticamente',
   'Support the local businesses you already love, every single time you spend.':
     'Apoya a los negocios locales que ya amas cada vez que compras.',
+  'Support participating local businesses when you make an eligible purchase.':
+    'Apoya a negocios locales participantes cuando haces una compra elegible.',
   'Earn 20% – 100% back': 'Recibe entre 20% y 100%',
   'Simply spend at amazing businesses within our platform to start earning.':
     'Compra en negocios increíbles de nuestra plataforma para comenzar a ganar.',
+  'Earn at program-set rates': 'Gana según las tasas del programa',
+  'Each participating offer defines its own earn rate and eligibility.':
+    'Cada oferta participante define su tasa y sus requisitos.',
+  'Offers and eligibility vary by participating business.':
+    'Las ofertas y los requisitos varían según el negocio participante.',
   'Almost anything counts': 'Casi todo cuenta',
+  'Explore eligible offers': 'Explora ofertas elegibles',
   'Earn from purchasing almost any type of product or service - from Restaurants, hotels, coffee shops, hair and nail salons, cars, even real estate and more.':
     'Gana al comprar casi cualquier producto o servicio: restaurantes, hoteles, cafés, salones de belleza, autos, bienes raíces y mucho más.',
   MEMBERSHIP: 'MEMBRESÍA',
@@ -56,28 +73,53 @@ const spanishHomeCopy: Record<string, string> = {
   'Upgrade any time as you spend more': 'Mejora tu membresía cuando quieras',
   'Join Free →': 'Únete gratis →',
   'Regular Membership': 'Membresía regular',
+  'Premium Membership': 'Membresía premium',
+  'Pricing available on request': 'Precio disponible bajo solicitud',
+  'Start free, then contact the program team for current upgrade pricing and benefits.':
+    'Comienza gratis y luego contacta al equipo del programa para conocer los precios y beneficios actuales.',
+  'Review current membership options, pricing, and benefits with the program team.':
+    'Consulta con el equipo del programa las opciones, precios y beneficios actuales.',
+  'Member Account': 'Cuenta de miembro',
+  'Program terms apply': 'Se aplican los términos del programa',
+  'Earn Rewards on eligible purchases when offered': 'Gana recompensas en compras elegibles cuando estén disponibles',
+  'Review current program terms before upgrading': 'Revisa los términos actuales antes de mejorar tu membresía',
+  'View membership options →': 'Ver opciones de membresía →',
+  'Pricing and benefits are managed by this program in':
+    'Los precios y beneficios son administrados por este programa en',
+  'Earn more on eligible purchases at participating businesses':
+    'Gana más en compras elegibles en negocios participantes',
+  'Access referral rewards when offered by this program':
+    'Accede a recompensas por referidos cuando este programa las ofrezca',
+  'Review current benefits and terms before upgrading':
+    'Revisa los beneficios y términos actuales antes de mejorar tu membresía',
+  'Ask about membership →': 'Consulta sobre la membresía →',
   'WORKS OUT TO BE FREE': 'AL FINAL ES GRATIS',
-  'Earn 100,000 COP back in rewards': 'Recibe 100.000 COP en recompensas',
   'Earn minimum 20% – 100% back on almost all purchases': 'Recibe entre 20% y 100% en casi todas tus compras',
-  'Earn 40,000 COP in rewards for every member you refer that joins':
-    'Gana 40.000 COP por cada miembro referido que se una',
-  'Earn a minimum of 200,000 COP in Rewards for referring a business that joins':
-    'Gana al menos 200.000 COP por referir un negocio que se una',
   'Upgrade →': 'Mejorar →',
   'THE PROCESS': 'EL PROCESO',
   Join: 'Únete',
   'Sign up as a member — free, in under a minute.': 'Regístrate gratis como miembro en menos de un minuto.',
+  'Create a member account to review current program offers.':
+    'Crea una cuenta de miembro para revisar las ofertas actuales.',
   'Spend & earn': 'Compra y gana',
   'Shop, dine, and buy at any business in our network. Earn 10% back for free, or 20–100% back on our paid tier.':
     'Compra o come en cualquier negocio de nuestra red. Recibe 10% gratis, o entre 20% y 100% con nuestra membresía regular.',
+  'Shop with participating businesses and earn at the rate shown in each eligible offer.':
+    'Compra en negocios participantes y gana según la tasa indicada en cada oferta elegible.',
   Redeem: 'Canjea',
   "Use your Rewards to purchase your dream vacation, or on anything available in our Rewards Store.":
     'Usa tus recompensas para tus vacaciones soñadas o para cualquier opción disponible en nuestra tienda.',
+  'Use your Rewards on currently available offers from participating businesses.':
+    'Usa tus recompensas en las ofertas disponibles de los negocios participantes.',
   REDEEM: 'CANJEA',
   'Your dream vacation.': 'Tus vacaciones soñadas.',
   'Already paid for.': 'Ya están pagadas.',
+  'Rewards you can use.': 'Recompensas que puedes usar.',
+  'Browse current offers.': 'Explora las ofertas actuales.',
   "Every Reward you earn stacks toward the Rewards Store — including the trip you've been putting off.":
     'Cada recompensa se acumula para usarla en nuestra tienda, incluso para ese viaje que has estado aplazando.',
+  'Available Rewards depend on current program and partner offers.':
+    'Las recompensas disponibles dependen de las ofertas actuales del programa y sus aliados.',
   'Start earning today': 'Empieza a ganar hoy',
   'GOOD TO KNOW': 'LO QUE DEBES SABER',
   'Frequently asked questions': 'Preguntas frecuentes',
@@ -93,6 +135,12 @@ const spanishHomeCopy: Record<string, string> = {
   'Can Rewards be exchanged for money?': '¿Puedo cambiar las recompensas por dinero?',
   'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.':
     'No. Las recompensas están diseñadas para beneficios, compras, viajes, experiencias y ofertas de aliados, no para cambiarlas por efectivo.',
+  'No. Rewards are member benefits available through current program and partner offers, not cash.':
+    'No. Las recompensas son beneficios disponibles en las ofertas actuales del programa y sus aliados, no dinero en efectivo.',
+  'You can use Rewards with participating businesses and current offers listed by this program.':
+    'Puedes usar recompensas con los negocios participantes y las ofertas actuales de este programa.',
+  'Account limits and transfer options follow the current program terms. Contact support if you need help with an existing account.':
+    'Los limites de cuentas y las opciones de transferencia dependen de los terminos actuales del programa. Contacta a soporte si necesitas ayuda con una cuenta existente.',
   "Don't see one of your favourite businesses?": '¿No encuentras uno de tus negocios favoritos?',
   "Refer them to us, and if they join, you'll earn Rewards.":
     'Recomiéndalo y, si se une, ganarás recompensas.',
@@ -134,6 +182,20 @@ const tagalogHomeCopy: Record<string, string> = {
   'Start earning today': 'Magsimulang kumita ngayon',
   'GOOD TO KNOW': 'MAHALAGANG MALAMAN',
   'Frequently asked questions': 'Mga madalas itanong',
+  'Where can I use my Rewards?': 'Saan ko magagamit ang aking Rewards?',
+  'You can use your Rewards with many partnered businesses, either by going to the Rewards Store or by messaging us for more options.':
+    'Magagamit mo ang iyong Rewards sa mga partner na negosyo, sa Rewards Store, o sa pakikipag-ugnayan sa amin para sa iba pang opsyon.',
+  'Can I have more than one Rewards account?': 'Maaari ba akong magkaroon ng higit sa isang Rewards account?',
+  'No. Each person can have one Rewards account, tied to your full name, email, and phone number.':
+    'Hindi. Isang Rewards account lamang ang maaari sa bawat tao at nakaugnay ito sa buong pangalan, email, at numero ng telepono.',
+  'Can I transfer Rewards to another account?': 'Maaari ko bang ilipat ang Rewards sa ibang account?',
+  'Rewards are tied to your member account and must be used and cannot be transferred.':
+    'Nakaugnay ang Rewards sa iyong member account at hindi ito maaaring ilipat sa ibang account.',
+  'Can Rewards be exchanged for money?': 'Maaari bang ipalit sa pera ang Rewards?',
+  'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.':
+    'Hindi. Ang Rewards ay para sa mga benepisyo, pagbili, biyahe, karanasan, at partner offers ng programa at hindi maaaring ipalit sa cash.',
+  'No. Rewards are member benefits available through current program and partner offers, not cash.':
+    'Hindi. Ang Rewards ay mga benepisyo mula sa kasalukuyang programa at partner offers, hindi cash.',
   'Privacy policy': 'Patakaran sa Privacy',
   Contact: 'Makipag-ugnayan',
   'All rights reserved.': 'Lahat ng karapatan ay nakalaan.',
@@ -173,7 +235,7 @@ const categoryImages = [
   {
     src: dinnerRewards,
     srcSmall: dinnerRewardsSmall,
-    alt: 'Friends dining together in Medellín',
+    alt: 'Friends dining together at a local restaurant',
     className: 'figma-home__category-card--dining',
   },
   {
@@ -201,10 +263,51 @@ const freeBenefits = [
   'Upgrade any time as you spend more',
 ] as const
 
-const regularBenefits = [
-  'Earn minimum 20% – 100% back on almost all purchases',
-  'Earn 40,000 COP in rewards for every member you refer that joins',
-  'Earn a minimum of 200,000 COP in Rewards for referring a business that joins',
+const tenantManagedBenefits = [
+  'Earn more on eligible purchases at participating businesses',
+  'Access referral rewards when offered by this program',
+  'Review current benefits and terms before upgrading',
+] as const
+
+const tenantManagedValueItems = [
+  {
+    icon: '🏠',
+    title: 'Support local, automatically',
+    body: 'Support participating local businesses when you make an eligible purchase.',
+  },
+  {
+    icon: '📊',
+    title: 'Earn at program-set rates',
+    body: 'Each participating offer defines its own earn rate and eligibility.',
+  },
+  {
+    icon: '🛒',
+    title: 'Explore eligible offers',
+    body: 'Offers and eligibility vary by participating business.',
+  },
+] as const
+
+const tenantManagedFreeBenefits = [
+  'Earn Rewards on eligible purchases when offered',
+  'Review current program terms before upgrading',
+] as const
+
+const tenantManagedProcessSteps = [
+  {
+    number: '01',
+    title: 'Join',
+    body: 'Create a member account to review current program offers.',
+  },
+  {
+    number: '02',
+    title: 'Spend & earn',
+    body: 'Shop with participating businesses and earn at the rate shown in each eligible offer.',
+  },
+  {
+    number: '03',
+    title: 'Redeem',
+    body: 'Use your Rewards on currently available offers from participating businesses.',
+  },
 ] as const
 
 const processSteps = [
@@ -225,7 +328,7 @@ const processSteps = [
   },
 ] as const
 
-const faqs = [
+const pinasFaqs = [
   {
     icon: '📍',
     question: 'Where can I use my Rewards?',
@@ -246,6 +349,30 @@ const faqs = [
     icon: '$',
     question: 'Can Rewards be exchanged for money?',
     answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+  },
+] as const
+
+const tenantManagedFaqs = [
+  {
+    icon: '📍',
+    question: 'Where can I use my Rewards?',
+    answer: 'You can use Rewards with participating businesses and current offers listed by this program.',
+  },
+  {
+    icon: '👤',
+    question: 'Can I have more than one Rewards account?',
+    answer: 'Account limits and transfer options follow the current program terms. Contact support if you need help with an existing account.',
+    open: true,
+  },
+  {
+    icon: '✅',
+    question: 'Can I transfer Rewards to another account?',
+    answer: 'Account limits and transfer options follow the current program terms. Contact support if you need help with an existing account.',
+  },
+  {
+    icon: '$',
+    question: 'Can Rewards be exchanged for money?',
+    answer: 'No. Rewards are member benefits available through current program and partner offers, not cash.',
   },
 ] as const
 
@@ -282,7 +409,26 @@ export function HomePage() {
         'Earn rewards for every member you refer who joins',
         'Earn even more when a business you refer joins the network',
       ]
-    : regularBenefits
+    : tenantManagedBenefits
+  const paidMembershipPrice = isPinas
+    ? `${formatTenantCurrency(4_000, program)} / Year`
+    : tx('Pricing available on request')
+  const paidMembershipPriceNote = isPinas
+    ? `Get the full ${formatTenantCurrency(4_000, program)} back in Rewards credit`
+    : `${tx('Pricing and benefits are managed by this program in')} ${program.currency}.`
+  const membershipSectionIntro = isPinas
+    ? tx('Start free, or upgrade and get 100% of it back in Rewards credit.')
+    : tx('Review current membership options, pricing, and benefits with the program team.')
+  const homepageValueItems = isPinas ? valueItems : tenantManagedValueItems
+  const homepageProcessSteps = isPinas ? processSteps : tenantManagedProcessSteps
+  const homepageFaqs = isPinas ? pinasFaqs : tenantManagedFaqs
+  const baseMembershipBenefits = isPinas ? freeBenefits : tenantManagedFreeBenefits
+  const heroOfferCopy = isPinas
+    ? 'Join free and earn 10% back automatically — or upgrade to earn between 20% and 100% back — every time you spend with the businesses in our network.'
+    : 'Create an account and earn Rewards on eligible purchases. Current rates and upgrade benefits are set by this program.'
+  const heroPills = isPinas
+    ? ['Everyday spending', '20% – 100% back', 'Any business, anywhere']
+    : ['Eligible spending', 'Program-set reward rates', 'Participating businesses']
 
   return (
     <main className="figma-home" id="top">
@@ -335,7 +481,7 @@ export function HomePage() {
                   {tx("Every time you shop, dine, or spend at a business in our network, you're supporting a local business — and earning Rewards you can actually use.")}
                 </p>
                 <p>
-                  {tx('Join free and earn 10% back automatically — or upgrade to earn between 20% and 100% back — every time you spend with the businesses in our network.')}
+                  {tx(heroOfferCopy)}
                 </p>
               </div>
 
@@ -345,9 +491,7 @@ export function HomePage() {
               </div>
 
               <ul className="figma-home__hero-pills" aria-label="Membership benefits">
-                <li>{tx('Everyday spending')}</li>
-                <li>{tx('20% – 100% back')}</li>
-                <li>{tx('Any business, anywhere')}</li>
+                {heroPills.map((pill) => <li key={pill}>{tx(pill)}</li>)}
               </ul>
             </div>
 
@@ -359,9 +503,12 @@ export function HomePage() {
                 alt="Member enjoying rewards at a local coffee shop"
                 fetchPriority="high"
               />
-              <div className="figma-home__reward-badge" aria-label="More than fifty percent back today">
-                <strong>+50%</strong>
-                <span>{tx('BACK TODAY')}</span>
+              <div
+                className="figma-home__reward-badge"
+                aria-label={isPinas ? 'More than fifty percent back today' : 'Rewards on eligible purchases'}
+              >
+                <strong>{isPinas ? '+50%' : tx('REWARDS')}</strong>
+                <span>{tx(isPinas ? 'BACK TODAY' : 'ON ELIGIBLE PURCHASES')}</span>
               </div>
             </div>
           </div>
@@ -370,10 +517,10 @@ export function HomePage() {
 
       <section className="figma-home__rewards" id="rewards" aria-labelledby="rewards-title">
         <div className="figma-home__container">
-          <h2 id="rewards-title">{tx('Every purchase becomes a Reward')}</h2>
+          <h2 id="rewards-title">{tx(isPinas ? 'Every purchase becomes a Reward' : 'Eligible purchases can earn Rewards')}</h2>
 
           <div className="figma-home__value-grid">
-            {valueItems.map((item) => (
+            {homepageValueItems.map((item) => (
               <article className="figma-home__value-card" key={item.title}>
                 <span className="figma-home__value-icon" aria-hidden="true">{item.icon}</span>
                 <h3>{tx(item.title)}</h3>
@@ -403,7 +550,7 @@ export function HomePage() {
         <div className="figma-home__container">
           <SectionEyebrow>{tx('MEMBERSHIP')}</SectionEyebrow>
           <h2 id="membership-title">{tx('Choose how you earn')}</h2>
-          <p className="figma-home__section-intro">{tx('Start free, or upgrade and get 100% of it back in Rewards credit.')}</p>
+          <p className="figma-home__section-intro">{membershipSectionIntro}</p>
           {isPinas ? (
             <p className="figma-home__section-note">
               Proposed launch pricing and reward rates are subject to the final membership terms and each participating offer.
@@ -413,33 +560,40 @@ export function HomePage() {
           <div className="figma-home__membership-grid">
             <article className="figma-home__membership-card">
               <div className="figma-home__membership-heading">
-                <h3>{tx('Free Membership')}</h3>
-                <span className="figma-home__percentage">10%</span>
+                <h3>{tx(isPinas ? 'Free Membership' : 'Member Account')}</h3>
+                {isPinas ? <span className="figma-home__percentage">10%</span> : null}
               </div>
-              <p className="figma-home__price">$0</p>
-              <p className="figma-home__price-note">{tx('No cost to join')}</p>
+              <p className="figma-home__price">{isPinas ? formatTenantCurrency(0, program) : tx('Program terms apply')}</p>
+              <p className="figma-home__price-note">{tx(isPinas ? 'No cost to join' : 'Review current program terms before upgrading')}</p>
               <ul className="figma-home__benefit-list">
-                {freeBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
+                {baseMembershipBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
               </ul>
               <Link className="figma-home__membership-button figma-home__membership-button--free" to="/join">
-                {tx('Join Free →')}
+                {tx(isPinas ? 'Join Free →' : 'View membership options →')}
               </Link>
             </article>
 
             <article className="figma-home__membership-card figma-home__membership-card--regular">
-              <span className="figma-home__free-ribbon">{tx('WORKS OUT TO BE FREE')}</span>
+              {isPinas ? <span className="figma-home__free-ribbon">{tx('WORKS OUT TO BE FREE')}</span> : null}
               <div className="figma-home__membership-heading">
-                <h3>{isPinas ? 'Gold Membership' : tx('Regular Membership')}</h3>
-                <span className="figma-home__percentage figma-home__percentage--regular">100%</span>
+                <h3>{isPinas ? 'Gold Membership' : tx('Premium Membership')}</h3>
+                {isPinas ? <span className="figma-home__percentage figma-home__percentage--regular">100%</span> : null}
               </div>
-              <p className="figma-home__price">{isPinas ? '₱4,000 / Year' : '$100,000 COP'}</p>
-              <p className="figma-home__price-note">
-                {isPinas ? 'Get the full ₱4,000 back in Rewards credit' : tx('Earn 100,000 COP back in rewards')}
-              </p>
+              <p className="figma-home__price">{paidMembershipPrice}</p>
+              <p className="figma-home__price-note">{paidMembershipPriceNote}</p>
               <ul className="figma-home__benefit-list">
                 {paidBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
               </ul>
-              <Link className="figma-home__membership-button" to="/join">{tx('Upgrade →')}</Link>
+              {isPinas ? (
+                <Link className="figma-home__membership-button" to="/join">{tx('Upgrade →')}</Link>
+              ) : (
+                <a
+                  className="figma-home__membership-button"
+                  href={`mailto:${program.supportEmail}?subject=${encodeURIComponent(`${program.name} membership`)}`}
+                >
+                  {tx('Ask about membership →')}
+                </a>
+              )}
             </article>
           </div>
         </div>
@@ -451,7 +605,7 @@ export function HomePage() {
           <h2 id="process-title">{tx('How it works')}</h2>
 
           <div className="figma-home__process-grid">
-            {processSteps.map((step) => (
+            {homepageProcessSteps.map((step) => (
               <article className="figma-home__process-step" key={step.number}>
                 <span className="figma-home__step-number">{step.number}</span>
                 <h3>{tx(step.title)}</h3>
@@ -471,8 +625,13 @@ export function HomePage() {
         <div className="figma-home__vacation-shade" />
         <div className="figma-home__container figma-home__vacation-content">
           <SectionEyebrow>{tx('REDEEM')}</SectionEyebrow>
-          <h2 id="vacation-title">{tx('Your dream vacation.')}<br />{tx('Already paid for.')}</h2>
-          <p>{tx("Every Reward you earn stacks toward the Rewards Store — including the trip you've been putting off.")}</p>
+          <h2 id="vacation-title">
+            {tx(isPinas ? 'Your dream vacation.' : 'Rewards you can use.')}<br />
+            {tx(isPinas ? 'Already paid for.' : 'Browse current offers.')}
+          </h2>
+          <p>{tx(isPinas
+            ? "Every Reward you earn stacks toward the Rewards Store — including the trip you've been putting off."
+            : 'Available Rewards depend on current program and partner offers.')}</p>
           <Link className="figma-home__button" to="/join">{tx('Start earning today')}</Link>
         </div>
       </section>
@@ -483,7 +642,7 @@ export function HomePage() {
           <h2 id="faq-title">{tx('Frequently asked questions')}</h2>
 
           <div className="figma-home__faq-list">
-            {faqs.map((faq) => (
+            {homepageFaqs.map((faq) => (
               <details key={faq.question} open={'open' in faq && faq.open}>
                 <summary>
                   <span><span aria-hidden="true">{faq.icon}</span>{tx(faq.question)}</span>

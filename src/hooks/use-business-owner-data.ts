@@ -1,7 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
-import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { adminService } from '@/integrations/supabase/services/admin-service'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
@@ -12,7 +11,7 @@ import { memberTransactionsService } from '@/integrations/supabase/services/memb
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
 import { camelCaseRow, requireSupabase } from '@/integrations/supabase/services/shared'
-import type { AmbassadorLeadStatus, Profile, Redemption } from '@/types/domain'
+import type { AmbassadorLeadStatus, BusinessCustomer, Profile, Redemption } from '@/types/domain'
 import type {
   BusinessSettingsFormValues,
   OwnerProductDraftFormValues,
@@ -249,60 +248,23 @@ export function useBusinessOwnerData() {
 export function useBusinessMembers(businessId?: string) {
   return useQuery({
     queryKey: ['businessMembers', businessId],
-    queryFn: async () => {
+    queryFn: async (): Promise<BusinessCustomer[]> => {
       if (!businessId) return []
 
       const sb = requireSupabase()
-      const { data: profileRows, error: profError } = await sb
-        .from('profiles')
-        .select('*')
-        .eq('role', 'customer')
+      const { data, error } = await sb.rpc('get_business_customers', {
+        p_business_id: businessId,
+      })
 
-      if (profError) throw new Error('Failed to load customers.')
+      if (error) throw new Error('Failed to load customers for this business.')
 
-      const { data: balanceRows, error: balError } = await sb
-        .from('reward_balances')
-        .select('*')
-        .eq('program_id', getActiveProgram().id)
-
-      if (balError) throw new Error('Failed to load balances.')
-
-      const { data: orderRows, error: orderError } = await sb
-        .from('orders')
-        .select('profile_id')
-        .eq('business_id', businessId)
-
-      if (orderError) throw new Error('Failed to load customer orders.')
-
-      const { data: transactionRows, error: transactionError } = await sb
-        .from('member_transactions')
-        .select('profile_id')
-        .eq('business_id', businessId)
-
-      if (transactionError) throw new Error('Failed to load scanned customer transactions.')
-
-      const balanceMap = new Map(
-        (balanceRows ?? []).map((balance) => [balance.profile_id as string, balance.points as number]),
-      )
-
-      const interactedProfileIds = new Set([
-        ...(orderRows ?? []).map((order) => order.profile_id as string),
-        ...(transactionRows ?? []).map((transaction) => transaction.profile_id as string),
-      ])
-
-      return (profileRows ?? [])
-        .filter((profile) => {
-          const profileId = profile.id as string
-          const registeredByBusinessId = (profile.registered_by_business_id as string | null) ?? null
-          return interactedProfileIds.has(profileId) || registeredByBusinessId === businessId
-        })
-        .map((profile) => ({
-          id: profile.id as string,
-          fullName: profile.full_name as string,
-          email: profile.email as string,
-          points: balanceMap.get(profile.id as string) ?? 0,
-          verificationStatus: profile.verification_status as Profile['verificationStatus'],
-        }))
+      return ((data ?? []) as Record<string, unknown>[]).map((customer) => ({
+        id: customer.id as string,
+        fullName: customer.full_name as string,
+        email: customer.email as string,
+        points: Number(customer.points ?? 0),
+        verificationStatus: customer.verification_status as Profile['verificationStatus'],
+      }))
     },
     enabled: !!businessId,
   })

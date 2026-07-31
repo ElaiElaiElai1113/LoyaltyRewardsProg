@@ -3,45 +3,29 @@ import { AlertTriangle, RotateCw } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { TenantContext } from '@/features/tenant/tenant-context'
-import { getFallbackProgram, resolveProgram, setActiveProgram } from '@/features/tenant/tenant-service'
+import { applyProgramDocumentBrand } from '@/features/tenant/tenant-document-brand'
+import {
+  getFallbackProgram,
+  inferTenantSlugHint,
+  resolveProgram,
+  setActiveProgram,
+} from '@/features/tenant/tenant-service'
 import type { Program } from '@/types/domain'
 
-function applyProgram(program: Program) {
+function isPlatformAdminPath() {
+  return /^\/admin(?:\/|$)/.test(window.location.pathname)
+}
+
+
+function applyProgram(program: Program, applyDocumentBrand = true) {
   setActiveProgram(program)
-  const root = document.documentElement
-  root.style.setProperty('--tenant-accent', program.primaryColor)
-  root.style.setProperty('--tenant-accent-soft', `color-mix(in srgb, ${program.accentColor} 24%, transparent)`)
-  document.title = program.name
-  document.documentElement.lang = program.locale.split('-')[0]
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', program.primaryColor)
-  document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', program.name)
-  document.querySelector('meta[property="og:title"]')?.setAttribute('content', program.name)
-  document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', program.name)
-  document.querySelector('meta[name="description"]')?.setAttribute('content', `${program.name} rewards and local business benefits.`)
-  const icon = document.querySelector<HTMLLinkElement>('link[rel="icon"]')
-  if (icon && program.logoUrl) icon.href = program.logoUrl
-  const manifest = {
-    name: program.name,
-    short_name: program.name,
-    start_url: '/',
-    display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: program.primaryColor,
-    icons: [
-      { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-      { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
-    ],
-  }
-  document.querySelector<HTMLLinkElement>('link[rel="manifest"]')?.setAttribute(
-    'href',
-    `data:application/manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`,
-  )
+  if (applyDocumentBrand && !isPlatformAdminPath()) applyProgramDocumentBrand(program)
 }
 
 export function TenantProvider({ children }: { children: ReactNode }) {
   const [program, setProgram] = useState(() => {
     const initialProgram = getFallbackProgram()
-    applyProgram(initialProgram)
+    applyProgram(initialProgram, inferTenantSlugHint(window.location.hostname) !== null)
     return initialProgram
   })
   const [isLoading, setIsLoading] = useState(true)

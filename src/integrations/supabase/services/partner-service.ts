@@ -5,6 +5,7 @@ import type {
   PartnerReferrer,
 } from '@/types/domain'
 import type { PartnerReferrerDraftFormValues } from '@/types/forms'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { camelCaseRow, requireSupabase, snakeCaseObj } from './shared'
 
 type PartnerReferralRow = Record<string, unknown> & {
@@ -196,6 +197,7 @@ export const partnerService = {
   async createPartnerReferrer(values: PartnerReferrerDraftFormValues): Promise<PartnerReferrer> {
     const sb = requireSupabase()
     const payload = snakeCaseObj({
+      programId: getActiveProgram().id,
       businessId: values.businessId,
       partnerName: values.sourceLabel.trim(),
       contactName: values.sourceLabel.trim(),
@@ -222,6 +224,7 @@ export const partnerService = {
   ): Promise<PartnerReferrer> {
     const sb = requireSupabase()
     const patch = snakeCaseObj({
+      programId: getActiveProgram().id,
       businessId: values.businessId,
       partnerName: values.sourceLabel?.trim(),
       contactName: values.sourceLabel?.trim(),

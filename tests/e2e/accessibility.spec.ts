@@ -13,7 +13,7 @@ test.describe('public keyboard accessibility', () => {
   })
 
   test('sign-in inputs and action have accessible names', async ({ page }) => {
-    await page.goto('/signin?tenant=davao')
+    await page.goto('/signin?tenant=pinas')
     await expect(page.locator('#signin-email')).toBeVisible()
     await expect(page.locator('#signin-password')).toBeVisible()
     const submit = page.locator('form button[type="submit"]')

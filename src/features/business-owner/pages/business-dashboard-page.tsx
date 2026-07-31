@@ -34,11 +34,16 @@ import { useTenant } from '@/hooks/use-tenant'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
 import { useLanguage } from '@/lib/language'
 import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/status-labels'
-import { formatCurrency, formatDate, formatPoints } from '@/lib/utils'
+import { formatCurrency as formatBaseCurrency, formatDate, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
   const { program } = useTenant()
   const { business, metrics, promotions, redemptions } = useBusinessOwnerData()
+  const formatCurrency = (value: number) => formatBaseCurrency(
+    value,
+    business?.currency ?? program.currency,
+    program.locale,
+  )
   const { profile } = useAuth()
   const { t } = useLanguage()
   const signupQrRef = useRef<HTMLDivElement | null>(null)

@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 
 type Language = 'en' | 'es' | 'tl'
@@ -373,6 +374,7 @@ const spanishTranslations: Record<string, string> = {
   'Sign in to check your balance and redeem rewards.':
     'Inicia sesión para revisar tu saldo y canjear recompensas.',
   'Reset Password': 'Restablecer contraseña',
+  'Accept Invitation': 'Aceptar invitación',
   "Enter your email and we'll send you a reset link.":
     'Ingresa tu correo y te enviaremos un enlace para restablecerla.',
   'Email Address': 'Correo electrónico',
@@ -1263,6 +1265,7 @@ const spanishTranslations: Record<string, string> = {
     'Elige un cliente para ver su saldo actual antes de otorgar XP.',
   'XP to Award': 'XP a otorgar',
   Reason: 'Motivo',
+  'e.g., In-store purchase': 'p. ej., compra en tienda',
   'e.g., In-store purchase $12.50': 'p. ej., compra en tienda $12.50',
   'Awarding...': 'Otorgando...',
   'Customer Base': 'Base de clientes',
@@ -1909,10 +1912,16 @@ const tagalogTranslations: Record<string, string> = {
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)
 
+export function getDefaultLanguageForLocale(locale: string): Language {
+  const baseLanguage = locale.trim().toLowerCase().split('-')[0]
+  return baseLanguage === 'es' || baseLanguage === 'tl' ? baseLanguage : 'en'
+}
+
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'en'
   const stored = window.localStorage.getItem(tenantStorageKey('language'))
-  return stored === 'es' || stored === 'tl' ? stored : 'en'
+  if (stored === 'en' || stored === 'es' || stored === 'tl') return stored
+  return getDefaultLanguageForLocale(getActiveProgram().locale)
 }
 
 function applyValues(text: string, values?: TranslationValues) {

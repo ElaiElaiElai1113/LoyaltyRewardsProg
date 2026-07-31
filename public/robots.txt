@@ -1,10 +1,2 @@
 User-agent: *
-Allow: /
-Disallow: /admin/
-Disallow: /business/
-Disallow: /profile
-Disallow: /dashboard
-Disallow: /orders
-Disallow: /cart
-
-Sitemap: https://pinas-rewards.vercel.app/sitemap.xml
+Disallow: /

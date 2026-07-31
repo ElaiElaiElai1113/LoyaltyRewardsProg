@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 
-import { canUseTenantPreviewOverride, getFallbackProgram, seededPrograms } from '@/features/tenant/tenant-service'
+import {
+  canUseTenantPreviewOverride,
+  getFallbackProgram,
+  inferTenantSlugHint,
+  seededPrograms,
+} from '@/features/tenant/tenant-service'
 
 describe('tenant resolution fallback', () => {
   it('allows this project preview hosts without trusting unrelated Vercel deployments', () => {
@@ -21,6 +26,11 @@ describe('tenant resolution fallback', () => {
 
   it('uses Pinas Rewards for an unknown domain', () => {
     expect(getFallbackProgram('localhost').slug).toBe('pinas')
+    expect(inferTenantSlugHint('localhost')).toBeNull()
+    expect(getFallbackProgram('medellin.attacker.example').slug).toBe('pinas')
+    expect(inferTenantSlugHint('medellin.attacker.example')).toBeNull()
+    expect(getFallbackProgram('guatemala-rewards.evil.example').slug).toBe('pinas')
+    expect(inferTenantSlugHint('guatemala-rewards.evil.example')).toBeNull()
   })
 
   it('ships four distinct seeded programs', () => {

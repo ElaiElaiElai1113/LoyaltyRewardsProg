@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 
 export const e2eBaseUrl = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:5275'
 
-export const e2ePassword = process.env.E2E_PASSWORD ?? 'demo1234'
+export const e2ePassword = process.env.E2E_PASSWORD ?? readDotEnvValue('E2E_PASSWORD') ?? 'demo1234'
 
 function readDotEnvValue(name: string) {
   if (!existsSync('.env')) return undefined
@@ -25,20 +25,22 @@ const lifecycleAuthRequested =
   process.env.npm_lifecycle_event === 'test:gift-cards' ||
   process.env.npm_lifecycle_event === 'test:rewards' ||
   process.env.npm_lifecycle_event === 'test:agreements'
-const explicitAuthEnabled = process.env.E2E_AUTH_ENABLED === 'true'
+const explicitAuthEnabled = (
+  process.env.E2E_AUTH_ENABLED ?? readDotEnvValue('E2E_AUTH_ENABLED')
+) === 'true'
 
 export const workflowAuthEnabled = explicitAuthEnabled || (lifecycleAuthRequested && usesLocalSupabase)
 
 export const e2eAccounts = {
-  customer: process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test',
-  unverifiedCustomer: process.env.E2E_UNVERIFIED_CUSTOMER_EMAIL ?? 'unverified@medellin.test',
-  businessStaff: process.env.E2E_BUSINESS_STAFF_EMAIL ?? 'staff@velvetbrew.test',
-  businessOwner: process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'owner@velvetbrew.test',
-  admin: process.env.E2E_ADMIN_EMAIL ?? 'admin@medellin.test',
+  customer: process.env.E2E_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_CUSTOMER_EMAIL') ?? 'customer@medellin.test',
+  unverifiedCustomer: process.env.E2E_UNVERIFIED_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_UNVERIFIED_CUSTOMER_EMAIL') ?? 'unverified@medellin.test',
+  businessStaff: process.env.E2E_BUSINESS_STAFF_EMAIL ?? readDotEnvValue('E2E_BUSINESS_STAFF_EMAIL') ?? 'staff@velvetbrew.test',
+  businessOwner: process.env.E2E_BUSINESS_OWNER_EMAIL ?? readDotEnvValue('E2E_BUSINESS_OWNER_EMAIL') ?? 'businesstest2@gmail.com',
+  admin: process.env.E2E_ADMIN_EMAIL ?? readDotEnvValue('E2E_ADMIN_EMAIL') ?? 'admin@medellin.test',
   agreementPendingCustomer:
-    process.env.E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL ?? 'agreement-pending-customer@medellin.test',
+    process.env.E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL') ?? 'agreement-pending-customer@medellin.test',
   agreementPendingBusinessOwner:
-    process.env.E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL ?? 'agreement-pending-owner@velvetbrew.test',
+    process.env.E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL ?? readDotEnvValue('E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL') ?? 'agreement-pending-owner@velvetbrew.test',
   agreementUnsignedCustomer:
-    process.env.E2E_AGREEMENT_UNSIGNED_CUSTOMER_EMAIL ?? 'agreement-unsigned-customer@medellin.test',
+    process.env.E2E_AGREEMENT_UNSIGNED_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_AGREEMENT_UNSIGNED_CUSTOMER_EMAIL') ?? 'agreement-unsigned-customer@medellin.test',
 } as const

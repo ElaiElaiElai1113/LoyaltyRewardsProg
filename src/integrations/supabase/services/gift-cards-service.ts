@@ -18,8 +18,12 @@ function mapGiftCard(row: Record<string, unknown>): GiftCard {
     publicToken: mapped.publicToken as string,
     status: mapped.status as GiftCard['status'],
     pointsSpent: mapped.pointsSpent as number,
-    initialBalance: (mapped.initialBalance as number | null) ?? null,
-    remainingBalance: (mapped.remainingBalance as number | null) ?? null,
+    initialBalance: (mapped.initialBalance as number | null)
+      ?? (mapped.originalValueAmount as number | null)
+      ?? null,
+    remainingBalance: (mapped.remainingBalance as number | null)
+      ?? (mapped.remainingValueAmount as number | null)
+      ?? null,
     expiresAt: mapped.expiresAt as string,
     redeemedAt: (mapped.redeemedAt as string | null) ?? null,
     redeemedBy: (mapped.redeemedBy as string | null) ?? null,
@@ -40,6 +44,7 @@ function mapGiftCard(row: Record<string, unknown>): GiftCard {
           id: business.id as string,
           name: business.name as string,
           logoUrl: (business.logo_url as string | null) ?? null,
+          currency: (business.currency as string | null) ?? undefined,
         }
       : undefined,
     customerFirstName: customer?.full_name
@@ -61,8 +66,12 @@ function mapPublicGiftCard(row: Record<string, unknown>): PublicGiftCard {
     publicToken: mapped.publicToken as string,
     status: mapped.status as GiftCard['status'],
     pointsSpent: mapped.pointsSpent as number,
-    initialBalance: (mapped.initialBalance as number | null) ?? null,
-    remainingBalance: (mapped.remainingBalance as number | null) ?? null,
+    initialBalance: (mapped.initialBalance as number | null)
+      ?? (mapped.originalValueAmount as number | null)
+      ?? null,
+    remainingBalance: (mapped.remainingBalance as number | null)
+      ?? (mapped.remainingValueAmount as number | null)
+      ?? null,
     expiresAt: mapped.expiresAt as string,
     redeemedAt: (mapped.redeemedAt as string | null) ?? null,
     redeemedBy: null,
@@ -129,8 +138,12 @@ function mapBusinessGiftCard(row: Record<string, unknown>): GiftCard {
     publicToken: mapped.publicToken as string,
     status: mapped.status as GiftCard['status'],
     pointsSpent: mapped.pointsSpent as number,
-    initialBalance: (mapped.initialBalance as number | null) ?? null,
-    remainingBalance: (mapped.remainingBalance as number | null) ?? null,
+    initialBalance: (mapped.initialBalance as number | null)
+      ?? (mapped.originalValueAmount as number | null)
+      ?? null,
+    remainingBalance: (mapped.remainingBalance as number | null)
+      ?? (mapped.remainingValueAmount as number | null)
+      ?? null,
     expiresAt: mapped.expiresAt as string,
     redeemedAt: (mapped.redeemedAt as string | null) ?? null,
     redeemedBy: (mapped.redeemedBy as string | null) ?? null,
@@ -151,12 +164,13 @@ function mapBusinessGiftCard(row: Record<string, unknown>): GiftCard {
       id: mapped.businessId as string,
       name: mapped.businessName as string,
       logoUrl: (mapped.businessLogoUrl as string | null) ?? null,
+      currency: (mapped.businessCurrency as string | null) ?? undefined,
     },
     customerFirstName: mapped.customerFirstName as string,
   }
 }
 
-const giftCardSelect = '*, gift_card_catalog(id, title, description, value_label, image_url), businesses(id, name, logo_url)'
+const giftCardSelect = '*, gift_card_catalog(id, title, description, value_label, image_url), businesses(id, name, logo_url, currency)'
 
 async function enrichGiftCardRows(rows: Record<string, unknown>[]): Promise<GiftCard[]> {
   if (rows.length === 0) return []
@@ -175,7 +189,7 @@ async function enrichGiftCardRows(rows: Record<string, unknown>[]): Promise<Gift
     businessIds.length > 0
       ? sb
           .from('businesses')
-          .select('id, name, logo_url')
+          .select('id, name, logo_url, currency')
           .in('id', businessIds)
       : Promise.resolve({ data: [] }),
   ])
@@ -298,6 +312,7 @@ export const giftCardsService = {
 
     const { data, error } = await sb.rpc('get_public_gift_card_by_token', {
       p_token: token,
+      p_program_id: getActiveProgram().id,
     })
 
     if (error) throw new Error(error.message)
@@ -350,7 +365,7 @@ export const giftCardsService = {
       businessId
         ? sb
             .from('businesses')
-            .select('id, name, logo_url')
+            .select('id, name, logo_url, currency')
             .eq('id', businessId)
             .maybeSingle()
         : Promise.resolve({ data: null }),

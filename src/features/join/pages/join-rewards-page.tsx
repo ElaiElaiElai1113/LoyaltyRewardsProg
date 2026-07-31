@@ -211,6 +211,12 @@ export function CompactJoinRewardsPage() {
   const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const phonePlaceholder = ({
+    CO: '+57 300 000 0000',
+    GT: '+502 5000 0000',
+    PH: '+63 900 000 0000',
+    US: '+1 555 000 0000',
+  } as Record<string, string>)[program.countryCode] ?? '+00 000 000 0000'
 
   const form = useForm<MemberSignUpFormValues>({
     resolver: zodResolver(memberSignUpSchema),
@@ -298,7 +304,7 @@ export function CompactJoinRewardsPage() {
 
           <div className="grid gap-2">
             <Label htmlFor="join-phone" className="text-[12px] font-semibold text-[#8f8f8f]">{t('WhatsApp or phone')}</Label>
-            <Input id="join-phone" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" type="tel" placeholder="+57 300 000 0000" {...form.register('phone')} />
+            <Input id="join-phone" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" type="tel" placeholder={phonePlaceholder} {...form.register('phone')} />
             {form.formState.errors.phone ? (
               <p className="text-xs font-bold text-red-400">{t(form.formState.errors.phone.message ?? '')}</p>
             ) : null}

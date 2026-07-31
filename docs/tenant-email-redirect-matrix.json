@@ -20,10 +20,11 @@
       "senderEmail": "rewards@synergizerewards.com"
     },
     {
-      "slug": "davao",
+      "slug": "pinas",
       "status": "pending",
-      "hostname": "davaorewards.com",
-      "senderEmail": "rewards@davaorewards.com"
+      "hostname": "pinas-rewards.vercel.app",
+      "senderEmail": null,
+      "monitor": true
     }
   ],
   "redirectPaths": [

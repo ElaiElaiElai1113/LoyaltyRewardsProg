@@ -4,6 +4,8 @@ import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/hooks/use-tenant'
+import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import type { GiftCard, PublicGiftCard } from '@/types/domain'
 
 function formatDate(value: string) {
@@ -17,10 +19,6 @@ function parseGiftCardValue(valueLabel?: string) {
   return match ? Number(match[0]) : 0
 }
 
-function formatBalance(value: number) {
-  return value.toLocaleString(undefined, { maximumFractionDigits: 2 })
-}
-
 interface GiftCardDisplayProps {
   giftCard: GiftCard | PublicGiftCard
   publicUrl: string
@@ -29,11 +27,17 @@ interface GiftCardDisplayProps {
 }
 
 export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: GiftCardDisplayProps) {
+  const { program } = useTenant()
   const displayTitle = title ?? giftCard.catalog?.title ?? 'Gift card'
   const displayValue = 'valueLabel' in giftCard ? giftCard.valueLabel : giftCard.catalog?.valueLabel
   const displayBusiness = businessName ?? ('businessName' in giftCard ? giftCard.businessName : giftCard.business?.name)
   const initialBalance = giftCard.initialBalance ?? parseGiftCardValue(displayValue)
   const remainingBalance = Math.max(giftCard.remainingBalance ?? initialBalance, 0)
+  const currencyContext = {
+    currency: giftCard.business?.currency ?? program.currency,
+    locale: program.locale,
+  }
+  const formatBalance = (value: number) => formatTenantCurrency(value, currencyContext)
   const isActive = giftCard.status === 'active' && new Date(giftCard.expiresAt) > new Date()
 
   async function copyLink() {

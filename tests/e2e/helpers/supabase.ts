@@ -434,6 +434,16 @@ export async function createGiftCardCatalogItem(
   title: string,
   pointsCost = 100,
 ) {
+  const { data: business, error: businessError } = await client
+    .from('businesses')
+    .select('currency')
+    .eq('id', businessId)
+    .single()
+
+  if (businessError || !business?.currency) {
+    throw new Error(`Could not load gift card currency: ${businessError?.message ?? 'missing currency'}`)
+  }
+
   const { data, error } = await client
     .from('gift_card_catalog')
     .insert({
@@ -441,7 +451,7 @@ export async function createGiftCardCatalogItem(
       title,
       description: 'Workflow automation gift card.',
       points_cost: pointsCost,
-      value_label: 'Test value',
+      value_label: `${business.currency} 5`,
       expiry_days: 30,
       is_active: true,
     })

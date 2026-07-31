@@ -76,13 +76,13 @@ export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
               <div className="rounded-xl border border-[var(--border)] bg-card p-3 text-card-foreground shadow-sm">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Monthly')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">
-                  {formatCurrency(MEMBERSHIP_PRICE_USD)}
+                  {formatCurrency(MEMBERSHIP_PRICE_USD, 'USD', 'en-US')}
                 </p>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-card p-3 text-card-foreground shadow-sm">
                 <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Instant credit')}</p>
                 <p className="mt-2 text-2xl font-semibold text-[var(--foreground)]">
-                  {formatCurrency(MEMBERSHIP_REWARD_CREDIT_USD)}
+                  {formatCurrency(MEMBERSHIP_REWARD_CREDIT_USD, 'USD', 'en-US')}
                 </p>
               </div>
               <div className="rounded-xl border border-[var(--border)] bg-card p-3 text-card-foreground shadow-sm">
@@ -129,7 +129,9 @@ export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
                   return
                 }
 
-                void subscribe.mutateAsync().then(() => setOpen(false))
+                void subscribe.mutateAsync()
+                  .then(() => setOpen(false))
+                  .catch(() => undefined)
               }}
             >
               {isGuest

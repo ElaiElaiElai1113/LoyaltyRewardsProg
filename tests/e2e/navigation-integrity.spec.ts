@@ -10,6 +10,8 @@ const publicEntryPoints = [
   '/ambassadors',
   '/invitation',
   '/signin',
+  '/reset-password',
+  '/accept-invitation',
   '/join',
   '/terms',
   '/privacy',

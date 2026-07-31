@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -10,6 +10,8 @@ import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
+import type { PasswordSetupType } from '@/lib/password-setup'
+import { getHomePathForRole } from '@/lib/role-routes'
 
 const resetPasswordSchema = z
   .object({
@@ -23,10 +25,13 @@ const resetPasswordSchema = z
 
 type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
 
-export function ResetPasswordPage() {
+export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupType }) {
   const { t } = useLanguage()
+  const navigate = useNavigate()
   const [isSessionReady, setIsSessionReady] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
+  const isInvitation = flow === 'invite'
+  const linkLabel = isInvitation ? 'invitation' : 'reset'
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -39,12 +44,12 @@ export function ResetPasswordPage() {
     let isMounted = true
 
     void authService
-      .ensureRecoverySession()
+      .ensurePasswordSetupSession(flow)
       .then((hasSession) => {
         if (!isMounted) return
 
         if (!hasSession) {
-          setSessionError('Auth session missing. Open the latest reset link again.')
+          setSessionError(`Auth session missing. Open the latest ${linkLabel} link again.`)
           return
         }
 
@@ -54,20 +59,24 @@ export function ResetPasswordPage() {
       .catch((error) => {
         if (!isMounted) return
 
-        setSessionError(error instanceof Error ? error.message : 'Auth session missing. Open the latest reset link again.')
+        setSessionError(
+          error instanceof Error
+            ? error.message
+            : `Auth session missing. Open the latest ${linkLabel} link again.`,
+        )
       })
 
     return () => {
       isMounted = false
     }
-  }, [])
+  }, [flow, linkLabel])
 
   const onSubmit = form.handleSubmit(async (values) => {
     form.clearErrors('root')
 
     if (!isSessionReady) {
       form.setError('root', {
-        message: sessionError ?? 'Auth session missing. Open the latest reset link again.',
+        message: sessionError ?? `Auth session missing. Open the latest ${linkLabel} link again.`,
       })
       return
     }
@@ -75,6 +84,10 @@ export function ResetPasswordPage() {
     try {
       await authService.updatePassword(values.password)
       form.reset()
+      if (isInvitation) {
+        const profile = await authService.getSessionProfile()
+        navigate(profile ? getHomePathForRole(profile.role) : '/signin', { replace: true })
+      }
     } catch (error) {
       form.setError('root', {
         message: error instanceof Error ? error.message : 'Password could not be updated.',
@@ -87,17 +100,21 @@ export function ResetPasswordPage() {
       <form className="space-y-6" onSubmit={onSubmit}>
         <div className="space-y-2 text-center">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[#d1ad4a]">
-            {t('Reset Password')}
+            {isInvitation ? t('Accept Invitation') : t('Reset Password')}
           </p>
-          <h1 className="font-serif text-3xl text-[var(--foreground)]">Set a new password</h1>
+          <h1 className="font-serif text-3xl text-[var(--foreground)]">
+            {isInvitation ? 'Create your password' : 'Set a new password'}
+          </h1>
           <p className="text-sm font-medium leading-6 text-[var(--muted-foreground)]">
-            Use at least 6 characters for your new password.
+            {isInvitation
+              ? 'Set a password to finish accepting your customer invitation.'
+              : 'Use at least 6 characters for your new password.'}
           </p>
         </div>
 
         {!isSessionReady && !sessionError ? (
           <p className="text-center text-sm font-medium text-[var(--muted-foreground)]">
-            Preparing secure reset session...
+            Preparing secure {linkLabel} session...
           </p>
         ) : null}
 
@@ -123,7 +140,9 @@ export function ResetPasswordPage() {
 
         {form.formState.isSubmitSuccessful ? (
           <p className="rounded-2xl border border-success/20 bg-success/10 px-4 py-3 text-center text-sm font-bold text-success">
-            Password updated. You can sign in with your new password.
+            {isInvitation
+              ? 'Invitation accepted. Opening your account...'
+              : 'Password updated. You can sign in with your new password.'}
           </p>
         ) : null}
 

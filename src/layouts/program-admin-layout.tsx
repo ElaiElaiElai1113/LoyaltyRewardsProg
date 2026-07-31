@@ -2,6 +2,7 @@ import { BarChart3, CreditCard, LogOut, Settings, Users } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { BrandLogo } from '@/components/brand-logo'
+import { ProgramInvitations } from '@/components/program-invitations'
 import { ProgramSwitcher } from '@/components/program-switcher'
 import { Button } from '@/components/ui/button'
 import { useAuth } from '@/hooks/use-auth'
@@ -34,7 +35,7 @@ export function ProgramAdminLayout() {
             </NavLink>
           ))}
         </nav>
-        <main className="min-w-0"><Outlet /></main>
+        <main className="min-w-0"><ProgramInvitations /><Outlet /></main>
       </div>
     </div>
   )

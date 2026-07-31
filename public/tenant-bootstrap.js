@@ -1,24 +1,112 @@
 (function bootstrapTenantBrand() {
   var hostname = window.location.hostname.toLowerCase()
   var brands = {
-    medellin: { name: 'Medellin Rewards', color: '#9c6a22', locale: 'es' },
-    guatemala: { name: 'Guatemala Rewards', color: '#176b5b', locale: 'es' },
-    synergize: { name: 'Synergize', color: '#2357a5', locale: 'en' },
-    pinas: { name: 'Pinas Rewards', color: '#a67608', locale: 'en' },
+    medellin: { name: 'Medellin Rewards',
+      color: '#9c6a22',
+      locale: 'es',
+      logo: '/medellin-rewards-mark.svg',
+      description: 'Medellin Rewards member benefits and participating local businesses.',
+    },
+    guatemala: { name: 'Guatemala Rewards',
+      color: '#176b5b',
+      locale: 'es',
+      logo: null,
+      description: 'Guatemala Rewards member benefits and participating local businesses.',
+    },
+    synergize: { name: 'Synergize',
+      color: '#2357a5',
+      locale: 'en',
+      logo: null,
+      description: 'Synergize member benefits and participating local businesses.',
+    },
+    pinas: { name: 'Pinas Rewards',
+      color: '#a67608',
+      locale: 'en',
+      logo: '/pinas-rewards-mark.svg',
+      description: 'Pinas Rewards member benefits and participating local businesses.',
+    },
+  }
+  var neutralBrand = {
+    name: 'Rewards Program',
+    color: '#4b5563',
+    locale: 'en',
+    logo: '/rewards-program-mark.svg',
+    description: 'Member rewards and local business benefits.',
   }
   var isPlatformAdmin = /^\/admin(?:\/|$)/.test(window.location.pathname)
-  var slug = Object.keys(brands).find(function findBrand(key) {
-    return hostname.indexOf(key) !== -1
-  }) || 'pinas'
-  var brand = isPlatformAdmin
-    ? { name: 'Rewards Platform', color: '#d1ad4a', locale: 'en' }
-    : brands[slug]
+  var hostSlugs = {
+    'medellinrewards.com': 'medellin',
+    'www.medellinrewards.com': 'medellin',
+    'guatemalarewards.com': 'guatemala',
+    'www.guatemalarewards.com': 'guatemala',
+    'pinas-rewards.vercel.app': 'pinas',
+    'synergize.example': 'synergize',
+    'pinas.localhost': 'pinas',
+  }
+  var canUsePreviewOverride = hostname === 'localhost'
+    || hostname.indexOf('127.') === 0
+    || hostname === 'pinas-rewards.vercel.app'
+    || hostname.endsWith('.rewardsplatform.app')
+    || (hostname.indexOf('loyalty-rewards-prog-') === 0 && hostname.endsWith('-elaielaielai1113s-projects.vercel.app'))
+  var querySlug = canUsePreviewOverride ? new URLSearchParams(window.location.search).get('tenant') : null
+  var hostSlug = hostSlugs[hostname]
+  if (!hostSlug && hostname.endsWith('.rewardsplatform.app')) {
+    var platformSubdomain = hostname.slice(0, -'.rewardsplatform.app'.length)
+    if (brands[platformSubdomain]) hostSlug = platformSubdomain
+  }
+  var slug = querySlug && brands[querySlug] ? querySlug : hostSlug
+  if (!slug && canUsePreviewOverride) slug = 'pinas'
 
+  var brand = isPlatformAdmin
+    ? {
+        name: 'Rewards Platform',
+        color: '#d1ad4a',
+        locale: 'en',
+        logo: '/rewards-program-mark.svg',
+        description: 'Rewards Platform administration.',
+      }
+    : brands[slug] || neutralBrand
+
+  function fallbackIcon() {
+    var initial = brand.name.charAt(0).toUpperCase() || 'R'
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
+      + '<rect width="64" height="64" rx="14" fill="' + brand.color + '"/>'
+      + '<text x="32" y="43" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="white">' + initial + '</text>'
+      + '</svg>'
+    return 'data:image/svg+xml,' + encodeURIComponent(svg)
+  }
+
+  function setContent(selector, value) {
+    var element = document.querySelector(selector)
+    if (element) element.setAttribute('content', value)
+  }
+
+  var iconHref = brand.logo || fallbackIcon()
+  var canonicalUrl = window.location.origin + '/'
   document.title = brand.name
   document.documentElement.lang = brand.locale
+  document.documentElement.dataset.tenantBrand = isPlatformAdmin ? 'platform' : (slug || 'neutral')
   document.documentElement.style.setProperty('--tenant-accent', brand.color)
-  document.querySelector('meta[name="theme-color"]')?.setAttribute('content', brand.color)
-  document.querySelector('meta[property="og:site_name"]')?.setAttribute('content', brand.name)
-  document.querySelector('meta[property="og:title"]')?.setAttribute('content', brand.name)
-  document.querySelector('meta[name="apple-mobile-web-app-title"]')?.setAttribute('content', brand.name)
+  setContent('meta[name="theme-color"]', brand.color)
+  setContent('meta[name="description"]', brand.description)
+  setContent('meta[property="og:site_name"]', brand.name)
+  setContent('meta[property="og:title"]', brand.name)
+  setContent('meta[property="og:description"]', brand.description)
+  setContent('meta[property="og:url"]', canonicalUrl)
+  setContent('meta[property="og:image:alt"]', brand.name)
+  setContent('meta[name="twitter:title"]', brand.name)
+  setContent('meta[name="twitter:description"]', brand.description)
+  setContent('meta[name="apple-mobile-web-app-title"]', brand.name)
+
+  var icon = document.querySelector('link[rel="icon"]')
+  if (icon) icon.setAttribute('href', iconHref)
+  var appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]')
+  if (appleTouchIcon) appleTouchIcon.setAttribute('href', iconHref)
+  var canonical = document.querySelector('link[rel="canonical"]')
+  if (!canonical) {
+    canonical = document.createElement('link')
+    canonical.setAttribute('rel', 'canonical')
+    document.head.appendChild(canonical)
+  }
+  canonical.setAttribute('href', canonicalUrl)
 })()

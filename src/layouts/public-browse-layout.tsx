@@ -32,8 +32,8 @@ export function PublicBrowseLayout() {
         <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
             <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
-              <img src="/favicon.svg" alt="" aria-hidden="true" />
-              <span>
+              <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
+              <span className="business-public-shell__brand-copy">
                 {program.name.toUpperCase()}
                 <small>FOR BUSINESSES</small>
               </span>
@@ -61,8 +61,8 @@ export function PublicBrowseLayout() {
             <div className="business-public-shell__footer-top">
               <div>
                 <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
-                  <img src="/favicon.svg" alt="" aria-hidden="true" />
-                  <span>{program.name.toUpperCase()}</span>
+                  <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
+                  <span className="business-public-shell__brand-copy">{program.name.toUpperCase()}</span>
                 </NavLink>
                 <p>Helping local businesses grow while<br />giving amazing Rewards to our members.</p>
               </div>

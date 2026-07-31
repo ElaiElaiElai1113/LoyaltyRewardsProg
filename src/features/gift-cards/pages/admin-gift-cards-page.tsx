@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import { Gift } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
@@ -8,9 +7,13 @@ import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAdminAllBusinesses } from '@/hooks/use-admin-data'
 import { useBusinessMembers } from '@/hooks/use-business-owner-data'
+import { useTenant } from '@/hooks/use-tenant'
+import { formatTenantCurrency } from '@/lib/tenant-commerce'
+import type { GiftCard } from '@/types/domain'
 import { useGiftCardCatalog, useBusinessGiftCards, useIssueGiftCardToCustomer } from '../hooks/use-gift-cards'
 
 export function AdminGiftCardsPage() {
+  const { program } = useTenant()
   const businesses = useAdminAllBusinesses()
   const [businessId, setBusinessId] = useState<string | undefined>(undefined)
   const [issueCatalogId, setIssueCatalogId] = useState('')
@@ -19,6 +22,16 @@ export function AdminGiftCardsPage() {
   const giftCards = useBusinessGiftCards(businessId)
   const members = useBusinessMembers(businessId)
   const issueGiftCard = useIssueGiftCardToCustomer(issueCustomerId, businessId)
+  const selectedBusiness = businesses.data?.find((business) => business.id === businessId)
+
+  function formatCardBalance(card: GiftCard) {
+    const value = card.remainingBalance ?? card.initialBalance ?? 0
+    const currency = card.business?.currency ?? selectedBusiness?.currency
+
+    return currency
+      ? formatTenantCurrency(value, { currency, locale: program.locale })
+      : value.toLocaleString(program.locale, { maximumFractionDigits: 2 })
+  }
 
   function changeBusiness(value: string) {
     setBusinessId(value === 'all' ? undefined : value)
@@ -28,9 +41,13 @@ export function AdminGiftCardsPage() {
 
   async function issueToCustomer() {
     if (!issueCatalogId || !issueCustomerId) return
-    await issueGiftCard.mutateAsync(issueCatalogId)
-    setIssueCatalogId('')
-    setIssueCustomerId('')
+    try {
+      await issueGiftCard.mutateAsync(issueCatalogId)
+      setIssueCatalogId('')
+      setIssueCustomerId('')
+    } catch {
+      // The mutation hook already presents the actionable error toast.
+    }
   }
 
   return (
@@ -144,17 +161,22 @@ export function AdminGiftCardsPage() {
           <h2 className="font-serif text-3xl text-primary-container">Issued</h2>
           <div className="grid gap-4">
             {(giftCards.data ?? []).map((card) => (
-              <div key={card.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm flex items-center justify-between gap-4 p-5">
-                <div>
+              <div key={card.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm flex flex-col justify-between gap-4 p-5 sm:flex-row sm:items-center">
+                <div className="min-w-0">
                   <h3 className="font-serif text-2xl text-primary-container">{card.catalog?.title ?? card.code}</h3>
                   <p className="font-mono text-sm text-on-surface-variant">{card.code}</p>
+                  <p className="mt-1 break-all text-sm text-on-surface-variant">
+                    {card.customerFirstName ? `Customer: ${card.customerFirstName}` : `Customer ID: ${card.customerId}`}
+                  </p>
                   <p className="mt-1 text-sm font-semibold text-on-surface-variant">
-                    Balance: {(card.remainingBalance ?? card.initialBalance ?? 0).toLocaleString(undefined, { maximumFractionDigits: 2 })}
+                    Balance: {formatCardBalance(card)}
                   </p>
                 </div>
-                <Button asChild variant="outline">
-                  <Link to={`/wallet/gift-cards/${card.id}`}>Open</Link>
-                </Button>
+                <div className="shrink-0 text-left sm:text-right">
+                  <Badge className="capitalize" variant={card.status === 'active' ? 'accent' : 'outline'}>{card.status}</Badge>
+                  <p className="mt-2 text-xs text-on-surface-variant">Expires {new Date(card.expiresAt).toLocaleDateString()}</p>
+                  {card.catalog?.valueLabel ? <p className="mt-1 text-sm font-semibold text-on-surface">{card.catalog.valueLabel}</p> : null}
+                </div>
               </div>
             ))}
           </div>

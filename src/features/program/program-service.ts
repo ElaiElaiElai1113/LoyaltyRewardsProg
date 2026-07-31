@@ -60,6 +60,32 @@ export interface ProgramReport {
   giftCardPoints: number
 }
 
+const programRolePriority: Record<ProgramRole, number> = {
+  'program-admin': 4,
+  'business-owner': 3,
+  'business-staff': 2,
+  member: 1,
+}
+
+export function dedupeAccessiblePrograms(programs: AccessibleProgram[]) {
+  const byProgram = new Map<string, AccessibleProgram>()
+
+  for (const program of programs) {
+    const current = byProgram.get(program.id)
+    if (!current || programRolePriority[program.role] > programRolePriority[current.role]) {
+      byProgram.set(program.id, program)
+    }
+  }
+
+  return [...byProgram.values()]
+}
+
+export function selectHighestPriorityMembership(memberships: ProgramMembership[]) {
+  return [...memberships].sort((left, right) => (
+    programRolePriority[right.role] - programRolePriority[left.role]
+  ))[0] ?? null
+}
+
 export const programService = {
   async listAccessiblePrograms(profileId: string): Promise<AccessibleProgram[]> {
     const sb = requireSupabase()
@@ -70,7 +96,7 @@ export const programService = {
       .eq('status', 'active')
     if (error) throw new Error('Programs could not be loaded.')
 
-    return (data ?? []).flatMap((row) => {
+    const accessiblePrograms = (data ?? []).flatMap((row) => {
       const programValue = Array.isArray(row.programs) ? row.programs[0] : row.programs
       if (!programValue) return []
       const domains = (programValue.program_domains ?? []) as Array<{
@@ -87,6 +113,8 @@ export const programService = {
         hostname: domain?.hostname ?? null,
       }]
     })
+
+    return dedupeAccessiblePrograms(accessiblePrograms)
   },
 
   async getCurrentMembership(profileId: string): Promise<ProgramMembership | null> {
@@ -98,19 +126,16 @@ export const programService = {
       .eq('program_id', getActiveProgram().id)
       .eq('status', 'active')
       .in('role', ['program-admin', 'business-owner', 'business-staff', 'member'])
-      .order('role')
       .order('created_at')
-      .limit(1)
-      .maybeSingle()
-    if (error || !data) return null
-    return {
-      id: data.id,
-      programId: data.program_id,
-      profileId: data.profile_id,
-      role: data.role,
-      status: data.status,
-      businessId: data.business_id,
-    }
+    if (error || !data?.length) return null
+    return selectHighestPriorityMembership(data.map((row) => ({
+      id: row.id,
+      programId: row.program_id,
+      profileId: row.profile_id,
+      role: row.role,
+      status: row.status,
+      businessId: row.business_id,
+    })))
   },
 
   async listInvitations(profileId: string): Promise<AccessibleProgram[]> {

@@ -30,7 +30,7 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
 - Keep `pinas-rewards.vercel.app` as the canonical zero-cost production address.
 - Create `support@pinasrewards.ph`.
 - Configure SMTP/API delivery plus SPF, DKIM, and DMARC.
-- Replace `SMTP_FROM` after a working support mailbox exists.
+- Configure each tenant's verified sender name and address in program settings.
 - Apply the reviewed pending Supabase migrations.
 
 ## Validation gates

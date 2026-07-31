@@ -71,12 +71,12 @@ export function MembershipPage() {
               <div className="rounded-lg border border-[var(--border)] p-4">
                 <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Monthly price')}</p>
                 <p className="mt-2 text-2xl font-semibold">
-                  {formatCurrency((membership?.priceCents ?? MEMBERSHIP_PRICE_CENTS) / 100)}
+                  {formatCurrency((membership?.priceCents ?? MEMBERSHIP_PRICE_CENTS) / 100, membership?.currency ?? 'USD', 'en-US')}
                 </p>
               </div>
               <div className="rounded-lg border border-[var(--border)] p-4">
                 <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Instant credit')}</p>
-                <p className="mt-2 text-2xl font-semibold">{formatCurrency(MEMBERSHIP_REWARD_CREDIT_USD)}</p>
+                <p className="mt-2 text-2xl font-semibold">{formatCurrency(MEMBERSHIP_REWARD_CREDIT_USD, 'USD', 'en-US')}</p>
               </div>
               <div className="rounded-lg border border-[var(--border)] p-4">
                 <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Provider')}</p>
@@ -88,7 +88,7 @@ export function MembershipPage() {
           <div className="rounded-xl border border-[var(--border)] bg-[var(--card)] p-5">
             <div className="flex items-baseline gap-1">
               <span className="text-4xl font-semibold text-[var(--foreground)]">
-                {formatCurrency(MEMBERSHIP_PRICE_USD)}
+                {formatCurrency(MEMBERSHIP_PRICE_USD, 'USD', 'en-US')}
               </span>
               <span className="text-sm font-medium text-[var(--muted-foreground)]">/mo</span>
             </div>

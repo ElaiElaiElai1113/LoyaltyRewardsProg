@@ -1,7 +1,7 @@
 {
-  "name": "Pinas Rewards",
-  "short_name": "Pinas",
-  "description": "Install Pinas Rewards to show your member QR, earn with local businesses, and manage rewards from your phone.",
+  "name": "Rewards Program",
+  "short_name": "Rewards",
+  "description": "Install your rewards program to show your member QR, earn with participating businesses, and manage rewards from your phone.",
   "id": "/?source=pwa",
   "start_url": "/?source=pwa",
   "scope": "/",
@@ -13,47 +13,32 @@
   "dir": "ltr",
   "icons": [
     {
-      "src": "/pinas-rewards-logo.svg",
+      "src": "/rewards-program-mark.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any"
-    },
-    {
-      "src": "/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any maskable"
     }
   ],
-  "theme_color": "#A67608",
-  "background_color": "#FAF8F3",
+  "theme_color": "#4B5563",
+  "background_color": "#FFFFFF",
   "shortcuts": [
     {
       "name": "Member QR",
       "short_name": "QR",
       "description": "Open your scannable member QR.",
-      "url": "/profile?source=pwa-shortcut",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/profile?source=pwa-shortcut"
     },
     {
       "name": "Business Portal",
       "short_name": "Business",
       "description": "Open the business QR sales workspace.",
-      "url": "/business/dashboard?source=pwa-shortcut",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/business/dashboard?source=pwa-shortcut"
     },
     {
       "name": "Platform Guide",
       "short_name": "Guide",
       "description": "Open the customer, business, and admin walkthrough.",
-      "url": "/guide?source=pwa-shortcut",
-      "icons": [{ "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" }]
+      "url": "/guide?source=pwa-shortcut"
     }
   ]
 }

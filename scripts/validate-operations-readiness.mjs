@@ -2,7 +2,14 @@ import { readFile } from 'node:fs/promises'
 
 const required = {
   '.github/workflows/operations.yml': ['schedule:', 'ops:monitor', 'supabase db dump', 'retention-days: 14'],
-  '.github/workflows/post-deployment.yml': ['deployment_url', 'ops:smoke', 'ops:health:diagnose'],
+  '.github/workflows/post-deployment.yml': [
+    'deployment_url',
+    'ops:smoke',
+    'ops:health:diagnose',
+    'pinas-rewards.vercel.app',
+    'www.medellinrewards.com',
+    'guatemalarewards.com',
+  ],
   'docs/platform-administrator-guide.md': ['Program suspension', 'Migration approval', 'Incident response'],
   'docs/tenant-administrator-guide.md': ['Branding', 'Team access', 'Data export'],
   'docs/privacy-operations-runbook.md': ['Access export', 'Account deletion', 'Financial records'],

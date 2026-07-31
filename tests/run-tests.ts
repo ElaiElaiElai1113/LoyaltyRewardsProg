@@ -87,7 +87,7 @@ runTest('membership charges $25 USD monthly and keeps the $10 instant credit', (
   assert.match(pricing, /MEMBERSHIP_REWARD_CREDIT_CENTS = 1000/)
   assert.match(page, /\$25\/mo flat/)
   assert.match(banner, /\$25\/mo membership, \$10 credit instantly/)
-  assert.match(gate, /formatCurrency\(MEMBERSHIP_PRICE_USD\)/)
+  assert.match(gate, /formatCurrency\(MEMBERSHIP_PRICE_USD, 'USD', 'en-US'\)/)
   assert.match(language, /'\$25\/mo flat': '\$25\/mes fijo'/)
   assert.match(migration, /price_cents = 2500/)
   assert.match(migration, /grant_membership_credit\(actor_id, 1000\)/)
@@ -263,7 +263,7 @@ runTest('global CSS restores the brand theme outside early access', () => {
   assert.match(css, /\.early-access-neutral/)
 })
 
-runTest('tenant logo assets preserve Medellin branding while global install assets prioritize Pinas', () => {
+runTest('tenant logo assets stay available while shared install metadata remains neutral', () => {
   const fullLogo = readFileSync('public/medellin-rewards-logo.svg', 'utf8')
   const markLogo = readFileSync('public/medellin-rewards-mark.svg', 'utf8')
   const favicon = readFileSync('public/favicon.svg', 'utf8')
@@ -281,9 +281,10 @@ runTest('tenant logo assets preserve Medellin branding while global install asse
   assert.match(favicon, /fill="#11100e"/)
   assert.doesNotMatch(fullLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
   assert.doesNotMatch(markLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
-  assert.match(manifest, /"name": "Pinas Rewards"/)
-  assert.match(manifest, /\/pinas-rewards-logo\.svg/)
-  assert.match(manifest, /"theme_color": "#A67608"/)
+  assert.match(manifest, /"name": "Rewards Program"/)
+  assert.match(manifest, /\/rewards-program-mark\.svg/)
+  assert.match(manifest, /"theme_color": "#4B5563"/)
+  assert.doesNotMatch(manifest, /Pinas Rewards|Medellin Rewards/)
   assert.match(brandLogo, /src=\{program\.logoUrl\}/)
   assert.match(brandLogo, /alt=\{program\.name\}/)
   assert.match(brandLogo, /sr-only">\{program\.name\}/)
@@ -707,8 +708,9 @@ runTest('welcome email API uses server-only Hostinger SMTP settings', () => {
   assert.match(api, /process\.env\.SMTP_SECURE/)
   assert.match(api, /process\.env\.SMTP_USER/)
   assert.match(api, /process\.env\.SMTP_PASS/)
-  assert.match(api, /process\.env\.SMTP_FROM/)
-  assert.match(api, /resolve_program_email_brand/)
+  assert.doesNotMatch(api, /process\.env\.SMTP_FROM/)
+  assert.match(api, /authorize_early_access_welcome_email/)
+  assert.match(api, /request\.headers\.host/)
   assert.match(api, /buildTenantEmail/)
   assert.match(templates, /welcome/)
   assert.match(templates, /invitation/)
@@ -778,7 +780,7 @@ runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   assert.match(router, /path: '\/business\/guide', element: <PlatformGuidePage \/>/)
 
   assert.match(guidePage, /Guia de la plataforma/)
-  assert.match(guidePage, /Video aqui proximamente/)
+  assert.match(guidePage, /Recorrido guiado de la demo/)
   assert.doesNotMatch(guidePage, /Guion en espanol/)
   assert.doesNotMatch(guidePage, /Script base para grabar/)
   assert.doesNotMatch(guidePage, /Recording script/)
@@ -1069,7 +1071,7 @@ runTest('tenant branding is bootstrapped before React loads', () => {
   assert.match(indexHtml, /<script src="\/tenant-bootstrap\.js"><\/script>/)
   assert.match(bootstrap, /medellin: \{ name: 'Medellin Rewards'/)
   assert.match(bootstrap, /document\.title = brand\.name/)
-  assert.match(provider, /applyProgram\(initialProgram\)/)
+  assert.match(provider, /applyProgram\(initialProgram, inferTenantSlugHint\(window\.location\.hostname\) !== null\)/)
 })
 
 runTest('Rewards Platform is isolated to platform-admin surfaces', () => {
@@ -1674,8 +1676,8 @@ runTest('gift cards use declining balances and can be issued by businesses or ad
 
   assert.match(domain, /initialBalance\?: number \| null/)
   assert.match(domain, /remainingBalance\?: number \| null/)
-  assert.match(service, /initialBalance: \(mapped\.initialBalance as number \| null\) \?\? null/)
-  assert.match(service, /remainingBalance: \(mapped\.remainingBalance as number \| null\) \?\? null/)
+  assert.match(service, /mapped\.originalValueAmount as number \| null/)
+  assert.match(service, /mapped\.remainingValueAmount as number \| null/)
   assert.match(hooks, /useIssueGiftCardToCustomer/)
   assert.match(redemptionsPage, /getGiftCardAvailableBalance/)
   assert.match(redemptionsPage, /selectedGiftCardAvailableBalance/)
@@ -1690,6 +1692,29 @@ runTest('gift cards use declining balances and can be issued by businesses or ad
   assert.match(adminGiftCardsPage, /Admin-issued cards use the catalog value/)
   assert.match(display, /Available Balance/)
   assert.match(display, /Original value:/)
+})
+
+runTest('gift card balance compatibility migration repairs legacy and current hosted contracts', () => {
+  const migration = readFileSync(
+    'supabase/migrations/20260801020000_reconcile_gift_card_balance_contract.sql',
+    'utf8',
+  )
+
+  for (const column of [
+    'original_value_amount',
+    'remaining_value_amount',
+    'initial_balance',
+    'remaining_balance',
+  ]) {
+    assert.match(migration, new RegExp(`add column if not exists ${column}`))
+  }
+
+  assert.match(migration, /create trigger sync_gift_card_balance_columns/)
+  assert.match(migration, /on conflict \(program_id, profile_id\) do nothing/)
+  assert.match(migration, /'Customer is not an active member of this rewards program'/)
+  assert.match(migration, /original_value_amount,[\s\S]+remaining_value_amount,[\s\S]+initial_balance,[\s\S]+remaining_balance/)
+  assert.match(migration, /drop function if exists public\.get_public_gift_card_by_token\(text\)/)
+  assert.match(migration, /grant execute on function public\.get_public_gift_card_by_token\(text\) to anon, authenticated/)
 })
 
 runTest('gift card catalog exposes claimable filtering and summary feedback', () => {
@@ -1792,7 +1817,7 @@ runTest('admin partners page uses table-first operations layout with modal creat
   assert.doesNotMatch(partnersSection, /Partner Cards/)
 })
 
-runTest('admin partner creation treats tax as percent and provisions partner owner credentials', () => {
+runTest('admin partner creation treats tax as percent and securely invites a tenant-scoped owner', () => {
   const forms = readFileSync('src/types/forms.ts', 'utf8')
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
   const adminService = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
@@ -1820,12 +1845,14 @@ runTest('admin partner creation treats tax as percent and provisions partner own
   assert.match(adminPage, /Latitude/)
   assert.match(adminPage, /Longitude/)
   assert.match(adminPage, /Partner Login Email/)
-  assert.match(adminPage, /default password/)
+  assert.match(adminPage, /secure account invitation was sent/)
   assert.match(adminPage, /provisionPartnerOwner\.mutateAsync/)
   assert.match(adminPage, /Missing coordinates/)
   assert.match(adminPage, /values\.ownerEmail\.trim\(\)/)
-  assert.match(provisionPartnerOwnerFunction, /admin\.auth\.admin\.createUser/)
-  assert.match(provisionPartnerOwnerFunction, /password:\s*defaultPassword/)
+  assert.match(provisionPartnerOwnerFunction, /admin\.auth\.admin\.inviteUserByEmail/)
+  assert.match(provisionPartnerOwnerFunction, /active_program_id:\s*scopedBusiness\.program_id/)
+  assert.match(provisionPartnerOwnerFunction, /ensureOwnerMembership/)
+  assert.doesNotMatch(provisionPartnerOwnerFunction, /defaultPassword/)
   assert.match(provisionPartnerOwnerFunction, /role:\s*'business-owner'/)
   assert.match(provisionPartnerOwnerFunction, /owner_profile_id:\s*userId/)
 })
@@ -1913,7 +1940,7 @@ runTest('admin and business owner operational lists expose compact search filter
     assert.match(adminPage, new RegExp(token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
   }
 
-  assert.match(businessOwnerHooks, /verificationStatus: profile\.verification_status/)
+  assert.match(businessOwnerHooks, /verificationStatus: customer\.verification_status/)
 
   for (const [source, tokens] of [
     [
@@ -2341,4 +2368,53 @@ runTest('workflow QA docs list focused automation commands', () => {
   ]) {
     assert.match(qaDoc, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')))
   }
+})
+
+runTest('active tenant operations use Pinas and always verify canonical production brands', () => {
+  const accessibility = readFileSync('tests/e2e/accessibility.spec.ts', 'utf8')
+  const load = readFileSync('tests/e2e/load.spec.ts', 'utf8')
+  const tenantConsole = readFileSync('tests/e2e/tenant-console-accessibility.spec.ts', 'utf8')
+  const matrix = JSON.parse(readFileSync('docs/tenant-email-redirect-matrix.json', 'utf8')) as {
+    programs: Array<{
+      slug: string
+      status: string
+      hostname: string
+      senderEmail: string | null
+      monitor?: boolean
+    }>
+  }
+  const monitor = readFileSync('scripts/monitor-production.mjs', 'utf8')
+  const domainReadiness = readFileSync('scripts/check-domain-readiness.mjs', 'utf8')
+  const postDeployment = readFileSync('.github/workflows/post-deployment.yml', 'utf8')
+
+  for (const activeTest of [accessibility, load, tenantConsole]) {
+    assert.doesNotMatch(activeTest, /tenant=davao|['"]davao['"]/i)
+    assert.match(activeTest, /pinas/)
+  }
+
+  const pinas = matrix.programs.find((program) => program.slug === 'pinas')
+  assert.deepEqual(pinas, {
+    slug: 'pinas',
+    status: 'pending',
+    hostname: 'pinas-rewards.vercel.app',
+    senderEmail: null,
+    monitor: true,
+  })
+  assert.equal(matrix.programs.some((program) => program.slug === 'davao'), false)
+  assert.match(monitor, /program\.status === 'ready' \|\| program\.monitor === true/)
+  assert.match(domainReadiness, /expectedTenantName/)
+  assert.match(domainReadiness, /tenant-brand/)
+  assert.match(domainReadiness, /lookup\(hostname, \{ all: true \}\)/)
+  assert.match(domainReadiness, /meta\[property="og:title"\]/)
+  assert.match(domainReadiness, /manifest\.name === name/)
+  assert.match(domainReadiness, /manifest\.icons\.length > 0/)
+
+  for (const [hostname, tenantName] of [
+    ['pinas-rewards.vercel.app', 'Pinas Rewards'],
+    ['www.medellinrewards.com', 'Medellin Rewards'],
+    ['guatemalarewards.com', 'Guatemala Rewards'],
+  ]) {
+    assert.match(postDeployment, new RegExp(`${hostname.replaceAll('.', '\\.')}.+${tenantName}`))
+  }
+  assert.match(postDeployment, /Verify canonical tenant domains/)
 })

@@ -7,7 +7,7 @@ test.describe('platform guide workflow', () => {
 
     await expect(page).toHaveURL(/\/guide$/)
     await expect(page.getByRole('heading', { name: 'Guia de la plataforma' })).toBeVisible()
-    await expect(page.getByText('Video aqui proximamente')).toBeVisible()
+    await expect(page.getByText('Recorrido guiado de la demo')).toBeVisible()
     await expect(page.getByText('Storyboard con pantallas')).toBeVisible()
     await expect(page.getByText('English version')).not.toBeVisible()
     await expect(page.getByText('Platform guide', { exact: true })).not.toBeVisible()
@@ -35,7 +35,7 @@ test.describe('platform guide workflow', () => {
 
     await expect(page).toHaveURL(/\/guide$/)
     await expect(page.getByRole('heading', { name: 'Platform guide' })).toBeVisible()
-    await expect(page.getByText('Video coming soon')).toBeVisible()
+    await expect(page.getByText('Guided demo walkthrough')).toBeVisible()
     await expect(page.getByText('Screen storyboard')).toBeVisible()
 
     await expect(page.getByText('English script')).not.toBeVisible()

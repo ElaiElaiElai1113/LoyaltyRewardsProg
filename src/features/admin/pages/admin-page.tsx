@@ -1975,7 +1975,9 @@ export function AdminPage() {
                           businessName: values.name,
                         })
                         toast.success(
-                          `Partner created. Send login credentials to ${ownerCredentials.email}: password ${ownerCredentials.defaultPassword}`,
+                          ownerCredentials.invitationSent
+                            ? `Partner created. A secure account invitation was sent to ${ownerCredentials.email}.`
+                            : `Partner access was updated for ${ownerCredentials.email}. They can use their existing sign-in.`,
                           { duration: 12000 },
                         )
 
@@ -2235,7 +2237,7 @@ export function AdminPage() {
                     {createBusinessForm.formState.errors.ownerEmail ? (
                       <p className="text-xs text-red-500">{createBusinessForm.formState.errors.ownerEmail.message}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">The partner owner account will be created with this email and the default password. Send those credentials to the partner after saving.</p>
+                      <p className="text-xs text-on-surface-variant/70">A secure invitation will be sent to this email so the partner owner can create their own password.</p>
                     )}
                   </div>
 

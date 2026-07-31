@@ -2,9 +2,7 @@ import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { platformService } from '@/features/platform/platform-service'
 import { programService } from '@/features/program/program-service'
 import { useTenant } from '@/hooks/use-tenant'
 
@@ -22,7 +20,13 @@ export function ProgramBillingPage() {
           <div><p className="text-sm text-[var(--muted-foreground)]">Current plan</p><p className="text-xl font-semibold">{String(plan?.name ?? 'Not configured')}</p></div>
           <Badge variant={billing?.status === 'active' ? 'tenant' : 'secondary'}>{String(billing?.status ?? 'incomplete')}</Badge>
         </div>
-        <Button onClick={() => void platformService.startCheckout(program.id).catch((error) => toast.error(error.message))}>Open secure billing</Button>
+        <div className="rounded-lg border border-[var(--border)] bg-[var(--muted)] p-4">
+          <Badge variant="outline">Managed offline</Badge>
+          <p className="mt-3 font-semibold">Online billing is intentionally disabled.</p>
+          <p className="mt-1 text-sm leading-6 text-[var(--muted-foreground)]">
+            Plan changes, renewals, and billing questions are handled directly by the Rewards Platform operations team. No payment is collected from this page.
+          </p>
+        </div>
       </CardContent>
     </Card>
   )

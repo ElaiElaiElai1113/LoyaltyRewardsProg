@@ -12,6 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinessMembers, useBusinessOwnerData } from '@/hooks/use-business-owner-data'
+import { useTenant } from '@/hooks/use-tenant'
+import { getDefaultGiftCardValueLabel } from '@/lib/tenant-commerce'
 import type { GiftCardCatalogItem } from '@/types/domain'
 import { ownerGiftCardCatalogItemSchema, type OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 import {
@@ -24,6 +26,7 @@ import {
 
 export function BusinessGiftCardsPage() {
   const { profile } = useAuth()
+  const { program } = useTenant()
   const { business } = useBusinessOwnerData()
   const catalog = useGiftCardCatalog(business?.id)
   const members = useBusinessMembers(business?.id)
@@ -36,6 +39,10 @@ export function BusinessGiftCardsPage() {
   const [open, setOpen] = useState(false)
   const [editingId, setEditingId] = useState<string | null>(null)
   const [actionError, setActionError] = useState<string | null>(null)
+  const defaultValueLabel = getDefaultGiftCardValueLabel({
+    currency: business?.currency ?? program.currency,
+    locale: program.locale,
+  })
 
   const form = useForm<OwnerGiftCardCatalogItemFormValues>({
     resolver: zodResolver(ownerGiftCardCatalogItemSchema),
@@ -44,7 +51,7 @@ export function BusinessGiftCardsPage() {
       description: '',
       imageUrl: '',
       pointsCost: 500,
-      valueLabel: 'PHP 250',
+      valueLabel: defaultValueLabel,
       expiryDays: 30,
       isActive: true,
     },
@@ -66,7 +73,7 @@ export function BusinessGiftCardsPage() {
       description: '',
       imageUrl: '',
       pointsCost: 500,
-      valueLabel: 'PHP 250',
+      valueLabel: defaultValueLabel,
       expiryDays: 30,
       isActive: true,
     })
@@ -104,9 +111,17 @@ export function BusinessGiftCardsPage() {
 
   async function issueToCustomer() {
     if (!issueCatalogId || !issueCustomerId) return
-    await issueGiftCard.mutateAsync(issueCatalogId)
-    setIssueCatalogId('')
-    setIssueCustomerId('')
+    try {
+      await issueGiftCard.mutateAsync(issueCatalogId)
+      setIssueCatalogId('')
+      setIssueCustomerId('')
+    } catch {
+      // The mutation hook already presents the actionable error toast.
+    }
+  }
+
+  function deleteCatalogItem(id: string) {
+    void deleteItem.mutateAsync(id).catch(() => undefined)
   }
 
   return (
@@ -235,7 +250,7 @@ export function BusinessGiftCardsPage() {
                 <Button variant="ghost" size="icon" onClick={() => openForEdit(item)}>
                   <Edit2 className="size-4" />
                 </Button>
-                <Button variant="ghost" size="icon" className="text-error" onClick={() => void deleteItem.mutateAsync(item.id)}>
+                <Button variant="ghost" size="icon" className="text-error" onClick={() => deleteCatalogItem(item.id)}>
                   <Trash2 className="size-4" />
                 </Button>
               </div>

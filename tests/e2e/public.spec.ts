@@ -1,15 +1,31 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('public acquisition workflow', () => {
-  test('search metadata exposes only public launch routes', async ({ request }) => {
+  test('search metadata exposes only public launch routes', async ({ request }, testInfo) => {
+    const hostname = new URL(String(testInfo.project.use.baseURL)).hostname
+    const expectedOrigin = new Map([
+      ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
+      ['guatemalarewards.com', 'https://guatemalarewards.com'],
+      ['pinas-rewards.vercel.app', 'https://pinas-rewards.vercel.app'],
+    ]).get(hostname)
     const robots = await request.get('/robots.txt')
     expect(robots.ok()).toBeTruthy()
-    expect(await robots.text()).toContain('Sitemap: https://pinas-rewards.vercel.app/sitemap.xml')
+    const robotsText = await robots.text()
+    expect(robotsText).toContain('User-agent: *')
 
     const sitemap = await request.get('/sitemap.xml')
     expect(sitemap.ok()).toBeTruthy()
     const xml = await sitemap.text()
-    expect(xml).toContain('https://pinas-rewards.vercel.app/for-businesses')
+    expect(xml).toContain('<urlset')
+    if (expectedOrigin) {
+      expect(robotsText).toContain(`Sitemap: ${expectedOrigin}/sitemap.xml`)
+      expect(xml).toContain(`<loc>${expectedOrigin}/for-businesses</loc>`)
+    } else {
+      expect(robotsText).not.toContain('medellinrewards.com')
+      expect(robotsText).not.toContain('guatemalarewards.com')
+      expect(robotsText).not.toContain('pinas-rewards.vercel.app')
+      expect(xml).not.toContain('<loc>')
+    }
     expect(xml).not.toContain('/admin/')
     expect(xml).not.toContain('/business/dashboard')
   })

@@ -1,4 +1,8 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
+import {
+  resolveInvitationOrigin,
+  type InvitationDomain,
+} from '../_shared/invitation-origin.ts'
 
 type RegisterCustomerRequest = {
   name?: string
@@ -159,6 +163,65 @@ async function ensureRewardBalance(
   return error
 }
 
+async function ensureBusinessCustomerLink(
+  admin: ReturnType<typeof createClient>,
+  programId: string,
+  businessId: string,
+  profileId: string,
+  linkedBy: string,
+) {
+  const { data: existing, error: readError } = await admin
+    .from('business_customer_links')
+    .select('profile_id')
+    .eq('program_id', programId)
+    .eq('business_id', businessId)
+    .eq('profile_id', profileId)
+    .maybeSingle()
+
+  if (readError) return { error: readError, created: false }
+  if (existing) return { error: null, created: false }
+
+  const { error: insertError } = await admin
+    .from('business_customer_links')
+    .insert({
+      program_id: programId,
+      business_id: businessId,
+      profile_id: profileId,
+      linked_by: linkedBy,
+      source: 'registration',
+    })
+
+  // A simultaneous retry may have inserted the same idempotent link first.
+  if (insertError?.code === '23505') return { error: null, created: false }
+  return { error: insertError, created: !insertError }
+}
+
+async function resolveInvitationRedirect(
+  admin: ReturnType<typeof createClient>,
+  programId: string,
+  requestOrigin: string | null,
+) {
+  const { data, error } = await admin
+    .from('program_domains')
+    .select('hostname, is_primary')
+    .eq('program_id', programId)
+    .eq('verification_status', 'verified')
+
+  if (error) throw error
+
+  const origin = resolveInvitationOrigin(
+    requestOrigin,
+    Deno.env.get('SITE_URL'),
+    (data ?? []) as InvitationDomain[],
+  )
+
+  if (!origin) {
+    throw new Error('No verified invitation domain is configured for this rewards program.')
+  }
+
+  return `${origin}/accept-invitation`
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders })
@@ -253,9 +316,29 @@ Deno.serve(async (req: Request) => {
 
   const programId = business.program_id as string
 
+  if (actor.role !== 'platform-admin') {
+    const { data: activeBusinessMembership, error: membershipError } = await admin
+      .from('program_memberships')
+      .select('id')
+      .eq('program_id', programId)
+      .eq('profile_id', actor.id)
+      .eq('business_id', businessId)
+      .eq('role', actor.role)
+      .eq('status', 'active')
+      .maybeSingle()
+
+    if (membershipError) {
+      return jsonResponse({ message: 'Business access could not be verified.' }, 500)
+    }
+
+    if (!activeBusinessMembership) {
+      return jsonResponse({ message: 'Active business program access is required.' }, 403)
+    }
+  }
+
   const { data: existingProfile, error: existingProfileError } = await admin
     .from('profiles')
-    .select('id, full_name, email, registered_by_business_id')
+    .select('id, full_name, email, role, registered_by_business_id')
     .eq('email', email)
     .maybeSingle()
 
@@ -264,49 +347,88 @@ Deno.serve(async (req: Request) => {
   }
 
   if (existingProfile) {
-    if (existingProfile.registered_by_business_id && existingProfile.registered_by_business_id !== businessId) {
+    if (existingProfile.role !== 'customer') {
       return jsonResponse({ message: 'A customer with this email already exists.' }, 409)
     }
 
-    if (!existingProfile.registered_by_business_id) {
-      const { error: linkExistingError } = await admin
-        .from('profiles')
-        .update({ registered_by_business_id: businessId })
-        .eq('id', existingProfile.id)
+    const { data: activeMembership, error: activeMembershipError } = await admin
+      .from('program_memberships')
+      .select('id')
+      .eq('program_id', programId)
+      .eq('profile_id', existingProfile.id)
+      .eq('role', 'member')
+      .eq('status', 'active')
+      .maybeSingle()
 
-      if (linkExistingError) {
-        return jsonResponse({ message: linkExistingError.message }, 500)
-      }
+    if (activeMembershipError) {
+      return jsonResponse({ message: activeMembershipError.message }, 500)
     }
 
-    const [existingMembershipError, existingBalanceError] = await Promise.all([
-      ensureMemberProgramAccess(admin, programId, existingProfile.id),
+    // Do not reveal or attach an identity that belongs only to another tenant.
+    if (!activeMembership) {
+      return jsonResponse({ message: 'A customer with this email already exists.' }, 409)
+    }
+
+    const [existingBalanceError, linkResult] = await Promise.all([
       ensureRewardBalance(admin, programId, existingProfile.id),
+      ensureBusinessCustomerLink(
+        admin,
+        programId,
+        businessId,
+        existingProfile.id,
+        actor.id,
+      ),
     ])
 
-    if (existingMembershipError || existingBalanceError) {
+    if (existingBalanceError || linkResult.error) {
       return jsonResponse(
-        { message: existingMembershipError?.message ?? existingBalanceError?.message },
+        { message: existingBalanceError?.message ?? linkResult.error?.message },
         500,
       )
     }
 
     return jsonResponse({
+      message: linkResult.created
+        ? 'Existing customer linked to this business.'
+        : 'Customer is already linked to this business.',
       user: {
         id: existingProfile.id,
         email: existingProfile.email,
         fullName: existingProfile.full_name,
         existing: true,
+        linkedToBusiness: true,
+        linkCreated: linkResult.created,
       },
     })
   }
 
-  const redirectTo = req.headers.get('origin') ?? Deno.env.get('SITE_URL') ?? undefined
+  let invitationRedirectError: unknown = null
+  const redirectTo = await resolveInvitationRedirect(
+    admin,
+    programId,
+    req.headers.get('origin'),
+  ).catch((error: unknown) => {
+    invitationRedirectError = error
+    return null
+  })
+
+  if (!redirectTo) {
+    return jsonResponse(
+      {
+        message: invitationRedirectError instanceof Error
+          ? invitationRedirectError.message
+          : 'Customer invitation redirect could not be resolved.',
+      },
+      500,
+    )
+  }
+
   const { data: created, error: createError } = await admin.auth.admin.inviteUserByEmail(email, {
     redirectTo,
     data: {
       full_name: name,
       registered_by_business_id: businessId,
+      active_program_id: programId,
     },
   })
 
@@ -321,10 +443,12 @@ Deno.serve(async (req: Request) => {
     app_metadata: {
       role: 'customer',
       registered_by_business_id: businessId,
+      active_program_id: programId,
     },
     user_metadata: {
       full_name: name,
       registered_by_business_id: businessId,
+      active_program_id: programId,
     },
   })
 
@@ -375,12 +499,27 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ message: balanceError.message }, 500)
   }
 
+  const linkResult = await ensureBusinessCustomerLink(
+    admin,
+    programId,
+    businessId,
+    created.user.id,
+    actor.id,
+  )
+
+  if (linkResult.error) {
+    return jsonResponse({ message: linkResult.error.message }, 500)
+  }
+
   return jsonResponse({
+    message: 'Customer invited and linked to this business.',
     user: {
       id: created.user.id,
       email: created.user.email,
       fullName: name,
       existing: false,
+      linkedToBusiness: true,
+      linkCreated: linkResult.created,
     },
   })
 })

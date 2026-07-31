@@ -15,6 +15,7 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 
 import { LanguagePicker } from '@/components/language-picker'
+import { ProgramInvitations } from '@/components/program-invitations'
 import { ProgramSwitcher } from '@/components/program-switcher'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -211,6 +212,7 @@ export function BusinessOwnerLayout() {
       {/* Main Content */}
       <main className="min-h-screen min-w-0 flex-1 xl:ml-72">
         <div className="mx-auto w-full max-w-7xl min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12">
+          <ProgramInvitations />
           <Outlet />
         </div>
       </main>

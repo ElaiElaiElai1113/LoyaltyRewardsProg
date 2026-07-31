@@ -14,15 +14,22 @@ import { Textarea } from '@/components/ui/textarea'
 import { useBusinessOwnerData, useCreateOwnerProduct } from '@/hooks/use-business-owner-data'
 import { useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { searchMatches } from '@/lib/search'
-import { formatCurrency } from '@/lib/utils'
+import { formatCurrency as formatBaseCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
 import { ownerProductDraftSchema, type OwnerProductDraftFormValues } from '@/types/forms'
 import { Controller } from 'react-hook-form'
 
 export function ProductsPage() {
   const { business, products } = useBusinessOwnerData()
+  const { program } = useTenant()
+  const formatCurrency = (value: number) => formatBaseCurrency(
+    value,
+    business?.currency ?? program.currency,
+    program.locale,
+  )
   const { profile } = useAuth()
   const { t } = useLanguage()
   const createProduct = useCreateOwnerProduct(profile, business?.id)

@@ -4,7 +4,9 @@ import { resolve } from 'node:path'
 const matrix = JSON.parse(await readFile('docs/tenant-email-redirect-matrix.json', 'utf8'))
 const extraOrigins = (process.env.MONITOR_ORIGINS ?? '').split(',').map((value) => value.trim()).filter(Boolean)
 const origins = [
-  ...matrix.programs.filter((program) => program.status === 'ready').map((program) => `https://${program.hostname}`),
+  ...matrix.programs
+    .filter((program) => program.status === 'ready' || program.monitor === true)
+    .map((program) => `https://${program.hostname}`),
   ...extraOrigins,
 ]
 const results = []

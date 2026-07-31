@@ -9,7 +9,7 @@ on:
         required: true
         type: string
       tenant_domains:
-        description: Comma-separated tenant domains
+        description: Optional comma-separated additional tenant domains
         required: false
         type: string
 
@@ -24,17 +24,24 @@ jobs:
     env:
       DEPLOYMENT_URL: ${{ inputs.deployment_url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
       - run: npm ci
+      - name: Install browser for rendered tenant metadata checks
+        run: npx playwright install --with-deps chromium
       - name: Deployment smoke
         run: npm run ops:smoke -- "$DEPLOYMENT_URL"
       - name: Health contract and SPA routing
         run: npm run ops:health:diagnose -- "$DEPLOYMENT_URL"
-      - name: Verify tenant domains
+      - name: Verify canonical tenant domains
+        run: |
+          npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards"
+          npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards"
+          npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards"
+      - name: Verify additional tenant domains
         if: inputs.tenant_domains != ''
         shell: bash
         run: |

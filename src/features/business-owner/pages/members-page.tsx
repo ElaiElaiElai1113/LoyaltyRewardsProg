@@ -18,10 +18,11 @@ import {
   useRegisterCustomer,
 } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { searchMatches } from '@/lib/search'
 import { getVerificationStatusLabel } from '@/lib/status-labels'
-import { cn, formatPoints, getInitials } from '@/lib/utils'
+import { cn, formatCurrency, formatPoints, getInitials } from '@/lib/utils'
 import {
   registerCustomerSchema,
   rewardAdjustmentSchema,
@@ -45,8 +46,16 @@ function matchesCustomerStatusFilter(
 
 export function MembersPage() {
   const { profile } = useAuth()
+  const { program } = useTenant()
   const { t } = useLanguage()
   const { business, metrics } = useBusinessOwnerData()
+  const businessCurrency = business?.currency ?? program.currency
+  const purchaseCurrencySymbol = new Intl.NumberFormat(program.locale, {
+    style: 'currency',
+    currency: businessCurrency,
+    currencyDisplay: 'narrowSymbol',
+    maximumFractionDigits: 0,
+  }).formatToParts(0).find((part) => part.type === 'currency')?.value ?? businessCurrency
   const members = useBusinessMembers(business?.id)
   const awardPoints = useAwardPoints(profile, business?.id)
   const registerCustomer = useRegisterCustomer(business?.id)
@@ -234,7 +243,7 @@ export function MembersPage() {
                 </Label>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-on-surface-variant/60">
-                    $
+                    {purchaseCurrencySymbol}
                   </span>
                   <Input
                     id="purchaseAmount"
@@ -257,7 +266,8 @@ export function MembersPage() {
                 </div>
                 {purchaseAmount ? (
                   <p className="text-xs text-on-surface-variant/70">
-                    {business?.earnRate ?? 0} pts per $1 · ${purchaseAmount} = {calculatedPoints ?? 0} pts
+                    {business?.earnRate ?? 0} pts per {formatCurrency(1, businessCurrency, program.locale)} ·{' '}
+                    {formatCurrency(Number.parseFloat(purchaseAmount) || 0, businessCurrency, program.locale)} = {calculatedPoints ?? 0} pts
                   </p>
                 ) : null}
               </div>
@@ -283,7 +293,7 @@ export function MembersPage() {
                 </Label>
                 <Input
                   id="reason"
-                  placeholder={t('e.g., In-store purchase $12.50')}
+                  placeholder={`${t('e.g., In-store purchase')} ${formatCurrency(12.5, businessCurrency, program.locale)}`}
                   className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                   {...form.register('reason')}
                 />

@@ -12,7 +12,7 @@ test.describe('load smoke workflow automation', () => {
   })
 
   test('LOAD002 tenant resolution remains stable under concurrent brand traffic', async ({ request }) => {
-    const tenants = ['medellin', 'guatemala', 'synergize', 'davao']
+    const tenants = ['medellin', 'guatemala', 'synergize', 'pinas']
     const responses = await Promise.all(
       Array.from({ length: 120 }, (_, index) => request.get(`/?tenant=${tenants[index % tenants.length]}`)),
     )

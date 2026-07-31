@@ -46,10 +46,11 @@ type CreateBusinessAgreementInput = {
 
 export type ProvisionPartnerOwnerResult = {
   email: string
-  defaultPassword: string
   userId: string
   businessId: string
+  programId: string
   accountCreated: boolean
+  invitationSent: boolean
 }
 
 type AgreementStatusProfileRow = {
@@ -398,9 +399,23 @@ export const adminService = {
       profiles.map(async ({ profile }) => {
         if (!profile.verificationDocumentPath) return
 
-        const { data, error } = await sb.storage
-          .from(MEMBER_VERIFICATION_BUCKET)
-          .createSignedUrl(profile.verificationDocumentPath, 60 * 60)
+        const documentPath = profile.verificationDocumentPath.replace(/^\/+/, '')
+        const separator = documentPath.lastIndexOf('/')
+        const folder = separator >= 0 ? documentPath.slice(0, separator) : ''
+        const filename = separator >= 0 ? documentPath.slice(separator + 1) : documentPath
+        const bucket = sb.storage.from(MEMBER_VERIFICATION_BUCKET)
+        const { data: objects, error: listError } = await bucket.list(folder, {
+          limit: 2,
+          search: filename,
+        })
+
+        if (listError || !objects?.some((entry) => entry.name === filename)) {
+          profile.verificationDocumentPath = null
+          profile.verificationDocumentUrl = null
+          return
+        }
+
+        const { data, error } = await bucket.createSignedUrl(documentPath, 60 * 60)
 
         if (!error && data?.signedUrl) {
           profile.verificationDocumentUrl = data.signedUrl
@@ -731,16 +746,17 @@ export const adminService = {
     }
 
     const result = data as Partial<ProvisionPartnerOwnerResult> | null
-    if (!result?.email || !result.defaultPassword || !result.userId || !result.businessId) {
+    if (!result?.email || !result.userId || !result.businessId || !result.programId) {
       throw new Error('Partner owner account was not provisioned.')
     }
 
     return {
       email: result.email,
-      defaultPassword: result.defaultPassword,
       userId: result.userId,
       businessId: result.businessId,
+      programId: result.programId,
       accountCreated: Boolean(result.accountCreated),
+      invitationSent: Boolean(result.invitationSent),
     }
   },
 

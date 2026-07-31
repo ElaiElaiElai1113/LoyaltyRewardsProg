@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { getProfileByEmail, getSupabaseSessionClient } from './helpers/supabase.js'
+
 const memberEmail = process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test'
 const businessEmail = process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'businesstest2@gmail.com'
 const password = process.env.E2E_PASSWORD
@@ -54,6 +56,10 @@ test('Medellin member can sign in and open demo pages', async ({ page }) => {
 
 test('Medellin business owner can sign in and open demo pages', async ({ page }) => {
   const errors = monitorUnexpectedErrors(page)
+  const memberClient = await getSupabaseSessionClient(memberEmail)
+  const memberProfile = await getProfileByEmail(memberClient, memberEmail)
+  expect(memberProfile.memberQrToken).toBeTruthy()
+
   await page.goto('/business/login')
   await page.locator('#staff-signin-email').fill(businessEmail)
   await page.locator('#staff-signin-password').fill(password)
@@ -65,7 +71,7 @@ test('Medellin business owner can sign in and open demo pages', async ({ page })
   await expect(page).toHaveURL(/\/business\/dashboard$/)
 
   for (const path of [
-    '/business/member-sale',
+    `/business/member-sale/${memberProfile.memberQrToken}`,
     '/business/members',
     '/business/products',
     '/business/rewards',
@@ -75,6 +81,7 @@ test('Medellin business owner can sign in and open demo pages', async ({ page })
   ]) {
     await page.goto(path)
     await expect(page).toHaveURL(new RegExp(`${path.replaceAll('/', '\\/')}$`))
+    await expect(page.getByRole('heading', { name: 'Page not found' })).toHaveCount(0)
     await expect(page.locator('body')).not.toContainText(/application error|something went wrong/i)
   }
 

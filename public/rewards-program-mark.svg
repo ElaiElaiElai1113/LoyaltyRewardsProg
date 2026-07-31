@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">Rewards program</title>
+  <rect width="64" height="64" rx="14" fill="#4b5563"/>
+  <path d="M20 48V16h14.2c8 0 13 4.2 13 11 0 4.7-2.5 8.2-6.8 9.8L48 48h-8.5l-6.6-10.2h-5V48H20Zm8-16.8h5.4c3.6 0 5.6-1.4 5.6-4.2 0-2.9-2-4.2-5.6-4.2H28v8.4Z" fill="#fff"/>
+</svg>

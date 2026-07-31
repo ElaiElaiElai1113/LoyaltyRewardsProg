@@ -3,23 +3,14 @@ import { useState } from 'react'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTenant } from '@/hooks/use-tenant'
+import { formatTenantCurrency } from '@/lib/tenant-commerce'
 
 const DEFAULT_HARD_COST_PERCENT = 25
 const DEFAULT_TARGET_REVENUE = 1000
 const DEFAULT_REWARDS_PERCENT = 20
 const DEFAULT_REWARDS_COMMISSION_PERCENT = 25
 const DEFAULT_COMPETITOR_COMMISSION_PERCENT = 25
-
-function formatCurrency(value: number) {
-  const hasCents = Math.abs(value % 1) > 0.001
-
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: hasCents ? 2 : 0,
-    maximumFractionDigits: hasCents ? 2 : 0,
-  }).format(value)
-}
 
 function formatPercent(value: number) {
   return `${value.toFixed(0)}%`
@@ -36,6 +27,7 @@ function parsePositiveNumber(value: string, fallback: number) {
 }
 
 export function CostCalculator() {
+  const { program } = useTenant()
   const [hardCostPercent, setHardCostPercent] = useState(DEFAULT_HARD_COST_PERCENT)
   const [targetRevenue, setTargetRevenue] = useState(DEFAULT_TARGET_REVENUE)
   const [rewardsPercent, setRewardsPercent] = useState(DEFAULT_REWARDS_PERCENT)
@@ -55,6 +47,7 @@ export function CostCalculator() {
   const realFoodCost = totalRewardsValue * foodCostRate
   const competitorCost = targetRevenue * competitorCommissionRate
   const savings = competitorCost - realFoodCost
+  const formatCurrency = (value: number) => formatTenantCurrency(value, program)
 
   return (
     <div className="grid gap-6 xl:grid-cols-[0.92fr_1.08fr]">

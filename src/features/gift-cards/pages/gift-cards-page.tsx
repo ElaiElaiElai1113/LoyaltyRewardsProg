@@ -61,9 +61,13 @@ export function GiftCardsPage() {
 
   async function handleIssue() {
     if (!selectedItem) return
-    const giftCard = await issueGiftCard.mutateAsync(selectedItem.id)
-    setSelectedItem(null)
-    navigate(`/wallet/gift-cards/${giftCard.id}`)
+    try {
+      const giftCard = await issueGiftCard.mutateAsync(selectedItem.id)
+      setSelectedItem(null)
+      navigate(`/wallet/gift-cards/${giftCard.id}`)
+    } catch {
+      // The mutation hook already presents the actionable error toast.
+    }
   }
 
   return (

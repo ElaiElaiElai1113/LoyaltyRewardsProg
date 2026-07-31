@@ -17,10 +17,12 @@ import { useLanguage } from '@/lib/language'
 import { getHomePathForRole } from '@/lib/role-routes'
 import { useCurrentProgramMembership } from '@/hooks/use-program-access'
 import { canAccessProgramAdmin } from '@/lib/program-access'
+import { getPasswordSetupRoute, getPasswordSetupType } from '@/lib/password-setup'
 
 const AdminPage = lazy(() => import('@/features/admin/pages/admin-page').then((module) => ({ default: module.AdminPage })))
 const AmbassadorsPage = lazy(() => import('@/features/ambassadors/pages/ambassadors-page').then((module) => ({ default: module.AmbassadorsPage })))
 const AuthPage = lazy(() => import('@/features/auth/pages/landing-page').then((module) => ({ default: module.AuthPage })))
+const EmailConfirmationPage = lazy(() => import('@/features/auth/pages/email-confirmation-page').then((module) => ({ default: module.EmailConfirmationPage })))
 const RequiredAgreementsPage = lazy(() => import('@/features/auth/pages/required-agreements-page').then((module) => ({ default: module.RequiredAgreementsPage })))
 const ResetPasswordPage = lazy(() => import('@/features/auth/pages/reset-password-page').then((module) => ({ default: module.ResetPasswordPage })))
 const StaffLoginPage = lazy(() => import('@/features/auth/pages/staff-login-page').then((module) => ({ default: module.StaffLoginPage })))
@@ -97,16 +99,15 @@ function RouteEffects() {
   }, [location.pathname])
 
   useEffect(() => {
-    const searchParams = new URLSearchParams(location.search)
-    const hash = location.hash.startsWith('#') ? location.hash.slice(1) : location.hash
-    const hashParams = new URLSearchParams(hash)
-    const recoveryParams = searchParams.get('type') === 'recovery' ? searchParams : hashParams
+    const setupType = getPasswordSetupType(location.search, location.hash)
+    if (!setupType) return
 
-    if (recoveryParams.get('type') !== 'recovery' || location.pathname === '/reset-password') return
+    const setupPath = getPasswordSetupRoute(setupType)
+    if (location.pathname === setupPath) return
 
     navigate(
       {
-        pathname: '/reset-password',
+        pathname: setupPath,
         search: location.search,
         hash: location.hash,
       },
@@ -418,6 +419,14 @@ const router = createBrowserRouter([
       {
         path: '/reset-password',
         element: <ResetPasswordPage />,
+      },
+      {
+        path: '/auth/confirm',
+        element: <EmailConfirmationPage />,
+      },
+      {
+        path: '/accept-invitation',
+        element: <ResetPasswordPage flow="invite" />,
       },
       {
         path: '/business/login',

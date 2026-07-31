@@ -129,7 +129,10 @@ export function TenantImportPage() {
           <div className="flex flex-wrap gap-3">
             <Button type="button" variant="outline" onClick={() => download('json')}><Download className="size-4" />JSON report</Button>
             <Button type="button" variant="outline" onClick={() => download('csv')}><Download className="size-4" />CSV report</Button>
-            <Button disabled title={analysis.valid ? 'Import execution requires an approved import RPC.' : 'Resolve dry-run errors first.'}>Create import batch</Button>
+            <div className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--muted)] px-3 text-sm text-[var(--muted-foreground)]">
+              <Badge variant="outline">Report only</Badge>
+              <span>No database changes are made from this page.</span>
+            </div>
           </div>
         </>
       ) : null}

@@ -126,6 +126,7 @@ export const referralsService = {
     const { error: expireError } = await sb
       .from('credit_redemptions')
       .update({ status: 'expired' })
+      .eq('program_id', getActiveProgram().id)
       .eq('profile_id', profileId)
       .eq('status', 'pending')
 
@@ -138,6 +139,7 @@ export const referralsService = {
     for (let attempt = 0; attempt < 5; attempt += 1) {
       const code = generateSixDigitCode()
       const { error: insertError } = await sb.from('credit_redemptions').insert({
+        program_id: getActiveProgram().id,
         profile_id: profileId,
         code,
         expires_at: expiresAt,
@@ -279,6 +281,7 @@ export const referralsService = {
     void actorName
     const { error } = await sb.rpc('consume_reward_credit', {
       p_profile_id: profileId,
+      p_program_id: getActiveProgram().id,
     })
 
     if (error) {

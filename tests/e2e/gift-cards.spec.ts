@@ -18,6 +18,7 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
   test.skip(!workflowAuthEnabled, 'Run with npm run test:gift-cards against a seeded Supabase project.')
 
   const runId = process.env.WORKFLOW_TEST_RUN_ID ?? `${Date.now()}`
+  const businessSlug = process.env.E2E_BUSINESS_SLUG ?? 'velvet-brew'
   const fundingNote = `gift-card-workflow-funding-${runId}`
   const catalogTitle = `Workflow Gift Card ${runId}`
 
@@ -30,7 +31,7 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
     const staffClient = await getSupabaseSessionClient(e2eAccounts.businessStaff)
     const ownerClient = await getSupabaseSessionClient(e2eAccounts.businessOwner)
-    const business = await getBusinessBySlug(ownerClient, 'velvet-brew')
+    const business = await getBusinessBySlug(ownerClient, businessSlug)
     const customer = await getProfileByEmail(customerClient, e2eAccounts.customer)
     businessId = business.id
     customerProfileId = customer.id
@@ -48,19 +49,11 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
 
   test('GC002 verified customer can issue a gift card and see wallet state', async ({ page }) => {
     const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
-    let issuedCard: Record<string, unknown>
-    try {
-      issuedCard = await issueGiftCardForCustomer(customerClient, catalogId, customerProfileId)
-    } catch (error) {
-      test.info().annotations.push({
-        type: 'known-gap',
-        description: error instanceof Error ? error.message : 'Gift card issuing failed in current Supabase project.',
-      })
-      await signInCustomer(page, e2eAccounts.customer)
-      await page.goto('/gift-cards')
-      await expect(page.locator('body')).toContainText(/Gift Card Catalog|Available Points|Claimable/i)
-      return
-    }
+    const issuedCard: Record<string, unknown> = await issueGiftCardForCustomer(
+      customerClient,
+      catalogId,
+      customerProfileId,
+    )
     const latestCard = await getLatestGiftCardForCustomer(customerClient, customerProfileId)
     giftCardId = latestCard.id as string
 
@@ -73,25 +66,20 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
   })
 
   test('GC003 business staff can redeem an active gift card once', async ({ page }) => {
-    if (!giftCardId) {
-      test.info().annotations.push({
-        type: 'known-gap',
-        description: 'Gift card issue RPC failed earlier, so redemption UI is verified without redeeming a card.',
-      })
-      await signInBusinessPortal(page, e2eAccounts.businessStaff)
-      await page.goto('/business/redemptions')
-      await expect(page.locator('body')).toContainText(/Gift Card Redemptions|Scanner|Validation Result/i)
-      return
-    }
+    expect(giftCardId).toBeTruthy()
 
     const staffClient = await getSupabaseSessionClient(e2eAccounts.businessStaff)
     const redeemedCard = await redeemGiftCardForBusiness(staffClient, giftCardId, businessId)
 
     expect(redeemedCard.status).toBe('redeemed')
     expect(redeemedCard.redeemed_at).toBeTruthy()
+    await expect(
+      redeemGiftCardForBusiness(staffClient, giftCardId, businessId),
+    ).rejects.toThrow(/no remaining balance|not active/i)
 
     await signInBusinessPortal(page, e2eAccounts.businessStaff)
     await page.goto('/business/redemptions')
-    await expect(page.locator('body')).toContainText(/Gift Card Redemptions|Scanner|Validation Result/i)
+    await expect(page.getByRole('heading', { name: 'Transactions', exact: true })).toBeVisible()
+    await expect(page.locator('body')).toContainText(/Gift card redeemed|Transaction History/i)
   })
 })

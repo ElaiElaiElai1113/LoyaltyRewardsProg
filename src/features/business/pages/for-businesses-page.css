@@ -33,12 +33,18 @@
   text-decoration: none;
 }
 
-.business-public-shell__brand img {
+.business-public-shell__brand img.business-public-shell__brand-mark {
+  height: 34px;
+  max-width: 100px;
+  width: auto;
+}
+
+.business-public-shell__brand span.business-public-shell__brand-mark {
   height: 34px;
   width: 34px;
 }
 
-.business-public-shell__brand span {
+.business-public-shell__brand-copy {
   display: flex;
   flex-direction: column;
 }
@@ -95,7 +101,12 @@
   font-size: 14px;
 }
 
-.business-public-shell__footer .business-public-shell__brand img {
+.business-public-shell__footer .business-public-shell__brand img.business-public-shell__brand-mark {
+  height: 30px;
+  max-width: 88px;
+}
+
+.business-public-shell__footer .business-public-shell__brand span.business-public-shell__brand-mark {
   height: 30px;
   width: 30px;
 }
@@ -1012,7 +1023,12 @@
     font-size: 12px;
   }
 
-  .business-public-shell__brand img {
+  .business-public-shell__brand img.business-public-shell__brand-mark {
+    height: 30px;
+    max-width: 88px;
+  }
+
+  .business-public-shell__brand span.business-public-shell__brand-mark {
     height: 30px;
     width: 30px;
   }

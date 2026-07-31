@@ -30,7 +30,7 @@ const programs: Record<string, Program> = {
     timezone: 'America/Guatemala',
     primaryColor: '#176b5b',
     accentColor: '#f2b134',
-    logoUrl: '/pinas-rewards-logo.svg',
+    logoUrl: null,
     supportEmail: 'support@guatemalarewards.com',
     mapCenter: { latitude: 14.6349, longitude: -90.5069 },
     featureFlags: {},
@@ -71,13 +71,31 @@ const programs: Record<string, Program> = {
 
 let activeProgram: Program | null = null
 
-function inferSlug(hostname: string) {
+const programSlugByHost: Record<string, keyof typeof programs> = {
+  'medellinrewards.com': 'medellin',
+  'www.medellinrewards.com': 'medellin',
+  'guatemalarewards.com': 'guatemala',
+  'www.guatemalarewards.com': 'guatemala',
+  'pinas-rewards.vercel.app': 'pinas',
+  'synergize.example': 'synergize',
+  'pinas.localhost': 'pinas',
+}
+
+export function inferTenantSlugHint(hostname: string) {
   const host = hostname.toLowerCase().split(':')[0]
   const queryTenant = typeof window === 'undefined'
     ? null
-    : new URLSearchParams(window.location.search).get('tenant')
-  if (queryTenant && programs[queryTenant]) return queryTenant
-  return Object.keys(programs).find((slug) => host.includes(slug)) ?? 'pinas'
+    : new URLSearchParams(window.location.search).get('tenant')?.toLowerCase()
+  if (queryTenant && canUseTenantPreviewOverride(host) && programs[queryTenant]) return queryTenant
+  const exactHostSlug = programSlugByHost[host]
+  if (exactHostSlug) return exactHostSlug
+
+  const platformSubdomain = host.endsWith('.rewardsplatform.app')
+    ? host.slice(0, -'.rewardsplatform.app'.length)
+    : null
+  if (platformSubdomain && programs[platformSubdomain]) return platformSubdomain
+
+  return null
 }
 
 export function canUseTenantPreviewOverride(hostname: string) {
@@ -90,7 +108,8 @@ export function canUseTenantPreviewOverride(hostname: string) {
 }
 
 export function getFallbackProgram(hostname = window.location.hostname) {
-  return programs[inferSlug(hostname)] ?? programs.pinas
+  const slug = inferTenantSlugHint(hostname)
+  return (slug ? programs[slug] : null) ?? programs.pinas
 }
 
 export function setActiveProgram(program: Program) {

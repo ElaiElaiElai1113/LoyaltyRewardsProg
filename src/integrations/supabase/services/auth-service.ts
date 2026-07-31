@@ -3,6 +3,12 @@ import type { AuthFormValues, MemberSignUpSubmission } from '@/types/forms'
 import { requireSupabase, camelCaseRow } from './shared'
 import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { isSupabaseConfigured } from '@/integrations/supabase/client'
+import { resolveTenantPublicSiteUrl } from '@/lib/public-site-url'
+import {
+  getPasswordSetupParams,
+  getPasswordSetupType,
+  type PasswordSetupType,
+} from '@/lib/password-setup'
 
 let pendingSignInRole: AuthFormValues['role'] | null = null
 
@@ -11,19 +17,21 @@ function getUrlTokenParams() {
     return new URLSearchParams()
   }
 
-  const searchParams = new URLSearchParams(window.location.search)
-  if (searchParams.get('type') === 'recovery') {
-    return searchParams
-  }
-
-  const hash = window.location.hash.startsWith('#')
-    ? window.location.hash.slice(1)
-    : window.location.hash
-
-  return new URLSearchParams(hash)
+  return getPasswordSetupParams(window.location.search, window.location.hash)
 }
 
-function clearRecoveryParamsFromUrl() {
+function getAuthCallbackParams() {
+  if (typeof window === 'undefined') return new URLSearchParams()
+
+  const merged = new URLSearchParams(
+    window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash,
+  )
+  const search = new URLSearchParams(window.location.search)
+  for (const [key, value] of search) merged.set(key, value)
+  return merged
+}
+
+function clearPasswordSetupParamsFromUrl() {
   if (typeof window === 'undefined') return
 
   const nextUrl = new URL(window.location.href)
@@ -44,12 +52,10 @@ function clearRecoveryParamsFromUrl() {
 }
 
 function getPublicSiteUrl() {
-  const configuredUrl = import.meta.env.VITE_PUBLIC_SITE_URL?.trim()
-  if (configuredUrl) {
-    return configuredUrl.replace(/\/+$/, '')
-  }
-
-  return typeof window === 'undefined' ? '' : window.location.origin
+  return resolveTenantPublicSiteUrl(
+    typeof window === 'undefined' ? undefined : window.location.origin,
+    import.meta.env.VITE_PUBLIC_SITE_URL,
+  )
 }
 
 function mapMembership(row: Record<string, unknown>): Membership {
@@ -198,6 +204,7 @@ export const authService = {
       email,
       password: input.password,
       options: {
+        emailRedirectTo: `${getPublicSiteUrl()}/auth/confirm`,
         data: {
           full_name: name,
           phone,
@@ -261,14 +268,21 @@ export const authService = {
     await sb.auth.signOut()
   },
 
-  async ensureRecoverySession(): Promise<boolean> {
+  async ensurePasswordSetupSession(expectedType: PasswordSetupType): Promise<boolean> {
     const sb = requireSupabase()
     const params = getUrlTokenParams()
-    const recoveryType = params.get('type')
+    const setupType = typeof window === 'undefined'
+      ? null
+      : getPasswordSetupType(window.location.search, window.location.hash)
     const accessToken = params.get('access_token')
     const refreshToken = params.get('refresh_token')
+    const code = params.get('code')
 
-    if (recoveryType === 'recovery' && accessToken && refreshToken) {
+    if (setupType && setupType !== expectedType) {
+      throw new Error('This authentication link is for a different password flow.')
+    }
+
+    if (setupType === expectedType && accessToken && refreshToken) {
       const { error } = await sb.auth.setSession({
         access_token: accessToken,
         refresh_token: refreshToken,
@@ -278,7 +292,15 @@ export const authService = {
         throw error
       }
 
-      clearRecoveryParamsFromUrl()
+      clearPasswordSetupParamsFromUrl()
+      return true
+    }
+
+    if (code) {
+      const { error } = await sb.auth.exchangeCodeForSession(code)
+      if (error) throw error
+
+      clearPasswordSetupParamsFromUrl()
       return true
     }
 
@@ -286,7 +308,51 @@ export const authService = {
       data: { session },
     } = await sb.auth.getSession()
 
-    return Boolean(session)
+    if (session) {
+      clearPasswordSetupParamsFromUrl()
+      return true
+    }
+
+    return false
+  },
+
+  async ensureRecoverySession(): Promise<boolean> {
+    return this.ensurePasswordSetupSession('recovery')
+  },
+
+  async ensureEmailConfirmationSession(): Promise<Profile | null> {
+    const sb = requireSupabase()
+    const params = getAuthCallbackParams()
+    const callbackType = params.get('type')
+    const accessToken = params.get('access_token')
+    const refreshToken = params.get('refresh_token')
+    const code = params.get('code')
+    const allowedTypes = new Set(['signup', 'email', 'email_change', 'magiclink'])
+
+    if (callbackType && !allowedTypes.has(callbackType)) {
+      throw new Error('This authentication link is not an email confirmation link.')
+    }
+
+    if (callbackType && accessToken && refreshToken) {
+      const { error } = await sb.auth.setSession({
+        access_token: accessToken,
+        refresh_token: refreshToken,
+      })
+      if (error) throw error
+      clearPasswordSetupParamsFromUrl()
+    } else if (code) {
+      // Exchange the callback code before consulting any persisted session so
+      // an unrelated signed-in browser account cannot win the confirmation.
+      const { error } = await sb.auth.exchangeCodeForSession(code)
+      if (error) throw error
+      clearPasswordSetupParamsFromUrl()
+    } else {
+      const { data: { session } } = await sb.auth.getSession()
+      if (!session) return null
+      clearPasswordSetupParamsFromUrl()
+    }
+
+    return this.getSessionProfile()
   },
 
   getPendingSignInRole(): AuthFormValues['role'] | null {

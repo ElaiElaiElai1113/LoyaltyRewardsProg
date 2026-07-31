@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 
+import { getActiveProgram } from '@/features/tenant/tenant-service'
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
@@ -43,9 +45,22 @@ export function getInitials(name: string) {
     .join('')
 }
 
-export function formatCurrency(amount: number) {
-  return new Intl.NumberFormat('en-US', {
+export function formatCurrency(amount: number, currency?: string, locale?: string) {
+  let fallbackCurrency = 'USD'
+  let fallbackLocale = 'en-US'
+
+  if (!currency || !locale) {
+    try {
+      const program = getActiveProgram()
+      fallbackCurrency = program.currency
+      fallbackLocale = program.locale
+    } catch {
+      // The helper can also run in build-time and isolated unit-test contexts.
+    }
+  }
+
+  return new Intl.NumberFormat(locale ?? fallbackLocale, {
     style: 'currency',
-    currency: 'USD',
+    currency: currency ?? fallbackCurrency,
   }).format(amount)
 }

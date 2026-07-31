@@ -5,7 +5,7 @@ const routes = [
   '/admin/import',
   '/program/settings?tenant=guatemala',
   '/program/team?tenant=synergize',
-  '/program/reports?tenant=davao',
+  '/program/reports?tenant=pinas',
   '/onboarding/program?tenant=guatemala',
 ]
 
