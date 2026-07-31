@@ -90,6 +90,17 @@
   ],
   "redirects": [
     {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.guatemalarewards.com"
+        }
+      ],
+      "destination": "https://guatemalarewards.com/",
+      "permanent": true
+    },
+    {
       "source": "/:path*",
       "has": [
         {
