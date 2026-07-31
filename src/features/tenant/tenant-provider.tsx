@@ -39,7 +39,11 @@ function applyProgram(program: Program) {
 }
 
 export function TenantProvider({ children }: { children: ReactNode }) {
-  const [program, setProgram] = useState(() => getFallbackProgram())
+  const [program, setProgram] = useState(() => {
+    const initialProgram = getFallbackProgram()
+    applyProgram(initialProgram)
+    return initialProgram
+  })
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 

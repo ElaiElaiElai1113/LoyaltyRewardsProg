@@ -1061,6 +1061,17 @@ runTest('public homepage never renders internal headline labels', () => {
   assert.match(homePage, /en: 'Businesses'/)
 })
 
+runTest('tenant branding is bootstrapped before React loads', () => {
+  const indexHtml = readFileSync('index.html', 'utf8')
+  const bootstrap = readFileSync('public/tenant-bootstrap.js', 'utf8')
+  const provider = readFileSync('src/features/tenant/tenant-provider.tsx', 'utf8')
+
+  assert.match(indexHtml, /<script src="\/tenant-bootstrap\.js"><\/script>/)
+  assert.match(bootstrap, /medellin: \{ name: 'Medellin Rewards'/)
+  assert.match(bootstrap, /document\.title = brand\.name/)
+  assert.match(provider, /applyProgram\(initialProgram\)/)
+})
+
 runTest('early access English source copy has Spanish translations', () => {
   const content = readFileSync('src/features/early-access/early-access-content.ts', 'utf8')
   const language = readFileSync('src/lib/language.tsx', 'utf8')

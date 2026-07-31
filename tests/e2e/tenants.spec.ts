@@ -33,6 +33,12 @@ test.describe('white-label tenant resolution', () => {
       await expect(page.locator('html')).toHaveCSS('--tenant-accent', tenant.color)
       await expect(page.locator('body')).not.toContainText('Loading rewards program...')
       expect(errors).toEqual([])
+
+      await page.reload()
+      await expect(page).toHaveTitle(tenant.name)
+      if (tenant.slug !== 'pinas') {
+        await expect(page.locator('body')).not.toContainText('Pinas Rewards')
+      }
     })
   }
 
