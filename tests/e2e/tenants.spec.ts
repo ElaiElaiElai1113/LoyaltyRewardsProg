@@ -51,6 +51,17 @@ test.describe('white-label tenant resolution', () => {
       await expect(page.locator('body')).not.toContainText(tenant.name)
       expect(errors).toEqual([])
     })
+
+    test(`${tenant.name} keeps the business entry tenant branded`, async ({ page }) => {
+      const errors = collectRuntimeErrors(page)
+      await page.goto(`/business/login?tenant=${tenant.slug}`)
+
+      await expect(page).toHaveTitle(tenant.name)
+      await expect(page.getByText(tenant.name, { exact: true })).toBeVisible()
+      await expect(page.locator('#staff-signin-email')).toBeVisible()
+      await expect(page.locator('body')).not.toContainText('Rewards Platform')
+      expect(errors).toEqual([])
+    })
   }
 
   test('tenant selection survives navigation to the public business catalog', async ({ page }) => {
