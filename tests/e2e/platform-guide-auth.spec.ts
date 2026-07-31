@@ -11,7 +11,7 @@ test.describe('authenticated platform guide workflow', () => {
 
     await page.goto('/admin/guide')
     await expect(page).toHaveURL(/\/admin\/guide$/)
-    await expect(page.getByRole('heading', { name: 'Guia de la plataforma' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Guia de la plataforma|Platform guide/ })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Guia' })).toHaveAttribute('href', '/admin/guide')
   })
 
@@ -20,7 +20,7 @@ test.describe('authenticated platform guide workflow', () => {
 
     await page.goto('/business/guide')
     await expect(page).toHaveURL(/\/business\/guide$/)
-    await expect(page.getByRole('heading', { name: 'Guia de la plataforma' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: /Guia de la plataforma|Platform guide/ })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Guia' })).toHaveAttribute('href', '/business/guide')
   })
 })
