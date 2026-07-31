@@ -40,6 +40,17 @@ test.describe('white-label tenant resolution', () => {
         await expect(page.locator('body')).not.toContainText('Pinas Rewards')
       }
     })
+
+    test(`${tenant.name} keeps the platform-admin entry parent branded`, async ({ page }) => {
+      const errors = collectRuntimeErrors(page)
+      await page.goto(`/admin?tenant=${tenant.slug}`)
+
+      await expect(page).toHaveTitle('Rewards Platform Admin')
+      await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
+      await expect(page.locator('#staff-signin-email')).toBeVisible()
+      await expect(page.locator('body')).not.toContainText(tenant.name)
+      expect(errors).toEqual([])
+    })
   }
 
   test('tenant selection survives navigation to the public business catalog', async ({ page }) => {

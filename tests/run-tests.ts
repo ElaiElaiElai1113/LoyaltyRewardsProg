@@ -1072,6 +1072,22 @@ runTest('tenant branding is bootstrapped before React loads', () => {
   assert.match(provider, /applyProgram\(initialProgram\)/)
 })
 
+runTest('Rewards Platform is isolated to platform-admin surfaces', () => {
+  const platformConfig = readFileSync('src/features/platform/platform-brand.ts', 'utf8')
+  const platformMetadata = readFileSync('src/features/platform/use-platform-document-brand.ts', 'utf8')
+  const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
+  const staffLogin = readFileSync('src/features/auth/pages/staff-login-page.tsx', 'utf8')
+  const bootstrap = readFileSync('public/tenant-bootstrap.js', 'utf8')
+
+  assert.match(platformConfig, /name: 'Rewards Platform'/)
+  assert.match(platformConfig, /adminTitle: 'Rewards Platform Admin'/)
+  assert.match(platformMetadata, /document\.title = platformBrand\.adminTitle/)
+  assert.match(adminLayout, /platformBrand\.name/)
+  assert.match(staffLogin, /isAdminPortal \? platformBrand\.name : program\.name/)
+  assert.match(bootstrap, /isPlatformAdmin/)
+  assert.doesNotMatch(platformConfig, /Medellin|Pinas|Guatemala|Synergize/)
+})
+
 runTest('early access English source copy has Spanish translations', () => {
   const content = readFileSync('src/features/early-access/early-access-content.ts', 'utf8')
   const language = readFileSync('src/lib/language.tsx', 'utf8')
@@ -2082,7 +2098,7 @@ runTest('business and admin login pages follow the compact auth layout', () => {
   const language = readFileSync('src/lib/language.tsx', 'utf8')
 
   assert.match(page, /AuthPortalShell showTabs=\{false\}/)
-  assert.match(page, /\{program\.name\}/)
+  assert.match(page, /isAdminPortal \? platformBrand\.name : program\.name/)
   assert.match(page, /portalLabel\.toUpperCase\(\)/)
   assert.match(page, /id="staff-signin-email"/)
   assert.match(page, /id="staff-signin-password"/)

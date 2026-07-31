@@ -27,6 +27,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { platformBrand } from '@/features/platform/platform-brand'
+import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
 import { useLanguage } from '@/lib/language'
 import { cn, getInitials } from '@/lib/utils'
 
@@ -55,6 +57,7 @@ export function AdminLayout() {
   const { t } = useLanguage()
   const location = useLocation()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  usePlatformDocumentBrand()
   const isAdminPortal = location.pathname === '/admin/portal'
   const activeAdminSection = location.hash.replace('#', '') || 'members'
 
@@ -90,9 +93,9 @@ export function AdminLayout() {
             <ShieldCheck className="size-5" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="text-lg font-semibold text-[var(--foreground)]">{t('Admin Portal')}</span>
+            <span className="text-lg font-semibold text-[var(--foreground)]">{platformBrand.name}</span>
             <span className="text-xs font-medium text-[var(--muted-foreground)]">
-              {t('Platform Operations')}
+              {platformBrand.controlPlaneLabel}
             </span>
           </div>
           <Button

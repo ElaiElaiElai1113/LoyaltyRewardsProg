@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
+import { platformBrand } from '@/features/platform/platform-brand'
+import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
@@ -72,6 +74,7 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
   })
 
   const isAdminPortal = portal === 'admin'
+  usePlatformDocumentBrand(isAdminPortal)
   const portalHome = isAdminPortal ? '/admin/portal' : '/business/dashboard'
   const portalLabel = isAdminPortal ? t('Admin Portal') : t('Business Portal')
 
@@ -79,7 +82,7 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
     <AuthPortalShell showTabs={false}>
       <div className="mb-7 text-center">
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
-          {program.name}
+          {isAdminPortal ? platformBrand.name : program.name}
         </p>
         <p className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
           {portalLabel.toUpperCase()}

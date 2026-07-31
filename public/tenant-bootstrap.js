@@ -6,10 +6,13 @@
     synergize: { name: 'Synergize', color: '#2357a5', locale: 'en' },
     pinas: { name: 'Pinas Rewards', color: '#a67608', locale: 'en' },
   }
+  var isPlatformAdmin = /^\/admin(?:\/|$)/.test(window.location.pathname)
   var slug = Object.keys(brands).find(function findBrand(key) {
     return hostname.indexOf(key) !== -1
   }) || 'pinas'
-  var brand = brands[slug]
+  var brand = isPlatformAdmin
+    ? { name: 'Rewards Platform', color: '#d1ad4a', locale: 'en' }
+    : brands[slug]
 
   document.title = brand.name
   document.documentElement.lang = brand.locale

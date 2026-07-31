@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { platformService, type PlatformProgram } from '@/features/platform/platform-service'
+import { platformBrand } from '@/features/platform/platform-brand'
 
 const defaults = {
   name: '',
@@ -103,7 +104,7 @@ export function PlatformProgramsPage() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold uppercase text-[var(--muted-foreground)]">SaaS control plane</p>
+          <p className="text-sm font-semibold uppercase text-[var(--muted-foreground)]">{platformBrand.name}</p>
           <h1 className="mt-1 text-3xl font-semibold text-[var(--foreground)]">Reward programs</h1>
           <p className="mt-2 max-w-2xl text-sm text-[var(--muted-foreground)]">
             Manage tenant lifecycle, domains, plans, and operational access.
