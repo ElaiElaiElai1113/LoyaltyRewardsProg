@@ -47,7 +47,7 @@ const programs: Record<string, Program> = {
     primaryColor: '#2357a5',
     accentColor: '#e45b3f',
     logoUrl: null,
-    supportEmail: 'support@synergize.example',
+    supportEmail: 'support@synergizerewards.com',
     mapCenter: { latitude: 40.7128, longitude: -74.006 },
     featureFlags: {},
   },
