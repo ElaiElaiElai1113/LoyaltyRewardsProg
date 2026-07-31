@@ -1053,6 +1053,14 @@ runTest('early access page uses tenant-scoped language preferences and exposes a
   assert.match(language, /'When we officially launch, subscribers will be the first to know/)
 })
 
+runTest('public homepage never renders internal headline labels', () => {
+  const homePage = readFileSync('src/features/home/pages/home-page.tsx', 'utf8')
+
+  assert.doesNotMatch(homePage, /Businesses headline/)
+  assert.match(homePage, /heroBusinessCopy\[language\]/)
+  assert.match(homePage, /en: 'Businesses'/)
+})
+
 runTest('early access English source copy has Spanish translations', () => {
   const content = readFileSync('src/features/early-access/early-access-content.ts', 'utf8')
   const language = readFileSync('src/lib/language.tsx', 'utf8')

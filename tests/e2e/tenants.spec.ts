@@ -21,10 +21,15 @@ test.describe('white-label tenant resolution', () => {
   for (const tenant of tenants) {
     test(`${tenant.name} loads isolated branding without runtime errors`, async ({ page }) => {
       const errors = collectRuntimeErrors(page)
+      await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
       await page.goto(`/?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle(tenant.name)
       await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
+      await expect(
+        page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
+      ).toBeVisible()
+      await expect(page.locator('body')).not.toContainText(/\bheadline\b/i)
       await expect(page.locator('html')).toHaveCSS('--tenant-accent', tenant.color)
       await expect(page.locator('body')).not.toContainText('Loading rewards program...')
       expect(errors).toEqual([])

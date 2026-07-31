@@ -26,7 +26,6 @@ const spanishHomeCopy: Record<string, string> = {
   'Earn Amazing': 'Gana increíbles',
   'Rewards While': 'recompensas mientras',
   'Supporting Local': 'apoyas a los',
-  'Businesses headline': 'negocios locales',
   "Every time you shop, dine, or spend at a business in our network, you're supporting a local business — and earning Rewards you can actually use.":
     'Cada vez que compras, comes o gastas en un negocio de nuestra red, apoyas a un negocio local y ganas recompensas que realmente puedes usar.',
   'Join free and earn 10% back automatically — or upgrade to earn between 20% and 100% back — every time you spend with the businesses in our network.':
@@ -115,7 +114,6 @@ const tagalogHomeCopy: Record<string, string> = {
   'Earn Amazing': 'Kumita ng Malalaking',
   'Rewards While': 'Reward Habang',
   'Supporting Local': 'Sinusuportahan ang Lokal',
-  'Businesses headline': 'na mga Negosyo',
   "Every time you shop, dine, or spend at a business in our network, you're supporting a local business â€” and earning Rewards you can actually use.":
     'Sa bawat pamimili, pagkain, o paggastos sa aming network, sinusuportahan mo ang lokal na negosyo at kumikita ng Rewards na magagamit mo.',
   'See how it works': 'Tingnan kung paano',
@@ -140,6 +138,12 @@ const tagalogHomeCopy: Record<string, string> = {
   Contact: 'Makipag-ugnayan',
   'All rights reserved.': 'Lahat ng karapatan ay nakalaan.',
 }
+
+const heroBusinessCopy = {
+  en: 'Businesses',
+  es: 'negocios locales',
+  tl: 'na mga Negosyo',
+} as const
 
 const valueItems = [
   {
@@ -323,7 +327,7 @@ export function HomePage() {
                 <br />
                 <em>{tx('Supporting Local')}</em>
                 <br />
-                {tx('Businesses headline')}
+                {heroBusinessCopy[language]}
               </h1>
 
               <div className="figma-home__hero-text">
