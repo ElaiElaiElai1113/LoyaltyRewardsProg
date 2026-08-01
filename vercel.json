@@ -110,17 +110,19 @@
       ],
       "destination": "https://guatemalarewards.com/:path*",
       "permanent": true
-    }
-  ],
-  "rewrites": [
+    },
     {
       "source": "/robots.txt",
-      "destination": "/api/robots"
+      "destination": "/api/robots",
+      "permanent": false
     },
     {
       "source": "/sitemap.xml",
-      "destination": "/api/sitemap"
-    },
+      "destination": "/api/sitemap",
+      "permanent": false
+    }
+  ],
+  "rewrites": [
     {
       "source": "/((?!api(?:/|$)).*)",
       "destination": "/index.html"

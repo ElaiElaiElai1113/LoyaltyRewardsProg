@@ -77,7 +77,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('.figma-home__category-card figcaption')).toHaveCount(0)
 
     const vacationBanner = page.locator('#vacation')
-    await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean\.webp/)
+    await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean(?:-[\w-]+)?\.webp/)
     await expect(vacationBanner).toHaveCSS('background-position', '50% 0%')
   })
 
@@ -150,11 +150,11 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('link', { name: 'Partner With Us' })).toHaveAttribute('href', '#get-started')
 
     await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Pinas Rewards members' }))
-      .toHaveAttribute('src', /local-business-owner\.png/)
+      .toHaveAttribute('src', /local-business-owner(?:-[\w-]+)?\.png/)
     await expect(page.getByRole('img', { name: 'Hotel partner welcoming a rewards member' }))
-      .toHaveAttribute('src', /hotel-partner\.png/)
+      .toHaveAttribute('src', /hotel-partner(?:-[\w-]+)?\.png/)
     await expect(page.getByRole('img', { name: 'Salon partner serving rewards members' }))
-      .toHaveAttribute('src', /salon-partner\.png/)
+      .toHaveAttribute('src', /salon-partner(?:-[\w-]+)?\.png/)
     await expect(page.getByRole('img', { name: 'Staff member scanning a customer QR code at checkout' }))
       .toHaveAttribute('src', /staff-qr-checkout\.png/)
   })

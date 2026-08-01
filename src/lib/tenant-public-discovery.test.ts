@@ -16,12 +16,12 @@ const verifiedTenants = [
 describe('host-aware public discovery documents', () => {
   it('routes both well-known discovery paths through their serverless handlers', () => {
     const vercelConfig = JSON.parse(readFileSync('vercel.json', 'utf8')) as {
-      rewrites?: Array<{ source: string; destination: string }>
+      redirects?: Array<{ source: string; destination: string; permanent: boolean }>
     }
 
-    expect(vercelConfig.rewrites).toEqual(expect.arrayContaining([
-      { source: '/robots.txt', destination: '/api/robots' },
-      { source: '/sitemap.xml', destination: '/api/sitemap' },
+    expect(vercelConfig.redirects).toEqual(expect.arrayContaining([
+      { source: '/robots.txt', destination: '/api/robots', permanent: false },
+      { source: '/sitemap.xml', destination: '/api/sitemap', permanent: false },
     ]))
     expect(readFileSync('public/robots.txt', 'utf8')).not.toMatch(/https?:\/\//)
     expect(readFileSync('public/sitemap.xml', 'utf8')).not.toContain('<loc>')
