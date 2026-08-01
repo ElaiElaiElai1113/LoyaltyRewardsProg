@@ -4,6 +4,7 @@ import { signInBusinessPortal, signInCustomer } from './helpers/auth.js'
 import { e2eAccounts, workflowAuthEnabled } from './helpers/env.js'
 import {
   createGiftCardCatalogItem,
+  getBusinessById,
   getBusinessBySlug,
   getLatestGiftCardForCustomer,
   getProfileByEmail,
@@ -18,7 +19,7 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
   test.skip(!workflowAuthEnabled, 'Run with npm run test:gift-cards against a seeded Supabase project.')
 
   const runId = process.env.WORKFLOW_TEST_RUN_ID ?? `${Date.now()}`
-  const businessSlug = process.env.E2E_BUSINESS_SLUG ?? 'velvet-brew'
+  const fallbackBusinessSlug = process.env.E2E_BUSINESS_SLUG ?? 'velvet-brew'
   const fundingNote = `gift-card-workflow-funding-${runId}`
   const catalogTitle = `Workflow Gift Card ${runId}`
 
@@ -31,7 +32,10 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
     const staffClient = await getSupabaseSessionClient(e2eAccounts.businessStaff)
     const ownerClient = await getSupabaseSessionClient(e2eAccounts.businessOwner)
-    const business = await getBusinessBySlug(ownerClient, businessSlug)
+    const owner = await getProfileByEmail(ownerClient, e2eAccounts.businessOwner)
+    const business = owner.businessId
+      ? await getBusinessById(ownerClient, owner.businessId)
+      : await getBusinessBySlug(ownerClient, fallbackBusinessSlug)
     const customer = await getProfileByEmail(customerClient, e2eAccounts.customer)
     businessId = business.id
     customerProfileId = customer.id

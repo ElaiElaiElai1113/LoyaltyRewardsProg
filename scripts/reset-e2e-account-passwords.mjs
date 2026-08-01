@@ -33,7 +33,7 @@ if (password.length < 12) {
 const accounts = [
   { email: process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test', role: 'customer', name: 'E2E Verified Customer' },
   { email: process.env.E2E_UNVERIFIED_CUSTOMER_EMAIL ?? 'unverified@medellin.test', role: 'customer', name: 'E2E Unverified Customer' },
-  { email: process.env.E2E_BUSINESS_STAFF_EMAIL ?? 'staff@velvetbrew.test', role: 'business-staff', name: 'E2E Pinas Staff' },
+  { email: process.env.E2E_BUSINESS_STAFF_EMAIL ?? 'staff@velvetbrew.test', role: 'business-staff', name: 'Business Test 2 Staff' },
   { email: process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'owner@velvetbrew.test', role: 'business-owner', name: 'E2E Pinas Owner' },
   { email: 'owner@velvetbrew.co', role: 'business-owner', name: 'Velvet Brew Owner' },
   { email: 'businesstest2@gmail.com', role: 'business-owner', name: 'Business Test 2 Owner' },
@@ -66,6 +66,32 @@ for (let page = 1; ; page += 1) {
   if (error) throw error
   for (const user of data.users) usersByEmail.set(user.email?.toLowerCase(), user)
   if (data.users.length < 100) break
+}
+
+if (process.env.QA_PROFILE_NAMES_ONLY === 'true') {
+  let updatedCount = 0
+  for (const account of selectedAccounts) {
+    const user = usersByEmail.get(account.email.toLowerCase())
+    if (!user) continue
+
+    const { error: authError } = await client.auth.admin.updateUserById(user.id, {
+      user_metadata: {
+        ...(user.user_metadata ?? {}),
+        full_name: account.name,
+      },
+    })
+    if (authError) throw authError
+
+    const { error: profileError } = await client
+      .from('profiles')
+      .update({ full_name: account.name })
+      .eq('id', user.id)
+    if (profileError) throw profileError
+    updatedCount += 1
+  }
+
+  console.log(`Updated ${updatedCount} approved QA profile display names without changing roles or business assignments.`)
+  process.exit(0)
 }
 
 if (process.env.QA_LIST_ROLE) {

@@ -156,7 +156,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('img', { name: 'Salon partner serving rewards members' }))
       .toHaveAttribute('src', /salon-partner(?:-[\w-]+)?\.png/)
     await expect(page.getByRole('img', { name: 'Staff member scanning a customer QR code at checkout' }))
-      .toHaveAttribute('src', /staff-qr-checkout\.png/)
+      .toHaveAttribute('src', /staff-qr-checkout(?:-[\w-]+)?\.png/)
   })
 
   test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {

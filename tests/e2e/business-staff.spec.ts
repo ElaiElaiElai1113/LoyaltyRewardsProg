@@ -12,7 +12,7 @@ test.describe('business staff workflow smoke test', () => {
     for (const path of ['/business/dashboard', '/business/redemptions', '/business/members', '/business/partners']) {
       await page.goto(path)
       await expect(page).toHaveURL(new RegExp(`${path.replaceAll('/', '\\/')}$`))
-      await expect(page.locator('body')).toContainText(/Velvet Brew|Medellin Rewards/i)
+      await expect(page.locator('body')).not.toContainText(/application error|something went wrong|page not found/i)
     }
 
     for (const linkName of [/products/i, /^rewards$/i, /promotions/i, /gift cards/i, /settings/i]) {

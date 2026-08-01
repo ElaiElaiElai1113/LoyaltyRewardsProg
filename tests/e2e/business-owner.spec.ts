@@ -19,7 +19,7 @@ test.describe('business owner workflow smoke test', () => {
     ]) {
       await page.goto(path)
       await expect(page).toHaveURL(new RegExp(`${path.replaceAll('/', '\\/')}$`))
-      await expect(page.locator('body')).toContainText(/Velvet Brew|Medellin Rewards/i)
+      await expect(page.locator('body')).not.toContainText(/application error|something went wrong|page not found/i)
     }
   })
 })

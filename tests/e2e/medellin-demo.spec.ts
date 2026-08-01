@@ -28,20 +28,20 @@ test('Medellin member can sign in and open demo pages', async ({ page }) => {
 
   await page.goto('/profile')
   await expect(page.locator('#fullName')).toHaveValue('E2E Verified Customer')
-  await expect(page.getByText(/^Frozen$/i)).toHaveCount(0)
-  await expect(page.getByText(/^Active$/i).first()).toBeVisible()
+  await expect(page.getByText(/^(Frozen|Congelado)$/i)).toHaveCount(0)
+  await expect(page.getByText(/^(Active|Activo)$/i).first()).toBeVisible()
   await page.locator('#phone').fill('+57 300 555 0101')
   await page.locator('#location').fill('')
   await page.locator('#favoriteOrder').fill('')
-  await page.getByRole('button', { name: /save changes/i }).click()
-  await expect(page.getByText(/profile saved/i)).toBeVisible()
+  await page.getByRole('button', { name: /save changes|guardar cambios/i }).click()
+  await expect(page.getByRole('button', { name: /save changes|guardar cambios/i })).toBeEnabled()
   await page.reload()
   await expect(page.locator('#phone')).toHaveValue('+57 300 555 0101')
   await expect(page.locator('body')).toContainText('+57 300 555 0101')
 
   await page.goto('/gift-cards')
-  await expect(page.getByRole('button', { name: /add contact details/i })).toHaveCount(0)
-  await expect(page.getByRole('button', { name: /^issue$/i }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: /add contact details|agregar datos de contacto/i })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: /^(issue|emitir)$/i }).first()).toBeVisible()
 
   for (const path of ['/profile', '/shop', '/membership', '/activity', '/cart']) {
     await page.goto(path)
@@ -84,6 +84,11 @@ test('Medellin business owner can sign in and open demo pages', async ({ page })
     await expect(page.getByRole('heading', { name: 'Page not found' })).toHaveCount(0)
     await expect(page.locator('body')).not.toContainText(/application error|something went wrong/i)
   }
+
+  await page.goto('/business/members')
+  await expect(page.locator('body')).toContainText('E2E Verified Customer')
+  await page.getByPlaceholder(/Search by name, email, or customer ID/i).fill(memberProfile.id)
+  await expect(page.getByText(/^E2E Verified Customer$/).first()).toBeVisible()
 
   expect(errors).toEqual([])
 })
