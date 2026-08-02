@@ -42,6 +42,9 @@ jobs:
       - name: Health contract and SPA routing
         run: npm run ops:health:diagnose -- "$DEPLOYMENT_URL"
       - name: Verify canonical tenant domains
+        env:
+          DOMAIN_VERSION_RETRY_ATTEMPTS: '6'
+          DOMAIN_VERSION_RETRY_DELAY_MS: '10000'
         run: |
           npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_VERSION"
           npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_VERSION"
@@ -49,6 +52,9 @@ jobs:
       - name: Verify additional tenant domains
         if: inputs.tenant_domains != ''
         shell: bash
+        env:
+          DOMAIN_VERSION_RETRY_ATTEMPTS: '6'
+          DOMAIN_VERSION_RETRY_DELAY_MS: '10000'
         run: |
           IFS=',' read -ra domains <<< "${{ inputs.tenant_domains }}"
           for domain in "${domains[@]}"; do

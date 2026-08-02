@@ -2421,6 +2421,12 @@ runTest('active tenant operations use Pinas and always verify canonical producti
   assert.match(domainReadiness, /manifest\.name === name/)
   assert.match(domainReadiness, /manifest\.icons\.length > 0/)
   assert.match(domainReadiness, /--expected-version/)
+  assert.match(domainReadiness, /DOMAIN_VERSION_RETRY_ATTEMPTS/)
+  assert.match(domainReadiness, /DOMAIN_VERSION_RETRY_DELAY_MS/)
+  assert.match(domainReadiness, /versionCheckAttempt/)
+  assert.match(domainReadiness, /after \$\{versionRetryAttempts\} attempts/)
+  assert.match(postDeployment, /DOMAIN_VERSION_RETRY_ATTEMPTS: '6'/)
+  assert.match(postDeployment, /DOMAIN_VERSION_RETRY_DELAY_MS: '10000'/)
   assert.match(domainReadiness, /Expected deployed version/)
 
   for (const [hostname, tenantName] of [

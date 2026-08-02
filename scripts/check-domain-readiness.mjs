@@ -15,9 +15,33 @@ const [hostnameArg, ...expectedTenantNameParts] = rawArgs
 const hostname = String(hostnameArg ?? '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
 const expectedTenantName = expectedTenantNameParts.join(' ').trim()
 const expectedVersion = String(expectedVersionArg).trim().toLowerCase()
+const versionRetryAttempts = readBoundedInteger(
+  process.env.DOMAIN_VERSION_RETRY_ATTEMPTS,
+  1,
+  { minimum: 1, maximum: 12 },
+)
+const versionRetryDelayMs = readBoundedInteger(
+  process.env.DOMAIN_VERSION_RETRY_DELAY_MS,
+  10_000,
+  { minimum: 0, maximum: 60_000 },
+)
 if (!hostname) {
   console.error('Usage: npm run ops:domain:check -- rewards.example.com ["Tenant Rewards"] [--expected-version <git-sha>]')
   process.exit(2)
+}
+
+function readBoundedInteger(value, fallback, { minimum, maximum }) {
+  if (value === undefined || value === '') return fallback
+  const parsed = Number(value)
+  if (!Number.isInteger(parsed) || parsed < minimum || parsed > maximum) {
+    console.error(`Domain version retry configuration must be an integer from ${minimum} to ${maximum}.`)
+    process.exit(2)
+  }
+  return parsed
+}
+
+function versionsMatch(expected, actual) {
+  return Boolean(actual) && (expected.startsWith(actual) || actual.startsWith(expected))
 }
 if (expectedVersion && !/^[a-f0-9]{7,40}$/.test(expectedVersion)) {
   console.error('--expected-version must be a 7 to 40 character Git commit SHA.')
@@ -145,16 +169,26 @@ if (expectedTenantName) {
   })
 }
 await check('health', async () => {
-  const response = await fetch(`https://${hostname}/api/health`, { signal: AbortSignal.timeout(15000) })
-  const body = await response.json()
-  if (!response.ok || body.ok !== true) throw new Error(`Health check failed with HTTP ${response.status}`)
-  if (expectedVersion) {
-    const actualVersion = String(body.version ?? '').trim().toLowerCase()
-    if (!actualVersion || (!expectedVersion.startsWith(actualVersion) && !actualVersion.startsWith(expectedVersion))) {
-      throw new Error(`Expected deployed version ${expectedVersion.slice(0, 12)}, received ${actualVersion || 'missing'}`)
+  let lastActualVersion = ''
+  for (let attempt = 1; attempt <= versionRetryAttempts; attempt += 1) {
+    const response = await fetch(`https://${hostname}/api/health`, { signal: AbortSignal.timeout(15000) })
+    const body = await response.json()
+    if (!response.ok || body.ok !== true) throw new Error(`Health check failed with HTTP ${response.status}`)
+    if (!expectedVersion) return body
+
+    lastActualVersion = String(body.version ?? '').trim().toLowerCase()
+    if (versionsMatch(expectedVersion, lastActualVersion)) {
+      return { ...body, versionCheckAttempt: attempt }
+    }
+
+    if (attempt < versionRetryAttempts) {
+      await new Promise((resolve) => setTimeout(resolve, versionRetryDelayMs))
     }
   }
-  return body
+
+  throw new Error(
+    `Expected deployed version ${expectedVersion.slice(0, 12)}, received ${lastActualVersion || 'missing'} after ${versionRetryAttempts} attempts`,
+  )
 })
 
 const report = {
