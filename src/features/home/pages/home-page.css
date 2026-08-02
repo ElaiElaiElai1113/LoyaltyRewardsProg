@@ -270,6 +270,24 @@
   height: auto;
 }
 
+.figma-home--pinas .figma-home__hero-visual {
+  aspect-ratio: 0.82;
+  width: min(100%, 450px);
+}
+
+.figma-home--pinas .figma-home__hero-visual > img {
+  height: 100%;
+  border-radius: 50% / 44%;
+  box-shadow: 0 22px 45px rgb(71 48 22 / 12%);
+  object-fit: cover;
+  object-position: 51% center;
+}
+
+.figma-home--pinas .figma-home__reward-badge {
+  right: -8%;
+  bottom: 10%;
+}
+
 .figma-home__reward-badge {
   position: absolute;
   right: 3%;
@@ -401,6 +419,27 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.figma-home__category-card figcaption {
+  position: absolute;
+  bottom: 18px;
+  left: 18px;
+  z-index: 2;
+  border-radius: 999px;
+  background: rgb(24 19 15 / 82%);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 10px 16px;
+}
+
+.figma-home__category-card:has(figcaption)::after {
+  position: absolute;
+  inset: 42% 0 0;
+  background: linear-gradient(180deg, transparent, rgb(20 14 8 / 38%));
+  content: '';
 }
 
 .figma-home__category-card--cars img {
@@ -535,6 +574,17 @@
   margin-top: 12px !important;
   color: #29241f;
   font-size: 14px;
+}
+
+.figma-home__membership-referral {
+  margin-top: 22px !important;
+  border-left: 3px solid var(--home-gold);
+  background: #f7f1dc;
+  color: #5f5127;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.5;
+  padding: 10px 14px;
 }
 
 .figma-home__benefit-list {
@@ -845,7 +895,8 @@
 
 @media (max-width: 1050px) {
   .figma-home {
-    padding-left: 150px;
+    padding-bottom: 72px;
+    padding-left: 0;
   }
 
   .figma-home__brand span {
@@ -857,31 +908,38 @@
   }
 
   .figma-home__nav {
-    align-items: stretch;
+    align-items: center;
     background: var(--home-white);
-    border-right: 1px solid var(--home-line);
+    border-right: 0;
+    border-top: 1px solid var(--home-line);
     bottom: 0;
-    flex-direction: column;
-    gap: 8px;
+    flex-direction: row;
+    gap: 0;
     justify-content: center;
     left: 0;
-    padding: 24px 16px;
+    padding: 8px 10px max(8px, env(safe-area-inset-bottom));
     position: fixed;
-    top: 0;
-    width: 150px;
+    right: 0;
+    top: auto;
+    width: 100%;
     z-index: 30;
   }
 
   .figma-home__nav a {
     align-items: center;
-    border-bottom: 1px solid var(--home-line);
+    border-bottom: 0;
+    border-right: 1px solid var(--home-line);
     display: flex;
+    flex: 1 1 0;
     gap: 9px;
-    padding: 16px 4px;
+    justify-content: center;
+    max-width: 240px;
+    padding: 10px 8px;
+    text-align: center;
   }
 
   .figma-home__nav a:last-child {
-    border-bottom: 0;
+    border-right: 0;
   }
 
   .figma-home__hero {
@@ -897,8 +955,14 @@
     font-size: 54px;
   }
 
+  .figma-home__membership-grid {
+    grid-template-columns: minmax(0, 680px);
+    justify-content: center;
+  }
+
   .figma-home__membership-card {
-    padding-inline: 36px;
+    min-width: 0;
+    padding-inline: clamp(30px, 6vw, 50px);
   }
 }
 
@@ -1104,7 +1168,6 @@
 @media (max-width: 620px) {
   .figma-home {
     padding-bottom: 70px;
-    padding-left: 0;
   }
 
   .figma-home__header-actions {
@@ -1129,31 +1192,8 @@
     white-space: nowrap;
   }
 
-  .figma-home__nav {
-    align-items: center;
-    border-right: 0;
-    border-top: 1px solid var(--home-line);
-    flex-direction: row;
-    gap: 0;
-    justify-content: space-around;
-    padding: 8px 10px max(8px, env(safe-area-inset-bottom));
-    right: 0;
-    top: auto;
-    width: 100%;
-  }
-
   .figma-home__nav a {
-    border-bottom: 0;
-    border-right: 1px solid var(--home-line);
-    flex: 1 1 0;
     font-size: 12px;
-    justify-content: center;
-    padding: 10px 8px;
-    text-align: center;
-  }
-
-  .figma-home__nav a:last-child {
-    border-right: 0;
   }
 
 }
@@ -1190,6 +1230,7 @@
 
   .figma-home__price {
     font-size: 38px;
+    overflow-wrap: anywhere;
   }
 
   .figma-home__free-ribbon {

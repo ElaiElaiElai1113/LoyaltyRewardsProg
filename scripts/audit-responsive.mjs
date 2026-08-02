@@ -6,7 +6,7 @@ import { createServer } from 'vite'
 const host = '127.0.0.1'
 const port = 5276
 const baseUrl = `http://${host}:${port}`
-const outputDir = '.tmp-responsive-audit'
+const outputDir = process.env.RESPONSIVE_AUDIT_OUTPUT_DIR?.trim() || '.tmp-responsive-audit'
 
 const viewports = [
   { name: 'small-mobile', width: 360, height: 780 },
@@ -141,7 +141,7 @@ async function main() {
         try {
           const response = await page.goto(url, {
             waitUntil: 'domcontentloaded',
-            timeout: 12_000,
+            timeout: route.path === '/' ? 25_000 : 12_000,
           })
           await page.waitForTimeout(450)
           status = response?.ok() || response?.status() === 304 ? 'ok' : `http-${response?.status() ?? 'unknown'}`

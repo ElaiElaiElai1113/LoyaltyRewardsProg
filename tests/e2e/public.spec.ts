@@ -37,8 +37,11 @@ test.describe('public acquisition workflow', () => {
       page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
     ).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Every purchase becomes a Reward' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Choose how you earn' })).toBeVisible()
-    await expect(page.getByText('₱4,000 / Year', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Membership Packages' })).toBeVisible()
+    await expect(page.getByText('₱1,000/Month', { exact: true })).toBeVisible()
+    await expect(page.getByText('₱4,000/Year', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Regular' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Gold', exact: true })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'How it works' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Your dream vacation. Already paid for.' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible()
@@ -72,9 +75,19 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByText("Every time you shop, dine, or spend at a business in our network", { exact: false }))
       .toHaveCSS('font-family', /Inter/)
 
+    await expect(page.getByRole('img', { name: 'Pinas Rewards member enjoying coffee at a local business' }))
+      .toHaveAttribute('src', /coffee-rewards[^"]*\.webp/)
+    await expect(page.locator('.figma-home__brand img').first()).toHaveAttribute('src', '/pinas-rewards-mark.svg')
+
     await expect(page.getByRole('img', { name: 'Family celebrating a car purchase' }))
       .toHaveAttribute('src', /car-rewards-clean[^"]*\.webp/)
-    await expect(page.locator('.figma-home__category-card figcaption')).toHaveCount(0)
+    await expect(page.locator('.figma-home__category-card figcaption')).toHaveText([
+      'Coffee runs',
+      'Dining out',
+      'Salon days',
+      'Cars',
+      'Real estate',
+    ])
 
     const vacationBanner = page.locator('#vacation')
     await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean(?:-[\w-]+)?\.webp/)
@@ -144,8 +157,10 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('heading', { name: 'Sign the agreement. We’ll take it from there.' })).toBeVisible()
 
     await expect(page.getByRole('link', { name: 'Business Login' })).toHaveAttribute('href', '/business/login')
-    await expect(page.getByRole('link', { name: 'Cost Calculator' })).toHaveAttribute('href', '/cost-calculator')
-    await expect(page.getByRole('link', { name: 'Calculate Your Costs' })).toHaveAttribute('href', '/cost-calculator')
+    await expect(page.getByRole('link', { name: 'Cost Calculator' })).toHaveCount(0)
+    await expect(page.getByRole('link', { name: 'Calculate Your Costs' })).toHaveCount(0)
+    const businessLanguageToggle = page.getByRole('button', { name: 'Lumipat sa Tagalog' })
+    await expect(businessLanguageToggle).toHaveText('Tagalog')
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how-it-works')
     await expect(page.getByRole('link', { name: 'Partner With Us' })).toHaveAttribute('href', '#get-started')
 
@@ -157,6 +172,9 @@ test.describe('public acquisition workflow', () => {
       .toHaveAttribute('src', /salon-partner(?:-[\w-]+)?\.png/)
     await expect(page.getByRole('img', { name: 'Staff member scanning a customer QR code at checkout' }))
       .toHaveAttribute('src', /staff-qr-checkout(?:-[\w-]+)?\.png/)
+
+    await businessLanguageToggle.click()
+    await expect(page.getByRole('button', { name: 'Switch to English' })).toHaveText('English')
   })
 
   test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {

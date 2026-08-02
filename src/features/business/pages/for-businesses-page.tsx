@@ -117,11 +117,6 @@ export function ForBusinessesPage() {
               <li>15–25% commission</li>
               <li>Setup in days, not weeks</li>
             </ul>
-            {program.slug === 'pinas' ? (
-              <p className="business-landing__commercial-note">
-                Final commission and settlement terms are confirmed in each signed partner agreement.
-              </p>
-            ) : null}
           </div>
 
           <div className="business-landing__hero-art">
@@ -246,9 +241,11 @@ export function ForBusinessesPage() {
             <p>Talk to our team and we’ll walk you through commission rates,<br className="business-landing__desktop-break" /> onboarding, and what to expect.</p>
           </div>
           <div className="business-landing__question-actions">
-            <Link className="business-landing__button business-landing__button--outline" to="/cost-calculator">
-              Calculate Your Costs <ArrowRight aria-hidden="true" />
-            </Link>
+            {program.slug === 'pinas' ? null : (
+              <Link className="business-landing__button business-landing__button--outline" to="/cost-calculator">
+                Calculate Your Costs <ArrowRight aria-hidden="true" />
+              </Link>
+            )}
             <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
               Talk to us <ArrowRight aria-hidden="true" />
             </a>

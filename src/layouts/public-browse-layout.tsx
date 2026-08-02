@@ -22,13 +22,13 @@ const legalLinks = [
 
 export function PublicBrowseLayout() {
   const { program } = useTenant()
-  const { t } = useLanguage()
+  const { language, setLanguage, t } = useLanguage()
   const location = useLocation()
   const isBusinessOnboarding = location.pathname === '/business'
 
   if (isBusinessOnboarding) {
     return (
-      <div className="business-public-shell">
+      <div className={`business-public-shell${program.slug === 'pinas' ? ' business-public-shell--pinas' : ''}`}>
         <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
             <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
@@ -42,13 +42,25 @@ export function PublicBrowseLayout() {
             <nav className="business-public-shell__nav" aria-label="Business page navigation">
               <a href="#benefits">Benefits</a>
               <a href="#how-it-works">How It Works</a>
-              <NavLink to="/cost-calculator">Cost Calculator</NavLink>
+              {program.slug === 'pinas' ? null : <NavLink to="/cost-calculator">Cost Calculator</NavLink>}
               <a href="#get-started">Get Started</a>
             </nav>
 
-            <NavLink to="/business/login" className="business-public-shell__login">
-              Business Login
-            </NavLink>
+            <div className="business-public-shell__header-actions">
+              {program.slug === 'pinas' ? (
+                <button
+                  className="business-public-shell__language-toggle"
+                  type="button"
+                  onClick={() => setLanguage(language === 'tl' ? 'en' : 'tl')}
+                  aria-label={language === 'tl' ? 'Switch to English' : 'Lumipat sa Tagalog'}
+                >
+                  {language === 'tl' ? 'English' : 'Tagalog'}
+                </button>
+              ) : null}
+              <NavLink to="/business/login" className="business-public-shell__login">
+                Business Login
+              </NavLink>
+            </div>
           </div>
         </header>
 
