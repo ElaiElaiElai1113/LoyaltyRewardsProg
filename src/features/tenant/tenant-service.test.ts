@@ -17,7 +17,7 @@ describe('tenant resolution fallback', () => {
   it.each([
     ['medellinrewards.com', 'medellin'],
     ['guatemala.rewardsplatform.app', 'guatemala'],
-    ['synergize.example', 'synergize'],
+    ['synergize-rewards.vercel.app', 'synergize'],
     ['pinas.localhost', 'pinas'],
     ['pinas-rewards.vercel.app', 'pinas'],
   ])('maps %s to %s', (hostname, slug) => {

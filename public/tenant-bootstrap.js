@@ -40,7 +40,7 @@
     'guatemalarewards.com': 'guatemala',
     'www.guatemalarewards.com': 'guatemala',
     'pinas-rewards.vercel.app': 'pinas',
-    'synergize.example': 'synergize',
+    'synergize-rewards.vercel.app': 'synergize',
     'pinas.localhost': 'pinas',
   }
   var canUsePreviewOverride = hostname === 'localhost'

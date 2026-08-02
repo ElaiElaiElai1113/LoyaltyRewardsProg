@@ -22,6 +22,9 @@ for (const program of matrix.programs) {
   if ('monitor' in program && typeof program.monitor !== 'boolean') {
     throw new Error(`${program.slug} monitor must be a boolean when configured.`)
   }
+  if ('publicHostname' in program && !/^[a-z0-9.-]+\.[a-z]{2,}$/i.test(program.publicHostname)) {
+    throw new Error(`${program.slug} public hostname is invalid.`)
+  }
 
   if (program.status === 'ready' && !program.senderEmail) {
     throw new Error(`${program.slug} is marked ready without a sender email.`)

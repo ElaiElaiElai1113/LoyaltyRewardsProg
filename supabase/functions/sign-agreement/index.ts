@@ -1,6 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2'
 
 type SignAgreementRequest = {
+  programId?: string
   agreementVersionId?: string
   typedSignature?: string
   signatureSvg?: string
@@ -114,6 +115,9 @@ Deno.serve(async (req: Request) => {
 
   const typedSignature = payload.typedSignature?.trim()
   const signatureSvg = sanitizeSignatureSvg(payload.signatureSvg)
+  if (!payload.programId || !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(payload.programId)) {
+    return jsonResponse({ message: 'Program is required.' }, 400)
+  }
   if (!payload.agreementVersionId) {
     return jsonResponse({ message: 'Agreement version is required.' }, 400)
   }
@@ -140,10 +144,27 @@ Deno.serve(async (req: Request) => {
     return jsonResponse({ message: 'Profile not found.' }, 404)
   }
 
+  const membershipRole = profile.role === 'customer' ? 'member' : profile.role
+  let membershipQuery = admin
+    .from('program_memberships')
+    .select('id')
+    .eq('program_id', payload.programId)
+    .eq('profile_id', profile.id)
+    .eq('role', membershipRole)
+    .eq('status', 'active')
+  if (profile.role === 'business-owner' || profile.role === 'business-staff') {
+    membershipQuery = membershipQuery.eq('business_id', profile.business_id)
+  }
+  const { data: membership, error: membershipError } = await membershipQuery.maybeSingle()
+  if (membershipError || !membership) {
+    return jsonResponse({ message: 'Active program membership is required.' }, 403)
+  }
+
   const { data: agreement, error: agreementError } = await admin
     .from('agreement_versions')
     .select('*')
     .eq('id', payload.agreementVersionId)
+    .eq('program_id', payload.programId)
     .eq('is_active', true)
     .single()
 
@@ -162,6 +183,7 @@ Deno.serve(async (req: Request) => {
   const { data: existing, error: existingError } = await admin
     .from('agreement_acceptances')
     .select('*')
+    .eq('program_id', payload.programId)
     .eq('profile_id', userResult.user.id)
     .eq('agreement_version_id', agreement.id)
     .maybeSingle()
@@ -178,6 +200,7 @@ Deno.serve(async (req: Request) => {
     const { data: updatedAcceptance, error: updateError } = await admin
       .from('agreement_acceptances')
       .update({
+        program_id: payload.programId,
         business_id: agreement.business_id ?? profile.business_id,
         typed_signature: typedSignature,
         signature_svg: signatureSvg,
@@ -201,6 +224,7 @@ Deno.serve(async (req: Request) => {
   const { data: acceptance, error: acceptanceError } = await admin
     .from('agreement_acceptances')
     .insert({
+      program_id: payload.programId,
       profile_id: userResult.user.id,
       business_id: agreement.business_id ?? profile.business_id,
       agreement_version_id: agreement.id,

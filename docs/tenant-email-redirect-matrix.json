@@ -17,7 +17,9 @@
       "slug": "synergize",
       "status": "pending",
       "hostname": "synergizerewards.com",
-      "senderEmail": "rewards@synergizerewards.com"
+      "senderEmail": "rewards@synergizerewards.com",
+      "publicHostname": "synergize-rewards.vercel.app",
+      "monitor": true
     },
     {
       "slug": "pinas",

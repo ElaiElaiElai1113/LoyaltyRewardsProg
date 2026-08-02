@@ -11,6 +11,7 @@ import type {
   UserRole,
 } from '@/types/domain'
 import type { SignAgreementFormValues } from '@/types/forms'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { requireSupabase } from './shared'
 
 type AgreementVersionRow = {
@@ -89,18 +90,21 @@ export const legalService = {
     }
 
     const sb = requireSupabase()
+    const programId = getActiveProgram().id
 
     const [versionsResult, acceptancesResult] = await Promise.all([
       sb
         .from('agreement_versions')
         .select('*')
+        .eq('program_id', programId)
         .eq('is_active', true)
         .order('kind', { ascending: true })
         .order('version', { ascending: false }),
       sb
         .from('agreement_acceptances')
         .select('*')
-        .eq('profile_id', profile.id),
+        .eq('profile_id', profile.id)
+        .eq('program_id', programId),
     ])
 
     if (versionsResult.error) {
@@ -131,7 +135,7 @@ export const legalService = {
   async signAgreement(input: SignAgreementInput): Promise<AgreementAcceptance> {
     const sb = requireSupabase()
     const { data, error } = await sb.functions.invoke('sign-agreement', {
-      body: input,
+      body: { ...input, programId: getActiveProgram().id },
     })
 
     if (error) {

@@ -12,6 +12,10 @@ on:
         description: Optional comma-separated additional tenant domains
         required: false
         type: string
+      expected_version:
+        description: Optional Git commit SHA that every canonical domain must serve
+        required: false
+        type: string
 
 permissions:
   contents: read
@@ -23,6 +27,7 @@ jobs:
     timeout-minutes: 15
     env:
       DEPLOYMENT_URL: ${{ inputs.deployment_url || vars.PRODUCTION_URL || github.event.deployment_status.environment_url }}
+      EXPECTED_VERSION: ${{ inputs.expected_version || github.event.deployment.sha || github.sha }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -38,14 +43,15 @@ jobs:
         run: npm run ops:health:diagnose -- "$DEPLOYMENT_URL"
       - name: Verify canonical tenant domains
         run: |
-          npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards"
-          npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards"
-          npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards"
+          npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_VERSION"
+          npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_VERSION"
+          npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_VERSION"
+          npm run ops:domain:check -- "synergize-rewards.vercel.app" "Synergize" --expected-version "$EXPECTED_VERSION"
       - name: Verify additional tenant domains
         if: inputs.tenant_domains != ''
         shell: bash
         run: |
           IFS=',' read -ra domains <<< "${{ inputs.tenant_domains }}"
           for domain in "${domains[@]}"; do
-            npm run ops:domain:check -- "$(echo "$domain" | xargs)"
+            npm run ops:domain:check -- "$(echo "$domain" | xargs)" --expected-version "$EXPECTED_VERSION"
           done

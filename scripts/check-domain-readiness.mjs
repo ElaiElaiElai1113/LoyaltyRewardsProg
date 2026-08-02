@@ -1,10 +1,26 @@
 import { lookup, resolve4, resolve6 } from 'node:dns/promises'
 
-const [hostnameArg, ...expectedTenantNameParts] = process.argv.slice(2)
+const rawArgs = process.argv.slice(2)
+const expectedVersionIndex = rawArgs.indexOf('--expected-version')
+const expectedVersionArg = expectedVersionIndex >= 0 ? rawArgs[expectedVersionIndex + 1] : ''
+if (expectedVersionIndex >= 0) {
+  if (!expectedVersionArg || expectedVersionArg.startsWith('--')) {
+    console.error('--expected-version requires a Git commit SHA.')
+    process.exit(2)
+  }
+  rawArgs.splice(expectedVersionIndex, 2)
+}
+
+const [hostnameArg, ...expectedTenantNameParts] = rawArgs
 const hostname = String(hostnameArg ?? '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/.*$/, '')
 const expectedTenantName = expectedTenantNameParts.join(' ').trim()
+const expectedVersion = String(expectedVersionArg).trim().toLowerCase()
 if (!hostname) {
-  console.error('Usage: npm run ops:domain:check -- rewards.example.com ["Tenant Rewards"]')
+  console.error('Usage: npm run ops:domain:check -- rewards.example.com ["Tenant Rewards"] [--expected-version <git-sha>]')
+  process.exit(2)
+}
+if (expectedVersion && !/^[a-f0-9]{7,40}$/.test(expectedVersion)) {
+  console.error('--expected-version must be a 7 to 40 character Git commit SHA.')
   process.exit(2)
 }
 
@@ -132,12 +148,19 @@ await check('health', async () => {
   const response = await fetch(`https://${hostname}/api/health`, { signal: AbortSignal.timeout(15000) })
   const body = await response.json()
   if (!response.ok || body.ok !== true) throw new Error(`Health check failed with HTTP ${response.status}`)
+  if (expectedVersion) {
+    const actualVersion = String(body.version ?? '').trim().toLowerCase()
+    if (!actualVersion || (!expectedVersion.startsWith(actualVersion) && !actualVersion.startsWith(expectedVersion))) {
+      throw new Error(`Expected deployed version ${expectedVersion.slice(0, 12)}, received ${actualVersion || 'missing'}`)
+    }
+  }
   return body
 })
 
 const report = {
   hostname,
   expectedTenantName: expectedTenantName || null,
+  expectedVersion: expectedVersion || null,
   checkedAt: new Date().toISOString(),
   passed: checks.every((item) => item.passed),
   checks,

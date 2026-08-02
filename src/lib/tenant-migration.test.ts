@@ -23,6 +23,14 @@ const pinasRename = readFileSync(
   'supabase/migrations/20260730010000_rename_davao_to_pinas.sql',
   'utf8',
 )
+const serviceRoleClaimsFix = readFileSync(
+  'supabase/migrations/20260802170418_fix_service_role_jwt_claim_detection.sql',
+  'utf8',
+)
+const programAgreementScope = readFileSync(
+  'supabase/migrations/20260802170947_scope_agreements_to_program_memberships.sql',
+  'utf8',
+)
 
 describe('tenant database migrations', () => {
   it('creates all four seeded programs and tenant identity tables', () => {
@@ -46,6 +54,20 @@ describe('tenant database migrations', () => {
     expect(authProvisioning).toContain("session_user = 'supabase_auth_admin'")
     expect(authProvisioning).toContain("v_role = 'service_role'")
     expect(authProvisioning).toContain("raise exception 'cross_program_access_denied'")
+  })
+
+  it('recognizes service-role requests from the current PostgREST JWT claims setting', () => {
+    expect(serviceRoleClaimsFix).toContain("current_setting('request.jwt.claims', true)")
+    expect(serviceRoleClaimsFix).toContain("v_role = 'service_role'")
+    expect(serviceRoleClaimsFix).toContain('enforce_tenant_write_access')
+    expect(serviceRoleClaimsFix).toContain('enforce_program_resource_limit')
+    expect(serviceRoleClaimsFix).toContain('enforce_program_feature')
+  })
+
+  it('scopes required agreements to active program memberships', () => {
+    expect(programAgreementScope).toContain('pm.program_id = av.program_id')
+    expect(programAgreementScope).toContain('aa.program_id = av.program_id')
+    expect(programAgreementScope).toContain('public.is_program_member(program_id)')
   })
 
   it('scopes leads and balances by program', () => {

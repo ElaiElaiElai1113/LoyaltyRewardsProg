@@ -6,7 +6,7 @@ const extraOrigins = (process.env.MONITOR_ORIGINS ?? '').split(',').map((value) 
 const origins = [
   ...matrix.programs
     .filter((program) => program.status === 'ready' || program.monitor === true)
-    .map((program) => `https://${program.hostname}`),
+    .map((program) => `https://${program.publicHostname ?? program.hostname}`),
   ...extraOrigins,
 ]
 const results = []

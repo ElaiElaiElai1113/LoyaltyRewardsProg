@@ -267,7 +267,7 @@ export async function getLatestMemberTransactionByNote(
   const { data, error } = await client
     .from('member_transactions')
     .select('id, profile_id, business_id, purchase_amount, points_awarded, note')
-    .eq('note', note)
+    .like('note', `${note}%`)
     .order('created_at', { ascending: false })
     .limit(1)
     .single()
