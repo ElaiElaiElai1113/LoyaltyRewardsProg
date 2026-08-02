@@ -99,11 +99,6 @@ $requiredRedirects = @(
   'https://pinas-rewards.vercel.app/auth/confirm',
   'https://pinas-rewards.vercel.app/auth/reset-password',
   'https://pinas-rewards.vercel.app/accept-invitation',
-  'https://synergize-rewards.vercel.app/',
-  'https://synergize-rewards.vercel.app/reset-password',
-  'https://synergize-rewards.vercel.app/auth/confirm',
-  'https://synergize-rewards.vercel.app/auth/reset-password',
-  'https://synergize-rewards.vercel.app/accept-invitation',
   'http://localhost:5173/**',
   'http://127.0.0.1:5173/**',
   'http://127.0.0.1:5177/**',
@@ -114,7 +109,8 @@ $existingRedirects = @($current.uri_allow_list -split ',') |
   ForEach-Object { $_.Trim() } |
   Where-Object {
     $_ -and
-    $_ -notin @('http://localhost:3000', 'http://localhost:3000/**')
+    $_ -notin @('http://localhost:3000', 'http://localhost:3000/**') -and
+    $_ -notlike 'https://synergize-rewards.vercel.app*'
   }
 $redirects = @($existingRedirects + $requiredRedirects) | Sort-Object -Unique
 $desiredSiteUrl = 'https://pinas-rewards.vercel.app/'

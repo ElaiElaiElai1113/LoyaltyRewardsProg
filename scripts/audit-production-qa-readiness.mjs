@@ -27,7 +27,7 @@ if (!supabaseUrl || !serviceRoleKey) {
 const client = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 })
-const slugs = ['pinas', 'guatemala', 'synergize']
+const slugs = ['pinas', 'guatemala']
 const expectedEmails = [
   process.env.E2E_PINAS_CUSTOMER_EMAIL ?? 'customer@pinas.test',
   process.env.E2E_PINAS_BUSINESS_OWNER_EMAIL ?? 'owner@pinas.test',

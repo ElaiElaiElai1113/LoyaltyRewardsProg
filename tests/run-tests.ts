@@ -2427,10 +2427,10 @@ runTest('active tenant operations use Pinas and always verify canonical producti
     ['pinas-rewards.vercel.app', 'Pinas Rewards'],
     ['www.medellinrewards.com', 'Medellin Rewards'],
     ['guatemalarewards.com', 'Guatemala Rewards'],
-    ['synergize-rewards.vercel.app', 'Synergize'],
   ]) {
     assert.match(postDeployment, new RegExp(`${hostname.replaceAll('.', '\\.')}.+${tenantName}`))
   }
+  assert.doesNotMatch(postDeployment, /synergize-rewards\.vercel\.app/)
   assert.match(postDeployment, /Verify canonical tenant domains/)
   assert.match(postDeployment, /EXPECTED_VERSION/)
 })

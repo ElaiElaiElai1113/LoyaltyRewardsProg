@@ -31,6 +31,10 @@ const programAgreementScope = readFileSync(
   'supabase/migrations/20260802170947_scope_agreements_to_program_memberships.sql',
   'utf8',
 )
+const synergizeSeparation = readFileSync(
+  'supabase/migrations/20260802173500_restore_synergize_application_separation.sql',
+  'utf8',
+)
 
 describe('tenant database migrations', () => {
   it('creates all four seeded programs and tenant identity tables', () => {
@@ -68,6 +72,13 @@ describe('tenant database migrations', () => {
     expect(programAgreementScope).toContain('pm.program_id = av.program_id')
     expect(programAgreementScope).toContain('aa.program_id = av.program_id')
     expect(programAgreementScope).toContain('public.is_program_member(program_id)')
+  })
+
+  it('keeps the separate Synergize application outside Rewards Platform hosting and entitlements', () => {
+    expect(synergizeSeparation).toContain("hostname = 'synergize.example'")
+    expect(synergizeSeparation).toContain("p.slug = 'synergize'")
+    expect(synergizeSeparation).toContain("sp.code = 'launch'")
+    expect(synergizeSeparation).toContain("ps.stripe_customer_id is null")
   })
 
   it('scopes leads and balances by program', () => {

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const tenantSlugs = ['pinas', 'medellin', 'guatemala', 'synergize'] as const
+const tenantSlugs = ['pinas', 'medellin', 'guatemala'] as const
 const viewportWidths = [320, 390, 768, 859, 1024, 1280] as const
 const publicRoutes = ['/', '/business'] as const
 
