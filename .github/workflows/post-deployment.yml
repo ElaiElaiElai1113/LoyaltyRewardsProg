@@ -49,6 +49,7 @@ jobs:
           npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_VERSION"
           npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_VERSION"
           npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_VERSION"
+          npm run ops:domain:check -- "wondertown-rewards.vercel.app" "Wondertown Rewards" --expected-version "$EXPECTED_VERSION"
       - name: Verify additional tenant domains
         if: inputs.tenant_domains != ''
         shell: bash

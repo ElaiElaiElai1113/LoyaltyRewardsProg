@@ -11,6 +11,7 @@ const verifiedTenants = [
   ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
   ['guatemalarewards.com', 'https://guatemalarewards.com'],
   ['pinas-rewards.vercel.app', 'https://pinas-rewards.vercel.app'],
+  ['wondertown-rewards.vercel.app', 'https://wondertown-rewards.vercel.app'],
 ] as const
 
 describe('host-aware public discovery documents', () => {

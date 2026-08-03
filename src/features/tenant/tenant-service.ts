@@ -67,6 +67,22 @@ const programs: Record<string, Program> = {
     mapCenter: { latitude: 12.8797, longitude: 121.774 },
     featureFlags: {},
   },
+  wondertown: {
+    id: '10000000-0000-4000-8000-000000000005',
+    name: 'Wondertown Rewards',
+    slug: 'wondertown',
+    status: 'active',
+    countryCode: 'US',
+    locale: 'en-US',
+    currency: 'USD',
+    timezone: 'America/New_York',
+    primaryColor: '#4f3b78',
+    accentColor: '#e57267',
+    logoUrl: '/wondertown-rewards-logo.svg',
+    supportEmail: 'support@wondertown.test',
+    mapCenter: { latitude: 39.8283, longitude: -98.5795 },
+    featureFlags: { demoTenant: true },
+  },
 }
 
 let activeProgram: Program | null = null
@@ -78,6 +94,8 @@ const programSlugByHost: Record<string, keyof typeof programs> = {
   'www.guatemalarewards.com': 'guatemala',
   'pinas-rewards.vercel.app': 'pinas',
   'pinas.localhost': 'pinas',
+  'wondertown-rewards.vercel.app': 'wondertown',
+  'wondertown.localhost': 'wondertown',
 }
 
 export function inferTenantSlugHint(hostname: string) {
@@ -102,6 +120,7 @@ export function canUseTenantPreviewOverride(hostname: string) {
   return host === 'localhost'
     || host.startsWith('127.')
     || host === 'pinas-rewards.vercel.app'
+    || host === 'wondertown-rewards.vercel.app'
     || host.endsWith('.rewardsplatform.app')
     || (host.startsWith('loyalty-rewards-prog-') && host.endsWith('-elaielaielai1113s-projects.vercel.app'))
 }

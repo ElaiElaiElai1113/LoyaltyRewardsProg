@@ -12,7 +12,13 @@ const enabled = process.env.E2E_INCLUDE_TENANT_AUTH_SMOKE === 'true'
 const tenantName = process.env.E2E_TENANT_NAME ?? ''
 const customerEmail = process.env.E2E_TENANT_CUSTOMER_EMAIL ?? ''
 const businessOwnerEmail = process.env.E2E_TENANT_BUSINESS_OWNER_EMAIL ?? ''
+const businessName = process.env.E2E_TENANT_BUSINESS_NAME ?? 'QA Partner'
+const productName = process.env.E2E_TENANT_PRODUCT_NAME ?? 'QA Coffee'
+const rewardName = process.env.E2E_TENANT_REWARD_NAME ?? 'QA Welcome Reward'
+const giftCardName = process.env.E2E_TENANT_GIFT_CARD_NAME ?? 'QA Gift Card'
 const password = process.env.E2E_PASSWORD ?? ''
+
+const escapedBusinessName = businessName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
 function monitorUnexpectedErrors(page: Page) {
   const errors: string[] = []
@@ -68,12 +74,12 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     }
 
     await page.goto('/shop')
-    await page.getByRole('button', { name: /(?:open business|abrir negocio) .*qa partner/i }).click()
-    await expect(page.getByText('QA Coffee').first()).toBeVisible()
+    await page.getByRole('button', { name: new RegExp(`(?:open business|abrir negocio) .*${escapedBusinessName}`, 'i') }).click()
+    await expect(page.getByText(productName).first()).toBeVisible()
     await page.goto('/rewards')
     await expect(page).toHaveURL(/\/dashboard$/)
     await page.goto('/gift-cards')
-    await expect(page.getByText('QA Gift Card').first()).toBeVisible()
+    await expect(page.getByText(giftCardName).first()).toBeVisible()
     expect(errors).toEqual([])
   })
 
@@ -107,7 +113,7 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     await expect(page.locator('p').filter({ hasText: memberProfile.fullName }).first()).toBeVisible()
 
     await page.goto('/business/rewards')
-    await expect(page.getByText('QA Welcome Reward').first()).toBeVisible()
+    await expect(page.getByText(rewardName).first()).toBeVisible()
 
     await page.goto(`/business/member-sale/${memberProfile.memberQrToken}`)
     await page.locator('#purchaseAmount').fill('20')

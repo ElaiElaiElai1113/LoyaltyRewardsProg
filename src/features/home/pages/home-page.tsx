@@ -17,6 +17,7 @@ import realEstateRewardsSmall from '@/assets/landing/real-estate-rewards-768.web
 import salonRewards from '@/assets/landing/salon-rewards.webp'
 import salonRewardsSmall from '@/assets/landing/salon-rewards-768.webp'
 import vacationBanner from '@/assets/landing/vacation-beach-clean.webp'
+import { WondertownHomePage } from './wondertown-home'
 
 import './home-page.css'
 
@@ -408,6 +409,7 @@ function SectionEyebrow({ children }: { children: string }) {
 export function HomePage() {
   const { language, setLanguage } = useLanguage()
   const { program } = useTenant()
+  if (program.slug === 'wondertown') return <WondertownHomePage />
   const isPinas = program.slug === 'pinas'
   const tx = (text: string) => (
     language === 'es'

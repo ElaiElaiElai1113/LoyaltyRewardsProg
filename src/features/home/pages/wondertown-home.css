@@ -1,0 +1,776 @@
+.wondertown-home,
+.wondertown-home * {
+  box-sizing: border-box;
+}
+
+.wondertown-home {
+  --wonder-ink: #251b3f;
+  --wonder-indigo: #4f3b78;
+  --wonder-plum: #7b416f;
+  --wonder-coral: #e57267;
+  --wonder-aqua: #64c7bf;
+  --wonder-gold: #f4b860;
+  --wonder-cream: #fff8e9;
+  --wonder-paper: #f9f3e7;
+  background: var(--wonder-cream);
+  color: var(--wonder-ink);
+  font-family: 'Inter', Arial, sans-serif;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.wondertown-home a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.wondertown-home a:focus-visible {
+  outline: 3px solid var(--wonder-aqua);
+  outline-offset: 4px;
+}
+
+.wondertown-home h1,
+.wondertown-home h2,
+.wondertown-home h3,
+.wondertown-home p {
+  margin: 0;
+}
+
+.wondertown-home h1,
+.wondertown-home h2,
+.wondertown-home h3 {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.wondertown-home__container {
+  margin-inline: auto;
+  width: min(100% - 64px, 1240px);
+}
+
+.wondertown-home__header {
+  background: rgb(255 248 233 / 94%);
+  border-bottom: 1px solid rgb(79 59 120 / 12%);
+  backdrop-filter: blur(16px);
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 10;
+}
+
+.wondertown-home__header-inner {
+  align-items: center;
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr auto 1fr;
+  min-height: 88px;
+}
+
+.wondertown-home__brand {
+  align-items: center;
+  display: inline-flex;
+  gap: 12px;
+  width: fit-content;
+}
+
+.wondertown-home__brand img {
+  height: 50px;
+  width: 50px;
+}
+
+.wondertown-home__brand span {
+  display: grid;
+  line-height: 1;
+}
+
+.wondertown-home__brand strong {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 18px;
+}
+
+.wondertown-home__brand small {
+  color: var(--wonder-plum);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+.wondertown-home__nav {
+  align-items: center;
+  display: flex;
+  font-size: 13px;
+  font-weight: 750;
+  gap: 34px;
+  white-space: nowrap;
+}
+
+.wondertown-home__nav a,
+.wondertown-home__text-link {
+  transition: color 160ms ease;
+}
+
+.wondertown-home__nav a:hover,
+.wondertown-home__text-link:hover {
+  color: var(--wonder-coral);
+}
+
+.wondertown-home__header-actions {
+  align-items: center;
+  display: flex;
+  gap: 18px;
+  justify-self: end;
+}
+
+.wondertown-home__text-link {
+  font-size: 13px;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.wondertown-home__button {
+  align-items: center;
+  background: var(--wonder-coral);
+  border: 2px solid var(--wonder-coral);
+  border-radius: 999px;
+  box-shadow: 0 14px 34px rgb(68 35 75 / 18%);
+  color: #fff !important;
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 850;
+  gap: 10px;
+  justify-content: center;
+  min-height: 56px;
+  padding: 0 28px;
+  transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+
+.wondertown-home__button:hover {
+  box-shadow: 0 17px 38px rgb(68 35 75 / 24%);
+  transform: translateY(-2px);
+}
+
+.wondertown-home__button--small {
+  min-height: 44px;
+  padding-inline: 20px;
+}
+
+.wondertown-home__hero {
+  align-items: flex-end;
+  display: flex;
+  min-height: 820px;
+  overflow: hidden;
+  padding: 170px 0 84px;
+  position: relative;
+}
+
+.wondertown-home__hero-art,
+.wondertown-home__hero-shade {
+  height: 100%;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.wondertown-home__hero-art {
+  object-fit: cover;
+  object-position: center;
+}
+
+.wondertown-home__hero-shade {
+  background: linear-gradient(90deg, rgb(37 27 63 / 91%) 0%, rgb(37 27 63 / 74%) 42%, rgb(37 27 63 / 12%) 72%),
+    linear-gradient(0deg, rgb(37 27 63 / 44%) 0%, transparent 45%);
+}
+
+.wondertown-home__hero-content {
+  color: #fff;
+  position: relative;
+  z-index: 1;
+}
+
+.wondertown-home__demo-label {
+  align-items: center;
+  background: rgb(255 248 233 / 14%);
+  border: 1px solid rgb(255 255 255 / 34%);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 12px;
+  font-weight: 800;
+  gap: 8px;
+  letter-spacing: 0.08em;
+  padding: 10px 16px;
+  text-transform: uppercase;
+}
+
+.wondertown-home__hero h1 {
+  font-size: clamp(58px, 7vw, 104px);
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+  margin-top: 28px;
+  max-width: 820px;
+}
+
+.wondertown-home__hero h1 em {
+  color: var(--wonder-gold);
+  font-weight: 600;
+}
+
+.wondertown-home__hero-content > p {
+  font-size: clamp(16px, 1.5vw, 20px);
+  line-height: 1.65;
+  margin-top: 32px;
+  max-width: 630px;
+}
+
+.wondertown-home__hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.wondertown-home__button--glass {
+  background: rgb(255 255 255 / 9%);
+  border-color: rgb(255 255 255 / 58%);
+  box-shadow: none;
+}
+
+.wondertown-home__button--glass:hover {
+  background: rgb(255 255 255 / 17%);
+  box-shadow: none;
+}
+
+.wondertown-home__hero-notes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 26px;
+  list-style: none;
+  margin: 34px 0 0;
+  padding: 0;
+}
+
+.wondertown-home__hero-notes li {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  font-weight: 750;
+  gap: 9px;
+}
+
+.wondertown-home__hero-notes li::before {
+  background: var(--wonder-aqua);
+  border-radius: 50%;
+  content: '';
+  height: 8px;
+  width: 8px;
+}
+
+.wondertown-home__intro {
+  background: var(--wonder-indigo);
+  color: #fff;
+  padding: 100px 0;
+}
+
+.wondertown-home__intro-grid {
+  align-items: end;
+  display: grid;
+  gap: 80px;
+  grid-template-columns: 1.2fr 0.8fr;
+}
+
+.wondertown-home__eyebrow {
+  color: var(--wonder-coral);
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.24em;
+}
+
+.wondertown-home__intro h2,
+.wondertown-home__section-heading h2,
+.wondertown-home__steps-heading h2,
+.wondertown-home__cta h2 {
+  font-size: clamp(42px, 5vw, 72px);
+  letter-spacing: -0.04em;
+  line-height: 0.96;
+  margin-top: 18px;
+}
+
+.wondertown-home__intro-copy {
+  border-left: 1px solid rgb(255 255 255 / 22%);
+  padding-left: 42px;
+}
+
+.wondertown-home__intro-copy p {
+  color: rgb(255 255 255 / 78%);
+  font-size: 17px;
+  line-height: 1.75;
+}
+
+.wondertown-home__intro-copy a {
+  align-items: center;
+  color: var(--wonder-gold);
+  display: inline-flex;
+  font-size: 14px;
+  font-weight: 850;
+  gap: 8px;
+  margin-top: 28px;
+}
+
+.wondertown-home__businesses {
+  background: var(--wonder-paper);
+  padding: 120px 0;
+}
+
+.wondertown-home__section-heading,
+.wondertown-home__steps-heading {
+  align-items: end;
+  display: grid;
+  gap: 80px;
+  grid-template-columns: 1fr 0.7fr;
+}
+
+.wondertown-home__section-heading > p,
+.wondertown-home__steps-heading > p {
+  color: #6d6477;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.wondertown-home__business-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(6, 1fr);
+  margin-top: 58px;
+}
+
+.wondertown-home__business-card {
+  background: #fff;
+  border: 1px solid rgb(79 59 120 / 10%);
+  border-radius: 28px;
+  box-shadow: 0 22px 55px rgb(67 49 76 / 8%);
+  grid-column: span 2;
+  min-height: 330px;
+  overflow: hidden;
+  padding: 32px;
+  position: relative;
+}
+
+.wondertown-home__business-card:nth-child(4),
+.wondertown-home__business-card:nth-child(5) {
+  grid-column: span 3;
+}
+
+.wondertown-home__business-card::after {
+  background: currentColor;
+  border-radius: 50%;
+  content: '';
+  filter: blur(1px);
+  height: 180px;
+  opacity: 0.1;
+  position: absolute;
+  right: -60px;
+  top: -70px;
+  width: 180px;
+}
+
+.wondertown-home__business-card--moonbeam { color: var(--wonder-plum); }
+.wondertown-home__business-card--dragonfly { color: #278d8c; }
+.wondertown-home__business-card--stardust { color: var(--wonder-coral); }
+.wondertown-home__business-card--lantern { color: #b5742d; }
+.wondertown-home__business-card--cloud { color: var(--wonder-indigo); }
+
+.wondertown-home__business-icon {
+  align-items: center;
+  background: currentColor;
+  border-radius: 18px;
+  color: #fff;
+  display: flex;
+  height: 58px;
+  justify-content: center;
+  width: 58px;
+}
+
+.wondertown-home__business-card > p {
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  margin-top: 36px;
+  text-transform: uppercase;
+}
+
+.wondertown-home__business-card h3 {
+  color: var(--wonder-ink);
+  font-size: 29px;
+  line-height: 1;
+  margin-top: 10px;
+}
+
+.wondertown-home__business-card > span {
+  color: #746c79;
+  display: block;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-top: 18px;
+  max-width: 340px;
+}
+
+.wondertown-home__steps {
+  background: #fff;
+  padding: 120px 0;
+}
+
+.wondertown-home__steps-heading {
+  margin-top: 16px;
+}
+
+.wondertown-home__steps-grid {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 76px;
+}
+
+.wondertown-home__steps-grid article {
+  border-left: 1px solid #ded9e4;
+  min-height: 290px;
+  padding: 8px 42px 0;
+}
+
+.wondertown-home__steps-grid article:last-child {
+  border-right: 1px solid #ded9e4;
+}
+
+.wondertown-home__step-top {
+  align-items: center;
+  color: var(--wonder-coral);
+  display: flex;
+  justify-content: space-between;
+}
+
+.wondertown-home__step-top span {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+
+.wondertown-home__steps-grid h3 {
+  font-size: 30px;
+  line-height: 1.05;
+  margin-top: 56px;
+}
+
+.wondertown-home__steps-grid p {
+  color: #716a77;
+  font-size: 14px;
+  line-height: 1.75;
+  margin-top: 18px;
+}
+
+.wondertown-home__cta {
+  background: var(--wonder-paper);
+  padding: 30px 0 100px;
+}
+
+.wondertown-home__cta-card {
+  align-items: center;
+  background: var(--wonder-indigo);
+  border-radius: 40px;
+  color: #fff;
+  display: grid;
+  gap: 70px;
+  grid-template-columns: 1fr auto;
+  min-height: 390px;
+  overflow: hidden;
+  padding: 64px 70px;
+  position: relative;
+}
+
+.wondertown-home__cta-card > *:not(.wondertown-home__cta-orbit) {
+  position: relative;
+  z-index: 1;
+}
+
+.wondertown-home__cta h2 {
+  font-size: clamp(40px, 4.5vw, 68px);
+}
+
+.wondertown-home__cta-card > div > p:last-child {
+  color: rgb(255 255 255 / 76%);
+  line-height: 1.7;
+  margin-top: 24px;
+  max-width: 680px;
+}
+
+.wondertown-home__cta-actions {
+  display: grid;
+  gap: 14px;
+  min-width: 220px;
+}
+
+.wondertown-home__button--outline {
+  background: transparent;
+  border-color: rgb(255 255 255 / 62%);
+  box-shadow: none;
+}
+
+.wondertown-home__cta-orbit {
+  border: 1px solid rgb(244 184 96 / 34%);
+  border-radius: 50%;
+  height: 420px;
+  position: absolute;
+  right: -120px;
+  top: -170px;
+  width: 420px;
+}
+
+.wondertown-home__cta-orbit::after {
+  background: var(--wonder-gold);
+  border-radius: 50%;
+  content: '';
+  height: 22px;
+  left: 36px;
+  position: absolute;
+  top: 314px;
+  width: 22px;
+}
+
+.wondertown-home__footer {
+  background: #211834;
+  color: #fff;
+  padding: 48px 0;
+}
+
+.wondertown-home__footer-inner {
+  align-items: center;
+  display: grid;
+  gap: 32px;
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.wondertown-home__footer .wondertown-home__brand small {
+  color: var(--wonder-gold);
+}
+
+.wondertown-home__footer p {
+  align-items: center;
+  color: rgb(255 255 255 / 62%);
+  display: flex;
+  font-size: 12px;
+  gap: 8px;
+  text-align: center;
+}
+
+.wondertown-home__footer nav {
+  display: flex;
+  font-size: 12px;
+  gap: 24px;
+  justify-self: end;
+}
+
+@media (max-width: 1080px) {
+  .wondertown-home__header-inner {
+    grid-template-columns: 1fr auto;
+  }
+
+  .wondertown-home__nav {
+    display: none;
+  }
+
+  .wondertown-home__hero {
+    min-height: 760px;
+  }
+
+  .wondertown-home__business-card {
+    grid-column: span 3;
+  }
+
+  .wondertown-home__business-card:last-child {
+    grid-column: 2 / span 4;
+  }
+
+  .wondertown-home__cta-card {
+    align-items: start;
+    grid-template-columns: 1fr;
+  }
+
+  .wondertown-home__cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .wondertown-home__footer-inner {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .wondertown-home__footer p {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .wondertown-home__container {
+    width: min(100% - 36px, 1240px);
+  }
+
+  .wondertown-home__header-inner {
+    min-height: 76px;
+  }
+
+  .wondertown-home__brand img {
+    height: 42px;
+    width: 42px;
+  }
+
+  .wondertown-home__brand strong {
+    font-size: 16px;
+  }
+
+  .wondertown-home__text-link {
+    display: none;
+  }
+
+  .wondertown-home__button--small {
+    font-size: 12px;
+    min-height: 40px;
+    padding-inline: 14px;
+  }
+
+  .wondertown-home__hero {
+    align-items: flex-end;
+    min-height: 760px;
+    padding: 130px 0 54px;
+  }
+
+  .wondertown-home__hero-art {
+    object-position: 63% center;
+  }
+
+  .wondertown-home__hero-shade {
+    background: linear-gradient(0deg, rgb(37 27 63 / 96%) 0%, rgb(37 27 63 / 72%) 56%, rgb(37 27 63 / 20%) 100%);
+  }
+
+  .wondertown-home__demo-label {
+    font-size: 9px;
+  }
+
+  .wondertown-home__hero h1 {
+    font-size: clamp(50px, 14vw, 70px);
+    line-height: 0.9;
+  }
+
+  .wondertown-home__hero-content > p {
+    font-size: 15px;
+    line-height: 1.55;
+  }
+
+  .wondertown-home__hero-actions {
+    display: grid;
+  }
+
+  .wondertown-home__button {
+    width: 100%;
+  }
+
+  .wondertown-home__hero-notes {
+    gap: 12px 20px;
+  }
+
+  .wondertown-home__intro,
+  .wondertown-home__businesses,
+  .wondertown-home__steps {
+    padding: 80px 0;
+  }
+
+  .wondertown-home__intro-grid,
+  .wondertown-home__section-heading,
+  .wondertown-home__steps-heading {
+    gap: 32px;
+    grid-template-columns: 1fr;
+  }
+
+  .wondertown-home__intro-copy {
+    border-left: 0;
+    border-top: 1px solid rgb(255 255 255 / 22%);
+    padding: 28px 0 0;
+  }
+
+  .wondertown-home__business-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .wondertown-home__business-card,
+  .wondertown-home__business-card:nth-child(4),
+  .wondertown-home__business-card:nth-child(5),
+  .wondertown-home__business-card:last-child {
+    grid-column: auto;
+    min-height: 290px;
+  }
+
+  .wondertown-home__steps-grid {
+    grid-template-columns: 1fr;
+    margin-top: 52px;
+  }
+
+  .wondertown-home__steps-grid article,
+  .wondertown-home__steps-grid article:last-child {
+    border: 0;
+    border-top: 1px solid #ded9e4;
+    min-height: 0;
+    padding: 34px 0 42px;
+  }
+
+  .wondertown-home__steps-grid h3 {
+    margin-top: 28px;
+  }
+
+  .wondertown-home__cta {
+    padding: 18px 0 70px;
+  }
+
+  .wondertown-home__cta-card {
+    border-radius: 28px;
+    gap: 40px;
+    min-height: 0;
+    padding: 48px 26px;
+  }
+
+  .wondertown-home__cta-actions {
+    display: grid;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .wondertown-home__footer-inner {
+    grid-template-columns: 1fr;
+  }
+
+  .wondertown-home__footer nav {
+    justify-self: start;
+  }
+}
+
+@media (max-width: 390px) {
+  .wondertown-home__container {
+    width: min(100% - 28px, 1240px);
+  }
+
+  .wondertown-home__brand span {
+    display: none;
+  }
+
+  .wondertown-home__hero h1 {
+    font-size: 48px;
+  }
+
+  .wondertown-home__hero-notes {
+    display: grid;
+  }
+
+  .wondertown-home__intro h2,
+  .wondertown-home__section-heading h2,
+  .wondertown-home__steps-heading h2,
+  .wondertown-home__cta h2 {
+    font-size: 39px;
+  }
+}

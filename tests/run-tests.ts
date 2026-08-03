@@ -2433,6 +2433,7 @@ runTest('active tenant operations use Pinas and always verify canonical producti
     ['pinas-rewards.vercel.app', 'Pinas Rewards'],
     ['www.medellinrewards.com', 'Medellin Rewards'],
     ['guatemalarewards.com', 'Guatemala Rewards'],
+    ['wondertown-rewards.vercel.app', 'Wondertown Rewards'],
   ]) {
     assert.match(postDeployment, new RegExp(`${hostname.replaceAll('.', '\\.')}.+${tenantName}`))
   }

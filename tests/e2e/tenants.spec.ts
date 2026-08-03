@@ -5,6 +5,12 @@ const tenants = [
   { slug: 'guatemala', name: 'Guatemala Rewards', color: '#176b5b' },
   { slug: 'synergize', name: 'Synergize', color: '#2357a5' },
   { slug: 'pinas', name: 'Pinas Rewards', color: '#a67608' },
+  {
+    slug: 'wondertown',
+    name: 'Wondertown Rewards',
+    color: '#4f3b78',
+    heading: 'Every little thing feels rewarding.',
+  },
 ] as const
 
 function collectRuntimeErrors(page: Page) {
@@ -25,9 +31,16 @@ test.describe('white-label tenant resolution', () => {
       await page.goto(`/?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle(tenant.name)
-      await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
+      if (tenant.slug === 'wondertown') {
+        await expect(page.locator('.wondertown-home__brand').first()).toContainText('Wondertown')
+        await expect(page.locator('.wondertown-home__brand').first()).toContainText('Rewards')
+      } else {
+        await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
+      }
       await expect(
-        page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
+        page.getByRole('heading', {
+          name: 'heading' in tenant ? tenant.heading : 'Earn Amazing Rewards While Supporting Local Businesses',
+        }),
       ).toBeVisible()
       await expect(page.locator('body')).not.toContainText(/\bheadline\b/i)
       await expect(page.locator('html')).toHaveCSS('--tenant-accent', tenant.color)

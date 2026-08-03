@@ -9,6 +9,7 @@ const required = {
     'pinas-rewards.vercel.app',
     'www.medellinrewards.com',
     'guatemalarewards.com',
+    'wondertown-rewards.vercel.app',
   ],
   'docs/platform-administrator-guide.md': ['Program suspension', 'Migration approval', 'Incident response'],
   'docs/tenant-administrator-guide.md': ['Branding', 'Team access', 'Data export'],

@@ -25,6 +25,12 @@
       logo: '/pinas-rewards-mark.svg',
       description: 'Pinas Rewards member benefits and participating local businesses.',
     },
+    wondertown: { name: 'Wondertown Rewards',
+      color: '#4f3b78',
+      locale: 'en',
+      logo: '/wondertown-rewards-logo.svg',
+      description: 'A fictional rewards city built for safe, end-to-end platform testing.',
+    },
   }
   var neutralBrand = {
     name: 'Rewards Program',
@@ -41,10 +47,13 @@
     'www.guatemalarewards.com': 'guatemala',
     'pinas-rewards.vercel.app': 'pinas',
     'pinas.localhost': 'pinas',
+    'wondertown-rewards.vercel.app': 'wondertown',
+    'wondertown.localhost': 'wondertown',
   }
   var canUsePreviewOverride = hostname === 'localhost'
     || hostname.indexOf('127.') === 0
     || hostname === 'pinas-rewards.vercel.app'
+    || hostname === 'wondertown-rewards.vercel.app'
     || hostname.endsWith('.rewardsplatform.app')
     || (hostname.indexOf('loyalty-rewards-prog-') === 0 && hostname.endsWith('-elaielaielai1113s-projects.vercel.app'))
   var querySlug = canUsePreviewOverride ? new URLSearchParams(window.location.search).get('tenant') : null

@@ -20,6 +20,7 @@ describe('tenant resolution fallback', () => {
     ['synergize.rewardsplatform.app', 'synergize'],
     ['pinas.localhost', 'pinas'],
     ['pinas-rewards.vercel.app', 'pinas'],
+    ['wondertown-rewards.vercel.app', 'wondertown'],
   ])('maps %s to %s', (hostname, slug) => {
     expect(getFallbackProgram(hostname).slug).toBe(slug)
   })
@@ -33,8 +34,8 @@ describe('tenant resolution fallback', () => {
     expect(inferTenantSlugHint('guatemala-rewards.evil.example')).toBeNull()
   })
 
-  it('ships four distinct seeded programs', () => {
-    expect(new Set(seededPrograms.map((program) => program.id))).toHaveLength(4)
+  it('ships five distinct seeded programs', () => {
+    expect(new Set(seededPrograms.map((program) => program.id))).toHaveLength(5)
     expect(new Set(seededPrograms.map((program) => program.currency)).size).toBeGreaterThan(1)
   })
 })

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const tenantSlugs = ['pinas', 'medellin', 'guatemala'] as const
+const tenantSlugs = ['pinas', 'medellin', 'guatemala', 'wondertown'] as const
 const viewportWidths = [320, 390, 768, 859, 1024, 1280] as const
 const publicRoutes = ['/', '/business'] as const
 
@@ -31,6 +31,12 @@ test.describe('cross-tenant public responsive layouts', () => {
               '.business-landing h1',
               '.business-landing__button',
               '.business-landing__benefit',
+              '.wondertown-home__header-inner',
+              '.wondertown-home__hero-content',
+              '.wondertown-home__business-card',
+              '.wondertown-home__steps-grid article',
+              '.wondertown-home__cta-card',
+              '.wondertown-home__button',
             ].join(',')
             const clipped = Array.from(document.querySelectorAll<HTMLElement>(criticalSelector))
               .filter((element) => element.offsetParent !== null)
@@ -52,6 +58,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               && Math.abs(membershipCards[0].top - membershipCards[1].top) < 2
 
             const homeNav = document.querySelector<HTMLElement>('.figma-home__nav')
+            const wondertownNav = document.querySelector<HTMLElement>('.wondertown-home__nav')
             const businessNav = document.querySelector<HTMLElement>('.business-public-shell__nav')
 
             return {
@@ -59,6 +66,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               clipped,
               membershipCardsShareRow,
               homeNavPosition: homeNav ? getComputedStyle(homeNav).position : null,
+              wondertownNavDisplay: wondertownNav ? getComputedStyle(wondertownNav).display : null,
               businessNavPosition: businessNav ? getComputedStyle(businessNav).position : null,
             }
           })
@@ -66,9 +74,13 @@ test.describe('cross-tenant public responsive layouts', () => {
           expect(layout.documentOverflow, `${tenant} ${route} at ${width}px`).toBeLessThanOrEqual(1)
           expect(layout.clipped, `${tenant} ${route} at ${width}px`).toEqual([])
 
-          if (route === '/' && width <= 1050) {
+          if (route === '/' && width <= 1050 && tenant !== 'wondertown') {
             expect(layout.membershipCardsShareRow, `${tenant} membership cards at ${width}px`).toBe(false)
             expect(layout.homeNavPosition, `${tenant} home navigation at ${width}px`).toBe('fixed')
+          }
+
+          if (route === '/' && width <= 1050 && tenant === 'wondertown') {
+            expect(layout.wondertownNavDisplay, `${tenant} home navigation at ${width}px`).toBe('none')
           }
 
           if (route === '/business' && width <= 820) {
