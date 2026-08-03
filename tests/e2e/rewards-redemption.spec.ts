@@ -35,7 +35,7 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
     businessId = business.id
     customerProfileId = customer.id
 
-    await ensureActiveMembership(customerClient)
+    await ensureActiveMembership(customerClient, business.program_id)
     await recordMemberQrSale(staffClient, customer.memberQrToken!, 85, fundingNote)
     const reward = await getFirstRewardForBusiness(customerClient, businessId)
     const balance = await getRewardBalance(customerClient, customerProfileId)

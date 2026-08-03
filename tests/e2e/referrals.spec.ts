@@ -20,6 +20,7 @@ test.describe.serial('referral and QR signup workflow automation', () => {
 
   const runId = process.env.WORKFLOW_TEST_RUN_ID ?? `${Date.now()}`
   let businessId = ''
+  let programId = ''
   let partnerCode = ''
   let referredProfileId = ''
 
@@ -39,6 +40,7 @@ test.describe.serial('referral and QR signup workflow automation', () => {
     const business = await getBusinessBySlug(ownerClient, 'velvet-brew')
     const customer = await getProfileByEmail(customerClient, e2eAccounts.customer)
     businessId = business.id
+    programId = business.program_id
     referredProfileId = customer.id
     const partner =
       await getFirstPartnerReferrerForBusiness(ownerClient, businessId)
@@ -62,7 +64,7 @@ test.describe.serial('referral and QR signup workflow automation', () => {
     const beforeReferral = await getPartnerReferralForCustomer(ownerClient, referredProfileId, businessId)
     const product = await getFirstProductForBusiness(customerClient, businessId)
 
-    await ensureActiveMembership(customerClient)
+    await ensureActiveMembership(customerClient, programId)
     const order = await placeSingleItemOrder(customerClient, businessId, product.id)
     const referral = await getPartnerReferralForCustomer(ownerClient, referredProfileId, businessId)
 

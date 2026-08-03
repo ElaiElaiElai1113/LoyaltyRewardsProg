@@ -155,7 +155,7 @@ export async function signUpTestCustomer(email: string, fullName: string, passwo
 export async function getBusinessBySlug(client: AppSupabaseClient, slug: string) {
   const { data, error } = await client
     .from('businesses')
-    .select('id, name, slug')
+    .select('id, name, slug, program_id')
     .eq('slug', slug)
     .single()
 
@@ -163,13 +163,13 @@ export async function getBusinessBySlug(client: AppSupabaseClient, slug: string)
     throw new Error(`Business not found for slug ${slug}: ${error?.message ?? 'missing row'}`)
   }
 
-  return data as { id: string; name: string; slug: string }
+  return data as { id: string; name: string; slug: string; program_id: string }
 }
 
 export async function getBusinessById(client: AppSupabaseClient, businessId: string) {
   const { data, error } = await client
     .from('businesses')
-    .select('id, name, slug')
+    .select('id, name, slug, program_id')
     .eq('id', businessId)
     .single()
 
@@ -177,7 +177,7 @@ export async function getBusinessById(client: AppSupabaseClient, businessId: str
     throw new Error(`Business not found for ID ${businessId}: ${error?.message ?? 'missing row'}`)
   }
 
-  return data as { id: string; name: string; slug: string }
+  return data as { id: string; name: string; slug: string; program_id: string }
 }
 
 export async function getProfileByEmail(client: AppSupabaseClient, email: string) {
@@ -411,8 +411,8 @@ export async function placeSingleItemOrder(client: AppSupabaseClient, businessId
   return row
 }
 
-export async function ensureActiveMembership(client: AppSupabaseClient) {
-  const { data, error } = await client.rpc('mock_subscribe')
+export async function ensureActiveMembership(client: AppSupabaseClient, programId: string) {
+  const { data, error } = await client.rpc('mock_subscribe', { p_program_id: programId })
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
 
   if (error || !row) {

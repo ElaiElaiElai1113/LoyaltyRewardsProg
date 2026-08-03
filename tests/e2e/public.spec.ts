@@ -88,6 +88,13 @@ test.describe('public acquisition workflow', () => {
       'Cars',
       'Real estate',
     ])
+    await page.locator('.figma-home__category-grid').scrollIntoViewIfNeeded()
+    await expect.poll(() => page.locator('.figma-home__category-card img').evaluateAll((images) =>
+      images.every((image) => {
+        const renderedImage = image as HTMLImageElement
+        return renderedImage.complete && renderedImage.naturalWidth > 0
+      }),
+    )).toBe(true)
 
     const vacationBanner = page.locator('#vacation')
     await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean(?:-[\w-]+)?\.webp/)

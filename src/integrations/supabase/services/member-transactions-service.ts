@@ -1,24 +1,6 @@
 import type { MemberTransaction, Profile, ScannedMember } from '@/types/domain'
 import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
-function isMissingReceiptNumberRpc(error: unknown) {
-  if (!error || typeof error !== 'object') return false
-
-  const message = 'message' in error ? String((error as { message?: unknown }).message ?? '') : ''
-  const code = 'code' in error ? String((error as { code?: unknown }).code ?? '') : ''
-
-  return (
-    code === 'PGRST202' ||
-    (
-      message.includes('record_member_transaction') &&
-      (
-        message.includes('schema cache') ||
-        message.includes('p_receipt_number')
-      )
-    )
-  )
-}
-
 function mapMemberTransaction(row: Record<string, unknown>): MemberTransaction {
   const transaction = camelCaseRow(row)
   const rawMember = row.profiles as Record<string, unknown> | undefined
@@ -106,22 +88,6 @@ export const memberTransactionsService = {
       p_note: input.note ?? null,
       p_client_request_id: input.clientRequestId,
     })
-
-    if (error && isMissingReceiptNumberRpc(error)) {
-      const { data: legacyData, error: legacyError } = await sb.rpc('record_member_transaction', {
-        p_member_qr_token: input.token,
-        p_purchase_amount: input.purchaseAmount,
-        p_note: [`Receipt/bill: ${input.receiptNumber}.`, input.note].filter(Boolean).join(' '),
-        p_client_request_id: input.clientRequestId,
-      })
-
-      const legacyRow = (Array.isArray(legacyData) ? legacyData[0] : legacyData) as Record<string, unknown> | null
-      if (legacyError || !legacyRow) {
-        throw new Error(friendlySupabaseError(legacyError, 'Failed to record member transaction.'))
-      }
-
-      return mapMemberTransaction(legacyRow)
-    }
 
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
     if (error || !row) {

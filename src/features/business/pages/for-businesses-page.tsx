@@ -126,6 +126,9 @@ export function ForBusinessesPage() {
             <img
               src={localBusinessOwner}
               alt={`Local business owner ready to welcome ${program.name} members`}
+              loading="eager"
+              decoding="async"
+              fetchPriority="high"
             />
             <div className="business-landing__cost-badge" aria-label="Zero percent upfront cost">
               <strong>0%</strong>
@@ -174,7 +177,7 @@ export function ForBusinessesPage() {
                 className={`business-landing__category-card business-landing__category-card--${category.label.toLowerCase()}`}
                 key={category.label}
               >
-                <img src={category.src} alt={category.alt} />
+                <img src={category.src} alt={category.alt} loading="lazy" decoding="async" />
                 <figcaption>{category.label}</figcaption>
               </figure>
             ))}
@@ -201,7 +204,12 @@ export function ForBusinessesPage() {
             </ol>
 
             <div className="business-landing__qr-art">
-              <img src={staffQrCheckout} alt="Staff member scanning a customer QR code at checkout" />
+              <img
+                src={staffQrCheckout}
+                alt="Staff member scanning a customer QR code at checkout"
+                loading="lazy"
+                decoding="async"
+              />
               <div className="business-landing__time-badge">
                 <strong>~10 sec</strong>
                 <span>to scan and log a sale at checkout</span>
@@ -218,7 +226,14 @@ export function ForBusinessesPage() {
         style={{ '--business-cta-art': `url(${ctaPhoto})` } as CSSProperties}
       >
         <span className="business-landing__compat-anchor" id="book-demo" aria-hidden="true" />
-        <img className="business-landing__cta-overlay" src={ctaOverlay} alt="" aria-hidden="true" />
+        <img
+          className="business-landing__cta-overlay"
+          src={ctaOverlay}
+          alt=""
+          aria-hidden="true"
+          loading="lazy"
+          decoding="async"
+        />
         <div className="business-landing__cta-erase" aria-hidden="true" />
         <div className="business-landing__cta-content">
           <SectionEyebrow>GET STARTED TODAY</SectionEyebrow>
