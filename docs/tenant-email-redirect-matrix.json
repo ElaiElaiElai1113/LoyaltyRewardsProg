@@ -27,6 +27,13 @@
       "hostname": "pinas-rewards.vercel.app",
       "senderEmail": null,
       "monitor": true
+    },
+    {
+      "slug": "wondertown",
+      "status": "pending",
+      "hostname": "wondertown-rewards.vercel.app",
+      "senderEmail": null,
+      "monitor": true
     }
   ],
   "redirectPaths": [

@@ -2412,6 +2412,14 @@ runTest('active tenant operations use Pinas and always verify canonical producti
     senderEmail: null,
     monitor: true,
   })
+  const wondertown = matrix.programs.find((program) => program.slug === 'wondertown')
+  assert.deepEqual(wondertown, {
+    slug: 'wondertown',
+    status: 'pending',
+    hostname: 'wondertown-rewards.vercel.app',
+    senderEmail: null,
+    monitor: true,
+  })
   assert.equal(matrix.programs.some((program) => program.slug === 'davao'), false)
   assert.match(monitor, /program\.status === 'ready' \|\| program\.monitor === true/)
   assert.match(domainReadiness, /expectedTenantName/)
