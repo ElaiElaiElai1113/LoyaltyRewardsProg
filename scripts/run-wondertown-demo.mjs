@@ -18,6 +18,11 @@ const child = spawn(process.execPath, [runner], {
     E2E_TENANT_PRODUCT_NAME: 'Starlight Latte',
     E2E_TENANT_REWARD_NAME: 'Moonbeam Breakfast',
     E2E_TENANT_GIFT_CARD_NAME: 'Moonbeam Gift Card',
+    E2E_TENANT_GIFT_CARD_CODE: 'GC-260805-5066C5',
+    E2E_TENANT_GIFT_CARD_RECEIPT: '12345678',
+    E2E_TENANT_GIFT_CARD_TOTAL: '$2,300',
+    E2E_TENANT_GIFT_CARD_DISCOUNT: '-$25',
+    E2E_TENANT_GIFT_CARD_FINAL_PRICE: '$2,275',
   },
   stdio: 'inherit',
 })

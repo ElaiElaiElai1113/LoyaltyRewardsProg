@@ -73,7 +73,7 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <p className="text-xs font-medium text-[var(--muted-foreground)]">Code</p>
-              <p className="mt-1 font-mono text-lg font-semibold text-[var(--foreground)]">{giftCard.code}</p>
+              <p className="mt-1 break-all font-mono text-lg font-semibold text-[var(--foreground)]">{giftCard.code}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-[var(--muted-foreground)]">Expires</p>

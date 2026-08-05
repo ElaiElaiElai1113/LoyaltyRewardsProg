@@ -49,8 +49,8 @@ export function CustomerLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
       <header className="fixed inset-x-0 top-0 z-50 shrink-0 border-b border-[var(--border)] bg-card/95 backdrop-blur">
-        <div className="mx-auto flex min-h-16 w-full items-center justify-between gap-3 px-4 py-2 sm:px-5 md:px-6 2xl:px-10">
-          <div className="flex min-w-0 flex-1 items-center gap-4 xl:gap-10">
+        <div className="mx-auto flex min-h-16 w-full items-center justify-between gap-1 px-4 py-2 sm:gap-3 sm:px-5 md:px-6 2xl:px-10">
+          <div className="flex min-w-0 flex-1 items-center gap-2 xl:gap-10">
             <NavLink to="/dashboard" className="flex min-w-0 items-center gap-3">
               <BrandLogo
                 markClassName="h-9"
@@ -84,7 +84,7 @@ export function CustomerLayout() {
               <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Member')}</span>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3 xl:gap-4">
+            <div className="flex items-center gap-1 sm:gap-3 xl:gap-4">
               <VerificationStatusPill status={profile?.verificationStatus} className="hidden xl:inline-flex" />
               <NavLink
                 to={compactGiftCardAction.to}
@@ -106,7 +106,7 @@ export function CustomerLayout() {
                   </span>
                 ) : null}
               </NavLink>
-              <LanguagePicker className="text-[var(--muted-foreground)]" compact />
+              <LanguagePicker className="text-[var(--muted-foreground)]" compact condenseOnNarrowScreens />
               <ThemeToggle />
               <Button
                 variant="ghost"

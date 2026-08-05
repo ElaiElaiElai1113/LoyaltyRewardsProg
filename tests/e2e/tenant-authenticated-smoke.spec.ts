@@ -18,6 +18,11 @@ const businessName = process.env.E2E_TENANT_BUSINESS_NAME ?? 'QA Partner'
 const productName = process.env.E2E_TENANT_PRODUCT_NAME ?? 'QA Coffee'
 const rewardName = process.env.E2E_TENANT_REWARD_NAME ?? 'QA Welcome Reward'
 const giftCardName = process.env.E2E_TENANT_GIFT_CARD_NAME ?? 'QA Gift Card'
+const giftCardCode = process.env.E2E_TENANT_GIFT_CARD_CODE ?? ''
+const giftCardReceipt = process.env.E2E_TENANT_GIFT_CARD_RECEIPT ?? ''
+const giftCardTotal = process.env.E2E_TENANT_GIFT_CARD_TOTAL ?? ''
+const giftCardDiscount = process.env.E2E_TENANT_GIFT_CARD_DISCOUNT ?? ''
+const giftCardFinalPrice = process.env.E2E_TENANT_GIFT_CARD_FINAL_PRICE ?? ''
 const password = process.env.E2E_PASSWORD ?? ''
 
 const escapedBusinessName = businessName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -29,6 +34,42 @@ function monitorUnexpectedErrors(page: Page) {
     if (message.type() === 'error') errors.push(`console: ${message.text()}`)
   })
   return errors
+}
+
+async function expectNoHorizontalClipping(page: Page, context: string) {
+  const layout = await page.evaluate(() => {
+    const viewportWidth = document.documentElement.clientWidth
+    const clippedInteractiveElements = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        'a, button, input, select, textarea, summary, [role="button"], [role="tab"]',
+      ),
+    )
+      .filter((element) => element.offsetParent !== null)
+      .map((element) => {
+        const rect = element.getBoundingClientRect()
+        return {
+          label: (element.textContent ?? element.getAttribute('aria-label') ?? '')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .slice(0, 80),
+          left: Math.round(rect.left),
+          right: Math.round(rect.right),
+        }
+      })
+      .filter(
+        (element) =>
+          (element.left < -1 && element.right > 1)
+          || (element.right > viewportWidth + 1 && element.left < viewportWidth - 1),
+      )
+
+    return {
+      overflow: Math.max(0, document.documentElement.scrollWidth - viewportWidth),
+      clippedInteractiveElements,
+    }
+  })
+
+  expect(layout.overflow, `${context} document overflow`).toBeLessThanOrEqual(1)
+  expect(layout.clippedInteractiveElements, `${context} clipped controls`).toEqual([])
 }
 
 async function signInCustomer(page: Page, email = customerEmail) {
@@ -98,6 +139,24 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     expect(errors).toEqual([])
   })
 
+  test('member gift-card wallet remains usable at the smallest supported mobile width', async ({ page }) => {
+    const errors = monitorUnexpectedErrors(page)
+    await page.setViewportSize({ width: 320, height: 844 })
+    await signInCustomer(page)
+    await page.goto('/wallet/gift-cards')
+
+    await expect(page.getByRole('heading', { name: 'Gift Cards', exact: true })).toBeVisible()
+    for (const status of ['Active', 'Redeemed', 'Expired']) {
+      await expect(page.getByRole('tab', { name: new RegExp(status, 'i') })).toBeVisible()
+    }
+    await page.getByRole('tab', { name: /redeemed/i }).click()
+    if (giftCardCode) {
+      await expect(page.getByText(giftCardCode, { exact: true })).toBeVisible()
+    }
+    await expectNoHorizontalClipping(page, 'member gift-card wallet at 320px')
+    expect(errors).toEqual([])
+  })
+
   test('business owner session, customer search, catalog, and points award work', async ({ page }) => {
     const errors = monitorUnexpectedErrors(page)
     await signInBusiness(page)
@@ -158,6 +217,32 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
       await expect(page).toHaveURL(new RegExp(`${path.replaceAll('/', '\\/')}$`))
       await expect(page.getByRole('heading', { name: /page not found/i })).toHaveCount(0)
       await expect(page.locator('body')).not.toContainText(/application error|something went wrong/i)
+    }
+
+    expect(errors).toEqual([])
+  })
+
+  test('business transaction history remains accurate and responsive on mobile', async ({ page }) => {
+    const errors = monitorUnexpectedErrors(page)
+    await page.setViewportSize({ width: 320, height: 844 })
+    await signInBusiness(page)
+    await page.goto('/business/redemptions')
+
+    await expect(page.getByRole('heading', { name: 'Transaction History', exact: true })).toBeVisible()
+    await expectNoHorizontalClipping(page, 'business transaction history at 320px')
+
+    if (giftCardReceipt) {
+      const transaction = page.locator(`[data-transaction-receipt="${giftCardReceipt}"]`)
+      await expect(transaction).toBeVisible()
+      if (giftCardTotal) {
+        await expect(transaction.getByTestId('transaction-total')).toHaveText(giftCardTotal)
+      }
+      if (giftCardDiscount) {
+        await expect(transaction.getByTestId('transaction-gift-card-discount')).toHaveText(giftCardDiscount)
+      }
+      if (giftCardFinalPrice) {
+        await expect(transaction.getByTestId('transaction-final-price')).toHaveText(giftCardFinalPrice)
+      }
     }
 
     expect(errors).toEqual([])

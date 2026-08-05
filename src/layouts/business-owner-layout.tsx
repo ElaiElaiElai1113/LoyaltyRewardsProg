@@ -95,15 +95,18 @@ export function BusinessOwnerLayout() {
 
   return (
     <div className="soft-luxe-shell flex min-h-screen">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="fixed left-4 top-4 z-50 border border-primary/15 bg-card/95 text-[var(--foreground)] shadow-soft backdrop-blur-xl xl:hidden"
-        onClick={() => setIsSidebarOpen(true)}
-        aria-label={t('Menu')}
-      >
-        <Menu className="size-5" />
-      </Button>
+      <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 border-b border-primary/15 bg-card px-4 shadow-soft xl:hidden">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="shrink-0 border border-primary/15 text-[var(--foreground)]"
+          onClick={() => setIsSidebarOpen(true)}
+          aria-label={t('Menu')}
+        >
+          <Menu className="size-5" />
+        </Button>
+        <span className="min-w-0 truncate text-sm font-semibold text-[var(--foreground)]">{business.name}</span>
+      </header>
 
       {isSidebarOpen ? (
         <button

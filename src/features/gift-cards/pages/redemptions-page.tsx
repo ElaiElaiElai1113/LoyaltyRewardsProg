@@ -26,6 +26,10 @@ import type { GiftCard } from '@/types/domain'
 import { QrScanner } from '../components/qr-scanner'
 import { RedemptionConfirmationDialog } from '../components/redemption-confirmation-dialog'
 import { useBusinessGiftCards, useRedeemGiftCard } from '../hooks/use-gift-cards'
+import {
+  extractGiftCardCode,
+  extractMoneyFromGiftCardNote,
+} from '../gift-card-transaction-note'
 
 type ValidationStatus = 'idle' | 'active' | 'redeemed' | 'expired' | 'wrong_business' | 'invalid'
 type TransactionHistoryItem =
@@ -109,19 +113,6 @@ function formatDateTime(value?: string | null) {
   })
 }
 
-function extractGiftCardCode(note?: string | null) {
-  const match = note?.match(/Gift card code:\s*([A-Z0-9-]+)/i)
-  return match?.[1] ?? null
-}
-
-function extractMoneyFromNote(note: string | null | undefined, label: string) {
-  const match = note?.match(new RegExp(`${label}:\\s*([\\d,.]+)`, 'i'))
-  if (!match) return null
-
-  const value = Number(match[1].replace(/,/g, ''))
-  return Number.isFinite(value) ? value : null
-}
-
 export function RedemptionsPage() {
   const queryClient = useQueryClient()
   const { program } = useTenant()
@@ -157,9 +148,9 @@ export function RedemptionsPage() {
       const giftCardCode = extractGiftCardCode(transaction.note)
       const currency = transaction.business?.currency ?? business?.currency ?? program.currency
       const currencyContext = { currency, locale: program.locale }
-      const giftCardValue = extractMoneyFromNote(transaction.note, 'Gift card value') ?? 0
-      const originalTotal = extractMoneyFromNote(transaction.note, 'Original receipt total') ?? transaction.purchaseAmount + giftCardValue
-      const finalPrice = extractMoneyFromNote(transaction.note, 'Final bill after gift card') ?? Math.max(originalTotal - giftCardValue, 0)
+      const giftCardValue = extractMoneyFromGiftCardNote(transaction.note, 'Gift card value') ?? 0
+      const originalTotal = extractMoneyFromGiftCardNote(transaction.note, 'Original receipt total') ?? transaction.purchaseAmount + giftCardValue
+      const finalPrice = extractMoneyFromGiftCardNote(transaction.note, 'Final bill after gift card') ?? Math.max(originalTotal - giftCardValue, 0)
 
       return {
         kind: 'member_transaction',
@@ -703,7 +694,11 @@ export function RedemptionsPage() {
           <Card>
             <CardContent className="divide-y divide-outline-variant/10 p-0">
               {transactionRows.map((transaction) => (
-                <div key={transaction.id} className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,2fr)_minmax(0,1.25fr)] lg:items-start">
+                <div
+                  key={transaction.id}
+                  className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,2fr)_minmax(0,1.25fr)] lg:items-start"
+                  data-transaction-receipt={transaction.receiptNumber ?? undefined}
+                >
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge variant={transaction.giftCardCode ? 'secondary' : 'outline'} className="w-fit">
@@ -722,15 +717,21 @@ export function RedemptionsPage() {
                   <div className="grid min-w-0 gap-3 sm:grid-cols-3">
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
                       <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Total</p>
-                      <p className="mt-2 font-semibold text-on-surface">{transaction.totalAmountLabel}</p>
+                      <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-total">
+                        {transaction.totalAmountLabel}
+                      </p>
                     </div>
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
                       <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Gift Card Discount</p>
-                      <p className="mt-2 font-semibold text-on-surface">{transaction.discountLabel}</p>
+                      <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-gift-card-discount">
+                        {transaction.discountLabel}
+                      </p>
                     </div>
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
                       <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Final Price</p>
-                      <p className="mt-2 font-semibold text-on-surface">{transaction.finalPriceLabel}</p>
+                      <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-final-price">
+                        {transaction.finalPriceLabel}
+                      </p>
                     </div>
                   </div>
 

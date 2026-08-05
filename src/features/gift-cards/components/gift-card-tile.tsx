@@ -103,8 +103,8 @@ export function GiftCardTile({
           </p>
         </div>
 
-        <div className="flex items-end justify-between gap-4">
-          <div>
+        <div className="flex flex-col items-stretch gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="min-w-0">
             <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Points Cost')}</span>
             <p className={cn('font-semibold text-[var(--foreground)]', compact ? 'text-xl' : 'text-2xl')}>
               {formatPoints(item.pointsCost)}
@@ -121,6 +121,7 @@ export function GiftCardTile({
             type="button"
             variant={canIssue ? 'secondary' : 'outline'}
             size="sm"
+            className="w-full sm:w-auto"
             disabled={!hasEnoughPoints}
             onClick={() => onSelect(item)}
           >
