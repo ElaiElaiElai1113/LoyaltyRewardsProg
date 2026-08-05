@@ -13,6 +13,7 @@ test.describe.serial('fresh customer onboarding workflow automation', () => {
     await page.goto('/join')
     await page.locator('#join-name').fill(onboardingName)
     await page.locator('#join-email').fill(onboardingEmail)
+    await page.locator('#join-phone').fill('+57 300 555 0101')
     await page.locator('#join-password').fill(e2ePassword)
     await page.getByRole('button', { name: /Create my account|Crear mi cuenta/i }).click()
 

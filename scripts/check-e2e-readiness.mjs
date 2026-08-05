@@ -31,12 +31,16 @@ export function getE2eReadiness() {
   const environment = { ...readEnvFile(), ...process.env }
   const missingClient = requiredClientVariables.filter((name) => isPlaceholder(environment[name]))
   const missingBilling = requiredBillingVariables.filter((name) => isPlaceholder(environment[name]))
+  const supabaseUrl = environment.VITE_SUPABASE_URL ?? ''
+  const usesLocalSupabase = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i.test(supabaseUrl)
 
   return {
     missingClient,
     missingBilling,
     authReady: missingClient.length === 0,
     billingReady: missingBilling.length === 0,
+    usesLocalSupabase,
+    allowHostedWorkflows: environment.E2E_ALLOW_HOSTED_WORKFLOWS === 'true',
   }
 }
 

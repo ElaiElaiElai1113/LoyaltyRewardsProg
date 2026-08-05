@@ -10,14 +10,18 @@ import {
 describe('tenant resolution fallback', () => {
   it('allows this project preview hosts without trusting unrelated Vercel deployments', () => {
     expect(canUseTenantPreviewOverride('loyalty-rewards-prog-7xkl2hro-elaielaielai1113s-projects.vercel.app')).toBe(true)
+    expect(canUseTenantPreviewOverride('medellin.localhost')).toBe(true)
     expect(canUseTenantPreviewOverride('attacker-project.vercel.app')).toBe(false)
     expect(canUseTenantPreviewOverride('unknown.example.com')).toBe(false)
   })
 
   it.each([
     ['medellinrewards.com', 'medellin'],
+    ['medellin.localhost', 'medellin'],
     ['guatemala.rewardsplatform.app', 'guatemala'],
+    ['guatemala.localhost', 'guatemala'],
     ['synergize.rewardsplatform.app', 'synergize'],
+    ['synergize.localhost', 'synergize'],
     ['pinas.localhost', 'pinas'],
     ['pinas-rewards.vercel.app', 'pinas'],
     ['wondertown-rewards.vercel.app', 'wondertown'],

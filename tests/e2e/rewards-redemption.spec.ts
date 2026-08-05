@@ -5,7 +5,7 @@ import { e2eAccounts, workflowAuthEnabled } from './helpers/env.js'
 import {
   ensureActiveMembership,
   fulfillRewardRedemption,
-  getBusinessBySlug,
+  getBusinessById,
   getFirstRewardForBusiness,
   getLatestRedemptionForCustomer,
   getProfileByEmail,
@@ -30,7 +30,9 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
     const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
     const staffClient = await getSupabaseSessionClient(e2eAccounts.businessStaff)
     const ownerClient = await getSupabaseSessionClient(e2eAccounts.businessOwner)
-    const business = await getBusinessBySlug(ownerClient, 'velvet-brew')
+    const owner = await getProfileByEmail(ownerClient, e2eAccounts.businessOwner)
+    expect(owner.businessId).toBeTruthy()
+    const business = await getBusinessById(ownerClient, owner.businessId!)
     const customer = await getProfileByEmail(customerClient, e2eAccounts.customer)
     businessId = business.id
     customerProfileId = customer.id

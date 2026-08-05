@@ -839,6 +839,11 @@ runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   assert.match(localRunner, /createServer/)
   assert.match(localRunner, /process\.argv\.slice\(2\)/)
   assert.match(localRunner, /playwright\.local\.config\.ts/)
+  assert.match(localRunner, /E2E_AUTH_ENABLED:\s*authRequested \? 'true'/)
+  assert.match(localRunner, /E2E_ALLOW_HOSTED_WORKFLOWS/)
+  assert.match(localRunner, /usesLocalSupabase/)
+  assert.match(localRunner, /E2E_TENANT_SLUG/)
+  assert.match(localRunner, /medellin/)
   assert.match(localRunner, /server\.close/)
   assert.match(guideSpec, /public guide explains the platform with Spanish-first video-ready content/)
   assert.match(guideSpec, /public guide follows the English language preference without Spanish guide copy/)
@@ -2201,7 +2206,17 @@ runTest('launch checklist command enables authenticated workflow tests', () => {
   const envHelper = readFileSync('tests/e2e/helpers/env.ts', 'utf8')
 
   assert.match(envHelper, /test:e2e:workflows/)
+  assert.match(envHelper, /test:e2e:acceptance/)
   assert.match(envHelper, /test:launch/)
+})
+
+runTest('live Medellin demo runner loads saved QA environment without exposing credentials', () => {
+  const runner = readFileSync('scripts/run-medellin-demo.mjs', 'utf8')
+
+  assert.match(runner, /existsSync\('\.env'\)/)
+  assert.match(runner, /readFileSync\('\.env', 'utf8'\)/)
+  assert.match(runner, /if \(!process\.env\[key\]\) process\.env\[key\] = value/)
+  assert.doesNotMatch(runner, /console\.log\([^)]*E2E_PASSWORD/)
 })
 
 runTest('focused workflow commands enable authenticated workflow tests', () => {

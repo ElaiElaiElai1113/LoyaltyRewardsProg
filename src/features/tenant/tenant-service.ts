@@ -90,8 +90,11 @@ let activeProgram: Program | null = null
 const programSlugByHost: Record<string, keyof typeof programs> = {
   'medellinrewards.com': 'medellin',
   'www.medellinrewards.com': 'medellin',
+  'medellin.localhost': 'medellin',
   'guatemalarewards.com': 'guatemala',
   'www.guatemalarewards.com': 'guatemala',
+  'guatemala.localhost': 'guatemala',
+  'synergize.localhost': 'synergize',
   'pinas-rewards.vercel.app': 'pinas',
   'pinas.localhost': 'pinas',
   'wondertown-rewards.vercel.app': 'wondertown',
@@ -119,6 +122,7 @@ export function canUseTenantPreviewOverride(hostname: string) {
   const host = hostname.toLowerCase().split(':')[0]
   return host === 'localhost'
     || host.startsWith('127.')
+    || host.endsWith('.localhost')
     || host === 'pinas-rewards.vercel.app'
     || host === 'wondertown-rewards.vercel.app'
     || host.endsWith('.rewardsplatform.app')

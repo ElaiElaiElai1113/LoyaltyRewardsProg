@@ -6,7 +6,7 @@ import {
   attributePartnerReferral,
   createPartnerReferrer,
   ensureActiveMembership,
-  getBusinessBySlug,
+  getBusinessById,
   getFirstPartnerReferrerForBusiness,
   getFirstProductForBusiness,
   getPartnerReferralForCustomer,
@@ -37,7 +37,9 @@ test.describe.serial('referral and QR signup workflow automation', () => {
   test('REF001 partner referral signup path preserves context and creates attribution', async ({ page }) => {
     const ownerClient = await getSupabaseSessionClient(e2eAccounts.businessOwner)
     const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
-    const business = await getBusinessBySlug(ownerClient, 'velvet-brew')
+    const owner = await getProfileByEmail(ownerClient, e2eAccounts.businessOwner)
+    expect(owner.businessId).toBeTruthy()
+    const business = await getBusinessById(ownerClient, owner.businessId!)
     const customer = await getProfileByEmail(customerClient, e2eAccounts.customer)
     businessId = business.id
     programId = business.program_id

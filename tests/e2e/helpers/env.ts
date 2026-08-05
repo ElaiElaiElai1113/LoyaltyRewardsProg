@@ -19,6 +19,7 @@ const usesLocalSupabase = /^(http:\/\/)?(127\.0\.0\.1|localhost)(:\d+)?/i.test(c
 const lifecycleAuthRequested =
   process.env.npm_lifecycle_event === 'test:e2e:hosted-safe' ||
   process.env.npm_lifecycle_event === 'test:e2e:workflows' ||
+  process.env.npm_lifecycle_event === 'test:e2e:acceptance' ||
   process.env.npm_lifecycle_event === 'test:launch' ||
   process.env.npm_lifecycle_event === 'test:referrals' ||
   process.env.npm_lifecycle_event === 'test:onboarding' ||
@@ -35,7 +36,10 @@ export const e2eAccounts = {
   customer: process.env.E2E_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_CUSTOMER_EMAIL') ?? 'customer@medellin.test',
   unverifiedCustomer: process.env.E2E_UNVERIFIED_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_UNVERIFIED_CUSTOMER_EMAIL') ?? 'unverified@medellin.test',
   businessStaff: process.env.E2E_BUSINESS_STAFF_EMAIL ?? readDotEnvValue('E2E_BUSINESS_STAFF_EMAIL') ?? 'staff@velvetbrew.test',
-  businessOwner: process.env.E2E_BUSINESS_OWNER_EMAIL ?? readDotEnvValue('E2E_BUSINESS_OWNER_EMAIL') ?? 'businesstest2@gmail.com',
+  businessOwner:
+    process.env.E2E_BUSINESS_OWNER_EMAIL
+    ?? readDotEnvValue('E2E_BUSINESS_OWNER_EMAIL')
+    ?? (usesLocalSupabase ? 'owner@velvetbrew.test' : 'businesstest2@gmail.com'),
   admin: process.env.E2E_ADMIN_EMAIL ?? readDotEnvValue('E2E_ADMIN_EMAIL') ?? 'admin@medellin.test',
   agreementPendingCustomer:
     process.env.E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL ?? readDotEnvValue('E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL') ?? 'agreement-pending-customer@medellin.test',
