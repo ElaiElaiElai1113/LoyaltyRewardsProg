@@ -263,28 +263,27 @@ runTest('global CSS restores the brand theme outside early access', () => {
   assert.match(css, /\.early-access-neutral/)
 })
 
-runTest('tenant logo assets stay available while shared install metadata remains neutral', () => {
+runTest('tenant logo assets stay available while install metadata remains host aware', () => {
   const fullLogo = readFileSync('public/medellin-rewards-logo.svg', 'utf8')
   const markLogo = readFileSync('public/medellin-rewards-mark.svg', 'utf8')
-  const favicon = readFileSync('public/favicon.svg', 'utf8')
-  const manifest = readFileSync('public/site.webmanifest', 'utf8')
+  const installBranding = readFileSync('api/_tenant-install-brand.ts', 'utf8')
   const brandLogo = readFileSync('src/components/brand-logo.tsx', 'utf8')
 
   assert.equal(existsSync('public/medellin-rewards-logo.png'), true)
   assert.match(fullLogo, /MEDELLIN/)
   assert.match(fullLogo, /REWARDS/)
   assert.match(markLogo, /linearGradient id="gold"/)
-  assert.match(favicon, /<title id="favicon-title">Pinas Rewards<\/title>/)
-  assert.match(favicon, /linearGradient id="g"/)
   assert.match(fullLogo, /stroke="#030303"/)
   assert.match(markLogo, /stroke="#030303"/)
-  assert.match(favicon, /fill="#11100e"/)
   assert.doesNotMatch(fullLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
   assert.doesNotMatch(markLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
-  assert.match(manifest, /"name": "Rewards Program"/)
-  assert.match(manifest, /\/rewards-program-mark\.svg/)
-  assert.match(manifest, /"theme_color": "#4B5563"/)
-  assert.doesNotMatch(manifest, /Pinas Rewards|Medellin Rewards/)
+  assert.match(installBranding, /name: 'Pinas Rewards'/)
+  assert.match(installBranding, /name: 'Medellin Rewards'/)
+  assert.match(installBranding, /name: 'Guatemala Rewards'/)
+  assert.match(installBranding, /name: 'Wondertown Rewards'/)
+  for (const legacyPath of ['public/site.webmanifest', 'public/apple-touch-icon.png', 'public/favicon.ico', 'public/favicon.svg', 'public/icon-192.png', 'public/icon-512.png']) {
+    assert.equal(existsSync(legacyPath), false)
+  }
   assert.match(brandLogo, /const displayLogoUrl = program\.logoUrl \?\? \(program\.slug === 'pinas' \? '\/pinas-rewards-mark\.svg' : null\)/)
   assert.match(brandLogo, /src=\{displayLogoUrl\}/)
   assert.match(brandLogo, /alt=\{program\.name\}/)
@@ -856,11 +855,7 @@ runTest('app version is installable as a PWA with online-required messaging', ()
   const packageJson = JSON.parse(readFileSync('package.json', 'utf8')) as {
     devDependencies?: Record<string, string>
   }
-  const manifest = JSON.parse(readFileSync('public/site.webmanifest', 'utf8')) as {
-    display?: string
-    orientation?: string
-    shortcuts?: Array<{ url?: string }>
-  }
+  const installBranding = readFileSync('api/_tenant-install-brand.ts', 'utf8')
   const viteConfig = readFileSync('vite.config.ts', 'utf8')
   const indexHtml = readFileSync('index.html', 'utf8')
   const main = readFileSync('src/main.tsx', 'utf8')
@@ -879,11 +874,11 @@ runTest('app version is installable as a PWA with online-required messaging', ()
   assert.match(indexHtml, /apple-mobile-web-app-capable/)
   assert.match(indexHtml, /apple-mobile-web-app-status-bar-style/)
 
-  assert.equal(manifest.display, 'standalone')
-  assert.equal(manifest.orientation, 'portrait')
-  assert.ok(manifest.shortcuts?.some((shortcut) => shortcut.url === '/profile?source=pwa-shortcut'))
-  assert.ok(manifest.shortcuts?.some((shortcut) => shortcut.url === '/business/dashboard?source=pwa-shortcut'))
-  assert.ok(manifest.shortcuts?.some((shortcut) => shortcut.url === '/guide?source=pwa-shortcut'))
+  assert.match(installBranding, /display: 'standalone'/)
+  assert.match(installBranding, /orientation: 'portrait'/)
+  assert.match(installBranding, /url: '\/profile\?source=pwa-shortcut'/)
+  assert.match(installBranding, /url: '\/business\/dashboard\?source=pwa-shortcut'/)
+  assert.match(installBranding, /url: '\/guide\?source=pwa-shortcut'/)
 
   assert.match(installPrompt, /beforeinstallprompt/)
   assert.match(installPrompt, /Add to Home Screen/)

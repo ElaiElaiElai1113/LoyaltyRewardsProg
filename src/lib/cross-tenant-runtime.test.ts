@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
@@ -74,10 +74,6 @@ describe('cross-tenant runtime safeguards', () => {
     const indexHtml = source('index.html')
     const bootstrap = source('public/tenant-bootstrap.js')
     const tenantDocumentBrand = source('src/features/tenant/tenant-document-brand.ts')
-    const staticManifest = JSON.parse(source('public/site.webmanifest')) as {
-      name: string
-      icons: Array<{ src: string }>
-    }
 
     expect(indexHtml).toContain('<title>Rewards Program</title>')
     expect(indexHtml).toContain('href="/api/tenant-icon?size=192"')
@@ -97,11 +93,16 @@ describe('cross-tenant runtime safeguards', () => {
     expect(bootstrap).toContain('dataset.tenantBrand')
     expect(bootstrap).toContain('link[rel="icon"]')
     expect(bootstrap).toContain("canonical.setAttribute('href', canonicalUrl)")
-    expect(staticManifest.name).toBe('Rewards Program')
-    expect(staticManifest.icons).toEqual([
-      expect.objectContaining({ src: '/rewards-program-mark.svg' }),
-    ])
-    expect(source('public/site.webmanifest')).not.toContain('Pinas Rewards')
+    for (const legacyPath of [
+      'public/site.webmanifest',
+      'public/apple-touch-icon.png',
+      'public/favicon.ico',
+      'public/favicon.svg',
+      'public/icon-192.png',
+      'public/icon-512.png',
+    ]) {
+      expect(existsSync(legacyPath)).toBe(false)
+    }
     expect(tenantDocumentBrand).toContain('/api/tenant-icon?size=192&tenant=')
     expect(tenantDocumentBrand).toContain('/api/tenant-icon?size=180&tenant=')
     expect(tenantDocumentBrand).toContain('/api/manifest?v=host-aware-2026&tenant=')

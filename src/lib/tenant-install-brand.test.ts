@@ -24,6 +24,19 @@ function readPngDimensions(path: string) {
 }
 
 describe('tenant install branding', () => {
+  it('does not ship shared legacy icon files that can leak one tenant into another', () => {
+    for (const path of [
+      'public/site.webmanifest',
+      'public/apple-touch-icon.png',
+      'public/favicon.ico',
+      'public/favicon.svg',
+      'public/icon-192.png',
+      'public/icon-512.png',
+    ]) {
+      expect(existsSync(path)).toBe(false)
+    }
+  })
+
   it.each(tenantCases)('resolves %s to its own %s manifest', (hostname, slug, name) => {
     const brand = resolveInstallBrand(hostname, 'pinas')
     const manifest = buildInstallManifest(brand)

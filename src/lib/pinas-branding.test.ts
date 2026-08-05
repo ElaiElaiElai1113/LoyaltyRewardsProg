@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest'
 const publicLayout = readFileSync('src/layouts/public-browse-layout.tsx', 'utf8')
 const homePage = readFileSync('src/features/home/pages/home-page.tsx', 'utf8')
 const businessPage = readFileSync('src/features/business/pages/for-businesses-page.tsx', 'utf8')
-const manifest = readFileSync('public/site.webmanifest', 'utf8')
+const installBranding = readFileSync('api/_tenant-install-brand.ts', 'utf8')
 const indexHtml = readFileSync('index.html', 'utf8')
 const robots = readFileSync('public/robots.txt', 'utf8')
 const sitemap = readFileSync('public/sitemap.xml', 'utf8')
@@ -20,11 +20,13 @@ describe('Pinas Rewards flagship branding', () => {
     expect(businessPage).toContain("text.replaceAll('Medellin Rewards', program.name)")
   })
 
-  it('ships neutral shared install and static discovery fallbacks', () => {
-    expect(manifest).toContain('"name": "Rewards Program"')
-    expect(manifest).toContain('/rewards-program-mark.svg')
-    expect(manifest).not.toContain('Pinas Rewards')
-    expect(manifest).not.toContain('Medellin Rewards')
+  it('ships host-aware install metadata and neutral static discovery fallbacks', () => {
+    expect(installBranding).toContain("name: 'Pinas Rewards'")
+    expect(installBranding).toContain("name: 'Medellin Rewards'")
+    expect(installBranding).toContain("name: 'Wondertown Rewards'")
+    expect(indexHtml).toContain('href="/api/tenant-icon?size=192"')
+    expect(indexHtml).toContain('href="/api/tenant-icon?size=180"')
+    expect(indexHtml).toContain('href="/api/manifest?v=host-aware-2026"')
     expect(indexHtml).toContain('<title>Rewards Program</title>')
     expect(indexHtml).not.toContain('rel="canonical"')
     expect(indexHtml).not.toContain('Pinas Rewards')
