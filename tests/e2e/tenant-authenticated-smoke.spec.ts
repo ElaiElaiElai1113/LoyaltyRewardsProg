@@ -11,7 +11,9 @@ import {
 const enabled = process.env.E2E_INCLUDE_TENANT_AUTH_SMOKE === 'true'
 const tenantName = process.env.E2E_TENANT_NAME ?? ''
 const customerEmail = process.env.E2E_TENANT_CUSTOMER_EMAIL ?? ''
+const neighborEmail = process.env.E2E_TENANT_NEIGHBOR_EMAIL ?? ''
 const businessOwnerEmail = process.env.E2E_TENANT_BUSINESS_OWNER_EMAIL ?? ''
+const businessStaffEmail = process.env.E2E_TENANT_BUSINESS_STAFF_EMAIL ?? ''
 const businessName = process.env.E2E_TENANT_BUSINESS_NAME ?? 'QA Partner'
 const productName = process.env.E2E_TENANT_PRODUCT_NAME ?? 'QA Coffee'
 const rewardName = process.env.E2E_TENANT_REWARD_NAME ?? 'QA Welcome Reward'
@@ -29,18 +31,18 @@ function monitorUnexpectedErrors(page: Page) {
   return errors
 }
 
-async function signInCustomer(page: Page) {
+async function signInCustomer(page: Page, email = customerEmail) {
   await page.goto('/signin')
-  await page.locator('#signin-email').fill(customerEmail)
+  await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#signin-email') })
     .getByRole('button', { name: /sign in|iniciar/i }).click()
   await expect(page).toHaveURL(/\/dashboard$/)
 }
 
-async function signInBusinessOwner(page: Page) {
+async function signInBusiness(page: Page, email = businessOwnerEmail) {
   await page.goto('/business/login')
-  await page.locator('#staff-signin-email').fill(businessOwnerEmail)
+  await page.locator('#staff-signin-email').fill(email)
   await page.locator('#staff-signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#staff-signin-email') })
     .getByRole('button', { name: /sign in|iniciar/i }).click()
@@ -83,9 +85,22 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     expect(errors).toEqual([])
   })
 
+  test('second member login and session work', async ({ page }) => {
+    test.skip(!neighborEmail, 'Set E2E_TENANT_NEIGHBOR_EMAIL to verify an optional second member.')
+    const errors = monitorUnexpectedErrors(page)
+
+    await signInCustomer(page, neighborEmail)
+    await expect(page.locator('body')).toContainText(tenantName)
+    await page.reload()
+    await expect(page).toHaveURL(/\/dashboard$/)
+    await page.goto('/profile')
+    await expect(page.getByRole('heading', { name: /page not found/i })).toHaveCount(0)
+    expect(errors).toEqual([])
+  })
+
   test('business owner session, customer search, catalog, and points award work', async ({ page }) => {
     const errors = monitorUnexpectedErrors(page)
-    await signInBusinessOwner(page)
+    await signInBusiness(page)
     await expect(page.locator('body')).toContainText(tenantName)
     await page.reload()
     await expect(page).toHaveURL(/\/business\/dashboard$/)
@@ -126,6 +141,25 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     const transaction = await getLatestMemberTransactionByNote(ownerClient, transactionNote)
     expect(transaction.profileId).toBe(memberProfile.id)
     expect(transaction.pointsAwarded).toBeGreaterThan(0)
+    expect(errors).toEqual([])
+  })
+
+  test('business staff login and staff-safe operations work', async ({ page }) => {
+    test.skip(!businessStaffEmail, 'Set E2E_TENANT_BUSINESS_STAFF_EMAIL to verify optional staff access.')
+    const errors = monitorUnexpectedErrors(page)
+
+    await signInBusiness(page, businessStaffEmail)
+    await expect(page.locator('body')).toContainText(tenantName)
+    await page.reload()
+    await expect(page).toHaveURL(/\/business\/dashboard$/)
+
+    for (const path of ['/business/redemptions', '/business/members', '/business/partners']) {
+      await page.goto(path)
+      await expect(page).toHaveURL(new RegExp(`${path.replaceAll('/', '\\/')}$`))
+      await expect(page.getByRole('heading', { name: /page not found/i })).toHaveCount(0)
+      await expect(page.locator('body')).not.toContainText(/application error|something went wrong/i)
+    }
+
     expect(errors).toEqual([])
   })
 
