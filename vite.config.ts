@@ -12,20 +12,12 @@ export default defineConfig({
       registerType: 'autoUpdate',
       injectRegister: false,
       manifest: false,
-      includeAssets: [
-        'apple-touch-icon.png',
-        'favicon.ico',
-        'favicon.svg',
-        'icon-192.png',
-        'icon-512.png',
-        'site.webmanifest',
-      ],
       workbox: {
         cleanupOutdatedCaches: true,
         clientsClaim: true,
         skipWaiting: true,
         navigateFallback: '/index.html',
-        globPatterns: ['**/*.{css,html,ico,js,svg,webmanifest}'],
+        globPatterns: ['**/*.{css,html,js}'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

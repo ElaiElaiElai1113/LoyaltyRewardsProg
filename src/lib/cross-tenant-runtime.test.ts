@@ -80,7 +80,9 @@ describe('cross-tenant runtime safeguards', () => {
     }
 
     expect(indexHtml).toContain('<title>Rewards Program</title>')
-    expect(indexHtml).toContain('href="/rewards-program-mark.svg"')
+    expect(indexHtml).toContain('href="/api/tenant-icon?size=192"')
+    expect(indexHtml).toContain('href="/api/tenant-icon?size=180"')
+    expect(indexHtml).toContain('href="/api/manifest?v=host-aware-2026"')
     expect(indexHtml).not.toContain('rel="canonical"')
     expect(indexHtml).not.toContain('Pinas Rewards')
     expect(indexHtml).not.toContain('pinas-rewards')
@@ -100,8 +102,10 @@ describe('cross-tenant runtime safeguards', () => {
       expect.objectContaining({ src: '/rewards-program-mark.svg' }),
     ])
     expect(source('public/site.webmanifest')).not.toContain('Pinas Rewards')
-    expect(tenantDocumentBrand).toContain("{ src: iconHref, sizes: 'any'")
-    expect(tenantDocumentBrand).not.toContain("src: '/icon-192.png'")
+    expect(tenantDocumentBrand).toContain('/api/tenant-icon?size=192&tenant=')
+    expect(tenantDocumentBrand).toContain('/api/tenant-icon?size=180&tenant=')
+    expect(tenantDocumentBrand).toContain('/api/manifest?v=host-aware-2026&tenant=')
+    expect(tenantDocumentBrand).not.toContain('data:application/manifest+json')
   })
 
   it('honors tenant query overrides only on trusted preview hosts', () => {
@@ -132,7 +136,9 @@ describe('cross-tenant runtime safeguards', () => {
     ]) {
       expect(platformDocument).toContain(surface)
     }
-    expect(platformDocument).toContain("'/rewards-program-mark.svg'")
+    expect(platformDocument).toContain('/api/tenant-icon?size=192&tenant=platform')
+    expect(platformDocument).toContain('/api/tenant-icon?size=180&tenant=platform')
+    expect(platformDocument).toContain('/api/manifest?v=host-aware-2026&tenant=platform')
     expect(platformDocument).not.toContain('pinas-rewards')
     expect(platformDocument).not.toContain('medellin-rewards')
   })

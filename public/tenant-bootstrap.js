@@ -75,21 +75,16 @@
       }
     : brands[slug] || neutralBrand
 
-  function fallbackIcon() {
-    var initial = brand.name.charAt(0).toUpperCase() || 'R'
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
-      + '<rect width="64" height="64" rx="14" fill="' + brand.color + '"/>'
-      + '<text x="32" y="43" text-anchor="middle" font-family="Arial,sans-serif" font-size="34" font-weight="700" fill="white">' + initial + '</text>'
-      + '</svg>'
-    return 'data:image/svg+xml,' + encodeURIComponent(svg)
-  }
-
   function setContent(selector, value) {
     var element = document.querySelector(selector)
     if (element) element.setAttribute('content', value)
   }
 
-  var iconHref = brand.logo || fallbackIcon()
+  var installSlug = isPlatformAdmin ? 'platform' : (slug || 'platform')
+  var installQuery = '&tenant=' + encodeURIComponent(installSlug)
+  var iconHref = '/api/tenant-icon?size=192' + installQuery
+  var appleTouchIconHref = '/api/tenant-icon?size=180' + installQuery
+  var manifestHref = '/api/manifest?v=host-aware-2026&tenant=' + encodeURIComponent(installSlug)
   var canonicalUrl = window.location.origin + '/'
   document.title = brand.name
   document.documentElement.lang = brand.locale
@@ -109,7 +104,9 @@
   var icon = document.querySelector('link[rel="icon"]')
   if (icon) icon.setAttribute('href', iconHref)
   var appleTouchIcon = document.querySelector('link[rel="apple-touch-icon"]')
-  if (appleTouchIcon) appleTouchIcon.setAttribute('href', iconHref)
+  if (appleTouchIcon) appleTouchIcon.setAttribute('href', appleTouchIconHref)
+  var manifest = document.querySelector('link[rel="manifest"]')
+  if (manifest) manifest.setAttribute('href', manifestHref)
   var canonical = document.querySelector('link[rel="canonical"]')
   if (!canonical) {
     canonical = document.createElement('link')

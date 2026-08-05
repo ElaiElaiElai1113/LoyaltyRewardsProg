@@ -9,17 +9,9 @@ function setMetaContent(selector: string, value: string) {
 }
 
 function applyPlatformDocumentBrand() {
-  const iconHref = '/rewards-program-mark.svg'
+  const iconHref = '/api/tenant-icon?size=192&tenant=platform'
+  const appleTouchIconHref = '/api/tenant-icon?size=180&tenant=platform'
   const canonicalUrl = `${window.location.origin}/admin`
-  const manifest = {
-    name: platformBrand.name,
-    short_name: 'Rewards Admin',
-    start_url: '/admin',
-    display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: platformBrand.accentColor,
-    icons: [{ src: iconHref, sizes: 'any', purpose: 'any' }],
-  }
 
   document.title = platformBrand.adminTitle
   document.documentElement.lang = 'en'
@@ -38,11 +30,11 @@ function applyPlatformDocumentBrand() {
   setMetaContent('meta[name="twitter:description"]', platformBrand.description)
   setMetaContent('meta[name="apple-mobile-web-app-title"]', platformBrand.name)
   document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.setAttribute('href', iconHref)
-  document.querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]')?.setAttribute('href', iconHref)
+  document.querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]')?.setAttribute('href', appleTouchIconHref)
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', canonicalUrl)
   document.querySelector<HTMLLinkElement>('link[rel="manifest"]')?.setAttribute(
     'href',
-    `data:application/manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`,
+    '/api/manifest?v=host-aware-2026&tenant=platform',
   )
 }
 

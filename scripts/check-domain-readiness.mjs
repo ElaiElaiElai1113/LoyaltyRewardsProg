@@ -59,6 +59,14 @@ async function check(name, operation) {
 }
 
 async function readRenderedTenantMetadata(origin, expectedName) {
+  const expectedInstallSlug = {
+    'Medellin Rewards': 'medellin',
+    'Guatemala Rewards': 'guatemala',
+    'Synergize': 'synergize',
+    'Pinas Rewards': 'pinas',
+    'Wondertown Rewards': 'wondertown',
+  }[expectedName]
+  if (!expectedInstallSlug) throw new Error(`No install-brand slug is configured for ${expectedName}`)
   let browser
   try {
     const { chromium } = await import('playwright')
@@ -85,21 +93,28 @@ async function readRenderedTenantMetadata(origin, expectedName) {
         && content('meta[name="description"]').startsWith(`${name} `)
     }, expectedName, { timeout: 15_000 })
 
-    await page.waitForFunction(async (name) => {
+    await page.waitForFunction(async ({ name, slug }) => {
       const manifestLink = document.querySelector('link[rel="manifest"]')?.getAttribute('href')
       if (!manifestLink) return false
       try {
         const manifest = manifestLink.startsWith('data:')
           ? JSON.parse(decodeURIComponent(manifestLink.slice(manifestLink.indexOf(',') + 1)))
           : await fetch(manifestLink).then((result) => result.json())
-        return manifest.name === name
-          && manifest.short_name === name
-          && Array.isArray(manifest.icons)
-          && manifest.icons.length > 0
+        if (manifest.name !== name || !String(manifest.short_name ?? '').trim()) return false
+        if (!Array.isArray(manifest.icons) || manifest.icons.length < 2) return false
+        const icons = await Promise.all(manifest.icons.map(async (icon) => {
+          const source = String(icon?.src ?? '')
+          if (!source.includes(`tenant=${slug}`)) return false
+          const response = await fetch(source, { cache: 'no-store', redirect: 'follow' })
+          return response.ok
+            && (response.headers.get('content-type') ?? '').includes('image/png')
+            && new URL(response.url).pathname.includes(`/install-icons/${slug}-`)
+        }))
+        return icons.every(Boolean)
       } catch {
         return false
       }
-    }, expectedName, { timeout: 15_000 })
+    }, { name: expectedName, slug: expectedInstallSlug }, { timeout: 15_000 })
 
     const metadata = await page.evaluate(async () => {
       const content = (selector) => document.querySelector(selector)?.getAttribute('content')?.trim() ?? null
@@ -107,6 +122,10 @@ async function readRenderedTenantMetadata(origin, expectedName) {
       const manifest = manifestLink.startsWith('data:')
         ? JSON.parse(decodeURIComponent(manifestLink.slice(manifestLink.indexOf(',') + 1)))
         : await fetch(manifestLink).then((result) => result.json())
+      const manifestIcons = await Promise.all((Array.isArray(manifest.icons) ? manifest.icons : []).map(async (icon) => {
+        const response = await fetch(icon.src, { cache: 'no-store', redirect: 'follow' })
+        return { source: icon.src, target: response.url, contentType: response.headers.get('content-type') }
+      }))
       return {
         title: document.title.trim(),
         openGraphTitle: content('meta[property="og:title"]'),
@@ -116,6 +135,7 @@ async function readRenderedTenantMetadata(origin, expectedName) {
         manifestName: manifest.name ?? null,
         manifestShortName: manifest.short_name ?? null,
         manifestIcons: Array.isArray(manifest.icons) ? manifest.icons.length : 0,
+        installIcons: manifestIcons,
       }
     })
 

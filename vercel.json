@@ -124,6 +124,30 @@
   ],
   "rewrites": [
     {
+      "source": "/site.webmanifest",
+      "destination": "/api/manifest"
+    },
+    {
+      "source": "/favicon.ico",
+      "destination": "/api/tenant-icon?size=192"
+    },
+    {
+      "source": "/favicon.svg",
+      "destination": "/api/tenant-icon?size=192"
+    },
+    {
+      "source": "/apple-touch-icon.png",
+      "destination": "/api/tenant-icon?size=180"
+    },
+    {
+      "source": "/icon-192.png",
+      "destination": "/api/tenant-icon?size=192"
+    },
+    {
+      "source": "/icon-512.png",
+      "destination": "/api/tenant-icon?size=512"
+    },
+    {
       "source": "/((?!api(?:/|$)).*)",
       "destination": "/index.html"
     }

@@ -1,0 +1,60 @@
+import { existsSync, readFileSync } from 'node:fs'
+
+import { describe, expect, it } from 'vitest'
+
+import {
+  buildInstallManifest,
+  getInstallIconPath,
+  resolveInstallBrand,
+  type InstallBrandSlug,
+} from '../../api/_tenant-install-brand'
+
+const tenantCases = [
+  ['medellinrewards.com', 'medellin', 'Medellin Rewards'],
+  ['guatemalarewards.com', 'guatemala', 'Guatemala Rewards'],
+  ['synergize-business-group.vercel.app', 'synergize', 'Synergize'],
+  ['pinas-rewards.vercel.app', 'pinas', 'Pinas Rewards'],
+  ['wondertown-rewards.vercel.app', 'wondertown', 'Wondertown Rewards'],
+] as const
+
+function readPngDimensions(path: string) {
+  const bytes = readFileSync(path)
+  expect(bytes.subarray(1, 4).toString('ascii')).toBe('PNG')
+  return { width: bytes.readUInt32BE(16), height: bytes.readUInt32BE(20) }
+}
+
+describe('tenant install branding', () => {
+  it.each(tenantCases)('resolves %s to its own %s manifest', (hostname, slug, name) => {
+    const brand = resolveInstallBrand(hostname, 'pinas')
+    const manifest = buildInstallManifest(brand)
+
+    expect(brand.slug).toBe(slug)
+    expect(manifest.name).toBe(name)
+    expect(manifest.icons).toEqual([
+      expect.objectContaining({ src: expect.stringContaining(`tenant=${slug}`), sizes: '192x192' }),
+      expect.objectContaining({ src: expect.stringContaining(`tenant=${slug}`), sizes: '512x512' }),
+    ])
+    if (slug !== 'pinas') expect(JSON.stringify(manifest.icons)).not.toContain('pinas')
+  })
+
+  it('keeps platform administration on the neutral parent install identity', () => {
+    const brand = resolveInstallBrand('wondertown-rewards.vercel.app', 'platform')
+    const manifest = buildInstallManifest(brand)
+
+    expect(brand.slug).toBe('platform')
+    expect(manifest.name).toBe('Rewards Platform')
+    expect(manifest.start_url).toContain('/admin')
+  })
+
+  it.each(['platform', 'medellin', 'guatemala', 'synergize', 'pinas', 'wondertown'] as InstallBrandSlug[])(
+    'ships exact PNG sizes for the %s install brand',
+    (slug) => {
+      const brand = resolveInstallBrand('localhost', slug)
+      for (const size of [180, 192, 512] as const) {
+        const path = `public${getInstallIconPath(brand, size)}`
+        expect(existsSync(path)).toBe(true)
+        expect(readPngDimensions(path)).toEqual({ width: size, height: size })
+      }
+    },
+  )
+})

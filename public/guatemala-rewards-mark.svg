@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="guatemala-mark-title">
+  <title id="guatemala-mark-title">Guatemala Rewards</title>
+  <defs>
+    <linearGradient id="guatemala-gold" x1="92" y1="74" x2="430" y2="438" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffe08a"/>
+      <stop offset=".48" stop-color="#f2b134"/>
+      <stop offset="1" stop-color="#b87713"/>
+    </linearGradient>
+    <linearGradient id="guatemala-green" x1="72" y1="56" x2="446" y2="460" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#238772"/>
+      <stop offset="1" stop-color="#0e4d43"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#guatemala-green)"/>
+  <circle cx="256" cy="256" r="202" fill="none" stroke="url(#guatemala-gold)" stroke-width="14"/>
+  <path fill="url(#guatemala-gold)" d="M256 82 272 116 309 121 282 147 289 184 256 166 223 184 230 147 203 121 240 116 256 82Z"/>
+  <path fill="#fff9e8" d="M257 178c-57 0-101 34-101 84 0 52 45 86 103 86 25 0 45-5 61-14v-73h-74v35h31v25c-6 3-12 4-19 4-32 0-56-24-56-63 0-37 24-61 58-61 20 0 37 7 52 20l27-31c-22-20-49-32-82-32Z"/>
+  <path fill="url(#guatemala-gold)" d="M157 382h198v18H157z"/>
+</svg>

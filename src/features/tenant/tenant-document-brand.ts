@@ -1,4 +1,3 @@
-import { getProgramIconHref } from '@/features/tenant/tenant-branding'
 import type { Program } from '@/types/domain'
 
 function setMetaContent(selector: string, value: string) {
@@ -8,7 +7,9 @@ function setMetaContent(selector: string, value: string) {
 export function applyProgramDocumentBrand(program: Program) {
   const root = document.documentElement
   const description = `${program.name} rewards and local business benefits.`
-  const iconHref = getProgramIconHref(program)
+  const tenant = encodeURIComponent(program.slug)
+  const iconHref = `/api/tenant-icon?size=192&tenant=${tenant}`
+  const appleTouchIconHref = `/api/tenant-icon?size=180&tenant=${tenant}`
   root.style.setProperty('--tenant-accent', program.primaryColor)
   root.style.setProperty('--tenant-accent-soft', `color-mix(in srgb, ${program.accentColor} 24%, transparent)`)
   document.title = program.name
@@ -23,19 +24,10 @@ export function applyProgramDocumentBrand(program: Program) {
   setMetaContent('meta[name="apple-mobile-web-app-title"]', program.name)
   setMetaContent('meta[name="description"]', description)
   document.querySelector<HTMLLinkElement>('link[rel="icon"]')?.setAttribute('href', iconHref)
-  document.querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]')?.setAttribute('href', iconHref)
+  document.querySelector<HTMLLinkElement>('link[rel="apple-touch-icon"]')?.setAttribute('href', appleTouchIconHref)
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', `${window.location.origin}/`)
-  const manifest = {
-    name: program.name,
-    short_name: program.name,
-    start_url: '/',
-    display: 'standalone',
-    background_color: '#ffffff',
-    theme_color: program.primaryColor,
-    icons: [{ src: iconHref, sizes: 'any', purpose: 'any' }],
-  }
   document.querySelector<HTMLLinkElement>('link[rel="manifest"]')?.setAttribute(
     'href',
-    `data:application/manifest+json,${encodeURIComponent(JSON.stringify(manifest))}`,
+    `/api/manifest?v=host-aware-2026&tenant=${tenant}`,
   )
 }
