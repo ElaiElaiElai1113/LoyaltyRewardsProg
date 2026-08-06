@@ -1,5 +1,5 @@
 import { BarChart3, CreditCard, LogOut, Settings, Users } from 'lucide-react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router'
 
 import { BrandLogo } from '@/components/brand-logo'
 import { ProgramInvitations } from '@/components/program-invitations'

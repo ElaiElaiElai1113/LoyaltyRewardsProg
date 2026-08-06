@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { BadgeCheck, Eye, EyeOff, Gift } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate } from 'react-router'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'

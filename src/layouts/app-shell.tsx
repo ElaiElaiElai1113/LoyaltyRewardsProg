@@ -7,7 +7,7 @@ import {
   ShieldCheck,
   QrCode,
 } from 'lucide-react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router'
 
 import { BrandLogo } from '@/components/brand-logo'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'

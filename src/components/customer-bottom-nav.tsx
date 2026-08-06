@@ -1,5 +1,5 @@
 import { Activity, CheckCircle2, Home, MapPin, QrCode } from 'lucide-react'
-import { NavLink, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router'
 
 import { useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'

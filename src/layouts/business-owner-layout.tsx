@@ -12,7 +12,7 @@ import {
   X,
 } from 'lucide-react'
 import { useState } from 'react'
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { ProgramInvitations } from '@/components/program-invitations'

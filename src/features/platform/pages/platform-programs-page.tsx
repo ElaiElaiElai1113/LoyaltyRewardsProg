@@ -1,6 +1,6 @@
 import { Building2, CheckCircle2, Globe2, Plus, Search, Users } from 'lucide-react'
 import { type FormEvent, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'

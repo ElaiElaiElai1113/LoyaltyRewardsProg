@@ -1,6 +1,6 @@
 import { type CSSProperties, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 
 import { Coffee, Cookie, Gift, Shirt, Ticket } from 'lucide-react'
 import { BusinessFilter } from '@/components/business-filter'

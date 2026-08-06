@@ -1103,6 +1103,22 @@
   }
 }
 
+@media (max-width: 360px) {
+  .business-public-shell__header-inner {
+    gap: 12px;
+  }
+
+  .business-public-shell__header .business-public-shell__brand-copy {
+    display: none;
+  }
+
+  .business-public-shell__login,
+  .business-public-shell__language-toggle {
+    font-size: 11px;
+    padding-inline: 10px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .business-landing__button {
     transition: none;

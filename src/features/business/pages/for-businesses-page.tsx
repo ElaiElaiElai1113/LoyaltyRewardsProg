@@ -7,7 +7,7 @@ import {
   RefreshCw,
   ShoppingBag,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { useTenant } from '@/hooks/use-tenant'
 
 import ctaOverlay from '@/assets/business/cta-overlay.png'
@@ -85,6 +85,7 @@ function SectionEyebrow({ children }: { children: string }) {
 
 export function ForBusinessesPage() {
   const { program } = useTenant()
+  const isDemoTenant = program.featureFlags.demoTenant === true
   const tenantText = (text: string) => text.replaceAll('Medellin Rewards', program.name)
   return (
     <div className="business-landing">
@@ -243,9 +244,15 @@ export function ForBusinessesPage() {
             scheduled for a short interview to see if your<br className="business-landing__desktop-break" />
             business will qualify.
           </p>
-          <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
-            Get Started Today <ArrowRight aria-hidden="true" />
-          </a>
+          {isDemoTenant ? (
+            <Link className="business-landing__button" to="/business/login">
+              Open Business Demo <ArrowRight aria-hidden="true" />
+            </Link>
+          ) : (
+            <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
+              Get Started Today <ArrowRight aria-hidden="true" />
+            </a>
+          )}
         </div>
       </section>
 
@@ -261,9 +268,15 @@ export function ForBusinessesPage() {
                 Calculate Your Costs <ArrowRight aria-hidden="true" />
               </Link>
             )}
-            <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
-              Talk to us <ArrowRight aria-hidden="true" />
-            </a>
+            {isDemoTenant ? (
+              <Link className="business-landing__button" to="/guide">
+                View Demo Guide <ArrowRight aria-hidden="true" />
+              </Link>
+            ) : (
+              <a className="business-landing__button" href={`mailto:${program.supportEmail}`}>
+                Talk to us <ArrowRight aria-hidden="true" />
+              </a>
+            )}
           </div>
         </div>
       </section>

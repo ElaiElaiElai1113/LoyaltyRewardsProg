@@ -10,7 +10,7 @@ import {
   Sparkles,
   Store,
 } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import wondertownHero from '@/assets/wondertown/wondertown-hero.jpg'
 import wondertownHeroSmall from '@/assets/wondertown/wondertown-hero-768.jpg'

@@ -1,5 +1,5 @@
 import type { CSSProperties } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
@@ -696,7 +696,7 @@ export function HomePage() {
             </div>
             <nav aria-label="Footer navigation">
               <Link to="/privacy">{tx('Privacy policy')}</Link>
-              <Link to="/terms">{tx('Contact')}</Link>
+              <a href={`mailto:${program.supportEmail}`}>{tx('Contact')}</a>
             </nav>
           </div>
           <div className="figma-home__footer-bottom">

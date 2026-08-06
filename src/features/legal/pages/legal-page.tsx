@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -10,7 +10,7 @@ type LegalPageKind = 'terms' | 'privacy' | 'reward-terms' | 'verification-policy
 const legalPages: Record<LegalPageKind, { title: string; intro: string; sections: Array<{ title: string; body: string }> }> = {
   terms: {
     title: 'Terms of Use',
-    intro: 'Plain-language placeholder terms for Medellin Rewards members. These should be reviewed by a qualified legal professional before launch.',
+    intro: 'These plain-language terms explain the current Medellin Rewards member experience and the responsibilities that come with using it.',
     sections: [
       {
         title: 'Member accounts',
@@ -22,13 +22,13 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
       },
       {
         title: 'Membership subscription',
-        body: 'Joining Medellin Rewards requires an active paid membership subscription. Reward actions may require sign-in, active subscription status, and completed ID verification before earning or redeeming value.',
+        body: 'Membership access follows the current Medellin Rewards program offering. Reward actions may require sign-in, active membership status, and completed ID verification before earning or redeeming value.',
       },
     ],
   },
   privacy: {
     title: 'Privacy Policy',
-    intro: 'Plain-language placeholder privacy notes for Medellin Rewards. Replace with reviewed legal copy before launch.',
+    intro: 'This privacy summary explains the information Medellin Rewards uses to operate accounts, rewards, support, and verification.',
     sections: [
       {
         title: 'Information we collect',
@@ -46,7 +46,7 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
   },
   'reward-terms': {
     title: 'Reward Terms',
-    intro: 'Plain-language placeholder reward terms explaining how Medellin Rewards value works for members.',
+    intro: 'These reward terms explain how Medellin Rewards offers, point costs, eligibility, and redemptions work for members.',
     sections: [
       {
         title: 'No cash payout promise',
@@ -64,7 +64,7 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
   },
   'verification-policy': {
     title: 'Verification Policy',
-    intro: 'Plain-language placeholder notes about why member verification is required before reward actions unlock.',
+    intro: 'This policy explains why member verification may be required before protected reward actions become available.',
     sections: [
       {
         title: 'Why verification is required',

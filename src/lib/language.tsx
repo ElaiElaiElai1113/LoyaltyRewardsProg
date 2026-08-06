@@ -69,6 +69,7 @@ const spanishTranslations: Record<string, string> = {
   'Business Overview': 'Resumen del negocio',
   'Platform Operations': 'Operaciones de plataforma',
   Guia: 'Guia',
+  'Demo guide': 'Guia de demostracion',
   'Member Dashboard': 'Panel de miembro',
   'Track your points, available rewards, and activity across partner businesses.':
     'Consulta tus puntos, recompensas disponibles y actividad en negocios aliados.',
@@ -613,8 +614,8 @@ const spanishTranslations: Record<string, string> = {
   Legal: 'Legal',
   'Customer trust': 'Confianza del cliente',
   'Terms of Use': 'Terminos de uso',
-  'Plain-language placeholder terms for Medellin Rewards members. These should be reviewed by a qualified legal professional before launch.':
-    'Terminos provisionales en lenguaje claro para miembros de Medellin Rewards. Deben ser revisados por un profesional legal calificado antes del lanzamiento.',
+  'These plain-language terms explain the current Medellin Rewards member experience and the responsibilities that come with using it.':
+    'Estos terminos en lenguaje claro explican la experiencia actual de los miembros de Medellin Rewards y las responsabilidades de usarla.',
   'Member accounts': 'Cuentas de miembro',
   'Members are responsible for keeping account details accurate and secure. One member account should represent one real person.':
     'Los miembros son responsables de mantener sus datos de cuenta correctos y seguros. Una cuenta de miembro debe representar a una persona real.',
@@ -625,11 +626,11 @@ const spanishTranslations: Record<string, string> = {
   'Reward actions may require sign-in, active account status, and completed ID verification before earning or redeeming value.':
     'Las acciones de recompensas pueden requerir inicio de sesion, cuenta activa y verificacion de ID completada antes de ganar o canjear valor.',
   'Membership subscription': 'Suscripcion de miembro',
-  'Joining Medellin Rewards requires an active paid membership subscription. Reward actions may require sign-in, active subscription status, and completed ID verification before earning or redeeming value.':
-    'Unirse a Medellin Rewards requiere una suscripcion de membresia pagada y activa. Las acciones de recompensas pueden requerir inicio de sesion, suscripcion activa y verificacion de ID completada antes de ganar o canjear valor.',
+  'Membership access follows the current Medellin Rewards program offering. Reward actions may require sign-in, active membership status, and completed ID verification before earning or redeeming value.':
+    'El acceso de membresia sigue la oferta actual del programa Medellin Rewards. Las acciones de recompensas pueden requerir inicio de sesion, membresia activa y verificacion de ID completada antes de ganar o canjear valor.',
   'Privacy Policy': 'Politica de privacidad',
-  'Plain-language placeholder privacy notes for Medellin Rewards. Replace with reviewed legal copy before launch.':
-    'Notas provisionales de privacidad en lenguaje claro para Medellin Rewards. Reemplazalas con texto legal revisado antes del lanzamiento.',
+  'This privacy summary explains the information Medellin Rewards uses to operate accounts, rewards, support, and verification.':
+    'Este resumen de privacidad explica la informacion que Medellin Rewards usa para operar cuentas, recompensas, soporte y verificacion.',
   'Information we collect': 'Informacion que recopilamos',
   'The app may collect account details, contact details, activity, reward history, and ID verification submissions needed to operate the program.':
     'La app puede recopilar datos de cuenta, contacto, actividad, historial de recompensas y envios de verificacion de ID necesarios para operar el programa.',
@@ -639,8 +640,8 @@ const spanishTranslations: Record<string, string> = {
   'Support contact': 'Contacto de soporte',
   'For privacy questions, members can contact support@medellinrewards.com.':
     'Para preguntas de privacidad, los miembros pueden contactar a support@medellinrewards.com.',
-  'Plain-language placeholder reward terms explaining how Medellin Rewards value works for members.':
-    'Terminos provisionales de recompensas en lenguaje claro que explican como funciona el valor de Medellin Rewards para miembros.',
+  'These reward terms explain how Medellin Rewards offers, point costs, eligibility, and redemptions work for members.':
+    'Estos terminos explican como funcionan las ofertas, los costos en puntos, la elegibilidad y los canjes de Medellin Rewards.',
   'No cash payout promise': 'Sin promesa de pago en efectivo',
   'Rewards represent offers, perks, credits, or experiences available through Medellin Rewards. They are not a promise of cash payment.':
     'Las recompensas representan ofertas, beneficios, creditos o experiencias disponibles con Medellin Rewards. No son una promesa de pago en efectivo.',
@@ -650,8 +651,8 @@ const spanishTranslations: Record<string, string> = {
   'Redemption review': 'Revision de canje',
   'Some reward actions may be validated by staff or administrators to keep the program fair and prevent duplicate or invalid claims.':
     'Algunas acciones de recompensas pueden ser validadas por personal o administradores para mantener el programa justo y prevenir reclamos duplicados o invalidos.',
-  'Plain-language placeholder notes about why member verification is required before reward actions unlock.':
-    'Notas provisionales en lenguaje claro sobre por que se requiere verificacion de miembros antes de desbloquear acciones de recompensas.',
+  'This policy explains why member verification may be required before protected reward actions become available.':
+    'Esta politica explica por que puede requerirse la verificacion del miembro antes de habilitar acciones protegidas de recompensas.',
   'Why verification is required': 'Por que se requiere verificacion',
   'Verification helps support one member account per person and protects reward value for legitimate members.':
     'La verificacion ayuda a mantener una cuenta por persona y protege el valor de recompensas para miembros legitimos.',
@@ -1747,6 +1748,7 @@ const spanishTranslations: Record<string, string> = {
 }
 
 const tagalogTranslations: Record<string, string> = {
+  'Demo guide': 'Gabay sa demo',
   Account: 'Account',
   Activity: 'Aktibidad',
   Add: 'Idagdag',

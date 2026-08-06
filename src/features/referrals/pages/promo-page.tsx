@@ -1,6 +1,6 @@
 import { Gift, Sparkles } from 'lucide-react'
 import { useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { Button } from '@/components/ui/button'

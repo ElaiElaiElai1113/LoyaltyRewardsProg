@@ -1,6 +1,6 @@
 import { X } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { Button } from '@/components/ui/button'
 import { useMembership } from '@/hooks/use-membership'

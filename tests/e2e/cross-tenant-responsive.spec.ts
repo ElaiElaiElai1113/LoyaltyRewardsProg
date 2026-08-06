@@ -21,6 +21,7 @@ test.describe('cross-tenant public responsive layouts', () => {
             const criticalSelector = [
               '.figma-home__header-inner',
               '.figma-home__hero-copy',
+              '.figma-home__reward-badge',
               '.figma-home__membership-grid',
               '.figma-home__membership-card',
               '.figma-home__membership-card h3',

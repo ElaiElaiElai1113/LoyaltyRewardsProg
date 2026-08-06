@@ -16,7 +16,7 @@ import {
 } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 import { toast } from 'sonner'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'

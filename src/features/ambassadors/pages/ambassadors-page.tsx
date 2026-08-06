@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { BadgeCheck, Camera, Crown, Gift, HeartHandshake, Mail } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router'
 
 import heroImage from '@/assets/hero.png'
 import { Badge } from '@/components/ui/badge'

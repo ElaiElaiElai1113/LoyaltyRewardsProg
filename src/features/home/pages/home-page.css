@@ -1192,6 +1192,21 @@
     white-space: nowrap;
   }
 
+  .figma-home--pinas .figma-home__reward-badge {
+    right: 0;
+  }
+
+  .figma-home__reward-badge {
+    box-sizing: border-box;
+    width: 112px;
+    padding-inline: 10px;
+  }
+
+  .figma-home:not(.figma-home--pinas) .figma-home__reward-badge strong {
+    font-size: 18px;
+    letter-spacing: -0.02em;
+  }
+
   .figma-home__nav a {
     font-size: 12px;
   }

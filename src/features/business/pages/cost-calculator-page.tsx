@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { CostCalculator } from '@/features/business/components/cost-calculator'
 import { Badge } from '@/components/ui/badge'

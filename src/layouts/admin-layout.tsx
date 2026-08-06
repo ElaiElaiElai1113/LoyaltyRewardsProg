@@ -19,7 +19,7 @@ import {
   X,
 } from 'lucide-react'
 import { useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { ProgramInvitations } from '@/components/program-invitations'

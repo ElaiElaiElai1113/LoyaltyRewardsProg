@@ -1,6 +1,7 @@
 import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import { App as CapacitorApp } from '@capacitor/app'
-import { Navigate, Outlet, RouterProvider, createBrowserRouter, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, Outlet, createBrowserRouter, useLocation, useNavigate } from 'react-router'
+import { RouterProvider } from 'react-router/dom'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { useAuth } from '@/hooks/use-auth'

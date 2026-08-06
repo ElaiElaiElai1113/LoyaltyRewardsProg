@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router'
 
 import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
@@ -80,7 +80,11 @@ export function PublicBrowseLayout() {
               </div>
               <nav aria-label="Business footer navigation">
                 <NavLink to="/privacy">Privacy policy</NavLink>
-                <a href={`mailto:${program.supportEmail}`}>Contact</a>
+                {program.featureFlags.demoTenant ? (
+                  <NavLink to="/guide">Demo guide</NavLink>
+                ) : (
+                  <a href={`mailto:${program.supportEmail}`}>Contact</a>
+                )}
                 <NavLink to="/">Member site</NavLink>
               </nav>
             </div>

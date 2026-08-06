@@ -1,5 +1,5 @@
 import { Gift, History, MonitorPlay, Phone, QrCode } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
 import { CustomerOnboardingChecklist } from '@/features/dashboard/components/customer-onboarding-checklist'

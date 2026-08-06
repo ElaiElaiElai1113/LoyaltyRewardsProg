@@ -4,7 +4,7 @@ import {
   LogOut,
   WalletCards,
 } from 'lucide-react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router'
 
 import { BrandLogo } from '@/components/brand-logo'
 import { ProgramSwitcher } from '@/components/program-switcher'
@@ -17,6 +17,7 @@ import { Button } from '@/components/ui/button'
 import { VerificationStatusPill } from '@/features/membership/components/verification-status-pill'
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-customer-data'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
@@ -38,6 +39,7 @@ const customerNavigation = [
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
   const cart = useCart()
+  const { program } = useTenant()
   const { t } = useLanguage()
   const { pathname } = useLocation()
   const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
@@ -173,9 +175,13 @@ export function CustomerLayout() {
                   {t('Company')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <span className="text-sm text-[var(--muted-foreground)]">{t('About Us')}</span>
-                  <span className="text-sm text-[var(--muted-foreground)]">{t('Contact')}</span>
-                  <span className="text-sm text-[var(--muted-foreground)]">{t('Store Locator')}</span>
+                  <NavLink to="/guide" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('About Us')}</NavLink>
+                  {program.featureFlags.demoTenant ? (
+                    <NavLink to="/guide" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Demo guide')}</NavLink>
+                  ) : (
+                    <a href={`mailto:${program.supportEmail}`} className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Contact')}</a>
+                  )}
+                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Store Locator')}</NavLink>
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
