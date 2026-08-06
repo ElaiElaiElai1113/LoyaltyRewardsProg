@@ -1,7 +1,22 @@
 import { readFile } from 'node:fs/promises'
 
 const required = {
-  '.github/workflows/operations.yml': ['schedule:', 'ops:monitor', 'supabase db dump', 'retention-days: 14'],
+  '.github/workflows/operations.yml': [
+    'schedule:',
+    'ops:monitor',
+    'supabase db dump',
+    '--role-only',
+    '--data-only',
+    '--use-copy',
+    'storage.buckets_vectors',
+    'storage.vector_indexes',
+    'scripts/validate-scheduled-backup.mjs',
+    'BACKUP_ENCRYPTION_PASSPHRASE',
+    'gpg --symmetric',
+    '.tar.gz.gpg',
+    'sha256sum -c',
+    'retention-days: 14',
+  ],
   '.github/workflows/post-deployment.yml': [
     'deployment_url',
     'ops:smoke',

@@ -35,10 +35,8 @@ jobs:
   backup:
     if: github.event.schedule == '43 2 * * *' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
-      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
-      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
       PROJECT_REF: retfuxpfstatpdsunkgj
     steps:
       - uses: actions/checkout@v6
@@ -48,17 +46,75 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Require backup credentials
-        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD"
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD" && test -n "$BACKUP_ENCRYPTION_PASSPHRASE"
       - name: Link project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
       - name: Create logical backup
+        shell: bash
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
         run: |
-          mkdir -p backups
-          npx supabase db dump --linked --password "$SUPABASE_DB_PASSWORD" --file "backups/rewards-${GITHUB_RUN_ID}.sql"
-          sha256sum "backups/rewards-${GITHUB_RUN_ID}.sql" > "backups/rewards-${GITHUB_RUN_ID}.sha256"
+          set -euo pipefail
+          umask 077
+
+          backup_dir="backups/rewards-${GITHUB_RUN_ID}"
+          mkdir -p "$backup_dir"
+
+          npx supabase db dump --linked --password "$SUPABASE_DB_PASSWORD" --file "$backup_dir/roles.sql" --role-only
+          npx supabase db dump --linked --password "$SUPABASE_DB_PASSWORD" --file "$backup_dir/schema.sql"
+          npx supabase db dump --linked --password "$SUPABASE_DB_PASSWORD" --file "$backup_dir/data.sql" --data-only --use-copy -x "storage.buckets_vectors" -x "storage.vector_indexes"
+
+          export SUPABASE_CLI_VERSION="$(npx supabase --version)"
+          node scripts/validate-scheduled-backup.mjs "$backup_dir"
+
+          (
+            cd "$backup_dir"
+            sha256sum -c SHA256SUMS
+          )
+      - name: Encrypt and verify backup archive
+        shell: bash
+        env:
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        run: |
+          set -euo pipefail
+          umask 077
+
+          backup_name="rewards-${GITHUB_RUN_ID}"
+          plaintext_dir="backups/${backup_name}"
+          archive="backups/${backup_name}.tar.gz"
+          encrypted_archive="${archive}.gpg"
+          verification_dir="$(mktemp -d)"
+          trap 'rm -rf -- "$verification_dir"' EXIT
+
+          tar -C backups -czf "$archive" "$backup_name"
+          printf '%s' "$BACKUP_ENCRYPTION_PASSPHRASE" | gpg --symmetric --batch --yes --pinentry-mode loopback --cipher-algo AES256 --s2k-digest-algo SHA512 --passphrase-fd 0 --output "$encrypted_archive" "$archive"
+          printf '%s' "$BACKUP_ENCRYPTION_PASSPHRASE" | gpg --decrypt --batch --yes --pinentry-mode loopback --passphrase-fd 0 --output "$verification_dir/${backup_name}.tar.gz" "$encrypted_archive"
+
+          tar -xzf "$verification_dir/${backup_name}.tar.gz" -C "$verification_dir"
+          (
+            cd "$verification_dir/$backup_name"
+            sha256sum -c SHA256SUMS
+          )
+
+          (
+            cd backups
+            sha256sum "${backup_name}.tar.gz.gpg" > "${backup_name}.tar.gz.gpg.sha256"
+          )
+          rm -rf -- "$plaintext_dir"
+          rm -f -- "$archive"
       - uses: actions/upload-artifact@v4
         with:
           name: encrypted-at-rest-database-backup-${{ github.run_id }}
-          path: backups
+          path: |
+            backups/rewards-${{ github.run_id }}.tar.gz.gpg
+            backups/rewards-${{ github.run_id }}.tar.gz.gpg.sha256
           retention-days: 14
           if-no-files-found: error

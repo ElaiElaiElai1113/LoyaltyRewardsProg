@@ -18,6 +18,28 @@ Add `-- --hosted` only in an environment configured for hosted security tests. R
 
 Authenticated workflow commands fail immediately with a readiness report when Supabase is not configured. The public `npm run test:e2e` command remains usable without backend credentials.
 
+## Scheduled Database Backup
+
+The scheduled workflow exports `roles.sql`, `schema.sql`, and `data.sql` separately. The data export uses `--data-only --use-copy`; a default `supabase db dump` is schema-only. The workflow validates the three files, verifies their SHA-256 checksums, packages them with a manifest, and uploads only the passphrase-encrypted `.tar.gz.gpg` archive and its ciphertext checksum. Keep `BACKUP_ENCRYPTION_PASSPHRASE` in a protected GitHub secret and in an approved recovery vault, never in source control or workflow output.
+
+Recover only into a disposable, compatible Supabase/Postgres target first:
+
+```sh
+sha256sum -c rewards-<run>.tar.gz.gpg.sha256
+gpg --decrypt --output rewards-<run>.tar.gz rewards-<run>.tar.gz.gpg
+tar -xzf rewards-<run>.tar.gz
+cd rewards-<run>
+sha256sum -c SHA256SUMS
+psql --single-transaction --variable ON_ERROR_STOP=1 \
+  --file roles.sql \
+  --file schema.sql \
+  --command 'SET session_replication_role = replica' \
+  --file data.sql \
+  --dbname "$RESTORE_DATABASE_URL"
+```
+
+Compare key table row counts and application workflows before approving any production recovery. Custom login-role passwords, Storage object contents, Edge Functions, JWT/API secrets, OAuth/SMTP settings, and domains are not contained in the SQL bundle and require separate recovery procedures.
+
 ## Hosted Database Change
 
 1. Run `npm run ops:supabase:backup` and retain the `.dump` and `.manifest.json` files together.
