@@ -43,6 +43,7 @@ jobs:
       - name: Health contract and SPA routing
         run: npm run ops:health:diagnose -- "$DEPLOYMENT_URL"
       - name: Verify canonical tenant domains
+        if: github.event_name == 'workflow_dispatch'
         env:
           DOMAIN_VERSION_RETRY_ATTEMPTS: '6'
           DOMAIN_VERSION_RETRY_DELAY_MS: '10000'

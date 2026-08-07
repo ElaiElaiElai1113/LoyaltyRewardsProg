@@ -8,6 +8,8 @@ The Rewards repository has two Vercel projects and two deployment aliases:
 
 The `Tenant deployment synchronization` GitHub workflow runs only after the `CI` workflow passes on `main`. It resolves the ready primary deployment by the complete Git commit SHA, deploys that checkout to the Guatemala project with an explicit health-version marker, updates both aliases, and verifies that all four canonical domains report the same version.
 
+The legacy `Post-deployment verification` workflow continues to smoke-test the primary production deployment automatically. Its four-domain version gate runs only when manually dispatched, preventing false failures while aliases are still awaiting synchronized promotion.
+
 ## Required GitHub settings
 
 1. Create a repository Actions secret named `VERCEL_TOKEN` using a scoped Vercel automation token.
