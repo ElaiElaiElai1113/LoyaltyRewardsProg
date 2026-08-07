@@ -1,0 +1,86 @@
+name: Tenant deployment synchronization
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+  workflow_dispatch:
+    inputs:
+      commit_sha:
+        description: Full Git commit SHA to deploy; defaults to the selected branch commit
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tenant-deployment-${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  synchronize:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      vars.ENABLE_TENANT_DEPLOYMENT_SYNC == 'true')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      EXPECTED_COMMIT_SHA: ${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}
+      VERCEL_SCOPE: ${{ vars.VERCEL_SCOPE || 'elaielaielai1113s-projects' }}
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+    steps:
+      - name: Checkout exact validated commit
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Require deployment credentials
+        shell: bash
+        run: |
+          test -n "$EXPECTED_COMMIT_SHA"
+          test -n "$VERCEL_TOKEN"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@58.7.1
+
+      - name: Synchronize tenant deployments
+        run: npm run ops:deploy:tenants -- --sha "$EXPECTED_COMMIT_SHA" --output artifacts/deployment/tenant-sync.json
+
+      - name: Install browser for canonical domain verification
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify every canonical tenant domain
+        shell: bash
+        env:
+          DOMAIN_VERSION_RETRY_ATTEMPTS: '6'
+          DOMAIN_VERSION_RETRY_DELAY_MS: '10000'
+        run: |
+          status=0
+          npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "wondertown-rewards.vercel.app" "Wondertown Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          exit "$status"
+
+      - name: Upload deployment evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: tenant-deployment-${{ github.run_id }}
+          path: artifacts/deployment/tenant-sync.json
+          if-no-files-found: warn
+          retention-days: 30

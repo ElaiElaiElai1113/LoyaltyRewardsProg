@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 
 const path = new URL('../docs/tenant-email-redirect-matrix.json', import.meta.url)
 const matrix = JSON.parse(await readFile(path, 'utf8'))
-const allowedStatuses = new Set(['ready', 'pending'])
+const allowedStatuses = new Set(['ready', 'pending', 'disabled'])
 const requiredPaths = ['/auth/confirm', '/auth/reset-password', '/accept-invitation']
 const hostnames = new Set()
 
@@ -29,6 +29,9 @@ for (const program of matrix.programs) {
   if (program.status === 'ready' && !program.senderEmail) {
     throw new Error(`${program.slug} is marked ready without a sender email.`)
   }
+  if (program.status === 'disabled' && (program.senderEmail || !program.reason?.trim())) {
+    throw new Error(`${program.slug} must have no sender and include a reason when email is disabled.`)
+  }
 
   const senderDomain = program.senderEmail?.split('@')[1] ?? null
   if (senderDomain !== null && senderDomain !== program.hostname) {
@@ -43,4 +46,6 @@ for (const requiredPath of requiredPaths) {
 }
 
 const ready = matrix.programs.filter((program) => program.status === 'ready').length
-console.log(`Email configuration valid: ${ready} ready, ${matrix.programs.length - ready} pending.`)
+const pending = matrix.programs.filter((program) => program.status === 'pending').length
+const disabled = matrix.programs.filter((program) => program.status === 'disabled').length
+console.log(`Email configuration valid: ${ready} ready, ${pending} pending, ${disabled} disabled.`)

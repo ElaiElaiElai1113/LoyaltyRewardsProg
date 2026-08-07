@@ -2403,6 +2403,7 @@ runTest('active tenant operations use Pinas and always verify canonical producti
       hostname: string
       senderEmail: string | null
       monitor?: boolean
+      reason?: string
     }>
   }
   const monitor = readFileSync('scripts/monitor-production.mjs', 'utf8')
@@ -2425,10 +2426,11 @@ runTest('active tenant operations use Pinas and always verify canonical producti
   const wondertown = matrix.programs.find((program) => program.slug === 'wondertown')
   assert.deepEqual(wondertown, {
     slug: 'wondertown',
-    status: 'pending',
+    status: 'disabled',
     hostname: 'wondertown-rewards.vercel.app',
     senderEmail: null,
     monitor: true,
+    reason: 'Fictional demo tenant; outbound email is intentionally disabled.',
   })
   assert.equal(matrix.programs.some((program) => program.slug === 'davao'), false)
   assert.match(monitor, /program\.status === 'ready' \|\| program\.monitor === true/)

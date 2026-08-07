@@ -7,10 +7,10 @@
   "timezone": "America/Guatemala",
   "primaryDomain": "guatemalarewards.com",
   "emailFromName": "Guatemala Rewards",
-  "emailFromAddress": "",
+  "emailFromAddress": "rewards@guatemalarewards.com",
   "mapCenter": {
-    "latitude": null,
-    "longitude": null
+    "latitude": 14.6349,
+    "longitude": -90.5069
   },
   "legalDocumentsReceived": false,
   "brandingAssetsReceived": false

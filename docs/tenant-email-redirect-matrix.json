@@ -30,10 +30,11 @@
     },
     {
       "slug": "wondertown",
-      "status": "pending",
+      "status": "disabled",
       "hostname": "wondertown-rewards.vercel.app",
       "senderEmail": null,
-      "monitor": true
+      "monitor": true,
+      "reason": "Fictional demo tenant; outbound email is intentionally disabled."
     }
   ],
   "redirectPaths": [

@@ -38,7 +38,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
       database: 'reachable',
       latencyMs: Date.now() - startedAt,
       timestamp: new Date().toISOString(),
-      version: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 12) ?? 'local',
+      version: (process.env.REWARDS_SOURCE_COMMIT ?? process.env.VERCEL_GIT_COMMIT_SHA)?.slice(0, 12) ?? 'local',
       requestId,
     }
     if (request.method === 'HEAD') {

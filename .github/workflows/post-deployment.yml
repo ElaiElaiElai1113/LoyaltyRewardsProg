@@ -22,7 +22,8 @@ permissions:
 
 jobs:
   verify:
-    if: github.event_name == 'workflow_dispatch' || (github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
+    # Automatic multi-domain verification moves to tenant-deployment.yml once synchronization is enabled.
+    if: github.event_name == 'workflow_dispatch' || (vars.ENABLE_TENANT_DEPLOYMENT_SYNC != 'true' && github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
