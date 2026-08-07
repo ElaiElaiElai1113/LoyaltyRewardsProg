@@ -17,6 +17,9 @@ describe('Wondertown demo tenant', () => {
     }
     expect(home).toContain('A fictional city built for testing')
     expect(home).toContain('Moonbeam Café')
+    expect(home).toContain('wondertown-hero.webp')
+    expect(home).toContain('wondertown-hero-768.webp')
+    expect(home).not.toContain('wondertown-hero.jpg')
     expect(home).not.toContain('Medellin Rewards')
     expect(home).not.toContain('Pinas Rewards')
     expect(home).not.toContain('Guatemala Rewards')

@@ -12,8 +12,8 @@ import {
 } from 'lucide-react'
 import { Link } from 'react-router'
 
-import wondertownHero from '@/assets/wondertown/wondertown-hero.jpg'
-import wondertownHeroSmall from '@/assets/wondertown/wondertown-hero-768.jpg'
+import wondertownHero from '@/assets/wondertown/wondertown-hero.webp'
+import wondertownHeroSmall from '@/assets/wondertown/wondertown-hero-768.webp'
 import { useTenant } from '@/hooks/use-tenant'
 
 import './wondertown-home.css'

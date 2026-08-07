@@ -36,11 +36,11 @@ test.describe('public performance and accessibility acceptance', () => {
     })
   }
 
-  test('home photography uses optimized delivery formats', async ({ page }) => {
+  test('home hero media uses optimized delivery formats', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
     const sources = await page.locator('main img').evaluateAll((images) => images.map((image) => (image as HTMLImageElement).currentSrc))
-    const marketing = sources.filter((source) => /(car-rewards-clean|coffee-member|coffee-rewards|dinner-rewards|real-estate-rewards|salon-rewards)/.test(source))
-    expect(marketing.length).toBeGreaterThan(0)
-    expect(marketing.every((source) => source.includes('.webp'))).toBe(true)
+    const heroMedia = sources.filter((source) => /(car-rewards-clean|coffee-member|coffee-rewards|dinner-rewards|real-estate-rewards|salon-rewards|wondertown-hero)/.test(source))
+    expect(heroMedia.length).toBeGreaterThan(0)
+    expect(heroMedia.every((source) => source.includes('.webp'))).toBe(true)
   })
 })
