@@ -1,6 +1,7 @@
 import { spawnSync } from 'node:child_process'
+import { existsSync } from 'node:fs'
 import { mkdir, writeFile } from 'node:fs/promises'
-import { dirname, resolve } from 'node:path'
+import { dirname, isAbsolute, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 export const deploymentDefaults = Object.freeze({
@@ -89,13 +90,41 @@ function readPositiveInteger(value, fallback, name) {
   return parsed
 }
 
+function locateWindowsCommand(executable) {
+  const result = spawnSync('where.exe', [executable], { encoding: 'utf8' })
+  return result.status === 0 ? result.stdout.split(/\r?\n/).find(Boolean)?.trim() ?? '' : ''
+}
+
+export function resolveVercelInvocation(configuredExecutable, helpers = {}) {
+  const platform = helpers.platform ?? process.platform
+  const fileExists = helpers.fileExists ?? existsSync
+  const locateCommand = helpers.locateCommand ?? locateWindowsCommand
+  const nodeExecutable = helpers.nodeExecutable ?? process.execPath
+  const executable = configuredExecutable?.trim()
+    || (platform === 'win32' ? 'vercel.cmd' : 'vercel')
+
+  if (platform !== 'win32') return { executable, prefixArguments: [] }
+
+  const commandPath = isAbsolute(executable) ? executable : locateCommand(executable)
+  if (!commandPath.toLowerCase().endsWith('.cmd')) return { executable, prefixArguments: [] }
+
+  const commandDirectory = dirname(commandPath)
+  const cliCandidates = [
+    resolve(commandDirectory, '..', 'vercel', 'dist', 'index.js'),
+    resolve(commandDirectory, 'node_modules', 'vercel', 'dist', 'index.js'),
+  ]
+  const cliPath = cliCandidates.find((candidate) => fileExists(candidate))
+  if (!cliPath) return { executable, prefixArguments: [] }
+
+  return { executable: nodeExecutable, prefixArguments: [cliPath] }
+}
+
 function runVercel(argumentsList, { capture = false, scope, token }) {
-  const executable = process.env.VERCEL_CLI_BIN?.trim()
-    || (process.platform === 'win32' ? 'vercel.cmd' : 'vercel')
+  const invocation = resolveVercelInvocation(process.env.VERCEL_CLI_BIN)
   const authentication = token ? ['--token', token] : []
   const result = spawnSync(
-    executable,
-    [...argumentsList, '--scope', scope, ...authentication],
+    invocation.executable,
+    [...invocation.prefixArguments, ...argumentsList, '--scope', scope, ...authentication],
     {
       cwd: process.cwd(),
       encoding: 'utf8',
@@ -179,6 +208,7 @@ export async function deployTenantSites(options, environment = process.env) {
       primaryDeployment = selectReadyProductionDeployment(JSON.parse(deploymentListOutput), sha)
       break
     } catch (error) {
+      if (error?.code === 'EINVAL' || error?.code === 'ENOENT') throw error
       lastResolutionError = error
       if (attempt < retryAttempts) {
         await new Promise((resolveDelay) => setTimeout(resolveDelay, retryDelayMs))

@@ -7,6 +7,7 @@ import {
   extractDeploymentUrl,
   normalizeCommitSha,
   parseArguments,
+  resolveVercelInvocation,
   selectReadyProductionDeployment,
 } from './deploy-tenant-sites.mjs'
 
@@ -77,4 +78,16 @@ test('validates arguments and preserves the audited alias set', () => {
 test('health version fallback is explicitly supplied to the Guatemala deployment', async () => {
   const source = await readFile(new URL('./deploy-tenant-sites.mjs', import.meta.url), 'utf8')
   assert.match(source, /REWARDS_SOURCE_COMMIT=\$\{sha\}/)
+})
+
+test('runs a Windows Vercel command shim through its JavaScript CLI entrypoint', () => {
+  const invocation = resolveVercelInvocation('/cache/node_modules/.bin/vercel.cmd', {
+    platform: 'win32',
+    nodeExecutable: '/node',
+    fileExists: (candidate) => candidate.replaceAll('\\', '/').endsWith('/node_modules/vercel/dist/index.js'),
+  })
+
+  assert.equal(invocation.executable, '/node')
+  assert.equal(invocation.prefixArguments.length, 1)
+  assert.match(invocation.prefixArguments[0].replaceAll('\\', '/'), /node_modules\/vercel\/dist\/index\.js$/)
 })
