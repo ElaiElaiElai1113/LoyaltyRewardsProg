@@ -24,17 +24,18 @@ function readDotEnv() {
 
 const dotEnv = readDotEnv()
 
-function requiredEnv(name: string) {
+function environment(name: string) {
   const value = process.env[name] ?? dotEnv.get(name)
-  if (!value || /replace[_-]|your-project/i.test(value)) {
-    throw new Error(`${name} is required for hosted-safe E2E tests.`)
-  }
-  return value
+  return !value || /replace[_-]|your-project/i.test(value) ? '' : value
 }
 
-const supabaseUrl = requiredEnv('VITE_SUPABASE_URL')
-const anonKey = requiredEnv('VITE_SUPABASE_ANON_KEY')
-const serviceRoleKey = requiredEnv('SUPABASE_SERVICE_ROLE_KEY')
+const configuredSupabaseUrl = environment('VITE_SUPABASE_URL')
+const configuredAnonKey = environment('VITE_SUPABASE_ANON_KEY')
+const configuredServiceRoleKey = environment('SUPABASE_SERVICE_ROLE_KEY')
+const hostedSafeReady = Boolean(configuredSupabaseUrl && configuredAnonKey && configuredServiceRoleKey)
+const supabaseUrl = configuredSupabaseUrl || 'http://127.0.0.1:54321'
+const anonKey = configuredAnonKey || 'hosted-safe-not-configured'
+const serviceRoleKey = configuredServiceRoleKey || 'hosted-safe-not-configured'
 const runId = `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
 const password = `HostedSafe-${crypto.randomUUID()}!`
 
@@ -50,6 +51,7 @@ function createSessionClient() {
 
 test.describe('hosted-safe tenant isolation', () => {
   test.describe.configure({ mode: 'serial' })
+  test.skip(!hostedSafeReady, 'Hosted-safe tests require Supabase browser and service-role credentials.')
 
   const admin = createClient(supabaseUrl, serviceRoleKey, {
     auth: {

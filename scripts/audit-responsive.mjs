@@ -6,12 +6,14 @@ import { createServer } from 'vite'
 const host = '127.0.0.1'
 const port = 5276
 const baseUrl = `http://${host}:${port}`
-const outputDir = process.env.RESPONSIVE_AUDIT_OUTPUT_DIR?.trim() || '.tmp-responsive-audit'
+const outputDir = process.env.RESPONSIVE_AUDIT_OUTPUT_DIR?.trim() || 'artifacts/responsive-audit'
 
 const viewports = [
+  { name: 'compact-mobile', width: 320, height: 568 },
   { name: 'small-mobile', width: 360, height: 780 },
   { name: 'mobile', width: 390, height: 844 },
   { name: 'tablet', width: 768, height: 1024 },
+  { name: 'tablet-landscape', width: 1024, height: 768 },
   { name: 'desktop', width: 1440, height: 1000 },
 ]
 
@@ -19,6 +21,8 @@ const routes = [
   { name: 'home', path: '/', fullViewport: true },
   { name: 'signin', path: '/signin', fullViewport: true },
   { name: 'reset-password', path: '/reset-password', fullViewport: true },
+  { name: 'email-confirmation', path: '/auth/confirm' },
+  { name: 'accept-invitation', path: '/accept-invitation', fullViewport: true },
   { name: 'business-login', path: '/business/login', fullViewport: true },
   { name: 'admin-login', path: '/admin', fullViewport: true },
   { name: 'agreements-required', path: '/agreements/required' },
@@ -57,8 +61,16 @@ const routes = [
   { name: 'customer-activity-protected', path: '/activity' },
   { name: 'customer-profile-protected', path: '/profile' },
   { name: 'admin-portal-protected', path: '/admin/portal' },
+  { name: 'admin-programs-protected', path: '/admin/programs' },
+  { name: 'admin-import-protected', path: '/admin/import' },
   { name: 'admin-gift-cards-protected', path: '/admin/gift-cards' },
   { name: 'admin-guide-protected', path: '/admin/guide' },
+  { name: 'program-root-protected', path: '/program' },
+  { name: 'program-settings-protected', path: '/program/settings?tenant=guatemala' },
+  { name: 'program-team-protected', path: '/program/team?tenant=synergize' },
+  { name: 'program-reports-protected', path: '/program/reports?tenant=pinas' },
+  { name: 'program-billing-protected', path: '/program/billing?tenant=medellin' },
+  { name: 'program-onboarding-protected', path: '/onboarding/program?tenant=guatemala' },
   { name: 'business-dashboard-protected', path: '/business/dashboard' },
   { name: 'business-member-sale-protected', path: '/business/member-sale/demo-token' },
   { name: 'business-products-protected', path: '/business/products' },
@@ -74,7 +86,7 @@ const routes = [
 ]
 
 function shouldAuditRouteAtViewport(route, viewport) {
-  return viewport.name === 'small-mobile' || route.fullViewport
+  return viewport.name === 'compact-mobile' || viewport.name === 'tablet' || route.fullViewport
 }
 
 function formatRouteUrl(path) {
@@ -124,6 +136,7 @@ async function main() {
         const page = await context.newPage()
         const consoleMessages = []
         const pageErrors = []
+        const requestFailures = []
 
         page.on('console', (message) => {
           if (message.type() === 'error' && !isIgnoredConsoleError(message)) {
@@ -132,6 +145,12 @@ async function main() {
         })
         page.on('pageerror', (error) => {
           pageErrors.push(error.message.slice(0, 220))
+        })
+        page.on('requestfailed', (request) => {
+          const failure = request.failure()?.errorText ?? 'request failed'
+          if (!failure.includes('ERR_NETWORK_ACCESS_DENIED')) {
+            requestFailures.push({ url: request.url().slice(0, 220), error: failure.slice(0, 160) })
+          }
         })
 
         const url = formatRouteUrl(route.path)
@@ -214,6 +233,12 @@ async function main() {
               .map((heading) => heading.textContent?.replace(/\s+/g, ' ').trim())
               .filter(Boolean)
               .slice(0, 8),
+            isBlank: document.body.innerText.trim().length < 10,
+            hasFatalErrorText: /application error|something went wrong|page crashed/i.test(document.body.innerText),
+            brokenImages: Array.from(document.images)
+              .filter((image) => image.complete && image.naturalWidth === 0)
+              .map((image) => (image.currentSrc || image.src).slice(0, 220))
+              .slice(0, 8),
             oversizedElements,
             clippedInteractiveElements,
           }
@@ -231,6 +256,7 @@ async function main() {
           screenshotPath,
           consoleErrors: consoleMessages,
           pageErrors,
+          requestFailures,
           ...metrics,
         })
 
@@ -252,7 +278,11 @@ async function main() {
       result.overflowX > 2 ||
       result.clippedInteractiveElements.length > 0 ||
       result.consoleErrors.length > 0 ||
-      result.pageErrors.length > 0,
+      result.pageErrors.length > 0 ||
+      result.requestFailures.length > 0 ||
+      result.brokenImages.length > 0 ||
+      result.isBlank ||
+      result.hasFatalErrorText,
   )
 
   console.log(`Responsive audit complete: ${results.length} checks`)
@@ -270,6 +300,10 @@ async function main() {
         clippedInteractiveElements: issue.clippedInteractiveElements.slice(0, 3),
         consoleErrors: issue.consoleErrors.slice(0, 2),
         pageErrors: issue.pageErrors.slice(0, 2),
+        requestFailures: issue.requestFailures.slice(0, 2),
+        brokenImages: issue.brokenImages.slice(0, 3),
+        isBlank: issue.isBlank,
+        hasFatalErrorText: issue.hasFatalErrorText,
         screenshotPath: issue.screenshotPath,
       }),
     )

@@ -14,6 +14,8 @@ import { Link } from 'react-router'
 
 import wondertownHero from '@/assets/wondertown/wondertown-hero.webp'
 import wondertownHeroSmall from '@/assets/wondertown/wondertown-hero-768.webp'
+import wondertownLegacyHero from '@/assets/wondertown/wondertown-hero.jpg'
+import wondertownLegacyHeroSmall from '@/assets/wondertown/wondertown-hero-768.jpg'
 import { useTenant } from '@/hooks/use-tenant'
 
 import './wondertown-home.css'
@@ -107,7 +109,11 @@ export function WondertownHomePage() {
         </div>
       </header>
 
-      <section className="wondertown-home__hero" aria-labelledby="wondertown-hero-title">
+      <section
+        className="wondertown-home__hero"
+        aria-labelledby="wondertown-hero-title"
+        data-legacy-hero-assets={`${wondertownLegacyHeroSmall},${wondertownLegacyHero}`}
+      >
         <img
           className="wondertown-home__hero-art"
           src={wondertownHero}

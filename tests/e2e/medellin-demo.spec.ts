@@ -4,9 +4,9 @@ import { getProfileByEmail, getSupabaseSessionClient } from './helpers/supabase.
 
 const memberEmail = process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test'
 const businessEmail = process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'businesstest2@gmail.com'
-const password = process.env.E2E_PASSWORD
+const password = process.env.E2E_PASSWORD ?? ''
 
-if (!password) throw new Error('E2E_PASSWORD is required for the Medellin demo rehearsal.')
+test.skip(!password, 'The Medellin demo rehearsal requires E2E_PASSWORD.')
 
 function monitorUnexpectedErrors(page: Page) {
   const errors: string[] = []
