@@ -2419,7 +2419,7 @@ runTest('active tenant operations use RewardMe and always verify canonical produ
   assert.deepEqual(rewardMe, {
     slug: 'pinas',
     status: 'pending',
-    hostname: 'rewardme-ph.vercel.app',
+    hostname: 'loyalty-rewards-prog.vercel.app',
     senderEmail: null,
     monitor: true,
   })
@@ -2452,7 +2452,7 @@ runTest('active tenant operations use RewardMe and always verify canonical produ
   assert.match(domainReadiness, /Expected deployed version/)
 
   for (const [hostname, tenantName] of [
-    ['rewardme-ph.vercel.app', 'RewardMe'],
+    ['loyalty-rewards-prog.vercel.app', 'RewardMe'],
     ['www.medellinrewards.com', 'Medellin Rewards'],
     ['guatemalarewards.com', 'Guatemala Rewards'],
     ['wondertown-rewards.vercel.app', 'Wondertown Rewards'],

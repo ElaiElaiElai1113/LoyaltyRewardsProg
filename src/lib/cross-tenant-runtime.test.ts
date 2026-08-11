@@ -17,10 +17,10 @@ describe('cross-tenant runtime safeguards', () => {
   it('uses the browser tenant origin before a global configured fallback', () => {
     expect(resolveTenantPublicSiteUrl(
       'https://medellinrewards.com',
-      'https://rewardme-ph.vercel.app',
+      'https://loyalty-rewards-prog.vercel.app',
     )).toBe('https://medellinrewards.com')
-    expect(resolveTenantPublicSiteUrl(undefined, 'https://rewardme-ph.vercel.app/path')).toBe(
-      'https://rewardme-ph.vercel.app',
+    expect(resolveTenantPublicSiteUrl(undefined, 'https://loyalty-rewards-prog.vercel.app/path')).toBe(
+      'https://loyalty-rewards-prog.vercel.app',
     )
     expect(resolveTenantPublicSiteUrl('javascript:alert(1)', undefined)).toBe('')
   })

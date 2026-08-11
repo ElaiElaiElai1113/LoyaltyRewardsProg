@@ -6,7 +6,7 @@ Replace the former public identity with RewardMe and align the
 member acquisition experience with the approved RewardMe pitch. Preserve the
 stable `pinas` tenant slug, UUID, Supabase scope, route structure, and existing
 authenticated workflows. Move the canonical public address to the branded
-`rewardme-ph.vercel.app` hostname while redirecting the former address.
+`loyalty-rewards-prog.vercel.app` hostname while redirecting the former address.
 
 The supplied RewardMe landing-page image defines the visual direction: warm
 cream surfaces, forest-green ink, restrained gold accents, editorial serif

@@ -61,7 +61,7 @@ jobs:
             where p.id = '10000000-0000-4000-8000-000000000004'
               and p.name = 'RewardMe'
               and p.support_email = 'support@rewardme.ph'
-              and d.hostname = 'rewardme-ph.vercel.app'
+              and d.hostname = 'loyalty-rewards-prog.vercel.app'
               and d.verification_status = 'verified'
               and s.email_from_name = 'RewardMe'
               and s.email_from_address = ''

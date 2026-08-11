@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import React from 'react'
 import { chromium } from 'playwright'
 
-const destination = 'https://rewardme-ph.vercel.app/'
+const destination = 'https://loyalty-rewards-prog.vercel.app/'
 const qr = renderToStaticMarkup(
   React.createElement(QRCodeSVG, {
     value: destination,
@@ -38,7 +38,7 @@ main{width:1200px;height:1500px;padding:110px 100px;display:flex;flex-direction:
 <h1 class="title">Support local.<br>Earn more.</h1>
 <p class="copy">Scan to discover participating businesses, earn member rewards, and support Filipino entrepreneurs.</p>
 <div class="qr">${qr}</div>
-<div class="url">rewardme-ph.vercel.app</div>
+<div class="url">loyalty-rewards-prog.vercel.app</div>
 <div class="rule"></div>
 <div class="footer">Made for members and local businesses in the Philippines.</div>
 </main></body></html>`)

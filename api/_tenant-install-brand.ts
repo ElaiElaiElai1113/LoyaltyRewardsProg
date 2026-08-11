@@ -87,7 +87,7 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'guatemalarewards.com': 'guatemala',
   'www.guatemalarewards.com': 'guatemala',
   'synergize-business-group.vercel.app': 'synergize',
-  'rewardme-ph.vercel.app': 'pinas',
+  'loyalty-rewards-prog.vercel.app': 'pinas',
   'pinas-rewards.vercel.app': 'pinas', // Legacy redirect host.
   'wondertown-rewards.vercel.app': 'wondertown',
 }

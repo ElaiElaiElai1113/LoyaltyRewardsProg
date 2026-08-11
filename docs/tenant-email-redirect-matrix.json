@@ -24,7 +24,7 @@
     {
       "slug": "pinas",
       "status": "pending",
-      "hostname": "rewardme-ph.vercel.app",
+      "hostname": "loyalty-rewards-prog.vercel.app",
       "senderEmail": null,
       "monitor": true
     },

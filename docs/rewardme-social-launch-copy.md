@@ -4,7 +4,7 @@ All pricing and reward claims remain subject to final owner and legal approval.
 
 ## General announcement
 
-Support local. Earn more. RewardMe connects members with participating Filipino businesses so eligible everyday purchases can build toward meaningful rewards. Discover the network at https://rewardme-ph.vercel.app/
+Support local. Earn more. RewardMe connects members with participating Filipino businesses so eligible everyday purchases can build toward meaningful rewards. Discover the network at https://loyalty-rewards-prog.vercel.app/
 
 ## Partner recruitment
 

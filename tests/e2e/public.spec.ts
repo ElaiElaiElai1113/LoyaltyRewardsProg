@@ -41,7 +41,7 @@ test.describe('public acquisition workflow', () => {
     const expectedOrigin = new Map([
       ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
       ['guatemalarewards.com', 'https://guatemalarewards.com'],
-      ['rewardme-ph.vercel.app', 'https://rewardme-ph.vercel.app'],
+      ['loyalty-rewards-prog.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
     ]).get(hostname)
     const robots = await request.get('/robots.txt')
     expect(robots.ok()).toBeTruthy()

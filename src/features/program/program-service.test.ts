@@ -38,7 +38,7 @@ describe('accessible program options', () => {
         name: 'RewardMe',
         slug: 'pinas',
         role: 'program-admin',
-        hostname: 'rewardme-ph.vercel.app',
+        hostname: 'loyalty-rewards-prog.vercel.app',
       },
       {
         id: 'guatemala',

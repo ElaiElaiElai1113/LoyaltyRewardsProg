@@ -72,7 +72,7 @@ jobs:
           status=0
           npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
-          npm run ops:domain:check -- "rewardme-ph.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "loyalty-rewards-prog.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           npm run ops:domain:check -- "wondertown-rewards.vercel.app" "Wondertown Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           exit "$status"
 

@@ -5,7 +5,7 @@
   "locale": "en-PH",
   "currency": "PHP",
   "timezone": "Asia/Manila",
-  "primaryDomain": "rewardme-ph.vercel.app",
+  "primaryDomain": "loyalty-rewards-prog.vercel.app",
   "emailFromName": "RewardMe",
   "emailFromAddress": "",
   "mapCenter": {

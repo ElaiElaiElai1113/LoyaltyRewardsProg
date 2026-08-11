@@ -7,7 +7,7 @@
 - Locale: `en-PH`
 - Currency: `PHP`
 - Timezone: `Asia/Manila`
-- Primary domain: `rewardme-ph.vercel.app`
+- Primary domain: `loyalty-rewards-prog.vercel.app`
 - Proposed support address: `support@rewardme.ph`
 - Verified sender address: not configured
 - Brand colors: heritage gold `#A67608`, accent gold `#D9AD20`, ink `#11100E`
@@ -28,7 +28,7 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
 
 ## External production dependencies
 
-- Keep `rewardme-ph.vercel.app` as the canonical zero-cost production address.
+- Keep `loyalty-rewards-prog.vercel.app` as the canonical zero-cost production address.
 - Create `support@rewardme.ph`.
 - Configure SMTP/API delivery plus SPF, DKIM, and DMARC.
 - Configure each tenant's verified sender name and address in program settings.

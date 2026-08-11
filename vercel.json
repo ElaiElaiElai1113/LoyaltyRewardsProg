@@ -97,7 +97,7 @@
           "value": "pinas-rewards.vercel.app"
         }
       ],
-      "destination": "https://rewardme-ph.vercel.app/",
+      "destination": "https://loyalty-rewards-prog.vercel.app/",
       "permanent": true
     },
     {
@@ -108,7 +108,7 @@
           "value": "pinas-rewards.vercel.app"
         }
       ],
-      "destination": "https://rewardme-ph.vercel.app/:path*",
+      "destination": "https://loyalty-rewards-prog.vercel.app/:path*",
       "permanent": true
     },
     {

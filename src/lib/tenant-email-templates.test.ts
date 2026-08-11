@@ -4,7 +4,7 @@ import { buildTenantEmail, tenantActionUrl, type TenantEmailBrand } from '../../
 
 const brand: TenantEmailBrand = {
   name: 'RewardMe',
-  hostname: 'rewardme-ph.vercel.app',
+  hostname: 'loyalty-rewards-prog.vercel.app',
   supportEmail: 'support@rewardme.ph',
   primaryColor: '#176b45',
   accentColor: '#d7a832',

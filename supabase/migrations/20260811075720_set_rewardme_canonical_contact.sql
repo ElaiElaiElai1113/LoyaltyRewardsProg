@@ -17,7 +17,7 @@ alter table public.program_domains disable trigger enforce_custom_domain_limit;
 
 update public.program_domains
 set
-  hostname = 'rewardme-ph.vercel.app',
+  hostname = 'loyalty-rewards-prog.vercel.app',
   is_primary = true,
   verification_status = 'verified',
   verified_at = now()

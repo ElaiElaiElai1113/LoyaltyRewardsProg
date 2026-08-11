@@ -55,9 +55,10 @@ describe('RewardMe flagship branding', () => {
     const deployment = readFileSync('scripts/deploy-tenant-sites.mjs', 'utf8')
     const vercel = readFileSync('vercel.json', 'utf8')
 
-    expect(discovery).toContain("'rewardme-ph.vercel.app': 'https://rewardme-ph.vercel.app'")
-    expect(deployment).toContain("aliases: ['rewardme-ph.vercel.app'")
-    expect(vercel).toContain('"destination": "https://rewardme-ph.vercel.app/:path*"')
+    expect(discovery).toContain("'loyalty-rewards-prog.vercel.app': 'https://loyalty-rewards-prog.vercel.app'")
+    expect(deployment).toContain("primaryProject: 'loyalty-rewards-prog'")
+    expect(deployment).toContain("aliases: ['pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app']")
+    expect(vercel).toContain('"destination": "https://loyalty-rewards-prog.vercel.app/:path*"')
   })
 
   it('does not hardcode the Medellin wordmark in public page chrome', () => {

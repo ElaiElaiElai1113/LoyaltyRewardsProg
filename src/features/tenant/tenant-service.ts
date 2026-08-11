@@ -95,7 +95,7 @@ const programSlugByHost: Record<string, keyof typeof programs> = {
   'www.guatemalarewards.com': 'guatemala',
   'guatemala.localhost': 'guatemala',
   'synergize.localhost': 'synergize',
-  'rewardme-ph.vercel.app': 'pinas',
+  'loyalty-rewards-prog.vercel.app': 'pinas',
   'pinas-rewards.vercel.app': 'pinas', // Legacy redirect host.
   'pinas.localhost': 'pinas',
   'wondertown-rewards.vercel.app': 'wondertown',
@@ -124,7 +124,6 @@ export function canUseTenantPreviewOverride(hostname: string) {
   return host === 'localhost'
     || host.startsWith('127.')
     || host.endsWith('.localhost')
-    || host === 'rewardme-ph.vercel.app'
     || host === 'pinas-rewards.vercel.app'
     || host === 'wondertown-rewards.vercel.app'
     || host.endsWith('.rewardsplatform.app')
@@ -192,7 +191,7 @@ export async function resolveProgram(hostname: string): Promise<Program> {
     p_hostname: resolutionHostname.split(':')[0].toLowerCase(),
   })
   if (!error && data && Array.isArray(data) && data[0]) return mapProgram(data[0] as Record<string, unknown>)
-  if (canUseTenantOverride) return getFallbackProgram(hostname)
+  if (canUseTenantOverride || inferTenantSlugHint(hostname) !== null) return getFallbackProgram(hostname)
   throw new Error('program_not_found')
 }
 

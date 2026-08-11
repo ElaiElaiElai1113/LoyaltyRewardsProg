@@ -10,7 +10,7 @@ import {
 const verifiedTenants = [
   ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
   ['guatemalarewards.com', 'https://guatemalarewards.com'],
-  ['rewardme-ph.vercel.app', 'https://rewardme-ph.vercel.app'],
+  ['loyalty-rewards-prog.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
   ['wondertown-rewards.vercel.app', 'https://wondertown-rewards.vercel.app'],
 ] as const
 
@@ -47,7 +47,7 @@ describe('host-aware public discovery documents', () => {
 
   it('accepts case and a transport port without broadening the hostname allowlist', () => {
     expect(resolveDiscoveryOrigin('WWW.MEDELLINREWARDS.COM:443')).toBe('https://www.medellinrewards.com')
-    expect(resolveDiscoveryOrigin('pinas-rewards.vercel.app')).toBe('https://rewardme-ph.vercel.app')
+    expect(resolveDiscoveryOrigin('pinas-rewards.vercel.app')).toBe('https://loyalty-rewards-prog.vercel.app')
   })
 
   it.each([
@@ -65,9 +65,9 @@ describe('host-aware public discovery documents', () => {
   })
 
   it('never includes protected portal routes in a tenant sitemap', () => {
-    const sitemap = buildSitemapDocument('rewardme-ph.vercel.app')
+    const sitemap = buildSitemapDocument('loyalty-rewards-prog.vercel.app')
     for (const path of ['/admin', '/dashboard', '/profile', '/orders', '/cart', '/business/dashboard']) {
-      expect(sitemap).not.toContain(`<loc>https://rewardme-ph.vercel.app${path}`)
+      expect(sitemap).not.toContain(`<loc>https://loyalty-rewards-prog.vercel.app${path}`)
     }
   })
 })

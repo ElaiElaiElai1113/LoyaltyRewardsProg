@@ -1,13 +1,14 @@
 # Tenant deployment automation
 
-The Rewards repository has two Vercel projects and three deployment aliases:
+The Rewards repository has two Vercel projects and two compatibility aliases:
 
 - `loyalty-rewards-prog` automatically builds the Medellin production release.
 - `guatemala-rewards` receives the same validated commit through a separate production deployment.
-- `rewardme-ph.vercel.app` and `wondertown-rewards.vercel.app` are public aliases of the exact Medellin/primary deployment.
+- `loyalty-rewards-prog.vercel.app` is the Git-integrated, brand-neutral RewardMe production address.
+- `wondertown-rewards.vercel.app` is a public alias of the exact Medellin/primary deployment.
 - The former RewardMe hostname remains a redirect-only alias so old bookmarks continue to work.
 
-The `Tenant deployment synchronization` GitHub workflow runs only after the `CI` workflow passes on `main`. It resolves the ready primary deployment by the complete Git commit SHA, deploys that checkout to the Guatemala project with an explicit health-version marker, updates all three aliases, and verifies that all four canonical domains report the same version.
+The `Tenant deployment synchronization` GitHub workflow runs only after the `CI` workflow passes on `main`. It resolves the ready primary deployment by the complete Git commit SHA, deploys that checkout to the Guatemala project with an explicit health-version marker, updates both compatibility aliases, and verifies that all four canonical domains report the same version.
 
 The legacy `Post-deployment verification` workflow continues to smoke-test the primary production deployment automatically. Its four-domain version gate runs only when manually dispatched, preventing false failures while aliases are still awaiting synchronized promotion.
 

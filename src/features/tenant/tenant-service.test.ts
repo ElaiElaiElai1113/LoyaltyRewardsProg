@@ -23,7 +23,7 @@ describe('tenant resolution fallback', () => {
     ['synergize.rewardsplatform.app', 'synergize'],
     ['synergize.localhost', 'synergize'],
     ['pinas.localhost', 'pinas'],
-    ['rewardme-ph.vercel.app', 'pinas'],
+    ['loyalty-rewards-prog.vercel.app', 'pinas'],
     ['pinas-rewards.vercel.app', 'pinas'],
     ['wondertown-rewards.vercel.app', 'wondertown'],
   ])('maps %s to %s', (hostname, slug) => {

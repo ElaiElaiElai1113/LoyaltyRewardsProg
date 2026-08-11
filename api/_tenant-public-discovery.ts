@@ -1,8 +1,8 @@
 const tenantOrigins = {
   'www.medellinrewards.com': 'https://www.medellinrewards.com',
   'guatemalarewards.com': 'https://guatemalarewards.com',
-  'rewardme-ph.vercel.app': 'https://rewardme-ph.vercel.app',
-  'pinas-rewards.vercel.app': 'https://rewardme-ph.vercel.app',
+  'loyalty-rewards-prog.vercel.app': 'https://loyalty-rewards-prog.vercel.app',
+  'pinas-rewards.vercel.app': 'https://loyalty-rewards-prog.vercel.app',
   'wondertown-rewards.vercel.app': 'https://wondertown-rewards.vercel.app',
 } as const
 
