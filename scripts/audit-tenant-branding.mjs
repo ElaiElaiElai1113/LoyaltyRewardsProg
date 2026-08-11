@@ -19,6 +19,8 @@ const permitted = [
   /for-businesses-page\.tsx$/,
   /legal-page\.tsx$/,
   /home-page\.tsx$/,
+  /shop-page\.tsx$/,
+  /rewardme-pitch-alignment\.test\.ts$/,
   /platform-guide-page\.tsx$/,
   /mock-store\.ts$/,
   /send-welcome-email\.ts$/,
