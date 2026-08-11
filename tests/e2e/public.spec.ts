@@ -95,7 +95,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByText('RewardMe connects everyday spending', { exact: false }))
       .toHaveCSS('font-family', /Inter/)
     await expect(page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }))
-      .toHaveAttribute('src', /coffee-member-wide\.webp/)
+      .toHaveAttribute('src', /coffee-member-wide(?:-[\w-]+)?\.webp/)
     const homeImageFraming = await page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }).evaluate((image: HTMLImageElement) => ({
       naturalRatio: image.naturalWidth / image.naturalHeight,
       renderedRatio: image.clientWidth / image.clientHeight,
@@ -146,7 +146,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/business/login')
     await expect(page.getByRole('link', { name: 'Apply to partner' })).toHaveAttribute('href', /mailto:/)
     await expect(page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }))
-      .toHaveAttribute('src', /local-business-owner-wide\.webp/)
+      .toHaveAttribute('src', /local-business-owner-wide(?:-[\w-]+)?\.webp/)
     const businessImageFraming = await page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }).evaluate((image: HTMLImageElement) => ({
       naturalRatio: image.naturalWidth / image.naturalHeight,
       renderedRatio: image.clientWidth / image.clientHeight,
