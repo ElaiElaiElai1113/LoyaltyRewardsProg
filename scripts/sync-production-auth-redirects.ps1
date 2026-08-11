@@ -87,28 +87,23 @@ $requiredRedirects = @(
   'https://www.medellinrewards.com/',
   'https://www.medellinrewards.com/reset-password',
   'https://www.medellinrewards.com/auth/confirm',
-  'https://www.medellinrewards.com/auth/reset-password',
   'https://www.medellinrewards.com/accept-invitation',
   'https://guatemalarewards.com/',
   'https://guatemalarewards.com/reset-password',
   'https://guatemalarewards.com/auth/confirm',
-  'https://guatemalarewards.com/auth/reset-password',
   'https://guatemalarewards.com/accept-invitation',
   'https://loyalty-rewards-prog.vercel.app/',
   'https://loyalty-rewards-prog.vercel.app/reset-password',
   'https://loyalty-rewards-prog.vercel.app/auth/confirm',
-  'https://loyalty-rewards-prog.vercel.app/auth/reset-password',
   'https://loyalty-rewards-prog.vercel.app/accept-invitation',
   # Legacy RewardMe hostname retained until old links and installed apps age out.
   'https://pinas-rewards.vercel.app/',
   'https://pinas-rewards.vercel.app/reset-password',
   'https://pinas-rewards.vercel.app/auth/confirm',
-  'https://pinas-rewards.vercel.app/auth/reset-password',
   'https://pinas-rewards.vercel.app/accept-invitation',
   'https://wondertown-rewards.vercel.app/',
   'https://wondertown-rewards.vercel.app/reset-password',
   'https://wondertown-rewards.vercel.app/auth/confirm',
-  'https://wondertown-rewards.vercel.app/auth/reset-password',
   'https://wondertown-rewards.vercel.app/accept-invitation',
   'http://localhost:5173/**',
   'http://127.0.0.1:5173/**',
@@ -121,7 +116,8 @@ $existingRedirects = @($current.uri_allow_list -split ',') |
   Where-Object {
     $_ -and
     $_ -notin @('http://localhost:3000', 'http://localhost:3000/**') -and
-    $_ -notlike 'https://synergize-rewards.vercel.app*'
+    $_ -notlike 'https://synergize-rewards.vercel.app*' -and
+    $_ -notlike '*/auth/reset-password'
   }
 $redirects = @($existingRedirects + $requiredRedirects) | Sort-Object -Unique
 $desiredSiteUrl = 'https://loyalty-rewards-prog.vercel.app/'
@@ -133,6 +129,8 @@ $preview = [ordered]@{
   currentRedirectCount = @($existingRedirects).Count
   desiredRedirectCount = $redirects.Count
   requiredRedirectsPresent = @($requiredRedirects | Where-Object { $_ -in $redirects }).Count -eq $requiredRedirects.Count
+  smtpConfigured = [bool]($current.smtp_host -and $current.smtp_user -and $current.smtp_pass)
+  senderConfigured = [bool]($current.smtp_admin_email -and $current.smtp_sender_name)
   applyRequested = $Apply.IsPresent
 }
 $preview | ConvertTo-Json

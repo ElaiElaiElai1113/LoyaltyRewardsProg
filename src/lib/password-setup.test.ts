@@ -5,12 +5,17 @@ import { describe, expect, it } from 'vitest'
 
 import { resolveInvitationOrigin } from '../../supabase/functions/_shared/invitation-origin'
 import {
+  PASSWORD_MIN_LENGTH,
   getPasswordSetupParams,
   getPasswordSetupRoute,
   getPasswordSetupType,
 } from './password-setup'
 
 describe('password setup links', () => {
+  it('requires the same minimum length used by production QA accounts', () => {
+    expect(PASSWORD_MIN_LENGTH).toBe(12)
+  })
+
   it('routes recovery and invitation fragments to separate setup screens', () => {
     expect(getPasswordSetupType('', '#type=recovery&access_token=secret')).toBe('recovery')
     expect(getPasswordSetupRoute('recovery')).toBe('/reset-password')

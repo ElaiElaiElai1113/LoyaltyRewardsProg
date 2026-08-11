@@ -39,7 +39,7 @@
   ],
   "redirectPaths": [
     "/auth/confirm",
-    "/auth/reset-password",
+    "/reset-password",
     "/accept-invitation"
   ]
 }

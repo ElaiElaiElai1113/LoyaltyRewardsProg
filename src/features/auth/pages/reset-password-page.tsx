@@ -10,13 +10,13 @@ import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
-import type { PasswordSetupType } from '@/lib/password-setup'
+import { PASSWORD_MIN_LENGTH, type PasswordSetupType } from '@/lib/password-setup'
 import { getHomePathForRole } from '@/lib/role-routes'
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, 'Use at least 6 characters.'),
-    confirmPassword: z.string().min(6, 'Confirm your new password.'),
+    password: z.string().min(PASSWORD_MIN_LENGTH, `Use at least ${PASSWORD_MIN_LENGTH} characters.`),
+    confirmPassword: z.string().min(PASSWORD_MIN_LENGTH, 'Confirm your new password.'),
   })
   .refine((values) => values.password === values.confirmPassword, {
     message: 'Passwords do not match.',
@@ -108,7 +108,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
           <p className="text-sm font-medium leading-6 text-[var(--muted-foreground)]">
             {isInvitation
               ? 'Set a password to finish accepting your customer invitation.'
-              : 'Use at least 6 characters for your new password.'}
+              : `Use at least ${PASSWORD_MIN_LENGTH} characters for your new password.`}
           </p>
         </div>
 
@@ -124,7 +124,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
 
         <div className="grid gap-2">
           <Label htmlFor="new-password">New password</Label>
-          <Input id="new-password" type="password" {...form.register('password')} />
+          <Input id="new-password" type="password" autoComplete="new-password" {...form.register('password')} />
           {form.formState.errors.password ? (
             <p className="text-xs font-bold text-red-500">{form.formState.errors.password.message}</p>
           ) : null}
@@ -132,7 +132,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
 
         <div className="grid gap-2">
           <Label htmlFor="confirm-password">Confirm password</Label>
-          <Input id="confirm-password" type="password" {...form.register('confirmPassword')} />
+          <Input id="confirm-password" type="password" autoComplete="new-password" {...form.register('confirmPassword')} />
           {form.formState.errors.confirmPassword ? (
             <p className="text-xs font-bold text-red-500">{form.formState.errors.confirmPassword.message}</p>
           ) : null}

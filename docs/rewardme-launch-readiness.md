@@ -69,12 +69,22 @@ remaining approval, test-account, Stripe, database and release steps.
 - Customer, business, staff, program-admin, and platform-admin acceptance flows
 - Production health, email, domain, migration, and rollback checks
 
-## Current live QA dependency
+## Current live QA status
 
-The repository-side fixture and validation work is complete. The four published
-accounts still need to be provisioned in the same Supabase project used by the
-RewardMe Vercel deployment. The currently connected Supabase account does not
-expose that project, so the server-side provisioner cannot be run against it from
-this workspace yet. Connect the correct project or place its ignored server-only
-values in `.env`, then set `$env:QA_PROGRAM_SLUG='pinas'` and run
-`npm run qa:provision-tenant`, followed by `npm run test:e2e:rewardme-accounts`.
+The four published accounts and isolated QA fixtures are provisioned in the
+Supabase project used by the RewardMe Vercel deployment. Password login is
+verified for the member, business owner, business staff and platform
+administrator accounts. The live published-account gate passes for all four
+roles, and the hosted-safe RewardMe suite verifies tenant isolation plus mobile
+authentication without a dead end.
+
+The release workstation can repeat this idempotently without storing or printing
+project keys:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/provision-rewardme-production-qa.ps1 -Apply -RunAuthenticatedChecks
+```
+
+Public credentials remain temporary testing infrastructure. Before a true
+public launch, set `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, redeploy, run the
+release-mode check, and rotate or disable all four QA accounts.

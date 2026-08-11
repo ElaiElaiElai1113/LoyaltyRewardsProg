@@ -59,6 +59,23 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(migration).toContain('alter table public.stripe_member_webhook_events enable row level security')
   })
 
+  it('provisions production QA without persisting or printing privileged keys', () => {
+    const provisioner = source('scripts/provision-rewardme-production-qa.ps1')
+
+    expect(provisioner).toContain('/api-keys?reveal=true')
+    expect(provisioner).toContain("$env:QA_PROGRAM_SLUG = 'pinas'")
+    expect(provisioner).toContain('scripts/provision-tenant-qa-fixtures.mjs')
+    expect(provisioner).toContain('test:e2e:rewardme-accounts')
+    expect(provisioner).toContain('test:e2e:rewardme-safe')
+    expect(provisioner).toContain('Remove-Item "Env:$name"')
+    expect(provisioner).not.toContain('WriteAllText')
+    expect(provisioner).not.toContain('Set-Content')
+
+    const fixtureProvisioner = source('scripts/provision-tenant-qa-fixtures.mjs')
+    expect(fixtureProvisioner).toContain("businessName: 'RewardMe QA Partner'")
+    expect(fixtureProvisioner).toContain('Could not update QA business')
+  })
+
   it('includes counsel drafts for referrals and savings plus an approval register', () => {
     const index = source('docs/legal-drafts/README.md')
     const referrals = source('docs/legal-drafts/referral-program-terms.md')

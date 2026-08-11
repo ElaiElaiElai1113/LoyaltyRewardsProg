@@ -1,5 +1,7 @@
 export type PasswordSetupType = 'recovery' | 'invite'
 
+export const PASSWORD_MIN_LENGTH = 12
+
 const passwordSetupTypes = new Set<PasswordSetupType>(['recovery', 'invite'])
 
 function parseParams(value: string) {

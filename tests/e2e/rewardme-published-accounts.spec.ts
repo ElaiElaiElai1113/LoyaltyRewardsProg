@@ -47,6 +47,7 @@ test.describe('published RewardMe test accounts', () => {
   for (const account of accounts) {
     test(`${account.label} account signs in from the published credential panel`, async ({ page }) => {
       const runtimeErrors: string[] = []
+      await page.setViewportSize({ width: 390, height: 844 })
       page.on('pageerror', (error) => runtimeErrors.push(error.message))
       page.on('console', (message) => {
         if (message.type() === 'error') runtimeErrors.push(message.text())
@@ -74,7 +75,18 @@ test.describe('published RewardMe test accounts', () => {
       ])
       await expect(page).toHaveURL(account.destination, { timeout: 15_000 })
       await expect(page.locator('main')).toBeVisible()
+      await page.waitForTimeout(1_500)
       await expect(page.locator('body')).not.toContainText(/invalid login credentials/i)
+      await expect(page.locator('body')).not.toContainText(/\bpinas\b/i)
+      const pageIntegrity = await page.evaluate(() => ({
+        emptyLinks: [...document.querySelectorAll('a')].filter((link) => {
+          const href = link.getAttribute('href')
+          return href === null || href.trim() === '' || href.trim() === '#'
+        }).length,
+        overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth + 1,
+        visibleRuntimeError: /application error|unexpected error|something went wrong/i.test(document.body.innerText),
+      }))
+      expect(pageIntegrity).toEqual({ emptyLinks: 0, overflow: false, visibleRuntimeError: false })
       expect(runtimeErrors).toEqual([])
     })
   }

@@ -30,6 +30,7 @@ const configurations = {
     staffName: 'RewardMe QA Staff',
     adminEmail: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
     adminName: 'RewardMe QA Administrator',
+    recoveryRedirect: 'https://loyalty-rewards-prog.vercel.app/reset-password',
     phone: '+63 917 555 0101',
     transactionRequestId: 'f1000000-0000-4000-8000-000000000001',
     transactionReceipt: 'REWARDME-QA-001',
@@ -41,6 +42,7 @@ const configurations = {
     customerName: 'Guatemala QA Customer',
     ownerEmail: process.env.E2E_GUATEMALA_BUSINESS_OWNER_EMAIL ?? 'owner@guatemala.test',
     ownerName: 'Guatemala QA Owner',
+    recoveryRedirect: 'https://guatemalarewards.com/reset-password',
     phone: '+502 5555 0101',
     transactionRequestId: 'f1000000-0000-4000-8000-000000000002',
     transactionReceipt: 'GUATEMALA-QA-001',
@@ -100,6 +102,22 @@ if (!business) {
     .select('id,name,slug')
     .single()
   if (error || !data) throw new Error(`Could not create QA business: ${error?.message ?? 'missing row'}`)
+  business = data
+} else {
+  const { data, error } = await client
+    .from('businesses')
+    .update({
+      name: configuration.businessName,
+      description: 'Isolated partner used only for authenticated release testing.',
+      earn_rate: 10,
+      tax_rate: 0,
+      currency: program.currency,
+      active: true,
+    })
+    .eq('id', business.id)
+    .select('id,name,slug')
+    .single()
+  if (error || !data) throw new Error(`Could not update QA business: ${error?.message ?? 'missing row'}`)
   business = data
 }
 
@@ -320,6 +338,15 @@ if (transactionFixtureError || !transactionFixture) {
 }
 const transactionFixtureRow = Array.isArray(transactionFixture) ? transactionFixture[0] : transactionFixture
 if (!transactionFixtureRow?.id) throw new Error('Could not read the created QA transaction.')
+const { error: activityBrandError } = await client
+  .from('activities')
+  .update({ title: `Purchase at ${configuration.businessName} - ${program.currency} 25.00` })
+  .eq('program_id', program.id)
+  .eq('profile_id', customer.id)
+  .eq('business_id', business.id)
+  .eq('type', 'earned')
+  .like('description', `%${configuration.transactionReceipt}%`)
+if (activityBrandError) throw new Error(`Could not brand QA activity: ${activityBrandError.message}`)
 await authClient.auth.signOut()
 
 let { data: giftCardFixture, error: giftCardReadError } = await client
@@ -366,11 +393,25 @@ for (const email of qaAccountEmails) {
   await authClient.auth.signOut()
 }
 
+const { data: recoveryLink, error: recoveryLinkError } = await client.auth.admin.generateLink({
+  type: 'recovery',
+  email: configuration.customerEmail,
+  options: { redirectTo: configuration.recoveryRedirect },
+})
+if (recoveryLinkError || !recoveryLink.properties) {
+  throw new Error(`Recovery-link verification failed: ${recoveryLinkError?.message ?? 'missing link properties'}`)
+}
+if (recoveryLink.properties.redirect_to !== configuration.recoveryRedirect) {
+  throw new Error('Recovery-link verification returned an unexpected redirect.')
+}
+
 console.log(JSON.stringify({
   program: program.slug,
   business: business.slug,
+  businessName: business.name,
   accounts: qaAccountEmails,
   passwordLoginVerified: true,
+  passwordRecoveryRedirectVerified: true,
   transactionFixtureId: transactionFixtureRow.id,
   giftCardFixtureId: giftCardFixture.id,
   billingConfigured: false,
