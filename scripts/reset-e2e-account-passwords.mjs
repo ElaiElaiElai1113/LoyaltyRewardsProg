@@ -31,16 +31,10 @@ if (password.length < 12) {
 }
 
 const accounts = [
-  { email: process.env.E2E_CUSTOMER_EMAIL ?? 'customer@medellin.test', role: 'customer', name: 'E2E Verified Customer' },
-  { email: process.env.E2E_UNVERIFIED_CUSTOMER_EMAIL ?? 'unverified@medellin.test', role: 'customer', name: 'E2E Unverified Customer' },
-  { email: process.env.E2E_BUSINESS_STAFF_EMAIL ?? 'staff@velvetbrew.test', role: 'business-staff', name: 'Business Test 2 Staff' },
-  { email: process.env.E2E_BUSINESS_OWNER_EMAIL ?? 'owner@velvetbrew.test', role: 'business-owner', name: 'E2E Pinas Owner' },
-  { email: 'owner@velvetbrew.co', role: 'business-owner', name: 'Velvet Brew Owner' },
-  { email: 'businesstest2@gmail.com', role: 'business-owner', name: 'Business Test 2 Owner' },
-  { email: process.env.E2E_ADMIN_EMAIL ?? 'admin@medellin.test', role: 'platform-admin', name: 'E2E Platform Admin' },
-  { email: process.env.E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL ?? 'agreement-pending-customer@medellin.test', role: 'customer', name: 'E2E Agreement Pending Customer' },
-  { email: process.env.E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL ?? 'agreement-pending-owner@velvetbrew.test', role: 'business-owner', name: 'E2E Agreement Pending Owner' },
-  { email: process.env.E2E_AGREEMENT_UNSIGNED_CUSTOMER_EMAIL ?? 'agreement-unsigned-customer@medellin.test', role: 'customer', name: 'E2E Unsigned Agreement Customer' },
+  { email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test', role: 'customer', name: 'RewardMe Test Member' },
+  { email: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test', role: 'business-staff', name: 'RewardMe QA Staff' },
+  { email: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test', role: 'business-owner', name: 'RewardMe QA Owner' },
+  { email: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test', role: 'platform-admin', name: 'RewardMe QA Administrator' },
 ]
 const requestedEmails = new Set(
   (process.env.QA_ACCOUNT_EMAILS ?? '')
@@ -240,7 +234,7 @@ for (const account of selectedAccounts) {
 
 console.log(`Provisioned or reset ${provisionableAccounts.length} isolated QA accounts without changing real user accounts.`)
 if (!qaBusiness) {
-  console.warn('Skipped business QA accounts because no designated Pinas business exists and plan limits must not be bypassed.')
+  console.warn('Skipped business QA accounts because no designated RewardMe business exists and plan limits must not be bypassed.')
 }
 
 if (process.env.QA_VERIFY_LOGIN === 'true') {

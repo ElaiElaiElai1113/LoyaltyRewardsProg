@@ -29,8 +29,10 @@ const client = createClient(supabaseUrl, serviceRoleKey, {
 })
 const slugs = ['pinas', 'guatemala']
 const expectedEmails = [
-  process.env.E2E_PINAS_CUSTOMER_EMAIL ?? 'customer@pinas.test',
-  process.env.E2E_PINAS_BUSINESS_OWNER_EMAIL ?? 'owner@pinas.test',
+  process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
+  process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
+  process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
+  process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
   process.env.E2E_GUATEMALA_CUSTOMER_EMAIL ?? 'customer@guatemala.test',
   process.env.E2E_GUATEMALA_BUSINESS_OWNER_EMAIL ?? 'owner@guatemala.test',
 ].map((email) => email.toLowerCase())

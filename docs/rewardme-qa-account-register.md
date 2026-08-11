@@ -1,27 +1,27 @@
 # RewardMe QA account register
 
-Do not store passwords in this file or commit them to Git. Keep credentials in an approved password manager or ignored local environment file.
+The following deliberately public credentials are for temporary RewardMe testing only. They must use isolated QA data and must be removed from the sign-in pages before public launch.
 
-| Role | Environment variable | Purpose | Status |
-|---|---|---|---|
-| Verified customer | `E2E_CUSTOMER_EMAIL` | Core member workflow | Blocked: RewardMe member limit |
-| Unverified customer | `E2E_UNVERIFIED_CUSTOMER_EMAIL` | Restricted-value actions | Blocked: RewardMe member limit |
-| Business owner | `E2E_BUSINESS_OWNER_EMAIL` | Partner administration | Blocked: no RewardMe business slot |
-| Business staff | `E2E_BUSINESS_STAFF_EMAIL` | QR sales and redemption | Blocked: no RewardMe business slot |
-| Platform administrator | `E2E_ADMIN_EMAIL` | Operational controls | Existing isolated fixture can be reset |
-| Pending member agreement | `E2E_AGREEMENT_PENDING_CUSTOMER_EMAIL` | E-signature gate | Blocked: RewardMe member limit |
-| Pending partner agreement | `E2E_AGREEMENT_PENDING_BUSINESS_OWNER_EMAIL` | Partner e-signature gate | Blocked: no RewardMe business slot |
+| Role | Username | Sign-in route |
+|---|---|---|
+| Member | `member@rewardme.test` | `/signin` |
+| Business owner | `owner@rewardme.test` | `/business/login` |
+| Business staff | `staff@rewardme.test` | `/business/login` |
+| Platform administrator | `admin@rewardsplatform.test` | `/admin` |
 
-Production QA users must:
+Shared testing password: `Rewards 123!`
 
-- use clearly isolated `qa+...` addresses;
-- never reuse real customer or employee accounts;
-- use a randomly generated password;
-- be attached only to the RewardMe program and a designated QA business;
-- be removed or disabled after launch acceptance.
+The password is intentionally 12 characters so it satisfies the production QA tooling's minimum length. The website provides a **Use account** action on the correct portal and links every other account to its matching portal.
 
-The `npm run qa:reset-passwords` helper resets only existing isolated fixtures by default. Creating missing users, creating a QA business, or assigning program memberships each requires its own explicit environment flag so a routine password reset cannot consume tenant capacity accidentally.
+## Provisioning and verification
 
-## Current production constraint
+Run the approved RewardMe fixture provisioner with `QA_PROGRAM_SLUG=pinas`. It creates or updates the four isolated accounts, attaches the member and business roles to the RewardMe program, assigns owner and staff to the designated QA business, resets the shared password through the Supabase Admin API, and verifies password login for every account.
 
-On July 30, 2026, production returned `members_limit_reached` and `businesses_limit_reached` while preparing isolated RewardMe fixtures. Do not bypass these controls or attach RewardMe QA identities to another tenant's business. Acceptance can resume after an existing RewardMe member/business slot is freed or the RewardMe subscription entitlement is legitimately increased.
+Never expose or commit `SUPABASE_SERVICE_ROLE_KEY`. Password updates must continue through the server-side Admin API; do not update password hashes with database SQL.
+
+## Removal before public launch
+
+1. Remove the public credential panel from all three sign-in routes.
+2. Rotate or disable every account above.
+3. Remove the shared password from documentation and environment examples.
+4. Repeat authenticated role, tenant-isolation, and responsive Playwright checks.

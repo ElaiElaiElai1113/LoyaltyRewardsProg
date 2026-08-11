@@ -21,10 +21,14 @@ const configurations = {
   pinas: {
     businessName: 'RewardMe QA Partner',
     businessSlug: 'pinas-qa-partner',
-    customerEmail: process.env.E2E_PINAS_CUSTOMER_EMAIL ?? 'customer@pinas.test',
-    customerName: 'RewardMe QA Customer',
-    ownerEmail: process.env.E2E_PINAS_BUSINESS_OWNER_EMAIL ?? 'owner@pinas.test',
+    customerEmail: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
+    customerName: 'RewardMe Test Member',
+    ownerEmail: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
     ownerName: 'RewardMe QA Owner',
+    staffEmail: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
+    staffName: 'RewardMe QA Staff',
+    adminEmail: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
+    adminName: 'RewardMe QA Administrator',
     phone: '+63 917 555 0101',
   },
   guatemala: {
@@ -182,9 +186,25 @@ const owner = await ensureUser({
   role: 'business-owner',
   businessId: business.id,
 })
+const staff = configuration.staffEmail
+  ? await ensureUser({
+      email: configuration.staffEmail,
+      fullName: configuration.staffName,
+      role: 'business-staff',
+      businessId: business.id,
+    })
+  : null
+const admin = configuration.adminEmail
+  ? await ensureUser({
+      email: configuration.adminEmail,
+      fullName: configuration.adminName,
+      role: 'platform-admin',
+    })
+  : null
 
 await ensureProgramMembership(customer.id, 'member')
 await ensureProgramMembership(owner.id, 'business-owner', business.id)
+if (staff) await ensureProgramMembership(staff.id, 'business-staff', business.id)
 
 const { error: balanceError } = await client.from('reward_balances').upsert({
   program_id: program.id,
@@ -251,7 +271,14 @@ await ensureCatalogRow('gift_card_catalog', 'QA Gift Card', {
 const authClient = createClient(supabaseUrl, anonKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 })
-for (const email of [configuration.customerEmail, configuration.ownerEmail]) {
+const qaAccountEmails = [
+  configuration.customerEmail,
+  configuration.ownerEmail,
+  configuration.staffEmail,
+  configuration.adminEmail,
+].filter(Boolean)
+
+for (const email of qaAccountEmails) {
   const { error } = await authClient.auth.signInWithPassword({ email, password })
   if (error) throw new Error(`Login verification failed for ${email}: ${error.message}`)
   await authClient.auth.signOut()
@@ -260,7 +287,7 @@ for (const email of [configuration.customerEmail, configuration.ownerEmail]) {
 console.log(JSON.stringify({
   program: program.slug,
   business: business.slug,
-  accounts: [configuration.customerEmail, configuration.ownerEmail],
+  accounts: qaAccountEmails,
   passwordLoginVerified: true,
   billingConfigured: false,
 }, null, 2))

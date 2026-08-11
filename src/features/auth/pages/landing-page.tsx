@@ -21,6 +21,7 @@ import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
+import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-test-credentials'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -129,7 +130,7 @@ const landingCopy: Record<Exclude<Language, 'tl'>, {
       script: 'Script idea: a member spending, earning, and redeeming rewards toward a trip - same beats as the reward walkthrough on the sign-up flow.',
     },
     hero: {
-      eyebrow: 'Medellin Rewards',
+      eyebrow: '{programName}',
       firstAccent: 'Earn',
       middle: 'Amazing',
       secondAccent: 'Rewards',
@@ -139,7 +140,7 @@ const landingCopy: Record<Exclude<Language, 'tl'>, {
       bodyAccent: 'Rewards',
       subcopy: 'Join free and earn 10% back automatically - or upgrade to earn between 20% and 100% back - every time you spend with the businesses in our network.',
       pills: ['Everyday spending', '20% - 100% back', 'Any business, anywhere'],
-      cta: 'Join Medellin Rewards',
+      cta: 'Join {programName}',
     },
     featureCards: [
       {
@@ -219,7 +220,7 @@ const landingCopy: Record<Exclude<Language, 'tl'>, {
         },
         {
           question: 'Can Rewards be exchanged for money?',
-          answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+          answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the {programName} Program - not cash exchange.',
         },
       ],
     },
@@ -246,7 +247,7 @@ const landingCopy: Record<Exclude<Language, 'tl'>, {
       script: 'Idea del guion: un miembro compra, gana y canjea recompensas para un viaje, siguiendo los mismos pasos del recorrido de registro.',
     },
     hero: {
-      eyebrow: 'Medellin Rewards',
+      eyebrow: '{programName}',
       firstAccent: 'Gana',
       middle: 'Recompensas',
       secondAccent: 'Increibles',
@@ -256,7 +257,7 @@ const landingCopy: Record<Exclude<Language, 'tl'>, {
       bodyAccent: 'Recompensas',
       subcopy: 'Unete gratis y gana 10% de vuelta automaticamente, o mejora tu membresia para ganar entre 20% y 100% de vuelta cada vez que compres con los negocios de nuestra red.',
       pills: ['Compras diarias', '20% - 100% de vuelta', 'Cualquier negocio, en cualquier lugar'],
-      cta: 'Unirme a Medellin Rewards',
+      cta: 'Unirme a {programName}',
     },
     featureCards: [
       {
@@ -336,7 +337,7 @@ const landingCopy: Record<Exclude<Language, 'tl'>, {
         },
         {
           question: 'Las Recompensas se pueden cambiar por dinero?',
-          answer: 'No, las Recompensas son para beneficios de miembros, compras, viajes, experiencias y ofertas aliadas dentro de Medellin Rewards, no para cambio por efectivo.',
+          answer: 'No, las Recompensas son para beneficios de miembros, compras, viajes, experiencias y ofertas aliadas dentro de {programName}, no para cambio por efectivo.',
         },
       ],
     },
@@ -375,7 +376,7 @@ export function LandingPage() {
   const { program } = useTenant()
   const baseCopy = landingCopy[language === 'tl' ? 'en' : language]
   const copy = JSON.parse(
-    JSON.stringify(baseCopy).replaceAll('Medellin Rewards', program.name),
+    JSON.stringify(baseCopy).replaceAll('{programName}', program.name),
   ) as typeof baseCopy
   const featureCards = copy.featureCards.map((item, index) => ({
     ...item,
@@ -1095,6 +1096,18 @@ export function CompactAuthPage() {
               {t('Join {program}', { program: program.name })}
             </Link>
           </p>
+
+          {program.slug === 'pinas' ? (
+            <RewardMeTestCredentials
+              currentPortal="member"
+              onUse={(account, password) => {
+                setError(null)
+                signInForm.setValue('email', account.email, { shouldValidate: true })
+                signInForm.setValue('password', password, { shouldValidate: true })
+                signInForm.setValue('role', account.role)
+              }}
+            />
+          ) : null}
         </form>
       )}
     </AuthPortalShell>

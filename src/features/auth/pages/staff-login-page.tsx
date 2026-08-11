@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
+import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-test-credentials'
+import { REWARDME_TEST_ACCOUNTS } from '@/features/auth/rewardme-test-accounts'
 import { platformBrand } from '@/features/platform/platform-brand'
 import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
 import { useAuth } from '@/hooks/use-auth'
@@ -241,6 +243,22 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
               t('Sign in')
             )}
           </Button>
+
+          {program.slug === 'pinas' ? (
+            <RewardMeTestCredentials
+              accounts={isAdminPortal
+                ? REWARDME_TEST_ACCOUNTS.filter((account) => account.portal === 'admin')
+                : REWARDME_TEST_ACCOUNTS}
+              currentPortal={isAdminPortal ? 'admin' : 'business'}
+              onUse={(account, password) => {
+                setError(null)
+                signInForm.setValue('email', account.email, { shouldValidate: true })
+                signInForm.setValue('password', password, { shouldValidate: true })
+                signInForm.setValue('role', account.role)
+              }}
+              title={isAdminPortal ? 'Platform test account' : 'RewardMe test accounts'}
+            />
+          ) : null}
         </form>
       )}
     </AuthPortalShell>

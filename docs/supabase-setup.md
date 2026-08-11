@@ -40,10 +40,10 @@ In Supabase Dashboard -> Authentication -> Users, create these users:
 
 | Email | Password | app_metadata |
 |-------|----------|-------------|
-| `ava@example.com` | `demo1234` | `{ "role": "customer" }` |
-| `admin@medellinrewards.com` | `demo1234` | `{ "role": "platform-admin" }` |
-| `owner@velvetbrew.co` | `demo1234` | `{ "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }` |
-| `owner@mysticcoffee.co` | `demo1234` | `{ "role": "business-owner", "business_id": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22" }` |
+| `ava@example.com` | `Rewards 123!` | `{ "role": "customer" }` |
+| `admin@medellinrewards.com` | `Rewards 123!` | `{ "role": "platform-admin" }` |
+| `owner@velvetbrew.co` | `Rewards 123!` | `{ "role": "business-owner", "business_id": "a0eebc99-9c0b-4ef8-bb6d-6bb9bd380a11" }` |
+| `owner@mysticcoffee.co` | `Rewards 123!` | `{ "role": "business-owner", "business_id": "b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22" }` |
 
 Set `role` in `app_metadata`, not `user_metadata`. The auth trigger reads from `app_metadata` when creating the profile row.
 

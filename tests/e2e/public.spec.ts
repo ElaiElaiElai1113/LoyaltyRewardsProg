@@ -135,6 +135,65 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
   })
 
+  test('RewardMe sign-in portals show complete brand-safe test credentials and autofill the matching account', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 740 })
+
+    const portals = [
+      {
+        route: '/signin',
+        email: 'member@rewardme.test',
+        emailInput: '#signin-email',
+        passwordInput: '#signin-password',
+      },
+      {
+        route: '/business/login',
+        email: 'staff@rewardme.test',
+        emailInput: '#staff-signin-email',
+        passwordInput: '#staff-signin-password',
+      },
+      {
+        route: '/admin',
+        email: 'admin@rewardsplatform.test',
+        emailInput: '#staff-signin-email',
+        passwordInput: '#staff-signin-password',
+      },
+    ] as const
+
+    for (const portal of portals) {
+      await page.goto(portal.route)
+
+      const credentials = page.getByTestId('rewardme-test-credentials')
+      await expect(credentials).toBeVisible()
+      await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
+      for (const email of [
+        'member@rewardme.test',
+        'owner@rewardme.test',
+        'staff@rewardme.test',
+        'admin@rewardsplatform.test',
+      ]) {
+        if (portal.route === '/admin' && email !== 'admin@rewardsplatform.test') continue
+        await expect(credentials.getByText(email, { exact: true })).toBeVisible()
+      }
+
+      await expect(page.locator('body')).not.toContainText(/medellin/i)
+      await expect(page.locator('body')).not.toContainText('MedellinQA!2026')
+
+      await credentials
+        .locator('article')
+        .filter({ hasText: portal.email })
+        .getByRole('button', { name: 'Use account' })
+        .click()
+      await expect(page.locator(portal.emailInput)).toHaveValue(portal.email)
+      await expect(page.locator(portal.passwordInput)).toHaveValue('Rewards 123!')
+
+      const dimensions = await page.evaluate(() => ({
+        clientWidth: document.documentElement.clientWidth,
+        scrollWidth: document.documentElement.scrollWidth,
+      }))
+      expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
+    }
+  })
+
   test('RewardMe business page presents both approved participation models', async ({ page }) => {
     await page.goto('/business')
 

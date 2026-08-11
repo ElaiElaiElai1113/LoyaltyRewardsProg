@@ -149,7 +149,7 @@ These suites cover partner referral attribution and duplicate protection, first-
 
 The agreement suite signs through the real `sign-agreement` Supabase Edge Function. Before running `npm run test:agreements` locally, reset/seed Supabase and serve or deploy that Edge Function for the configured `VITE_SUPABASE_URL`.
 
-The local seed accounts use password `demo1234`:
+The local seed accounts use password `Rewards 123!`:
 
 - `customer@medellin.test`
 - `unverified@medellin.test`
