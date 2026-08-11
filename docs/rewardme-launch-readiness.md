@@ -45,8 +45,13 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
   and separate verified, executable, approval, and external-input statuses.
 - Recoverable empty and error states for missing pages, team loading, empty team,
   filtered programs, and partner catalogs.
-- Production-safe RewardMe authenticated QA using unique temporary users and
-  cleanup; the run remains credential-blocked until isolated QA secrets exist.
+- Production-safe RewardMe authenticated QA tooling using isolated public test users,
+  role and program memberships, a QA partner, member balance, customer link,
+  catalog entries, a recorded purchase, activity history, and an issued gift card.
+- A fail-closed published-account Playwright check that verifies every displayed
+  login reaches the correct authenticated portal when deliberately invoked.
+- A single deployment switch, `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, that hides
+  all public test credentials before launch.
 - Fail-closed RewardMe Stripe checkout/webhook scaffolding with replay protection,
   fixed trusted return URLs, test price configuration, and disabled server/database gates.
 - Savings goal and read-only ledger schema with RLS, tenant ownership checks, and
@@ -63,3 +68,13 @@ remaining approval, test-account, Stripe, database and release steps.
 - Mobile readiness and responsive browser checks
 - Customer, business, staff, program-admin, and platform-admin acceptance flows
 - Production health, email, domain, migration, and rollback checks
+
+## Current live QA dependency
+
+The repository-side fixture and validation work is complete. The four published
+accounts still need to be provisioned in the same Supabase project used by the
+RewardMe Vercel deployment. The currently connected Supabase account does not
+expose that project, so the server-side provisioner cannot be run against it from
+this workspace yet. Connect the correct project or place its ignored server-only
+values in `.env`, then set `$env:QA_PROGRAM_SLUG='pinas'` and run
+`npm run qa:provision-tenant`, followed by `npm run test:e2e:rewardme-accounts`.

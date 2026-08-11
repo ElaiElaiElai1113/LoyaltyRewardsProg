@@ -27,6 +27,7 @@ VITE_SUPABASE_ANON_KEY=<local anon key>
 SUPABASE_URL=http://127.0.0.1:54321
 SUPABASE_SERVICE_ROLE_KEY=<local service-role key>
 E2E_AUTH_ENABLED=true
+VITE_SHOW_PUBLIC_QA_CREDENTIALS=true
 E2E_REWARDME_MEMBER_EMAIL=member@rewardme.test
 E2E_REWARDME_BUSINESS_OWNER_EMAIL=owner@rewardme.test
 E2E_REWARDME_BUSINESS_STAFF_EMAIL=staff@rewardme.test
@@ -56,6 +57,8 @@ npm run test:e2e:acceptance
 ```
 
 Run focused suites with `npm run test:referrals`, `test:onboarding`, `test:gift-cards`, `test:rewards`, and `test:agreements`.
+
+To validate the deliberately published live accounts against the deployed RewardMe site, run `npm run test:e2e:rewardme-accounts`. This remote smoke test does not need the service-role key.
 
 ## Reset and stop
 

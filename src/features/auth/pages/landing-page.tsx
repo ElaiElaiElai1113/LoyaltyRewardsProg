@@ -22,6 +22,7 @@ import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-test-credentials'
+import { shouldShowRewardMeTestCredentials } from '@/features/auth/rewardme-test-accounts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -1097,7 +1098,7 @@ export function CompactAuthPage() {
             </Link>
           </p>
 
-          {program.slug === 'pinas' ? (
+          {program.slug === 'pinas' && shouldShowRewardMeTestCredentials() ? (
             <RewardMeTestCredentials
               currentPortal="member"
               onUse={(account, password) => {

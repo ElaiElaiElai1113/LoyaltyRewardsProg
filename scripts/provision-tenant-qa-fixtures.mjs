@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'node:fs'
+import { randomUUID } from 'node:crypto'
 
 import { createClient } from '@supabase/supabase-js'
 
@@ -30,6 +31,8 @@ const configurations = {
     adminEmail: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
     adminName: 'RewardMe QA Administrator',
     phone: '+63 917 555 0101',
+    transactionRequestId: 'f1000000-0000-4000-8000-000000000001',
+    transactionReceipt: 'REWARDME-QA-001',
   },
   guatemala: {
     businessName: 'Guatemala QA Partner',
@@ -39,6 +42,8 @@ const configurations = {
     ownerEmail: process.env.E2E_GUATEMALA_BUSINESS_OWNER_EMAIL ?? 'owner@guatemala.test',
     ownerName: 'Guatemala QA Owner',
     phone: '+502 5555 0101',
+    transactionRequestId: 'f1000000-0000-4000-8000-000000000002',
+    transactionReceipt: 'GUATEMALA-QA-001',
   },
 }
 
@@ -145,6 +150,7 @@ async function ensureUser({ email, fullName, role, businessId = null }) {
       phone: configuration.phone,
       role,
       business_id: businessId,
+      ...(role === 'customer' ? { verification_status: 'verified' } : {}),
     })
     .eq('id', user.id)
   if (profileError) throw profileError
@@ -259,7 +265,7 @@ await ensureCatalogRow('rewards', 'QA Welcome Reward', {
   featured: false,
   highlight: 'QA fixture',
 })
-await ensureCatalogRow('gift_card_catalog', 'QA Gift Card', {
+const giftCardCatalogId = await ensureCatalogRow('gift_card_catalog', 'QA Gift Card', {
   description: 'Authenticated tenant QA gift card.',
   points_cost: 10,
   value_label: `${program.currency} 5`,
@@ -271,6 +277,82 @@ await ensureCatalogRow('gift_card_catalog', 'QA Gift Card', {
 const authClient = createClient(supabaseUrl, anonKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 })
+
+let { data: customerProfile, error: customerProfileError } = await client
+  .from('profiles')
+  .select('member_qr_token')
+  .eq('id', customer.id)
+  .single()
+if (customerProfileError || !customerProfile) {
+  throw new Error(`Could not load QA member QR token: ${customerProfileError?.message ?? 'missing profile'}`)
+}
+if (!customerProfile.member_qr_token) {
+  const generatedQrToken = randomUUID().replaceAll('-', '') + randomUUID().replaceAll('-', '')
+  const { data, error } = await client
+    .from('profiles')
+    .update({ member_qr_token: generatedQrToken })
+    .eq('id', customer.id)
+    .select('member_qr_token')
+    .single()
+  if (error || !data?.member_qr_token) {
+    throw new Error(`Could not create QA member QR token: ${error?.message ?? 'missing token'}`)
+  }
+  customerProfile = data
+}
+
+const { error: ownerSignInError } = await authClient.auth.signInWithPassword({
+  email: configuration.ownerEmail,
+  password,
+})
+if (ownerSignInError) throw new Error(`Could not sign in QA owner for fixture creation: ${ownerSignInError.message}`)
+const { data: transactionFixture, error: transactionFixtureError } = await authClient.rpc(
+  'record_member_transaction',
+  {
+    p_member_qr_token: customerProfile.member_qr_token,
+    p_purchase_amount: 25,
+    p_receipt_number: configuration.transactionReceipt,
+    p_note: 'Idempotent authenticated QA fixture.',
+    p_client_request_id: configuration.transactionRequestId,
+  },
+)
+if (transactionFixtureError || !transactionFixture) {
+  throw new Error(`Could not create QA transaction: ${transactionFixtureError?.message ?? 'missing row'}`)
+}
+const transactionFixtureRow = Array.isArray(transactionFixture) ? transactionFixture[0] : transactionFixture
+if (!transactionFixtureRow?.id) throw new Error('Could not read the created QA transaction.')
+await authClient.auth.signOut()
+
+let { data: giftCardFixture, error: giftCardReadError } = await client
+  .from('gift_cards')
+  .select('id,status')
+  .eq('program_id', program.id)
+  .eq('catalog_id', giftCardCatalogId)
+  .eq('customer_id', customer.id)
+  .order('created_at', { ascending: false })
+  .limit(1)
+  .maybeSingle()
+if (giftCardReadError) throw giftCardReadError
+
+if (!giftCardFixture) {
+  const { error: customerSignInError } = await authClient.auth.signInWithPassword({
+    email: configuration.customerEmail,
+    password,
+  })
+  if (customerSignInError) {
+    throw new Error(`Could not sign in QA member for gift-card fixture creation: ${customerSignInError.message}`)
+  }
+  const { data, error } = await authClient.rpc('issue_gift_card', {
+    p_catalog_id: giftCardCatalogId,
+    p_customer_id: customer.id,
+  })
+  if (error || !data) throw new Error(`Could not issue QA gift card: ${error?.message ?? 'missing row'}`)
+  const issuedGiftCard = Array.isArray(data) ? data[0] : data
+  if (!issuedGiftCard?.id) throw new Error('Could not read the issued QA gift card.')
+  giftCardFixture = issuedGiftCard
+  await authClient.auth.signOut()
+}
+if (!giftCardFixture?.id) throw new Error('Could not load the QA gift-card fixture.')
+
 const qaAccountEmails = [
   configuration.customerEmail,
   configuration.ownerEmail,
@@ -289,5 +371,7 @@ console.log(JSON.stringify({
   business: business.slug,
   accounts: qaAccountEmails,
   passwordLoginVerified: true,
+  transactionFixtureId: transactionFixtureRow.id,
+  giftCardFixtureId: giftCardFixture.id,
   billingConfigured: false,
 }, null, 2))

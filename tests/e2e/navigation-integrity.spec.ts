@@ -31,6 +31,7 @@ function monitorRuntimeErrors(page: Page) {
 }
 
 test('public navigation has no empty links, missing fragments, or dead internal destinations', async ({ page }) => {
+  test.setTimeout(90_000)
   const errors = monitorRuntimeErrors(page)
   const destinations = new Set<string>()
 

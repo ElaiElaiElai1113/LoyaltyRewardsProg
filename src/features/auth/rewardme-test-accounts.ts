@@ -2,6 +2,12 @@ import type { AuthFormValues } from '@/types/forms'
 
 export const REWARDME_TEST_PASSWORD = 'Rewards 123!'
 
+export function shouldShowRewardMeTestCredentials(
+  configuredValue = import.meta.env.VITE_SHOW_PUBLIC_QA_CREDENTIALS,
+) {
+  return configuredValue !== 'false'
+}
+
 export type RewardMeTestPortal = 'member' | 'business' | 'admin'
 
 export type RewardMeTestAccount = {
