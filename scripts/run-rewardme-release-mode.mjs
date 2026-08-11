@@ -11,6 +11,7 @@ const child = spawn(
     cwd: repoRoot,
     env: {
       ...process.env,
+      E2E_INCLUDE_REWARDME_RELEASE_MODE: 'true',
       VITE_SHOW_PUBLIC_QA_CREDENTIALS: 'false',
     },
     stdio: 'inherit',
