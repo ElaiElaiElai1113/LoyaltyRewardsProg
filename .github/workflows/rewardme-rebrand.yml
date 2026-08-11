@@ -1,0 +1,63 @@
+name: Apply RewardMe production rebrand
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY REWARDME REBRAND to run the one-row production migration
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rewardme-production-rebrand
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY REWARDME REBRAND'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: retfuxpfstatpdsunkgj
+      MIGRATION_VERSION: '20260811064738'
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require production database credentials
+        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD"
+      - name: Link the approved production project
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Show the scoped row before migration
+        run: >-
+          npx supabase db query --linked --output table
+          "select id, slug, name, primary_color, accent_color, logo_url, map_latitude, map_longitude
+          from public.programs
+          where id = '10000000-0000-4000-8000-000000000004' and slug = 'pinas';"
+      - name: Apply only the approved RewardMe migration
+        run: npx supabase db query --linked --file supabase/migrations/20260811064738_rewardme_public_rebrand.sql
+      - name: Record the applied migration version
+        run: npx supabase migration repair --linked --status applied "$MIGRATION_VERSION" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Verify the RewardMe production row
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ begin
+          if not exists (
+            select 1 from public.programs
+            where id = '10000000-0000-4000-8000-000000000004'
+              and slug = 'pinas'
+              and name = 'RewardMe'
+              and primary_color = '#173f32'
+              and accent_color = '#b77b1f'
+              and logo_url = '/rewardme-mark.svg'
+          ) then raise exception 'RewardMe production verification failed';
+          end if;
+          end \$\$;"

@@ -1,4 +1,4 @@
-# Pinas Rewards Migration Sign-Off
+# RewardMe Migration Sign-Off
 
 ## Inputs
 - [ ] Source export received and frozen

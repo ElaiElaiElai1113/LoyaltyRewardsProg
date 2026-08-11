@@ -207,6 +207,7 @@ export function CompactJoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const { t } = useLanguage()
   const { program } = useTenant()
+  const isRewardMe = program.slug === 'pinas'
   const [signUpComplete, setSignUpComplete] = useState(false)
   const [signUpWarning, setSignUpWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -237,6 +238,15 @@ export function CompactJoinRewardsPage() {
           {t('Member Portal').toUpperCase()}
         </h1>
       </div>
+
+      {isRewardMe ? (
+        <aside className="mb-6 rounded-lg border border-[#b77b1f]/30 bg-[#f4efdf] p-4 text-left text-[#173f32]">
+          <p className="font-serif text-lg font-bold">Three-month free access</p>
+          <p className="mt-1 text-xs leading-5 text-[#5f655d]">
+            Explore RewardMe without adding a payment card. Rewards and referral bonuses begin after you become a paid member.
+          </p>
+        </aside>
+      ) : null}
 
       {signUpComplete ? (
         <div className="space-y-6 py-2 text-center">

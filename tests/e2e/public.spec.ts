@@ -30,170 +30,48 @@ test.describe('public acquisition workflow', () => {
     expect(xml).not.toContain('/business/dashboard')
   })
 
-  test('Pinas homepage is the English-first main public landing page', async ({ page }) => {
+  test('RewardMe homepage follows the approved pitch and public journey', async ({ page }) => {
     await page.goto('/')
 
-    await expect(
-      page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
-    ).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Every purchase becomes a Reward' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Membership Packages' })).toBeVisible()
-    await expect(page.getByText('₱1,000/Month', { exact: true })).toBeVisible()
-    await expect(page.getByText('₱4,000/Year', { exact: true })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Regular' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Gold', exact: true })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'How it works' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Your dream vacation. Already paid for.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '/business')
-    await expect(page.getByRole('link', { name: 'Join now' }).first()).toHaveAttribute('href', '/join')
-    await expect(page.getByRole('button', { name: 'Lumipat sa Tagalog' })).toHaveText('Tagalog')
-
-    const expandedFaq = page.locator('details').filter({ hasText: 'Can I have more than one Rewards account?' })
-    await expect(expandedFaq).toHaveAttribute('open', '')
-    await expect(
-      page.getByText(
-        'No. Each person can have one Rewards account, tied to your full name, email, and phone number.',
-      ),
-    ).toBeVisible()
+    await expect(page).toHaveTitle('RewardMe')
+    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
+    await expect(page.getByRole('heading', { name: "Three steps. That's the whole system." })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Most places, 20% or more back. Some days, all of it.' })).toBeVisible()
+    await expect(page.getByText('No rewards or referral bonuses are paid during the trial.', { exact: false })).toBeVisible()
+    await expect(page.getByText('$25/month', { exact: true })).toBeVisible()
+    await expect(page.getByText('$100/year', { exact: true })).toBeVisible()
+    await expect(page.getByText('PLANNED · NOT LIVE', { exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Start your free access' })).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('link', { name: 'Browse the store' })).toHaveAttribute('href', '/shop')
+    await expect(page.getByRole('link', { name: 'See how businesses join' })).toHaveAttribute('href', '/business')
+    await expect(page.locator('body')).not.toContainText('Pinas Rewards')
   })
 
-  test('legacy landing URL renders the Figma homepage', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
+  test('legacy landing URL resolves to the RewardMe homepage', async ({ page }) => {
     await page.goto('/landing-page')
-    await expect(
-      page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }),
-    ).toBeVisible()
+    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
   })
 
-  test('homepage uses approved landing typography and clean media assets', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
+  test('homepage uses the approved editorial typography and clean media', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: 'Earn Amazing Rewards While Supporting Local Businesses' }))
-      .toHaveCSS('font-family', /Fraunces/)
-    await expect(page.getByText("Every time you shop, dine, or spend at a business in our network", { exact: false }))
+    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." }))
+      .toHaveCSS('font-family', /Georgia/)
+    await expect(page.getByText('RewardMe connects everyday spending', { exact: false }))
       .toHaveCSS('font-family', /Inter/)
-
-    await expect(page.getByRole('img', { name: 'Pinas Rewards member enjoying coffee at a local business' }))
-      .toHaveAttribute('src', /coffee-rewards[^"]*\.webp/)
-    await expect(page.locator('.figma-home__brand img').first()).toHaveAttribute('src', '/pinas-rewards-mark.svg')
-
-    await expect(page.getByRole('img', { name: 'Family celebrating a car purchase' }))
-      .toHaveAttribute('src', /car-rewards-clean[^"]*\.webp/)
-    await expect(page.locator('.figma-home__category-card figcaption')).toHaveText([
-      'Coffee runs',
-      'Dining out',
-      'Salon days',
-      'Cars',
-      'Real estate',
-    ])
-    await page.locator('.figma-home__category-grid').scrollIntoViewIfNeeded()
-    await expect.poll(() => page.locator('.figma-home__category-card img').evaluateAll((images) =>
-      images.every((image) => {
-        const renderedImage = image as HTMLImageElement
-        return renderedImage.complete && renderedImage.naturalWidth > 0
-      }),
-    )).toBe(true)
-
-    const vacationBanner = page.locator('#vacation')
-    await expect(vacationBanner).toHaveCSS('background-image', /vacation-beach-clean(?:-[\w-]+)?\.webp/)
-    await expect(vacationBanner).toHaveCSS('background-position', '50% 0%')
+    await expect(page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }))
+      .toHaveAttribute('src', /coffee-member[^"]*\.webp/)
+    await expect(page.locator('.rewardme-home__brand').first()).toContainText('RewardMe')
+    await expect(page.locator('.rewardme-home__ledger')).toContainText('ILLUSTRATION')
   })
 
-  test('mobile homepage separates the hero actions from the benefit pills', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
+  test('mobile homepage has no horizontal overflow and keeps every CTA reachable', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/')
 
-    const secondaryAction = page.getByRole('link', { name: 'See how it works' })
-    const benefitPills = page.getByRole('list', { name: 'Membership benefits' })
-    const secondaryBox = await secondaryAction.boundingBox()
-    const pillsBox = await benefitPills.boundingBox()
-
-    expect(secondaryBox).not.toBeNull()
-    expect(pillsBox).not.toBeNull()
-    expect(pillsBox!.y - (secondaryBox!.y + secondaryBox!.height)).toBeGreaterThanOrEqual(28)
-  })
-
-  test('all homepage FAQs expand and show approved answers', async ({ page }) => {
-    await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'en'))
-    await page.goto('/')
-
-    const faqItems = [
-      {
-        question: 'Where can I use my Rewards?',
-        answer: 'You can use your Rewards with many partnered businesses, either by going to the Rewards Store or by messaging us for more options.',
-      },
-      {
-        question: 'Can I have more than one Rewards account?',
-        answer: 'No. Each person can have one Rewards account, tied to your full name, email, and phone number.',
-      },
-      {
-        question: 'Can I transfer Rewards to another account?',
-        answer: 'Rewards are tied to your member account and must be used and cannot be transferred.',
-      },
-      {
-        question: 'Can Rewards be exchanged for money?',
-        answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Pinas Rewards Program - not cash exchange.',
-      },
-    ] as const
-
-    await expect(page.locator('#faq details')).toHaveCount(faqItems.length)
-
-    for (const faq of faqItems) {
-      const item = page.locator('#faq details').filter({ hasText: faq.question })
-      if ((await item.getAttribute('open')) === null) {
-        await item.locator('summary').click()
-      }
-
-      await expect(item).toHaveAttribute('open', '')
-      await expect(item.locator('p')).toHaveText(faq.answer)
-      await expect(item.locator('p')).toBeVisible()
-    }
-  })
-
-  test('business page follows the supplied local partner reference', async ({ page }) => {
-    await page.goto('/business')
-
-    await expect(
-      page.getByRole('heading', { name: 'Helping local businesses grow, while giving amazing Rewards to our members.' }),
-    ).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'A steady stream of loyal, spending customers' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Three steps. That’s it.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Sign the agreement. We’ll take it from there.' })).toBeVisible()
-
-    await expect(page.getByRole('link', { name: 'Business Login' })).toHaveAttribute('href', '/business/login')
-    await expect(page.getByRole('link', { name: 'Cost Calculator' })).toHaveCount(0)
-    await expect(page.getByRole('link', { name: 'Calculate Your Costs' })).toHaveCount(0)
-    const businessLanguageToggle = page.getByRole('button', { name: 'Lumipat sa Tagalog' })
-    await expect(businessLanguageToggle).toHaveText('Tagalog')
-    await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how-it-works')
-    await expect(page.getByRole('link', { name: 'Partner With Us' })).toHaveAttribute('href', '#get-started')
-
-    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Pinas Rewards members' }))
-      .toHaveAttribute('src', /local-business-owner(?:-[\w-]+)?\.png/)
-    await expect(page.getByRole('img', { name: 'Hotel partner welcoming a rewards member' }))
-      .toHaveAttribute('src', /hotel-partner(?:-[\w-]+)?\.png/)
-    await expect(page.getByRole('img', { name: 'Salon partner serving rewards members' }))
-      .toHaveAttribute('src', /salon-partner(?:-[\w-]+)?\.png/)
-    await expect(page.getByRole('img', { name: 'Staff member scanning a customer QR code at checkout' }))
-      .toHaveAttribute('src', /staff-qr-checkout(?:-[\w-]+)?\.png/)
-
-    await businessLanguageToggle.click()
-    await expect(page.getByRole('button', { name: 'Switch to English' })).toHaveText('English')
-  })
-
-  test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto('/business')
-
-    await expect(
-      page.getByRole('heading', { name: 'Helping local businesses grow, while giving amazing Rewards to our members.' }),
-    ).toBeVisible()
-    await expect(page.getByRole('img', { name: 'Local business owner ready to welcome Pinas Rewards members' }))
-      .toBeVisible()
-
+    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Start your free access' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
@@ -201,13 +79,52 @@ test.describe('public acquisition workflow', () => {
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
   })
 
-  test('early access invitation page renders', async ({ page }) => {
+  test('membership and signup disclose trial and demo-billing limits', async ({ page }) => {
+    await page.goto('/membership')
+    await expect(page.getByRole('heading', { name: 'Choose how you want to earn.' })).toBeVisible()
+    await expect(page.getByText('Demo billing:', { exact: false })).toBeVisible()
+    await expect(page.getByText('No real payment is processed here.', { exact: false })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Free' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Regular' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Gold' })).toBeVisible()
+
+    await page.goto('/join')
+    await expect(page.getByText('Three-month free access', { exact: true })).toBeVisible()
+    await expect(page.getByText('Rewards and referral bonuses begin after you become a paid member.', { exact: false })).toBeVisible()
+    await expect(page.locator('#join-email')).toBeVisible()
+    await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
+  })
+
+  test('RewardMe business page presents both approved participation models', async ({ page }) => {
+    await page.goto('/business')
+
+    await expect(page.getByRole('heading', { name: 'Turn unused capacity into loyal, paying customers.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Commission model' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Business-credit model' })).toBeVisible()
+    await expect(page.getByText('25% commission', { exact: false })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Connected economics. Separate products.' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/business/login')
+    await expect(page.getByRole('link', { name: 'Apply to partner' })).toHaveAttribute('href', /mailto:/)
+    await expect(page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }))
+      .toHaveAttribute('src', /local-business-owner(?:-[\w-]+)?\.png/)
+  })
+
+  test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 740 })
+    await page.goto('/business')
+
+    await expect(page.getByRole('heading', { name: 'Turn unused capacity into loyal, paying customers.' })).toBeVisible()
+    const dimensions = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
+  })
+
+  test('early access invitation uses the final RewardMe identity', async ({ page }) => {
     await page.goto('/invitation')
-    await expect(page.locator('body')).toContainText(/Pinas Rewards/)
+    await expect(page.locator('body')).toContainText('RewardMe')
+    await expect(page.locator('body')).not.toContainText('Pinas Rewards')
     await expect(page.locator('body')).toContainText(/Suscribirse|Subscribe/i)
-    await page.getByRole('button', { name: /Suscribirse|Subscribe/i }).click()
-    await page.getByRole('button', { name: /Suscribirse|Subscribe/i }).click()
-    await expect(page.getByText(/Enter your WhatsApp number|Ingresa tu n.mero de WhatsApp/i)).toBeVisible()
-    await expect(page.getByText(/Enter your email|Ingresa tu correo/i)).toBeVisible()
   })
 })

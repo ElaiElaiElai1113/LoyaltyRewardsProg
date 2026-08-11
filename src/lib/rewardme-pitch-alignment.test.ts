@@ -1,0 +1,74 @@
+import { readFileSync } from 'node:fs'
+
+import { describe, expect, it } from 'vitest'
+
+function source(path: string) {
+  return readFileSync(path, 'utf8')
+}
+
+describe('RewardMe pitch alignment', () => {
+  it('uses RewardMe as the public identity while preserving the stable pinas tenant key', () => {
+    const tenantService = source('src/features/tenant/tenant-service.ts')
+    const tenantBootstrap = source('public/tenant-bootstrap.js')
+    const installBrand = source('api/_tenant-install-brand.ts')
+    const migrationPackage = source('migration-packages/pinas/tenant-config.json')
+
+    expect(tenantService).toMatch(/pinas:\s*\{[\s\S]*name: 'RewardMe'[\s\S]*slug: 'pinas'/)
+    expect(tenantBootstrap).toMatch(/pinas:\s*\{ name: 'RewardMe'/)
+    expect(tenantBootstrap).toContain("logo: '/rewardme-mark.svg'")
+    expect(installBrand).toMatch(/pinas:\s*\{[\s\S]*name: 'RewardMe'[\s\S]*shortName: 'RewardMe'/)
+    expect(migrationPackage).toContain('"programName": "RewardMe"')
+    expect(migrationPackage).toContain('"sourceSystem": "RewardMe platform"')
+    expect(migrationPackage).toContain('"slug": "pinas"')
+  })
+
+  it('gives the pinas tenant its own deck-aligned RewardMe home experience', () => {
+    const home = source('src/features/home/pages/home-page.tsx')
+    const rewardMeHome = source('src/features/home/pages/rewardme-home.tsx')
+
+    expect(home).toContain("if (program.slug === 'pinas') return <RewardMeHomePage />")
+    expect(rewardMeHome).toContain("Turn what you already spend into what you're saving for.")
+    expect(rewardMeHome).toContain('Three-month free access')
+    expect(rewardMeHome).toContain('No rewards or referral bonuses are paid during the trial.')
+    expect(rewardMeHome).toContain('$25/month')
+    expect(rewardMeHome).toContain('$100/year')
+    expect(rewardMeHome).toContain('20%+')
+    expect(rewardMeHome).toContain('100%')
+    expect(rewardMeHome).toContain('<20%')
+    expect(rewardMeHome).toContain('Commission model')
+    expect(rewardMeHome).toContain('Business-credit model')
+    expect(rewardMeHome).toContain('25% commission')
+    expect(rewardMeHome).toContain('to="/join"')
+    expect(rewardMeHome).toContain('to="/shop"')
+    expect(rewardMeHome).toContain('to="/business"')
+    expect(rewardMeHome).not.toContain('Pinas Rewards')
+    expect(rewardMeHome).not.toContain('Every plan starts with 3 months of Gold')
+  })
+
+  it('keeps trial and billing claims honest across signup and membership', () => {
+    const join = source('src/features/join/pages/join-rewards-page.tsx')
+    const membership = source('src/features/membership/pages/rewardme-membership-page.tsx')
+
+    expect(join).toContain('Three-month free access')
+    expect(join).toContain('Rewards and referral bonuses begin after you become a paid member.')
+    expect(membership).toContain('RewardMe membership')
+    expect(membership).toContain('Demo billing')
+    expect(membership).toContain('No real payment is processed here.')
+    expect(membership).toContain('Free')
+    expect(membership).toContain('Regular')
+    expect(membership).toContain('Gold')
+    expect(membership).not.toContain('Get $10 credit instantly')
+  })
+
+  it('aligns business acquisition and protects anonymous discovery from QA fixtures', () => {
+    const businessPage = source('src/features/business/pages/for-businesses-page.tsx')
+    const shopPage = source('src/features/shop/pages/shop-page.tsx')
+
+    expect(businessPage).toContain('Commission model')
+    expect(businessPage).toContain('Business-credit model')
+    expect(businessPage).toContain('25% commission')
+    expect(shopPage).toContain('isQaReleaseFixture')
+    expect(shopPage).toContain('profile ? allBusinesses : allBusinesses.filter')
+    expect(shopPage).toContain("['Davao City', 'Matina', 'Bajada', 'Lanang']")
+  })
+})

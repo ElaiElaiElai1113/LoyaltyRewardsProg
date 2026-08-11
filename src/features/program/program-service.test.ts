@@ -35,7 +35,7 @@ describe('accessible program options', () => {
     const memberships: AccessibleProgram[] = [
       {
         id: 'pinas',
-        name: 'Pinas Rewards',
+        name: 'RewardMe',
         slug: 'pinas',
         role: 'program-admin',
         hostname: 'pinas-rewards.vercel.app',

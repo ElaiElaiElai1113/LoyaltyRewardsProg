@@ -1,5 +1,6 @@
 import { type CSSProperties, useState } from 'react'
 import { Compass, MapPin, Minus, Navigation, PackageSearch, Plus, ShoppingCart, Store, Ticket } from 'lucide-react'
+import { Link } from 'react-router'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -8,6 +9,7 @@ import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLoginGate } from '@/hooks/use-login-gate'
+import { useAuth } from '@/hooks/use-auth'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
@@ -24,6 +26,14 @@ const PREVIEW_PIN_POSITIONS = [
   { left: 36, top: 44 },
   { left: 64, top: 72 },
 ]
+
+const DAVAO_MAP_LABELS = ['Davao City', 'Matina', 'Bajada', 'Lanang']
+const MEDELLIN_MAP_LABELS = ['Laureles', 'Poblado', 'Centro', 'Provenza']
+
+function isQaReleaseFixture(business: Business) {
+  return business.slug.endsWith('-qa-partner')
+    || business.description === 'Isolated partner used only for authenticated release testing.'
+}
 
 function clamp(value: number, min: number, max: number) {
   return Math.min(max, Math.max(min, value))
@@ -70,7 +80,7 @@ function getMapPosition(
   }
 }
 
-function PartnerMapBackdrop() {
+function PartnerMapBackdrop({ labels }: { labels: readonly [string, string, string, string] | string[] }) {
   return (
     <>
       <svg
@@ -148,10 +158,10 @@ function PartnerMapBackdrop() {
         <path d="M 6 632 C 209 596 379 586 536 606 C 700 626 816 618 994 580" fill="none" stroke="#8a6d9e" strokeDasharray="12 14" strokeLinecap="round" strokeOpacity="0.46" strokeWidth="7" />
 
         <g fill="#7e6848" fontFamily="Manrope, sans-serif" fontSize="18" fontWeight="800" opacity="0.55">
-          <text transform="rotate(-8 120 292)" x="120" y="292">Laureles</text>
-          <text transform="rotate(7 706 184)" x="706" y="184">Poblado</text>
-          <text transform="rotate(-6 586 458)" x="586" y="458">Centro</text>
-          <text transform="rotate(8 792 556)" x="792" y="556">Provenza</text>
+          <text transform="rotate(-8 120 292)" x="120" y="292">{labels[0]}</text>
+          <text transform="rotate(7 706 184)" x="706" y="184">{labels[1]}</text>
+          <text transform="rotate(-6 586 458)" x="586" y="458">{labels[2]}</text>
+          <text transform="rotate(8 792 556)" x="792" y="556">{labels[3]}</text>
         </g>
       </svg>
       <div className="absolute inset-0 bg-[linear-gradient(180deg,rgb(255_250_241_/_0.16),rgb(117_87_49_/_0.08))]" />
@@ -162,6 +172,7 @@ function PartnerMapBackdrop() {
 
 export function ShopPage() {
   const requireAuth = useLoginGate()
+  const { profile } = useAuth()
   const { t } = useLanguage()
   const { program } = useTenant()
   const businesses = useBusinesses()
@@ -172,7 +183,9 @@ export function ShopPage() {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [selectedQuantity, setSelectedQuantity] = useState(1)
 
-  const partnerBusinesses = businesses.data ?? []
+  const allBusinesses = businesses.data ?? []
+  const partnerBusinesses = profile ? allBusinesses : allBusinesses.filter((business) => !isQaReleaseFixture(business))
+  const mapLabels = program.slug === 'pinas' ? DAVAO_MAP_LABELS : MEDELLIN_MAP_LABELS
   const previewPinnedBusinesses = partnerBusinesses.filter((business) => !hasExactMapPin(business))
   const selectedBusiness = partnerBusinesses.find((business) => business.id === selectedBusinessId) ?? null
   const selectedProducts = selectedBusiness
@@ -253,11 +266,17 @@ export function ShopPage() {
             icon={<Store className="size-8" />}
             title={t('No partner businesses yet')}
             description={t('Partner businesses will appear here when they are available.')}
+            action={(
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button asChild><Link to="/business">{t('For Businesses')}</Link></Button>
+                <Button asChild variant="outline"><Link to="/signin">{t('Sign in')}</Link></Button>
+              </div>
+            )}
           />
         ) : (
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
             <section className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary/20 bg-[#f3e7d1] shadow-card sm:min-h-[42rem]">
-              <PartnerMapBackdrop />
+              <PartnerMapBackdrop labels={mapLabels} />
 
               <div className="absolute left-5 top-5 rounded-2xl border border-primary/20 bg-card/88 px-4 py-3 text-primary shadow-soft backdrop-blur">
                 <div className="flex items-center gap-2">

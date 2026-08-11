@@ -85,7 +85,7 @@ describe('cross-tenant runtime safeguards', () => {
     expect(indexHtml).not.toContain('application/ld+json')
     expect(indexHtml).not.toContain('og:image')
     expect(indexHtml).not.toContain('twitter:image')
-    for (const tenant of ['Medellin Rewards', 'Guatemala Rewards', 'Synergize', 'Pinas Rewards', 'Wondertown Rewards']) {
+    for (const tenant of ['Medellin Rewards', 'Guatemala Rewards', 'Synergize', 'RewardMe', 'Wondertown Rewards']) {
       expect(bootstrap).toContain(`name: '${tenant}'`)
     }
     expect(bootstrap).toContain('brands[slug] || neutralBrand')

@@ -49,7 +49,7 @@ jobs:
           DOMAIN_VERSION_RETRY_DELAY_MS: '10000'
         run: |
           status=0
-          npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_VERSION" || status=1
+          npm run ops:domain:check -- "pinas-rewards.vercel.app" "RewardMe" --expected-version "$EXPECTED_VERSION" || status=1
           npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_VERSION" || status=1
           npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_VERSION" || status=1
           npm run ops:domain:check -- "wondertown-rewards.vercel.app" "Wondertown Rewards" --expected-version "$EXPECTED_VERSION" || status=1

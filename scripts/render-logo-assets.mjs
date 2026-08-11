@@ -1,11 +1,11 @@
 import { readFileSync } from 'node:fs'
 import { chromium } from 'playwright'
 
-const fullLogoSvg = readFileSync('public/pinas-rewards-logo.svg', 'utf8')
-const installMarkSvg = readFileSync('public/pinas-rewards-mark.svg', 'utf8')
+const fullLogoSvg = readFileSync('public/rewardme-logo.svg', 'utf8')
+const installMarkSvg = readFileSync('public/rewardme-mark.svg', 'utf8')
 
 const targets = [
-  ['public/pinas-rewards-logo.png', 1024, fullLogoSvg],
+  ['public/rewardme-logo.png', 1024, fullLogoSvg],
   ['public/install-icons/pinas-512.png', 512, installMarkSvg],
   ['public/install-icons/pinas-192.png', 192, installMarkSvg],
   ['public/install-icons/pinas-180.png', 180, installMarkSvg],
@@ -30,7 +30,7 @@ const targets = [
 const browser = await chromium.launch()
 const page = await browser.newPage({ deviceScaleFactor: 1 })
 
-for (const [path, size, sourceSvg = fullLogoSvg] of targets) {
+for (const [path, size, sourceSvg = installMarkSvg] of targets) {
   await page.setViewportSize({ width: size, height: size })
   await page.setContent(`
     <!doctype html>

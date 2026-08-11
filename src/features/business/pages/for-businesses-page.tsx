@@ -83,8 +83,71 @@ function SectionEyebrow({ children }: { children: string }) {
   return <p className="business-landing__eyebrow">{children}</p>
 }
 
+const rewardMeModels = [
+  {
+    name: 'Commission model',
+    description: 'The business funds a member reward when a qualifying sale occurs. RewardMe retains a 25% commission on Rewards spent through the platform.',
+  },
+  {
+    name: 'Business-credit model',
+    description: 'A business may issue eligible business credit to support RewardMe offers, subject to a signed agreement and published member terms.',
+  },
+] as const
+
+function RewardMeBusinessPage({ supportEmail }: { supportEmail: string }) {
+  return (
+    <div className="rewardme-business">
+      <section className="rewardme-business__hero">
+        <div>
+          <p className="rewardme-business__eyebrow">REWARDME FOR BUSINESSES</p>
+          <h1>Turn unused capacity into loyal, paying customers.</h1>
+          <p>Join the RewardMe network, publish clear member offers, and only fund rewards under the participation model in your signed agreement.</p>
+          <div className="rewardme-business__actions">
+            <a className="rewardme-business__button" href={`mailto:${supportEmail}?subject=RewardMe%20business%20application`}>Apply to partner <ArrowRight aria-hidden="true" /></a>
+            <Link className="rewardme-business__button rewardme-business__button--outline" to="/business/login">Business sign in</Link>
+          </div>
+        </div>
+        <img src={localBusinessOwner} alt="Local business owner welcoming RewardMe members" decoding="async" fetchPriority="high" />
+      </section>
+
+      <section className="rewardme-business__section" aria-labelledby="rewardme-models-title">
+        <p className="rewardme-business__eyebrow">TWO PARTICIPATION MODELS</p>
+        <h2 id="rewardme-models-title">Choose the model that matches your business.</h2>
+        <div className="rewardme-business__models">
+          {rewardMeModels.map((model) => <article key={model.name}><h3>{model.name}</h3><p>{model.description}</p></article>)}
+        </div>
+        <p className="rewardme-business__note">Final rates, offer eligibility, settlement timing, and credit terms are confirmed in the business agreement before launch.</p>
+      </section>
+
+      <section className="rewardme-business__section rewardme-business__process" aria-labelledby="rewardme-business-process-title">
+        <div>
+          <p className="rewardme-business__eyebrow">HOW IT WORKS</p>
+          <h2 id="rewardme-business-process-title">A clear path from offer to repeat visit.</h2>
+        </div>
+        <ol>
+          <li><span>01</span><div><h3>Agree the commercial terms</h3><p>Select the Commission model or Business-credit model and document the offer, limits, and settlement rules.</p></div></li>
+          <li><span>02</span><div><h3>Publish an eligible offer</h3><p>Members see the active rate, availability, and restrictions before they spend.</p></div></li>
+          <li><span>03</span><div><h3>Verify the purchase</h3><p>Staff records the qualifying sale so the member receives the applicable reward and the business has an auditable entry.</p></div></li>
+        </ol>
+      </section>
+
+      <section className="rewardme-business__bridge">
+        <div><p className="rewardme-business__eyebrow">SYNERGIZE BRIDGE</p><h2>Connected economics. Separate products.</h2></div>
+        <p>Synergize is the separate B2B credit network. Eligible Synergize business credits may help fund RewardMe offers, which convert that value into new customer activity. RewardMe members do not need a Synergize account.</p>
+      </section>
+
+      <section className="rewardme-business__cta">
+        <h2>Ready to discuss a RewardMe offer?</h2>
+        <p>Contact the program team for qualification, terms, and onboarding.</p>
+        <a className="rewardme-business__button" href={`mailto:${supportEmail}?subject=RewardMe%20partner%20conversation`}>Talk to the team <ArrowRight aria-hidden="true" /></a>
+      </section>
+    </div>
+  )
+}
+
 export function ForBusinessesPage() {
   const { program } = useTenant()
+  if (program.slug === 'pinas') return <RewardMeBusinessPage supportEmail={program.supportEmail} />
   const isDemoTenant = program.featureFlags.demoTenant === true
   const tenantText = (text: string) => text.replaceAll('Medellin Rewards', program.name)
   return (

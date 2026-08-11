@@ -1,16 +1,16 @@
 {
   "slug": "pinas",
-  "programName": "Pinas Rewards",
-  "sourceSystem": "Pinas Rewards platform",
+  "programName": "RewardMe",
+  "sourceSystem": "RewardMe platform",
   "locale": "en-PH",
   "currency": "PHP",
   "timezone": "Asia/Manila",
   "primaryDomain": "pinas-rewards.vercel.app",
-  "emailFromName": "Pinas Rewards",
+  "emailFromName": "RewardMe",
   "emailFromAddress": "support@pinasrewards.ph",
   "mapCenter": {
-    "latitude": 12.8797,
-    "longitude": 121.774
+    "latitude": 7.1907,
+    "longitude": 125.4553
   },
   "legalDocumentsReceived": false,
   "brandingAssetsReceived": true

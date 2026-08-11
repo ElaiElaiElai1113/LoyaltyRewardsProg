@@ -277,14 +277,14 @@ runTest('tenant logo assets stay available while install metadata remains host a
   assert.match(markLogo, /stroke="#030303"/)
   assert.doesNotMatch(fullLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
   assert.doesNotMatch(markLogo, /<rect[^>]+fill="#fff|<rect[^>]+fill="#ffffff/i)
-  assert.match(installBranding, /name: 'Pinas Rewards'/)
+  assert.match(installBranding, /name: 'RewardMe'/)
   assert.match(installBranding, /name: 'Medellin Rewards'/)
   assert.match(installBranding, /name: 'Guatemala Rewards'/)
   assert.match(installBranding, /name: 'Wondertown Rewards'/)
   for (const legacyPath of ['public/site.webmanifest', 'public/apple-touch-icon.png', 'public/favicon.ico', 'public/favicon.svg', 'public/icon-192.png', 'public/icon-512.png']) {
     assert.equal(existsSync(legacyPath), false)
   }
-  assert.match(brandLogo, /const displayLogoUrl = program\.logoUrl \?\? \(program\.slug === 'pinas' \? '\/pinas-rewards-mark\.svg' : null\)/)
+  assert.match(brandLogo, /const displayLogoUrl = program\.logoUrl \?\? \(program\.slug === 'pinas' \? '\/rewardme-mark\.svg' : null\)/)
   assert.match(brandLogo, /src=\{displayLogoUrl\}/)
   assert.match(brandLogo, /alt=\{program\.name\}/)
   assert.match(brandLogo, /sr-only">\{program\.name\}/)
@@ -907,7 +907,7 @@ runTest('native app wrapper is configured for Android and iOS distribution', () 
   assert.equal(packageJson.scripts?.['android:sync'], 'npm run build && cap sync android')
   assert.equal(packageJson.scripts?.['ios:sync'], 'npm run build && cap sync ios')
   assert.match(capacitorConfig, /appId: 'com\.rewardsplatform\.app'/)
-  assert.match(capacitorConfig, /appName: 'Pinas Rewards'/)
+  assert.match(capacitorConfig, /appName: 'RewardMe'/)
   assert.match(capacitorConfig, /webDir: 'dist'/)
 
   assert.match(router, /@capacitor\/app/)
@@ -2452,7 +2452,7 @@ runTest('active tenant operations use Pinas and always verify canonical producti
   assert.match(domainReadiness, /Expected deployed version/)
 
   for (const [hostname, tenantName] of [
-    ['pinas-rewards.vercel.app', 'Pinas Rewards'],
+    ['pinas-rewards.vercel.app', 'RewardMe'],
     ['www.medellinrewards.com', 'Medellin Rewards'],
     ['guatemalarewards.com', 'Guatemala Rewards'],
     ['wondertown-rewards.vercel.app', 'Wondertown Rewards'],

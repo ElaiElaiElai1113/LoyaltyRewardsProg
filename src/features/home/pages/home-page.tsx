@@ -18,6 +18,7 @@ import salonRewards from '@/assets/landing/salon-rewards.webp'
 import salonRewardsSmall from '@/assets/landing/salon-rewards-768.webp'
 import vacationBanner from '@/assets/landing/vacation-beach-clean.webp'
 import { WondertownHomePage } from './wondertown-home'
+import { RewardMeHomePage } from './rewardme-home'
 
 import './home-page.css'
 
@@ -393,7 +394,7 @@ const tenantManagedFaqs = [
 
 function Brand() {
   const { program } = useTenant()
-  const logoUrl = program.logoUrl ?? (program.slug === 'pinas' ? '/pinas-rewards-mark.svg' : null)
+  const logoUrl = program.logoUrl ?? (program.slug === 'pinas' ? '/rewardme-mark.svg' : null)
   return (
     <span className="figma-home__brand">
       {logoUrl ? <img src={logoUrl} alt="" aria-hidden="true" /> : null}
@@ -409,6 +410,7 @@ function SectionEyebrow({ children }: { children: string }) {
 export function HomePage() {
   const { language, setLanguage } = useLanguage()
   const { program } = useTenant()
+  if (program.slug === 'pinas') return <RewardMeHomePage />
   if (program.slug === 'wondertown') return <WondertownHomePage />
   const isPinas = program.slug === 'pinas'
   const tx = (text: string) => (
@@ -521,7 +523,7 @@ export function HomePage() {
                   : `${coffeeMemberSmall} 768w, ${coffeeMember} 1024w`}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 alt={isPinas
-                  ? 'Pinas Rewards member enjoying coffee at a local business'
+                  ? 'RewardMe member enjoying coffee at a local business'
                   : 'Member enjoying rewards at a local coffee shop'}
                 fetchPriority="high"
               />

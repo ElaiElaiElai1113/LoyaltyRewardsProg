@@ -13,7 +13,7 @@ const qr = renderToStaticMarkup(
     marginSize: 4,
     bgColor: '#FAF8F3',
     fgColor: '#11100E',
-    title: 'Open Pinas Rewards',
+    title: 'Open RewardMe',
   }),
 )
 

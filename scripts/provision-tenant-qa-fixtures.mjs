@@ -19,12 +19,12 @@ loadDotEnv()
 
 const configurations = {
   pinas: {
-    businessName: 'Pinas QA Partner',
+    businessName: 'RewardMe QA Partner',
     businessSlug: 'pinas-qa-partner',
     customerEmail: process.env.E2E_PINAS_CUSTOMER_EMAIL ?? 'customer@pinas.test',
-    customerName: 'Pinas QA Customer',
+    customerName: 'RewardMe QA Customer',
     ownerEmail: process.env.E2E_PINAS_BUSINESS_OWNER_EMAIL ?? 'owner@pinas.test',
-    ownerName: 'Pinas QA Owner',
+    ownerName: 'RewardMe QA Owner',
     phone: '+63 917 555 0101',
   },
   guatemala: {

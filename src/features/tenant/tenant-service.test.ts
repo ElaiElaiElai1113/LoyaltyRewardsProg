@@ -29,7 +29,7 @@ describe('tenant resolution fallback', () => {
     expect(getFallbackProgram(hostname).slug).toBe(slug)
   })
 
-  it('uses Pinas Rewards for an unknown domain', () => {
+  it('uses the RewardMe tenant for an unknown local domain', () => {
     expect(getFallbackProgram('localhost').slug).toBe('pinas')
     expect(inferTenantSlugHint('localhost')).toBeNull()
     expect(getFallbackProgram('medellin.attacker.example').slug).toBe('pinas')

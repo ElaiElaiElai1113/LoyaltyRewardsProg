@@ -142,7 +142,7 @@ if (!qaBusiness && process.env.QA_ALLOW_BUSINESS_CREATE === 'true') {
     .from('businesses')
     .insert({
       program_id: pinasProgram.id,
-      name: 'Pinas QA Partner',
+      name: 'RewardMe QA Partner',
       slug: 'pinas-qa-partner',
       description: 'Isolated partner used only for release acceptance testing.',
       earn_rate: 10,

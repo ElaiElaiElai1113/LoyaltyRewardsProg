@@ -4,7 +4,12 @@ const tenants = [
   { slug: 'medellin', name: 'Medellin Rewards', color: '#9c6a22' },
   { slug: 'guatemala', name: 'Guatemala Rewards', color: '#176b5b' },
   { slug: 'synergize', name: 'Synergize', color: '#2357a5' },
-  { slug: 'pinas', name: 'Pinas Rewards', color: '#a67608' },
+  {
+    slug: 'pinas',
+    name: 'RewardMe',
+    color: '#173f32',
+    heading: "Turn what you already spend into what you're saving for.",
+  },
   {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
@@ -34,6 +39,8 @@ test.describe('white-label tenant resolution', () => {
       if (tenant.slug === 'wondertown') {
         await expect(page.locator('.wondertown-home__brand').first()).toContainText('Wondertown')
         await expect(page.locator('.wondertown-home__brand').first()).toContainText('Rewards')
+      } else if (tenant.slug === 'pinas') {
+        await expect(page.locator('.rewardme-home__brand').first()).toContainText('RewardMe')
       } else {
         await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
       }
@@ -50,7 +57,7 @@ test.describe('white-label tenant resolution', () => {
       await page.reload()
       await expect(page).toHaveTitle(tenant.name)
       if (tenant.slug !== 'pinas') {
-        await expect(page.locator('body')).not.toContainText('Pinas Rewards')
+        await expect(page.locator('body')).not.toContainText('RewardMe')
       }
     })
 
@@ -82,7 +89,7 @@ test.describe('white-label tenant resolution', () => {
     await page.goto('/?tenant=pinas')
     await page.locator('a[href="/business"]').first().click()
     await expect(page).toHaveURL(/\/business/)
-    await expect(page).toHaveTitle('Pinas Rewards')
+    await expect(page).toHaveTitle('RewardMe')
     expect(errors).toEqual([])
   })
 
@@ -108,7 +115,7 @@ test.describe('white-label tenant resolution', () => {
     await page.goto('/onboarding/program?tenant=pinas')
     await expect(page).toHaveURL(/\/signin\?redirect=%2Fonboarding%2Fprogram&tenant=pinas/)
     await expect(page.locator('#signin-email')).toBeVisible()
-    await expect(page).toHaveTitle('Pinas Rewards')
+    await expect(page).toHaveTitle('RewardMe')
     expect(errors).toEqual([])
   })
 

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title">
+  <title id="title">RewardMe</title>
+  <rect width="64" height="64" rx="14" fill="#173f32"/>
+  <path d="M20 16h19c6.1 0 11 4.9 11 11 0 4.8-3.1 8.9-7.4 10.4L50 49H39.7l-6.2-10H29v10h-9V16Zm9 8v7h9.1a3.5 3.5 0 1 0 0-7H29Z" fill="#f4efdf"/>
+  <path d="M13 18v28" stroke="#b77b1f" stroke-width="4" stroke-linecap="round"/>
+</svg>

@@ -9,7 +9,7 @@ const indexHtml = readFileSync('index.html', 'utf8')
 const robots = readFileSync('public/robots.txt', 'utf8')
 const sitemap = readFileSync('public/sitemap.xml', 'utf8')
 
-describe('Pinas Rewards flagship branding', () => {
+describe('RewardMe flagship branding', () => {
   it('does not hardcode the Medellin wordmark in public page chrome', () => {
     expect(publicLayout).not.toMatch(/MEDELL[IÍ]N REWARDS/)
     expect(publicLayout).toContain('program.name.toUpperCase()')
@@ -21,7 +21,7 @@ describe('Pinas Rewards flagship branding', () => {
   })
 
   it('ships host-aware install metadata and neutral static discovery fallbacks', () => {
-    expect(installBranding).toContain("name: 'Pinas Rewards'")
+    expect(installBranding).toContain("name: 'RewardMe'")
     expect(installBranding).toContain("name: 'Medellin Rewards'")
     expect(installBranding).toContain("name: 'Wondertown Rewards'")
     expect(indexHtml).toContain('href="/api/tenant-icon?size=192"')

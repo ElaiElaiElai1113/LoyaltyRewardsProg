@@ -10,7 +10,7 @@ type BrandLogoProps = {
 
 export function BrandLogo({ className, markClassName, textClassName, showText = true }: BrandLogoProps) {
   const { program } = useTenant()
-  const displayLogoUrl = program.logoUrl ?? (program.slug === 'pinas' ? '/pinas-rewards-mark.svg' : null)
+  const displayLogoUrl = program.logoUrl ?? (program.slug === 'pinas' ? '/rewardme-mark.svg' : null)
   return (
     <span className={cn('inline-flex min-w-0 items-center gap-2', className)}>
       {displayLogoUrl ? (

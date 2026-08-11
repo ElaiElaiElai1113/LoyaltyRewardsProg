@@ -1837,7 +1837,7 @@ const tagalogTranslations: Record<string, string> = {
   'Privacy policy': 'Patakaran sa Privacy',
   'Member agreement': 'Kasunduan ng Miyembro',
   'Install app': 'I-install ang app',
-  'Install Medellin Rewards': 'I-install ang Pinas Rewards',
+  'Install Medellin Rewards': 'I-install ang Medellin Rewards',
   'Create Rewards Account': 'Gumawa ng Rewards Account',
   'Preparing your workspace.': 'Inihahanda ang iyong workspace.',
   'Page not found': 'Hindi makita ang pahina',

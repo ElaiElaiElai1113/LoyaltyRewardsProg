@@ -9,10 +9,18 @@ import {
 } from '@/features/membership/membership-pricing'
 import { useAuth } from '@/hooks/use-auth'
 import { useMembership } from '@/hooks/use-membership'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency, formatDate } from '@/lib/utils'
+import { RewardMeMembershipPage } from './rewardme-membership-page'
 
 export function MembershipPage() {
+  const { program } = useTenant()
+  if (program.slug === 'pinas') return <RewardMeMembershipPage />
+  return <StandardMembershipPage />
+}
+
+function StandardMembershipPage() {
   const { t } = useLanguage()
   const { profile } = useAuth()
   const { membership, isActive, isLoading, subscribe, renew, cancel } = useMembership()

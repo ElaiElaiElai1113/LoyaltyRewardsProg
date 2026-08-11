@@ -11,7 +11,7 @@ const files = {
 }
 const checks = [
   ['neutral app id', files.capacitor.includes("appId: 'com.rewardsplatform.app'")],
-  ['Pinas app name', files.capacitor.includes("appName: 'Pinas Rewards'")],
+  ['RewardMe app name', files.capacitor.includes("appName: 'RewardMe'")],
   ['web directory', files.capacitor.includes("webDir: 'dist'")],
   ['android namespace', files.android.includes('com.rewardsplatform.app')],
   ['android activity package', files.androidActivity.includes('package com.rewardsplatform.app;')],

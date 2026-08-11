@@ -59,6 +59,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               && Math.abs(membershipCards[0].top - membershipCards[1].top) < 2
 
             const homeNav = document.querySelector<HTMLElement>('.figma-home__nav')
+            const rewardMeNav = document.querySelector<HTMLElement>('.rewardme-home__nav')
             const wondertownNav = document.querySelector<HTMLElement>('.wondertown-home__nav')
             const businessNav = document.querySelector<HTMLElement>('.business-public-shell__nav')
 
@@ -67,6 +68,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               clipped,
               membershipCardsShareRow,
               homeNavPosition: homeNav ? getComputedStyle(homeNav).position : null,
+              rewardMeNavDisplay: rewardMeNav ? getComputedStyle(rewardMeNav).display : null,
               wondertownNavDisplay: wondertownNav ? getComputedStyle(wondertownNav).display : null,
               businessNavPosition: businessNav ? getComputedStyle(businessNav).position : null,
             }
@@ -75,9 +77,13 @@ test.describe('cross-tenant public responsive layouts', () => {
           expect(layout.documentOverflow, `${tenant} ${route} at ${width}px`).toBeLessThanOrEqual(1)
           expect(layout.clipped, `${tenant} ${route} at ${width}px`).toEqual([])
 
-          if (route === '/' && width <= 1050 && tenant !== 'wondertown') {
+          if (route === '/' && width <= 1050 && tenant !== 'wondertown' && tenant !== 'pinas') {
             expect(layout.membershipCardsShareRow, `${tenant} membership cards at ${width}px`).toBe(false)
             expect(layout.homeNavPosition, `${tenant} home navigation at ${width}px`).toBe('fixed')
+          }
+
+          if (route === '/' && tenant === 'pinas') {
+            expect(layout.rewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('flex')
           }
 
           if (route === '/' && width <= 1050 && tenant === 'wondertown') {
