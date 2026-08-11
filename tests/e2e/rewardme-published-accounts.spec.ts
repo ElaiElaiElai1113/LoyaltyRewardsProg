@@ -11,6 +11,7 @@ const accounts = [
     emailInput: '#signin-email',
     passwordInput: '#signin-password',
     destination: /\/(?:dashboard|agreements\/required)(?:[/?#]|$)/,
+    rewardMeBranded: true,
   },
   {
     label: 'business owner',
@@ -19,6 +20,7 @@ const accounts = [
     emailInput: '#staff-signin-email',
     passwordInput: '#staff-signin-password',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
+    rewardMeBranded: true,
   },
   {
     label: 'business staff',
@@ -27,6 +29,7 @@ const accounts = [
     emailInput: '#staff-signin-email',
     passwordInput: '#staff-signin-password',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
+    rewardMeBranded: true,
   },
   {
     label: 'platform administrator',
@@ -35,6 +38,7 @@ const accounts = [
     emailInput: '#staff-signin-email',
     passwordInput: '#staff-signin-password',
     destination: /\/admin\/portal(?:[/?#]|$)/,
+    rewardMeBranded: false,
   },
 ] as const
 
@@ -77,7 +81,9 @@ test.describe('published RewardMe test accounts', () => {
       await expect(page.locator('main')).toBeVisible()
       await page.waitForTimeout(1_500)
       await expect(page.locator('body')).not.toContainText(/invalid login credentials/i)
-      await expect(page.locator('body')).not.toContainText(/\bpinas\b/i)
+      if (account.rewardMeBranded) {
+        await expect(page.locator('body')).not.toContainText(/\bpinas\b/i)
+      }
       const pageIntegrity = await page.evaluate(() => ({
         emptyLinks: [...document.querySelectorAll('a')].filter((link) => {
           const href = link.getAttribute('href')
