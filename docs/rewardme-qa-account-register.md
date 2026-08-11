@@ -33,3 +33,12 @@ Never expose or commit `SUPABASE_SERVICE_ROLE_KEY`. Password updates must contin
 2. Rotate or disable every account above.
 3. Remove the shared password from documentation and environment examples.
 4. Repeat authenticated role, tenant-isolation, and responsive Playwright checks.
+
+Before changing the production environment, verify the release shutoff locally:
+
+```powershell
+npm run test:e2e:rewardme-release-mode
+```
+
+This command starts RewardMe with the credential switch disabled and fails if any
+published username or the shared password remains visible on a sign-in portal.

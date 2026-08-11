@@ -17,6 +17,7 @@ const gates = [
   ['build', ['run', 'build']],
   ['build-budget', ['run', 'build:budget']],
   ['playwright-ci', ['run', 'test:e2e:ci']],
+  ['rewardme-release-mode', ['run', 'test:e2e:rewardme-release-mode']],
   ['tenant-console', ['run', 'test:tenant-console']],
   ['load', ['run', 'test:load']],
 ]
