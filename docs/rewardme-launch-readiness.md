@@ -37,8 +37,16 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
 ## Completed approval-ready foundations
 
 - Counsel-ready legal drafts, including referral and savings supplements, plus a legal approval register.
-- Pitch-aligned commercial decision register and owner sign-off sheet.
-- Partner and offer CSV templates with a report-only validator and automated tests.
+- Pitch-aligned commercial decision register, decision-ready recommendations,
+  and owner sign-off sheet.
+- Partner and offer CSV templates, inactive examples, report-only validation,
+  automated tests, and a review package with SHA-256 source checksums.
+- Protected `/admin/readiness` control register with named owners, next actions,
+  and separate verified, executable, approval, and external-input statuses.
+- Recoverable empty and error states for missing pages, team loading, empty team,
+  filtered programs, and partner catalogs.
+- Production-safe RewardMe authenticated QA using unique temporary users and
+  cleanup; the run remains credential-blocked until isolated QA secrets exist.
 - Fail-closed RewardMe Stripe checkout/webhook scaffolding with replay protection,
   fixed trusted return URLs, test price configuration, and disabled server/database gates.
 - Savings goal and read-only ledger schema with RLS, tenant ownership checks, and

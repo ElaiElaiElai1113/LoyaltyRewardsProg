@@ -186,7 +186,7 @@ export function PlatformProgramsPage() {
                     <td className="px-5 py-4"><div className="flex gap-2"><Button variant="outline" size="sm" onClick={() => setSelected(program)}>Details</Button><Button variant="ghost" size="sm" onClick={() => void toggleStatus(program)}>{program.status === 'active' ? 'Suspend' : 'Activate'}</Button></div></td>
                   </tr>
                 ))}
-                {!isLoading && visiblePrograms.length === 0 ? <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--muted-foreground)]">No programs match these filters.</td></tr> : null}
+                {!isLoading && visiblePrograms.length === 0 ? <tr><td colSpan={7} className="px-5 py-12 text-center text-[var(--muted-foreground)]"><p>No programs match these filters.</p><Button className="mt-4" variant="outline" size="sm" onClick={() => { setQuery(''); setStatusFilter('all'); setPage(1) }}>Clear filters</Button></td></tr> : null}
               </tbody>
             </table>
           </div>

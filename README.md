@@ -1,6 +1,6 @@
-# Medellin Rewards
+# RewardMe
 
-React + TypeScript + Vite application for the Medellin Rewards member, business, and admin platform backed by Supabase.
+React + TypeScript + Vite application for the RewardMe flagship program and the Medellin, Guatemala, Wondertown, and Synergize tenant experiences backed by Supabase.
 
 Checkout is currently a labeled demo flow for rewards testing. No real payment is processed.
 
@@ -38,8 +38,22 @@ supabase db reset
 ```bash
 npm run lint
 npm run test
+npm run test:unit
+npm run test:e2e:ci
+npm run test:responsive
 npm run build
 ```
+
+Credentialed RewardMe QA is intentionally separate and fails closed unless an
+isolated Supabase environment is configured:
+
+```bash
+npm run test:e2e:rewardme-safe
+```
+
+See `docs/rewardme-authenticated-qa.md` for its temporary-user and cleanup rules.
+Partner operations can validate and package a review-only intake with
+`validate:rewardme-partners` and `prepare:rewardme-partners`.
 
 ## Production Build
 

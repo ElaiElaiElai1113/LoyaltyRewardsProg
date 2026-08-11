@@ -14,10 +14,22 @@
 
 5. Resolve every error and review every warning. The validator is report-only;
    it does not write to Supabase or publish a partner.
+6. Create a tamper-evident review package in a new directory:
+
+   `npm run prepare:rewardme-partners -- partners.csv offers.csv rewardme-import-review`
+
+   The package contains the unchanged source files, validation evidence, and a
+   SHA-256 manifest. It remains review-only and cannot activate or publish data.
+
+Use the [inactive partner example](templates/rewardme-partners-example.csv) and
+[inactive offer example](templates/rewardme-offers-example.csv) as formatting
+references only. Replace every sample value and keep records inactive until
+the named approvals below are complete.
 
 ## Before activation
 
 - Confirm the signed agreement, legal business name, locations, owner contact, offer, exclusions, reward rate, commission, taxes, settlement cycle, and refund handling.
+- Require E.164 phone numbers (for example `+639171234567`) and one of the supported settlement cycles: `weekly`, `biweekly`, `monthly`, or `manual`.
 - Assign one owner and named staff accounts; never share credentials.
 - Place the partner QR/signage where staff and members can see it.
 - Run one training sale and one reversal before serving members.

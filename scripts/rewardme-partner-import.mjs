@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+
 const partnerHeaders = [
   'external_id', 'legal_name', 'display_name', 'slug', 'category', 'description',
   'location', 'address', 'currency', 'reward_rate_percent',
@@ -85,6 +87,14 @@ function validIsoDate(value) {
   return value === '' || /^\d{4}-\d{2}-\d{2}$/.test(value)
 }
 
+function validExternalId(value) {
+  return /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/i.test(value)
+}
+
+function validPhone(value) {
+  return value === '' || /^\+[1-9]\d{7,14}$/.test(value)
+}
+
 function addDuplicateErrors(rows, field, label, errors) {
   const seen = new Set()
   for (const row of rows) {
@@ -126,6 +136,9 @@ export function analyzeRewardMePartnerCatalog(partnerCsv, offerCsv) {
       'settlement_cycle', 'owner_full_name', 'owner_email', 'active', 'agreement_status',
     ], 'partners CSV', errors)
     const value = row.values
+    if (value.external_id && !validExternalId(value.external_id)) {
+      errors.push(`partners CSV line ${row.line}: external_id must use letters, numbers, hyphens or underscores`)
+    }
     if (value.slug && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value.slug)) {
       errors.push(`partners CSV line ${row.line}: slug must use lowercase letters, numbers and hyphens`)
     }
@@ -134,6 +147,9 @@ export function analyzeRewardMePartnerCatalog(partnerCsv, offerCsv) {
     }
     if (value.owner_email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.owner_email)) {
       errors.push(`partners CSV line ${row.line}: owner_email is invalid`)
+    }
+    if (!validPhone(value.owner_phone)) {
+      errors.push(`partners CSV line ${row.line}: owner_phone must use E.164 format, for example +639171234567`)
     }
     if (value.reward_rate_percent && !numberInRange(value.reward_rate_percent, 0, 100)) {
       errors.push(`partners CSV line ${row.line}: reward_rate_percent must be from 0 to 100`)
@@ -147,8 +163,16 @@ export function analyzeRewardMePartnerCatalog(partnerCsv, offerCsv) {
     if (value.agreement_status && !['draft', 'sent', 'signed'].includes(value.agreement_status)) {
       errors.push(`partners CSV line ${row.line}: agreement_status must be draft, sent or signed`)
     }
+    if (value.settlement_cycle && !['weekly', 'biweekly', 'monthly', 'manual'].includes(value.settlement_cycle)) {
+      errors.push(`partners CSV line ${row.line}: settlement_cycle must be weekly, biweekly, monthly or manual`)
+    }
     if (value.active === 'true' && value.agreement_status !== 'signed') {
       errors.push(`partners CSV line ${row.line}: an active partner must have a signed agreement`)
+    }
+    if (value.active === 'true') {
+      for (const field of ['description', 'address', 'owner_phone']) {
+        if (!value[field]?.trim()) errors.push(`partners CSV line ${row.line}: an active partner requires ${field}`)
+      }
     }
     if (row.extraValues.some((entry) => entry.trim())) {
       errors.push(`partners CSV line ${row.line}: contains values without matching headers`)
@@ -162,6 +186,9 @@ export function analyzeRewardMePartnerCatalog(partnerCsv, offerCsv) {
       'reward_rate_percent', 'inventory', 'start_date', 'end_date', 'restrictions', 'active',
     ], 'offers CSV', errors)
     const value = row.values
+    if (value.external_id && !validExternalId(value.external_id)) {
+      errors.push(`offers CSV line ${row.line}: external_id must use letters, numbers, hyphens or underscores`)
+    }
     const partner = partnerById.get(value.business_external_id?.toLowerCase())
     if (value.business_external_id && !partner) {
       errors.push(`offers CSV line ${row.line}: unknown business_external_id ${value.business_external_id}`)
@@ -186,6 +213,9 @@ export function analyzeRewardMePartnerCatalog(partnerCsv, offerCsv) {
     if (value.active === 'true' && partner?.active !== 'true') {
       errors.push(`offers CSV line ${row.line}: an active offer requires an active partner`)
     }
+    if (value.active === 'true' && Number(value.inventory) === 0) {
+      errors.push(`offers CSV line ${row.line}: an active offer requires inventory greater than zero`)
+    }
     if (row.extraValues.some((entry) => entry.trim())) {
       errors.push(`offers CSV line ${row.line}: contains values without matching headers`)
     }
@@ -203,6 +233,35 @@ export function analyzeRewardMePartnerCatalog(partnerCsv, offerCsv) {
       activePartners: partners.rows.filter((row) => row.values.active === 'true').length,
       offers: offers.rows.length,
       activeOffers: offers.rows.filter((row) => row.values.active === 'true').length,
+    },
+  }
+}
+
+function sha256(value) {
+  return createHash('sha256').update(value, 'utf8').digest('hex')
+}
+
+export function createRewardMePartnerManifest(partnerCsv, offerCsv, options = {}) {
+  const validation = analyzeRewardMePartnerCatalog(partnerCsv, offerCsv)
+  if (!validation.valid) {
+    throw new Error(`Cannot package an invalid RewardMe catalog (${validation.errors.length} error(s)).`)
+  }
+
+  return {
+    schemaVersion: 1,
+    program: 'RewardMe',
+    tenantSlug: 'pinas',
+    importMode: 'review-only',
+    generatedAt: options.generatedAt ?? new Date().toISOString(),
+    sources: {
+      partners: { file: 'partners.csv', sha256: sha256(partnerCsv) },
+      offers: { file: 'offers.csv', sha256: sha256(offerCsv) },
+    },
+    summary: validation.summary,
+    activation: {
+      automatic: false,
+      requiresOwnerApproval: true,
+      note: 'Validation and packaging never publish records or activate partners.',
     },
   }
 }

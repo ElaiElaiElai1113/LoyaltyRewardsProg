@@ -1,5 +1,10 @@
 # RewardMe commercial owner sign-off
 
+Use the decision-ready defaults in
+[rewardme-commercial-recommendations.md](rewardme-commercial-recommendations.md)
+as the starting point. A recommendation is not active until this register names
+the approver, date, final rule, and evidence.
+
 Status: **OWNER INPUT REQUIRED — DO NOT ENABLE LIVE BILLING OR SAVINGS**
 
 Complete every field, attach the approved pricing schedule, and sign the final

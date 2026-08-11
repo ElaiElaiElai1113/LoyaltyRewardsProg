@@ -4,6 +4,7 @@ import {
   FileSignature,
   LayoutDashboard,
   CreditCard,
+  ClipboardCheck,
   Database,
   Hotel,
   LogOut,
@@ -35,6 +36,7 @@ import { cn, getInitials } from '@/lib/utils'
 
 const navigation = [
   { to: '/admin/programs', label: 'Programs', icon: Building2 },
+  { to: '/admin/readiness', label: 'Launch Readiness', icon: ClipboardCheck },
   { to: '/admin/import', label: 'Tenant Import', icon: Database },
   { to: '/admin/portal', label: 'Operations', icon: LayoutDashboard },
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: CreditCard },

@@ -51,6 +51,7 @@ const NotFoundPage = lazy(() => import('@/features/not-found/pages/not-found-pag
 const PlatformGuidePage = lazy(() => import('@/features/platform-guide/pages/platform-guide-page').then((module) => ({ default: module.PlatformGuidePage })))
 const PlatformProgramsPage = lazy(() => import('@/features/platform/pages/platform-programs-page').then((module) => ({ default: module.PlatformProgramsPage })))
 const TenantImportPage = lazy(() => import('@/features/platform/pages/tenant-import-page').then((module) => ({ default: module.TenantImportPage })))
+const LaunchReadinessPage = lazy(() => import('@/features/platform/pages/launch-readiness-page').then((module) => ({ default: module.LaunchReadinessPage })))
 const ProgramSettingsPage = lazy(() => import('@/features/program/pages/program-settings-page').then((module) => ({ default: module.ProgramSettingsPage })))
 const ProgramTeamPage = lazy(() => import('@/features/program/pages/program-team-page').then((module) => ({ default: module.ProgramTeamPage })))
 const ProgramBillingPage = lazy(() => import('@/features/program/pages/program-billing-page').then((module) => ({ default: module.ProgramBillingPage })))
@@ -540,6 +541,7 @@ const router = createBrowserRouter([
         children: [
           { path: '/admin/portal', element: <AdminPage /> },
           { path: '/admin/programs', element: <PlatformProgramsPage /> },
+          { path: '/admin/readiness', element: <LaunchReadinessPage /> },
           { path: '/admin/import', element: <TenantImportPage /> },
           { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
           { path: '/admin/guide', element: <PlatformGuidePage /> },

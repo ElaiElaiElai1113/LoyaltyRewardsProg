@@ -62,6 +62,7 @@ const routes = [
   { name: 'customer-profile-protected', path: '/profile' },
   { name: 'admin-portal-protected', path: '/admin/portal' },
   { name: 'admin-programs-protected', path: '/admin/programs' },
+  { name: 'admin-readiness-protected', path: '/admin/readiness' },
   { name: 'admin-import-protected', path: '/admin/import' },
   { name: 'admin-gift-cards-protected', path: '/admin/gift-cards' },
   { name: 'admin-guide-protected', path: '/admin/guide' },

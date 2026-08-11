@@ -494,6 +494,7 @@ export function ShopPage() {
                     icon={<PackageSearch className="size-8" />}
                     title={t('No products yet')}
                     description={t('Products from this partner will appear here when they are available.')}
+                    action={<Button type="button" variant="outline" onClick={() => setSelectedBusinessId(null)}>{t('Browse other partners')}</Button>}
                   />
                 ) : (
                   <div className="max-h-[38vh] space-y-3 overflow-y-auto pr-1">

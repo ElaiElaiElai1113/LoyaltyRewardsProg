@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test'
 
 const routes = [
   '/admin/programs',
+  '/admin/readiness',
   '/admin/import',
   '/program/settings?tenant=guatemala',
   '/program/team?tenant=synergize',

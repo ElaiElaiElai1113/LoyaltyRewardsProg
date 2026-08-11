@@ -759,6 +759,7 @@ const spanishTranslations: Record<string, string> = {
   'We saved your details. We will reach out when Medellin Rewards is ready for early adopters.':
     'Guardamos tus datos. Te contactaremos cuando Medellin Rewards este listo para primeros usuarios.',
   'Back to home': 'Volver al inicio',
+  'Open guide': 'Abrir guia',
   'Get notified': 'Recibe avisos',
   'Become an early adopter': 'Se un primer usuario',
   'Leave your email, WhatsApp, or both. We will only use this to send launch updates and early access details.':
@@ -1485,6 +1486,7 @@ const spanishTranslations: Record<string, string> = {
   'Back to landing page': 'Volver a la pagina principal',
   Browse: 'Explorar',
   'Browse businesses': 'Explorar negocios',
+  'Browse other partners': 'Explorar otros aliados',
   Businesses: 'Negocios',
   'Canceling...': 'Cancelando...',
   'Catalog browsing stays open. Subscribe in demo mode only when you are ready to redeem.':

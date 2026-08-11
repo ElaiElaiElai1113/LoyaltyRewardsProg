@@ -85,4 +85,34 @@ describe('current UI process safeguards', () => {
     expect(activeJoin).toContain('program.countryCode')
     expect(activeJoin).toContain('placeholder={phonePlaceholder}')
   })
+
+  it('keeps operational empty and failure states recoverable', () => {
+    const errorBoundary = source('src/components/error-boundary.tsx')
+    const notFound = source('src/features/not-found/pages/not-found-page.tsx')
+    const programTeam = source('src/features/program/pages/program-team-page.tsx')
+    const platformPrograms = source('src/features/platform/pages/platform-programs-page.tsx')
+    const shop = source('src/features/shop/pages/shop-page.tsx')
+
+    expect(errorBoundary).toContain("homeAction={t('Back to home')}")
+    expect(notFound).toContain('to="/guide"')
+    expect(programTeam).toContain('Program team could not be loaded')
+    expect(programTeam).toContain('Try again')
+    expect(programTeam).toContain('Invite first administrator')
+    expect(platformPrograms).toContain('Clear filters')
+    expect(shop).toContain("t('Browse other partners')")
+  })
+
+  it('registers the protected launch dashboard and keeps approvals explicit', () => {
+    const router = source('src/routes/router.tsx')
+    const layout = source('src/layouts/admin-layout.tsx')
+    const dashboard = source('src/features/platform/pages/launch-readiness-page.tsx')
+    const register = source('src/features/platform/launch-readiness.ts')
+
+    expect(router).toContain("path: '/admin/readiness'")
+    expect(layout).toContain("to: '/admin/readiness'")
+    expect(dashboard).toContain('data-launch-readiness-dashboard')
+    expect(dashboard).toContain('Approval boundary')
+    expect(register).toContain("status: 'approval-required'")
+    expect(register).toContain("status: 'external-required'")
+  })
 })

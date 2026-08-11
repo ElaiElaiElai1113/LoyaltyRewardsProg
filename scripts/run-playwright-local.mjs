@@ -26,6 +26,7 @@ const seededFixtureLifecycleCommands = new Set([
 const authRequested =
   process.env.E2E_AUTH_ENABLED === 'true' ||
   lifecycleEvent === 'test:e2e:hosted-safe' ||
+  lifecycleEvent === 'test:e2e:rewardme-safe' ||
   lifecycleEvent === 'test:tenant-security' ||
   seededFixtureLifecycleCommands.has(lifecycleEvent)
 const requestedTenantSlug = (
