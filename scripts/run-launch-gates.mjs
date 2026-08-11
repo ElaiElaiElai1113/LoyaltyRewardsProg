@@ -17,6 +17,7 @@ const gates = [
   ['email-readiness', ['run', 'test:email-readiness']],
   ['legal-readiness', ['run', 'test:legal-readiness']],
   ['mobile-readiness', ['run', 'test:mobile-readiness']],
+  ['isolated-qa-tooling', ['run', 'test:local-qa-readiness']],
   ['build', ['run', 'build']],
   ['build-budget', ['run', 'build:budget']],
   ['playwright-ci', ['run', 'test:e2e:ci']],

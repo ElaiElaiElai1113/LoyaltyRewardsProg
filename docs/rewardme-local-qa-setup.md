@@ -11,9 +11,30 @@ This environment provides unlimited disposable test users and businesses without
 
 ## Start and seed
 
+Run the automated preflight first:
+
+```powershell
+npm run qa:isolated:preflight
+```
+
+After Docker reports ready, the complete disposable reset, RewardMe fixture
+provisioning, authenticated platform workflow suite, RewardMe tenant smoke,
+and cleanup can run with one command:
+
+```powershell
+npm run qa:isolated
+```
+
+The runner refuses non-local Supabase URLs, explicitly uses `db reset --local`,
+keeps keys only in the child process environment, and stops the local stack
+without retaining its database after a successful or failed run. Pass
+`-KeepLocalStack` directly to the PowerShell script only when debugging.
+
+Manual equivalent:
+
 ```powershell
 npx supabase start
-npx supabase db reset
+npx supabase db reset --local
 npx supabase status
 ```
 
@@ -66,4 +87,7 @@ Use `npx supabase db reset` whenever a workflow changes fixture state. Use `npx 
 
 ## Current workstation status
 
-Docker was not installed on July 30, 2026, so authenticated local QA could not run. Resume from the prerequisite section after Docker Desktop is available.
+Checked on August 12, 2026: Docker Desktop, Podman, Rancher Desktop, and WSL
+were not installed. The automated runner and its fail-closed safety tests are
+complete, but container-backed authenticated QA cannot execute until a
+Docker-compatible runtime is installed and running.

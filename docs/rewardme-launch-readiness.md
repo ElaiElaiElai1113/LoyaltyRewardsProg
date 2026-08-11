@@ -58,6 +58,10 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
   counsel approval register. It does not replace legal approval.
 - Touch-enabled Playwright coverage for six phone/tablet sizes and both
   orientations, plus a 240-check screenshot-based responsive route audit.
+- A fail-closed `npm run qa:isolated` runner that refuses hosted databases,
+  resets only local Supabase with `--local`, provisions RewardMe fixtures, runs
+  the authenticated platform and tenant workflows, and removes the disposable
+  local stack afterward. Its preflight currently awaits Docker Desktop.
 - A single deployment switch, `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, that hides
   all public test credentials before launch.
 - Fail-closed RewardMe Stripe checkout/webhook scaffolding with replay protection,
