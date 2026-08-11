@@ -1,5 +1,5 @@
 {
-  "name": "pinas-rewards",
+  "name": "rewardme",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -44,7 +44,7 @@
     "test:tenant-console": "node scripts/run-playwright-local.mjs tests/e2e/tenant-console-accessibility.spec.ts --workers=1",
     "validate:tenant-import": "node scripts/validate-tenant-import.mjs",
     "audit:tenant-branding": "node scripts/audit-tenant-branding.mjs",
-    "assets:pinas-qr": "node scripts/generate-pinas-qr.mjs",
+    "assets:rewardme-qr": "node scripts/generate-rewardme-qr.mjs",
     "qa:reset-passwords": "node scripts/reset-e2e-account-passwords.mjs",
     "qa:audit-production": "node scripts/audit-production-qa-readiness.mjs",
     "qa:provision-tenant": "node scripts/provision-tenant-qa-fixtures.mjs",

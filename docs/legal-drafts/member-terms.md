@@ -1,4 +1,4 @@
-# Pinas Rewards Member Terms of Use
+# RewardMe Member Terms of Use
 
 Status: **DRAFT FOR LEGAL REVIEW**
 
@@ -8,11 +8,11 @@ Support contact: `[WORKING SUPPORT EMAIL REQUIRED]`
 
 ## 1. Agreement and eligibility
 
-By creating or using a Pinas Rewards account, a member agrees to these terms and the incorporated Privacy Notice, Rewards and Gift Card Terms, and Verification Policy. Members must have legal capacity to contract in the Philippines. The minimum age and any parental-consent process require counsel approval.
+By creating or using a RewardMe account, a member agrees to these terms and the incorporated Privacy Notice, Rewards and Gift Card Terms, and Verification Policy. Members must have legal capacity to contract in the Philippines. The minimum age and any parental-consent process require counsel approval.
 
 ## 2. Accounts
 
-Each account must represent one real person. Members must provide accurate information, safeguard credentials, and promptly report unauthorized access. Pinas Rewards may restrict duplicate, fraudulent, shared, or compromised accounts after appropriate review.
+Each account must represent one real person. Members must provide accurate information, safeguard credentials, and promptly report unauthorized access. RewardMe may restrict duplicate, fraudulent, shared, or compromised accounts after appropriate review.
 
 ## 3. Membership plans
 
@@ -24,7 +24,7 @@ Rewards arise only from eligible, recorded transactions with participating busin
 
 ## 5. Reversals and corrections
 
-Pinas Rewards or a partner may correct points or benefits associated with refunds, duplicate entries, chargebacks, cancelled transactions, fraud, technical errors, or violation of these terms. Members should receive a reason and a support path where practicable.
+RewardMe or a partner may correct points or benefits associated with refunds, duplicate entries, chargebacks, cancelled transactions, fraud, technical errors, or violation of these terms. Members should receive a reason and a support path where practicable.
 
 ## 6. Suspension and termination
 
@@ -32,7 +32,7 @@ Accounts may be restricted for security, fraud prevention, legal compliance, or 
 
 ## 7. Service availability and changes
 
-Partner participation and offers can change. Material changes to paid plans or member rights require advance notice consistent with applicable law. Pinas Rewards does not guarantee uninterrupted availability.
+Partner participation and offers can change. Material changes to paid plans or member rights require advance notice consistent with applicable law. RewardMe does not guarantee uninterrupted availability.
 
 ## 8. Liability, disputes, and governing law
 

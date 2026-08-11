@@ -63,7 +63,7 @@ const programs: Record<string, Program> = {
     primaryColor: '#173f32',
     accentColor: '#b77b1f',
     logoUrl: '/rewardme-mark.svg',
-    supportEmail: 'support@pinasrewards.ph',
+    supportEmail: 'support@rewardme.ph',
     mapCenter: { latitude: 7.1907, longitude: 125.4553 },
     featureFlags: {},
   },
@@ -95,7 +95,8 @@ const programSlugByHost: Record<string, keyof typeof programs> = {
   'www.guatemalarewards.com': 'guatemala',
   'guatemala.localhost': 'guatemala',
   'synergize.localhost': 'synergize',
-  'pinas-rewards.vercel.app': 'pinas',
+  'rewardme-ph.vercel.app': 'pinas',
+  'pinas-rewards.vercel.app': 'pinas', // Legacy redirect host.
   'pinas.localhost': 'pinas',
   'wondertown-rewards.vercel.app': 'wondertown',
   'wondertown.localhost': 'wondertown',
@@ -123,6 +124,7 @@ export function canUseTenantPreviewOverride(hostname: string) {
   return host === 'localhost'
     || host.startsWith('127.')
     || host.endsWith('.localhost')
+    || host === 'rewardme-ph.vercel.app'
     || host === 'pinas-rewards.vercel.app'
     || host === 'wondertown-rewards.vercel.app'
     || host.endsWith('.rewardsplatform.app')

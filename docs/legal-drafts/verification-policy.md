@@ -1,4 +1,4 @@
-# Pinas Rewards Verification Policy
+# RewardMe Verification Policy
 
 Status: **DRAFT FOR LEGAL REVIEW**
 

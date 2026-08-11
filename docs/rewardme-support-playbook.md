@@ -1,4 +1,4 @@
-# Pinas Rewards support playbook
+# RewardMe support playbook
 
 ## Required ticket fields
 
@@ -18,7 +18,7 @@ Proposed until owner approval: acknowledge account/security issues within four b
 
 **Missing transaction:** “Thanks for reporting this. Please send the participating business, purchase date, amount, and receipt reference. Do not send payment-card details.”
 
-**Account access:** “We can help secure the account. Please use the password-reset link. Pinas Rewards will never ask for your password or one-time code.”
+**Account access:** “We can help secure the account. Please use the password-reset link. RewardMe will never ask for your password or one-time code.”
 
 **Reward eligibility:** “Rates and eligibility follow the offer shown for the participating business. We’ll review the recorded transaction and explain any adjustment.”
 

@@ -1,4 +1,4 @@
-# Pinas Rewards launch-day checklist
+# RewardMe launch-day checklist
 
 ## Go/no-go
 

@@ -1,4 +1,4 @@
-# Pinas Rewards local QA setup
+# RewardMe local QA setup
 
 This environment provides unlimited disposable test users and businesses without consuming production capacity.
 

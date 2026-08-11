@@ -28,7 +28,7 @@ export function PublicBrowseLayout() {
 
   if (isBusinessOnboarding) {
     return (
-      <div className={`business-public-shell${program.slug === 'pinas' ? ' business-public-shell--pinas' : ''}`}>
+      <div className={`business-public-shell${program.slug === 'pinas' ? ' business-public-shell--rewardme' : ''}`}>
         <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
             <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>

@@ -270,12 +270,12 @@
   height: auto;
 }
 
-.figma-home--pinas .figma-home__hero-visual {
+.figma-home--rewardme .figma-home__hero-visual {
   aspect-ratio: 0.82;
   width: min(100%, 450px);
 }
 
-.figma-home--pinas .figma-home__hero-visual > img {
+.figma-home--rewardme .figma-home__hero-visual > img {
   height: 100%;
   border-radius: 50% / 44%;
   box-shadow: 0 22px 45px rgb(71 48 22 / 12%);
@@ -283,7 +283,7 @@
   object-position: 51% center;
 }
 
-.figma-home--pinas .figma-home__reward-badge {
+.figma-home--rewardme .figma-home__reward-badge {
   right: -8%;
   bottom: 10%;
 }
@@ -1192,7 +1192,7 @@
     white-space: nowrap;
   }
 
-  .figma-home--pinas .figma-home__reward-badge {
+  .figma-home--rewardme .figma-home__reward-badge {
     right: 0;
   }
 
@@ -1202,7 +1202,7 @@
     padding-inline: 10px;
   }
 
-  .figma-home:not(.figma-home--pinas) .figma-home__reward-badge strong {
+  .figma-home:not(.figma-home--rewardme) .figma-home__reward-badge strong {
     font-size: 18px;
     letter-spacing: -0.02em;
   }

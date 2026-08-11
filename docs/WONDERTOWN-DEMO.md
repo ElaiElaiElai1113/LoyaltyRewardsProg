@@ -2,7 +2,7 @@
 
 Wondertown Rewards is the permanent fictional tenant used to demonstrate and
 test the Rewards Platform without exposing or confusing data from Medellin,
-Guatemala, or Pinas Rewards.
+Guatemala, or RewardMe.
 
 ## Live address
 

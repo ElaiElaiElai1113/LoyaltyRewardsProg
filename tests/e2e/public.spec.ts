@@ -1,12 +1,47 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('public acquisition workflow', () => {
+  test('RewardMe public links have real destinations and no missing section targets', async ({ page, request }) => {
+    const runtimeErrors: string[] = []
+    page.on('pageerror', (error) => runtimeErrors.push(error.message))
+    page.on('console', (message) => {
+      if (message.type() === 'error' && !message.text().includes('ERR_NETWORK_ACCESS_DENIED')) {
+        runtimeErrors.push(message.text())
+      }
+    })
+
+    for (const route of ['/', '/business', '/membership', '/shop', '/join', '/signin', '/terms', '/privacy']) {
+      const response = await page.goto(route, { waitUntil: 'domcontentloaded' })
+      expect(response?.ok(), route).toBeTruthy()
+      await page.locator('main').waitFor()
+
+      const hrefs = await page.locator('a[href]').evaluateAll((links) => (
+        [...new Set(links.map((link) => link.getAttribute('href')?.trim() ?? ''))]
+      ))
+      expect(hrefs, `${route} empty links`).not.toContain('')
+      expect(hrefs.some((href) => href.startsWith('javascript:')), `${route} javascript links`).toBe(false)
+
+      for (const href of hrefs) {
+        if (href.startsWith('#')) {
+          expect(await page.locator(href).count(), `${route} missing ${href}`).toBeGreaterThan(0)
+        } else if (href.startsWith('/')) {
+          const target = await request.get(href)
+          expect(target.ok(), `${route} -> ${href}`).toBeTruthy()
+        } else if (href.startsWith('mailto:')) {
+          expect(href, `${route} support email`).toMatch(/^mailto:support@rewardme\.ph(?:\?|$)/)
+        }
+      }
+    }
+
+    expect(runtimeErrors).toEqual([])
+  })
+
   test('search metadata exposes only public launch routes', async ({ request }, testInfo) => {
     const hostname = new URL(String(testInfo.project.use.baseURL)).hostname
     const expectedOrigin = new Map([
       ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
       ['guatemalarewards.com', 'https://guatemalarewards.com'],
-      ['pinas-rewards.vercel.app', 'https://pinas-rewards.vercel.app'],
+      ['rewardme-ph.vercel.app', 'https://rewardme-ph.vercel.app'],
     ]).get(hostname)
     const robots = await request.get('/robots.txt')
     expect(robots.ok()).toBeTruthy()
@@ -23,7 +58,7 @@ test.describe('public acquisition workflow', () => {
     } else {
       expect(robotsText).not.toContain('medellinrewards.com')
       expect(robotsText).not.toContain('guatemalarewards.com')
-      expect(robotsText).not.toContain('pinas-rewards.vercel.app')
+      expect(robotsText).not.toContain('pinas-' + 'rewards.vercel.app')
       expect(xml).not.toContain('<loc>')
     }
     expect(xml).not.toContain('/admin/')

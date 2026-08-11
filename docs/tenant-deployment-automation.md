@@ -1,12 +1,13 @@
 # Tenant deployment automation
 
-The Rewards repository has two Vercel projects and two deployment aliases:
+The Rewards repository has two Vercel projects and three deployment aliases:
 
 - `loyalty-rewards-prog` automatically builds the Medellin production release.
 - `guatemala-rewards` receives the same validated commit through a separate production deployment.
-- `pinas-rewards.vercel.app` and `wondertown-rewards.vercel.app` are aliases of the exact Medellin/primary deployment.
+- `rewardme-ph.vercel.app` and `wondertown-rewards.vercel.app` are public aliases of the exact Medellin/primary deployment.
+- The former RewardMe hostname remains a redirect-only alias so old bookmarks continue to work.
 
-The `Tenant deployment synchronization` GitHub workflow runs only after the `CI` workflow passes on `main`. It resolves the ready primary deployment by the complete Git commit SHA, deploys that checkout to the Guatemala project with an explicit health-version marker, updates both aliases, and verifies that all four canonical domains report the same version.
+The `Tenant deployment synchronization` GitHub workflow runs only after the `CI` workflow passes on `main`. It resolves the ready primary deployment by the complete Git commit SHA, deploys that checkout to the Guatemala project with an explicit health-version marker, updates all three aliases, and verifies that all four canonical domains report the same version.
 
 The legacy `Post-deployment verification` workflow continues to smoke-test the primary production deployment automatically. Its four-domain version gate runs only when manually dispatched, preventing false failures while aliases are still awaiting synchronized promotion.
 
@@ -34,4 +35,4 @@ Use `--dry-run` to inspect the planned targets without contacting Vercel.
 - The synchronizer waits up to five minutes for the primary Git-integrated deployment to become ready; the retry count and delay are configurable through `PRIMARY_DEPLOYMENT_RETRY_ATTEMPTS` and `PRIMARY_DEPLOYMENT_RETRY_DELAY_MS`.
 - Alias promotion happens only after the Guatemala deployment succeeds.
 - Canonical domain checks require the exact commit version and fail the workflow on any mismatch.
-- To roll back, use the previous immutable deployment URL recorded by Vercel, restore the Pinas and Wondertown aliases with `vercel alias set`, and roll back the two production projects through their Vercel deployment history. Never use a different source commit for only one tenant.
+- To roll back, use the previous immutable deployment URL recorded by Vercel, restore the RewardMe and Wondertown aliases with `vercel alias set`, and roll back the two production projects through their Vercel deployment history. Never use a different source commit for only one tenant.

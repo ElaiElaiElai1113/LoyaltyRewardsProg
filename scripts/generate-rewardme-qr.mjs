@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import React from 'react'
 import { chromium } from 'playwright'
 
-const destination = 'https://pinas-rewards.vercel.app/'
+const destination = 'https://rewardme-ph.vercel.app/'
 const qr = renderToStaticMarkup(
   React.createElement(QRCodeSVG, {
     value: destination,
@@ -18,7 +18,7 @@ const qr = renderToStaticMarkup(
 )
 
 await writeFile(
-  'public/pinas-rewards-qr.svg',
+  'public/rewardme-qr.svg',
   `<?xml version="1.0" encoding="UTF-8"?>\n${qr}\n`,
   'utf8',
 )
@@ -34,13 +34,13 @@ main{width:1200px;height:1500px;padding:110px 100px;display:flex;flex-direction:
 .qr svg{display:block;width:620px;height:620px}.url{margin-top:42px;font-size:27px;font-weight:700}.rule{width:120px;height:5px;margin:42px 0;background:#d9ad20}
 .footer{font-size:22px;color:#6d655b}
 </style></head><body><main>
-<div class="eyebrow">PINAS REWARDS</div>
+<div class="eyebrow">REWARDME</div>
 <h1 class="title">Support local.<br>Earn more.</h1>
 <p class="copy">Scan to discover participating businesses, earn member rewards, and support Filipino entrepreneurs.</p>
 <div class="qr">${qr}</div>
-<div class="url">pinas-rewards.vercel.app</div>
+<div class="url">rewardme-ph.vercel.app</div>
 <div class="rule"></div>
 <div class="footer">Made for members and local businesses in the Philippines.</div>
 </main></body></html>`)
-await page.screenshot({ path: 'public/pinas-rewards-scan-poster.png' })
+await page.screenshot({ path: 'public/rewardme-scan-poster.png' })
 await browser.close()

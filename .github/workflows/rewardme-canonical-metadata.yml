@@ -1,0 +1,70 @@
+name: Apply RewardMe canonical metadata
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY REWARDME CANONICAL METADATA to run the scoped production migration
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rewardme-canonical-metadata
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY REWARDME CANONICAL METADATA'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: retfuxpfstatpdsunkgj
+      MIGRATION_VERSION: '20260811075720'
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require production database credentials
+        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD"
+      - name: Link the approved production project
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Show the scoped RewardMe metadata before migration
+        run: >-
+          npx supabase db query --linked --output table
+          "select p.id, p.slug, p.name, p.support_email, d.hostname, d.is_primary,
+          s.email_from_name, s.email_from_address
+          from public.programs p
+          join public.program_domains d on d.program_id = p.id and d.is_primary
+          join public.program_settings s on s.program_id = p.id
+          where p.id = '10000000-0000-4000-8000-000000000004';"
+      - name: Apply only the approved canonical metadata migration
+        run: npx supabase db query --linked --file supabase/migrations/20260811075720_set_rewardme_canonical_contact.sql
+      - name: Record the applied migration version
+        run: npx supabase migration repair --linked --status applied "$MIGRATION_VERSION" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Verify the RewardMe production metadata
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ begin
+          if not exists (
+            select 1
+            from public.programs p
+            join public.program_domains d on d.program_id = p.id and d.is_primary
+            join public.program_settings s on s.program_id = p.id
+            where p.id = '10000000-0000-4000-8000-000000000004'
+              and p.name = 'RewardMe'
+              and p.support_email = 'support@rewardme.ph'
+              and d.hostname = 'rewardme-ph.vercel.app'
+              and d.verification_status = 'verified'
+              and s.email_from_name = 'RewardMe'
+              and s.email_from_address = ''
+          ) then raise exception 'RewardMe canonical metadata verification failed';
+          end if;
+          end \$\$;"

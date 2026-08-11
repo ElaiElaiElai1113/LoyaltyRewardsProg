@@ -17,10 +17,10 @@ describe('cross-tenant runtime safeguards', () => {
   it('uses the browser tenant origin before a global configured fallback', () => {
     expect(resolveTenantPublicSiteUrl(
       'https://medellinrewards.com',
-      'https://pinas-rewards.vercel.app',
+      'https://rewardme-ph.vercel.app',
     )).toBe('https://medellinrewards.com')
-    expect(resolveTenantPublicSiteUrl(undefined, 'https://pinas-rewards.vercel.app/path')).toBe(
-      'https://pinas-rewards.vercel.app',
+    expect(resolveTenantPublicSiteUrl(undefined, 'https://rewardme-ph.vercel.app/path')).toBe(
+      'https://rewardme-ph.vercel.app',
     )
     expect(resolveTenantPublicSiteUrl('javascript:alert(1)', undefined)).toBe('')
   })
@@ -57,7 +57,7 @@ describe('cross-tenant runtime safeguards', () => {
     expect(layout).toContain('<BrandLogo')
     expect(layout).not.toContain('src="/favicon.svg"')
     expect(guatemala).toContain('logoUrl: null')
-    expect(guatemala).not.toContain('pinas-rewards-logo')
+    expect(guatemala).not.toContain('rewardme-logo')
   })
 
   it('fails welcome-email branding closed instead of falling back to Medellin', () => {

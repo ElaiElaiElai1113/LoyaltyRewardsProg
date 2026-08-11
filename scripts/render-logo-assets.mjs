@@ -6,9 +6,9 @@ const installMarkSvg = readFileSync('public/rewardme-mark.svg', 'utf8')
 
 const targets = [
   ['public/rewardme-logo.png', 1024, fullLogoSvg],
-  ['public/install-icons/pinas-512.png', 512, installMarkSvg],
-  ['public/install-icons/pinas-192.png', 192, installMarkSvg],
-  ['public/install-icons/pinas-180.png', 180, installMarkSvg],
+  ['public/install-icons/rewardme-512.png', 512, installMarkSvg],
+  ['public/install-icons/rewardme-192.png', 192, installMarkSvg],
+  ['public/install-icons/rewardme-180.png', 180, installMarkSvg],
   ['ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png', 1024],
   ['android/app/src/main/res/mipmap-mdpi/ic_launcher.png', 48],
   ['android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png', 48],

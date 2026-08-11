@@ -1,4 +1,4 @@
-# Pinas Rewards support-email migration checklist
+# RewardMe support-email migration checklist
 
 - [ ] Choose a mailbox controlled by the operating organization.
 - [ ] Enable multi-factor authentication and recovery ownership.

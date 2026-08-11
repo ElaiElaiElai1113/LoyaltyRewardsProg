@@ -1,4 +1,4 @@
-# Pinas Rewards member quick-start
+# RewardMe member quick-start
 
 1. Create an account using your real name, email, and current phone or WhatsApp number.
 2. Sign in and open **Member QR**.

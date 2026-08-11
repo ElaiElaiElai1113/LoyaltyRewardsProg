@@ -2,10 +2,11 @@
 
 ## Outcome
 
-Replace the public-facing Pinas Rewards identity with RewardMe and align the
+Replace the former public identity with RewardMe and align the
 member acquisition experience with the approved RewardMe pitch. Preserve the
-stable `pinas` tenant slug, UUID, Supabase scope, production hostname, route
-structure, and existing authenticated workflows.
+stable `pinas` tenant slug, UUID, Supabase scope, route structure, and existing
+authenticated workflows. Move the canonical public address to the branded
+`rewardme-ph.vercel.app` hostname while redirecting the former address.
 
 The supplied RewardMe landing-page image defines the visual direction: warm
 cream surfaces, forest-green ink, restrained gold accents, editorial serif
@@ -13,9 +14,9 @@ headings, compact navigation, thin rules, and minimal card chrome. The
 RewardMe pitch deck defines product behavior and takes precedence when mockup
 copy conflicts with the deck.
 
-## Evidence and current problems
+## Pre-change evidence and resolved problems
 
-- Production still identifies the tenant as `Pinas Rewards` in document
+- Production identified the tenant under the former name in document
   metadata, the landing page, signup, legal pages, business acquisition, PWA
   install metadata, and tenant bootstrap data.
 - The current landing page advertises PHP 1,000/month and PHP 4,000/year,
@@ -30,7 +31,7 @@ copy conflicts with the deck.
 - The public shop exposes an authenticated QA fixture and uses Medellin map
   labels for the Philippines tenant.
 - Several source strings contain mojibake such as `Â©`, `â€“`, and `â†’`.
-- The current RewardMe/Pinas landing document is approximately 7,494px tall at
+- The pre-change landing document was approximately 7,494px tall at
   the audited desktop viewport. Its information hierarchy repeats rewards and
   membership claims before explaining trial timing.
 
@@ -82,10 +83,10 @@ copy conflicts with the deck.
 
 - Add a RewardMe-specific home component and stylesheet. Keep existing
   Medellin, Guatemala, and Wondertown home experiences intact.
-- Change public Pinas display branding to RewardMe in tenant fallback data,
+- Change the former display branding to RewardMe in tenant fallback data,
   bootstrap metadata, install metadata, migration-package display fields, and
-  logo assets while retaining the `pinas` internal identifier and current
-  hostname.
+  logo assets while retaining the `pinas` internal identifier. Promote the
+  RewardMe hostname and keep the previous host as a redirect only.
 - Update public business acquisition copy for the two deck-defined business
   models and 25% commission.
 - Add pitch-accurate trial language to the active member signup experience and
@@ -139,14 +140,13 @@ Remaining Synergize content gaps are outside this repository:
 - Payment and savings enrollment remain explicitly unavailable as live
   mutations. UI copy must not imply that a real charge, trial timer, savings
   deposit, or payout was created.
-- Legacy support email and hostname may remain as infrastructure aliases until
-  the client supplies approved RewardMe replacements; they should not be used
-  as the visible brand name.
+- The legacy hostname may remain only as an infrastructure redirect until old
+  bookmarks age out; it must never be presented as the canonical public URL.
 
 ## Test strategy
 
 - Source-contract tests for RewardMe tenant metadata, stable internal slug, and
-  absence of public Pinas branding.
+  absence of the former public branding.
 - Source-contract tests for exact pitch rules: trial timing, tiers, reward
   rates, business models, and 25% commission.
 - Regression tests proving other tenants and Synergize isolation remain intact.
@@ -158,7 +158,7 @@ Remaining Synergize content gaps are outside this repository:
 ## Non-goals
 
 - Renaming the `pinas` tenant slug, UUID, database foreign keys, storage paths,
-  QA account identifiers, or current production hostname.
+  or QA account identifiers.
 - Implementing Stripe or another live billing provider.
 - Creating a live trial timer, payout engine, savings ledger, withdrawal flow,
   or direct Synergize-to-RewardMe credit transfer.
@@ -176,7 +176,8 @@ Remaining Synergize content gaps are outside this repository:
 
 ## Acceptance criteria
 
-- No public RewardMe surface displays `Pinas Rewards` as the program name.
+- Every public RewardMe surface displays `RewardMe` as the program name and no
+  former wordmark asset is shipped.
 - RewardMe landing, signup, membership explanation, and business acquisition
   agree with the deck's trial, tier, reward-rate, and participation rules.
 - Every primary CTA reaches an existing functional route or a valid support

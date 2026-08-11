@@ -66,7 +66,7 @@ const brands: Record<InstallBrandSlug, InstallBrand> = {
     themeColor: '#173f32',
     backgroundColor: '#f4efdf',
     startUrl: '/',
-    iconBase: 'pinas',
+    iconBase: 'rewardme',
   },
   wondertown: {
     slug: 'wondertown',
@@ -87,7 +87,8 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'guatemalarewards.com': 'guatemala',
   'www.guatemalarewards.com': 'guatemala',
   'synergize-business-group.vercel.app': 'synergize',
-  'pinas-rewards.vercel.app': 'pinas',
+  'rewardme-ph.vercel.app': 'pinas',
+  'pinas-rewards.vercel.app': 'pinas', // Legacy redirect host.
   'wondertown-rewards.vercel.app': 'wondertown',
 }
 

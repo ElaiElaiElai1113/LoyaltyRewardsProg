@@ -1,4 +1,4 @@
-# Pinas Rewards commercial decision register
+# RewardMe commercial decision register
 
 Status: **OWNER APPROVAL REQUIRED**
 
@@ -13,7 +13,7 @@ Status: **OWNER APPROVAL REQUIRED**
 | Gift cards | Supported in product | Issuer, validity, refunds, lost codes, regulatory treatment |
 | Referrals | Supported in product | Award, qualifying action, anti-abuse, expiry |
 | Reward expiry | Not finalized | Duration, notice, suspension and termination treatment |
-| Support | `support@pinasrewards.ph` placeholder | Working monitored mailbox and service hours |
+| Support | `support@rewardme.ph` placeholder | Working monitored mailbox and service hours |
 
 Until approved, marketing claims should be treated as proposed program design rather than contractual guarantees.
 

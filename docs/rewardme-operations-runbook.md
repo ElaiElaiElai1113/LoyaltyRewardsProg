@@ -1,4 +1,4 @@
-# Pinas Rewards operations runbook
+# RewardMe operations runbook
 
 ## Daily checks
 

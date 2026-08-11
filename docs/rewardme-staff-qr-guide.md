@@ -1,4 +1,4 @@
-# Pinas Rewards staff QR guide
+# RewardMe staff QR guide
 
 ## Record a purchase
 

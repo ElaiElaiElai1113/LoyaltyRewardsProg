@@ -1,4 +1,4 @@
-# Pinas Rewards partner onboarding guide
+# RewardMe partner onboarding guide
 
 ## Before activation
 

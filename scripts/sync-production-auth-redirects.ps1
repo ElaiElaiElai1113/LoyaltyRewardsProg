@@ -94,6 +94,12 @@ $requiredRedirects = @(
   'https://guatemalarewards.com/auth/confirm',
   'https://guatemalarewards.com/auth/reset-password',
   'https://guatemalarewards.com/accept-invitation',
+  'https://rewardme-ph.vercel.app/',
+  'https://rewardme-ph.vercel.app/reset-password',
+  'https://rewardme-ph.vercel.app/auth/confirm',
+  'https://rewardme-ph.vercel.app/auth/reset-password',
+  'https://rewardme-ph.vercel.app/accept-invitation',
+  # Legacy RewardMe hostname retained until old links and installed apps age out.
   'https://pinas-rewards.vercel.app/',
   'https://pinas-rewards.vercel.app/reset-password',
   'https://pinas-rewards.vercel.app/auth/confirm',
@@ -118,7 +124,7 @@ $existingRedirects = @($current.uri_allow_list -split ',') |
     $_ -notlike 'https://synergize-rewards.vercel.app*'
   }
 $redirects = @($existingRedirects + $requiredRedirects) | Sort-Object -Unique
-$desiredSiteUrl = 'https://pinas-rewards.vercel.app/'
+$desiredSiteUrl = 'https://rewardme-ph.vercel.app/'
 
 $preview = [ordered]@{
   projectRef = $projectRef

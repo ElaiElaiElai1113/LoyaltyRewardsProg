@@ -1,4 +1,4 @@
-# Pinas Rewards Privacy Notice
+# RewardMe Privacy Notice
 
 Status: **DRAFT FOR LEGAL REVIEW**
 
@@ -7,7 +7,7 @@ Personal information controller: `[LEGAL ENTITY REQUIRED]`
 
 ## Information processed
 
-Pinas Rewards may process account and contact details, program membership, transaction and reward history, referrals, device and security events, customer-support communications, consent records, and optional verification information. The final notice must list every production data field and vendor.
+RewardMe may process account and contact details, program membership, transaction and reward history, referrals, device and security events, customer-support communications, consent records, and optional verification information. The final notice must list every production data field and vendor.
 
 ## Purposes and legal bases
 
@@ -15,7 +15,7 @@ Purposes include providing accounts and rewards, recording purchases, preventing
 
 ## Sharing
 
-Information may be shared with participating businesses when needed to validate a purchase or redemption, and with contracted service providers such as hosting, database, email, monitoring, and payment providers. Pinas Rewards must not sell personal data. A final processor and cross-border transfer register is required.
+Information may be shared with participating businesses when needed to validate a purchase or redemption, and with contracted service providers such as hosting, database, email, monitoring, and payment providers. RewardMe must not sell personal data. A final processor and cross-border transfer register is required.
 
 ## Retention and security
 

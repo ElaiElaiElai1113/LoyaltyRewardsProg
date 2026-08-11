@@ -110,7 +110,7 @@ function RewardMeBusinessPage({ supportEmail }: { supportEmail: string }) {
         <img src={localBusinessOwner} alt="Local business owner welcoming RewardMe members" decoding="async" fetchPriority="high" />
       </section>
 
-      <section className="rewardme-business__section" aria-labelledby="rewardme-models-title">
+      <section id="benefits" className="rewardme-business__section" aria-labelledby="rewardme-models-title">
         <p className="rewardme-business__eyebrow">TWO PARTICIPATION MODELS</p>
         <h2 id="rewardme-models-title">Choose the model that matches your business.</h2>
         <div className="rewardme-business__models">
@@ -119,7 +119,7 @@ function RewardMeBusinessPage({ supportEmail }: { supportEmail: string }) {
         <p className="rewardme-business__note">Final rates, offer eligibility, settlement timing, and credit terms are confirmed in the business agreement before launch.</p>
       </section>
 
-      <section className="rewardme-business__section rewardme-business__process" aria-labelledby="rewardme-business-process-title">
+      <section id="how-it-works" className="rewardme-business__section rewardme-business__process" aria-labelledby="rewardme-business-process-title">
         <div>
           <p className="rewardme-business__eyebrow">HOW IT WORKS</p>
           <h2 id="rewardme-business-process-title">A clear path from offer to repeat visit.</h2>
@@ -136,7 +136,7 @@ function RewardMeBusinessPage({ supportEmail }: { supportEmail: string }) {
         <p>Synergize is the separate B2B credit network. Eligible Synergize business credits may help fund RewardMe offers, which convert that value into new customer activity. RewardMe members do not need a Synergize account.</p>
       </section>
 
-      <section className="rewardme-business__cta">
+      <section id="get-started" className="rewardme-business__cta">
         <h2>Ready to discuss a RewardMe offer?</h2>
         <p>Contact the program team for qualification, terms, and onboarding.</p>
         <a className="rewardme-business__button" href={`mailto:${supportEmail}?subject=RewardMe%20partner%20conversation`}>Talk to the team <ArrowRight aria-hidden="true" /></a>

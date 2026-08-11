@@ -1,4 +1,4 @@
-# Pinas Rewards legal review pack
+# RewardMe legal review pack
 
 Status: **DRAFT FOR PHILIPPINE LEGAL REVIEW — NOT APPROVED FOR LAUNCH**
 

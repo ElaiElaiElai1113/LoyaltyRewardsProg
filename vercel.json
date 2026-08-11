@@ -94,6 +94,28 @@
       "has": [
         {
           "type": "host",
+          "value": "pinas-rewards.vercel.app"
+        }
+      ],
+      "destination": "https://rewardme-ph.vercel.app/",
+      "permanent": true
+    },
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "pinas-rewards.vercel.app"
+        }
+      ],
+      "destination": "https://rewardme-ph.vercel.app/:path*",
+      "permanent": true
+    },
+    {
+      "source": "/",
+      "has": [
+        {
+          "type": "host",
           "value": "www.guatemalarewards.com"
         }
       ],

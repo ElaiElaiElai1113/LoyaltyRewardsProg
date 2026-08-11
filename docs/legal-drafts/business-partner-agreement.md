@@ -1,8 +1,8 @@
-# Pinas Rewards Business Partner Agreement
+# RewardMe Business Partner Agreement
 
 Status: **DRAFT TERM SHEET FOR LEGAL REVIEW**
 
-Parties: `[PINAS REWARDS LEGAL ENTITY]` and `[PARTNER LEGAL NAME]`
+Parties: `[REWARDME LEGAL ENTITY]` and `[PARTNER LEGAL NAME]`
 
 ## Commercial schedule
 
@@ -20,7 +20,7 @@ The partner will train authorized staff, record genuine transactions accurately,
 
 ## Platform responsibilities
 
-Pinas Rewards will provide reasonable access to program tools, calculate recorded rewards and commissions according to the approved schedule, maintain operational records, provide support, and communicate material program changes.
+RewardMe will provide reasonable access to program tools, calculate recorded rewards and commissions according to the approved schedule, maintain operational records, provide support, and communicate material program changes.
 
 ## Reconciliation
 

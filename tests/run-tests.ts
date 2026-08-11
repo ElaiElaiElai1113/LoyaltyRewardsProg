@@ -763,7 +763,7 @@ runTest('Figma homepage uses the approved typography and clean photography asset
   assert.match(homePage, /Dining out/)
   assert.match(homePage, /Salon days/)
   assert.match(homePage, /Made for members in the Philippines/)
-  assert.match(homeStyles, /figma-home--pinas \.figma-home__hero-visual/)
+  assert.match(homeStyles, /figma-home--rewardme \.figma-home__hero-visual/)
   assert.match(homeStyles, /figma-home__membership-referral/)
 })
 
@@ -2392,7 +2392,7 @@ runTest('workflow QA docs list focused automation commands', () => {
   }
 })
 
-runTest('active tenant operations use Pinas and always verify canonical production brands', () => {
+runTest('active tenant operations use RewardMe and always verify canonical production brands', () => {
   const accessibility = readFileSync('tests/e2e/accessibility.spec.ts', 'utf8')
   const load = readFileSync('tests/e2e/load.spec.ts', 'utf8')
   const tenantConsole = readFileSync('tests/e2e/tenant-console-accessibility.spec.ts', 'utf8')
@@ -2415,11 +2415,11 @@ runTest('active tenant operations use Pinas and always verify canonical producti
     assert.match(activeTest, /pinas/)
   }
 
-  const pinas = matrix.programs.find((program) => program.slug === 'pinas')
-  assert.deepEqual(pinas, {
+  const rewardMe = matrix.programs.find((program) => program.slug === 'pinas')
+  assert.deepEqual(rewardMe, {
     slug: 'pinas',
     status: 'pending',
-    hostname: 'pinas-rewards.vercel.app',
+    hostname: 'rewardme-ph.vercel.app',
     senderEmail: null,
     monitor: true,
   })
@@ -2452,7 +2452,7 @@ runTest('active tenant operations use Pinas and always verify canonical producti
   assert.match(domainReadiness, /Expected deployed version/)
 
   for (const [hostname, tenantName] of [
-    ['pinas-rewards.vercel.app', 'RewardMe'],
+    ['rewardme-ph.vercel.app', 'RewardMe'],
     ['www.medellinrewards.com', 'Medellin Rewards'],
     ['guatemalarewards.com', 'Guatemala Rewards'],
     ['wondertown-rewards.vercel.app', 'Wondertown Rewards'],

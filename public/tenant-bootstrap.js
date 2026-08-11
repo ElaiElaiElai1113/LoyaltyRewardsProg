@@ -45,13 +45,15 @@
     'www.medellinrewards.com': 'medellin',
     'guatemalarewards.com': 'guatemala',
     'www.guatemalarewards.com': 'guatemala',
-    'pinas-rewards.vercel.app': 'pinas',
+    'rewardme-ph.vercel.app': 'pinas',
+    'pinas-rewards.vercel.app': 'pinas', // Legacy redirect host.
     'pinas.localhost': 'pinas',
     'wondertown-rewards.vercel.app': 'wondertown',
     'wondertown.localhost': 'wondertown',
   }
   var canUsePreviewOverride = hostname === 'localhost'
     || hostname.indexOf('127.') === 0
+    || hostname === 'rewardme-ph.vercel.app'
     || hostname === 'pinas-rewards.vercel.app'
     || hostname === 'wondertown-rewards.vercel.app'
     || hostname.endsWith('.rewardsplatform.app')

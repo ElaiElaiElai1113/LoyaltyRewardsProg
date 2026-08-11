@@ -1,4 +1,4 @@
-# Pinas Rewards Consent and Account Deletion Notice
+# RewardMe Consent and Account Deletion Notice
 
 Status: **DRAFT FOR LEGAL REVIEW**
 
@@ -8,7 +8,7 @@ Required acceptance of service terms must be separate from optional marketing co
 
 Suggested unchecked option:
 
-> I agree to receive Pinas Rewards launch news and member offers by email. I can unsubscribe at any time.
+> I agree to receive RewardMe launch news and member offers by email. I can unsubscribe at any time.
 
 Do not bundle partner marketing, SMS, profiling, or sharing with unrelated companies into this choice.
 

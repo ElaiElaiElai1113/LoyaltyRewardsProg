@@ -12,6 +12,7 @@ describe('RewardMe pitch alignment', () => {
     const tenantBootstrap = source('public/tenant-bootstrap.js')
     const installBrand = source('api/_tenant-install-brand.ts')
     const migrationPackage = source('migration-packages/pinas/tenant-config.json')
+    const canonicalMigration = source('supabase/migrations/20260811075720_set_rewardme_canonical_contact.sql')
 
     expect(tenantService).toMatch(/pinas:\s*\{[\s\S]*name: 'RewardMe'[\s\S]*slug: 'pinas'/)
     expect(tenantBootstrap).toMatch(/pinas:\s*\{ name: 'RewardMe'/)
@@ -20,6 +21,11 @@ describe('RewardMe pitch alignment', () => {
     expect(migrationPackage).toContain('"programName": "RewardMe"')
     expect(migrationPackage).toContain('"sourceSystem": "RewardMe platform"')
     expect(migrationPackage).toContain('"slug": "pinas"')
+    expect(migrationPackage).toContain('"primaryDomain": "rewardme-ph.vercel.app"')
+    expect(migrationPackage).toContain('"emailFromAddress": ""')
+    expect(canonicalMigration).toContain("hostname = 'rewardme-ph.vercel.app'")
+    expect(canonicalMigration).toContain("support_email = 'support@rewardme.ph'")
+    expect(canonicalMigration).toContain("email_from_address = ''")
   })
 
   it('gives the pinas tenant its own deck-aligned RewardMe home experience', () => {

@@ -1,4 +1,4 @@
-# Pinas Rewards Rewards and Gift Card Terms
+# RewardMe Rewards and Gift Card Terms
 
 Status: **DRAFT FOR LEGAL REVIEW**
 
@@ -20,5 +20,5 @@ Before issuing gift cards, the owner and counsel must confirm issuer identity, v
 
 ## Fraud and errors
 
-Pinas Rewards may pause suspicious activity and correct duplicate or erroneous transactions after review. Members must have a documented support and appeal route.
+RewardMe may pause suspicious activity and correct duplicate or erroneous transactions after review. Members must have a documented support and appeal route.
 

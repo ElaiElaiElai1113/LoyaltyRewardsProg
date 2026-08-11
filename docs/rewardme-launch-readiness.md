@@ -1,19 +1,20 @@
-# Pinas Rewards launch readiness
+# RewardMe launch readiness
 
 ## Flagship identity
 
-- Program: Pinas Rewards
+- Program: RewardMe
 - Slug: `pinas`
 - Locale: `en-PH`
 - Currency: `PHP`
 - Timezone: `Asia/Manila`
-- Primary domain: `pinas-rewards.vercel.app`
-- Support and sender address: `support@pinasrewards.ph`
+- Primary domain: `rewardme-ph.vercel.app`
+- Proposed support address: `support@rewardme.ph`
+- Verified sender address: not configured
 - Brand colors: heritage gold `#A67608`, accent gold `#D9AD20`, ink `#11100E`
-- Primary logo: `/pinas-rewards-logo.svg`
+- Primary logo: `/rewardme-logo.svg`
 - Social preview: `/og.png`
 
-Pinas Rewards is the default public program and must appear first in program selectors and platform administration views.
+RewardMe is the default public program and must appear first in program selectors and platform administration views.
 
 ## Commercial configuration requiring owner approval
 
@@ -27,8 +28,8 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
 
 ## External production dependencies
 
-- Keep `pinas-rewards.vercel.app` as the canonical zero-cost production address.
-- Create `support@pinasrewards.ph`.
+- Keep `rewardme-ph.vercel.app` as the canonical zero-cost production address.
+- Create `support@rewardme.ph`.
 - Configure SMTP/API delivery plus SPF, DKIM, and DMARC.
 - Configure each tenant's verified sender name and address in program settings.
 - Apply the reviewed pending Supabase migrations.
