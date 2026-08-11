@@ -19,3 +19,7 @@ Counsel must complete every `[OWNER INPUT REQUIRED]` field and confirm complianc
 
 Use [the legal approval checklist](legal-approval-checklist.md) to record the
 reviewed version, approver, effective date, and publication decision for every document.
+
+The repository's [technical review](technical-review.md) verifies the pack's
+structure, branding, draft notices, public routes, and unresolved owner inputs.
+Run `npm run test:legal-readiness` after editing any legal copy.

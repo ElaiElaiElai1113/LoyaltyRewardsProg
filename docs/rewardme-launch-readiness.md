@@ -50,6 +50,14 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
   catalog entries, a recorded purchase, activity history, and an issued gift card.
 - A fail-closed published-account Playwright check that verifies every displayed
   login reaches the correct authenticated portal when deliberately invoked.
+- Automated recovery and invitation contract checks covering normalized email
+  addresses, approved redirect routes, PKCE exchange, verified invitation
+  domains, session setup, password updates, and neutral shared auth templates.
+- An eight-document legal-pack technical gate covering RewardMe identity, draft
+  disclosures, public routes, section structure, owner-input markers, and the
+  counsel approval register. It does not replace legal approval.
+- Touch-enabled Playwright coverage for six phone/tablet sizes and both
+  orientations, plus a 240-check screenshot-based responsive route audit.
 - A single deployment switch, `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, that hides
   all public test credentials before launch.
 - Fail-closed RewardMe Stripe checkout/webhook scaffolding with replay protection,

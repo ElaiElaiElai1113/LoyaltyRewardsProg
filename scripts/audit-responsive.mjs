@@ -9,12 +9,14 @@ const baseUrl = `http://${host}:${port}`
 const outputDir = process.env.RESPONSIVE_AUDIT_OUTPUT_DIR?.trim() || 'artifacts/responsive-audit'
 
 const viewports = [
-  { name: 'compact-mobile', width: 320, height: 568 },
-  { name: 'small-mobile', width: 360, height: 780 },
-  { name: 'mobile', width: 390, height: 844 },
-  { name: 'tablet', width: 768, height: 1024 },
-  { name: 'tablet-landscape', width: 1024, height: 768 },
-  { name: 'desktop', width: 1440, height: 1000 },
+  { name: 'compact-mobile', width: 320, height: 568, touch: true },
+  { name: 'small-mobile', width: 360, height: 780, touch: true },
+  { name: 'mobile', width: 390, height: 844, touch: true },
+  { name: 'mobile-landscape', width: 844, height: 390, touch: true },
+  { name: 'tablet', width: 768, height: 1024, touch: true },
+  { name: 'large-tablet', width: 820, height: 1180, touch: true },
+  { name: 'tablet-landscape', width: 1024, height: 768, touch: true },
+  { name: 'desktop', width: 1440, height: 1000, touch: false },
 ]
 
 const routes = [
@@ -130,6 +132,7 @@ async function main() {
           width: viewport.width,
           height: viewport.height,
         },
+        hasTouch: viewport.touch,
         deviceScaleFactor: 1,
       })
 

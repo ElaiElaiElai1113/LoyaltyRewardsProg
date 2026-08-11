@@ -247,7 +247,8 @@ export const authService = {
 
   async resetPassword(email: string): Promise<void> {
     const sb = requireSupabase()
-    const { error } = await sb.auth.resetPasswordForEmail(email, {
+    const normalizedEmail = email.trim().toLowerCase()
+    const { error } = await sb.auth.resetPasswordForEmail(normalizedEmail, {
       redirectTo: `${getPublicSiteUrl()}/reset-password`,
     })
 

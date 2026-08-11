@@ -4,6 +4,12 @@
 
 Run `npm run test:mobile-readiness`, `npm run build`, and `npm run native:sync`. Build Android debug output with `npm run android:build:debug`.
 
+The web release gate also runs a touch-enabled Playwright matrix at 320×568,
+390×844, 844×390, 768×1024, 820×1180, and 1024×768. It covers the RewardMe
+public, authentication, recovery, invitation, and legal routes in both portrait
+and landscape layouts. The broader screenshot audit currently covers 240
+route/viewport combinations with `npm run test:responsive`.
+
 ## External release inputs
 
 - Apple Developer and Google Play Console accounts

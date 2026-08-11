@@ -10,7 +10,7 @@ type LegalPageKind = 'terms' | 'privacy' | 'reward-terms' | 'verification-policy
 const legalPages: Record<LegalPageKind, { title: string; intro: string; sections: Array<{ title: string; body: string }> }> = {
   terms: {
     title: 'Terms of Use',
-    intro: 'These plain-language terms explain the current Medellin Rewards member experience and the responsibilities that come with using it.',
+    intro: 'These plain-language terms explain the current RewardMe member experience and the responsibilities that come with using it.',
     sections: [
       {
         title: 'Member accounts',
@@ -22,13 +22,13 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
       },
       {
         title: 'Membership subscription',
-        body: 'Membership access follows the current Medellin Rewards program offering. Reward actions may require sign-in, active membership status, and completed ID verification before earning or redeeming value.',
+        body: 'Membership access follows the current RewardMe program offering. Reward actions may require sign-in, active membership status, and completed ID verification before earning or redeeming value.',
       },
     ],
   },
   privacy: {
     title: 'Privacy Policy',
-    intro: 'This privacy summary explains the information Medellin Rewards uses to operate accounts, rewards, support, and verification.',
+    intro: 'This privacy summary explains the information RewardMe uses to operate accounts, rewards, support, and verification.',
     sections: [
       {
         title: 'Information we collect',
@@ -40,17 +40,17 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
       },
       {
         title: 'Support contact',
-        body: 'For privacy questions, members can contact support@medellinrewards.com.',
+        body: 'For privacy questions, members can contact support@rewardme.ph.',
       },
     ],
   },
   'reward-terms': {
     title: 'Reward Terms',
-    intro: 'These reward terms explain how Medellin Rewards offers, point costs, eligibility, and redemptions work for members.',
+    intro: 'These reward terms explain how RewardMe offers, point costs, eligibility, and redemptions work for members.',
     sections: [
       {
         title: 'No cash payout promise',
-        body: 'Rewards represent offers, perks, credits, or experiences available through Medellin Rewards. They are not a promise of cash payment.',
+        body: 'Rewards represent offers, perks, credits, or experiences available through RewardMe. They are not a promise of cash payment.',
       },
       {
         title: 'Reward availability',
@@ -76,7 +76,7 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
       },
       {
         title: 'How ID information is used',
-        body: 'ID information should be used only for member verification and account protection. Members can contact support@medellinrewards.com with questions.',
+        body: 'ID information should be used only for member verification and account protection. Members can contact support@rewardme.ph with questions.',
       },
     ],
   },
@@ -91,8 +91,8 @@ export function LegalPage({ kind }: LegalPageProps) {
   const { program } = useTenant()
   const page = legalPages[kind]
   const tenantText = (text: string) => t(text)
-    .replaceAll('Medellin Rewards', program.name)
-    .replaceAll('support@medellinrewards.com', program.supportEmail)
+    .replaceAll('RewardMe', program.name)
+    .replaceAll('support@rewardme.ph', program.supportEmail)
 
   return (
     <main className="min-h-screen bg-[#fffaf4] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
