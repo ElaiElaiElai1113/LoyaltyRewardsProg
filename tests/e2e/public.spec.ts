@@ -95,7 +95,12 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByText('RewardMe connects everyday spending', { exact: false }))
       .toHaveCSS('font-family', /Inter/)
     await expect(page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }))
-      .toHaveAttribute('src', /coffee-member[^"]*\.webp/)
+      .toHaveAttribute('src', /coffee-member-wide\.webp/)
+    const homeImageFraming = await page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }).evaluate((image: HTMLImageElement) => ({
+      naturalRatio: image.naturalWidth / image.naturalHeight,
+      renderedRatio: image.clientWidth / image.clientHeight,
+    }))
+    expect(Math.abs(homeImageFraming.naturalRatio - homeImageFraming.renderedRatio)).toBeLessThan(0.02)
     await expect(page.locator('.rewardme-home__brand').first()).toContainText('RewardMe')
     await expect(page.locator('.rewardme-home__ledger')).toContainText('ILLUSTRATION')
   })
@@ -141,7 +146,12 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/business/login')
     await expect(page.getByRole('link', { name: 'Apply to partner' })).toHaveAttribute('href', /mailto:/)
     await expect(page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }))
-      .toHaveAttribute('src', /local-business-owner(?:-[\w-]+)?\.png/)
+      .toHaveAttribute('src', /local-business-owner-wide\.webp/)
+    const businessImageFraming = await page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }).evaluate((image: HTMLImageElement) => ({
+      naturalRatio: image.naturalWidth / image.naturalHeight,
+      renderedRatio: image.clientWidth / image.clientHeight,
+    }))
+    expect(Math.abs(businessImageFraming.naturalRatio - businessImageFraming.renderedRatio)).toBeLessThan(0.02)
   })
 
   test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {

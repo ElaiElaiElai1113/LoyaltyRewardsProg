@@ -13,6 +13,8 @@ import { useTenant } from '@/hooks/use-tenant'
 import ctaOverlay from '@/assets/business/cta-overlay.png'
 import hotelPartner from '@/assets/business/hotel-partner.png'
 import localBusinessOwner from '@/assets/business/local-business-owner.png'
+import localBusinessOwnerWide from '@/assets/business/local-business-owner-wide.webp'
+import localBusinessOwnerWideSmall from '@/assets/business/local-business-owner-wide-768.webp'
 import salonPartner from '@/assets/business/salon-partner.png'
 import staffQrCheckout from '@/assets/business/staff-qr-checkout.png'
 import restaurantPartner from '@/assets/landing/dinner-rewards.webp'
@@ -107,7 +109,10 @@ function RewardMeBusinessPage({ supportEmail }: { supportEmail: string }) {
             <Link className="rewardme-business__button rewardme-business__button--outline" to="/business/login">Business sign in</Link>
           </div>
         </div>
-        <img src={localBusinessOwner} alt="Local business owner welcoming RewardMe members" decoding="async" fetchPriority="high" />
+        <picture className="rewardme-business__hero-media">
+          <source media="(max-width: 780px)" srcSet={localBusinessOwnerWideSmall} />
+          <img src={localBusinessOwnerWide} alt="Local business owner welcoming RewardMe members" decoding="async" fetchPriority="high" />
+        </picture>
       </section>
 
       <section id="benefits" className="rewardme-business__section" aria-labelledby="rewardme-models-title">

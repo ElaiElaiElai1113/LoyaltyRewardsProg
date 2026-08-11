@@ -89,9 +89,10 @@
 .rewardme-home__ledger-total strong { color: var(--rm-gold); font-family: Georgia, serif; font-size: 25px; }
 .rewardme-home__ledger > p { margin: 10px 0 0; color: #77776c; font-size: 8px; line-height: 1.4; }
 
-.rewardme-home__feature-image { position: relative; height: clamp(300px, 43vw, 560px); border-radius: 5px; overflow: hidden; }
-.rewardme-home__feature-image img { width: 100%; height: 100%; object-fit: cover; }
-.rewardme-home__feature-image figcaption { position: absolute; right: 18px; bottom: 18px; padding: 8px 11px; background: rgba(23,63,50,.9); color: var(--rm-paper); font-size: 10px; }
+.rewardme-home__feature-image { position: relative; aspect-ratio: 3 / 2; height: auto; border: 1px solid var(--rm-line); border-radius: 16px; overflow: hidden; background: #e8dfc9; box-shadow: 0 24px 48px rgba(23,63,50,.12); }
+.rewardme-home__feature-image picture { display: block; width: 100%; height: 100%; }
+.rewardme-home__feature-image img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.rewardme-home__feature-image figcaption { position: absolute; right: 18px; bottom: 18px; max-width: calc(100% - 36px); padding: 9px 12px; border-radius: 999px; background: rgba(23,63,50,.92); color: var(--rm-paper); font-size: 10px; line-height: 1.35; }
 
 .rewardme-home__section { padding-block: clamp(74px, 10vw, 126px); border-bottom: 1px solid var(--rm-line); }
 .rewardme-home__section-heading { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(260px, .8fr); gap: 50px; align-items: end; }
@@ -165,7 +166,8 @@
   .rewardme-home__actions { display: grid; grid-template-columns: 1fr; }
   .rewardme-home__ledger { border-width: 9px; padding: 17px; }
   .rewardme-home__ledger-row { align-items: flex-start; }
-  .rewardme-home__feature-image { height: 330px; }
+  .rewardme-home__feature-image { border-radius: 12px; }
+  .rewardme-home__feature-image figcaption { right: 10px; bottom: 10px; max-width: calc(100% - 20px); }
   .rewardme-home__section { padding-block: 70px; }
   .rewardme-home__section h2, .rewardme-home__savings h2, .rewardme-home__business h2 { font-size: 38px; }
   .rewardme-home__steps li { grid-template-columns: 46px 1fr; gap: 14px; }

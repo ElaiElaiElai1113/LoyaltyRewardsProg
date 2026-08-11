@@ -1,8 +1,8 @@
 import { ArrowRight, Bookmark, Check, LockKeyhole, Store } from 'lucide-react'
 import { Link } from 'react-router'
 
-import coffeeMember from '@/assets/landing/coffee-member.webp'
-import coffeeMemberSmall from '@/assets/landing/coffee-member-768.webp'
+import coffeeMember from '@/assets/landing/coffee-member-wide.webp'
+import coffeeMemberSmall from '@/assets/landing/coffee-member-wide-768.webp'
 import dinnerRewards from '@/assets/landing/dinner-rewards.webp'
 
 import './rewardme-home.css'
