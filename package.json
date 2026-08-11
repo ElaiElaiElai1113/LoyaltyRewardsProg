@@ -20,7 +20,7 @@
     "ios:sync": "npm run build && cap sync ios",
     "ios:open": "cap open ios",
     "test": "tsc -p tsconfig.tests.json && node .tmp-tests/tests/run-tests.js",
-    "test:unit": "vitest run src --exclude .tools/**",
+    "test:unit": "vitest run src api --exclude .tools/**",
     "test:e2e": "node scripts/run-playwright-local.mjs",
     "test:e2e:doctor": "node scripts/check-e2e-readiness.mjs",
     "test:e2e:hosted-safe": "node scripts/run-playwright-local.mjs tests/e2e/hosted-safe.spec.ts --workers=1",
@@ -43,6 +43,8 @@
     "test:tenant-security": "node scripts/run-playwright-local.mjs tests/e2e/tenant-security.spec.ts --workers=1",
     "test:tenant-console": "node scripts/run-playwright-local.mjs tests/e2e/tenant-console-accessibility.spec.ts --workers=1",
     "validate:tenant-import": "node scripts/validate-tenant-import.mjs",
+    "validate:rewardme-partners": "node scripts/validate-rewardme-partners.mjs",
+    "test:rewardme-partner-import": "node --test scripts/rewardme-partner-import.test.mjs",
     "audit:tenant-branding": "node scripts/audit-tenant-branding.mjs",
     "assets:rewardme-qr": "node scripts/generate-rewardme-qr.mjs",
     "qa:reset-passwords": "node scripts/reset-e2e-account-passwords.mjs",
@@ -138,6 +140,7 @@
   },
   "overrides": {
     "esbuild": "0.27.2",
-    "postcss": "8.5.25"
+    "postcss": "8.5.25",
+    "nanoid": "3.3.17"
   }
 }

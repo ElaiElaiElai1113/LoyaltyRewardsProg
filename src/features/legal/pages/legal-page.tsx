@@ -110,6 +110,9 @@ export function LegalPage({ kind }: LegalPageProps) {
           <Badge className="border-[#d9b365]/45 bg-[#5e3327] text-[#fff7ea]">{t('Customer trust')}</Badge>
           <h1 className="mt-5 font-serif text-5xl font-semibold leading-none text-[#21140d]">{t(page.title)}</h1>
           <p className="mt-4 text-base font-semibold leading-7 text-[#6f4f3d]">{tenantText(page.intro)}</p>
+          <p className="mt-4 rounded-xl border border-[#d8b98c]/60 bg-[#f8f0df] px-4 py-3 text-sm font-semibold leading-6 text-[#6f4f3d]">
+            {t('Operational summary — pending final legal approval before paid membership launch.')}
+          </p>
         </section>
 
         <section className="grid gap-4">

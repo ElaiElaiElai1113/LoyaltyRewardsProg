@@ -1,0 +1,74 @@
+import { readFileSync } from 'node:fs'
+
+import { describe, expect, it } from 'vitest'
+
+function source(path: string) {
+  return readFileSync(path, 'utf8')
+}
+
+describe('RewardMe approval-gated launch foundations', () => {
+  it('keeps the commercial register aligned with the pitch deck', () => {
+    const register = source('docs/rewardme-commercial-decision-register.md')
+    const signoff = source('docs/rewardme-commercial-owner-signoff.md')
+
+    expect(register).toContain('$25/month')
+    expect(register).toContain('$100/year')
+    expect(register).toContain('Three months; no rewards or referral bonuses during trial')
+    expect(register).not.toContain('₱4,000/year')
+    expect(signoff).toContain('DO NOT ENABLE LIVE BILLING OR SAVINGS')
+    expect(signoff).toContain('Membership-fee reward match timing')
+  })
+
+  it('keeps savings double-gated and the ledger read-only to members', () => {
+    const migration = source('supabase/migrations/20260811084843_rewardme_savings_foundation.sql')
+
+    expect(migration).toContain("p.feature_flags ->> 'savingsPlans'")
+    expect(migration).toContain("sp.entitlements -> 'features' ->> 'savingsPlans'")
+    expect(migration).toMatch(/select coalesce\(\([\s\S]*?\), false\);/)
+    expect(migration).toContain('alter table public.savings_goals enable row level security')
+    expect(migration).toContain('alter table public.savings_ledger_entries enable row level security')
+    expect(migration).toContain('revoke all on table public.savings_ledger_entries from anon, authenticated')
+    expect(migration).toContain('grant select on table public.savings_ledger_entries to authenticated')
+    expect(migration).not.toMatch(/grant\s+(insert|update|delete)[^;]*savings_ledger_entries\s+to authenticated/i)
+    expect(migration).toContain('{"savingsPlans":false}')
+  })
+
+  it('keeps member billing disabled until both server and database gates are approved', () => {
+    const checkout = source('api/rewardme-create-checkout-session.ts')
+    const tenantCheckout = source('api/stripe-create-checkout-session.ts')
+    const tenantWebhook = source('api/stripe-webhook.ts')
+    const webhook = source('api/rewardme-stripe-webhook.ts')
+    const migration = source('supabase/migrations/20260811085042_rewardme_member_billing_foundation.sql')
+    const environment = source('.env.example')
+
+    expect(environment).toContain('REWARDME_MEMBER_BILLING_ENABLED=false')
+    expect(environment).toContain('SAAS_STRIPE_BILLING_ENABLED=false')
+    expect(checkout).toContain("process.env.REWARDME_MEMBER_BILLING_ENABLED === 'true'")
+    expect(checkout).toContain('feature_flags?.memberBilling !== true')
+    expect(checkout).toContain("'Idempotency-Key'")
+    expect(checkout).toContain('VITE_PUBLIC_SITE_URL')
+    expect(checkout).not.toContain('request.body?.origin')
+    expect(tenantCheckout).toContain("process.env.SAAS_STRIPE_BILLING_ENABLED === 'true'")
+    expect(tenantCheckout).toContain('VITE_PUBLIC_SITE_URL')
+    expect(tenantCheckout).not.toContain('request.body?.origin')
+    expect(tenantWebhook).toContain('releaseEvent(event.id)')
+    expect(webhook).toContain('verifyStripeSignature')
+    expect(webhook).toContain('stripe_member_webhook_events')
+    expect(webhook).not.toContain('grant_program_membership_credit')
+    expect(migration).toContain('{"memberBilling":false}')
+    expect(migration).toContain('alter table public.stripe_member_webhook_events enable row level security')
+  })
+
+  it('includes counsel drafts for referrals and savings plus an approval register', () => {
+    const index = source('docs/legal-drafts/README.md')
+    const referrals = source('docs/legal-drafts/referral-program-terms.md')
+    const savings = source('docs/legal-drafts/savings-plan-supplement.md')
+    const checklist = source('docs/legal-drafts/legal-approval-checklist.md')
+
+    expect(index).toContain('Referral Program Terms')
+    expect(index).toContain('Savings Plan Supplement')
+    expect(referrals).toContain('DRAFT FOR LEGAL REVIEW')
+    expect(savings).toContain('FEATURE NOT LIVE')
+    expect(checklist).toContain('Approved to publish')
+  })
+})

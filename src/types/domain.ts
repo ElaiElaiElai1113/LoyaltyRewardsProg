@@ -144,7 +144,7 @@ export interface RewardBalance {
   tierProgress: number
 }
 
-export type MembershipStatus = 'active' | 'canceled'
+export type MembershipStatus = 'pending' | 'active' | 'past_due' | 'unpaid' | 'canceled'
 
 export interface Membership {
   id: string

@@ -45,6 +45,12 @@ jobs:
       - name: Tenant import validator
         run: npm run validate:tenant-import -- docs/tenant-import-template.json
 
+      - name: RewardMe partner intake tests
+        run: npm run test:rewardme-partner-import
+
+      - name: RewardMe empty intake template contract
+        run: npm run validate:rewardme-partners -- docs/templates/rewardme-partners.csv docs/templates/rewardme-offers.csv
+
       - name: Tenant migration tool regression tests
         run: npm run test:tenant-tools
 

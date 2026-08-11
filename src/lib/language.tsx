@@ -613,6 +613,8 @@ const spanishTranslations: Record<string, string> = {
   'Verification Policy': 'Politica de verificacion',
   Legal: 'Legal',
   'Customer trust': 'Confianza del cliente',
+  'Operational summary — pending final legal approval before paid membership launch.':
+    'Resumen operativo: pendiente de aprobacion legal final antes del lanzamiento de membresias pagadas.',
   'Terms of Use': 'Terminos de uso',
   'These plain-language terms explain the current Medellin Rewards member experience and the responsibilities that come with using it.':
     'Estos terminos en lenguaje claro explican la experiencia actual de los miembros de Medellin Rewards y las responsabilidades de usarla.',
@@ -1900,6 +1902,8 @@ const tagalogTranslations: Record<string, string> = {
   'Reward Terms': 'Mga Tuntunin ng Rewards',
   'Verification Policy': 'Patakaran sa Beripikasyon',
   'Customer trust': 'Tiwala ng Customer',
+  'Operational summary — pending final legal approval before paid membership launch.':
+    'Buod ng operasyon — hinihintay ang pinal na legal na pag-apruba bago ilunsad ang bayad na membership.',
   'Member accounts': 'Mga Account ng Miyembro',
   'Membership subscription': 'Membership Subscription',
   'Information we collect': 'Impormasyong Kinokolekta',
