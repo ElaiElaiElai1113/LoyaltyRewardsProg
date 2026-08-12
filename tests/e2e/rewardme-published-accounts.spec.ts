@@ -84,6 +84,18 @@ test.describe('published RewardMe test accounts', () => {
       if (account.rewardMeBranded) {
         await expect(page.locator('body')).not.toContainText(/\bpinas\b/i)
       }
+
+      if (account.label === 'member' && /\/dashboard(?:[/?#]|$)/.test(page.url())) {
+        await page.goto('/membership', { waitUntil: 'domcontentloaded' })
+        await expect(page.locator('[data-membership-request-panel]')).toBeVisible()
+        await expect(page.locator('body')).not.toContainText('Membership details could not be loaded.')
+      }
+      if (account.label === 'platform administrator') {
+        await page.goto('/admin/memberships', { waitUntil: 'domcontentloaded' })
+        await expect(page.locator('[data-membership-operations]')).toBeVisible()
+        await expect(page.locator('body')).not.toContainText('Operations data could not be loaded.')
+      }
+
       const pageIntegrity = await page.evaluate(() => ({
         emptyLinks: [...document.querySelectorAll('a')].filter((link) => {
           const href = link.getAttribute('href')
