@@ -700,13 +700,24 @@ grant execute on function public.renew_manual_membership(uuid, uuid, text, times
 grant execute on function public.cancel_manual_membership(uuid, uuid, text) to authenticated;
 grant execute on function public.get_manual_membership_requests() to authenticated;
 
--- Savings stays read-only even if a future flag is enabled accidentally.
-drop policy if exists "members create own enabled savings goals" on public.savings_goals;
-drop policy if exists "members update own enabled savings goals" on public.savings_goals;
-revoke insert, update, delete on table public.savings_goals from anon, authenticated;
-revoke insert, update, delete on table public.savings_ledger_entries from anon, authenticated;
-grant select on table public.savings_goals to authenticated;
-grant select on table public.savings_ledger_entries to authenticated;
+-- Savings stays read-only when the optional foundation is present. Production
+-- projects that have not installed that foundation still retain the feature-off
+-- program flag below.
+do $$
+begin
+  if to_regclass('public.savings_goals') is not null then
+    execute 'drop policy if exists "members create own enabled savings goals" on public.savings_goals';
+    execute 'drop policy if exists "members update own enabled savings goals" on public.savings_goals';
+    execute 'revoke insert, update, delete on table public.savings_goals from anon, authenticated';
+    execute 'grant select on table public.savings_goals to authenticated';
+  end if;
+
+  if to_regclass('public.savings_ledger_entries') is not null then
+    execute 'revoke insert, update, delete on table public.savings_ledger_entries from anon, authenticated';
+    execute 'grant select on table public.savings_ledger_entries to authenticated';
+  end if;
+end;
+$$;
 
 update public.programs
 set feature_flags = feature_flags || '{"savingsPlans":false}'::jsonb,

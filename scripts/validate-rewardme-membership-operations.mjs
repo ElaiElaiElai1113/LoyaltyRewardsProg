@@ -43,6 +43,7 @@ for (const control of [
   "auth.jwt() ->> 'role'",
   "'membership_canceled'",
   "'{\"savingsPlans\":false}'",
+  "to_regclass('public.savings_goals')",
 ]) requireText('migration', control, `missing security or audit control: ${control}`)
 
 for (const marker of ['data-membership-request-panel', 'Review pending', 'Status history', 'Retry', 'Cancel pending request']) {
