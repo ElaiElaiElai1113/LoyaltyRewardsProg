@@ -87,7 +87,7 @@ describe('tenant database migrations', () => {
     expect(guards).toContain('create_program_early_access_lead')
   })
 
-  it('supports plan enforcement and idempotent Stripe delivery', () => {
+  it('supports plan enforcement while retaining the legacy event schema for migration compatibility', () => {
     expect(guards).toContain('get_plan_entitlements')
     expect(guards).toContain('administrator_limit_reached')
     expect(guards).toContain('create table public.stripe_webhook_events')

@@ -51,15 +51,16 @@ describe('RewardMe pitch alignment', () => {
     expect(rewardMeHome).not.toContain('Every plan starts with 3 months of Gold')
   })
 
-  it('keeps trial and billing claims honest across signup and membership', () => {
+  it('keeps trial and manual-enrollment claims honest across signup and membership', () => {
     const join = source('src/features/join/pages/join-rewards-page.tsx')
     const membership = source('src/features/membership/pages/rewardme-membership-page.tsx')
 
     expect(join).toContain('Three-month free access')
-    expect(join).toContain('Rewards and referral bonuses begin after you become a paid member.')
+    expect(join).toContain('the RewardMe team activates an eligible Regular or Gold membership')
     expect(membership).toContain('RewardMe membership')
-    expect(membership).toContain('Demo billing')
-    expect(membership).toContain('No real payment is processed here.')
+    expect(membership).toContain('Manual enrollment')
+    expect(membership).toContain('does not collect online payments or card details')
+    expect(membership).toContain('Request Regular or Gold access')
     expect(membership).toContain('Free')
     expect(membership).toContain('Regular')
     expect(membership).toContain('Gold')

@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 
 import { describe, expect, it } from 'vitest'
 
@@ -15,7 +15,7 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(register).toContain('$100/year')
     expect(register).toContain('Three months; no rewards or referral bonuses during trial')
     expect(register).not.toContain('₱4,000/year')
-    expect(signoff).toContain('DO NOT ENABLE LIVE BILLING OR SAVINGS')
+    expect(signoff).toContain('DO NOT ACTIVATE REGULAR/GOLD BENEFITS OR SAVINGS')
     expect(signoff).toContain('Membership-fee reward match timing')
   })
 
@@ -33,30 +33,32 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(migration).toContain('{"savingsPlans":false}')
   })
 
-  it('keeps member billing disabled until both server and database gates are approved', () => {
-    const checkout = source('api/rewardme-create-checkout-session.ts')
-    const tenantCheckout = source('api/stripe-create-checkout-session.ts')
-    const tenantWebhook = source('api/stripe-webhook.ts')
-    const webhook = source('api/rewardme-stripe-webhook.ts')
+  it('keeps online payment processing out of the active RewardMe application', () => {
     const migration = source('supabase/migrations/20260811085042_rewardme_member_billing_foundation.sql')
     const environment = source('.env.example')
+    const membership = source('src/features/membership/pages/rewardme-membership-page.tsx')
+    const planAdministration = source('src/features/program/pages/program-billing-page.tsx')
 
-    expect(environment).toContain('REWARDME_MEMBER_BILLING_ENABLED=false')
-    expect(environment).toContain('SAAS_STRIPE_BILLING_ENABLED=false')
-    expect(checkout).toContain("process.env.REWARDME_MEMBER_BILLING_ENABLED === 'true'")
-    expect(checkout).toContain('feature_flags?.memberBilling !== true')
-    expect(checkout).toContain("'Idempotency-Key'")
-    expect(checkout).toContain('VITE_PUBLIC_SITE_URL')
-    expect(checkout).not.toContain('request.body?.origin')
-    expect(tenantCheckout).toContain("process.env.SAAS_STRIPE_BILLING_ENABLED === 'true'")
-    expect(tenantCheckout).toContain('VITE_PUBLIC_SITE_URL')
-    expect(tenantCheckout).not.toContain('request.body?.origin')
-    expect(tenantWebhook).toContain('releaseEvent(event.id)')
-    expect(webhook).toContain('verifyStripeSignature')
-    expect(webhook).toContain('stripe_member_webhook_events')
-    expect(webhook).not.toContain('grant_program_membership_credit')
+    expect(environment).not.toMatch(/STRIPE|MEMBER_BILLING_ENABLED/)
+    expect(existsSync('api/rewardme-create-checkout-session.ts')).toBe(false)
+    expect(existsSync('api/rewardme-stripe-webhook.ts')).toBe(false)
+    expect(existsSync('api/stripe-create-checkout-session.ts')).toBe(false)
+    expect(existsSync('api/stripe-webhook.ts')).toBe(false)
+    expect(membership).toContain('Manual enrollment:')
+    expect(membership).toContain('does not collect online payments or card details')
+    expect(planAdministration).toContain('RewardMe does not collect payments online.')
     expect(migration).toContain('{"memberBilling":false}')
-    expect(migration).toContain('alter table public.stripe_member_webhook_events enable row level security')
+  })
+
+  it('uses browser-led QA without a container-based runner', () => {
+    const packageJson = source('package.json')
+    const localQaGuide = source('docs/rewardme-local-qa-setup.md')
+
+    expect(packageJson).not.toContain('qa:isolated')
+    expect(packageJson).not.toContain('test:local-qa-readiness')
+    expect(existsSync('scripts/run-rewardme-isolated-qa.ps1')).toBe(false)
+    expect(localQaGuide).toContain('RewardMe browser QA workflow')
+    expect(localQaGuide).toContain('does not require a local database runtime')
   })
 
   it('provisions production QA without persisting or printing privileged keys', () => {

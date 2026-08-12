@@ -5,7 +5,7 @@ Use the decision-ready defaults in
 as the starting point. A recommendation is not active until this register names
 the approver, date, final rule, and evidence.
 
-Status: **OWNER INPUT REQUIRED — DO NOT ENABLE LIVE BILLING OR SAVINGS**
+Status: **OWNER INPUT REQUIRED — DO NOT ACTIVATE REGULAR/GOLD BENEFITS OR SAVINGS**
 
 Complete every field, attach the approved pricing schedule, and sign the final
 page. Product and legal reviewers should resolve any conflict with the RewardMe
@@ -15,17 +15,17 @@ pitch deck before engineering enables a production feature flag.
 
 - Trial starts on: `[account creation / email confirmation / first login / other]`
 - Trial length calculation: `[three calendar months / 90 days / other]`
-- Trial payment method: `[none / card required]`
+- Trial payment method: `none; RewardMe collects no card details`
 - Trial reminders: `[timing and channels]`
 - Trial end behavior: `[downgrade to Free / suspend / other]`
-- Billing currency: `[USD / PHP / member-localized display with USD charge / other]`
+- Reference-price currency and any off-platform collection procedure: `[USD / PHP / other + evidence rules]`
 - Free price and benefits approved: `[yes/no + changes]`
 - Regular price ($25/month) approved: `[yes/no + changes]`
 - Gold price ($100/year) approved: `[yes/no + changes]`
-- Auto-renewal disclosure and consent: `[approved wording/reference]`
+- Renewal disclosure, reminder, consent, and manual activation procedure: `[approved wording/reference]`
 - Cancellation effective date: `[immediate / period end / other]`
 - Refund and cooling-off rule: `[rule]`
-- Failed-payment retry and grace period: `[rule]`
+- Missing payment-evidence or fee-dispute handling outside RewardMe: `[rule]`
 - VAT, withholding, invoice and receipt treatment: `[accountant/counsel decision]`
 
 ## Rewards

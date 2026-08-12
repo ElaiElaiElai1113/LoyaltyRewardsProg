@@ -65,7 +65,7 @@ const programs: Record<string, Program> = {
     logoUrl: '/rewardme-mark.svg',
     supportEmail: 'support@rewardme.ph',
     mapCenter: { latitude: 7.1907, longitude: 125.4553 },
-    featureFlags: { memberBilling: false, savingsPlans: false },
+    featureFlags: { savingsPlans: false },
   },
   wondertown: {
     id: '10000000-0000-4000-8000-000000000005',

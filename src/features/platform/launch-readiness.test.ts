@@ -14,7 +14,7 @@ describe('RewardMe launch readiness', () => {
 
   it('does not misrepresent approval or external work as verified', () => {
     expect(rewardMeLaunchWorkstreams.find((item) => item.id === 'commercial')?.status).toBe('approval-required')
-    expect(rewardMeLaunchWorkstreams.find((item) => item.id === 'billing')?.status).toBe('approval-required')
+    expect(rewardMeLaunchWorkstreams.find((item) => item.id === 'membership-enrollment')?.status).toBe('approval-required')
     expect(rewardMeLaunchWorkstreams.find((item) => item.id === 'authenticated-qa')?.status).toBe('external-required')
   })
 

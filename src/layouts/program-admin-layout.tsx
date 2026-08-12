@@ -1,4 +1,4 @@
-import { BarChart3, CreditCard, LogOut, Settings, Users } from 'lucide-react'
+import { BarChart3, ClipboardList, LogOut, Settings, Users } from 'lucide-react'
 import { NavLink, Outlet } from 'react-router'
 
 import { BrandLogo } from '@/components/brand-logo'
@@ -11,7 +11,7 @@ const links = [
   { to: '/program/settings', label: 'Settings', icon: Settings },
   { to: '/program/team', label: 'Team', icon: Users },
   { to: '/program/reports', label: 'Reports', icon: BarChart3 },
-  { to: '/program/billing', label: 'Billing', icon: CreditCard },
+  { to: '/program/billing', label: 'Plan', icon: ClipboardList },
 ]
 
 export function ProgramAdminLayout() {

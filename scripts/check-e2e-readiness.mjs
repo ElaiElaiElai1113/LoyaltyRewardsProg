@@ -1,12 +1,6 @@
 import { existsSync, readFileSync } from 'node:fs'
 
 const requiredClientVariables = ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY']
-const requiredBillingVariables = [
-  'SUPABASE_URL',
-  'SUPABASE_SERVICE_ROLE_KEY',
-  'STRIPE_SECRET_KEY',
-  'STRIPE_WEBHOOK_SECRET',
-]
 
 function readEnvFile() {
   if (!existsSync('.env')) return {}
@@ -30,15 +24,12 @@ function isPlaceholder(value = '') {
 export function getE2eReadiness() {
   const environment = { ...readEnvFile(), ...process.env }
   const missingClient = requiredClientVariables.filter((name) => isPlaceholder(environment[name]))
-  const missingBilling = requiredBillingVariables.filter((name) => isPlaceholder(environment[name]))
   const supabaseUrl = environment.VITE_SUPABASE_URL ?? ''
   const usesLocalSupabase = /^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i.test(supabaseUrl)
 
   return {
     missingClient,
-    missingBilling,
     authReady: missingClient.length === 0,
-    billingReady: missingBilling.length === 0,
     usesLocalSupabase,
     allowHostedWorkflows: environment.E2E_ALLOW_HOSTED_WORKFLOWS === 'true',
   }
@@ -50,11 +41,6 @@ export function printE2eReadiness({ requireAuth = false } = {}) {
   console.log(`Authenticated browser workflows: ${readiness.authReady ? 'ready' : 'not ready'}`)
   if (readiness.missingClient.length) {
     console.log(`  Missing: ${readiness.missingClient.join(', ')}`)
-  }
-
-  console.log(`Stripe billing integration: ${readiness.billingReady ? 'ready' : 'not ready'}`)
-  if (readiness.missingBilling.length) {
-    console.log(`  Missing: ${readiness.missingBilling.join(', ')}`)
   }
 
   if (requireAuth && !readiness.authReady) {

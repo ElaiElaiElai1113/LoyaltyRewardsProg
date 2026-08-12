@@ -143,21 +143,6 @@ export const platformService = {
     return programId
   },
 
-  async startCheckout(programId: string) {
-    if (!supabase) throw new Error('Supabase must be configured to start billing.')
-    const { data } = await supabase.auth.getSession()
-    const token = data.session?.access_token
-    if (!token) throw new Error('Sign in before starting billing.')
-    const response = await fetch('/api/stripe-create-checkout-session', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ programId, origin: window.location.origin }),
-    })
-    const result = await response.json() as { url?: string; error?: string }
-    if (!response.ok || !result.url) throw new Error(result.error ?? 'Billing checkout could not start.')
-    window.location.assign(result.url)
-  },
-
   async updateProgramStatus(programId: string, status: Program['status']) {
     if (!supabase) throw new Error('Supabase must be configured to update a program.')
     const { error: rpcError } = await supabase.rpc('set_program_status', {

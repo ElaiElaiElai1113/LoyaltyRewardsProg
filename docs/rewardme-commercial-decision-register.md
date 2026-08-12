@@ -3,15 +3,16 @@
 Status: **OWNER APPROVAL REQUIRED**
 
 The RewardMe pitch deck is the product source of truth. The website currently
-describes these deck-defined proposals, but billing remains demo-only and the
-savings workflow remains planned until the unresolved rules below are signed.
+describes these deck-defined proposals, but Regular and Gold enrollment remains
+manual and the savings workflow remains planned until the unresolved rules below
+are signed. RewardMe does not collect online payments or card details.
 
 | Decision | Deck-aligned proposal | Required confirmation |
 |---|---|---|
 | Trial | Three months; no rewards or referral bonuses during trial | Start event, exact end calculation, reminders, conversion, cancellation |
 | Free membership | $0; up to 10% back; no referral bonuses | Eligibility, exclusions, funding, caps, retroactive-upgrade rule |
-| Regular membership | $25/month; 20–100% back; $10 per eligible referral | Billing currency, taxes, renewal, cancellation, failed payments, refunds |
-| Gold membership | $100/year; full access; deck-defined referral awards | Billing currency, taxes, renewal, cancellation, failed payments, refunds |
+| Regular membership | $25/month reference price; 20–100% back; $10 per eligible referral | Manual activation authority, currency, taxes, renewal, cancellation, payment evidence, refunds |
+| Gold membership | $100/year reference price; full access; deck-defined referral awards | Manual activation authority, currency, taxes, renewal, cancellation, payment evidence, refunds |
 | Membership value match | Paid membership fees matched 100% in rewards | Timing, expiry, reversals, accounting and tax treatment |
 | Reward rates | Most partners 20%+; selected off-peak offers up to 100%; high-ticket categories may be below 20% | Calculation base, rounding, exclusions, caps, offer approval |
 | Partner model | Commission model or business-credit model | Contract selection, liability, funding, reconciliation |

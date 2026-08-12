@@ -62,7 +62,7 @@ export function PlatformProgramsPage() {
       setShowForm(false)
       await loadPrograms()
       toast.message(`Program ID: ${programId}`, {
-        description: 'Billing is deferred. The platform subdomain can be configured now.',
+        description: 'Access is managed by operations. The platform subdomain can be configured now.',
       })
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Program could not be created.')

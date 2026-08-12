@@ -45,9 +45,9 @@ export const rewardMeLaunchWorkstreams: LaunchReadinessWorkstream[] = [
     nextAction: 'Approve or amend every recommendation in the commercial owner sign-off.', href: '/admin/portal#agreements', actionLabel: 'Open agreements',
   },
   {
-    id: 'billing', title: 'Paid membership billing', status: 'approval-required', owner: 'RewardMe owner and finance',
-    description: 'The application remains fail-closed until approved prices, Stripe products, webhook secrets, and production evidence exist.',
-    nextAction: 'Approve final prices and policies, configure live Stripe, and run a controlled checkout and refund.', href: '/admin/portal#activity', actionLabel: 'Open operations',
+    id: 'membership-enrollment', title: 'Membership enrollment', status: 'approval-required', owner: 'RewardMe owner and operations',
+    description: 'Online payments are out of scope. Free access is self-service; Regular and Gold access will be assigned manually by authorized operations staff.',
+    nextAction: 'Approve final plan rules and the manual request, identity-check, activation, renewal, cancellation, and audit procedure.', href: '/admin/portal#activity', actionLabel: 'Open operations',
   },
   {
     id: 'rewards', title: 'Rewards and referral funding', status: 'approval-required', owner: 'RewardMe owner and accounting',

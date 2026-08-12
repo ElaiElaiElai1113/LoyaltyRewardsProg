@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useSearchParams } from 'react-router'
 import { z } from 'zod'
 
 import { LanguagePicker } from '@/components/language-picker'
@@ -39,6 +40,8 @@ const earlyAccessParagraphClass = 'max-w-3xl text-[1.125rem] font-medium leading
 export function EarlyAccessPage() {
   const { t } = useLanguage()
   const { program } = useTenant()
+  const [searchParams] = useSearchParams()
+  const isMembershipRequest = program.slug === 'pinas' && searchParams.get('interest') === 'membership'
   const tenantText = (text: string) => t(text).replaceAll('Medellin Rewards', program.name)
   const [leadModalOpen, setLeadModalOpen] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -63,6 +66,14 @@ export function EarlyAccessPage() {
           </div>
 
           <div className="space-y-5">
+            {isMembershipRequest ? (
+              <div className="max-w-3xl border-l-2 border-black pl-4">
+                <h1 className="text-[1.5rem] font-bold leading-tight text-black">Request Regular or Gold access</h1>
+                <p className="mt-2 text-base font-medium leading-7 text-neutral-700">
+                  RewardMe does not collect payments online. Leave your details and the team will contact you about eligibility, reference prices, terms, and manual activation.
+                </p>
+              </div>
+            ) : null}
             {earlyAccessMessageLines.slice(0, 6).map((line) => (
               <p key={line} className={earlyAccessParagraphClass}>
                 {tenantText(line)}
@@ -71,9 +82,9 @@ export function EarlyAccessPage() {
 
             {isSubmitted ? (
               <div className="max-w-xl space-y-3 border-l-2 border-black pl-4">
-                <h2 className="text-xl font-semibold leading-tight text-black">{t("You're on the early list.")}</h2>
+                <h2 className="text-xl font-semibold leading-tight text-black">{isMembershipRequest ? 'Your membership request was received.' : t("You're on the early list.")}</h2>
                 <p className="text-base font-medium leading-7 text-neutral-700">
-                  {tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
+                  {isMembershipRequest ? 'The RewardMe team will contact you about the next manual enrollment steps.' : tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
                 </p>
               </div>
             ) : (
@@ -82,7 +93,7 @@ export function EarlyAccessPage() {
                 className="h-12 rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d]"
                 onClick={openLeadModal}
               >
-                {t(earlyAccessSubscribeButtonLabel)}
+                {isMembershipRequest ? 'Send membership request' : t(earlyAccessSubscribeButtonLabel)}
               </button>
             )}
           </div>
@@ -109,7 +120,10 @@ export function EarlyAccessPage() {
                   fullName: values.fullName,
                   whatsapp: values.whatsapp,
                   email: values.email ?? '',
-                  notes: instagram ? `Instagram: ${instagram}` : '',
+                  notes: [
+                    isMembershipRequest ? 'Interest: RewardMe Regular or Gold membership' : '',
+                    instagram ? `Instagram: ${instagram}` : '',
+                  ].filter(Boolean).join('; '),
                   marketingConsent: true,
                 })
                 if (lead.email) {
@@ -131,9 +145,9 @@ export function EarlyAccessPage() {
             })}
           >
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-black">{t('Join early access')}</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-black">{isMembershipRequest ? 'Request membership access' : t('Join early access')}</DialogTitle>
               <DialogDescription className="text-sm font-semibold leading-6 text-neutral-700">
-                {tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
+                {isMembershipRequest ? 'No payment details are required. The RewardMe team will contact you about manual enrollment.' : tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
               </DialogDescription>
             </DialogHeader>
 
@@ -172,7 +186,7 @@ export function EarlyAccessPage() {
               className="h-12 w-full rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d] disabled:opacity-60"
               disabled={leadForm.formState.isSubmitting}
             >
-              {leadForm.formState.isSubmitting ? t('Submitting...') : t(earlyAccessSubscribeButtonLabel)}
+              {leadForm.formState.isSubmitting ? t('Submitting...') : isMembershipRequest ? 'Send membership request' : t(earlyAccessSubscribeButtonLabel)}
             </button>
           </form>
         </DialogContent>

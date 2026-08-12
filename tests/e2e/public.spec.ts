@@ -119,18 +119,28 @@ test.describe('public acquisition workflow', () => {
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
   })
 
-  test('membership and signup disclose trial and demo-billing limits', async ({ page }) => {
+  test('membership and signup disclose trial and manual-enrollment limits', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/membership')
     await expect(page.getByRole('heading', { name: 'Choose how you want to earn.' })).toBeVisible()
-    await expect(page.getByText('Demo billing:', { exact: false })).toBeVisible()
-    await expect(page.getByText('No real payment is processed here.', { exact: false })).toBeVisible()
+    await expect(page.getByText('Manual enrollment:', { exact: false })).toBeVisible()
+    await expect(page.getByText('RewardMe does not collect online payments or card details.', { exact: false })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Free' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Regular' })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Gold' })).toBeVisible()
+    await page.getByRole('link', { name: 'Request Regular or Gold access' }).click()
+    await expect(page).toHaveURL(/\/invitation\?interest=membership$/)
+    await expect(page.getByRole('heading', { name: 'Request Regular or Gold access' })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Send membership request' })).toBeVisible()
+    const mobileDimensions = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+    expect(mobileDimensions.scrollWidth).toBeLessThanOrEqual(mobileDimensions.clientWidth)
 
     await page.goto('/join')
     await expect(page.getByText('Three-month free access', { exact: true })).toBeVisible()
-    await expect(page.getByText('Rewards and referral bonuses begin after you become a paid member.', { exact: false })).toBeVisible()
+    await expect(page.getByText('the RewardMe team activates an eligible Regular or Gold membership.', { exact: false })).toBeVisible()
     await expect(page.locator('#join-email')).toBeVisible()
     await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
   })

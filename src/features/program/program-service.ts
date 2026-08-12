@@ -241,14 +241,14 @@ export const programService = {
     if (error) throw new Error(error.message)
   },
 
-  async getBilling() {
+  async getPlanAdministration() {
     const sb = requireSupabase()
     const { data, error } = await sb
       .from('program_subscriptions')
       .select('*, subscription_plans(name,price_cents,currency,interval,entitlements)')
       .eq('program_id', getActiveProgram().id)
-      .single()
-    if (error) throw new Error('Billing details could not be loaded.')
+      .maybeSingle()
+    if (error) throw new Error('Plan details could not be loaded.')
     return data
   },
 

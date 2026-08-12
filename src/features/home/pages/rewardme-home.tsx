@@ -15,8 +15,8 @@ const steps = [
   },
   {
     number: '02',
-    title: 'Choose a paid membership',
-    body: 'After the trial, choose Regular or Gold to earn the paid-member reward rates shown by each participating business.',
+    title: 'Request a membership',
+    body: 'After the trial, request Regular or Gold access. The RewardMe team reviews and manually activates eligible memberships.',
   },
   {
     number: '03',
@@ -35,7 +35,7 @@ const plans = [
   {
     name: 'Regular',
     price: '$25/month',
-    description: 'Earn 20%–100% back, receive the paid-member store experience, and get $10 for each qualifying referral.',
+    description: 'Earn 20%–100% back, receive the full member store experience, and get $10 for each qualifying referral after manual activation.',
     featured: true,
   },
   {
@@ -93,7 +93,7 @@ export function RewardMeHomePage() {
             <div className="rewardme-home__ledger-row"><span>Weekend stay · 20% back</span><strong>+ $48</strong></div>
             <div className="rewardme-home__ledger-row"><span>Moved to savings plan</span><strong><LockKeyhole aria-hidden="true" /> planned</strong></div>
             <div className="rewardme-home__ledger-total"><span>AVAILABLE TO REDEEM</span><strong>$109</strong></div>
-            <p>Example paid-member activity only. Actual offers, rates, and availability vary by participating business.</p>
+            <p>Example active-member activity only. Actual offers, rates, and availability vary by participating business.</p>
           </aside>
         </section>
 
@@ -164,7 +164,7 @@ export function RewardMeHomePage() {
           <p className="rewardme-home__eyebrow">MEMBERSHIP</p>
           <div className="rewardme-home__section-heading">
             <h2 id="rewardme-membership-title">Start free. Upgrade when you're ready to earn more.</h2>
-            <p>Public pricing and reward terms follow the RewardMe pitch deck. Billing in this preview remains a demo.</p>
+            <p>Public pricing and reward terms follow the RewardMe pitch deck. RewardMe does not collect payments online; Regular and Gold access is activated manually.</p>
           </div>
           <div className="rewardme-home__plans">
             {plans.map((plan) => (

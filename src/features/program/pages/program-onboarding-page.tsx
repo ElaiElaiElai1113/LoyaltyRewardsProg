@@ -91,7 +91,7 @@ export function ProgramOnboardingPage() {
         <div className="mx-auto max-w-3xl">
           <Check className="size-10 text-success" />
           <h1 className="mt-5 text-3xl font-semibold">{values.name} is ready for configuration</h1>
-          <p className="mt-3 text-[var(--muted-foreground)]">The program was created without billing and your account is its first program administrator.</p>
+          <p className="mt-3 text-[var(--muted-foreground)]">The program was created with operations-managed access and your account is its first program administrator.</p>
           <dl className="mt-8 divide-y divide-[var(--border)] border-y border-[var(--border)]">
             <Result label="Program ID" value={created.id} />
             <Result label="Platform hostname" value={created.hostname} />
@@ -176,7 +176,7 @@ export function ProgramOnboardingPage() {
                 <Result label="Region" value={`${values.countryCode} / ${values.currency} / ${values.timezone}`} />
                 <Result label="Support" value={values.supportEmail} />
               </dl>
-              <p className="text-sm text-[var(--muted-foreground)]">No payment is collected. Subscription billing remains inactive until it is configured separately.</p>
+              <p className="text-sm text-[var(--muted-foreground)]">No payment is collected. Plan assignments are handled directly by authorized operations staff.</p>
             </section>
           ) : null}
 

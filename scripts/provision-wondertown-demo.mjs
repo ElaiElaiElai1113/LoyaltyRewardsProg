@@ -42,7 +42,7 @@ if (programError || !program) {
 }
 if (program.program_subscriptions?.status !== 'trialing'
   || program.program_subscriptions?.subscription_plans?.code !== 'launch') {
-  throw new Error('Wondertown Rewards does not have the expected non-Stripe launch entitlement.')
+  throw new Error('Wondertown Rewards does not have the expected operations-managed launch entitlement.')
 }
 
 const businessFixtures = [

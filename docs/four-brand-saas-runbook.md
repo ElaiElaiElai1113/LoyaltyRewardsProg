@@ -74,14 +74,16 @@ Emergency containment SQL is stored under `supabase/rollback-guides`. These file
 6. Restore a database archive only into a disposable environment first and validate it.
 7. Never delete financial records as a rollback mechanism.
 
-## Stripe
+## Plan administration
 
-Stripe is deferred. Program provisioning, platform subdomains, configuration, and access administration must remain usable without it.
+Online payment processing is not part of this platform. Program provisioning,
+platform subdomains, configuration, and access administration are managed by
+authorized operations staff.
 
-1. Register `/api/stripe-webhook` for Checkout and subscription lifecycle events.
-2. Confirm signature verification and idempotent event claims in staging.
-3. Test success, cancellation, past-due, unpaid, upgrade, downgrade, and cancellation-at-period-end.
-4. Confirm SaaS billing never updates a member rewards membership.
+1. Approve plan entitlements and program limits before assignment.
+2. Record the operator, reason, evidence, and effective date for every plan change.
+3. Test activation, suspension, renewal reminders, cancellation, and cross-tenant isolation.
+4. Keep card and payment credentials out of platform forms, logs, and support records.
 
 ## Launch Gate
 

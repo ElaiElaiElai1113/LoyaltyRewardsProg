@@ -30,9 +30,7 @@ const configurations = {
     staffName: 'RewardMe QA Staff',
     adminEmail: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
     adminName: 'RewardMe QA Administrator',
-    recoveryRedirect:
-      process.env.E2E_REWARDME_RECOVERY_REDIRECT
-      ?? 'https://loyalty-rewards-prog.vercel.app/reset-password',
+    recoveryRedirect: 'https://loyalty-rewards-prog.vercel.app/reset-password',
     phone: '+63 917 555 0101',
     transactionRequestId: 'f1000000-0000-4000-8000-000000000001',
     transactionReceipt: 'REWARDME-QA-001',
@@ -416,5 +414,5 @@ console.log(JSON.stringify({
   passwordRecoveryRedirectVerified: true,
   transactionFixtureId: transactionFixtureRow.id,
   giftCardFixtureId: giftCardFixture.id,
-  billingConfigured: false,
+  planAdministration: 'manual',
 }, null, 2))

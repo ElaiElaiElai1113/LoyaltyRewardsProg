@@ -15,11 +15,12 @@ describe('current UI process safeguards', () => {
     expect(page).not.toContain('Create import batch')
   })
 
-  it('keeps intentionally disabled billing informational', () => {
+  it('keeps manually administered plans informational', () => {
     const page = source('src/features/program/pages/program-billing-page.tsx')
 
-    expect(page).toContain('Managed offline')
-    expect(page).toContain('Online billing is intentionally disabled.')
+    expect(page).toContain('Managed by operations')
+    expect(page).toContain('RewardMe does not collect payments online.')
+    expect(page).toContain('No card or payment details are collected from this page.')
     expect(page).not.toContain('Open secure billing')
     expect(page).not.toContain('startCheckout')
   })
