@@ -109,7 +109,7 @@ export function RewardMeHomePage() {
           <p className="rewardme-home__eyebrow">HOW IT WORKS</p>
           <div className="rewardme-home__section-heading">
             <h2 id="rewardme-how-title">Three steps. That's the whole system.</h2>
-            <p>The trial lets you explore the program first. Paid-member earning begins only after conversion.</p>
+            <p>The trial lets you explore the program first. Reward earning begins only after the RewardMe team manually activates an eligible membership.</p>
           </div>
           <ol className="rewardme-home__steps">
             {steps.map((step) => (

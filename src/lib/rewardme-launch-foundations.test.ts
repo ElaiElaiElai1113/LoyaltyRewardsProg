@@ -58,7 +58,7 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(packageJson).not.toContain('test:local-qa-readiness')
     expect(existsSync('scripts/run-rewardme-isolated-qa.ps1')).toBe(false)
     expect(localQaGuide).toContain('RewardMe browser QA workflow')
-    expect(localQaGuide).toContain('does not require a local database runtime')
+    expect(localQaGuide).toMatch(/does\s+not require a local database runtime/)
   })
 
   it('provisions production QA without persisting or printing privileged keys', () => {
