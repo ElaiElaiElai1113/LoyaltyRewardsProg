@@ -16,5 +16,10 @@ test.describe('admin workflow smoke test', () => {
     await page.goto('/admin/gift-cards')
     await expect(page).toHaveURL(/\/admin\/gift-cards$/)
     await expect(page.locator('body')).toContainText(/Gift Cards|Tarjetas/i)
+
+    await page.goto('/admin/memberships')
+    await expect(page).toHaveURL(/\/admin\/memberships$/)
+    await expect(page.locator('[data-membership-operations]')).toBeVisible()
+    await expect(page.locator('body')).toContainText(/Request queue/i)
   })
 })

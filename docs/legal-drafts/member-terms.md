@@ -16,7 +16,7 @@ Each account must represent one real person. Members must provide accurate infor
 
 ## 3. Membership plans
 
-Free and paid plans, prices, renewal periods, included reward rates, cancellation rights, refunds, and taxes must be shown before purchase. Proposed pricing and reward percentages are not final until approved in the commercial decision register and reviewed by counsel.
+Free, Regular, and Gold plans, reference prices, renewal periods, included reward rates, cancellation rights, refunds, and taxes must be shown before activation. RewardMe does not collect online payments or card details. Regular and Gold access is requested by the member and activated manually by authorized staff, with a visible status and audit history. Proposed pricing, off-platform fee handling, and reward percentages are not final until approved in the commercial decision register and reviewed by counsel.
 
 ## 4. Earning and using rewards
 
@@ -37,4 +37,3 @@ Partner participation and offers can change. Material changes to paid plans or m
 ## 8. Liability, disputes, and governing law
 
 Counsel must provide compliant warranties, liability limits, complaint escalation, venue, governing law, and alternative-dispute language without excluding non-waivable Philippine consumer rights.
-

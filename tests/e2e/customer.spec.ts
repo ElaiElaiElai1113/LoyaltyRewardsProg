@@ -19,6 +19,9 @@ test.describe('customer workflow smoke test', () => {
       await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`))
     }
 
+    await page.goto('/membership')
+    await expect(page.locator('[data-membership-request-panel]')).toBeVisible()
+
     await page.goto('/rewards')
     await expect(page).toHaveURL(/\/dashboard$/)
     await expect(page.locator('body')).toContainText(/QR de miembro|member QR|Billetera de recompensas/i)

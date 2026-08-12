@@ -149,17 +149,66 @@ export type MembershipStatus = 'pending' | 'active' | 'past_due' | 'unpaid' | 'c
 export interface Membership {
   id: string
   profileId: string
+  programId?: string
   status: MembershipStatus
+  tier?: ManualMembershipTier
   currentPeriodStart: string
   currentPeriodEnd: string
   cancelAtPeriodEnd: boolean
   priceCents: number
   currency: string
   provider: string
+  providerStatus?: string
   providerSubscriptionId: string | null
   lastCreditAt: string | null
   createdAt: string
   updatedAt: string
+}
+
+export type ManualMembershipTier = 'regular' | 'gold'
+export type ManualMembershipRequestKind = 'enrollment' | 'cancellation'
+export type ManualMembershipRequestStatus = 'pending' | 'approved' | 'rejected' | 'canceled'
+export type ManualMembershipEventType =
+  | 'requested'
+  | 'request_canceled'
+  | 'approved'
+  | 'rejected'
+  | 'membership_renewed'
+  | 'membership_canceled'
+
+export interface ManualMembershipRequest {
+  id: string
+  programId: string
+  programName?: string
+  programSlug?: string
+  profileId: string
+  memberName?: string
+  memberEmail?: string
+  memberPhone?: string
+  requestKind: ManualMembershipRequestKind
+  requestedTier: ManualMembershipTier
+  status: ManualMembershipRequestStatus
+  memberNote: string
+  reviewerNote: string
+  requestedAt: string
+  reviewedAt: string | null
+  membershipStatus?: MembershipStatus | null
+  membershipTier?: ManualMembershipTier | null
+  membershipEnd?: string | null
+}
+
+export interface ManualMembershipEvent {
+  id: string
+  requestId: string | null
+  programId: string
+  profileId: string
+  actorProfileId: string | null
+  eventType: ManualMembershipEventType
+  tier: ManualMembershipTier
+  fromStatus: string | null
+  toStatus: string
+  reason: string
+  createdAt: string
 }
 
 export type ReferralStatus = 'pending' | 'approved' | 'rejected'

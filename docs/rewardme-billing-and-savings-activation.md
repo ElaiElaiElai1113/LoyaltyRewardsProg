@@ -6,13 +6,26 @@ authorized operations staff after the rules below are approved.
 
 ## Manual membership enrollment
 
+Implemented technical controls:
+
+- authenticated member request, cancellation request, pending-request
+  cancellation, status, recovery, and history views;
+- protected staff request queue with approval, decline, activation, renewal,
+  cancellation, date validation, and audit history;
+- RLS, exact-role RPC grants, direct-write revocation, a RewardMe-specific
+  mutation guard, one-pending-request enforcement, and immutable events;
+- membership email templates and an automated operations release gate; and
+- a staff SOP that keeps payments and sensitive credentials out of RewardMe.
+
+Remaining approval and external gates:
+
 1. Complete the commercial owner sign-off and legal/tax approval.
 2. Approve which plan prices are reference terms and how any off-platform fees,
    receipts, taxes, renewals, cancellations, refunds, and disputes are handled.
 3. Assign named staff who may review, approve, activate, change, and revoke plans.
 4. Document identity checks, eligibility evidence, dual approval for sensitive
    changes, and an auditable reason for every activation or cancellation.
-5. Test the public request form, lead review, activation, renewal reminder,
+5. Test the public request form, operations review, activation, renewal reminder,
    cancellation, cross-tenant isolation, error recovery, and mobile workflows.
 6. Keep card numbers and other payment credentials out of RewardMe forms, logs,
    database fields, support messages, and browser storage.

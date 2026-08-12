@@ -35,6 +35,23 @@ the named approvals below are complete.
 - Run one training sale and one reversal before serving members.
 - Retain the validated intake files, signed agreement, approval record and test evidence.
 
+## Admin review and activation controls
+
+1. Use `/admin/portal#partners` to create or review the partner. The admin form
+   covers identity, public listing, location, reward settings, tax and service
+   settings, owner invitation, and an optional required e-signature agreement.
+2. Use `/admin/portal#agreements` to confirm the correct agreement version and
+   signature status. A CSV value of `signed` is intake evidence only; retain the
+   actual signed document and verify the in-app agreement record where required.
+3. Keep the partner inactive until the signed agreement, named owner, complete
+   public information, approved commercial settings, and training evidence are
+   present. Use the Active/Inactive and missing-information filters during review.
+4. Use `/admin/portal#promotions` for controlled live offers. Confirm partner,
+   eligibility, dates, inventory, reward economics, restrictions, and owner
+   approval before launch. Pause the partner or offer when any approval expires.
+5. CSV validation and review packaging never activate a record. A platform
+   administrator must deliberately create or update the reviewed record.
+
 ## Daily workflow
 
 1. Staff sign in through **Business Login**.

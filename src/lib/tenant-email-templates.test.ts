@@ -11,7 +11,7 @@ const brand: TenantEmailBrand = {
 }
 
 describe('tenant email templates', () => {
-  for (const kind of ['welcome', 'invitation', 'password-recovery', 'email-verification', 'administrator-invitation'] as const) {
+  for (const kind of ['welcome', 'invitation', 'password-recovery', 'email-verification', 'administrator-invitation', 'membership-request-received', 'membership-status-update'] as const) {
     it(`renders ${kind} with tenant identity`, () => {
       const email = buildTenantEmail({ kind, brand, recipientName: 'Shaun Example', actionUrl: tenantActionUrl(brand, '/signin?token=preview') })
       expect(email.subject).toContain(brand.name)

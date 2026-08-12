@@ -5,6 +5,7 @@ const matrix = JSON.parse(await readFile(path, 'utf8'))
 const allowedStatuses = new Set(['ready', 'pending', 'disabled'])
 const requiredPaths = ['/auth/confirm', '/reset-password', '/accept-invitation']
 const router = await readFile(new URL('../src/routes/router.tsx', import.meta.url), 'utf8')
+const templates = await readFile(new URL('../api/_tenant-email-templates.ts', import.meta.url), 'utf8')
 const hostnames = new Set()
 
 if (matrix.schemaVersion !== 1 || !Array.isArray(matrix.programs) || matrix.programs.length < 4) {
@@ -51,6 +52,15 @@ for (const requiredPath of requiredPaths) {
 
 if (matrix.redirectPaths.includes('/auth/reset-password')) {
   throw new Error('Remove the obsolete /auth/reset-password redirect; the application uses /reset-password.')
+}
+
+for (const membershipKind of ['membership-request-received', 'membership-status-update']) {
+  if (!templates.includes(`'${membershipKind}'`)) {
+    throw new Error(`Missing RewardMe membership email template: ${membershipKind}`)
+  }
+}
+if (!router.includes("path: '/membership'")) {
+  throw new Error('Membership email action route is missing.')
 }
 
 const ready = matrix.programs.filter((program) => program.status === 'ready').length

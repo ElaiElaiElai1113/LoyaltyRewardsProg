@@ -49,6 +49,7 @@
     "validate:rewardme-partners": "node scripts/validate-rewardme-partners.mjs",
     "prepare:rewardme-partners": "node scripts/prepare-rewardme-partner-package.mjs",
     "test:rewardme-partner-import": "node --test scripts/rewardme-partner-import.test.mjs",
+    "test:rewardme-membership-operations": "node scripts/validate-rewardme-membership-operations.mjs",
     "audit:tenant-branding": "node scripts/audit-tenant-branding.mjs",
     "assets:rewardme-qr": "node scripts/generate-rewardme-qr.mjs",
     "qa:reset-passwords": "node scripts/reset-e2e-account-passwords.mjs",

@@ -28,7 +28,7 @@ export function LaunchReadinessPage() {
           <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">Launch readiness</h1>
           <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-on-surface-variant/80 sm:text-base">A truthful view of what is verified, executable now, awaiting business approval, or waiting for production inputs. Approval-gated work never becomes active from this page.</p>
         </div>
-        <Badge variant="outline" className="w-fit normal-case tracking-normal">Updated 11 Aug 2026</Badge>
+        <Badge variant="outline" className="w-fit normal-case tracking-normal">Updated 12 Aug 2026</Badge>
       </header>
 
       <section className="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label="Readiness summary">

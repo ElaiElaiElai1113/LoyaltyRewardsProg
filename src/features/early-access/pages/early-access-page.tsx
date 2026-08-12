@@ -125,7 +125,7 @@ export function EarlyAccessPage() {
                     instagram ? `Instagram: ${instagram}` : '',
                   ].filter(Boolean).join('; '),
                   marketingConsent: true,
-                })
+                }, { source: isMembershipRequest ? 'rewardme-membership-interest' : 'early-access-page' })
                 if (lead.email) {
                   try {
                     await sendEarlyAccessWelcomeEmail({

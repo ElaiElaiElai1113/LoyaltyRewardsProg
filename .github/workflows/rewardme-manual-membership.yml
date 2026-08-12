@@ -1,0 +1,69 @@
+name: Apply RewardMe manual membership operations
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY REWARDME MANUAL MEMBERSHIP to run the scoped production migration
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rewardme-manual-membership-production
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY REWARDME MANUAL MEMBERSHIP'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: retfuxpfstatpdsunkgj
+      MIGRATION_VERSION: '20260812062827'
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require production database credentials
+        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD"
+      - name: Link the approved production project
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Refuse unsafe provider conversion
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ begin
+          if exists (select 1 from public.memberships where provider = 'stripe')
+          then raise exception 'stripe_memberships_require_manual_reconciliation';
+          end if;
+          end \$\$;"
+      - name: Apply only the approved manual membership migration
+        run: npx supabase db query --linked --file supabase/migrations/20260812062827_rewardme_manual_membership_operations.sql
+      - name: Record the applied migration version
+        run: npx supabase migration repair --linked --status applied "$MIGRATION_VERSION" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Verify the production controls
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ begin
+          if to_regclass('public.manual_membership_requests') is null
+            or to_regclass('public.manual_membership_events') is null
+            or to_regprocedure('public.request_manual_membership(uuid,text,text)') is null
+            or to_regprocedure('public.review_manual_membership_request(uuid,text,text,timestamptz)') is null
+            or to_regprocedure('public.get_manual_membership_requests()') is null
+          then raise exception 'manual_membership_operations_verification_failed';
+          end if;
+          if not exists (
+            select 1 from public.programs
+            where slug = 'pinas'
+              and not (feature_flags ? 'memberBilling')
+              and coalesce((feature_flags ->> 'savingsPlans')::boolean, false) = false
+          ) then raise exception 'rewardme_feature_safeguard_verification_failed';
+          end if;
+          end \$\$;"

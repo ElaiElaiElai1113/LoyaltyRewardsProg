@@ -15,6 +15,8 @@ const templates = [
   ['password-recovery', 'Reset your password', `${origin}/reset-password?token=PREVIEW`],
   ['email-verification', 'Verify your email', `${origin}/signin?verified=PREVIEW`],
   ['administrator-invitation', `Admin access for ${config.programName}`, `${origin}/signin?admin_invitation=PREVIEW`],
+  ['membership-request-received', 'Membership request received', `${origin}/membership`],
+  ['membership-status-update', 'Membership status updated', `${origin}/membership`],
 ]
 for (const [filename, subject, actionUrl] of templates) {
   const html = `<!doctype html><html lang="${config.locale || 'en'}"><meta charset="utf-8"><title>${subject}</title><body><main><h1>${config.programName || config.slug}</h1><h2>${subject}</h2><p><a href="${actionUrl}">Continue</a></p><p>${config.emailFromAddress || ''}</p></main></body></html>`

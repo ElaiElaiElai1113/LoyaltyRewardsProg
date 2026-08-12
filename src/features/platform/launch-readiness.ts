@@ -46,8 +46,8 @@ export const rewardMeLaunchWorkstreams: LaunchReadinessWorkstream[] = [
   },
   {
     id: 'membership-enrollment', title: 'Membership enrollment', status: 'approval-required', owner: 'RewardMe owner and operations',
-    description: 'Online payments are out of scope. Free access is self-service; Regular and Gold access will be assigned manually by authorized operations staff.',
-    nextAction: 'Approve final plan rules and the manual request, identity-check, activation, renewal, cancellation, and audit procedure.', href: '/admin/portal#activity', actionLabel: 'Open operations',
+    description: 'The secure member request flow, staff review queue, activation, renewal, cancellation, recovery, and immutable audit history are implemented. Online payments remain out of scope.',
+    nextAction: 'Approve final plan, identity-check, fee, renewal, cancellation, refund, and notification rules before public paid launch.', href: '/admin/memberships', actionLabel: 'Open membership queue',
   },
   {
     id: 'rewards', title: 'Rewards and referral funding', status: 'approval-required', owner: 'RewardMe owner and accounting',

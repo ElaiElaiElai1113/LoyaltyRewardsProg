@@ -63,8 +63,10 @@ Existing in-app terms are operational drafts. A Philippine-qualified legal profe
   explicit QA-project authorization.
 - A single deployment switch, `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, that hides
   all public test credentials before launch.
-- A manual Regular/Gold request flow with explicit no-online-payment disclosure,
-  membership-specific lead capture, recovery messaging, and operations-owned activation.
+- A complete technical Regular/Gold operations flow with explicit no-online-payment
+  disclosure, authenticated requests, staff approval/decline, activation, renewal,
+  cancellation, recovery, immutable history, email templates, and a tested SOP.
+  Commercial, legal, sender, and real-world evidence gates remain external.
 - Savings goal and read-only ledger schema with RLS, tenant ownership checks, and
   separate program/plan feature gates. No lock, release, bonus, maturity or payout mutation is active.
 - Spanish and Filipino translations for the public legal approval notice.

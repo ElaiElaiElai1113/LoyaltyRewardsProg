@@ -8,7 +8,14 @@ export type TenantEmailBrand = {
   emailFromAddress?: string
 }
 
-export type TenantEmailKind = 'welcome' | 'invitation' | 'password-recovery' | 'email-verification' | 'administrator-invitation'
+export type TenantEmailKind =
+  | 'welcome'
+  | 'invitation'
+  | 'password-recovery'
+  | 'email-verification'
+  | 'administrator-invitation'
+  | 'membership-request-received'
+  | 'membership-status-update'
 
 const content: Record<TenantEmailKind, { subject: (brand: TenantEmailBrand) => string; heading: string; body: string; action?: string }> = {
   welcome: {
@@ -39,6 +46,18 @@ const content: Record<TenantEmailKind, { subject: (brand: TenantEmailBrand) => s
     heading: 'Program administrator invitation',
     body: 'You have been invited to administer this rewards program. Access remains limited to this program.',
     action: 'Review invitation',
+  },
+  'membership-request-received': {
+    subject: (brand) => `${brand.name} membership request received`,
+    heading: 'Your request is in review',
+    body: 'We received your membership request. An authorized operations team member will review it. No card details are needed, and you can view or cancel the pending request from your membership page.',
+    action: 'View membership status',
+  },
+  'membership-status-update': {
+    subject: (brand) => `${brand.name} membership status updated`,
+    heading: 'Your membership status changed',
+    body: 'An authorized operations team member updated your membership request or active term. Sign in to review the current status and audit history, or contact support if anything looks incorrect.',
+    action: 'Review membership',
   },
 }
 

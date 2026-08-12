@@ -8,6 +8,13 @@
 - Review unusually high reward issuance, repeated QR use, pending redemptions, and unpaid commissions.
 - Confirm the support queue has an owner.
 
+## Membership operations
+
+Use the protected `/admin/memberships` queue for Regular and Gold enrollment,
+renewal, cancellation, and audit review. Follow the
+[manual membership operations SOP](rewardme-membership-operations-sop.md).
+Never update membership rows directly or record card details in RewardMe.
+
 ## Reward adjustment
 
 Require a transaction reference, reason, requested delta, evidence, and approver. Use the administrative adjustment feature; never edit database balances manually. Record who approved and performed the change.
@@ -35,4 +42,3 @@ Log the request, verify identity proportionately, identify affected systems, app
 7. Publish a factual internal timeline and corrective actions.
 
 Do not speculate publicly or include personal information in shared incident channels.
-

@@ -21,6 +21,7 @@ import { canAccessProgramAdmin } from '@/lib/program-access'
 import { getPasswordSetupRoute, getPasswordSetupType } from '@/lib/password-setup'
 
 const AdminPage = lazy(() => import('@/features/admin/pages/admin-page').then((module) => ({ default: module.AdminPage })))
+const MembershipOperationsPage = lazy(() => import('@/features/platform/pages/membership-operations-page').then((module) => ({ default: module.MembershipOperationsPage })))
 const AmbassadorsPage = lazy(() => import('@/features/ambassadors/pages/ambassadors-page').then((module) => ({ default: module.AmbassadorsPage })))
 const AuthPage = lazy(() => import('@/features/auth/pages/landing-page').then((module) => ({ default: module.AuthPage })))
 const EmailConfirmationPage = lazy(() => import('@/features/auth/pages/email-confirmation-page').then((module) => ({ default: module.EmailConfirmationPage })))
@@ -542,6 +543,7 @@ const router = createBrowserRouter([
           { path: '/admin/portal', element: <AdminPage /> },
           { path: '/admin/programs', element: <PlatformProgramsPage /> },
           { path: '/admin/readiness', element: <LaunchReadinessPage /> },
+          { path: '/admin/memberships', element: <MembershipOperationsPage /> },
           { path: '/admin/import', element: <TenantImportPage /> },
           { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
           { path: '/admin/guide', element: <PlatformGuidePage /> },
