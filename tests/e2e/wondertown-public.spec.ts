@@ -33,9 +33,14 @@ test.describe('Wondertown public testing experience', () => {
         return
       }
       await expect(map).toBeVisible()
+      await expect(page.getByTestId('realistic-map-cartography')).toBeVisible()
+      await expect(page.getByTestId('map-scale')).toContainText('250 m')
+      await expect(page.getByTestId('map-compass')).toContainText('N')
       await expect(pins).toHaveCount(5)
       await expect(map.getByText('Storybook Lane', { exact: true })).toBeVisible()
       await expect(map.getByText('Starlight Square', { exact: true })).toBeVisible()
+      await expect(map.getByText('CIVIC PARK', { exact: true })).toBeVisible()
+      await expect(map.getByText('SILVER CREEK', { exact: true })).toBeVisible()
       await expect(map.getByText('Laureles', { exact: true })).toHaveCount(0)
 
       const mapBox = await map.boundingBox()
