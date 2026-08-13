@@ -118,6 +118,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
         return
       }
 
+      // The explicit signIn call validates the requested portal and owns the
+      // resulting profile state. Ignoring its SIGNED_IN event prevents a
+      // valid account from briefly entering its real dashboard when it chose
+      // the wrong portal and is about to be rejected.
+      if (authService.getPendingSignInRole()) {
+        return
+      }
+
       window.setTimeout(() => {
         void authService
           .getProfileForUserId(nextSession.user.id)
@@ -125,17 +133,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             if (!sessionProfile) {
               handleResolvedProfile(null)
               return
-            }
-
-            const pendingRole = authService.getPendingSignInRole()
-            if (pendingRole && !authService.isProfileAllowedForRole(sessionProfile, pendingRole)) {
-              // The initiating signIn call owns rejection and sign-out. Starting a
-              // second sign-out here races that call and can hide its portal error.
-              return
-            }
-
-            if (pendingRole) {
-              authService.clearPendingSignInRole()
             }
 
             handleResolvedProfile(sessionProfile)
@@ -159,6 +156,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     isLoading,
     async signIn(values: AuthFormValues) {
       const sessionProfile = await authService.signIn(values)
+      authService.clearPendingSignInRole()
       authRevision.current += 1
       queryClient.clear()
       setProfile(sessionProfile)

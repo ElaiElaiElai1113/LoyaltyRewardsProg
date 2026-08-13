@@ -989,14 +989,14 @@ runTest('all account roles use the approved unified auth portal', () => {
   assert.doesNotMatch(router, /StaffLoginPage/)
 })
 
-runTest('wrong-role auth events defer rejection to the initiating sign-in call', () => {
+runTest('auth events defer every active portal sign-in to the initiating call', () => {
   const provider = readFileSync('src/features/auth/auth-provider.tsx', 'utf8')
-  const mismatchBlock = provider.match(
-    /if \(pendingRole && !authService\.isProfileAllowedForRole\(sessionProfile, pendingRole\)\) \{([\s\S]*?)\n\s*\}/,
+  const pendingSignInBlock = provider.match(
+    /if \(authService\.getPendingSignInRole\(\)\) \{([\s\S]*?)\n\s*\}/,
   )?.[1] ?? ''
 
-  assert.match(mismatchBlock, /initiating signIn call owns rejection and sign-out/)
-  assert.doesNotMatch(mismatchBlock, /authService\.signOut/)
+  assert.match(pendingSignInBlock, /return/)
+  assert.match(provider, /const sessionProfile = await authService\.signIn\(values\)\s*authService\.clearPendingSignInRole\(\)/)
 })
 
 runTest('wrong-role sign-ins clear only the current browser session', () => {
