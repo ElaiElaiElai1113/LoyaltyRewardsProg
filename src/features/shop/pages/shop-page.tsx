@@ -15,69 +15,15 @@ import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
 import { formatCurrency } from '@/lib/utils'
 import type { Business, Product } from '@/types/domain'
-
-const PREVIEW_PIN_POSITIONS = [
-  { left: 28, top: 34 },
-  { left: 58, top: 26 },
-  { left: 72, top: 54 },
-  { left: 42, top: 68 },
-  { left: 20, top: 58 },
-  { left: 82, top: 36 },
-  { left: 36, top: 44 },
-  { left: 64, top: 72 },
-]
+import { getBusinessMapPositions, hasExactMapPin } from '@/features/shop/business-map-layout'
 
 const DAVAO_MAP_LABELS = ['Davao City', 'Matina', 'Bajada', 'Lanang']
 const MEDELLIN_MAP_LABELS = ['Laureles', 'Poblado', 'Centro', 'Provenza']
+const WONDERTOWN_MAP_LABELS = ['Storybook Lane', 'Comet Crescent', 'Lantern Walk', 'Starlight Square']
 
 function isQaReleaseFixture(business: Business) {
   return business.slug.endsWith('-qa-partner')
     || business.description === 'Isolated partner used only for authenticated release testing.'
-}
-
-function clamp(value: number, min: number, max: number) {
-  return Math.min(max, Math.max(min, value))
-}
-
-function hasExactMapPin(business: Business) {
-  return business.latitude !== null && business.longitude !== null
-}
-
-function getPreviewMapPosition(index: number) {
-  const base = PREVIEW_PIN_POSITIONS[index % PREVIEW_PIN_POSITIONS.length]
-  const lap = Math.floor(index / PREVIEW_PIN_POSITIONS.length)
-  const offset = lap * 4
-
-  return {
-    left: `${clamp(base.left + offset, 10, 90)}%`,
-    top: `${clamp(base.top + (lap % 2 === 0 ? offset : -offset), 10, 90)}%`,
-  }
-}
-
-function getMapPosition(
-  business: Business,
-  index: number,
-  center: { latitude: number; longitude: number },
-) {
-  if (!hasExactMapPin(business)) {
-    return getPreviewMapPosition(index)
-  }
-
-  const bounds = {
-    minLat: center.latitude - 0.08,
-    maxLat: center.latitude + 0.08,
-    minLng: center.longitude - 0.08,
-    maxLng: center.longitude + 0.08,
-  }
-  const longitude = business.longitude ?? bounds.minLng
-  const latitude = business.latitude ?? bounds.minLat
-  const x = ((longitude - bounds.minLng) / (bounds.maxLng - bounds.minLng)) * 100
-  const y = ((bounds.maxLat - latitude) / (bounds.maxLat - bounds.minLat)) * 100
-
-  return {
-    left: `${clamp(x, 8, 92)}%`,
-    top: `${clamp(y, 8, 92)}%`,
-  }
 }
 
 function PartnerMapBackdrop({ labels }: { labels: readonly [string, string, string, string] | string[] }) {
@@ -185,7 +131,12 @@ export function ShopPage() {
 
   const allBusinesses = businesses.data ?? []
   const partnerBusinesses = profile ? allBusinesses : allBusinesses.filter((business) => !isQaReleaseFixture(business))
-  const mapLabels = program.slug === 'pinas' ? DAVAO_MAP_LABELS : MEDELLIN_MAP_LABELS
+  const mapLabels = program.slug === 'pinas'
+    ? DAVAO_MAP_LABELS
+    : program.slug === 'wondertown'
+      ? WONDERTOWN_MAP_LABELS
+      : MEDELLIN_MAP_LABELS
+  const mapPositions = getBusinessMapPositions(partnerBusinesses)
   const previewPinnedBusinesses = partnerBusinesses.filter((business) => !hasExactMapPin(business))
   const selectedBusiness = partnerBusinesses.find((business) => business.id === selectedBusinessId) ?? null
   const selectedProducts = selectedBusiness
@@ -275,7 +226,7 @@ export function ShopPage() {
           />
         ) : (
           <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-            <section className="relative min-w-0 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary/20 bg-[#f3e7d1] shadow-card sm:min-h-[42rem]">
+            <section data-testid="partner-map" className="relative min-w-0 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary/20 bg-[#f3e7d1] shadow-card sm:min-h-[42rem]">
               <PartnerMapBackdrop labels={mapLabels} />
 
               <div className="absolute left-5 top-5 rounded-2xl border border-primary/20 bg-card/88 px-4 py-3 text-primary shadow-soft backdrop-blur">
@@ -287,7 +238,7 @@ export function ShopPage() {
 
               {partnerBusinesses.map((business, index) => {
                 const isExactPin = hasExactMapPin(business)
-                const position = getMapPosition(business, index, program.mapCenter)
+                const position = mapPositions[business.id]
 
                 return (
                   <button
@@ -298,6 +249,7 @@ export function ShopPage() {
                     onClick={() => openBusiness(business)}
                     aria-label={`${t('Open business')} ${business.name}`}
                     aria-pressed={selectedBusinessId === business.id}
+                    data-testid="business-map-pin"
                   >
                     <span
                       className={`absolute left-1/2 top-1/2 size-16 -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-white/18 opacity-70 transition group-hover:scale-125 group-hover:opacity-100 ${
@@ -316,7 +268,7 @@ export function ShopPage() {
                         <span className="font-serif text-2xl font-bold">{business.name.slice(0, 1)}</span>
                       )}
                     </span>
-                    <span className="absolute left-1/2 top-[calc(100%+0.55rem)] min-w-32 -translate-x-1/2 rounded-full border border-white/20 bg-black/35 px-3 py-1 text-xs font-bold text-white shadow-soft backdrop-blur">
+                    <span className="absolute left-1/2 top-[calc(100%+0.55rem)] hidden min-w-32 -translate-x-1/2 rounded-full border border-white/20 bg-black/35 px-3 py-1 text-xs font-bold text-white shadow-soft backdrop-blur min-[520px]:block">
                       {business.name}
                     </span>
                     {!isExactPin ? (

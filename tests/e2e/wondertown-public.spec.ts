@@ -12,6 +12,53 @@ function collectRuntimeErrors(page: Page) {
 }
 
 test.describe('Wondertown public testing experience', () => {
+  test('partner map spreads locations across the town on mobile and desktop', async ({ page }) => {
+    const runtimeErrors = collectRuntimeErrors(page)
+
+    for (const viewport of [
+      { width: 320, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1440, height: 1000 },
+    ]) {
+      await page.setViewportSize(viewport)
+      const response = await page.goto('/shop?tenant=wondertown', { waitUntil: 'domcontentloaded' })
+      expect(response?.status()).toBeLessThan(400)
+
+      const map = page.getByTestId('partner-map')
+      const pins = page.getByTestId('business-map-pin')
+      if (await map.count() === 0) {
+        await expect(page.getByRole('heading', { name: 'No partner businesses yet' })).toBeVisible()
+        return
+      }
+      await expect(map).toBeVisible()
+      await expect(pins).toHaveCount(5)
+      await expect(map.getByText('Storybook Lane', { exact: true })).toBeVisible()
+      await expect(map.getByText('Starlight Square', { exact: true })).toBeVisible()
+      await expect(map.getByText('Laureles', { exact: true })).toHaveCount(0)
+
+      const mapBox = await map.boundingBox()
+      const pinBoxes = await pins.evaluateAll((elements) => elements.map((element) => {
+        const rect = element.getBoundingClientRect()
+        return { left: rect.left, top: rect.top, right: rect.right, bottom: rect.bottom }
+      }))
+      expect(mapBox).not.toBeNull()
+
+      for (let firstIndex = 0; firstIndex < pinBoxes.length; firstIndex += 1) {
+        const first = pinBoxes[firstIndex]
+        expect(first.left).toBeGreaterThanOrEqual((mapBox?.x ?? 0) - 1)
+        expect(first.right).toBeLessThanOrEqual((mapBox?.x ?? 0) + (mapBox?.width ?? 0) + 1)
+        for (let secondIndex = firstIndex + 1; secondIndex < pinBoxes.length; secondIndex += 1) {
+          const second = pinBoxes[secondIndex]
+          const overlapWidth = Math.max(0, Math.min(first.right, second.right) - Math.max(first.left, second.left))
+          const overlapHeight = Math.max(0, Math.min(first.bottom, second.bottom) - Math.max(first.top, second.top))
+          expect(overlapWidth * overlapHeight, `${viewport.width}px pins ${firstIndex} and ${secondIndex} overlap`).toBe(0)
+        }
+      }
+
+      expect(runtimeErrors, `${viewport.width}px map runtime errors`).toEqual([])
+    }
+  })
+
   test('member, business, and admin sign-in portals publish complete working credentials', async ({ page }) => {
     const portals = [
       {
