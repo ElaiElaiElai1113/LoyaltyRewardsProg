@@ -1001,12 +1001,17 @@ runTest('wrong-role auth events defer rejection to the initiating sign-in call',
 
 runTest('wrong-role sign-ins clear only the current browser session', () => {
   const service = readFileSync('src/integrations/supabase/services/auth-service.ts', 'utf8')
-  const rejectionHelper = service.match(
-    /const rejectCurrentPortal = async \(message: string\): Promise<never> => \{([\s\S]*?)\n\s*\}/,
-  )?.[1] ?? ''
+  const helperStart = service.indexOf('const rejectCurrentPortal')
+  const helperEnd = service.indexOf('const { data, error: authError }', helperStart)
+  const rejectionHelper = service.slice(helperStart, helperEnd)
 
-  assert.match(rejectionHelper, /pendingSignInRole = null/)
   assert.match(rejectionHelper, /signOut\(\{ scope: 'local' \}\)/)
+  assert.match(rejectionHelper, /finally \{\s*pendingSignInRole = null/)
+  assert.ok(
+    rejectionHelper.indexOf("signOut({ scope: 'local' })") <
+      rejectionHelper.indexOf('pendingSignInRole = null'),
+    'the requested role must remain pending until local sign-out finishes',
+  )
   assert.match(rejectionHelper, /throw new Error\(message\)/)
 })
 

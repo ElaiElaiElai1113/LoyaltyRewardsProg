@@ -131,8 +131,14 @@ export const authService = {
     pendingSignInRole = input.role
 
     const rejectCurrentPortal = async (message: string): Promise<never> => {
-      pendingSignInRole = null
-      await sb.auth.signOut({ scope: 'local' })
+      try {
+        // Keep the requested role visible until SIGNED_OUT is emitted. Otherwise
+        // the auth observer can briefly accept the real profile and redirect the
+        // rejected account before the local session has finished clearing.
+        await sb.auth.signOut({ scope: 'local' })
+      } finally {
+        pendingSignInRole = null
+      }
       throw new Error(message)
     }
 
