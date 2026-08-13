@@ -69,6 +69,7 @@ test.describe('white-label tenant resolution', () => {
 
     test(`${tenant.name} identifies the platform-admin choice inside the unified sign-in entry`, async ({ page }) => {
       const errors = collectRuntimeErrors(page)
+      await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
       await page.goto(`/admin?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle('Rewards Platform Admin')
@@ -82,6 +83,7 @@ test.describe('white-label tenant resolution', () => {
 
     test(`${tenant.name} keeps the business entry tenant branded`, async ({ page }) => {
       const errors = collectRuntimeErrors(page)
+      await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
       await page.goto(`/business/login?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle(tenant.name)
