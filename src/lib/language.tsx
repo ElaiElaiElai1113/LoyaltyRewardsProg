@@ -129,6 +129,12 @@ const spanishTranslations: Record<string, string> = {
   'No partner businesses yet': 'Aun no hay negocios aliados',
   'Partner businesses will appear here when they are available.':
     'Los negocios aliados apareceran aqui cuando esten disponibles.',
+  'No partner locations published yet': 'Aun no hay ubicaciones de aliados publicadas',
+  'Explore the map preview now. Verified partner locations will appear here as they are published.':
+    'Explora ahora la vista previa del mapa. Las ubicaciones verificadas apareceran cuando se publiquen.',
+  'Directory coming soon': 'Directorio disponible pronto',
+  'Published partner businesses will be listed here with their exact locations and available products.':
+    'Los negocios aliados publicados apareceran aqui con sus ubicaciones exactas y productos disponibles.',
   Medellin: 'Medellin',
   'Open business': 'Abrir negocio',
   'Business Directory': 'Directorio de negocios',
@@ -1884,6 +1890,12 @@ const tagalogTranslations: Record<string, string> = {
   'No products found matching your filters.': 'Walang produktong tumutugma sa iyong filter.',
   'No partner businesses yet': 'Wala pang katuwang na negosyo',
   'Preparing your partner map.': 'Inihahanda ang mapa ng mga katuwang.',
+  'No partner locations published yet': 'Wala pang nailalathalang lokasyon ng katuwang',
+  'Explore the map preview now. Verified partner locations will appear here as they are published.':
+    'Tingnan muna ang preview ng mapa. Lalabas dito ang mga beripikadong lokasyon kapag nailathala na.',
+  'Directory coming soon': 'Malapit nang ilabas ang directory',
+  'Published partner businesses will be listed here with their exact locations and available products.':
+    'Ililista rito ang mga nailathalang katuwang na negosyo kasama ang eksaktong lokasyon at available na produkto.',
   'Open business': 'Buksan ang negosyo',
   'Available Products': 'Mga Available na Produkto',
   'Add to Cart': 'Idagdag sa Cart',

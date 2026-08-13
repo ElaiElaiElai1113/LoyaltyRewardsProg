@@ -119,6 +119,43 @@ test.describe('public acquisition workflow', () => {
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
   })
 
+  test('RewardMe partner map stays useful and truthful before public partners are published', async ({ page }) => {
+    const runtimeErrors: string[] = []
+    page.on('pageerror', (error) => runtimeErrors.push(error.message))
+
+    for (const viewport of [
+      { width: 320, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1440, height: 1000 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.goto('/shop', { waitUntil: 'domcontentloaded' })
+
+      await expect(page.getByTestId('partner-map')).toBeVisible()
+      await expect(page.getByTestId('realistic-map-cartography')).toBeVisible()
+      await expect(page.getByTestId('map-scale')).toContainText('250 m')
+      await expect(page.getByTestId('map-compass')).toContainText('N')
+      await expect(page.getByTestId('partner-map-empty-state')).toBeVisible()
+      await expect(page.getByTestId('partner-count')).toHaveText('0')
+      await expect(page.getByTestId('map-count')).toHaveText('0')
+      await expect(page.getByTestId('product-count')).toHaveText('0')
+      const mapEmptyState = page.getByTestId('partner-map-empty-state')
+      await expect(mapEmptyState.getByRole('link', { name: 'For Businesses' })).toHaveAttribute('href', '/business')
+      await expect(mapEmptyState.getByRole('link', { name: 'Sign in' }))
+        .toHaveAttribute('href', '/signin')
+
+      const integrity = await page.evaluate(() => ({
+        emptyLinks: Array.from(document.querySelectorAll<HTMLAnchorElement>('a'))
+          .filter((link) => !link.getAttribute('href')?.trim() || link.getAttribute('href') === '#')
+          .map((link) => link.textContent?.trim() || link.getAttribute('aria-label') || 'unlabelled link'),
+        overflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      }))
+      expect(integrity.emptyLinks).toEqual([])
+      expect(integrity.overflow).toBeLessThanOrEqual(2)
+      expect(runtimeErrors, `${viewport.width}px runtime errors`).toEqual([])
+    }
+  })
+
   test('membership and signup disclose trial and manual-enrollment limits', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/membership')

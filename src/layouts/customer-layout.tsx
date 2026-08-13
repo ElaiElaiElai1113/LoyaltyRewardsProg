@@ -132,6 +132,8 @@ export function CustomerLayout() {
                 size="icon"
                 className="hidden text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)] xl:inline-flex"
                 onClick={() => void signOut()}
+                title={t('Sign out')}
+                aria-label={t('Sign out')}
               >
                 <LogOut className="size-5" />
               </Button>

@@ -17,6 +17,8 @@ const routes = [
   '/admin',
   '/reset-password',
   '/accept-invitation',
+  '/shop',
+  '/gift-cards',
   '/terms',
   '/privacy',
   '/reward-terms',

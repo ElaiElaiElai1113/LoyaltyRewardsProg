@@ -26,22 +26,24 @@ test.describe('Wondertown public testing experience', () => {
 
       const map = page.getByTestId('partner-map')
       const pins = page.getByTestId('business-map-pin')
-      const emptyState = page.getByRole('heading', { name: 'No partner businesses yet' })
-      await expect(map.or(emptyState)).toBeVisible()
-      if (await map.count() === 0) {
-        await expect(emptyState).toBeVisible()
-        return
-      }
       await expect(map).toBeVisible()
       await expect(page.getByTestId('realistic-map-cartography')).toBeVisible()
       await expect(page.getByTestId('map-scale')).toContainText('250 m')
       await expect(page.getByTestId('map-compass')).toContainText('N')
-      await expect(pins).toHaveCount(5)
       await expect(map.getByText('Storybook Lane', { exact: true })).toBeVisible()
       await expect(map.getByText('Starlight Square', { exact: true })).toBeVisible()
       await expect(map.getByText('CIVIC PARK', { exact: true })).toBeVisible()
       await expect(map.getByText('SILVER CREEK', { exact: true })).toBeVisible()
       await expect(map.getByText('Laureles', { exact: true })).toHaveCount(0)
+
+      const emptyState = page.getByTestId('partner-map-empty-state')
+      if (await emptyState.isVisible()) {
+        await expect(pins).toHaveCount(0)
+        expect(runtimeErrors, `${viewport.width}px empty-map runtime errors`).toEqual([])
+        continue
+      }
+
+      await expect(pins).toHaveCount(5)
 
       const mapBox = await map.boundingBox()
       const pinBoxes = await pins.evaluateAll((elements) => elements.map((element) => {

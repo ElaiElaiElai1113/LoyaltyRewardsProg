@@ -215,6 +215,8 @@ export function ShopPage() {
 
   const allBusinesses = businesses.data ?? []
   const partnerBusinesses = profile ? allBusinesses : allBusinesses.filter((business) => !isQaReleaseFixture(business))
+  const partnerBusinessIds = new Set(partnerBusinesses.map((business) => business.id))
+  const partnerProducts = (products.data ?? []).filter((product) => partnerBusinessIds.has(product.businessId))
   const mapLabels = program.slug === 'pinas'
     ? DAVAO_MAP_LABELS
     : program.slug === 'wondertown'
@@ -224,7 +226,7 @@ export function ShopPage() {
   const previewPinnedBusinesses = partnerBusinesses.filter((business) => !hasExactMapPin(business))
   const selectedBusiness = partnerBusinesses.find((business) => business.id === selectedBusinessId) ?? null
   const selectedProducts = selectedBusiness
-    ? (products.data ?? []).filter((product) => product.businessId === selectedBusiness.id)
+    ? partnerProducts.filter((product) => product.businessId === selectedBusiness.id)
     : []
 
   const openBusiness = (business: Business) => {
@@ -281,33 +283,21 @@ export function ShopPage() {
           <div className="grid gap-3 sm:grid-cols-3 lg:min-w-[31rem]">
             <div className="rounded-2xl border border-primary/15 bg-card/80 p-4 shadow-soft">
               <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">{t('Partners')}</p>
-              <p className="mt-2 font-serif text-3xl text-primary">{partnerBusinesses.length}</p>
+              <p data-testid="partner-count" className="mt-2 font-serif text-3xl text-primary">{partnerBusinesses.length}</p>
             </div>
             <div className="rounded-2xl border border-primary/15 bg-card/80 p-4 shadow-soft">
               <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">{t('On Map')}</p>
-              <p className="mt-2 font-serif text-3xl text-primary">{partnerBusinesses.length}</p>
+              <p data-testid="map-count" className="mt-2 font-serif text-3xl text-primary">{partnerBusinesses.length}</p>
             </div>
             <div className="rounded-2xl border border-primary/15 bg-card/80 p-4 shadow-soft">
               <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">{t('Products')}</p>
-              <p className="mt-2 font-serif text-3xl text-primary">{products.data?.length ?? 0}</p>
+              <p data-testid="product-count" className="mt-2 font-serif text-3xl text-primary">{partnerProducts.length}</p>
             </div>
           </div>
         </div>
 
         {businesses.isLoading ? (
           <LoadingState title={t('Loading')} description={t('Preparing your partner map.')} />
-        ) : partnerBusinesses.length === 0 ? (
-          <EmptyState
-            icon={<Store className="size-8" />}
-            title={t('No partner businesses yet')}
-            description={t('Partner businesses will appear here when they are available.')}
-            action={(
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild><Link to="/business">{t('For Businesses')}</Link></Button>
-                <Button asChild variant="outline"><Link to="/signin">{t('Sign in')}</Link></Button>
-              </div>
-            )}
-          />
         ) : (
           <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
             <section data-testid="partner-map" className="relative min-w-0 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary/20 bg-[#f3e7d1] shadow-card sm:min-h-[42rem]">
@@ -319,6 +309,23 @@ export function ShopPage() {
                   <span className="text-xs font-bold uppercase tracking-[0.18em]">{program.name}</span>
                 </div>
               </div>
+
+              {partnerBusinesses.length === 0 ? (
+                <div
+                  data-testid="partner-map-empty-state"
+                  className="absolute inset-x-4 bottom-5 z-10 mx-auto max-w-lg rounded-[1.5rem] border border-primary/20 bg-card/95 p-5 text-center shadow-card backdrop-blur sm:inset-x-8 sm:bottom-8 sm:p-7"
+                >
+                  <Store className="mx-auto size-8 text-primary" />
+                  <h2 className="mt-3 font-serif text-2xl text-primary">{t('No partner locations published yet')}</h2>
+                  <p className="mx-auto mt-2 max-w-md text-sm font-medium leading-6 text-on-surface-variant/80">
+                    {t('Explore the map preview now. Verified partner locations will appear here as they are published.')}
+                  </p>
+                  <div className="mt-5 flex flex-col justify-center gap-3 sm:flex-row">
+                    <Button asChild><Link to="/business">{t('For Businesses')}</Link></Button>
+                    <Button asChild variant="outline"><Link to="/signin">{t('Sign in')}</Link></Button>
+                  </div>
+                </div>
+              ) : null}
 
               {partnerBusinesses.map((business, index) => {
                 const isExactPin = hasExactMapPin(business)
@@ -379,7 +386,13 @@ export function ShopPage() {
                 </div>
 
                 <div className="mt-5 space-y-3">
-                  {partnerBusinesses.map((business) => (
+                  {partnerBusinesses.length === 0 ? (
+                    <EmptyState
+                      icon={<Store className="size-7" />}
+                      title={t('Directory coming soon')}
+                      description={t('Published partner businesses will be listed here with their exact locations and available products.')}
+                    />
+                  ) : partnerBusinesses.map((business) => (
                     <button
                       key={business.id}
                       type="button"
