@@ -129,11 +129,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             const pendingRole = authService.getPendingSignInRole()
             if (pendingRole && !authService.isProfileAllowedForRole(sessionProfile, pendingRole)) {
-              void authService.signOut().finally(() => {
-                queryClient.clear()
-                syncSession(null)
-                finishLoading()
-              })
+              // The initiating signIn call owns rejection and sign-out. Starting a
+              // second sign-out here races that call and can hide its portal error.
               return
             }
 

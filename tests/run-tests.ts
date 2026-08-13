@@ -989,6 +989,16 @@ runTest('all account roles use the approved unified auth portal', () => {
   assert.doesNotMatch(router, /StaffLoginPage/)
 })
 
+runTest('wrong-role auth events defer rejection to the initiating sign-in call', () => {
+  const provider = readFileSync('src/features/auth/auth-provider.tsx', 'utf8')
+  const mismatchBlock = provider.match(
+    /if \(pendingRole && !authService\.isProfileAllowedForRole\(sessionProfile, pendingRole\)\) \{([\s\S]*?)\n\s*\}/,
+  )?.[1] ?? ''
+
+  assert.match(mismatchBlock, /initiating signIn call owns rejection and sign-out/)
+  assert.doesNotMatch(mismatchBlock, /authService\.signOut/)
+})
+
 runTest('unified sign in page follows the compact responsive portal layout', () => {
   const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const language = readFileSync('src/lib/language.tsx', 'utf8')
