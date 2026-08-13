@@ -107,6 +107,10 @@ function Set-RepositorySecret {
     [Parameter(Mandatory = $true)][string]$Value
   )
 
+  if ($Name -notmatch '^[A-Z][A-Z0-9_]*$') {
+    throw "Invalid GitHub Actions secret name: $Name"
+  }
+
   $startInfo = [Diagnostics.ProcessStartInfo]::new()
   $startInfo.FileName = (Get-Command gh -ErrorAction Stop).Source
   $startInfo.WorkingDirectory = $repoRoot.Path
@@ -114,9 +118,9 @@ function Set-RepositorySecret {
   $startInfo.RedirectStandardInput = $true
   $startInfo.RedirectStandardOutput = $true
   $startInfo.RedirectStandardError = $true
-  $startInfo.ArgumentList.Add('secret')
-  $startInfo.ArgumentList.Add('set')
-  $startInfo.ArgumentList.Add($Name)
+  # Windows PowerShell 5.1 runs on a .NET version where ArgumentList is not
+  # available. Secret names are validated above, so Arguments remains safe.
+  $startInfo.Arguments = "secret set $Name"
 
   $process = [Diagnostics.Process]::new()
   $process.StartInfo = $startInfo

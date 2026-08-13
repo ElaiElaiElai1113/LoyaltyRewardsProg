@@ -2493,3 +2493,13 @@ runTest('active tenant operations use RewardMe and always verify canonical produ
   assert.match(postDeployment, /Verify canonical tenant domains/)
   assert.match(postDeployment, /EXPECTED_VERSION/)
 })
+
+runTest('QA secret provisioning works on Windows PowerShell without exposing values', () => {
+  const provisioning = readFileSync('scripts/provision-rewardme-production-qa.ps1', 'utf8')
+
+  assert.match(provisioning, /\$Name -notmatch '\^\[A-Z\]\[A-Z0-9_\]\*\$'/)
+  assert.match(provisioning, /RedirectStandardInput = \$true/)
+  assert.match(provisioning, /\$startInfo\.Arguments = "secret set \$Name"/)
+  assert.match(provisioning, /\$process\.StandardInput\.Write\(\$Value\)/)
+  assert.doesNotMatch(provisioning, /ArgumentList\.Add/)
+})
