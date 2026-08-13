@@ -183,27 +183,24 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
   })
 
-  test('RewardMe sign-in portals show complete brand-safe test credentials and autofill the matching account', async ({ page }) => {
+  test('RewardMe sign-in portals show complete brand-safe one-tap test accounts', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
 
     const portals = [
       {
         route: '/signin',
         email: 'member@rewardme.test',
-        emailInput: '#signin-email',
-        passwordInput: '#signin-password',
+        accountLabel: 'Member',
       },
       {
         route: '/business/login',
         email: 'staff@rewardme.test',
-        emailInput: '#staff-signin-email',
-        passwordInput: '#staff-signin-password',
+        accountLabel: 'Business staff',
       },
       {
         route: '/admin',
         email: 'admin@rewardsplatform.test',
-        emailInput: '#staff-signin-email',
-        passwordInput: '#staff-signin-password',
+        accountLabel: 'Platform admin',
       },
     ] as const
 
@@ -226,13 +223,11 @@ test.describe('public acquisition workflow', () => {
       await expect(page.locator('body')).not.toContainText(/medellin/i)
       await expect(page.locator('body')).not.toContainText('MedellinQA!2026')
 
-      await credentials
+      await expect(credentials
         .locator('article')
         .filter({ hasText: portal.email })
-        .getByRole('button', { name: 'Use account' })
-        .click()
-      await expect(page.locator(portal.emailInput)).toHaveValue(portal.email)
-      await expect(page.locator(portal.passwordInput)).toHaveValue('Rewards 123!')
+        .getByRole('button', { name: `Sign in as ${portal.accountLabel}` }))
+        .toBeVisible()
 
       const dimensions = await page.evaluate(() => ({
         clientWidth: document.documentElement.clientWidth,

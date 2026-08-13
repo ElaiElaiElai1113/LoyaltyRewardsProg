@@ -1,4 +1,5 @@
 import { KeyRound, LogIn, UserRound } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router'
 
 import {
@@ -13,7 +14,7 @@ type RewardMeTestCredentialsProps = {
   ariaLabel?: string
   currentPortal: RewardMeTestPortal
   description?: string
-  onUse: (account: RewardMeTestAccount, password: string) => void
+  onUse: (account: RewardMeTestAccount, password: string) => void | Promise<void>
   password?: string
   testId?: string
   title?: string
@@ -29,6 +30,19 @@ export function RewardMeTestCredentials({
   testId = 'rewardme-test-credentials',
   title = 'RewardMe test accounts',
 }: RewardMeTestCredentialsProps) {
+  const [activeAccountEmail, setActiveAccountEmail] = useState<string | null>(null)
+
+  const signInWithAccount = async (account: RewardMeTestAccount) => {
+    if (activeAccountEmail) return
+
+    setActiveAccountEmail(account.email)
+    try {
+      await onUse(account, password)
+    } finally {
+      setActiveAccountEmail(null)
+    }
+  }
+
   return (
     <section
       aria-label={ariaLabel}
@@ -54,11 +68,15 @@ export function RewardMeTestCredentials({
         <code className="mt-1 block break-all text-[13px] font-bold text-[var(--foreground)]">
           {password}
         </code>
+        <p className="mt-2 text-[10px] font-semibold leading-4 text-[#8f8f8f]">
+          Tap your test account below to sign in instantly. No typing or browser autofill is needed.
+        </p>
       </div>
 
       <div className="mt-3 grid gap-2">
         {accounts.map((account) => {
           const isCurrentPortal = account.portal === currentPortal
+          const isSigningIn = activeAccountEmail === account.email
 
           return (
             <article
@@ -79,10 +97,12 @@ export function RewardMeTestCredentials({
                 <button
                   type="button"
                   className="inline-flex min-h-9 w-full items-center justify-center gap-1.5 rounded-[6px] border border-[#d1ad4a]/55 px-2.5 text-[11px] font-bold text-[#d1ad4a] transition hover:bg-[#d1ad4a] hover:text-[#080808]"
-                  onClick={() => onUse(account, password)}
+                  data-testid="test-account-sign-in"
+                  disabled={Boolean(activeAccountEmail)}
+                  onClick={() => void signInWithAccount(account)}
                 >
-                  <LogIn className="size-3.5" aria-hidden="true" />
-                  Use account
+                  <LogIn className={`size-3.5 ${isSigningIn ? 'animate-pulse' : ''}`} aria-hidden="true" />
+                  {isSigningIn ? 'Signing in...' : `Sign in as ${account.label}`}
                 </button>
               ) : (
                 <Link

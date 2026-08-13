@@ -22,10 +22,24 @@ window.addEventListener('unhandledrejection', (event) => {
   })
 })
 
+const hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller)
+let reloadingForServiceWorkerUpdate = false
+
+if (hadServiceWorkerController) {
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (reloadingForServiceWorkerUpdate) return
+    reloadingForServiceWorkerUpdate = true
+    window.location.reload()
+  })
+}
+
 const updateServiceWorker = registerSW({
   immediate: true,
   onNeedRefresh() {
     void updateServiceWorker(true)
+  },
+  onRegisteredSW(_serviceWorkerUrl, registration) {
+    void registration?.update()
   },
   onRegisterError(error) {
     console.error('Service worker registration failed', error)

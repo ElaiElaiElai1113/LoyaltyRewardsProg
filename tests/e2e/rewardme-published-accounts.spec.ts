@@ -1,42 +1,37 @@
 import { expect, test } from '@playwright/test'
 
 const accountCheckEnabled = process.env.E2E_REWARDME_PUBLIC_ACCOUNT_CHECK === 'true'
-const password = process.env.E2E_PASSWORD ?? 'Rewards 123!'
 
 const accounts = [
   {
     label: 'member',
+    panelLabel: 'Member',
     route: '/signin',
     email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
-    emailInput: '#signin-email',
-    passwordInput: '#signin-password',
     destination: /\/(?:dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
   },
   {
     label: 'business owner',
+    panelLabel: 'Business owner',
     route: '/business/login',
     email: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
-    emailInput: '#staff-signin-email',
-    passwordInput: '#staff-signin-password',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
   },
   {
     label: 'business staff',
+    panelLabel: 'Business staff',
     route: '/business/login',
     email: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
-    emailInput: '#staff-signin-email',
-    passwordInput: '#staff-signin-password',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
   },
   {
     label: 'platform administrator',
+    panelLabel: 'Platform admin',
     route: '/admin',
     email: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
-    emailInput: '#staff-signin-email',
-    passwordInput: '#staff-signin-password',
     destination: /\/admin\/portal(?:[/?#]|$)/,
     rewardMeBranded: false,
   },
@@ -64,12 +59,7 @@ test.describe('published RewardMe test accounts', () => {
       await expect(credentials).toBeVisible()
       const accountCard = credentials.locator('article').filter({ hasText: account.email })
       await expect(accountCard).toBeVisible()
-      await accountCard.getByRole('button', { name: 'Use account' }).click()
-      await expect(page.locator(account.emailInput)).toHaveValue(account.email)
-      await expect(page.locator(account.passwordInput)).toHaveValue(password)
-
-      const form = page.locator('form').filter({ has: page.locator(account.emailInput) })
-      await form.getByRole('button', { name: /sign in/i }).click()
+      await accountCard.getByRole('button', { name: `Sign in as ${account.panelLabel}` }).click()
       const loginError = page.getByText(/invalid login credentials|unable to sign in/i).first()
       await Promise.race([
         page.waitForURL(account.destination, { timeout: 15_000 }),

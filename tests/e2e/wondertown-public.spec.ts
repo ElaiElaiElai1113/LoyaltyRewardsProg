@@ -73,8 +73,7 @@ test.describe('Wondertown public testing experience', () => {
       {
         route: '/signin?tenant=wondertown',
         email: 'member@wondertown.test',
-        emailInput: '#signin-email',
-        passwordInput: '#signin-password',
+        accountLabel: 'Member',
         visibleEmails: [
           'member@wondertown.test',
           'neighbor@wondertown.test',
@@ -86,8 +85,7 @@ test.describe('Wondertown public testing experience', () => {
       {
         route: '/business/login?tenant=wondertown',
         email: 'owner@wondertown.test',
-        emailInput: '#staff-signin-email',
-        passwordInput: '#staff-signin-password',
+        accountLabel: 'Business owner',
         visibleEmails: [
           'member@wondertown.test',
           'neighbor@wondertown.test',
@@ -99,8 +97,7 @@ test.describe('Wondertown public testing experience', () => {
       {
         route: '/admin?tenant=wondertown',
         email: 'admin@rewardsplatform.test',
-        emailInput: '#staff-signin-email',
-        passwordInput: '#staff-signin-password',
+        accountLabel: 'Platform admin',
         visibleEmails: ['admin@rewardsplatform.test'],
       },
     ] as const
@@ -116,13 +113,11 @@ test.describe('Wondertown public testing experience', () => {
         await expect(credentials.getByText(email, { exact: true })).toBeVisible()
       }
 
-      await credentials
+      await expect(credentials
         .locator('article')
         .filter({ hasText: portal.email })
-        .getByRole('button', { name: 'Use account' })
-        .click()
-      await expect(page.locator(portal.emailInput)).toHaveValue(portal.email)
-      await expect(page.locator(portal.passwordInput)).toHaveValue('Rewards 123!')
+        .getByRole('button', { name: `Sign in as ${portal.accountLabel}` }))
+        .toBeVisible()
 
       const dimensions = await page.evaluate(() => ({
         clientWidth: document.documentElement.clientWidth,

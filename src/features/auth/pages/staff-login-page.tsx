@@ -12,6 +12,7 @@ import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-tes
 import {
   REWARDME_TEST_ACCOUNTS,
   shouldShowRewardMeTestCredentials,
+  type RewardMeTestAccount,
 } from '@/features/auth/rewardme-test-accounts'
 import {
   WONDERTOWN_TEST_ACCOUNTS,
@@ -86,6 +87,29 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
   usePlatformDocumentBrand(isAdminPortal)
   const portalHome = isAdminPortal ? '/admin/portal' : '/business/dashboard'
   const portalLabel = isAdminPortal ? t('Admin Portal') : t('Business Portal')
+
+  const signInTestAccount = async (account: RewardMeTestAccount, password: string) => {
+    const values: AuthFormValues = {
+      ...defaultValues,
+      email: account.email,
+      password,
+      role: isAdminPortal ? 'platform-admin' : account.role,
+    }
+    setError(null)
+    setResetSuccessMessage(null)
+    signInForm.reset(values)
+
+    try {
+      await signIn(values)
+      navigate(searchParams.get('redirect') || portalHome)
+    } catch (submissionError) {
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : t('Unable to sign in.'),
+      )
+    }
+  }
 
   return (
     <AuthPortalShell showTabs={false}>
@@ -257,12 +281,7 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
                 ? REWARDME_TEST_ACCOUNTS.filter((account) => account.portal === 'admin')
                 : REWARDME_TEST_ACCOUNTS}
               currentPortal={isAdminPortal ? 'admin' : 'business'}
-              onUse={(account, password) => {
-                setError(null)
-                signInForm.setValue('email', account.email, { shouldValidate: true })
-                signInForm.setValue('password', password, { shouldValidate: true })
-                signInForm.setValue('role', account.role)
-              }}
+              onUse={signInTestAccount}
               title={isAdminPortal ? 'Platform test account' : 'RewardMe test accounts'}
             />
           ) : null}
@@ -275,12 +294,7 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
               ariaLabel={isAdminPortal ? 'Platform test account' : 'Wondertown test accounts'}
               currentPortal={isAdminPortal ? 'admin' : 'business'}
               description="Fictional accounts for safely testing the complete Wondertown experience."
-              onUse={(account, password) => {
-                setError(null)
-                signInForm.setValue('email', account.email, { shouldValidate: true })
-                signInForm.setValue('password', password, { shouldValidate: true })
-                signInForm.setValue('role', account.role)
-              }}
+              onUse={signInTestAccount}
               password={WONDERTOWN_TEST_PASSWORD}
               testId="wondertown-test-credentials"
               title={isAdminPortal ? 'Platform test account' : 'Wondertown test accounts'}

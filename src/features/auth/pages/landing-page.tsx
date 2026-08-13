@@ -22,7 +22,10 @@ import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-test-credentials'
-import { shouldShowRewardMeTestCredentials } from '@/features/auth/rewardme-test-accounts'
+import {
+  shouldShowRewardMeTestCredentials,
+  type RewardMeTestAccount,
+} from '@/features/auth/rewardme-test-accounts'
 import {
   WONDERTOWN_TEST_ACCOUNTS,
   WONDERTOWN_TEST_PASSWORD,
@@ -928,6 +931,29 @@ export function CompactAuthPage() {
     },
   })
 
+  const signInTestAccount = async (account: RewardMeTestAccount, password: string) => {
+    const values: AuthFormValues = {
+      ...defaultValues,
+      email: account.email,
+      password,
+      role: account.role,
+    }
+    setError(null)
+    setResetSuccessMessage(null)
+    signInForm.reset(values)
+
+    try {
+      await signIn(values)
+      navigate(searchParams.get('redirect') || '/dashboard')
+    } catch (submissionError) {
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : t('Unable to sign in.'),
+      )
+    }
+  }
+
   return (
     <AuthPortalShell activeTab="signin">
       <div className="mb-7 text-center">
@@ -1105,12 +1131,7 @@ export function CompactAuthPage() {
           {program.slug === 'pinas' && shouldShowRewardMeTestCredentials() ? (
             <RewardMeTestCredentials
               currentPortal="member"
-              onUse={(account, password) => {
-                setError(null)
-                signInForm.setValue('email', account.email, { shouldValidate: true })
-                signInForm.setValue('password', password, { shouldValidate: true })
-                signInForm.setValue('role', account.role)
-              }}
+              onUse={signInTestAccount}
             />
           ) : null}
 
@@ -1120,12 +1141,7 @@ export function CompactAuthPage() {
               ariaLabel="Wondertown test accounts"
               currentPortal="member"
               description="Fictional accounts for safely testing the complete Wondertown experience."
-              onUse={(account, password) => {
-                setError(null)
-                signInForm.setValue('email', account.email, { shouldValidate: true })
-                signInForm.setValue('password', password, { shouldValidate: true })
-                signInForm.setValue('role', account.role)
-              }}
+              onUse={signInTestAccount}
               password={WONDERTOWN_TEST_PASSWORD}
               testId="wondertown-test-credentials"
               title="Wondertown test accounts"
