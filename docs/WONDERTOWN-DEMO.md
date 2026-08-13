@@ -16,13 +16,11 @@ Guatemala, or RewardMe.
 | Neighbor | `neighbor@wondertown.test` | A second fictional customer visible in the Moonbeam Café customer list. |
 | Business owner | `owner@wondertown.test` | Full Moonbeam Café management and transaction flow. |
 | Business staff | `staff@wondertown.test` | Staff-level sale, redemption, and customer operations. |
+| Platform admin | `admin@rewardsplatform.test` | Platform administration and Wondertown tenant oversight. |
 
-All accounts use the existing protected `E2E_PASSWORD` value. Do not commit or
-paste that password into this document.
+Password for every test account: `Rewards 123!`
 
 ## Boss-ready login message
-
-Send the password through a private channel, separately from this message.
 
 ### English
 
@@ -31,9 +29,10 @@ Send the password through a private channel, separately from this message.
 >
 > Open: https://wondertown-rewards.vercel.app
 >
-> To test as a member, use `member@wondertown.test` and the private demo
-> password. To test as a business owner, use `owner@wondertown.test` and the
-> same password. A staff account is also available at `staff@wondertown.test`.
+> To test as a member, use `member@wondertown.test`. To test as a business
+> owner, use `owner@wondertown.test`. A staff account is available at
+> `staff@wondertown.test`. The password for every test account is
+> `Rewards 123!`.
 >
 > Suggested test: sign in as the member and open the QR code. In a private or
 > second browser window, sign in as the business owner or staff member, find
@@ -49,10 +48,10 @@ Send the password through a private channel, separately from this message.
 >
 > Abrir: https://wondertown-rewards.vercel.app
 >
-> Para probar como miembro, usa `member@wondertown.test` y la contraseña privada
-> de demostración. Para probar como dueño de negocio, usa
-> `owner@wondertown.test` y la misma contraseña. También hay una cuenta de
-> empleado: `staff@wondertown.test`.
+> Para probar como miembro, usa `member@wondertown.test`. Para probar como dueño
+> de negocio, usa `owner@wondertown.test`. También hay una cuenta de empleado:
+> `staff@wondertown.test`. La contraseña para todas las cuentas de prueba es
+> `Rewards 123!`.
 >
 > Prueba sugerida: inicia sesión como miembro y abre el código QR. En una ventana
 > privada o en un segundo navegador, inicia sesión como dueño o empleado, busca

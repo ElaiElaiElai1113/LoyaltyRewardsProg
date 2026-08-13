@@ -11,6 +11,12 @@ const tenants = [
     heading: "Turn what you already spend into what you're saving for.",
   },
   {
+    slug: 'pinasrewards',
+    name: 'Pinas Rewards',
+    color: '#a67608',
+    heading: 'Earn Amazing Rewards While Supporting Local Businesses',
+  },
+  {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
     color: '#4f3b78',

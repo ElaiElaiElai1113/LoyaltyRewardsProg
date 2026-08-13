@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="pinas-mark-title">
+  <title id="pinas-mark-title">Pinas Rewards</title>
+  <defs>
+    <linearGradient id="g" x1="20" x2="108" y1="16" y2="116">
+      <stop stop-color="#f8df83"/>
+      <stop offset=".5" stop-color="#b88a0b"/>
+      <stop offset="1" stop-color="#f1cf62"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="24" fill="#11100e"/>
+  <rect x="7" y="7" width="114" height="114" rx="19" fill="none" stroke="url(#g)" stroke-width="2"/>
+  <path fill="url(#g)" d="M31 31h34c19 0 32 11 32 28 0 18-14 29-35 29h-7v10c0 8 3 11 13 13v2H31v-2c9-2 12-5 12-13V45c0-8-3-11-12-12Zm24 7v43h6c12 0 18-8 18-22 0-14-6-21-18-21Z"/>
+</svg>

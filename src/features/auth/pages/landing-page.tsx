@@ -23,6 +23,10 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-test-credentials'
 import { shouldShowRewardMeTestCredentials } from '@/features/auth/rewardme-test-accounts'
+import {
+  WONDERTOWN_TEST_ACCOUNTS,
+  WONDERTOWN_TEST_PASSWORD,
+} from '@/features/auth/wondertown-test-accounts'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -1107,6 +1111,24 @@ export function CompactAuthPage() {
                 signInForm.setValue('password', password, { shouldValidate: true })
                 signInForm.setValue('role', account.role)
               }}
+            />
+          ) : null}
+
+          {program.slug === 'wondertown' && shouldShowRewardMeTestCredentials() ? (
+            <RewardMeTestCredentials
+              accounts={WONDERTOWN_TEST_ACCOUNTS}
+              ariaLabel="Wondertown test accounts"
+              currentPortal="member"
+              description="Fictional accounts for safely testing the complete Wondertown experience."
+              onUse={(account, password) => {
+                setError(null)
+                signInForm.setValue('email', account.email, { shouldValidate: true })
+                signInForm.setValue('password', password, { shouldValidate: true })
+                signInForm.setValue('role', account.role)
+              }}
+              password={WONDERTOWN_TEST_PASSWORD}
+              testId="wondertown-test-credentials"
+              title="Wondertown test accounts"
             />
           ) : null}
         </form>

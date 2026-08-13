@@ -135,7 +135,7 @@ const spanishHomeCopy: Record<string, string> = {
   'Rewards are tied to your member account and must be used and cannot be transferred.':
     'Las recompensas pertenecen a tu cuenta de miembro, deben ser usadas por ti y no se pueden transferir.',
   'Can Rewards be exchanged for money?': '¿Puedo cambiar las recompensas por dinero?',
-  'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.':
+  'No. Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within Pinas Rewards—not cash exchange.':
     'No. Las recompensas están diseñadas para beneficios, compras, viajes, experiencias y ofertas de aliados, no para cambiarlas por efectivo.',
   'No. Rewards are member benefits available through current program and partner offers, not cash.':
     'No. Las recompensas son beneficios disponibles en las ofertas actuales del programa y sus aliados, no dinero en efectivo.',
@@ -202,7 +202,7 @@ const tagalogHomeCopy: Record<string, string> = {
   'Rewards are tied to your member account and must be used and cannot be transferred.':
     'Nakaugnay ang Rewards sa iyong member account at hindi ito maaaring ilipat sa ibang account.',
   'Can Rewards be exchanged for money?': 'Maaari bang ipalit sa pera ang Rewards?',
-  'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.':
+  'No. Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within Pinas Rewards—not cash exchange.':
     'Hindi. Ang Rewards ay para sa mga benepisyo, pagbili, biyahe, karanasan, at partner offers ng programa at hindi maaaring ipalit sa cash.',
   'No. Rewards are member benefits available through current program and partner offers, not cash.':
     'Hindi. Ang Rewards ay mga benepisyo mula sa kasalukuyang programa at partner offers, hindi cash.',
@@ -344,7 +344,7 @@ const processSteps = [
   },
 ] as const
 
-const rewardMeFaqs = [
+const pinasRewardsFaqs = [
   {
     icon: '📍',
     question: 'Where can I use my Rewards?',
@@ -364,7 +364,7 @@ const rewardMeFaqs = [
   {
     icon: '$',
     question: 'Can Rewards be exchanged for money?',
-    answer: 'No, Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within the Medellin Rewards Program - not cash exchange.',
+    answer: 'No. Rewards are designed for member benefits, purchases, travel, experiences, and partner offers within Pinas Rewards—not cash exchange.',
   },
 ] as const
 
@@ -394,7 +394,9 @@ const tenantManagedFaqs = [
 
 function Brand() {
   const { program } = useTenant()
-  const logoUrl = program.logoUrl ?? (program.slug === 'pinas' ? '/rewardme-mark.svg' : null)
+  const logoUrl = program.logoUrl
+    ?? (program.slug === 'pinas' ? '/rewardme-mark.svg' : null)
+    ?? (program.slug === 'pinasrewards' ? '/pinas-rewards-mark.svg' : null)
   return (
     <span className="figma-home__brand">
       {logoUrl ? <img src={logoUrl} alt="" aria-hidden="true" /> : null}
@@ -412,7 +414,7 @@ export function HomePage() {
   const { program } = useTenant()
   if (program.slug === 'pinas') return <RewardMeHomePage />
   if (program.slug === 'wondertown') return <WondertownHomePage />
-  const isRewardMe = program.slug === 'pinas'
+  const isPinasRewards = program.slug === 'pinasrewards'
   const tx = (text: string) => (
     language === 'es'
       ? spanishHomeCopy[text] ?? text
@@ -422,7 +424,7 @@ export function HomePage() {
   )
     .replaceAll('Medellin Rewards', program.name)
     .replaceAll('Medellín Rewards', program.name)
-  const paidBenefits = isRewardMe
+  const paidBenefits = isPinasRewards
     ? [
         'Earn a minimum of 20% – 100% back on almost all purchases',
         'Earn rewards for every member you refer who joins',
@@ -430,28 +432,28 @@ export function HomePage() {
         'Claim a minimum PHP 1,000 Rewards bonus for qualifying business referrals',
       ]
     : tenantManagedBenefits
-  const paidMembershipPrice = isRewardMe
+  const paidMembershipPrice = isPinasRewards
     ? `${formatTenantCurrency(4_000, program)}/Year`
     : tx('Pricing available on request')
-  const paidMembershipPriceNote = isRewardMe
+  const paidMembershipPriceNote = isPinasRewards
     ? `Get the full ${formatTenantCurrency(4_000, program)} back in Rewards credit`
     : `${tx('Pricing and benefits are managed by this program in')} ${program.currency}.`
-  const membershipSectionIntro = isRewardMe
+  const membershipSectionIntro = isPinasRewards
     ? tx('Two ways to join — both give you back what you spend.')
     : tx('Review current membership options, pricing, and benefits with the program team.')
-  const homepageValueItems = isRewardMe ? valueItems : tenantManagedValueItems
-  const homepageProcessSteps = isRewardMe ? processSteps : tenantManagedProcessSteps
-  const homepageFaqs = isRewardMe ? rewardMeFaqs : tenantManagedFaqs
-  const baseMembershipBenefits = isRewardMe ? regularBenefits : tenantManagedFreeBenefits
-  const heroOfferCopy = isRewardMe
+  const homepageValueItems = isPinasRewards ? valueItems : tenantManagedValueItems
+  const homepageProcessSteps = isPinasRewards ? processSteps : tenantManagedProcessSteps
+  const homepageFaqs = isPinasRewards ? pinasRewardsFaqs : tenantManagedFaqs
+  const baseMembershipBenefits = isPinasRewards ? regularBenefits : tenantManagedFreeBenefits
+  const heroOfferCopy = isPinasRewards
     ? 'Join free and earn 10% back automatically — or upgrade to earn between 20% and 100% back — every time you spend with the businesses in our network.'
     : 'Create an account and earn Rewards on eligible purchases. Current rates and upgrade benefits are set by this program.'
-  const heroPills = isRewardMe
+  const heroPills = isPinasRewards
     ? ['Everyday spending', '20% – 100% back', 'Any business, anywhere']
     : ['Eligible spending', 'Program-set reward rates', 'Participating businesses']
 
   return (
-    <main className={`figma-home${isRewardMe ? ' figma-home--rewardme' : ''}`} id="top">
+    <main className={`figma-home${isPinasRewards ? ' figma-home--pinas' : ''}`} id="top">
       <div className="figma-home__paper">
         <header className="figma-home__header">
           <div className="figma-home__container figma-home__header-inner">
@@ -469,12 +471,12 @@ export function HomePage() {
               <button
                 className="figma-home__language-toggle"
                 type="button"
-                onClick={() => setLanguage(isRewardMe ? (language === 'tl' ? 'en' : 'tl') : (language === 'es' ? 'en' : 'es'))}
-                aria-label={isRewardMe
+                onClick={() => setLanguage(isPinasRewards ? (language === 'tl' ? 'en' : 'tl') : (language === 'es' ? 'en' : 'es'))}
+                aria-label={isPinasRewards
                   ? (language === 'tl' ? 'Switch to English' : 'Lumipat sa Tagalog')
                   : language === 'es' ? 'Switch to English' : 'Cambiar a español'}
               >
-                {isRewardMe ? (language === 'tl' ? 'English' : 'Tagalog') : language === 'es' ? 'English' : 'Español'}
+                {isPinasRewards ? (language === 'tl' ? 'English' : 'Tagalog') : language === 'es' ? 'English' : 'Español'}
               </button>
               <Link className="figma-home__button figma-home__button--header" to="/join">
                 {tx('Join now')}
@@ -517,22 +519,22 @@ export function HomePage() {
 
             <div className="figma-home__hero-visual">
               <img
-                src={isRewardMe ? coffeeRewards : coffeeMember}
-                srcSet={isRewardMe
+                src={isPinasRewards ? coffeeRewards : coffeeMember}
+                srcSet={isPinasRewards
                   ? `${coffeeRewardsSmall} 768w, ${coffeeRewards} 1024w`
                   : `${coffeeMemberSmall} 768w, ${coffeeMember} 1024w`}
                 sizes="(max-width: 768px) 100vw, 50vw"
-                alt={isRewardMe
-                  ? 'RewardMe member enjoying coffee at a local business'
+                alt={isPinasRewards
+                  ? 'Pinas Rewards member enjoying coffee at a local business'
                   : 'Member enjoying rewards at a local coffee shop'}
                 fetchPriority="high"
               />
               <div
                 className="figma-home__reward-badge"
-                aria-label={isRewardMe ? 'More than fifty percent back today' : 'Rewards on eligible purchases'}
+                aria-label={isPinasRewards ? 'More than fifty percent back today' : 'Rewards on eligible purchases'}
               >
-                <strong>{isRewardMe ? '+50%' : tx('REWARDS')}</strong>
-                <span>{tx(isRewardMe ? 'BACK TODAY' : 'ON ELIGIBLE PURCHASES')}</span>
+                <strong>{isPinasRewards ? '+50%' : tx('REWARDS')}</strong>
+                <span>{tx(isPinasRewards ? 'BACK TODAY' : 'ON ELIGIBLE PURCHASES')}</span>
               </div>
             </div>
           </div>
@@ -541,7 +543,7 @@ export function HomePage() {
 
       <section className="figma-home__rewards" id="rewards" aria-labelledby="rewards-title">
         <div className="figma-home__container">
-          <h2 id="rewards-title">{tx(isRewardMe ? 'Every purchase becomes a Reward' : 'Eligible purchases can earn Rewards')}</h2>
+          <h2 id="rewards-title">{tx(isPinasRewards ? 'Every purchase becomes a Reward' : 'Eligible purchases can earn Rewards')}</h2>
 
           <div className="figma-home__value-grid">
             {homepageValueItems.map((item) => (
@@ -564,7 +566,7 @@ export function HomePage() {
                   loading="lazy"
                   decoding="async"
                 />
-                {isRewardMe ? <figcaption>{item.label}</figcaption> : null}
+                {isPinasRewards ? <figcaption>{item.label}</figcaption> : null}
               </figure>
             ))}
           </div>
@@ -574,39 +576,39 @@ export function HomePage() {
       <section className="figma-home__membership" id="membership" aria-labelledby="membership-title">
         <div className="figma-home__container">
           <SectionEyebrow>{tx('MEMBERSHIP')}</SectionEyebrow>
-          <h2 id="membership-title">{tx(isRewardMe ? 'Membership Packages' : 'Choose how you earn')}</h2>
+          <h2 id="membership-title">{tx(isPinasRewards ? 'Membership Packages' : 'Choose how you earn')}</h2>
           <p className="figma-home__section-intro">{membershipSectionIntro}</p>
 
           <div className="figma-home__membership-grid">
             <article className="figma-home__membership-card">
               <div className="figma-home__membership-heading">
-                <h3>{tx(isRewardMe ? 'Regular' : 'Member Account')}</h3>
-                {isRewardMe ? <span className="figma-home__percentage">10%</span> : null}
+                <h3>{tx(isPinasRewards ? 'Regular' : 'Member Account')}</h3>
+                {isPinasRewards ? <span className="figma-home__percentage">10%</span> : null}
               </div>
-              <p className="figma-home__price">{isRewardMe ? `${formatTenantCurrency(1_000, program)}/Month` : tx('Program terms apply')}</p>
-              <p className="figma-home__price-note">{tx(isRewardMe ? 'Billed monthly' : 'Review current program terms before upgrading')}</p>
-              {isRewardMe ? <p className="figma-home__membership-referral">Refer a friend and earn PHP 100 every 3 months</p> : null}
+              <p className="figma-home__price">{isPinasRewards ? `${formatTenantCurrency(1_000, program)}/Month` : tx('Program terms apply')}</p>
+              <p className="figma-home__price-note">{tx(isPinasRewards ? 'Billed monthly' : 'Review current program terms before upgrading')}</p>
+              {isPinasRewards ? <p className="figma-home__membership-referral">Refer a friend and earn PHP 100 every 3 months</p> : null}
               <ul className="figma-home__benefit-list">
                 {baseMembershipBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
               </ul>
               <Link className="figma-home__membership-button figma-home__membership-button--free" to="/join">
-                {tx(isRewardMe ? 'Start Regular →' : 'View membership options →')}
+                {tx(isPinasRewards ? 'Start Regular →' : 'View membership options →')}
               </Link>
             </article>
 
             <article className="figma-home__membership-card figma-home__membership-card--regular">
-              {isRewardMe ? <span className="figma-home__free-ribbon">{tx('WORKS OUT TO BE FREE')}</span> : null}
+              {isPinasRewards ? <span className="figma-home__free-ribbon">{tx('WORKS OUT TO BE FREE')}</span> : null}
               <div className="figma-home__membership-heading">
-                <h3>{isRewardMe ? 'Gold' : tx('Premium Membership')}</h3>
-                {isRewardMe ? <span className="figma-home__percentage figma-home__percentage--regular">100%</span> : null}
+                <h3>{isPinasRewards ? 'Gold' : tx('Premium Membership')}</h3>
+                {isPinasRewards ? <span className="figma-home__percentage figma-home__percentage--regular">100%</span> : null}
               </div>
               <p className="figma-home__price">{paidMembershipPrice}</p>
-              <p className="figma-home__price-note">{isRewardMe ? tx('Paid once, upfront') : paidMembershipPriceNote}</p>
-              {isRewardMe ? <p className="figma-home__membership-referral">Refer a friend on Gold and get PHP 1,000 back instantly</p> : null}
+              <p className="figma-home__price-note">{isPinasRewards ? tx('Paid once, upfront') : paidMembershipPriceNote}</p>
+              {isPinasRewards ? <p className="figma-home__membership-referral">Refer a friend on Gold and get PHP 1,000 back instantly</p> : null}
               <ul className="figma-home__benefit-list">
                 {paidBenefits.map((benefit) => <li key={benefit}>{tx(benefit)}</li>)}
               </ul>
-              {isRewardMe ? (
+              {isPinasRewards ? (
                 <Link className="figma-home__membership-button" to="/join">{tx('Start Gold →')}</Link>
               ) : (
                 <a
@@ -648,10 +650,10 @@ export function HomePage() {
         <div className="figma-home__container figma-home__vacation-content">
           <SectionEyebrow>{tx('REDEEM')}</SectionEyebrow>
           <h2 id="vacation-title">
-            {tx(isRewardMe ? 'Your dream vacation.' : 'Rewards you can use.')}<br />
-            {tx(isRewardMe ? 'Already paid for.' : 'Browse current offers.')}
+            {tx(isPinasRewards ? 'Your dream vacation.' : 'Rewards you can use.')}<br />
+            {tx(isPinasRewards ? 'Already paid for.' : 'Browse current offers.')}
           </h2>
-          <p>{tx(isRewardMe
+          <p>{tx(isPinasRewards
             ? "Every Reward you earn stacks toward the Rewards Store — including the trip you've been putting off."
             : 'Available Rewards depend on current program and partner offers.')}</p>
           <Link className="figma-home__button" to="/join">{tx('Start earning today')}</Link>
@@ -703,7 +705,7 @@ export function HomePage() {
           </div>
           <div className="figma-home__footer-bottom">
             <p>© 2026 {program.name}. {tx('All rights reserved.')}</p>
-            <p>{isRewardMe ? 'Made for members in the Philippines' : `Made for members in ${program.countryCode}`}</p>
+            <p>{isPinasRewards ? 'Made for members in the Philippines' : `Made for members in ${program.countryCode}`}</p>
           </div>
         </div>
       </footer>

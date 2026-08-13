@@ -94,28 +94,6 @@
       "has": [
         {
           "type": "host",
-          "value": "pinas-rewards.vercel.app"
-        }
-      ],
-      "destination": "https://loyalty-rewards-prog.vercel.app/",
-      "permanent": true
-    },
-    {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "host",
-          "value": "pinas-rewards.vercel.app"
-        }
-      ],
-      "destination": "https://loyalty-rewards-prog.vercel.app/:path*",
-      "permanent": true
-    },
-    {
-      "source": "/",
-      "has": [
-        {
-          "type": "host",
           "value": "www.guatemalarewards.com"
         }
       ],

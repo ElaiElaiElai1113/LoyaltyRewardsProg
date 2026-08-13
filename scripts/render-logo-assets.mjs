@@ -1,14 +1,20 @@
 import { readFileSync } from 'node:fs'
 import { chromium } from 'playwright'
 
-const fullLogoSvg = readFileSync('public/rewardme-logo.svg', 'utf8')
-const installMarkSvg = readFileSync('public/rewardme-mark.svg', 'utf8')
+const rewardMeFullLogoSvg = readFileSync('public/rewardme-logo.svg', 'utf8')
+const rewardMeInstallMarkSvg = readFileSync('public/rewardme-mark.svg', 'utf8')
+const pinasFullLogoSvg = readFileSync('public/pinas-rewards-logo.svg', 'utf8')
+const pinasInstallMarkSvg = readFileSync('public/pinas-rewards-mark.svg', 'utf8')
 
 const targets = [
-  ['public/rewardme-logo.png', 1024, fullLogoSvg],
-  ['public/install-icons/rewardme-512.png', 512, installMarkSvg],
-  ['public/install-icons/rewardme-192.png', 192, installMarkSvg],
-  ['public/install-icons/rewardme-180.png', 180, installMarkSvg],
+  ['public/rewardme-logo.png', 1024, rewardMeFullLogoSvg],
+  ['public/install-icons/rewardme-512.png', 512, rewardMeInstallMarkSvg],
+  ['public/install-icons/rewardme-192.png', 192, rewardMeInstallMarkSvg],
+  ['public/install-icons/rewardme-180.png', 180, rewardMeInstallMarkSvg],
+  ['public/pinas-rewards-logo.png', 1024, pinasFullLogoSvg],
+  ['public/install-icons/pinasrewards-512.png', 512, pinasInstallMarkSvg],
+  ['public/install-icons/pinasrewards-192.png', 192, pinasInstallMarkSvg],
+  ['public/install-icons/pinasrewards-180.png', 180, pinasInstallMarkSvg],
   ['ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png', 1024],
   ['android/app/src/main/res/mipmap-mdpi/ic_launcher.png', 48],
   ['android/app/src/main/res/mipmap-mdpi/ic_launcher_round.png', 48],
@@ -30,7 +36,7 @@ const targets = [
 const browser = await chromium.launch()
 const page = await browser.newPage({ deviceScaleFactor: 1 })
 
-for (const [path, size, sourceSvg = installMarkSvg] of targets) {
+for (const [path, size, sourceSvg = rewardMeInstallMarkSvg] of targets) {
   await page.setViewportSize({ width: size, height: size })
   await page.setContent(`
     <!doctype html>

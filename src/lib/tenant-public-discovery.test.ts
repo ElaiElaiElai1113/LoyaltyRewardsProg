@@ -11,6 +11,7 @@ const verifiedTenants = [
   ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
   ['guatemalarewards.com', 'https://guatemalarewards.com'],
   ['loyalty-rewards-prog.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
+  ['pinas-rewards.vercel.app', 'https://pinas-rewards.vercel.app'],
   ['wondertown-rewards.vercel.app', 'https://wondertown-rewards.vercel.app'],
 ] as const
 
@@ -47,7 +48,7 @@ describe('host-aware public discovery documents', () => {
 
   it('accepts case and a transport port without broadening the hostname allowlist', () => {
     expect(resolveDiscoveryOrigin('WWW.MEDELLINREWARDS.COM:443')).toBe('https://www.medellinrewards.com')
-    expect(resolveDiscoveryOrigin('pinas-rewards.vercel.app')).toBe('https://loyalty-rewards-prog.vercel.app')
+    expect(resolveDiscoveryOrigin('pinas-rewards.vercel.app')).toBe('https://pinas-rewards.vercel.app')
   })
 
   it.each([

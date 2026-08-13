@@ -10,32 +10,21 @@ const robots = readFileSync('public/robots.txt', 'utf8')
 const sitemap = readFileSync('public/sitemap.xml', 'utf8')
 
 describe('RewardMe flagship branding', () => {
-  it('does not ship the former wordmark, public filenames, or package identity', () => {
+  it('keeps RewardMe pages free of Pinas branding while both independent brands ship', () => {
     const formerDisplayName = ['Pinas', 'Rewards'].join(' ')
-    const runtime = [
-      'index.html',
-      'public/tenant-bootstrap.js',
-      'api/_tenant-install-brand.ts',
-      'src/features/tenant/tenant-service.ts',
+    const rewardMeRuntime = [
       'src/features/home/pages/rewardme-home.tsx',
-      'src/features/business/pages/for-businesses-page.tsx',
-      'src/features/join/pages/join-rewards-page.tsx',
       'src/features/membership/pages/rewardme-membership-page.tsx',
-      'src/layouts/public-browse-layout.tsx',
     ].map((path) => readFileSync(path, 'utf8')).join('\n')
 
-    expect(runtime).not.toContain(formerDisplayName)
+    expect(rewardMeRuntime).not.toContain(formerDisplayName)
     expect(JSON.parse(readFileSync('package.json', 'utf8')).name).toBe('rewardme')
     for (const path of [
       'public/pinas-rewards-logo.png',
       'public/pinas-rewards-logo.svg',
       'public/pinas-rewards-mark.svg',
-      'public/pinas-rewards-qr.svg',
-      'public/pinas-rewards-scan-poster.png',
-      'scripts/generate-pinas-qr.mjs',
-      'docs/pinas-rewards-launch-readiness.md',
     ]) {
-      expect(existsSync(path), path).toBe(false)
+      expect(existsSync(path), path).toBe(true)
     }
     for (const path of [
       'public/rewardme-logo.png',
@@ -50,15 +39,16 @@ describe('RewardMe flagship branding', () => {
     }
   })
 
-  it('uses the RewardMe hostname canonically and keeps the former host redirect-only', () => {
+  it('keeps RewardMe canonical while serving Pinas Rewards independently', () => {
     const discovery = readFileSync('api/_tenant-public-discovery.ts', 'utf8')
     const deployment = readFileSync('scripts/deploy-tenant-sites.mjs', 'utf8')
     const vercel = readFileSync('vercel.json', 'utf8')
 
     expect(discovery).toContain("'loyalty-rewards-prog.vercel.app': 'https://loyalty-rewards-prog.vercel.app'")
+    expect(discovery).toContain("'pinas-rewards.vercel.app': 'https://pinas-rewards.vercel.app'")
     expect(deployment).toContain("primaryProject: 'loyalty-rewards-prog'")
     expect(deployment).toContain("aliases: ['pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app']")
-    expect(vercel).toContain('"destination": "https://loyalty-rewards-prog.vercel.app/:path*"')
+    expect(vercel).not.toContain('"destination": "https://loyalty-rewards-prog.vercel.app/:path*"')
   })
 
   it('does not hardcode the Medellin wordmark in public page chrome', () => {
@@ -73,6 +63,7 @@ describe('RewardMe flagship branding', () => {
 
   it('ships host-aware install metadata and neutral static discovery fallbacks', () => {
     expect(installBranding).toContain("name: 'RewardMe'")
+    expect(installBranding).toContain("name: 'Pinas Rewards'")
     expect(installBranding).toContain("name: 'Medellin Rewards'")
     expect(installBranding).toContain("name: 'Wondertown Rewards'")
     expect(indexHtml).toContain('href="/api/tenant-icon?size=192"')

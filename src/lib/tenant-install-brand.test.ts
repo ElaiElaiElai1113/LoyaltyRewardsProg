@@ -14,6 +14,7 @@ const tenantCases = [
   ['guatemalarewards.com', 'guatemala', 'Guatemala Rewards'],
   ['synergize-business-group.vercel.app', 'synergize', 'Synergize'],
   ['loyalty-rewards-prog.vercel.app', 'pinas', 'RewardMe'],
+  ['pinas-rewards.vercel.app', 'pinasrewards', 'Pinas Rewards'],
   ['wondertown-rewards.vercel.app', 'wondertown', 'Wondertown Rewards'],
 ] as const
 
@@ -47,7 +48,7 @@ describe('tenant install branding', () => {
       expect.objectContaining({ src: expect.stringContaining(`tenant=${slug}`), sizes: '192x192' }),
       expect.objectContaining({ src: expect.stringContaining(`tenant=${slug}`), sizes: '512x512' }),
     ])
-    if (slug !== 'pinas') expect(JSON.stringify(manifest.icons)).not.toContain('pinas')
+    if (slug !== 'pinas' && slug !== 'pinasrewards') expect(JSON.stringify(manifest.icons)).not.toContain('pinas')
   })
 
   it('keeps platform administration on the neutral parent install identity', () => {
@@ -59,7 +60,7 @@ describe('tenant install branding', () => {
     expect(manifest.start_url).toContain('/admin')
   })
 
-  it.each(['platform', 'medellin', 'guatemala', 'synergize', 'pinas', 'wondertown'] as InstallBrandSlug[])(
+  it.each(['platform', 'medellin', 'guatemala', 'synergize', 'pinas', 'pinasrewards', 'wondertown'] as InstallBrandSlug[])(
     'ships exact PNG sizes for the %s install brand',
     (slug) => {
       const brand = resolveInstallBrand('localhost', slug)

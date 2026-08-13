@@ -1,4 +1,4 @@
-export type InstallBrandSlug = 'platform' | 'medellin' | 'guatemala' | 'synergize' | 'pinas' | 'wondertown'
+export type InstallBrandSlug = 'platform' | 'medellin' | 'guatemala' | 'synergize' | 'pinas' | 'pinasrewards' | 'wondertown'
 
 export type InstallBrand = {
   slug: InstallBrandSlug
@@ -68,6 +68,17 @@ const brands: Record<InstallBrandSlug, InstallBrand> = {
     startUrl: '/',
     iconBase: 'rewardme',
   },
+  pinasrewards: {
+    slug: 'pinasrewards',
+    name: 'Pinas Rewards',
+    shortName: 'Pinas Rewards',
+    description: 'Pinas Rewards member benefits and participating local businesses.',
+    locale: 'en',
+    themeColor: '#a67608',
+    backgroundColor: '#11100e',
+    startUrl: '/',
+    iconBase: 'pinasrewards',
+  },
   wondertown: {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
@@ -88,7 +99,7 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'www.guatemalarewards.com': 'guatemala',
   'synergize-business-group.vercel.app': 'synergize',
   'loyalty-rewards-prog.vercel.app': 'pinas',
-  'pinas-rewards.vercel.app': 'pinas', // Legacy redirect host.
+  'pinas-rewards.vercel.app': 'pinasrewards',
   'wondertown-rewards.vercel.app': 'wondertown',
 }
 

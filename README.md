@@ -1,6 +1,6 @@
 # RewardMe
 
-React + TypeScript + Vite application for the RewardMe flagship program and the Medellin, Guatemala, Wondertown, and Synergize tenant experiences backed by Supabase.
+React + TypeScript + Vite application for the independent RewardMe, Medellin, Guatemala, Pinas Rewards, Wondertown, and Synergize tenant experiences backed by Supabase.
 
 Checkout is currently a labeled demo flow for rewards testing. No real payment is processed.
 
@@ -52,6 +52,10 @@ npm run test:e2e:rewardme-safe
 ```
 
 See `docs/rewardme-authenticated-qa.md` for its temporary-user and cleanup rules.
+Wondertown is the permanent fictional user-testing tenant. Its member, second
+member, owner, staff, and platform-admin credentials are published directly on
+the matching sign-in pages; `npm run test:e2e:wondertown-demo` verifies the
+complete authenticated production workflow.
 Partner operations can validate and package a review-only intake with
 `validate:rewardme-partners` and `prepare:rewardme-partners`.
 

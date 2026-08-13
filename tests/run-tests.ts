@@ -764,7 +764,7 @@ runTest('Figma homepage uses the approved typography and clean photography asset
   assert.match(homePage, /Dining out/)
   assert.match(homePage, /Salon days/)
   assert.match(homePage, /Made for members in the Philippines/)
-  assert.match(homeStyles, /figma-home--rewardme \.figma-home__hero-visual/)
+  assert.match(homeStyles, /figma-home--pinas \.figma-home__hero-visual/)
   assert.match(homeStyles, /figma-home__membership-referral/)
 })
 

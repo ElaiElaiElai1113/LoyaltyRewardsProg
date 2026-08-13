@@ -22,8 +22,9 @@ permissions:
 
 jobs:
   verify:
-    # Automatic multi-domain verification moves to tenant-deployment.yml once synchronization is enabled.
-    if: github.event_name == 'workflow_dispatch' || (vars.ENABLE_TENANT_DEPLOYMENT_SYNC != 'true' && github.event.deployment_status.state == 'success' && github.event.deployment_status.environment == 'Production')
+    # Automatic multi-domain promotion and verification are handled by tenant-deployment.yml.
+    # Keep this workflow available for targeted manual checks of any deployment URL.
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     env:
@@ -52,6 +53,7 @@ jobs:
           npm run ops:domain:check -- "loyalty-rewards-prog.vercel.app" "RewardMe" --expected-version "$EXPECTED_VERSION" || status=1
           npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_VERSION" || status=1
           npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_VERSION" || status=1
+          npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_VERSION" || status=1
           npm run ops:domain:check -- "wondertown-rewards.vercel.app" "Wondertown Rewards" --expected-version "$EXPECTED_VERSION" || status=1
           exit "$status"
       - name: Verify additional tenant domains

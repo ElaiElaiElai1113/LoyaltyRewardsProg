@@ -13,6 +13,10 @@ import {
   REWARDME_TEST_ACCOUNTS,
   shouldShowRewardMeTestCredentials,
 } from '@/features/auth/rewardme-test-accounts'
+import {
+  WONDERTOWN_TEST_ACCOUNTS,
+  WONDERTOWN_TEST_PASSWORD,
+} from '@/features/auth/wondertown-test-accounts'
 import { platformBrand } from '@/features/platform/platform-brand'
 import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
 import { useAuth } from '@/hooks/use-auth'
@@ -260,6 +264,26 @@ export function StaffLoginPage({ portal }: { portal: StaffPortal }) {
                 signInForm.setValue('role', account.role)
               }}
               title={isAdminPortal ? 'Platform test account' : 'RewardMe test accounts'}
+            />
+          ) : null}
+
+          {program.slug === 'wondertown' && shouldShowRewardMeTestCredentials() ? (
+            <RewardMeTestCredentials
+              accounts={isAdminPortal
+                ? WONDERTOWN_TEST_ACCOUNTS.filter((account) => account.portal === 'admin')
+                : WONDERTOWN_TEST_ACCOUNTS}
+              ariaLabel={isAdminPortal ? 'Platform test account' : 'Wondertown test accounts'}
+              currentPortal={isAdminPortal ? 'admin' : 'business'}
+              description="Fictional accounts for safely testing the complete Wondertown experience."
+              onUse={(account, password) => {
+                setError(null)
+                signInForm.setValue('email', account.email, { shouldValidate: true })
+                signInForm.setValue('password', password, { shouldValidate: true })
+                signInForm.setValue('role', account.role)
+              }}
+              password={WONDERTOWN_TEST_PASSWORD}
+              testId="wondertown-test-credentials"
+              title={isAdminPortal ? 'Platform test account' : 'Wondertown test accounts'}
             />
           ) : null}
         </form>

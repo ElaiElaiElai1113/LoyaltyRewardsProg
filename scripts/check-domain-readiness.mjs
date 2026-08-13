@@ -64,6 +64,7 @@ async function readRenderedTenantMetadata(origin, expectedName) {
     'Guatemala Rewards': 'guatemala',
     'Synergize': 'synergize',
     'RewardMe': 'pinas',
+    'Pinas Rewards': 'pinasrewards',
     'Wondertown Rewards': 'wondertown',
   }[expectedName]
   if (!expectedInstallSlug) throw new Error(`No install-brand slug is configured for ${expectedName}`)

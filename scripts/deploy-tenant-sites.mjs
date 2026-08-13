@@ -170,7 +170,7 @@ export async function deployTenantSites(options, environment = process.env) {
       actions: [
         'resolve the ready primary production deployment for the exact commit',
         'deploy the exact checkout to the Guatemala production project',
-        'point the legacy RewardMe and Wondertown aliases to the resolved primary deployment',
+        'point the independent Pinas Rewards and Wondertown hostnames to the resolved primary deployment',
       ],
     }
   }

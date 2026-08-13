@@ -10,22 +10,30 @@ import {
 
 type RewardMeTestCredentialsProps = {
   accounts?: readonly RewardMeTestAccount[]
+  ariaLabel?: string
   currentPortal: RewardMeTestPortal
+  description?: string
   onUse: (account: RewardMeTestAccount, password: string) => void
+  password?: string
+  testId?: string
   title?: string
 }
 
 export function RewardMeTestCredentials({
   accounts = REWARDME_TEST_ACCOUNTS,
+  ariaLabel = 'RewardMe test accounts',
   currentPortal,
+  description = 'Temporary testing access. Use only with non-production data.',
   onUse,
+  password = REWARDME_TEST_PASSWORD,
+  testId = 'rewardme-test-credentials',
   title = 'RewardMe test accounts',
 }: RewardMeTestCredentialsProps) {
   return (
     <section
-      aria-label="RewardMe test accounts"
+      aria-label={ariaLabel}
       className="mt-6 rounded-[10px] border border-[#d1ad4a]/45 bg-[#d1ad4a]/[0.07] p-3.5"
-      data-testid="rewardme-test-credentials"
+      data-testid={testId}
     >
       <div className="flex items-start gap-2.5">
         <KeyRound className="mt-0.5 size-4 shrink-0 text-[#d1ad4a]" aria-hidden="true" />
@@ -34,7 +42,7 @@ export function RewardMeTestCredentials({
             {title}
           </h2>
           <p className="mt-1 text-[11px] leading-4 text-[#8f8f8f]">
-            Temporary testing access. Use only with non-production data.
+            {description}
           </p>
         </div>
       </div>
@@ -44,7 +52,7 @@ export function RewardMeTestCredentials({
           Password for every test account
         </span>
         <code className="mt-1 block break-all text-[13px] font-bold text-[var(--foreground)]">
-          {REWARDME_TEST_PASSWORD}
+          {password}
         </code>
       </div>
 
@@ -71,7 +79,7 @@ export function RewardMeTestCredentials({
                 <button
                   type="button"
                   className="inline-flex min-h-9 w-full items-center justify-center gap-1.5 rounded-[6px] border border-[#d1ad4a]/55 px-2.5 text-[11px] font-bold text-[#d1ad4a] transition hover:bg-[#d1ad4a] hover:text-[#080808]"
-                  onClick={() => onUse(account, REWARDME_TEST_PASSWORD)}
+                  onClick={() => onUse(account, password)}
                 >
                   <LogIn className="size-3.5" aria-hidden="true" />
                   Use account
