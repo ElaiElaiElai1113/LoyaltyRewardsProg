@@ -230,6 +230,20 @@ await ensureProgramMembership(customer.id, 'member')
 await ensureProgramMembership(owner.id, 'business-owner', business.id)
 if (staff) await ensureProgramMembership(staff.id, 'business-staff', business.id)
 
+// New auth identities can briefly receive a member row before the final QA role
+// is applied. Remove that transitional access so every published account has one
+// intentional tenant role and the global platform admin has no tenant membership.
+const nonMemberProfiles = [owner.id, staff?.id, admin?.id].filter(Boolean)
+if (nonMemberProfiles.length) {
+  const { error: transitionalMembershipError } = await client
+    .from('program_memberships')
+    .delete()
+    .eq('program_id', program.id)
+    .eq('role', 'member')
+    .in('profile_id', nonMemberProfiles)
+  if (transitionalMembershipError) throw transitionalMembershipError
+}
+
 const { error: balanceError } = await client.from('reward_balances').upsert({
   program_id: program.id,
   profile_id: customer.id,
@@ -290,6 +304,14 @@ const giftCardCatalogId = await ensureCatalogRow('gift_card_catalog', 'QA Gift C
   expiry_days: 30,
   is_active: true,
   created_by: owner.id,
+})
+await ensureCatalogRow('promotions', 'QA Member Bonus', {
+  description: 'Authenticated tenant QA promotion.',
+  badge: 'QA fixture',
+  cta: 'View QA partner',
+  audience: 'QA members',
+  expires_at: '2099-12-31T23:59:59.000Z',
+  active: true,
 })
 
 const authClient = createClient(supabaseUrl, anonKey, {
@@ -415,4 +437,5 @@ console.log(JSON.stringify({
   transactionFixtureId: transactionFixtureRow.id,
   giftCardFixtureId: giftCardFixture.id,
   planAdministration: 'manual',
+  isolatedProgramRolesVerified: true,
 }, null, 2))

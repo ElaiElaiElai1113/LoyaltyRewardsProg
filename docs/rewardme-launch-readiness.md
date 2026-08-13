@@ -81,6 +81,12 @@ remaining approval, test-account, manual-enrollment, database, and release steps
 - Mobile readiness and responsive browser checks
 - Customer, business, staff, program-admin, and platform-admin acceptance flows
 - Production health, email, domain, migration, and rollback checks
+- Six-hour deep RewardMe/Wondertown verification of published logins, tenant
+  roles, catalog fixtures, member balances, customer links, transactions, and
+  gift cards, with JSON evidence retained by GitHub Actions.
+- Live, mutation-aware Playwright gift-card commands for RewardMe and Wondertown
+  that fund a member, issue a card, redeem it once, reject a second redemption,
+  and verify both the member wallet and business transaction view.
 
 ## Current live QA status
 
@@ -101,3 +107,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/provision-reward
 Public credentials remain temporary testing infrastructure. Before a true
 public launch, set `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, redeploy, run the
 release-mode check, and rotate or disable all four QA accounts.
+
+While boss/user testing is active, the credential panels intentionally remain
+visible and the QA accounts remain enabled. This is a testing-state exception,
+not the public-launch configuration.

@@ -5,6 +5,12 @@ on:
     - cron: "17 */6 * * *"
     - cron: "43 2 * * *"
   workflow_dispatch:
+    inputs:
+      reset_wondertown:
+        description: Reset only the fictional Wondertown demo data before reseeding
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -30,6 +36,41 @@ jobs:
         with:
           name: production-monitoring-${{ github.run_id }}
           path: artifacts/monitoring
+          retention-days: 30
+
+  reward-sites:
+    if: vars.ENABLE_REWARD_SITES_DEEP_MONITORING == 'true' && github.event.schedule != '43 2 * * *'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require isolated QA credentials
+        shell: bash
+        run: test -n "$SUPABASE_URL" && test -n "$VITE_SUPABASE_ANON_KEY" && test -n "$SUPABASE_SERVICE_ROLE_KEY" && test -n "$E2E_PASSWORD"
+      - name: Refresh Wondertown fixtures without deleting test history
+        if: inputs.reset_wondertown != true
+        run: npm run qa:provision-wondertown
+      - name: Reset only Wondertown and restore its baseline
+        if: inputs.reset_wondertown == true
+        run: node scripts/provision-wondertown-demo.mjs --reset --confirm-reset-wondertown
+      - name: Verify RewardMe and Wondertown logins, isolation, catalogs, and persisted workflows
+        run: npm run qa:verify-reward-sites
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: reward-sites-monitoring-${{ github.run_id }}
+          path: artifacts/monitoring/reward-sites-latest.json
           retention-days: 30
 
   backup:

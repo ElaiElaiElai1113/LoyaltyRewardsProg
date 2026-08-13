@@ -17,6 +17,15 @@ function loadDotEnv(path = '.env') {
 
 loadDotEnv()
 
+const resetRequested = process.argv.includes('--reset')
+const resetConfirmed = process.argv.includes('--confirm-reset-wondertown')
+
+if (resetRequested && !resetConfirmed) {
+  throw new Error(
+    'Wondertown reset was not confirmed. Re-run with --reset --confirm-reset-wondertown.',
+  )
+}
+
 const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 const anonKey = process.env.VITE_SUPABASE_ANON_KEY
@@ -177,6 +186,56 @@ const businessFixtures = [
     },
   },
 ]
+
+async function deleteProgramRows(table) {
+  const { error, count } = await client
+    .from(table)
+    .delete({ count: 'exact' })
+    .eq('program_id', program.id)
+
+  if (error) {
+    throw new Error(`Could not reset Wondertown table ${table}: ${error.message}`)
+  }
+
+  return count ?? 0
+}
+
+const resetCounts = {}
+if (resetRequested) {
+  // Wondertown is the dedicated fictional demo tenant. The reset is deliberately
+  // scoped by program_id and leaves the program, domains, settings, subscription,
+  // profiles, and authentication identities intact.
+  const resetTables = [
+    'gift_card_events',
+    'gift_cards',
+    'redemptions',
+    'member_transactions',
+    'order_line_items',
+    'orders',
+    'activities',
+    'credit_redemptions',
+    'partner_credit_ledger',
+    'partner_referrals',
+    'partner_referrers',
+    'business_customer_links',
+    'memberships',
+    'reward_balances',
+    'agreement_acceptances',
+    'ambassador_leads',
+    'early_access_leads',
+    'promotions',
+    'gift_card_catalog',
+    'rewards',
+    'products',
+    'program_memberships',
+    'admin_logs',
+    'businesses',
+  ]
+
+  for (const table of resetTables) {
+    resetCounts[table] = await deleteProgramRows(table)
+  }
+}
 
 async function ensureBusiness(fixture) {
   const values = {
@@ -347,14 +406,24 @@ const { error: ownerAssignmentError } = await client
 if (ownerAssignmentError) throw ownerAssignmentError
 
 for (const [profileId, points] of [[member.id, 1500], [neighbor.id, 725]]) {
-  const { error } = await client.from('reward_balances').upsert({
-    program_id: program.id,
-    profile_id: profileId,
-    points,
-    next_reward_points: 2000,
-    available_credits: 0,
-  }, { onConflict: 'program_id,profile_id' })
-  if (error) throw error
+  const { data: existingBalance, error: balanceReadError } = await client
+    .from('reward_balances')
+    .select('profile_id')
+    .eq('program_id', program.id)
+    .eq('profile_id', profileId)
+    .maybeSingle()
+  if (balanceReadError) throw balanceReadError
+
+  if (!existingBalance) {
+    const { error } = await client.from('reward_balances').insert({
+      program_id: program.id,
+      profile_id: profileId,
+      points,
+      next_reward_points: 2000,
+      available_credits: 0,
+    })
+    if (error) throw error
+  }
 
   const { error: linkError } = await client.from('business_customer_links').upsert({
     program_id: program.id,
@@ -389,6 +458,7 @@ async function ensureCatalogRow(table, businessId, title, values) {
   return data.id
 }
 
+let moonbeamGiftCardCatalogId = null
 for (const fixture of businessFixtures) {
   const business = businesses.get(fixture.slug)
   await ensureCatalogRow('products', business.id, fixture.product.title, {
@@ -407,7 +477,7 @@ for (const fixture of businessFixtures) {
     featured: fixture.slug === 'wondertown-moonbeam-cafe',
     highlight: fixture.reward.highlight,
   })
-  await ensureCatalogRow('gift_card_catalog', business.id, fixture.giftCard.title, {
+  const giftCardCatalogId = await ensureCatalogRow('gift_card_catalog', business.id, fixture.giftCard.title, {
     description: fixture.giftCard.description,
     points_cost: fixture.giftCard.pointsCost,
     value_label: fixture.giftCard.valueLabel,
@@ -415,6 +485,9 @@ for (const fixture of businessFixtures) {
     is_active: true,
     created_by: owner.id,
   })
+  if (fixture.slug === 'wondertown-moonbeam-cafe') {
+    moonbeamGiftCardCatalogId = giftCardCatalogId
+  }
   await ensureCatalogRow('promotions', business.id, fixture.promotion.title, {
     description: fixture.promotion.description,
     badge: fixture.promotion.badge,
@@ -454,6 +527,69 @@ await ensureWelcomeActivity(neighbor.id, 725)
 const authClient = createClient(supabaseUrl, anonKey, {
   auth: { autoRefreshToken: false, persistSession: false },
 })
+
+const { data: memberProfileForFixtures, error: memberProfileFixtureError } = await client
+  .from('profiles')
+  .select('member_qr_token')
+  .eq('id', member.id)
+  .single()
+if (memberProfileFixtureError || !memberProfileForFixtures?.member_qr_token) {
+  throw new Error(`Could not load the Wondertown member QR token: ${memberProfileFixtureError?.message ?? 'missing token'}`)
+}
+
+const { error: ownerFixtureSignInError } = await authClient.auth.signInWithPassword({
+  email: owner.email,
+  password,
+})
+if (ownerFixtureSignInError) {
+  throw new Error(`Could not sign in the Wondertown owner for baseline data: ${ownerFixtureSignInError.message}`)
+}
+const { data: baselineTransaction, error: baselineTransactionError } = await authClient.rpc(
+  'record_member_transaction',
+  {
+    p_member_qr_token: memberProfileForFixtures.member_qr_token,
+    p_purchase_amount: 20,
+    p_receipt_number: 'WT-DEMO-BASELINE-001',
+    p_note: 'Idempotent Wondertown baseline transaction.',
+    p_client_request_id: '50000000-0000-4000-8000-000000000001',
+  },
+)
+if (baselineTransactionError || !baselineTransaction) {
+  throw new Error(`Could not create the Wondertown baseline transaction: ${baselineTransactionError?.message ?? 'missing row'}`)
+}
+await authClient.auth.signOut()
+
+let { data: baselineGiftCard, error: baselineGiftCardReadError } = await client
+  .from('gift_cards')
+  .select('id,status,code')
+  .eq('program_id', program.id)
+  .eq('catalog_id', moonbeamGiftCardCatalogId)
+  .eq('customer_id', member.id)
+  .order('created_at', { ascending: false })
+  .limit(1)
+  .maybeSingle()
+if (baselineGiftCardReadError) throw baselineGiftCardReadError
+
+if (!baselineGiftCard) {
+  const { error: memberFixtureSignInError } = await authClient.auth.signInWithPassword({
+    email: member.email,
+    password,
+  })
+  if (memberFixtureSignInError) {
+    throw new Error(`Could not sign in the Wondertown member for baseline data: ${memberFixtureSignInError.message}`)
+  }
+  const { data, error } = await authClient.rpc('issue_gift_card', {
+    p_catalog_id: moonbeamGiftCardCatalogId,
+    p_customer_id: member.id,
+  })
+  const issued = Array.isArray(data) ? data[0] : data
+  if (error || !issued?.id) {
+    throw new Error(`Could not create the Wondertown baseline gift card: ${error?.message ?? 'missing row'}`)
+  }
+  baselineGiftCard = issued
+  await authClient.auth.signOut()
+}
+
 for (const email of [member.email, owner.email, staff.email]) {
   const { error } = await authClient.auth.signInWithPassword({ email, password })
   if (error) throw new Error(`Login verification failed for ${email}: ${error.message}`)
@@ -491,4 +627,8 @@ console.log(JSON.stringify({
   passwordVerified: true,
   memberQrVerified: true,
   contactDetailsVerified: true,
+  baselineTransactionId: Array.isArray(baselineTransaction) ? baselineTransaction[0]?.id : baselineTransaction.id,
+  baselineGiftCardId: baselineGiftCard.id,
+  resetApplied: resetRequested,
+  resetCounts,
 }, null, 2))
