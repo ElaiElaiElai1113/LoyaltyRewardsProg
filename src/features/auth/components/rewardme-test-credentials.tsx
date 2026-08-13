@@ -18,6 +18,7 @@ type RewardMeTestCredentialsProps = {
   password?: string
   testId?: string
   title?: string
+  unified?: boolean
 }
 
 export function RewardMeTestCredentials({
@@ -29,6 +30,7 @@ export function RewardMeTestCredentials({
   password = REWARDME_TEST_PASSWORD,
   testId = 'rewardme-test-credentials',
   title = 'RewardMe test accounts',
+  unified = false,
 }: RewardMeTestCredentialsProps) {
   const [activeAccountEmail, setActiveAccountEmail] = useState<string | null>(null)
 
@@ -75,7 +77,7 @@ export function RewardMeTestCredentials({
 
       <div className="mt-3 grid gap-2">
         {accounts.map((account) => {
-          const isCurrentPortal = account.portal === currentPortal
+          const isCurrentPortal = unified || account.portal === currentPortal
           const isSigningIn = activeAccountEmail === account.email
 
           return (

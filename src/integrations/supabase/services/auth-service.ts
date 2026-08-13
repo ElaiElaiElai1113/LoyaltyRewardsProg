@@ -4,6 +4,7 @@ import { requireSupabase, camelCaseRow } from './shared'
 import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { isSupabaseConfigured } from '@/integrations/supabase/client'
 import { resolveTenantPublicSiteUrl } from '@/lib/public-site-url'
+import { profileRoleMatchesRequestedRole } from '@/lib/sign-in-portals'
 import {
   getPasswordSetupParams,
   getPasswordSetupType,
@@ -106,15 +107,7 @@ function profileMatchesRequestedRole(
   profile: Profile,
   requestedRole: AuthFormValues['role'],
 ) {
-  if (requestedRole === 'customer') {
-    return profile.role === 'customer'
-  }
-
-  if (requestedRole === 'platform-admin') {
-    return profile.role === 'platform-admin'
-  }
-
-  return profile.role === 'business-owner' || profile.role === 'business-staff'
+  return profileRoleMatchesRequestedRole(profile.role, requestedRole)
 }
 
 export const authService = {
@@ -155,6 +148,7 @@ export const authService = {
 
     const profile = await getProfileByUserId(userId)
     if (!profile) {
+      pendingSignInRole = null
       await sb.auth.signOut()
       throw new Error('Profile not found. Try creating an account first.')
     }
@@ -165,21 +159,25 @@ export const authService = {
       profile.role === 'business-owner' || profile.role === 'business-staff'
 
     if (isBusinessPortalSignIn && !isAllowedBusinessRole) {
+      pendingSignInRole = null
       await sb.auth.signOut()
       throw new Error('This account does not have access to the business portal.')
     }
 
     if (input.role === 'platform-admin' && profile.role !== 'platform-admin') {
+      pendingSignInRole = null
       await sb.auth.signOut()
       throw new Error('This account does not have access to the admin portal.')
     }
 
     if (input.role === 'customer' && profile.role !== 'customer') {
+      pendingSignInRole = null
       await sb.auth.signOut()
-      throw new Error('This sign-in page is for customer accounts only.')
+      throw new Error('This account does not have access to the customer portal.')
     }
 
     if (!isBusinessPortalSignIn && profile.role !== input.role) {
+      pendingSignInRole = null
       await sb.auth.signOut()
       throw new Error(`This account is a ${profile.role}, not a ${input.role}.`)
     }

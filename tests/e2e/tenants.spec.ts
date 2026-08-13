@@ -67,14 +67,16 @@ test.describe('white-label tenant resolution', () => {
       }
     })
 
-    test(`${tenant.name} keeps the platform-admin entry parent branded`, async ({ page }) => {
+    test(`${tenant.name} identifies the platform-admin choice inside the unified sign-in entry`, async ({ page }) => {
       const errors = collectRuntimeErrors(page)
       await page.goto(`/admin?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle('Rewards Platform Admin')
       await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
-      await expect(page.locator('#staff-signin-email')).toBeVisible()
-      await expect(page.locator('body')).not.toContainText(tenant.name)
+      await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=admin`))
+      await expect(page.locator('#signin-email')).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
+      await expect(page.getByText(tenant.name, { exact: false }).first()).toBeVisible()
       expect(errors).toEqual([])
     })
 
@@ -84,7 +86,9 @@ test.describe('white-label tenant resolution', () => {
 
       await expect(page).toHaveTitle(tenant.name)
       await expect(page.getByText(tenant.name, { exact: true })).toBeVisible()
-      await expect(page.locator('#staff-signin-email')).toBeVisible()
+      await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=business`))
+      await expect(page.locator('#signin-email')).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
       await expect(page.locator('body')).not.toContainText('Rewards Platform')
       expect(errors).toEqual([])
     })
@@ -102,8 +106,8 @@ test.describe('white-label tenant resolution', () => {
   test('platform program console remains protected for signed-out visitors', async ({ page }) => {
     const errors = collectRuntimeErrors(page)
     await page.goto('/admin/programs')
-    await expect(page).toHaveURL(/\/admin\?redirect=%2Fadmin%2Fprograms$/)
-    await expect(page.locator('#staff-signin-email')).toBeVisible()
+    await expect(page).toHaveURL(/\/signin\?portal=admin&redirect=%2Fadmin%2Fprograms$/)
+    await expect(page.locator('#signin-email')).toBeVisible()
     expect(errors).toEqual([])
   })
 

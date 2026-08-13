@@ -19,6 +19,7 @@ import { getHomePathForRole } from '@/lib/role-routes'
 import { useCurrentProgramMembership } from '@/hooks/use-program-access'
 import { canAccessProgramAdmin } from '@/lib/program-access'
 import { getPasswordSetupRoute, getPasswordSetupType } from '@/lib/password-setup'
+import { getUnifiedSignInPath, type SignInPortal } from '@/lib/sign-in-portals'
 
 const AdminPage = lazy(() => import('@/features/admin/pages/admin-page').then((module) => ({ default: module.AdminPage })))
 const MembershipOperationsPage = lazy(() => import('@/features/platform/pages/membership-operations-page').then((module) => ({ default: module.MembershipOperationsPage })))
@@ -27,7 +28,6 @@ const AuthPage = lazy(() => import('@/features/auth/pages/landing-page').then((m
 const EmailConfirmationPage = lazy(() => import('@/features/auth/pages/email-confirmation-page').then((module) => ({ default: module.EmailConfirmationPage })))
 const RequiredAgreementsPage = lazy(() => import('@/features/auth/pages/required-agreements-page').then((module) => ({ default: module.RequiredAgreementsPage })))
 const ResetPasswordPage = lazy(() => import('@/features/auth/pages/reset-password-page').then((module) => ({ default: module.ResetPasswordPage })))
-const StaffLoginPage = lazy(() => import('@/features/auth/pages/staff-login-page').then((module) => ({ default: module.StaffLoginPage })))
 const CostCalculatorPage = lazy(() => import('@/features/business/pages/cost-calculator-page').then((module) => ({ default: module.CostCalculatorPage })))
 const ForBusinessesPage = lazy(() => import('@/features/business/pages/for-businesses-page').then((module) => ({ default: module.ForBusinessesPage })))
 const ActivityPage = lazy(() => import('@/features/activity/pages/activity-page').then((module) => ({ default: module.ActivityPage })))
@@ -71,8 +71,6 @@ const ProductsPage = lazy(() => import('@/features/business-owner/pages/products
 const BusinessPromotionsPage = lazy(() => import('@/features/business-owner/pages/promotions-page').then((module) => ({ default: module.PromotionsPage })))
 const BusinessRewardsPage = lazy(() => import('@/features/business-owner/pages/rewards-page').then((module) => ({ default: module.RewardsPage })))
 const SettingsPage = lazy(() => import('@/features/business-owner/pages/settings-page').then((module) => ({ default: module.SettingsPage })))
-
-const portalAccessErrorKey = 'portalAccessError'
 
 function getSignInPath() {
   const tenant = new URLSearchParams(window.location.search).get('tenant')
@@ -148,7 +146,7 @@ function RouteEffects() {
 }
 
 function LandingRoute() {
-  const { profile, isLoading, signOut } = useAuth()
+  const { profile, isLoading } = useAuth()
   const requiredAgreements = useRequiredAgreements(profile)
   const agreementGate = getAgreementGateDecision({
     role: profile?.role ?? null,
@@ -157,23 +155,11 @@ function LandingRoute() {
     isAgreementComplete: requiredAgreements.data?.isComplete,
   })
 
-  useEffect(() => {
-    if (!profile) return
-    if (profile.role === 'customer') return
-
-    sessionStorage.setItem(portalAccessErrorKey, 'This sign-in page is for customer accounts only.')
-    void signOut({ redirectTo: '/signin' })
-  }, [profile, signOut])
-
   if (isLoading) {
     return <RouteLoading />
   }
 
   if (profile) {
-    if (profile.role !== 'customer') {
-      return <RouteLoading />
-    }
-
     if (agreementGate === 'loading') {
       return <RouteLoading />
     }
@@ -181,7 +167,7 @@ function LandingRoute() {
     if (agreementGate === 'redirect-required-agreements') {
       return <Navigate replace to="/agreements/required" />
     }
-    return <Navigate replace to="/dashboard" />
+    return <Navigate replace to={getHomePathForRole(profile.role)} />
   }
 
   return <AuthPage />
@@ -283,7 +269,7 @@ function ProtectedAdminRoute() {
     return (
       <Navigate
         replace
-        to={profile ? getHomePathForRole(profile.role) : `/admin?redirect=${encodeURIComponent(location.pathname)}`}
+        to={profile ? getHomePathForRole(profile.role) : getUnifiedSignInPath('admin', location.pathname)}
       />
     )
   }
@@ -326,7 +312,7 @@ function ProtectedBusinessOwnerRoute() {
     return (
       <Navigate
         replace
-        to={profile ? getHomePathForRole(profile.role) : `/business/login?redirect=${encodeURIComponent(location.pathname)}`}
+        to={profile ? getHomePathForRole(profile.role) : getUnifiedSignInPath('business', location.pathname)}
       />
     )
   }
@@ -356,55 +342,19 @@ function OwnerOnlyBusinessRoute({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-function AdminEntryRoute() {
-  const { profile, isLoading, signOut } = useAuth()
-
-  useEffect(() => {
-    if (!profile || profile.role === 'platform-admin') return
-
-    sessionStorage.setItem(portalAccessErrorKey, 'This account does not have access to the admin portal.')
-    void signOut({ redirectTo: '/admin' })
-  }, [profile, signOut])
+function LegacyPortalEntryRoute({ portal }: { portal: Exclude<SignInPortal, 'customer'> }) {
+  const { profile, isLoading } = useAuth()
+  const location = useLocation()
 
   if (isLoading) {
     return <RouteLoading />
   }
 
-  if (!profile) {
-    return <StaffLoginPage portal="admin" />
-  }
+  if (profile) return <Navigate replace to={getHomePathForRole(profile.role)} />
 
-  if (profile.role !== 'platform-admin') {
-    return <RouteLoading />
-  }
-
-  return <Navigate replace to="/admin/portal" />
-}
-
-function BusinessEntryRoute() {
-  const { profile, isLoading, signOut } = useAuth()
-
-  useEffect(() => {
-    if (!profile) return
-    if (profile.role === 'business-owner' || profile.role === 'business-staff') return
-
-    sessionStorage.setItem(portalAccessErrorKey, 'This account does not have access to the business portal.')
-    void signOut({ redirectTo: '/business/login' })
-  }, [profile, signOut])
-
-  if (isLoading) {
-    return <RouteLoading />
-  }
-
-  if (!profile) {
-    return <StaffLoginPage portal="business" />
-  }
-
-  if (profile.role === 'business-owner' || profile.role === 'business-staff') {
-    return <Navigate replace to="/business/dashboard" />
-  }
-
-  return <RouteLoading />
+  const search = new URLSearchParams(location.search)
+  search.set('portal', portal)
+  return <Navigate replace to={`/signin?${search.toString()}`} />
 }
 
 const router = createBrowserRouter([
@@ -433,11 +383,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/business/login',
-        element: <BusinessEntryRoute />,
+        element: <LegacyPortalEntryRoute portal="business" />,
       },
       {
         path: '/admin',
-        element: <AdminEntryRoute />,
+        element: <LegacyPortalEntryRoute portal="admin" />,
       },
       {
         path: '/agreements/required',

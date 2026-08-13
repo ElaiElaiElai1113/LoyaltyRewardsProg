@@ -14,7 +14,7 @@ const accounts = [
   {
     label: 'business owner',
     panelLabel: 'Business owner',
-    route: '/business/login',
+    route: '/signin?portal=business',
     email: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
@@ -22,7 +22,7 @@ const accounts = [
   {
     label: 'business staff',
     panelLabel: 'Business staff',
-    route: '/business/login',
+    route: '/signin?portal=business',
     email: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
@@ -30,7 +30,7 @@ const accounts = [
   {
     label: 'platform administrator',
     panelLabel: 'Platform admin',
-    route: '/admin',
+    route: '/signin?portal=admin',
     email: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
     destination: /\/admin\/portal(?:[/?#]|$)/,
     rewardMeBranded: false,

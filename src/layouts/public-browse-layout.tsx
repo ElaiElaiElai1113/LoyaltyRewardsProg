@@ -57,7 +57,7 @@ export function PublicBrowseLayout() {
                   {language === 'tl' ? 'English' : 'Tagalog'}
                 </button>
               ) : null}
-              <NavLink to="/business/login" className="business-public-shell__login">
+              <NavLink to="/signin?portal=business" className="business-public-shell__login">
                 Business Login
               </NavLink>
             </div>

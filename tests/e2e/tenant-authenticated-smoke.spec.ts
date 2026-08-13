@@ -82,10 +82,10 @@ async function signInCustomer(page: Page, email = customerEmail) {
 }
 
 async function signInBusiness(page: Page, email = businessOwnerEmail) {
-  await page.goto('/business/login')
-  await page.locator('#staff-signin-email').fill(email)
-  await page.locator('#staff-signin-password').fill(password)
-  await page.locator('form').filter({ has: page.locator('#staff-signin-email') })
+  await page.goto('/signin?portal=business')
+  await page.locator('#signin-email').fill(email)
+  await page.locator('#signin-password').fill(password)
+  await page.locator('form').filter({ has: page.locator('#signin-email') })
     .locator('button[type="submit"]').click()
   await expect(page).toHaveURL(/\/business\/dashboard$/)
 }

@@ -90,10 +90,10 @@ test.describe.serial('agreement e-signature frontend QA', () => {
   })
 
   test('AGR002 unsigned business owner signs affiliate agreement with drawn signature', async ({ page }) => {
-    await page.goto('/business/login')
-    await page.locator('#staff-signin-email').fill(e2eAccounts.agreementPendingBusinessOwner)
-    await page.locator('#staff-signin-password').fill(e2ePassword)
-    await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click()
+    await page.goto('/signin?portal=business')
+    await page.locator('#signin-email').fill(e2eAccounts.agreementPendingBusinessOwner)
+    await page.locator('#signin-password').fill(e2ePassword)
+    await page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click()
     await expect(page).toHaveURL(/\/business\/dashboard$|\/agreements\/required$/)
 
     if (page.url().endsWith('/business/dashboard')) {

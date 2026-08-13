@@ -140,7 +140,7 @@ export function WondertownHomePage() {
             <Link className="wondertown-home__button" to="/signin">
               Test as a member <ArrowRight size={18} aria-hidden="true" />
             </Link>
-            <Link className="wondertown-home__button wondertown-home__button--glass" to="/business/login">
+            <Link className="wondertown-home__button wondertown-home__button--glass" to="/signin?portal=business">
               Test as a business
             </Link>
           </div>
@@ -228,8 +228,8 @@ export function WondertownHomePage() {
             <p>Sign in with a demo role, award a few Sparks, redeem an offer, and decide what the real programs should become.</p>
           </div>
           <div className="wondertown-home__cta-actions">
-            <Link className="wondertown-home__button" to="/signin">Member portal</Link>
-            <Link className="wondertown-home__button wondertown-home__button--outline" to="/business/login">Business portal</Link>
+            <Link className="wondertown-home__button" to="/signin">Sign in</Link>
+            <Link className="wondertown-home__button wondertown-home__button--outline" to="/join">Create account</Link>
           </div>
         </div>
       </section>

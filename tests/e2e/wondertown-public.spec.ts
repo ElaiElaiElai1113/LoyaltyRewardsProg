@@ -68,63 +68,38 @@ test.describe('Wondertown public testing experience', () => {
     }
   })
 
-  test('member, business, and admin sign-in portals publish complete working credentials', async ({ page }) => {
-    const portals = [
-      {
-        route: '/signin?tenant=wondertown',
-        email: 'member@wondertown.test',
-        accountLabel: 'Member',
-        visibleEmails: [
-          'member@wondertown.test',
-          'neighbor@wondertown.test',
-          'owner@wondertown.test',
-          'staff@wondertown.test',
-          'admin@rewardsplatform.test',
-        ],
-      },
-      {
-        route: '/business/login?tenant=wondertown',
-        email: 'owner@wondertown.test',
-        accountLabel: 'Business owner',
-        visibleEmails: [
-          'member@wondertown.test',
-          'neighbor@wondertown.test',
-          'owner@wondertown.test',
-          'staff@wondertown.test',
-          'admin@rewardsplatform.test',
-        ],
-      },
-      {
-        route: '/admin?tenant=wondertown',
-        email: 'admin@rewardsplatform.test',
-        accountLabel: 'Platform admin',
-        visibleEmails: ['admin@rewardsplatform.test'],
-      },
-    ] as const
+  test('all roles use one responsive sign-in page with complete working credentials', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 844 })
+    await page.goto('/signin?tenant=wondertown')
 
-    for (const portal of portals) {
-      await page.setViewportSize({ width: 320, height: 844 })
-      await page.goto(portal.route)
-
-      const credentials = page.getByTestId('wondertown-test-credentials')
-      await expect(credentials).toBeVisible()
-      await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
-      for (const email of portal.visibleEmails) {
-        await expect(credentials.getByText(email, { exact: true })).toBeVisible()
-      }
-
-      await expect(credentials
-        .locator('article')
-        .filter({ hasText: portal.email })
-        .getByRole('button', { name: `Sign in as ${portal.accountLabel}` }))
-        .toBeVisible()
-
-      const dimensions = await page.evaluate(() => ({
-        clientWidth: document.documentElement.clientWidth,
-        scrollWidth: document.documentElement.scrollWidth,
-      }))
-      expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1)
+    for (const role of ['Admin', 'Business', 'Customer']) {
+      await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
     }
+
+    const credentials = page.getByTestId('wondertown-test-credentials')
+    await expect(credentials).toBeVisible()
+    await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
+    for (const [email, accountLabel] of [
+      ['member@wondertown.test', 'Member'],
+      ['neighbor@wondertown.test', 'Second member'],
+      ['owner@wondertown.test', 'Business owner'],
+      ['staff@wondertown.test', 'Business staff'],
+      ['admin@rewardsplatform.test', 'Platform admin'],
+    ] as const) {
+      const account = credentials.locator('article').filter({ hasText: email })
+      await expect(account.getByText(email, { exact: true })).toBeVisible()
+      await expect(account.getByRole('button', { name: `Sign in as ${accountLabel}` })).toBeVisible()
+    }
+
+    await page.getByRole('button', { name: 'Sign in as Business', exact: true }).click()
+    await expect(page).toHaveURL(/portal=business/)
+    await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+
+    const dimensions = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth + 1)
   })
 
   test('public and signed-out routes have no visual or navigation dead ends', async ({ page }) => {

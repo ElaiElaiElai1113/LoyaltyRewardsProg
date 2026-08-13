@@ -60,34 +60,34 @@ export async function signInCustomerExpectAgreementGate(page: Page, email: strin
 }
 
 export async function signInBusinessPortal(page: Page, email: string, password = e2ePassword) {
-  await page.goto('/business/login')
-  await page.locator('#staff-signin-email').fill(email)
-  await page.locator('#staff-signin-password').fill(password)
+  await page.goto('/signin?portal=business')
+  await page.locator('#signin-email').fill(email)
+  await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click(),
+    () => page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click(),
     /\/business\/dashboard$/,
   )
 }
 
 export async function signInBusinessPortalExpectAgreementGate(page: Page, email: string, password = e2ePassword) {
-  await page.goto('/business/login')
-  await page.locator('#staff-signin-email').fill(email)
-  await page.locator('#staff-signin-password').fill(password)
+  await page.goto('/signin?portal=business')
+  await page.locator('#signin-email').fill(email)
+  await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click(),
+    () => page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click(),
     /\/agreements\/required$/,
   )
 }
 
 export async function signInAdmin(page: Page, email: string, password = e2ePassword) {
-  await page.goto('/admin')
-  await page.locator('#staff-signin-email').fill(email)
-  await page.locator('#staff-signin-password').fill(password)
+  await page.goto('/signin?portal=admin')
+  await page.locator('#signin-email').fill(email)
+  await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click(),
+    () => page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click(),
     /\/admin\/portal$/,
   )
 }

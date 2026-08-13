@@ -106,7 +106,7 @@ function RewardMeBusinessPage({ supportEmail }: { supportEmail: string }) {
           <p>Join the RewardMe network, publish clear member offers, and only fund rewards under the participation model in your signed agreement.</p>
           <div className="rewardme-business__actions">
             <a className="rewardme-business__button" href={`mailto:${supportEmail}?subject=RewardMe%20business%20application`}>Apply to partner <ArrowRight aria-hidden="true" /></a>
-            <Link className="rewardme-business__button rewardme-business__button--outline" to="/business/login">Business sign in</Link>
+            <Link className="rewardme-business__button rewardme-business__button--outline" to="/signin?portal=business">Business sign in</Link>
           </div>
         </div>
         <picture className="rewardme-business__hero-media">
@@ -313,7 +313,7 @@ export function ForBusinessesPage() {
             business will qualify.
           </p>
           {isDemoTenant ? (
-            <Link className="business-landing__button" to="/business/login">
+            <Link className="business-landing__button" to="/signin?portal=business">
               Open Business Demo <ArrowRight aria-hidden="true" />
             </Link>
           ) : (

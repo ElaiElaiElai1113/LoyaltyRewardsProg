@@ -18,7 +18,7 @@ describe('public calls to action', () => {
     const publicLayout = source('src/layouts/public-browse-layout.tsx')
 
     expect(businessPage).toContain('const isDemoTenant = program.featureFlags.demoTenant === true')
-    expect(businessPage).toContain('to="/business/login"')
+    expect(businessPage).toContain('to="/signin?portal=business"')
     expect(businessPage).toContain('Open Business Demo')
     expect(businessPage).toContain('to="/guide"')
     expect(businessPage).toContain('View Demo Guide')

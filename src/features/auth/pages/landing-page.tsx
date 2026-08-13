@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import {
   BadgeCheck,
   BarChart3,
+  BriefcaseBusiness,
   Check,
   ChevronDown,
   Coins,
@@ -11,6 +12,8 @@ import {
   MapPin,
   Play,
   ShoppingCart,
+  ShieldCheck,
+  UserRound,
   Users,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -30,6 +33,8 @@ import {
   WONDERTOWN_TEST_ACCOUNTS,
   WONDERTOWN_TEST_PASSWORD,
 } from '@/features/auth/wondertown-test-accounts'
+import { platformBrand } from '@/features/platform/platform-brand'
+import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -37,6 +42,13 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage, type Language } from '@/lib/language'
+import { getHomePathForRole } from '@/lib/role-routes'
+import {
+  getRequestedRoleForPortal,
+  getSignInPortal,
+  SIGN_IN_PORTALS,
+  type SignInPortal,
+} from '@/lib/sign-in-portals'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const portalAccessErrorKey = 'portalAccessError'
@@ -55,6 +67,11 @@ const authErrorClass = 'text-center text-xs font-bold text-red-400'
 
 const featureCardIcons = [Users, BarChart3, ShoppingCart] as const
 const faqIcons = [MapPin, Users, BadgeCheck, DollarSign] as const
+const signInPortalIcons = {
+  admin: ShieldCheck,
+  business: BriefcaseBusiness,
+  customer: UserRound,
+} satisfies Record<SignInPortal, typeof ShieldCheck>
 
 const landingCopy: Record<Exclude<Language, 'tl'>, {
   nav: {
@@ -904,9 +921,12 @@ export function LegacyAuthPage() {
 export function CompactAuthPage() {
   const { program } = useTenant()
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { signIn } = useAuth()
   const { t } = useLanguage()
+  const [selectedPortal, setSelectedPortal] = useState<SignInPortal>(() =>
+    getSignInPortal(searchParams.get('portal')),
+  )
   const [error, setError] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
 
@@ -932,6 +952,7 @@ export function CompactAuthPage() {
   })
 
   const signInTestAccount = async (account: RewardMeTestAccount, password: string) => {
+    const accountPortal = getSignInPortal(account.portal)
     const values: AuthFormValues = {
       ...defaultValues,
       email: account.email,
@@ -940,11 +961,12 @@ export function CompactAuthPage() {
     }
     setError(null)
     setResetSuccessMessage(null)
+    setSelectedPortal(accountPortal)
     signInForm.reset(values)
 
     try {
-      await signIn(values)
-      navigate(searchParams.get('redirect') || '/dashboard')
+      const profile = await signIn(values)
+      navigate(searchParams.get('redirect') || getHomePathForRole(profile.role))
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
@@ -954,15 +976,69 @@ export function CompactAuthPage() {
     }
   }
 
+  const selectPortal = (portal: SignInPortal) => {
+    const nextSearchParams = new URLSearchParams(searchParams)
+    nextSearchParams.set('portal', portal)
+    setSearchParams(nextSearchParams, { replace: true })
+    setSelectedPortal(portal)
+    signInForm.setValue('role', getRequestedRoleForPortal(portal))
+    signInForm.clearErrors()
+    setError(null)
+    setResetSuccessMessage(null)
+  }
+
+  const selectedPortalDetails = SIGN_IN_PORTALS.find(({ id }) => id === selectedPortal) ?? SIGN_IN_PORTALS[2]
+  usePlatformDocumentBrand(selectedPortal === 'admin')
+
   return (
     <AuthPortalShell activeTab="signin">
       <div className="mb-7 text-center">
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
-          {program.name}
+          {selectedPortal === 'admin' ? platformBrand.name : program.name}
         </p>
         <h1 className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
-          {t('Member Portal').toUpperCase()}
+          {t('Sign In').toUpperCase()}
         </h1>
+        <p className="mt-3 text-[11px] font-medium leading-4 text-[#8f8f8f]">
+          {t('Choose your account type. Your assigned role is verified when you sign in.')}
+        </p>
+      </div>
+
+      <div
+        aria-label="Choose sign-in account type"
+        className="mb-6 grid gap-2 sm:grid-cols-3"
+        role="group"
+      >
+        {SIGN_IN_PORTALS.map((portal) => {
+          const Icon = signInPortalIcons[portal.id]
+          const isSelected = selectedPortal === portal.id
+
+          return (
+            <button
+              aria-label={t('Sign in as {role}', { role: t(portal.label) })}
+              aria-pressed={isSelected}
+              className={`flex min-h-[72px] items-center gap-3 rounded-[8px] border px-3 py-3 text-left transition sm:flex-col sm:justify-center sm:gap-1.5 sm:text-center ${
+                isSelected
+                  ? 'border-[#d1ad4a] bg-[#d1ad4a] text-[#080808] shadow-[0_8px_20px_rgba(209,173,74,0.18)]'
+                  : 'border-[#d1ad4a]/35 bg-[var(--background)]/40 text-[var(--foreground)] hover:border-[#d1ad4a] hover:text-[#d1ad4a]'
+              }`}
+              data-testid={`sign-in-portal-${portal.id}`}
+              key={portal.id}
+              onClick={() => selectPortal(portal.id)}
+              type="button"
+            >
+              <Icon className="size-5 shrink-0" aria-hidden="true" />
+              <span className="min-w-0">
+                <span className="block text-[12px] font-bold">
+                  {t('Sign in as {role}', { role: t(portal.label) })}
+                </span>
+                <span className={`mt-0.5 block text-[9px] leading-3 ${isSelected ? 'text-[#080808]/70' : 'text-[#8f8f8f]'}`}>
+                  {t(portal.description)}
+                </span>
+              </span>
+            </button>
+          )
+        })}
       </div>
 
       {showForgotPassword ? (
@@ -1028,17 +1104,19 @@ export function CompactAuthPage() {
         </form>
       ) : (
         <form
+          aria-label={t('Sign in as {role}', { role: t(selectedPortalDetails.label) })}
           className="space-y-5"
           onSubmit={signInForm.handleSubmit(
             async (values) => {
               try {
                 setError(null)
                 setResetSuccessMessage(null)
-                await signIn({ ...values, role: 'customer' })
+                const profile = await signIn({
+                  ...values,
+                  role: getRequestedRoleForPortal(selectedPortal),
+                })
                 const redirect = searchParams.get('redirect')
-                if (redirect) {
-                  navigate(redirect)
-                }
+                navigate(redirect || getHomePathForRole(profile.role))
               } catch (submissionError) {
                 setError(
                   submissionError instanceof Error
@@ -1117,7 +1195,7 @@ export function CompactAuthPage() {
                 {t('Signing in...')}
               </span>
             ) : (
-              `${t('Sign in to my account')} ↗`
+              `${t('Sign in as {role}', { role: t(selectedPortalDetails.label) })} ↗`
             )}
           </Button>
 
@@ -1132,6 +1210,7 @@ export function CompactAuthPage() {
             <RewardMeTestCredentials
               currentPortal="member"
               onUse={signInTestAccount}
+              unified
             />
           ) : null}
 
@@ -1145,6 +1224,7 @@ export function CompactAuthPage() {
               password={WONDERTOWN_TEST_PASSWORD}
               testId="wondertown-test-credentials"
               title="Wondertown test accounts"
+              unified
             />
           ) : null}
         </form>

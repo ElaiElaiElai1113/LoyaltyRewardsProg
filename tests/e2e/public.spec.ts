@@ -183,58 +183,47 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
   })
 
-  test('RewardMe sign-in portals show complete brand-safe one-tap test accounts', async ({ page }) => {
+  test('RewardMe uses one role-safe sign-in page with complete one-tap test accounts', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
+    await page.goto('/signin')
 
-    const portals = [
-      {
-        route: '/signin',
-        email: 'member@rewardme.test',
-        accountLabel: 'Member',
-      },
-      {
-        route: '/business/login',
-        email: 'staff@rewardme.test',
-        accountLabel: 'Business staff',
-      },
-      {
-        route: '/admin',
-        email: 'admin@rewardsplatform.test',
-        accountLabel: 'Platform admin',
-      },
-    ] as const
-
-    for (const portal of portals) {
-      await page.goto(portal.route)
-
-      const credentials = page.getByTestId('rewardme-test-credentials')
-      await expect(credentials).toBeVisible()
-      await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
-      for (const email of [
-        'member@rewardme.test',
-        'owner@rewardme.test',
-        'staff@rewardme.test',
-        'admin@rewardsplatform.test',
-      ]) {
-        if (portal.route === '/admin' && email !== 'admin@rewardsplatform.test') continue
-        await expect(credentials.getByText(email, { exact: true })).toBeVisible()
-      }
-
-      await expect(page.locator('body')).not.toContainText(/medellin/i)
-      await expect(page.locator('body')).not.toContainText('MedellinQA!2026')
-
-      await expect(credentials
-        .locator('article')
-        .filter({ hasText: portal.email })
-        .getByRole('button', { name: `Sign in as ${portal.accountLabel}` }))
-        .toBeVisible()
-
-      const dimensions = await page.evaluate(() => ({
-        clientWidth: document.documentElement.clientWidth,
-        scrollWidth: document.documentElement.scrollWidth,
-      }))
-      expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
+    for (const role of ['Admin', 'Business', 'Customer']) {
+      await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
     }
+    await expect(page.getByRole('button', { name: 'Sign in as Customer', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await page.getByRole('button', { name: 'Sign in as Business', exact: true }).click()
+    await expect(page).toHaveURL(/\/signin\?portal=business/)
+    await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await page.getByRole('button', { name: 'Sign in as Admin', exact: true }).click()
+    await expect(page).toHaveURL(/\/signin\?portal=admin/)
+
+    const credentials = page.getByTestId('rewardme-test-credentials')
+    await expect(credentials).toBeVisible()
+    await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
+    for (const [email, accountLabel] of [
+      ['member@rewardme.test', 'Member'],
+      ['owner@rewardme.test', 'Business owner'],
+      ['staff@rewardme.test', 'Business staff'],
+      ['admin@rewardsplatform.test', 'Platform admin'],
+    ] as const) {
+      const account = credentials.locator('article').filter({ hasText: email })
+      await expect(account.getByText(email, { exact: true })).toBeVisible()
+      await expect(account.getByRole('button', { name: `Sign in as ${accountLabel}` })).toBeVisible()
+    }
+
+    await expect(page.locator('body')).not.toContainText(/medellin/i)
+    await expect(page.locator('body')).not.toContainText('MedellinQA!2026')
+
+    const dimensions = await page.evaluate(() => ({
+      clientWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+    expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
+
+    await page.goto('/business/login?redirect=%2Fbusiness%2Fdashboard')
+    await expect(page).toHaveURL(/\/signin\?redirect=%2Fbusiness%2Fdashboard&portal=business/)
+    await page.goto('/admin')
+    await expect(page).toHaveURL(/\/signin\?portal=admin/)
   })
 
   test('RewardMe business page presents both approved participation models', async ({ page }) => {
@@ -245,7 +234,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('heading', { name: 'Business-credit model' })).toBeVisible()
     await expect(page.getByText('25% commission', { exact: false })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Connected economics. Separate products.' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/business/login')
+    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/signin?portal=business')
     await expect(page.getByRole('link', { name: 'Apply to partner' })).toHaveAttribute('href', /mailto:/)
     await expect(page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }))
       .toHaveAttribute('src', /local-business-owner-wide(?:-[\w-]+)?\.webp/)
