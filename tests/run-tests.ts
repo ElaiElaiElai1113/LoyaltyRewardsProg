@@ -999,6 +999,17 @@ runTest('wrong-role auth events defer rejection to the initiating sign-in call',
   assert.doesNotMatch(mismatchBlock, /authService\.signOut/)
 })
 
+runTest('wrong-role sign-ins clear only the current browser session', () => {
+  const service = readFileSync('src/integrations/supabase/services/auth-service.ts', 'utf8')
+  const rejectionHelper = service.match(
+    /const rejectCurrentPortal = async \(message: string\): Promise<never> => \{([\s\S]*?)\n\s*\}/,
+  )?.[1] ?? ''
+
+  assert.match(rejectionHelper, /pendingSignInRole = null/)
+  assert.match(rejectionHelper, /signOut\(\{ scope: 'local' \}\)/)
+  assert.match(rejectionHelper, /throw new Error\(message\)/)
+})
+
 runTest('unified sign in page follows the compact responsive portal layout', () => {
   const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
   const language = readFileSync('src/lib/language.tsx', 'utf8')

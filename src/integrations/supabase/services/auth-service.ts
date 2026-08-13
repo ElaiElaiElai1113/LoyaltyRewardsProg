@@ -130,6 +130,12 @@ export const authService = {
     const email = input.email.trim().toLowerCase()
     pendingSignInRole = input.role
 
+    const rejectCurrentPortal = async (message: string): Promise<never> => {
+      pendingSignInRole = null
+      await sb.auth.signOut({ scope: 'local' })
+      throw new Error(message)
+    }
+
     const { data, error: authError } = await sb.auth.signInWithPassword({
       email,
       password: input.password,
@@ -148,9 +154,7 @@ export const authService = {
 
     const profile = await getProfileByUserId(userId)
     if (!profile) {
-      pendingSignInRole = null
-      await sb.auth.signOut()
-      throw new Error('Profile not found. Try creating an account first.')
+      return rejectCurrentPortal('Profile not found. Try creating an account first.')
     }
 
     const isBusinessPortalSignIn =
@@ -159,27 +163,19 @@ export const authService = {
       profile.role === 'business-owner' || profile.role === 'business-staff'
 
     if (isBusinessPortalSignIn && !isAllowedBusinessRole) {
-      pendingSignInRole = null
-      await sb.auth.signOut()
-      throw new Error('This account does not have access to the business portal.')
+      return rejectCurrentPortal('This account does not have access to the business portal.')
     }
 
     if (input.role === 'platform-admin' && profile.role !== 'platform-admin') {
-      pendingSignInRole = null
-      await sb.auth.signOut()
-      throw new Error('This account does not have access to the admin portal.')
+      return rejectCurrentPortal('This account does not have access to the admin portal.')
     }
 
     if (input.role === 'customer' && profile.role !== 'customer') {
-      pendingSignInRole = null
-      await sb.auth.signOut()
-      throw new Error('This account does not have access to the customer portal.')
+      return rejectCurrentPortal('This account does not have access to the customer portal.')
     }
 
     if (!isBusinessPortalSignIn && profile.role !== input.role) {
-      pendingSignInRole = null
-      await sb.auth.signOut()
-      throw new Error(`This account is a ${profile.role}, not a ${input.role}.`)
+      return rejectCurrentPortal(`This account is a ${profile.role}, not a ${input.role}.`)
     }
 
     return profile
