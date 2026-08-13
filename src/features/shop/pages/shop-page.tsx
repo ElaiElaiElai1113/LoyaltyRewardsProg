@@ -274,8 +274,8 @@ export function ShopPage() {
             )}
           />
         ) : (
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
-            <section className="relative min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary/20 bg-[#f3e7d1] shadow-card sm:min-h-[42rem]">
+          <div className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
+            <section className="relative min-w-0 min-h-[34rem] overflow-hidden rounded-[2rem] border border-primary/20 bg-[#f3e7d1] shadow-card sm:min-h-[42rem]">
               <PartnerMapBackdrop labels={mapLabels} />
 
               <div className="absolute left-5 top-5 rounded-2xl border border-primary/20 bg-card/88 px-4 py-3 text-primary shadow-soft backdrop-blur">
@@ -329,10 +329,10 @@ export function ShopPage() {
               })}
             </section>
 
-            <aside className="space-y-4">
-              <div className="rounded-[2rem] border border-primary/18 bg-card/90 p-5 shadow-card">
+            <aside className="min-w-0 max-w-full space-y-4">
+              <div className="min-w-0 max-w-full rounded-[2rem] border border-primary/18 bg-card/90 p-5 shadow-card">
                 <div className="flex items-center justify-between gap-3">
-                  <div>
+                  <div className="min-w-0">
                     <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
                       {t('Business Directory')}
                     </p>
@@ -346,7 +346,7 @@ export function ShopPage() {
                     <button
                       key={business.id}
                       type="button"
-                      className={`w-full rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                      className={`w-full max-w-full rounded-2xl border p-4 text-left transition hover:-translate-y-0.5 hover:border-primary/30 hover:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${
                         selectedBusinessId === business.id
                           ? 'border-primary/45 bg-card shadow-soft'
                           : 'border-primary/12 bg-[var(--muted)]'
