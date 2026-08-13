@@ -26,8 +26,10 @@ test.describe('Wondertown public testing experience', () => {
 
       const map = page.getByTestId('partner-map')
       const pins = page.getByTestId('business-map-pin')
+      const emptyState = page.getByRole('heading', { name: 'No partner businesses yet' })
+      await expect(map.or(emptyState)).toBeVisible()
       if (await map.count() === 0) {
-        await expect(page.getByRole('heading', { name: 'No partner businesses yet' })).toBeVisible()
+        await expect(emptyState).toBeVisible()
         return
       }
       await expect(map).toBeVisible()
