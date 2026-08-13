@@ -51,7 +51,7 @@ test.describe.serial('agreement e-signature frontend QA', () => {
     await page.goto('/signin')
     await page.locator('#signin-email').fill(e2eAccounts.agreementPendingCustomer)
     await page.locator('#signin-password').fill(e2ePassword)
-    await page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click()
     await expect(page).toHaveURL(/\/dashboard$|\/agreements\/required$/)
 
     const client = await getSupabaseSessionClient(e2eAccounts.agreementPendingCustomer)
@@ -93,7 +93,7 @@ test.describe.serial('agreement e-signature frontend QA', () => {
     await page.goto('/business/login')
     await page.locator('#staff-signin-email').fill(e2eAccounts.agreementPendingBusinessOwner)
     await page.locator('#staff-signin-password').fill(e2ePassword)
-    await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click()
     await expect(page).toHaveURL(/\/business\/dashboard$|\/agreements\/required$/)
 
     if (page.url().endsWith('/business/dashboard')) {

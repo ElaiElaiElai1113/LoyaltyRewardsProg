@@ -10,7 +10,7 @@ test.describe('admin workflow smoke test', () => {
     await signInAdmin(page, e2eAccounts.admin)
 
     await expect(page).toHaveTitle('Rewards Platform Admin')
-    await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
+    await expect(page.getByRole('complementary').getByText('Rewards Platform', { exact: true })).toBeVisible()
     await expect(page.locator('body')).toContainText(/Operations|Operaciones|Early Access/i)
 
     await page.goto('/admin/gift-cards')

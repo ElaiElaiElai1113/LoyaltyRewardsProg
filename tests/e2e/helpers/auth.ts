@@ -43,7 +43,7 @@ export async function signInCustomer(page: Page, email: string, password = e2ePa
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click(),
+    () => page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click(),
     /\/dashboard$/,
   )
 }
@@ -54,7 +54,7 @@ export async function signInCustomerExpectAgreementGate(page: Page, email: strin
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click(),
+    () => page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click(),
     /\/agreements\/required$/,
   )
 }
@@ -65,7 +65,7 @@ export async function signInBusinessPortal(page: Page, email: string, password =
   await page.locator('#staff-signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click(),
+    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click(),
     /\/business\/dashboard$/,
   )
 }
@@ -76,7 +76,7 @@ export async function signInBusinessPortalExpectAgreementGate(page: Page, email:
   await page.locator('#staff-signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click(),
+    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click(),
     /\/agreements\/required$/,
   )
 }
@@ -87,7 +87,7 @@ export async function signInAdmin(page: Page, email: string, password = e2ePassw
   await page.locator('#staff-signin-password').fill(password)
   await submitAndExpectUrl(
     page,
-    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click(),
+    () => page.locator('form').filter({ has: page.locator('#staff-signin-email') }).locator('button[type="submit"]').click(),
     /\/admin\/portal$/,
   )
 }

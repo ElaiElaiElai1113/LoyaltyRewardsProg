@@ -31,7 +31,7 @@ test.describe('customer workflow smoke test', () => {
     await page.goto('/signin')
     await page.locator('#signin-email').fill(e2eAccounts.unverifiedCustomer)
     await page.locator('#signin-password').fill(e2ePassword)
-    await page.locator('form').filter({ has: page.locator('#signin-email') }).getByRole('button', { name: /sign in|iniciar/i }).click()
+    await page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click()
     await expect(page).toHaveURL(/\/dashboard$|\/agreements\/required$/)
 
     await page.goto('/rewards')

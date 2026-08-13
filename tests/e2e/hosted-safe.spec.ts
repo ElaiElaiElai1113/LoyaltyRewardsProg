@@ -246,7 +246,7 @@ test.describe('hosted-safe tenant isolation', () => {
     await page.locator('#signin-email').fill(createdUsers[2].email!)
     await page.locator('#signin-password').fill(password)
     await page.locator('form').filter({ has: page.locator('#signin-email') })
-      .getByRole('button', { name: /sign in|iniciar/i }).click()
+      .locator('button[type="submit"]').click()
     await page.waitForURL(/\/(dashboard|agreements\/required)$/)
 
     if (page.url().includes('/agreements/required')) {

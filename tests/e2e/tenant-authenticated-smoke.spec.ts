@@ -77,7 +77,7 @@ async function signInCustomer(page: Page, email = customerEmail) {
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#signin-email') })
-    .getByRole('button', { name: /sign in|iniciar/i }).click()
+    .locator('button[type="submit"]').click()
   await expect(page).toHaveURL(/\/dashboard$/)
 }
 
@@ -86,7 +86,7 @@ async function signInBusiness(page: Page, email = businessOwnerEmail) {
   await page.locator('#staff-signin-email').fill(email)
   await page.locator('#staff-signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#staff-signin-email') })
-    .getByRole('button', { name: /sign in|iniciar/i }).click()
+    .locator('button[type="submit"]').click()
   await expect(page).toHaveURL(/\/business\/dashboard$/)
 }
 

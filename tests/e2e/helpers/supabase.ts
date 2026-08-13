@@ -412,6 +412,24 @@ export async function placeSingleItemOrder(client: AppSupabaseClient, businessId
 }
 
 export async function ensureActiveMembership(client: AppSupabaseClient, programId: string) {
+  const { data: userData, error: userError } = await client.auth.getUser()
+  if (userError || !userData.user) {
+    throw new Error(`Could not load the signed-in member: ${userError?.message ?? 'missing user'}`)
+  }
+
+  const { data: existing, error: existingError } = await client
+    .from('memberships')
+    .select('*')
+    .eq('program_id', programId)
+    .eq('profile_id', userData.user.id)
+    .eq('status', 'active')
+    .gt('current_period_end', new Date().toISOString())
+    .maybeSingle()
+  if (existingError) {
+    throw new Error(`Could not check the active membership: ${existingError.message}`)
+  }
+  if (existing) return existing
+
   const { data, error } = await client.rpc('mock_subscribe', { p_program_id: programId })
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
 
@@ -450,7 +468,7 @@ export async function createGiftCardCatalogItem(
 ) {
   const { data: business, error: businessError } = await client
     .from('businesses')
-    .select('currency')
+    .select('currency, program_id')
     .eq('id', businessId)
     .single()
 
@@ -461,6 +479,7 @@ export async function createGiftCardCatalogItem(
   const { data, error } = await client
     .from('gift_card_catalog')
     .insert({
+      program_id: business.program_id,
       business_id: businessId,
       title,
       description: 'Workflow automation gift card.',
