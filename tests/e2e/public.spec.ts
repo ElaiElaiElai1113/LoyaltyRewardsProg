@@ -42,6 +42,7 @@ test.describe('public acquisition workflow', () => {
       ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
       ['guatemalarewards.com', 'https://guatemalarewards.com'],
       ['loyalty-rewards-prog.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
+      ['rewardme-prod.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
     ]).get(hostname)
     const robots = await request.get('/robots.txt')
     expect(robots.ok()).toBeTruthy()

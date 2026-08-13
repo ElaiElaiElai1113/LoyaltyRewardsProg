@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createHash } from 'node:crypto'
 import { createTransport } from 'nodemailer'
 import { buildTenantEmail, type TenantEmailBrand } from './_tenant-email-templates.js'
+import { resolveTenantDatabaseHostname } from './_tenant-host-alias.js'
 
 type WelcomeEmailRequest = {
   fullName?: unknown
@@ -160,7 +161,7 @@ async function authorizeWelcomeEmail(
   const result = await fetch(`${url}/rest/v1/rpc/authorize_early_access_welcome_email`, {
     method: 'POST',
     headers: { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ p_hostname: hostname, p_email: email }),
+    body: JSON.stringify({ p_hostname: resolveTenantDatabaseHostname(hostname), p_email: email }),
   })
   const payload = await result.json().catch(() => null) as unknown
   const rows = Array.isArray(payload) ? payload as Array<{

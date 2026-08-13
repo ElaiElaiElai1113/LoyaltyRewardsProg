@@ -99,6 +99,7 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'www.guatemalarewards.com': 'guatemala',
   'synergize-business-group.vercel.app': 'synergize',
   'loyalty-rewards-prog.vercel.app': 'pinas',
+  'rewardme-prod.vercel.app': 'pinas',
   'pinas-rewards.vercel.app': 'pinasrewards',
   'wondertown-rewards.vercel.app': 'wondertown',
 }

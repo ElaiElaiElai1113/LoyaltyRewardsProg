@@ -1,6 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createClient } from '@supabase/supabase-js'
 import { applyRequestContext } from './_request-context.js'
+import { resolveTenantDatabaseHostname } from './_tenant-host-alias.js'
 
 type EarlyAccessLeadRequest = {
   fullName?: unknown
@@ -70,6 +71,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   const notes = cleanOptionalString(body.notes)
   const source = cleanOptionalString(body.source) || 'early-access-page'
   const hostname = cleanOptionalString(body.hostname).toLowerCase()
+  const databaseHostname = resolveTenantDatabaseHostname(hostname)
 
   if (!email && !whatsapp) {
     sendJson(response, 400, { ok: false, error: 'Add an email or WhatsApp number.' })
@@ -89,7 +91,7 @@ export default async function handler(request: VercelRequest, response: VercelRe
   })
 
   const { data: programs, error: programError } = await supabase.rpc('resolve_program_by_hostname', {
-    p_hostname: hostname,
+    p_hostname: databaseHostname,
   })
   const programId = Array.isArray(programs) ? programs[0]?.id : null
   if (programError || !programId) {

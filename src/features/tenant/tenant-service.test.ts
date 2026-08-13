@@ -26,6 +26,7 @@ describe('tenant resolution fallback', () => {
     ['pinas.localhost', 'pinasrewards'],
     ['pinasrewards.localhost', 'pinasrewards'],
     ['loyalty-rewards-prog.vercel.app', 'pinas'],
+    ['rewardme-prod.vercel.app', 'pinas'],
     ['pinas-rewards.vercel.app', 'pinasrewards'],
     ['wondertown-rewards.vercel.app', 'wondertown'],
   ])('maps %s to %s', (hostname, slug) => {

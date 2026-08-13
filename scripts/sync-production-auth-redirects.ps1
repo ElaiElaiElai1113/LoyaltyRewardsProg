@@ -96,6 +96,11 @@ $requiredRedirects = @(
   'https://loyalty-rewards-prog.vercel.app/reset-password',
   'https://loyalty-rewards-prog.vercel.app/auth/confirm',
   'https://loyalty-rewards-prog.vercel.app/accept-invitation',
+  # Vercel currently redirects the canonical RewardMe project URL here.
+  'https://rewardme-prod.vercel.app/',
+  'https://rewardme-prod.vercel.app/reset-password',
+  'https://rewardme-prod.vercel.app/auth/confirm',
+  'https://rewardme-prod.vercel.app/accept-invitation',
   # Legacy RewardMe hostname retained until old links and installed apps age out.
   'https://pinas-rewards.vercel.app/',
   'https://pinas-rewards.vercel.app/reset-password',
