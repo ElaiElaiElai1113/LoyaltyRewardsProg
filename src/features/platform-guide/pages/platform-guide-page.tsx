@@ -538,6 +538,10 @@ export function PlatformGuidePage() {
     ? screenshotGallery.items.filter((item) => roleScreenshotRoutes.includes(item.route))
     : screenshotGallery.items
   const galleryHeading = isRoleScopedGuide ? roleGuideContent.gallery : screenshotGallery
+  const customerResourceScreen = visibleScreenshotItems[0]
+  const mergeCustomerResourceAndNextStep = isRoleScopedGuide
+    && guideAudience === 'customer'
+    && Boolean(galleryHeading && customerResourceScreen)
   const GuidePanelIcon = activeGuideContent.panelIcon
 
   return (
@@ -599,7 +603,72 @@ export function PlatformGuidePage() {
         </div>
       </section>
 
-      {galleryHeading && visibleScreenshotItems.length > 0 ? (
+      {mergeCustomerResourceAndNextStep && galleryHeading && customerResourceScreen ? (
+        <section
+          className="grid overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-card lg:grid-cols-[minmax(0,1.1fr)_minmax(320px,0.9fr)]"
+          data-testid="customer-guide-resource"
+        >
+          <div
+            className="min-h-64 overflow-hidden bg-surface-low sm:min-h-80 lg:min-h-[34rem]"
+            data-testid="customer-guide-resource-media"
+          >
+            <img
+              src={customerResourceScreen.imageSrc}
+              alt={customerResourceScreen.title}
+              loading="lazy"
+              className="h-full w-full object-cover object-top"
+            />
+          </div>
+
+          <div
+            className="flex flex-col justify-between gap-8 p-6 sm:p-8 lg:p-10"
+            data-testid="customer-guide-resource-content"
+          >
+            <div>
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
+                    {galleryHeading.eyebrow}
+                  </p>
+                  <h2 className="mt-2 font-serif text-3xl text-primary sm:text-4xl">
+                    {galleryHeading.title}
+                  </h2>
+                </div>
+                <Badge variant="outline" className="w-fit shrink-0 rounded-full">
+                  {galleryHeading.badge}
+                </Badge>
+              </div>
+
+              <div className="mt-7">
+                <h3 className="font-serif text-2xl text-primary">{customerResourceScreen.title}</h3>
+                <p className="mt-2 text-sm leading-7 text-on-surface-variant/85">
+                  {customerResourceScreen.caption}
+                </p>
+                <Button asChild className="mt-5 w-full rounded-full sm:w-auto">
+                  <Link to={customerResourceScreen.route}>{content.links.openView}</Link>
+                </Button>
+              </div>
+            </div>
+
+            <div className="border-t border-primary-container/18 pt-6">
+              <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
+                {activeGuideContent.nextEyebrow}
+              </p>
+              <h3 className="mt-2 font-serif text-3xl text-primary">{activeGuideContent.nextTitle}</h3>
+              <p className="mt-3 text-sm leading-7 text-on-surface-variant/85">
+                {activeGuideContent.nextBody}
+              </p>
+              {activeGuideContent.badges
+                .filter((badge) => badge !== galleryHeading.badge)
+                .map((badge) => (
+                  <Badge key={badge} variant="outline" className="mt-4 rounded-full px-4 py-2">
+                    {badge}
+                  </Badge>
+                ))}
+            </div>
+          </div>
+        </section>
+      ) : galleryHeading && visibleScreenshotItems.length > 0 ? (
         <section className="space-y-6">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
             <div>
@@ -674,26 +743,31 @@ export function PlatformGuidePage() {
         </section>
       ) : null}
 
-      <section className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-6 shadow-sm lg:p-8">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
-          <div>
-            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-              {activeGuideContent.nextEyebrow}
-            </p>
-            <h2 className="mt-2 font-serif text-3xl text-primary">{activeGuideContent.nextTitle}</h2>
-            <p className="mt-3 text-sm leading-7 text-on-surface-variant/85">
-              {activeGuideContent.nextBody}
-            </p>
+      {!mergeCustomerResourceAndNextStep ? (
+        <section
+          className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-6 shadow-sm lg:p-8"
+          data-testid="platform-guide-next-step"
+        >
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
+            <div>
+              <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
+                {activeGuideContent.nextEyebrow}
+              </p>
+              <h2 className="mt-2 font-serif text-3xl text-primary">{activeGuideContent.nextTitle}</h2>
+              <p className="mt-3 text-sm leading-7 text-on-surface-variant/85">
+                {activeGuideContent.nextBody}
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 lg:justify-end">
+              {activeGuideContent.badges.map((badge) => (
+                <Badge key={badge} variant="outline" className="rounded-full px-4 py-2">
+                  {badge}
+                </Badge>
+              ))}
+            </div>
           </div>
-          <div className="flex flex-wrap gap-3 lg:justify-end">
-            {activeGuideContent.badges.map((badge) => (
-              <Badge key={badge} variant="outline" className="rounded-full px-4 py-2">
-                {badge}
-              </Badge>
-            ))}
-          </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
     </div>
   )
 }

@@ -46,11 +46,42 @@ test.describe('authenticated platform guide workflow', () => {
   test('customer sees only customer guidance and destinations', async ({ page }) => {
     await signInCustomer(page, e2eAccounts.customer)
 
-    await page.goto('/guide')
-    await expect(page).toHaveURL(/\/guide$/)
-    await expect(page.getByTestId('platform-guide')).toHaveAttribute('data-guide-audience', 'customer')
-    await expect(page.getByTestId('platform-guide').locator('img[src*="/walkthrough-screenshots/"]')).toHaveCount(1)
-    await expect(page.getByText(/Screen storyboard|Storyboard con pantallas/)).not.toBeVisible()
-    expect(await guideHrefs(page)).toEqual(['/dashboard', '/profile', '/shop'])
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 1440, height: 900 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.goto('/guide')
+      await expect(page).toHaveURL(/\/guide$/)
+      await expect(page.getByTestId('platform-guide')).toHaveAttribute('data-guide-audience', 'customer')
+      await expect(page.getByTestId('platform-guide').locator('img[src*="/walkthrough-screenshots/"]')).toHaveCount(1)
+      await expect(page.getByTestId('customer-guide-resource')).toBeVisible()
+      await expect(page.getByTestId('platform-guide-next-step')).toHaveCount(0)
+      await expect(page.getByText(/Screen storyboard|Storyboard con pantallas/)).not.toBeVisible()
+      expect(await guideHrefs(page)).toEqual(['/dashboard', '/profile', '/shop'])
+
+      const layout = await page.evaluate(() => {
+        const media = document.querySelector<HTMLElement>('[data-testid="customer-guide-resource-media"]')!
+        const content = document.querySelector<HTMLElement>('[data-testid="customer-guide-resource-content"]')!
+        const mediaRect = media.getBoundingClientRect()
+        const contentRect = content.getBoundingClientRect()
+        return {
+          contentLeft: Math.round(contentRect.left),
+          contentTop: Math.round(contentRect.top),
+          mediaBottom: Math.round(mediaRect.bottom),
+          mediaRight: Math.round(mediaRect.right),
+          mediaTop: Math.round(mediaRect.top),
+          overflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+        }
+      })
+
+      expect(layout.overflow, `${viewport.width}px merged guide overflow`).toBeLessThanOrEqual(2)
+      if (viewport.width >= 1024) {
+        expect(Math.abs(layout.mediaTop - layout.contentTop), `${viewport.width}px merged guide columns`).toBeLessThanOrEqual(1)
+        expect(layout.mediaRight, `${viewport.width}px merged guide media/content order`).toBeLessThanOrEqual(layout.contentLeft + 1)
+      } else {
+        expect(layout.mediaBottom, `${viewport.width}px merged guide stacking`).toBeLessThanOrEqual(layout.contentTop + 1)
+      }
+    }
   })
 })
