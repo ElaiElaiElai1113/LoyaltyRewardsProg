@@ -36,6 +36,66 @@ test.describe('public acquisition workflow', () => {
     expect(runtimeErrors).toEqual([])
   })
 
+  test('all RewardMe public pages remain free of Medellin branding and legacy visual assets', async ({ page }) => {
+    test.setTimeout(120_000)
+    const runtimeErrors: string[] = []
+    page.on('pageerror', (error) => runtimeErrors.push(error.message))
+    page.on('console', (message) => {
+      if (message.type() === 'error' && !message.text().includes('ERR_NETWORK_ACCESS_DENIED')) {
+        runtimeErrors.push(message.text())
+      }
+    })
+    const routes = [
+      '/',
+      '/landing-page',
+      '/guide',
+      '/shop',
+      '/business',
+      '/cost-calculator',
+      '/signin',
+      '/join',
+      '/invitation',
+      '/terms',
+      '/privacy',
+      '/reward-terms',
+      '/verification-policy',
+      '/promotions',
+      '/membership',
+      '/ambassadors',
+      '/promo',
+      '/promo/register',
+      '/gift-cards',
+    ]
+
+    await page.setViewportSize({ width: 390, height: 844 })
+
+    for (const route of routes) {
+      runtimeErrors.length = 0
+      const response = await page.goto(`${route}?tenant=rewardme`, { waitUntil: 'networkidle' })
+      expect(response?.status(), route).toBeLessThan(400)
+      await page.locator('main').waitFor()
+
+      const branding = await page.evaluate(() => {
+        const attributeValues = Array.from(document.querySelectorAll<HTMLElement>('*')).flatMap((element) =>
+          ['aria-label', 'alt', 'title', 'placeholder', 'href'].map((attribute) => element.getAttribute(attribute) ?? ''),
+        )
+        const imageSources = Array.from(document.images).map((image) => image.getAttribute('src') ?? '')
+        const searchableText = [document.title, document.body.innerText, ...attributeValues].join('\n')
+
+        return {
+          hasMedellinBrand: /medell[ií]n|medellinrewards/i.test(searchableText),
+          legacyGuideImages: imageSources.filter((source) =>
+            /^\/walkthrough-screenshots\/(?:guide|public-map|business-page|business-login|admin-login)\.png$/i.test(source),
+          ),
+        }
+      })
+
+      expect(branding.hasMedellinBrand, `${route} leaked Medellin branding`).toBe(false)
+      expect(branding.legacyGuideImages, `${route} used Medellin guide screenshots`).toEqual([])
+      expect(runtimeErrors, `${route} runtime errors`).toEqual([])
+    }
+  })
+
   test('search metadata exposes only public launch routes', async ({ request }, testInfo) => {
     const hostname = new URL(String(testInfo.project.use.baseURL)).hostname
     const expectedOrigin = new Map([

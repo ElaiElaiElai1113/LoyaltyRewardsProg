@@ -86,4 +86,27 @@ test.describe('platform guide workflow', () => {
     ])
   })
 
+  test('RewardMe guide uses RewardMe copy and tenant-specific screenshots', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('rewards:pinas:language', 'en')
+    })
+
+    await page.goto('/guide?tenant=rewardme')
+
+    await expect(page).toHaveTitle('RewardMe')
+    await expect(page.locator('body')).toContainText('RewardMe')
+    await expect(page.locator('body')).not.toContainText(/medell[ií]n/i)
+
+    const screenshots = page.locator('img[src*="/walkthrough-screenshots/"]')
+    await expect(screenshots).toHaveCount(5)
+    const sources = await screenshots.evaluateAll((images) => images.map((image) => image.getAttribute('src')))
+    expect(sources).toEqual([
+      '/walkthrough-screenshots/rewardme/guide.png',
+      '/walkthrough-screenshots/rewardme/public-map.png',
+      '/walkthrough-screenshots/rewardme/business-page.png',
+      '/walkthrough-screenshots/rewardme/business-login.png',
+      '/walkthrough-screenshots/rewardme/admin-login.png',
+    ])
+  })
+
 })

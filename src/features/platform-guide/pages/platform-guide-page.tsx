@@ -289,8 +289,13 @@ export function PlatformGuidePage() {
     return value
   }
   const content = tenantize(guideContent[resolvedLanguage])
-  const tenantScreenshotDirectory = program.slug === 'wondertown'
-    ? '/walkthrough-screenshots/wondertown'
+  const tenantScreenshotSlug = program.slug === 'wondertown'
+    ? 'wondertown'
+    : program.slug === 'pinas'
+      ? 'rewardme'
+      : null
+  const tenantScreenshotDirectory = tenantScreenshotSlug
+    ? `/walkthrough-screenshots/${tenantScreenshotSlug}`
     : '/walkthrough-screenshots'
   const tenantScreenshotGallery = tenantize(screenshotGalleryByLanguage[resolvedLanguage])
   const screenshotGallery = {
