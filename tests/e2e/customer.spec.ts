@@ -20,12 +20,9 @@ test.describe('customer workflow smoke test', () => {
     }
 
     await page.goto('/membership')
-    const manualMembershipPanel = page.locator('[data-membership-request-panel]')
-    if (await manualMembershipPanel.count()) {
-      await expect(manualMembershipPanel).toBeVisible()
-    } else {
-      await expect(page.getByRole('heading', { name: /Monthly Membership|Membres[ií]a mensual/i })).toBeVisible()
-    }
+    await expect(page.getByRole('heading', {
+      name: /Membership status|Monthly Membership|Estado de membres[ií]a|Membres[ií]a mensual/i,
+    })).toBeVisible()
 
     await page.goto('/rewards')
     await expect(page).toHaveURL(/\/dashboard$/)
