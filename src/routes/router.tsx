@@ -448,7 +448,6 @@ const router = createBrowserRouter([
       {
         element: <PublicBrowseLayout />,
         children: [
-          { path: '/guide', element: <PlatformGuidePage /> },
           { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
           { path: '/cost-calculator', element: <CostCalculatorPage /> },
           { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
@@ -457,6 +456,7 @@ const router = createBrowserRouter([
       {
         element: <PublicOrCustomerRoute />,
         children: [
+          { path: '/guide', element: <PlatformGuidePage /> },
           { path: '/shop', element: <ShopPage /> },
           { path: '/rewards', element: <HiddenCustomerCommerceRoute /> },
           { path: '/promotions', element: <PromotionsPage /> },

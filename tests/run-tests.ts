@@ -768,9 +768,10 @@ runTest('Figma homepage uses the approved typography and clean photography asset
   assert.match(homeStyles, /figma-home__membership-referral/)
 })
 
-runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
+runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const guidePage = readFileSync('src/features/platform-guide/pages/platform-guide-page.tsx', 'utf8')
+  const guideScope = readFileSync('src/features/platform-guide/guide-role-scope.ts', 'utf8')
   const simpleWalkthrough = readFileSync('docs/spanish-team-walkthrough-copy-paste.md', 'utf8')
   const completeWalkthrough = readFileSync('docs/complete-role-walkthrough.md', 'utf8')
   const summaryWalkthrough = readFileSync('docs/spanish-team-walkthrough-summary.md', 'utf8')
@@ -802,6 +803,9 @@ runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   assert.match(guidePage, /guideContent/)
   assert.match(guidePage, /useLanguage/)
   assert.match(guidePage, /storyboard/)
+  assert.match(guidePage, /!isRoleScopedGuide/)
+  assert.match(guidePage, /data-guide-audience/)
+  assert.match(guidePage, /getRoleScopedScreenshotRoutes/)
   assert.match(guidePage, /\/shop/)
   assert.match(guidePage, /\/business\/redemptions/)
   assert.match(guidePage, /with or without a gift card/)
@@ -845,11 +849,16 @@ runTest('platform guide is a Spanish-first video-ready onboarding page', () => {
   assert.match(localRunner, /E2E_TENANT_SLUG/)
   assert.match(localRunner, /medellin/)
   assert.match(localRunner, /server\.close/)
-  assert.match(guideSpec, /public guide explains the platform with Spanish-first video-ready content/)
+  assert.match(guideScope, /programSlug === 'pinas' \|\| programSlug === 'wondertown'/)
+  assert.match(guideScope, /role === 'business-owner' \|\| role === 'business-staff'/)
+  assert.match(guideScope, /if \(role === 'platform-admin'\) return 'admin'/)
+  assert.match(guideSpec, /public guide explains the program without exposing private role portals/)
   assert.match(guideSpec, /public guide follows the English language preference without Spanish guide copy/)
   assert.match(guideSpec, /rewards:pinas:language/)
   assert.match(guideAuthSpec, /authenticated platform guide workflow/)
   assert.match(guideAuthSpec, /workflowAuthEnabled/)
+  assert.match(guideAuthSpec, /data-guide-audience/)
+  assert.match(guideAuthSpec, /customer sees only customer guidance and destinations/)
 })
 
 runTest('app version is installable as a PWA with online-required messaging', () => {

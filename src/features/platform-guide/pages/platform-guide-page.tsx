@@ -1,14 +1,25 @@
 import {
+  Gift,
+  LayoutDashboard,
+  LogIn,
   MapPinned,
   MonitorPlay,
   QrCode,
   ScanLine,
   ShieldCheck,
+  Users,
 } from 'lucide-react'
 import { Link } from 'react-router'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  getRoleScopedScreenshotRoutes,
+  isRoleScopedGuideProgram,
+  resolveRoleScopedGuideAudience,
+  type RoleScopedGuideAudience,
+} from '@/features/platform-guide/guide-role-scope'
+import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage, type Language } from '@/lib/language'
 
@@ -244,6 +255,180 @@ const guideContent = {
   badges: string[]
 }>
 
+type GuideAction = {
+  icon: typeof MapPinned
+  label: string
+  route: string
+}
+
+type RoleGuideContent = {
+  eyebrow: string
+  intro: string
+  panelTitle: string
+  panelBody: string
+  chapters: string[]
+  actions: GuideAction[]
+  nextTitle: string
+  nextBody: string
+  badges: string[]
+  gallery: {
+    eyebrow: string
+    title: string
+    badge: string
+  } | null
+}
+
+const roleScopedGuideContent: Record<Exclude<Language, 'tl'>, Record<RoleScopedGuideAudience, RoleGuideContent>> = {
+  es: {
+    public: {
+      eyebrow: 'Guia del programa',
+      intro: 'Conoce como funciona el programa de recompensas, explora negocios aliados y elige donde comenzar.',
+      panelTitle: 'Empieza aqui',
+      panelBody: 'Una introduccion breve para visitantes antes de crear una cuenta o iniciar sesion.',
+      chapters: ['Como funcionan las recompensas', 'Explorar negocios aliados', 'Unirse o iniciar sesion'],
+      actions: [
+        { icon: MapPinned, label: 'Ver mapa', route: '/shop' },
+        { icon: ScanLine, label: 'Para negocios', route: '/business' },
+        { icon: LogIn, label: 'Iniciar sesion', route: '/signin' },
+      ],
+      nextTitle: 'Elige tu proximo paso',
+      nextBody: 'Explora los negocios disponibles, conoce el programa para aliados o inicia sesion en tu cuenta.',
+      badges: ['Guia publica', 'Sin cuenta requerida'],
+      gallery: {
+        eyebrow: 'Paginas publicas',
+        title: 'Explora el programa',
+        badge: 'Sin cuenta requerida',
+      },
+    },
+    customer: {
+      eyebrow: 'Guia para clientes',
+      intro: 'Todo lo necesario para encontrar aliados, usar tu QR de miembro y revisar tus recompensas.',
+      panelTitle: 'Funciones para clientes',
+      panelBody: 'Estas son las funciones disponibles para tu cuenta de cliente.',
+      chapters: ['Abrir tu panel', 'Encontrar negocios aliados', 'Mostrar tu QR de miembro', 'Revisar tu actividad'],
+      actions: [
+        { icon: LayoutDashboard, label: 'Mi panel', route: '/dashboard' },
+        { icon: MapPinned, label: 'Ver mapa', route: '/shop' },
+        { icon: QrCode, label: 'Mi QR', route: '/profile' },
+      ],
+      nextTitle: 'Continua con tu cuenta',
+      nextBody: 'Usa el mapa para elegir un negocio o abre tu QR cuando estes listo para ganar recompensas.',
+      badges: ['Solo clientes', 'Funciones esenciales'],
+      gallery: {
+        eyebrow: 'Recurso para clientes',
+        title: 'Encuentra negocios participantes',
+        badge: 'Solo clientes',
+      },
+    },
+    business: {
+      eyebrow: 'Guia para negocios',
+      intro: 'Las funciones necesarias para atender clientes, registrar transacciones y revisar la actividad del negocio.',
+      panelTitle: 'Funciones para negocios',
+      panelBody: 'Esta guia muestra solo las herramientas disponibles para propietarios y personal.',
+      chapters: ['Abrir el panel del negocio', 'Registrar una transaccion', 'Revisar clientes y actividad'],
+      actions: [
+        { icon: LayoutDashboard, label: 'Panel del negocio', route: '/business/dashboard' },
+        { icon: ScanLine, label: 'Transacciones', route: '/business/redemptions' },
+        { icon: Users, label: 'Clientes', route: '/business/members' },
+      ],
+      nextTitle: 'Continua con las operaciones',
+      nextBody: 'Abre el panel para atender clientes, registrar una compra o revisar la actividad reciente.',
+      badges: ['Solo negocios', 'Herramientas operativas'],
+      gallery: null,
+    },
+    admin: {
+      eyebrow: 'Guia para administradores',
+      intro: 'Acceso directo a las funciones de administracion, membresias y gift cards de la plataforma.',
+      panelTitle: 'Funciones administrativas',
+      panelBody: 'Esta guia muestra solo las herramientas disponibles para administradores de plataforma.',
+      chapters: ['Abrir operaciones', 'Administrar miembros y aliados', 'Revisar membresias y gift cards'],
+      actions: [
+        { icon: ShieldCheck, label: 'Portal admin', route: '/admin/portal' },
+        { icon: Gift, label: 'Gift cards', route: '/admin/gift-cards' },
+        { icon: Users, label: 'Membresias', route: '/admin/memberships' },
+      ],
+      nextTitle: 'Continua con la administracion',
+      nextBody: 'Abre la herramienta administrativa que necesitas sin pasar por portales de clientes o negocios.',
+      badges: ['Solo administradores', 'Operaciones de plataforma'],
+      gallery: null,
+    },
+  },
+  en: {
+    public: {
+      eyebrow: 'Program guide',
+      intro: 'Learn how the rewards program works, explore partner businesses, and choose where to begin.',
+      panelTitle: 'Start here',
+      panelBody: 'A short introduction for visitors before creating an account or signing in.',
+      chapters: ['How rewards work', 'Explore partner businesses', 'Join or sign in'],
+      actions: [
+        { icon: MapPinned, label: 'View map', route: '/shop' },
+        { icon: ScanLine, label: 'For businesses', route: '/business' },
+        { icon: LogIn, label: 'Sign in', route: '/signin' },
+      ],
+      nextTitle: 'Choose your next step',
+      nextBody: 'Explore available businesses, learn about the partner program, or sign in to your account.',
+      badges: ['Public guide', 'No account required'],
+      gallery: {
+        eyebrow: 'Public pages',
+        title: 'Explore the program',
+        badge: 'No account required',
+      },
+    },
+    customer: {
+      eyebrow: 'Customer guide',
+      intro: 'Everything you need to find partners, use your member QR, and review your rewards.',
+      panelTitle: 'Customer essentials',
+      panelBody: 'These are the features available to your customer account.',
+      chapters: ['Open your dashboard', 'Find partner businesses', 'Show your member QR', 'Review rewards activity'],
+      actions: [
+        { icon: LayoutDashboard, label: 'My dashboard', route: '/dashboard' },
+        { icon: MapPinned, label: 'View map', route: '/shop' },
+        { icon: QrCode, label: 'My QR', route: '/profile' },
+      ],
+      nextTitle: 'Continue with your account',
+      nextBody: 'Use the map to choose a business or open your QR when you are ready to earn rewards.',
+      badges: ['Customer only', 'Rewards essentials'],
+      gallery: {
+        eyebrow: 'Customer resource',
+        title: 'Find participating businesses',
+        badge: 'Customer only',
+      },
+    },
+    business: {
+      eyebrow: 'Business guide',
+      intro: 'The tools you need to serve customers, record transactions, and review business activity.',
+      panelTitle: 'Business essentials',
+      panelBody: 'This guide shows only the tools available to owners and staff.',
+      chapters: ['Open the business dashboard', 'Record a customer transaction', 'Review customers and activity'],
+      actions: [
+        { icon: LayoutDashboard, label: 'Business dashboard', route: '/business/dashboard' },
+        { icon: ScanLine, label: 'Transactions', route: '/business/redemptions' },
+        { icon: Users, label: 'Customers', route: '/business/members' },
+      ],
+      nextTitle: 'Continue with operations',
+      nextBody: 'Open the dashboard to serve customers, record a purchase, or review recent activity.',
+      badges: ['Business only', 'Operational tools'],
+      gallery: null,
+    },
+    admin: {
+      eyebrow: 'Administrator guide',
+      intro: 'Direct access to the platform administration, membership, and gift-card tools.',
+      panelTitle: 'Administrator essentials',
+      panelBody: 'This guide shows only the tools available to platform administrators.',
+      chapters: ['Open operations', 'Manage members and partners', 'Review memberships and gift cards'],
+      actions: [
+        { icon: ShieldCheck, label: 'Admin portal', route: '/admin/portal' },
+        { icon: Gift, label: 'Gift cards', route: '/admin/gift-cards' },
+        { icon: Users, label: 'Memberships', route: '/admin/memberships' },
+      ],
+      nextTitle: 'Continue with administration',
+      nextBody: 'Open the administrative tool you need without passing through customer or business portals.',
+      badges: ['Administrator only', 'Platform operations'],
+      gallery: null,
+    },
+  },
+}
+
 function ScreenshotMockup({ items }: { items: string[] }) {
   return (
     <div className="mt-5 overflow-hidden rounded-2xl border border-primary-container/20 bg-surface-low shadow-soft">
@@ -273,6 +458,7 @@ function ScreenshotMockup({ items }: { items: string[] }) {
 export function PlatformGuidePage() {
   const { language } = useLanguage()
   const { program } = useTenant()
+  const { profile } = useAuth()
   const resolvedLanguage = language === 'tl' ? 'en' : language
   const tenantize = <T,>(value: T): T => {
     if (typeof value === 'string') {
@@ -289,6 +475,48 @@ export function PlatformGuidePage() {
     return value
   }
   const content = tenantize(guideContent[resolvedLanguage])
+  const isRoleScopedGuide = isRoleScopedGuideProgram(program.slug)
+  const guideAudience = resolveRoleScopedGuideAudience(profile?.role)
+  const roleGuideContent = tenantize(roleScopedGuideContent[resolvedLanguage][guideAudience])
+  const activeGuideContent = isRoleScopedGuide
+    ? {
+        eyebrow: roleGuideContent.eyebrow,
+        title: content.title,
+        intro: roleGuideContent.intro,
+        panelTitle: roleGuideContent.panelTitle,
+        panelBody: roleGuideContent.panelBody,
+        panelIcon: guideAudience === 'customer'
+          ? QrCode
+          : guideAudience === 'business'
+            ? ScanLine
+            : guideAudience === 'admin'
+              ? ShieldCheck
+              : MapPinned,
+        chapters: roleGuideContent.chapters,
+        actions: roleGuideContent.actions,
+        nextEyebrow: content.nextEyebrow,
+        nextTitle: roleGuideContent.nextTitle,
+        nextBody: roleGuideContent.nextBody,
+        badges: roleGuideContent.badges,
+      }
+    : {
+        eyebrow: content.eyebrow,
+        title: content.title,
+        intro: content.intro,
+        panelTitle: content.videoTitle,
+        panelBody: content.videoBody,
+        panelIcon: MonitorPlay,
+        chapters: content.chapters,
+        actions: [
+          { icon: MapPinned, label: content.links.map, route: '/shop' },
+          { icon: ScanLine, label: content.links.business, route: '/business/dashboard' },
+          { icon: ShieldCheck, label: content.links.admin, route: '/admin/portal#members' },
+        ],
+        nextEyebrow: content.nextEyebrow,
+        nextTitle: content.nextTitle,
+        nextBody: content.nextBody,
+        badges: content.badges,
+      }
   const tenantScreenshotSlug = program.slug === 'wondertown'
     ? 'wondertown'
     : program.slug === 'pinas'
@@ -305,102 +533,112 @@ export function PlatformGuidePage() {
       imageSrc: `${tenantScreenshotDirectory}/${item.imageSrc.split('/').at(-1)}`,
     })),
   }
+  const roleScreenshotRoutes = getRoleScopedScreenshotRoutes(guideAudience)
+  const visibleScreenshotItems = isRoleScopedGuide
+    ? screenshotGallery.items.filter((item) => roleScreenshotRoutes.includes(item.route))
+    : screenshotGallery.items
+  const galleryHeading = isRoleScopedGuide ? roleGuideContent.gallery : screenshotGallery
+  const GuidePanelIcon = activeGuideContent.panelIcon
 
   return (
-    <div className="mx-auto max-w-7xl space-y-12 pb-10">
+    <div
+      className="mx-auto max-w-7xl space-y-12 pb-10"
+      data-guide-audience={isRoleScopedGuide ? guideAudience : 'legacy'}
+      data-testid="platform-guide"
+    >
       <section className="grid gap-8 rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-6 shadow-card lg:grid-cols-[minmax(0,1fr)_420px] lg:p-8">
         <div className="space-y-6">
           <Badge variant="accent" className="w-fit rounded-full border-primary-container/25 bg-primary-container/12 text-primary">
-            {content.eyebrow}
+            {activeGuideContent.eyebrow}
           </Badge>
           <div className="space-y-4">
             <h1 className="font-serif text-5xl tracking-tight text-primary sm:text-6xl">
-              {content.title}
+              {activeGuideContent.title}
             </h1>
             <p className="max-w-3xl text-lg leading-8 text-on-surface-variant/85">
-              {content.intro}
+              {activeGuideContent.intro}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Button asChild className="rounded-full">
-              <Link to="/shop">
-                <MapPinned className="size-4" />
-                {content.links.map}
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-full">
-              <Link to="/business/dashboard">
-                <ScanLine className="size-4" />
-                {content.links.business}
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="rounded-full">
-              <Link to="/admin/portal#members">
-                <ShieldCheck className="size-4" />
-                {content.links.admin}
-              </Link>
-            </Button>
+            {activeGuideContent.actions.map((action, index) => (
+              <Button
+                key={action.route}
+                asChild
+                variant={index === 0 ? 'default' : 'outline'}
+                className="rounded-full"
+              >
+                <Link to={action.route}>
+                  <action.icon className="size-4" />
+                  {action.label}
+                </Link>
+              </Button>
+            ))}
           </div>
         </div>
 
         <div className="rounded-[2rem] border border-primary-container/20 bg-primary text-primary-foreground shadow-card">
           <div className="aspect-video rounded-t-[2rem] bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.24),transparent_30%),linear-gradient(135deg,rgba(255,255,255,0.14),rgba(0,0,0,0.22))] p-6">
             <div className="flex h-full flex-col items-center justify-center rounded-[1.5rem] border border-white/20 bg-black/18 text-center">
-              <MonitorPlay className="size-14 text-primary-foreground" />
-              <p className="mt-4 font-serif text-3xl">{content.videoTitle}</p>
+              <GuidePanelIcon className="size-14 text-primary-foreground" />
+              <p className="mt-4 font-serif text-3xl">{activeGuideContent.panelTitle}</p>
               <p className="mt-2 max-w-xs text-sm leading-6 text-primary-foreground/80">
-                {content.videoBody}
+                {activeGuideContent.panelBody}
               </p>
             </div>
           </div>
           <div className="space-y-3 p-5">
-            {content.chapters.map((item, index) => (
+            {activeGuideContent.chapters.map((item, index) => (
               <div key={item} className="flex items-center justify-between rounded-2xl bg-white/10 px-4 py-3 text-sm">
                 <span>{item}</span>
-                <span className="font-mono text-primary-foreground/80">0{index}:00</span>
+                <span className="font-mono text-primary-foreground/80">
+                  {isRoleScopedGuide ? String(index + 1).padStart(2, '0') : `0${index}:00`}
+                </span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="space-y-6">
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-              {screenshotGallery.eyebrow}
-            </p>
-            <h2 className="mt-2 font-serif text-3xl text-primary">{screenshotGallery.title}</h2>
+      {galleryHeading && visibleScreenshotItems.length > 0 ? (
+        <section className="space-y-6">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
+                {galleryHeading.eyebrow}
+              </p>
+              <h2 className="mt-2 font-serif text-3xl text-primary">{galleryHeading.title}</h2>
+            </div>
+            <Badge variant="outline" className="w-fit rounded-full">
+              {galleryHeading.badge}
+            </Badge>
           </div>
-          <Badge variant="outline" className="w-fit rounded-full">
-            {screenshotGallery.badge}
-          </Badge>
-        </div>
 
-        <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {screenshotGallery.items.map((screen) => (
-            <article key={screen.imageSrc} className="overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-sm">
-              <div className="aspect-[4/3] overflow-hidden bg-surface-low">
-                <img
-                  src={screen.imageSrc}
-                  alt={screen.title}
-                  loading="lazy"
-                  className="h-full w-full object-cover object-top"
-                />
-              </div>
-              <div className="p-5">
-                <h3 className="font-serif text-2xl text-primary">{screen.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-on-surface-variant/85">{screen.caption}</p>
-                <Button asChild variant="ghost" className="mt-4 w-full rounded-full">
-                  <Link to={screen.route}>{content.links.openView}</Link>
-                </Button>
-              </div>
-            </article>
-          ))}
-        </div>
-      </section>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {visibleScreenshotItems.map((screen) => (
+              <article key={screen.imageSrc} className="overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-sm">
+                <div className="aspect-[4/3] overflow-hidden bg-surface-low">
+                  <img
+                    src={screen.imageSrc}
+                    alt={screen.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover object-top"
+                  />
+                </div>
+                <div className="p-5">
+                  <h3 className="font-serif text-2xl text-primary">{screen.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-on-surface-variant/85">{screen.caption}</p>
+                  <Button asChild variant="ghost" className="mt-4 w-full rounded-full">
+                    <Link to={screen.route}>{content.links.openView}</Link>
+                  </Button>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      ) : null}
 
-      <section className="space-y-6">
+      {!isRoleScopedGuide ? (
+        <section className="space-y-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
@@ -433,21 +671,22 @@ export function PlatformGuidePage() {
             </article>
           ))}
         </div>
-      </section>
+        </section>
+      ) : null}
 
       <section className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-6 shadow-sm lg:p-8">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-center">
           <div>
             <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-on-surface-variant/75">
-              {content.nextEyebrow}
+              {activeGuideContent.nextEyebrow}
             </p>
-            <h2 className="mt-2 font-serif text-3xl text-primary">{content.nextTitle}</h2>
+            <h2 className="mt-2 font-serif text-3xl text-primary">{activeGuideContent.nextTitle}</h2>
             <p className="mt-3 text-sm leading-7 text-on-surface-variant/85">
-              {content.nextBody}
+              {activeGuideContent.nextBody}
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
-            {content.badges.map((badge) => (
+            {activeGuideContent.badges.map((badge) => (
               <Badge key={badge} variant="outline" className="rounded-full px-4 py-2">
                 {badge}
               </Badge>

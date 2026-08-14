@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test'
 
 test.describe('platform guide workflow', () => {
-  test('public guide explains the platform with Spanish-first video-ready content', async ({ page }) => {
+  test('public guide explains the program without exposing private role portals', async ({ page }) => {
     await page.addInitScript(() => window.localStorage.setItem('rewards:pinas:language', 'es'))
     await page.goto('/guide')
 
     await expect(page).toHaveURL(/\/guide$/)
     await expect(page.getByRole('heading', { name: 'Guia de la plataforma' })).toBeVisible()
-    await expect(page.getByText('Recorrido guiado de la demo')).toBeVisible()
-    await expect(page.getByText('Storyboard con pantallas')).toBeVisible()
+    await expect(page.getByText('Empieza aqui')).toBeVisible()
+    await expect(page.getByText('Storyboard con pantallas')).not.toBeVisible()
     await expect(page.getByText('English version')).not.toBeVisible()
     await expect(page.getByText('Platform guide', { exact: true })).not.toBeVisible()
 
@@ -21,9 +21,12 @@ test.describe('platform guide workflow', () => {
     await expect(page.locator('body')).not.toContainText('Flujo para administradores')
     await expect(page.locator('body')).not.toContainText('What the platform does')
 
-    await expect(page.getByRole('link', { name: 'Ver mapa' })).toHaveAttribute('href', '/shop')
-    await expect(page.getByRole('link', { name: 'Portal negocio' })).toHaveAttribute('href', '/business/dashboard')
-    await expect(page.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin/portal#members')
+    await expect(page.getByTestId('platform-guide').getByRole('link', { name: 'Ver mapa' })).toHaveAttribute('href', '/shop')
+    await expect(page.getByTestId('platform-guide').getByRole('link', { name: 'Para negocios' })).toHaveAttribute('href', '/business')
+    await expect(page.getByTestId('platform-guide').getByRole('link', { name: 'Iniciar sesion' })).toHaveAttribute('href', '/signin')
+    await expect(page.getByTestId('platform-guide')).toHaveAttribute('data-guide-audience', 'public')
+    await expect(page.locator('main a[href^="/admin"]')).toHaveCount(0)
+    await expect(page.locator('main a[href^="/business/"]')).toHaveCount(0)
   })
 
   test('public guide follows the English language preference without Spanish guide copy', async ({ page }) => {
@@ -35,8 +38,8 @@ test.describe('platform guide workflow', () => {
 
     await expect(page).toHaveURL(/\/guide$/)
     await expect(page.getByRole('heading', { name: 'Platform guide' })).toBeVisible()
-    await expect(page.getByText('Guided demo walkthrough')).toBeVisible()
-    await expect(page.getByText('Screen storyboard')).toBeVisible()
+    await expect(page.getByText('Start here')).toBeVisible()
+    await expect(page.getByText('Screen storyboard')).not.toBeVisible()
 
     await expect(page.getByText('English script')).not.toBeVisible()
     await expect(page.getByText('Recording script')).not.toBeVisible()
@@ -49,9 +52,12 @@ test.describe('platform guide workflow', () => {
     await expect(page.getByText('Guion en espanol')).not.toBeVisible()
     await expect(page.locator('body')).not.toContainText('Experiencia del cliente')
 
-    await expect(page.getByRole('link', { name: 'View map' })).toHaveAttribute('href', '/shop')
-    await expect(page.getByRole('link', { name: 'Business portal' })).toHaveAttribute('href', '/business/dashboard')
-    await expect(page.getByRole('link', { name: 'Admin' })).toHaveAttribute('href', '/admin/portal#members')
+    await expect(page.getByTestId('platform-guide').getByRole('link', { name: 'View map' })).toHaveAttribute('href', '/shop')
+    await expect(page.getByTestId('platform-guide').getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '/business')
+    await expect(page.getByTestId('platform-guide').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
+    await expect(page.getByTestId('platform-guide')).toHaveAttribute('data-guide-audience', 'public')
+    await expect(page.locator('main a[href^="/admin"]')).toHaveCount(0)
+    await expect(page.locator('main a[href^="/business/"]')).toHaveCount(0)
   })
 
   test('public navigation exposes the guide link', async ({ page }) => {
@@ -75,15 +81,15 @@ test.describe('platform guide workflow', () => {
     await expect(page.locator('body')).not.toContainText(/medell[ií]n/i)
 
     const screenshots = page.locator('img[src*="/walkthrough-screenshots/"]')
-    await expect(screenshots).toHaveCount(5)
+    await expect(screenshots).toHaveCount(2)
     const sources = await screenshots.evaluateAll((images) => images.map((image) => image.getAttribute('src')))
     expect(sources).toEqual([
-      '/walkthrough-screenshots/wondertown/guide.png',
       '/walkthrough-screenshots/wondertown/public-map.png',
       '/walkthrough-screenshots/wondertown/business-page.png',
-      '/walkthrough-screenshots/wondertown/business-login.png',
-      '/walkthrough-screenshots/wondertown/admin-login.png',
     ])
+    await expect(page.getByText('Screen storyboard')).not.toBeVisible()
+    await expect(page.locator('main a[href^="/admin"]')).toHaveCount(0)
+    await expect(page.locator('main a[href^="/business/"]')).toHaveCount(0)
   })
 
   test('RewardMe guide uses RewardMe copy and tenant-specific screenshots', async ({ page }) => {
@@ -98,15 +104,15 @@ test.describe('platform guide workflow', () => {
     await expect(page.locator('body')).not.toContainText(/medell[ií]n/i)
 
     const screenshots = page.locator('img[src*="/walkthrough-screenshots/"]')
-    await expect(screenshots).toHaveCount(5)
+    await expect(screenshots).toHaveCount(2)
     const sources = await screenshots.evaluateAll((images) => images.map((image) => image.getAttribute('src')))
     expect(sources).toEqual([
-      '/walkthrough-screenshots/rewardme/guide.png',
       '/walkthrough-screenshots/rewardme/public-map.png',
       '/walkthrough-screenshots/rewardme/business-page.png',
-      '/walkthrough-screenshots/rewardme/business-login.png',
-      '/walkthrough-screenshots/rewardme/admin-login.png',
     ])
+    await expect(page.getByText('Screen storyboard')).not.toBeVisible()
+    await expect(page.locator('main a[href^="/admin"]')).toHaveCount(0)
+    await expect(page.locator('main a[href^="/business/"]')).toHaveCount(0)
   })
 
 })
