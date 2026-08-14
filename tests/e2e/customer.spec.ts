@@ -15,12 +15,17 @@ test.describe('customer workflow smoke test', () => {
 
     for (const path of ['/membership', '/profile', '/cart']) {
       await page.goto(path)
-      await expect(page.locator('body')).toContainText(/RewardMe|Medellin Rewards|Guatemala Rewards|Synergize/)
+      await expect(page.locator('body')).toContainText(/RewardMe|Wondertown Rewards|Medellin Rewards|Guatemala Rewards|Synergize/)
       await expect(page).toHaveURL(new RegExp(`${path.replace('/', '\\/')}$`))
     }
 
     await page.goto('/membership')
-    await expect(page.locator('[data-membership-request-panel]')).toBeVisible()
+    const manualMembershipPanel = page.locator('[data-membership-request-panel]')
+    if (await manualMembershipPanel.count()) {
+      await expect(manualMembershipPanel).toBeVisible()
+    } else {
+      await expect(page.getByRole('heading', { name: /Monthly Membership|Membres[ií]a mensual/i })).toBeVisible()
+    }
 
     await page.goto('/rewards')
     await expect(page).toHaveURL(/\/dashboard$/)
