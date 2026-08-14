@@ -167,4 +167,57 @@ test.describe('Wondertown public testing experience', () => {
       }
     }
   })
+
+  test('all public pages remain free of Medellin branding and legacy visual assets', async ({ page }) => {
+    test.setTimeout(120_000)
+    const runtimeErrors = collectRuntimeErrors(page)
+    const routes = [
+      '/',
+      '/landing-page',
+      '/guide',
+      '/shop',
+      '/business',
+      '/cost-calculator',
+      '/signin',
+      '/join',
+      '/invitation',
+      '/terms',
+      '/privacy',
+      '/reward-terms',
+      '/verification-policy',
+      '/promotions',
+      '/membership',
+      '/ambassadors',
+      '/promo',
+      '/promo/register',
+      '/gift-cards',
+    ]
+
+    await page.setViewportSize({ width: 390, height: 844 })
+
+    for (const route of routes) {
+      runtimeErrors.length = 0
+      const response = await page.goto(`${route}?tenant=wondertown`, { waitUntil: 'domcontentloaded' })
+      expect(response?.status(), route).toBeLessThan(400)
+
+      const branding = await page.evaluate(() => {
+        const attributeValues = Array.from(document.querySelectorAll<HTMLElement>('*')).flatMap((element) =>
+          ['aria-label', 'alt', 'title', 'placeholder', 'href'].map((attribute) => element.getAttribute(attribute) ?? ''),
+        )
+        const imageSources = Array.from(document.images).map((image) => image.getAttribute('src') ?? '')
+        const searchableText = [document.title, document.body.innerText, ...attributeValues].join('\n')
+
+        return {
+          hasMedellinBrand: /medell[ií]n|medellinrewards/i.test(searchableText),
+          legacyGuideImages: imageSources.filter((source) =>
+            /^\/walkthrough-screenshots\/(?:guide|public-map|business-page|business-login|admin-login)\.png$/i.test(source),
+          ),
+        }
+      })
+
+      expect(branding.hasMedellinBrand, `${route} leaked Medellin branding`).toBe(false)
+      expect(branding.legacyGuideImages, `${route} used Medellin guide screenshots`).toEqual([])
+      expect(runtimeErrors, `${route} runtime errors`).toEqual([])
+    }
+  })
 })

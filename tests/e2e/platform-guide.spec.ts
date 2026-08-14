@@ -63,4 +63,27 @@ test.describe('platform guide workflow', () => {
     await expect(page.getByRole('heading', { name: 'Platform guide' })).toBeVisible()
   })
 
+  test('Wondertown guide uses Wondertown copy and tenant-specific screenshots', async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem('rewards:wondertown:language', 'en')
+    })
+
+    await page.goto('/guide?tenant=wondertown')
+
+    await expect(page).toHaveTitle('Wondertown Rewards')
+    await expect(page.locator('body')).toContainText('Wondertown Rewards')
+    await expect(page.locator('body')).not.toContainText(/medell[ií]n/i)
+
+    const screenshots = page.locator('img[src*="/walkthrough-screenshots/"]')
+    await expect(screenshots).toHaveCount(5)
+    const sources = await screenshots.evaluateAll((images) => images.map((image) => image.getAttribute('src')))
+    expect(sources).toEqual([
+      '/walkthrough-screenshots/wondertown/guide.png',
+      '/walkthrough-screenshots/wondertown/public-map.png',
+      '/walkthrough-screenshots/wondertown/business-page.png',
+      '/walkthrough-screenshots/wondertown/business-login.png',
+      '/walkthrough-screenshots/wondertown/admin-login.png',
+    ])
+  })
+
 })

@@ -289,7 +289,17 @@ export function PlatformGuidePage() {
     return value
   }
   const content = tenantize(guideContent[resolvedLanguage])
-  const screenshotGallery = tenantize(screenshotGalleryByLanguage[resolvedLanguage])
+  const tenantScreenshotDirectory = program.slug === 'wondertown'
+    ? '/walkthrough-screenshots/wondertown'
+    : '/walkthrough-screenshots'
+  const tenantScreenshotGallery = tenantize(screenshotGalleryByLanguage[resolvedLanguage])
+  const screenshotGallery = {
+    ...tenantScreenshotGallery,
+    items: tenantScreenshotGallery.items.map((item) => ({
+      ...item,
+      imageSrc: `${tenantScreenshotDirectory}/${item.imageSrc.split('/').at(-1)}`,
+    })),
+  }
 
   return (
     <div className="mx-auto max-w-7xl space-y-12 pb-10">
