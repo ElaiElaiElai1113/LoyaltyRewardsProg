@@ -2546,3 +2546,19 @@ runTest('QA secret provisioning works on Windows PowerShell without exposing val
   assert.match(provisioning, /\$process\.StandardInput\.Write\(\$Value\)/)
   assert.doesNotMatch(provisioning, /ArgumentList\.Add/)
 })
+
+runTest('business customer picker receives QR tokens only from its permission-checked RPC', () => {
+  const migration = readFileSync('supabase/migrations/20260815112000_business_customer_picker_qr_tokens.sql', 'utf8')
+  const businessOwnerHook = readFileSync('src/hooks/use-business-owner-data.ts', 'utf8')
+  const hookStart = businessOwnerHook.indexOf('export function useBusinessMembers')
+  const hookEnd = businessOwnerHook.indexOf('export function useAwardPoints', hookStart)
+  const memberHook = businessOwnerHook.slice(hookStart, hookEnd)
+
+  assert.match(migration, /security definer/)
+  assert.match(migration, /public\.has_active_business_program_access/)
+  assert.match(migration, /member_qr_token text/)
+  assert.match(migration, /p\.member_qr_token/)
+  assert.match(memberHook, /sb\.rpc\('get_business_customers'/)
+  assert.doesNotMatch(memberHook, /\.from\('profiles'\)/)
+  assert.match(memberHook, /customer\.member_qr_token/)
+})

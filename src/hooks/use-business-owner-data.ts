@@ -258,29 +258,11 @@ export function useBusinessMembers(businessId?: string) {
 
       if (error) throw new Error('Failed to load customers for this business.')
 
-      const customers = (data ?? []) as Record<string, unknown>[]
-      const customerIds = customers.map((customer) => customer.id as string)
-      const { data: tokenRows, error: tokenError } = customerIds.length
-        ? await sb
-            .from('profiles')
-            .select('id, member_qr_token')
-            .in('id', customerIds)
-        : { data: [], error: null }
-
-      if (tokenError) throw new Error('Failed to load customer QR access for this business.')
-
-      const tokenByCustomerId = new Map(
-        ((tokenRows ?? []) as Record<string, unknown>[]).map((row) => [
-          row.id as string,
-          (row.member_qr_token as string | null) ?? null,
-        ]),
-      )
-
-      return customers.map((customer) => ({
+      return ((data ?? []) as Record<string, unknown>[]).map((customer) => ({
         id: customer.id as string,
         fullName: customer.full_name as string,
         email: customer.email as string,
-        memberQrToken: tokenByCustomerId.get(customer.id as string) ?? null,
+        memberQrToken: (customer.member_qr_token as string | null) ?? null,
         points: Number(customer.points ?? 0),
         verificationStatus: customer.verification_status as Profile['verificationStatus'],
       }))
