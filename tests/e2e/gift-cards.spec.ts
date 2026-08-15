@@ -40,10 +40,16 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     businessId = business.id
     customerProfileId = customer.id
 
-    await recordMemberQrSale(staffClient, customer.memberQrToken!, 95, fundingNote)
     const catalogItem = await createGiftCardCatalogItem(ownerClient, businessId, catalogTitle, 100)
     catalogId = catalogItem.id
-    const balance = await getRewardBalance(customerClient, customerProfileId)
+    let balance = await getRewardBalance(customerClient, customerProfileId)
+    const shortfall = Math.max(0, catalogItem.points_cost - balance.points)
+    if (shortfall > 0) {
+      expect(business.reward_rate_percent).toBeGreaterThan(0)
+      const fundingPurchase = Math.ceil(((shortfall + 1) * 100) / business.reward_rate_percent)
+      await recordMemberQrSale(staffClient, customer.memberQrToken!, fundingPurchase, fundingNote)
+      balance = await getRewardBalance(customerClient, customerProfileId)
+    }
     expect(balance.points).toBeGreaterThanOrEqual(catalogItem.points_cost)
 
     await signInCustomer(page, e2eAccounts.customer)
