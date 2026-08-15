@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 const accountCheckEnabled = process.env.E2E_REWARDME_PUBLIC_ACCOUNT_CHECK === 'true'
+const isWondertown = (process.env.E2E_BASE_URL ?? '').toLowerCase().includes('wondertown')
 
 const accounts = [
   {
@@ -63,7 +64,11 @@ test.describe('published RewardMe test accounts', () => {
 
       if (account.label === 'member' && /\/dashboard(?:[/?#]|$)/.test(page.url())) {
         await page.goto('/membership', { waitUntil: 'domcontentloaded' })
-        await expect(page.locator('[data-membership-request-panel]')).toBeVisible()
+        if (isWondertown) {
+          await expect(page.getByRole('heading', { name: 'Monthly Membership' })).toBeVisible()
+        } else {
+          await expect(page.locator('[data-membership-request-panel]')).toBeVisible()
+        }
         await expect(page.locator('body')).not.toContainText('Membership details could not be loaded.')
       }
       if (account.label === 'platform administrator') {
