@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { Camera, ImageUp, RefreshCw, ScanLine } from 'lucide-react'
-import jsQR from 'jsqr'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
+import { scanQrImageBitmap, scanQrSourceWithJsQr } from '@/lib/qr-image-scanner'
 
 type BarcodeDetectorLike = {
   detect: (source: ImageBitmap | HTMLCanvasElement | HTMLVideoElement) => Promise<Array<{ rawValue?: string }>>
@@ -29,7 +29,7 @@ export function QrScanner({
   unavailableMessage = 'Live camera scanning is not available in this browser. Use upload or paste the code.',
   onDetected,
 }: QrScannerProps) {
-  const [scannerState, setScannerState] = useState<'idle' | 'starting' | 'scanning'>('idle')
+  const [scannerState, setScannerState] = useState<'idle' | 'starting' | 'scanning' | 'processing'>('idle')
   const [message, setMessage] = useState(idleMessage)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -68,7 +68,7 @@ export function QrScanner({
     return canvasRef.current
   }
 
-  async function detectQrCode(source: ImageBitmap | HTMLVideoElement) {
+  async function detectQrCode(source: ImageBitmap | HTMLVideoElement, exhaustive = false) {
     const BarcodeDetector = getBarcodeDetectorCtor()
     if (BarcodeDetector) {
       detectorRef.current = detectorRef.current ?? new BarcodeDetector({ formats: ['qr_code'] })
@@ -77,20 +77,7 @@ export function QrScanner({
       if (rawValue) return rawValue
     }
 
-    const width = source instanceof HTMLVideoElement ? source.videoWidth : source.width
-    const height = source instanceof HTMLVideoElement ? source.videoHeight : source.height
-    if (!width || !height) return null
-
-    const canvas = getCanvas()
-    canvas.width = width
-    canvas.height = height
-
-    const context = canvas.getContext('2d', { willReadFrequently: true })
-    if (!context) return null
-
-    context.drawImage(source, 0, 0, width, height)
-    const imageData = context.getImageData(0, 0, width, height)
-    return jsQR(imageData.data, width, height, { inversionAttempts: 'attemptBoth' })?.data ?? null
+    return scanQrSourceWithJsQr(source, getCanvas(), exhaustive)
   }
 
   async function startCamera() {
@@ -139,17 +126,27 @@ export function QrScanner({
     if (!file) return
 
     try {
+      setScannerState('processing')
+      setMessage('Checking the whole image for a QR code...')
       const bitmap = await createImageBitmap(file)
-      const rawValue = await detectQrCode(bitmap)
-      bitmap.close()
+      let rawValue: string | null = null
+      try {
+        rawValue = await scanQrImageBitmap(bitmap)
+      } finally {
+        bitmap.close()
+      }
 
       if (!rawValue) {
+        setScannerState('idle')
+        setMessage('No QR found. Try a clearer screenshot or use the camera.')
         toast.error('No QR code was found in that image.')
         return
       }
 
       handleDetected(rawValue)
     } catch (error) {
+      setScannerState('idle')
+      setMessage(idleMessage)
       toast.error(error instanceof Error ? error.message : 'Unable to scan the uploaded QR image.')
     }
   }
@@ -171,19 +168,24 @@ export function QrScanner({
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-3">
-        <Button type="button" onClick={() => void startCamera()} disabled={scannerState !== 'idle'}>
-          <Camera className="size-4" />
-          {scannerState === 'scanning' ? 'Scanning...' : 'Start Camera'}
-        </Button>
-        <Button type="button" variant="secondary" onClick={() => fileInputRef.current?.click()}>
-          <ImageUp className="size-4" />
-          Upload QR
-        </Button>
-        <Button type="button" variant="outline" onClick={stopCamera} disabled={scannerState === 'idle'}>
-          <RefreshCw className="size-4" />
-          Stop
-        </Button>
+      <div className="grid gap-3 sm:grid-cols-2">
+        {scannerState === 'scanning' || scannerState === 'starting' ? (
+          <Button type="button" variant="outline" className="sm:col-span-2" onClick={stopCamera}>
+            <RefreshCw className="size-4" />
+            Stop Camera
+          </Button>
+        ) : (
+          <>
+            <Button type="button" onClick={() => void startCamera()} disabled={scannerState === 'processing'}>
+              <Camera className="size-4" />
+              Scan With Camera
+            </Button>
+            <Button type="button" variant="secondary" disabled={scannerState === 'processing'} onClick={() => fileInputRef.current?.click()}>
+              <ImageUp className="size-4" />
+              {scannerState === 'processing' ? 'Checking Screenshot...' : 'Choose Screenshot'}
+            </Button>
+          </>
+        )}
         <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleUpload} />
       </div>
     </div>

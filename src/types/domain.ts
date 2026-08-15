@@ -48,6 +48,7 @@ export interface BusinessCustomer {
   id: string
   fullName: string
   email: string
+  memberQrToken: string | null
   points: number
   verificationStatus: Profile['verificationStatus']
 }

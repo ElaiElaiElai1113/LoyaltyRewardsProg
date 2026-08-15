@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
-import { AlertTriangle, CheckCircle2, History, ReceiptText, ShieldCheck } from 'lucide-react'
+import { AlertTriangle, CheckCircle2, History, Search, ShieldCheck, Users } from 'lucide-react'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -15,6 +15,7 @@ import {
 } from '@/features/critical-flows/member-transaction'
 import {
   useBusinessOwnerData,
+  useBusinessMembers,
   useRecordMemberTransaction,
   useScannedMember,
 } from '@/hooks/use-business-owner-data'
@@ -124,6 +125,7 @@ export function RedemptionsPage() {
   const [manualInput, setManualInput] = useState('')
   const [memberInput, setMemberInput] = useState('')
   const [memberToken, setMemberToken] = useState('')
+  const [customerSearch, setCustomerSearch] = useState('')
   const [validationStatus, setValidationStatus] = useState<ValidationStatus>('idle')
   const [selectedCard, setSelectedCard] = useState<GiftCard | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
@@ -133,10 +135,20 @@ export function RedemptionsPage() {
   const [isValidating, setIsValidating] = useState(false)
   const giftCards = useBusinessGiftCards(business?.id)
   const redeemGiftCard = useRedeemGiftCard(business?.id)
+  const businessCustomers = useBusinessMembers(business?.id)
   const scannedMember = useScannedMember(memberToken)
   const recordTransaction = useRecordMemberTransaction(business?.id, scannedMember.data?.id)
 
   const cards = useMemo(() => giftCards.data ?? [], [giftCards.data])
+  const filteredCustomers = useMemo(() => {
+    const query = customerSearch.trim().toLowerCase()
+    const customers = businessCustomers.data ?? []
+    if (!query) return customers.slice(0, 8)
+
+    return customers
+      .filter((customer) => `${customer.fullName} ${customer.email}`.toLowerCase().includes(query))
+      .slice(0, 12)
+  }, [businessCustomers.data, customerSearch])
   const transactionRows = useMemo<TransactionHistoryItem[]>(() => {
     const usedGiftCardCodes = new Set(
       memberTransactions
@@ -232,7 +244,6 @@ export function RedemptionsPage() {
     })
   }, [business, originalBill])
   const selectedGiftCardValue = Math.min(selectedGiftCardAvailableBalance, baseBreakdown?.finalPriceAmount ?? Math.max(Number.isFinite(originalBill) ? originalBill : 0, 0))
-  const remainingBill = Math.max((Number.isFinite(originalBill) ? originalBill : 0) - selectedGiftCardValue, 0)
   const canRedeemSelectedCard = validationStatus === 'active' && selectedGiftCardAvailableBalance > 0 && originalBill > 0 && receiptNumber.trim().length >= 3
   const rewardableBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(originalBill) || originalBill <= 0) return null
@@ -246,7 +257,6 @@ export function RedemptionsPage() {
       giftCardAmount: selectedGiftCardValue,
     })
   }, [business, originalBill, selectedGiftCardValue])
-  const taxIsIncludedInCustomerBill = Boolean(business?.taxIncludedInBill)
   const hasGiftCardEntry = manualInput.trim().length > 0
   const preview = useMemo(() => {
     if (!business || !rewardableBreakdown || rewardableBreakdown.rewardableAmount <= 0) return null
@@ -388,6 +398,7 @@ export function RedemptionsPage() {
     setManualInput('')
     setMemberInput('')
     setMemberToken('')
+    setCustomerSearch('')
     setValidationStatus('idle')
     setSelectedCard(null)
     setConfirmOpen(false)
@@ -400,6 +411,12 @@ export function RedemptionsPage() {
     const token = extractTokenOrCode(value)
     setMemberInput(value)
     setMemberToken(token)
+  }
+
+  function selectCustomer(memberQrToken: string | null, fullName: string) {
+    if (!memberQrToken) return
+    setCustomerSearch(fullName)
+    scanMember(memberQrToken)
   }
 
   function updateGiftCardInput(value: string) {
@@ -429,18 +446,14 @@ export function RedemptionsPage() {
 
   return (
     <div className="space-y-8">
-      <section className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+      <section>
         <div>
           <Badge variant="accent" className="w-fit">Business Transactions</Badge>
           <h1 className="mt-3 font-serif text-5xl tracking-tight text-primary">Transactions</h1>
           <p className="mt-2 max-w-3xl text-on-surface-variant">
-            Process purchases for {business?.name ?? 'this business'} with or without a gift card. Rewards follow the business settings for gift cards, tax, and service charge.
+            Choose the customer, enter the bill, and complete the sale. The website calculates rewards automatically.
           </p>
         </div>
-        <Button type="button" variant="secondary" className="h-12 rounded-full px-5" onClick={startNewTransaction}>
-          <ReceiptText className="size-4" />
-          New Transaction
-        </Button>
       </section>
 
       {transactionComplete ? (
@@ -469,46 +482,107 @@ export function RedemptionsPage() {
       <section className="grid gap-6 xl:grid-cols-[1fr,0.9fr]">
         <Card>
           <CardHeader>
-            <Badge variant="outline" className="w-fit">Customer transaction</Badge>
-            <CardTitle>Process Transaction</CardTitle>
-            <CardDescription>Scan the customer member QR, or scan the gift card QR when the customer is paying with one.</CardDescription>
+            <Badge variant="outline" className="w-fit">Step 1</Badge>
+            <CardTitle>Choose the Customer</CardTitle>
+            <CardDescription>Pick a saved customer, scan with the camera, or choose a screenshot. You only need one method.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
+            <div className="rounded-xl border border-outline-variant/20 bg-surface-low p-4" data-customer-picker>
+              <div className="flex items-start gap-3">
+                <div className="rounded-lg bg-primary/10 p-2 text-primary">
+                  <Users className="size-5" />
+                </div>
+                <div>
+                  <p className="font-semibold text-primary">Pick a saved customer</p>
+                  <p className="text-sm text-on-surface-variant/75">Search by name or email, then tap the customer.</p>
+                </div>
+              </div>
+
+              <div className="relative mt-4">
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant/60" />
+                <Input
+                  aria-label="Search customers"
+                  className="pl-10"
+                  value={customerSearch}
+                  onChange={(event) => setCustomerSearch(event.target.value)}
+                  placeholder="Search customer name or email"
+                />
+              </div>
+
+              <div className="mt-3 max-h-56 space-y-2 overflow-y-auto" role="list" aria-label="Saved customers">
+                {businessCustomers.isLoading ? (
+                  <p className="p-3 text-sm text-on-surface-variant/70">Loading customers...</p>
+                ) : businessCustomers.isError ? (
+                  <p className="rounded-lg bg-warning/10 p-3 text-sm font-semibold text-warning">Customer list could not be loaded. Scan their QR instead.</p>
+                ) : filteredCustomers.length === 0 ? (
+                  <p className="p-3 text-sm text-on-surface-variant/70">No saved customer matches that search. Scan their member QR for the first sale.</p>
+                ) : (
+                  filteredCustomers.map((customer) => (
+                    <button
+                      key={customer.id}
+                      type="button"
+                      className="flex min-h-14 w-full items-center justify-between gap-3 rounded-lg border border-outline-variant/15 bg-card px-4 py-3 text-left transition hover:border-primary/35 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                      disabled={!customer.memberQrToken}
+                      aria-label={`Select ${customer.fullName}`}
+                      onClick={() => selectCustomer(customer.memberQrToken, customer.fullName)}
+                    >
+                      <span className="min-w-0">
+                        <span className="block truncate font-semibold text-primary">{customer.fullName}</span>
+                        <span className="block truncate text-xs text-on-surface-variant/70">{customer.email}</span>
+                      </span>
+                      <span className="shrink-0 text-xs font-semibold text-on-surface-variant/70">
+                        {customer.memberQrToken ? 'Choose' : 'QR required'}
+                      </span>
+                    </button>
+                  ))
+                )}
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/55">
+              <span className="h-px flex-1 bg-outline-variant/20" />
+              Or scan
+              <span className="h-px flex-1 bg-outline-variant/20" />
+            </div>
+
             <QrScanner
-              idleMessage="Point the camera at the customer member QR or gift card QR."
+              idleMessage="Scan a member QR or gift card QR. Full phone screenshots work too."
               detectedMessage="QR detected. The transaction form was updated."
               onDetected={scanTransactionQr}
             />
-            <div className="grid gap-3">
-              <Label htmlFor="member-qr-token">Member QR link or token</Label>
-              <div className="flex flex-col gap-3 sm:flex-row">
+
+            <details className="rounded-lg border border-outline-variant/15 bg-surface-low px-4 py-3">
+              <summary className="cursor-pointer text-sm font-semibold text-primary">Enter a QR link or code manually</summary>
+              <div className="mt-3 flex flex-col gap-3 sm:flex-row">
                 <Input
                   id="member-qr-token"
+                  aria-label="Member QR link or token"
                   value={memberInput}
                   onChange={(event) => setMemberInput(event.target.value)}
                   placeholder="Paste the member QR link or token"
                 />
                 <Button type="button" variant="secondary" onClick={() => scanMember(memberInput)}>
                   <ShieldCheck className="size-4" />
-                  Load Member
+                  Load Customer
                 </Button>
               </div>
-              {scannedMember.isLoading ? (
-                <p className="text-xs font-semibold text-on-surface-variant/70">Loading member...</p>
-              ) : scannedMember.data ? (
-                <p className="rounded-lg bg-success/10 p-3 text-xs font-semibold text-success">
-                  Member loaded: {scannedMember.data.fullName}
-                </p>
-              ) : memberToken ? (
-                <p className="rounded-lg bg-warning/10 p-3 text-xs font-semibold text-warning">
-                  Member QR not found. Use the customer's current member QR for non-gift-card sales.
-                </p>
-              ) : null}
-            </div>
+            </details>
+
+            {scannedMember.isLoading ? (
+              <p className="rounded-lg bg-surface-low p-3 text-sm font-semibold text-on-surface-variant/70">Loading customer...</p>
+            ) : scannedMember.data ? (
+              <p className="rounded-lg bg-success/10 p-3 text-sm font-semibold text-success" role="status">
+                Customer selected: {scannedMember.data.fullName}
+              </p>
+            ) : memberToken ? (
+              <p className="rounded-lg bg-warning/10 p-3 text-sm font-semibold text-warning">
+                Customer not found. Ask them to open their current member QR and scan again.
+              </p>
+            ) : null}
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor="original-bill">Bill before tax/service</Label>
+                <Label htmlFor="original-bill">Step 2 — Bill before tax/service</Label>
                 <Input
                   id="original-bill"
                   type="number"
@@ -520,7 +594,7 @@ export function RedemptionsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="gift-card-receipt-number">Receipt / bill number</Label>
+                <Label htmlFor="gift-card-receipt-number">Step 3 — Receipt / bill number</Label>
                 <Input
                   id="gift-card-receipt-number"
                   value={receiptNumber}
@@ -558,70 +632,40 @@ export function RedemptionsPage() {
 
         <Card>
           <CardHeader>
-            <Badge variant="accent">Preview</Badge>
-            <CardTitle>Reward Calculation</CardTitle>
-            <CardDescription>
-              {taxIsIncludedInCustomerBill
-                ? 'Tax is added to the customer total, but rewards are calculated from the bill before tax.'
-                : 'Tax is not added to the customer total. Rewards are calculated from the bill before service charge.'}
-            </CardDescription>
+            <Badge variant="accent">Step 4</Badge>
+            <CardTitle>Check and Complete</CardTitle>
+            <CardDescription>Confirm these three details, then tap the single button below.</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4 text-sm">
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Bill before tax/service</span>
-                <strong>{formatCurrency(rewardableBreakdown?.originalReceiptTotal ?? originalBill ?? 0)}</strong>
+              <div className="rounded-xl bg-surface-low p-4">
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Customer</span>
+                <strong className="mt-1 block text-lg text-primary">
+                  {scannedMember.data?.fullName ?? selectedCard?.customerFirstName ?? 'Choose or scan a customer'}
+                </strong>
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Gift card discount</span>
-                <strong>-{formatCurrency(rewardableBreakdown?.giftCardAmount ?? 0)}</strong>
+              <div className="rounded-xl bg-surface-low p-4">
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Customer pays</span>
+                <strong className="mt-1 block text-2xl text-primary">
+                  {formatCurrency(rewardableBreakdown?.finalPriceAmount ?? 0)}
+                </strong>
+                {selectedGiftCardValue > 0 ? (
+                  <span className="mt-1 block text-xs text-on-surface-variant/70">
+                    Gift card covers {formatCurrency(selectedGiftCardValue)}.
+                  </span>
+                ) : null}
               </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Subtotal after gift card</span>
-                <strong>{formatCurrency(rewardableBreakdown?.amountAfterGiftCard ?? remainingBill)}</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-3">
-                <span className="text-on-surface-variant/75">
-                  {taxIsIncludedInCustomerBill ? 'Tax added to customer total' : 'Tax not charged'} {business && business.taxRate > 0 ? `(${(business.taxRate * 100).toFixed(2)}%)` : ''}
-                </span>
-                <strong>{taxIsIncludedInCustomerBill ? `+${formatCurrency(rewardableBreakdown?.taxableChargeAmount ?? 0)}` : formatCurrency(0)}</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">
-                  Service charge added {business?.serviceChargeEnabled ? `(${(business.serviceChargeRate * 100).toFixed(2)}%)` : ''}
-                </span>
-                <strong>+{formatCurrency(rewardableBreakdown?.serviceChargeAmount ?? 0)}</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Customer total</span>
-                <strong>{formatCurrency(rewardableBreakdown?.finalPriceAmount ?? remainingBill)}</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Rewardable bill</span>
-                <strong>{formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0)}</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-3">
-                <span className="text-on-surface-variant/75">Reward rate</span>
-                <strong>{business?.rewardRatePercent ?? 0}%</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Reward value</span>
-                <strong>{formatCurrency(preview?.rewardValue ?? 0)}</strong>
-              </div>
-              <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Points awarded</span>
-                <strong>{formatPoints(preview?.pointsAwarded ?? 0)}</strong>
+              <div className="rounded-xl bg-surface-low p-4">
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Customer earns</span>
+                <strong className="mt-1 block text-2xl text-primary">{formatPoints(preview?.pointsAwarded ?? 0)} points</strong>
               </div>
 
               {selectedCard ? (
-                <div className="rounded border border-primary-container/20 bg-surface-low p-3">
+                <div className="rounded-xl border border-primary-container/20 bg-primary/5 p-4">
                   <p className="font-semibold text-primary-container">{selectedCard.catalog?.title ?? 'Gift card'}</p>
-                  <p className="mt-1 break-all font-mono text-xs text-on-surface-variant">{selectedCard.code}</p>
-                  <div className="mt-3 grid gap-2 text-xs font-semibold text-on-surface-variant sm:grid-cols-3">
-                    <span>Original value: {formatCurrency(getGiftCardInitialBalance(selectedCard))}</span>
-                    <span>Available: {formatCurrency(selectedGiftCardAvailableBalance)}</span>
-                    <span>After sale: {formatCurrency(Math.max(selectedGiftCardAvailableBalance - selectedGiftCardValue, 0))}</span>
-                  </div>
+                  <p className="mt-1 text-sm text-on-surface-variant">
+                    Balance after this sale: {formatCurrency(Math.max(selectedGiftCardAvailableBalance - selectedGiftCardValue, 0))}
+                  </p>
                 </div>
               ) : null}
 
@@ -638,23 +682,24 @@ export function RedemptionsPage() {
                 </div>
               ) : null}
 
-              <div className="flex flex-col gap-3 pt-2 sm:flex-row">
+              <div className="pt-2">
                 {hasGiftCardEntry ? (
                   <Button
                     type="button"
-                    variant="secondary"
+                    className="min-h-12 w-full"
                     disabled={!canProcessWithGiftCard}
                     onClick={() => setConfirmOpen(true)}
                   >
-                    {redeemGiftCard.isPending ? 'Processing...' : 'Process With Gift Card'}
+                    {redeemGiftCard.isPending ? 'Completing Sale...' : 'Redeem Gift Card and Complete Sale'}
                   </Button>
                 ) : (
                   <Button
                     type="button"
+                    className="min-h-12 w-full"
                     disabled={!canProcessWithoutGiftCard}
                     onClick={() => void recordStandardTransaction()}
                   >
-                    {recordTransaction.isPending ? 'Processing...' : 'Process Without Gift Card'}
+                    {recordTransaction.isPending ? 'Completing Sale...' : 'Complete Sale'}
                   </Button>
                 )}
               </div>
