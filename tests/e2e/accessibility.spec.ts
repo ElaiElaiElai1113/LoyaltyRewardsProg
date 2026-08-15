@@ -12,12 +12,11 @@ test.describe('public keyboard accessibility', () => {
     await expect(page).toHaveURL(/\/join$/)
   })
 
-  test('sign-in inputs and action have accessible names', async ({ page }) => {
+  test('temporary test sign-in choices have accessible names', async ({ page }) => {
     await page.goto('/signin?tenant=pinas')
-    await expect(page.locator('#signin-email')).toBeVisible()
-    await expect(page.locator('#signin-password')).toBeVisible()
-    const submit = page.locator('form button[type="submit"]')
-    await expect(submit).toBeVisible()
-    await expect(submit).not.toHaveText('')
+    for (const role of ['Admin', 'Business', 'Customer']) {
+      await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
+    }
+    await expect(page.getByRole('button')).toHaveCount(3)
   })
 })

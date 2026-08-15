@@ -73,10 +73,15 @@ test.describe('white-label tenant resolution', () => {
       await page.goto(`/admin?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle('Rewards Platform Admin')
-      await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
       await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=admin`))
-      await expect(page.locator('#signin-email')).toBeVisible()
-      await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
+      if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+        await expect(page.getByRole('button')).toHaveCount(3)
+        await expect(page.locator('#signin-email')).toHaveCount(0)
+      } else {
+        await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
+        await expect(page.locator('#signin-email')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
+      }
       await expect(page.getByText(tenant.name, { exact: false }).first()).toBeVisible()
       expect(errors).toEqual([])
     })
@@ -89,8 +94,13 @@ test.describe('white-label tenant resolution', () => {
       await expect(page).toHaveTitle(tenant.name)
       await expect(page.getByText(tenant.name, { exact: true })).toBeVisible()
       await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=business`))
-      await expect(page.locator('#signin-email')).toBeVisible()
-      await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+      if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+        await expect(page.getByRole('button')).toHaveCount(3)
+        await expect(page.locator('#signin-email')).toHaveCount(0)
+      } else {
+        await expect(page.locator('#signin-email')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+      }
       await expect(page.locator('body')).not.toContainText('Rewards Platform')
       expect(errors).toEqual([])
     })
@@ -109,7 +119,8 @@ test.describe('white-label tenant resolution', () => {
     const errors = collectRuntimeErrors(page)
     await page.goto('/admin/programs')
     await expect(page).toHaveURL(/\/signin\?portal=admin&redirect=%2Fadmin%2Fprograms$/)
-    await expect(page.locator('#signin-email')).toBeVisible()
+    await expect(page.getByRole('button')).toHaveCount(3)
+    await expect(page.locator('#signin-email')).toHaveCount(0)
     expect(errors).toEqual([])
   })
 
@@ -126,7 +137,8 @@ test.describe('white-label tenant resolution', () => {
     const errors = collectRuntimeErrors(page)
     await page.goto('/onboarding/program?tenant=pinas')
     await expect(page).toHaveURL(/\/signin\?redirect=%2Fonboarding%2Fprogram&tenant=pinas/)
-    await expect(page.locator('#signin-email')).toBeVisible()
+    await expect(page.getByRole('button')).toHaveCount(3)
+    await expect(page.locator('#signin-email')).toHaveCount(0)
     await expect(page).toHaveTitle('RewardMe')
     expect(errors).toEqual([])
   })

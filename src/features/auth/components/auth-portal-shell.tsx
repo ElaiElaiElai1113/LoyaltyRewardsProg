@@ -10,6 +10,7 @@ type AuthPortalShellProps = {
   activeTab?: 'signin' | 'signup'
   children: ReactNode
   showTabs?: boolean
+  showUtilityControls?: boolean
 }
 
 function tabClass(isActive: boolean) {
@@ -21,7 +22,12 @@ function tabClass(isActive: boolean) {
   ].join(' ')
 }
 
-export function AuthPortalShell({ activeTab, children, showTabs = true }: AuthPortalShellProps) {
+export function AuthPortalShell({
+  activeTab,
+  children,
+  showTabs = true,
+  showUtilityControls = true,
+}: AuthPortalShellProps) {
   const { t } = useLanguage()
 
   return (
@@ -34,19 +40,21 @@ export function AuthPortalShell({ activeTab, children, showTabs = true }: AuthPo
         }}
       />
       <div className="relative z-10 flex w-full max-w-[420px] flex-col items-center">
-        <div className="mb-4 flex w-full items-center justify-between gap-3 text-[var(--foreground)]">
-          <Link
-            to="/landing-page"
-            className="inline-flex min-h-9 items-center gap-2 rounded-[8px] border border-[#d1ad4a]/35 bg-[color-mix(in_srgb,var(--surface-container-lowest)_82%,transparent)] px-3 text-[12px] font-semibold text-[#d1ad4a] transition hover:bg-[#d1ad4a] hover:text-[#060606]"
-          >
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            {t('Back')}
-          </Link>
-          <div className="flex items-center gap-2">
-          <LanguagePicker className="text-current" compact />
-          <ThemeToggle className="border border-[#d1ad4a]/45 bg-[color-mix(in_srgb,var(--surface-container-lowest)_86%,transparent)] text-[#d1ad4a] hover:bg-[#d1ad4a] hover:text-[#060606]" />
+        {showUtilityControls ? (
+          <div className="mb-4 flex w-full items-center justify-between gap-3 text-[var(--foreground)]">
+            <Link
+              to="/landing-page"
+              className="inline-flex min-h-9 items-center gap-2 rounded-[8px] border border-[#d1ad4a]/35 bg-[color-mix(in_srgb,var(--surface-container-lowest)_82%,transparent)] px-3 text-[12px] font-semibold text-[#d1ad4a] transition hover:bg-[#d1ad4a] hover:text-[#060606]"
+            >
+              <ArrowLeft className="size-4" aria-hidden="true" />
+              {t('Back')}
+            </Link>
+            <div className="flex items-center gap-2">
+              <LanguagePicker className="text-current" compact />
+              <ThemeToggle className="border border-[#d1ad4a]/45 bg-[color-mix(in_srgb,var(--surface-container-lowest)_86%,transparent)] text-[#d1ad4a] hover:bg-[#d1ad4a] hover:text-[#060606]" />
+            </div>
           </div>
-        </div>
+        ) : null}
 
         {showTabs ? (
           <nav className="grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] p-0">

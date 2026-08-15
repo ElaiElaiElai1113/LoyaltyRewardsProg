@@ -15,6 +15,8 @@ test('RewardMe release mode removes every public QA credential from sign-in port
     await page.locator('main').waitFor()
 
     await expect(page.getByTestId('rewardme-test-credentials')).toHaveCount(0)
+    await expect(page.locator('#signin-email')).toBeVisible()
+    await expect(page.locator('#signin-password')).toBeVisible()
     for (const credential of publishedCredentials) {
       await expect(page.locator('body'), `${route} exposes ${credential}`).not.toContainText(credential)
     }

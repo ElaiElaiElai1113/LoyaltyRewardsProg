@@ -243,33 +243,20 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
   })
 
-  test('RewardMe uses one role-safe sign-in page with complete one-tap test accounts', async ({ page }) => {
+  test('RewardMe test sign-in only exposes three automatic role choices', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/signin')
 
     for (const role of ['Admin', 'Business', 'Customer']) {
       await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
     }
-    await expect(page.getByRole('button', { name: 'Sign in as Customer', exact: true })).toHaveAttribute('aria-pressed', 'true')
-    await page.getByRole('button', { name: 'Sign in as Business', exact: true }).click()
-    await expect(page).toHaveURL(/\/signin\?portal=business/)
-    await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
-    await page.getByRole('button', { name: 'Sign in as Admin', exact: true }).click()
-    await expect(page).toHaveURL(/\/signin\?portal=admin/)
-
-    const credentials = page.getByTestId('rewardme-test-credentials')
-    await expect(credentials).toBeVisible()
-    await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
-    for (const [email, accountLabel] of [
-      ['member@rewardme.test', 'Member'],
-      ['owner@rewardme.test', 'Business owner'],
-      ['staff@rewardme.test', 'Business staff'],
-      ['admin@rewardsplatform.test', 'Platform admin'],
-    ] as const) {
-      const account = credentials.locator('article').filter({ hasText: email })
-      await expect(account.getByText(email, { exact: true })).toBeVisible()
-      await expect(account.getByRole('button', { name: `Sign in as ${accountLabel}` })).toBeVisible()
-    }
+    await expect(page.getByRole('button')).toHaveCount(3)
+    await expect(page.locator('#signin-email')).toHaveCount(0)
+    await expect(page.locator('#signin-password')).toHaveCount(0)
+    await expect(page.getByRole('link')).toHaveCount(0)
+    await expect(page.getByTestId('rewardme-test-credentials')).toHaveCount(0)
+    await expect(page.locator('body')).not.toContainText('Rewards 123!')
+    await expect(page.locator('body')).not.toContainText('@rewardme.test')
 
     await expect(page.locator('body')).not.toContainText(/medellin/i)
     await expect(page.locator('body')).not.toContainText('MedellinQA!2026')

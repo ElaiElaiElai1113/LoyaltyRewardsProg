@@ -6,14 +6,12 @@ const sites = [
   {
     name: 'Wondertown',
     origin: process.env.E2E_WONDERTOWN_URL ?? 'https://wondertown-rewards.vercel.app',
-    credentialsTestId: 'wondertown-test-credentials',
-    email: process.env.E2E_WONDERTOWN_CUSTOMER_EMAIL ?? 'member@wondertown.test',
+    customerButton: 'Sign in as Customer',
   },
   {
     name: 'RewardMe',
     origin: process.env.E2E_REWARDME_URL ?? 'https://rewardme-prod.vercel.app',
-    credentialsTestId: 'rewardme-test-credentials',
-    email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
+    customerButton: 'Sign in as Customer',
   },
 ] as const
 
@@ -51,10 +49,8 @@ test.describe('WhatsApp-style in-app browser login', () => {
       await expect(page.locator('main')).toBeVisible()
       await expect(page.locator('body')).not.toContainText(/rewards program not found/i)
 
-      const credentials = page.getByTestId(site.credentialsTestId)
-      await expect(credentials).toBeVisible()
-      const accountCard = credentials.locator('article').filter({ hasText: site.email })
-      await accountCard.getByRole('button', { name: 'Sign in as Member' }).click()
+      await expect(page.getByRole('button')).toHaveCount(3)
+      await page.getByRole('button', { name: site.customerButton, exact: true }).click()
 
       const loginError = page.getByText(/invalid login credentials|unable to sign in/i).first()
       await Promise.race([

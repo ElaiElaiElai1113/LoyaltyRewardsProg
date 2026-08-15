@@ -1026,12 +1026,21 @@ runTest('wrong-role sign-ins clear only the current browser session', () => {
 
 runTest('unified sign in page follows the compact responsive portal layout', () => {
   const authPage = readFileSync('src/features/auth/pages/landing-page.tsx', 'utf8')
+  const authShell = readFileSync('src/features/auth/components/auth-portal-shell.tsx', 'utf8')
   const language = readFileSync('src/lib/language.tsx', 'utf8')
   const authSectionStart = authPage.indexOf('export function CompactAuthPage')
   const authSectionEnd = authPage.indexOf('export function AuthPage')
   const authSection = authPage.slice(authSectionStart, authSectionEnd)
 
   assert.match(authSection, /AuthPortalShell activeTab="signin"/)
+  assert.match(authSection, /showQuickTestSignIn/)
+  assert.match(authSection, /quickTestAccounts/)
+  assert.match(authSection, /AuthPortalShell showTabs=\{false\} showUtilityControls=\{false\}/)
+  assert.match(authSection, /data-testid=\{`quick-sign-in-\$\{portal\.id\}`\}/)
+  assert.match(authSection, /SIGN_IN_PORTALS\.map/)
+  assert.match(authSection, /navigate\(getHomePathForRole\(profile\.role\)\)/)
+  assert.doesNotMatch(authSection, /<RewardMeTestCredentials/)
+  assert.match(authShell, /showUtilityControls \? \(/)
   assert.match(authSection, /selectedPortal === 'admin' \? platformBrand\.name : program\.name/)
   assert.match(authSection, /t\('Sign In'\)\.toUpperCase\(\)/)
   assert.match(authSection, /data-testid=\{`sign-in-portal-\$\{portal\.id\}`\}/)

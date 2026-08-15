@@ -68,32 +68,20 @@ test.describe('Wondertown public testing experience', () => {
     }
   })
 
-  test('all roles use one responsive sign-in page with complete working credentials', async ({ page }) => {
+  test('test sign-in only exposes three automatic role choices', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 844 })
     await page.goto('/signin?tenant=wondertown')
 
     for (const role of ['Admin', 'Business', 'Customer']) {
       await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
     }
-
-    const credentials = page.getByTestId('wondertown-test-credentials')
-    await expect(credentials).toBeVisible()
-    await expect(credentials.getByText('Rewards 123!', { exact: true })).toBeVisible()
-    for (const [email, accountLabel] of [
-      ['member@wondertown.test', 'Member'],
-      ['neighbor@wondertown.test', 'Second member'],
-      ['owner@wondertown.test', 'Business owner'],
-      ['staff@wondertown.test', 'Business staff'],
-      ['admin@rewardsplatform.test', 'Platform admin'],
-    ] as const) {
-      const account = credentials.locator('article').filter({ hasText: email })
-      await expect(account.getByText(email, { exact: true })).toBeVisible()
-      await expect(account.getByRole('button', { name: `Sign in as ${accountLabel}` })).toBeVisible()
-    }
-
-    await page.getByRole('button', { name: 'Sign in as Business', exact: true }).click()
-    await expect(page).toHaveURL(/portal=business/)
-    await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.getByRole('button')).toHaveCount(3)
+    await expect(page.getByRole('link')).toHaveCount(0)
+    await expect(page.locator('#signin-email')).toHaveCount(0)
+    await expect(page.locator('#signin-password')).toHaveCount(0)
+    await expect(page.getByTestId('wondertown-test-credentials')).toHaveCount(0)
+    await expect(page.locator('body')).not.toContainText('Rewards 123!')
+    await expect(page.locator('body')).not.toContainText('@wondertown.test')
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,

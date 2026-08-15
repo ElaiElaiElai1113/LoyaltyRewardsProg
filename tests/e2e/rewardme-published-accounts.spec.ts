@@ -5,33 +5,22 @@ const accountCheckEnabled = process.env.E2E_REWARDME_PUBLIC_ACCOUNT_CHECK === 't
 const accounts = [
   {
     label: 'member',
-    panelLabel: 'Member',
+    buttonLabel: 'Customer',
     route: '/signin',
-    email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
     destination: /\/(?:dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
   },
   {
     label: 'business owner',
-    panelLabel: 'Business owner',
-    route: '/signin?portal=business',
-    email: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
-    destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
-    rewardMeBranded: true,
-  },
-  {
-    label: 'business staff',
-    panelLabel: 'Business staff',
-    route: '/signin?portal=business',
-    email: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
+    buttonLabel: 'Business',
+    route: '/signin',
     destination: /\/(?:business\/dashboard|agreements\/required)(?:[/?#]|$)/,
     rewardMeBranded: true,
   },
   {
     label: 'platform administrator',
-    panelLabel: 'Platform admin',
-    route: '/signin?portal=admin',
-    email: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
+    buttonLabel: 'Admin',
+    route: '/signin',
     destination: /\/admin\/portal(?:[/?#]|$)/,
     rewardMeBranded: false,
   },
@@ -55,11 +44,8 @@ test.describe('published RewardMe test accounts', () => {
       const response = await page.goto(account.route, { waitUntil: 'domcontentloaded' })
       expect(response?.ok()).toBeTruthy()
 
-      const credentials = page.getByTestId('rewardme-test-credentials')
-      await expect(credentials).toBeVisible()
-      const accountCard = credentials.locator('article').filter({ hasText: account.email })
-      await expect(accountCard).toBeVisible()
-      await accountCard.getByRole('button', { name: `Sign in as ${account.panelLabel}` }).click()
+      await expect(page.getByRole('button')).toHaveCount(3)
+      await page.getByRole('button', { name: `Sign in as ${account.buttonLabel}`, exact: true }).click()
       const loginError = page.getByText(/invalid login credentials|unable to sign in/i).first()
       await Promise.race([
         page.waitForURL(account.destination, { timeout: 15_000 }),

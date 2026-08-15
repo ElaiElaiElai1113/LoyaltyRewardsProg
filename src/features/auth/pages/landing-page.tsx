@@ -24,8 +24,9 @@ import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
-import { RewardMeTestCredentials } from '@/features/auth/components/rewardme-test-credentials'
 import {
+  REWARDME_TEST_ACCOUNTS,
+  REWARDME_TEST_PASSWORD,
   shouldShowRewardMeTestCredentials,
   type RewardMeTestAccount,
 } from '@/features/auth/rewardme-test-accounts'
@@ -939,6 +940,7 @@ export function CompactAuthPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
   const [resetSuccessMessage, setResetSuccessMessage] = useState<string | null>(null)
+  const [activeQuickPortal, setActiveQuickPortal] = useState<SignInPortal | null>(null)
 
   const signInForm = useForm<AuthFormValues>({
     resolver: zodResolver(authSchema),
@@ -966,7 +968,7 @@ export function CompactAuthPage() {
 
     try {
       const profile = await signIn(values)
-      navigate(searchParams.get('redirect') || getHomePathForRole(profile.role))
+      navigate(getHomePathForRole(profile.role))
     } catch (submissionError) {
       setError(
         submissionError instanceof Error
@@ -988,7 +990,79 @@ export function CompactAuthPage() {
   }
 
   const selectedPortalDetails = SIGN_IN_PORTALS.find(({ id }) => id === selectedPortal) ?? SIGN_IN_PORTALS[2]
+  const quickTestAccounts = program.slug === 'pinas'
+    ? REWARDME_TEST_ACCOUNTS
+    : program.slug === 'wondertown'
+      ? WONDERTOWN_TEST_ACCOUNTS
+      : null
+  const quickTestPassword = program.slug === 'wondertown'
+    ? WONDERTOWN_TEST_PASSWORD
+    : REWARDME_TEST_PASSWORD
+  const showQuickTestSignIn = Boolean(
+    quickTestAccounts && shouldShowRewardMeTestCredentials(),
+  )
   usePlatformDocumentBrand(selectedPortal === 'admin')
+
+  if (showQuickTestSignIn && quickTestAccounts) {
+    return (
+      <AuthPortalShell showTabs={false} showUtilityControls={false}>
+        <div className="text-center">
+          <p className="font-serif text-[20px] font-bold leading-none text-[#d1ad4a]">
+            {program.name}
+          </p>
+          <h1 className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
+            {t('Sign In').toUpperCase()}
+          </h1>
+          <p className="mx-auto mt-4 max-w-[18rem] text-[13px] font-medium leading-5 text-[#8f8f8f]">
+            {t('Choose your account type. Your assigned role is verified when you sign in.')}
+          </p>
+        </div>
+
+        <div
+          aria-label="Choose sign-in account type"
+          className="mt-7 grid gap-3"
+          role="group"
+        >
+          {SIGN_IN_PORTALS.map((portal) => {
+            const accountPortal = portal.id === 'customer' ? 'member' : portal.id
+            const account = quickTestAccounts.find(({ portal: value }) => value === accountPortal)
+            if (!account) return null
+
+            const Icon = signInPortalIcons[portal.id]
+            const isSigningIn = activeQuickPortal === portal.id
+
+            return (
+              <button
+                aria-label={t('Sign in as {role}', { role: t(portal.label) })}
+                className="flex min-h-[74px] w-full items-center gap-4 rounded-[10px] border border-[#d1ad4a]/55 bg-[var(--background)]/45 px-5 py-4 text-left text-[var(--foreground)] shadow-sm transition hover:border-[#d1ad4a] hover:bg-[#d1ad4a] hover:text-[#080808] disabled:cursor-wait disabled:opacity-65"
+                data-testid={`quick-sign-in-${portal.id}`}
+                disabled={activeQuickPortal !== null}
+                key={portal.id}
+                onClick={() => {
+                  setActiveQuickPortal(portal.id)
+                  void signInTestAccount(account, quickTestPassword).finally(() => {
+                    setActiveQuickPortal(null)
+                  })
+                }}
+                type="button"
+              >
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full border border-current/20 bg-current/5">
+                  {isSigningIn ? <LoadingSpinner /> : <Icon className="size-5" aria-hidden="true" />}
+                </span>
+                <span className="text-[16px] font-bold">
+                  {isSigningIn
+                    ? t('Signing in...')
+                    : t('Sign in as {role}', { role: t(portal.label) })}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        {error ? <p className={`${authErrorClass} mt-5`}>{t(error)}</p> : null}
+      </AuthPortalShell>
+    )
+  }
 
   return (
     <AuthPortalShell activeTab="signin">
@@ -1206,27 +1280,6 @@ export function CompactAuthPage() {
             </Link>
           </p>
 
-          {program.slug === 'pinas' && shouldShowRewardMeTestCredentials() ? (
-            <RewardMeTestCredentials
-              currentPortal="member"
-              onUse={signInTestAccount}
-              unified
-            />
-          ) : null}
-
-          {program.slug === 'wondertown' && shouldShowRewardMeTestCredentials() ? (
-            <RewardMeTestCredentials
-              accounts={WONDERTOWN_TEST_ACCOUNTS}
-              ariaLabel="Wondertown test accounts"
-              currentPortal="member"
-              description="Fictional accounts for safely testing the complete Wondertown experience."
-              onUse={signInTestAccount}
-              password={WONDERTOWN_TEST_PASSWORD}
-              testId="wondertown-test-credentials"
-              title="Wondertown test accounts"
-              unified
-            />
-          ) : null}
         </form>
       )}
     </AuthPortalShell>

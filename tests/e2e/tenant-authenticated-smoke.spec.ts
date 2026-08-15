@@ -74,6 +74,12 @@ async function expectNoHorizontalClipping(page: Page, context: string) {
 
 async function signInCustomer(page: Page, email = customerEmail) {
   await page.goto('/signin')
+  if (await page.locator('#signin-email').count() === 0) {
+    test.skip(email !== customerEmail, 'Temporary test sign-in only exposes the primary customer account.')
+    await page.getByRole('button', { name: 'Sign in as Customer', exact: true }).click()
+    await expect(page).toHaveURL(/\/dashboard$/)
+    return
+  }
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#signin-email') })
@@ -83,6 +89,12 @@ async function signInCustomer(page: Page, email = customerEmail) {
 
 async function signInBusiness(page: Page, email = businessOwnerEmail) {
   await page.goto('/signin?portal=business')
+  if (await page.locator('#signin-email').count() === 0) {
+    test.skip(email !== businessOwnerEmail, 'Temporary test sign-in only exposes the business owner account.')
+    await page.getByRole('button', { name: 'Sign in as Business', exact: true }).click()
+    await expect(page).toHaveURL(/\/business\/dashboard$/)
+    return
+  }
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#signin-email') })

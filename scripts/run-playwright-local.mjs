@@ -29,6 +29,9 @@ const authRequested =
   lifecycleEvent === 'test:e2e:rewardme-safe' ||
   lifecycleEvent === 'test:tenant-security' ||
   seededFixtureLifecycleCommands.has(lifecycleEvent)
+if (authRequested && process.env.VITE_SHOW_PUBLIC_QA_CREDENTIALS === undefined) {
+  process.env.VITE_SHOW_PUBLIC_QA_CREDENTIALS = 'false'
+}
 const requestedTenantSlug = (
   process.env.E2E_TENANT_SLUG
   ?? (seededFixtureLifecycleCommands.has(lifecycleEvent) ? 'medellin' : '')
