@@ -1,0 +1,138 @@
+name: RewardMe and Wondertown full QA
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reward-sites-full-qa
+  cancel-in-progress: false
+
+jobs:
+  qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      E2E_REWARDME_URL: https://rewardme-prod.vercel.app
+      E2E_WONDERTOWN_URL: https://wondertown-rewards.vercel.app
+      SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require isolated production QA credentials
+        run: >-
+          test -n "$SUPABASE_URL"
+          && test -n "$VITE_SUPABASE_ANON_KEY"
+          && test -n "$SUPABASE_SERVICE_ROLE_KEY"
+          && test -n "$E2E_PASSWORD"
+      - name: Build and regression tests
+        run: npm run build && npm test
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Verify seeded accounts, isolation, catalogs, and persisted records
+        run: npm run qa:verify-reward-sites
+      - name: Verify WhatsApp-style one-tap member login on both sites
+        run: npm run test:e2e:in-app-browser
+
+      - name: Verify every published RewardMe role login
+        env:
+          E2E_BASE_URL: https://rewardme-prod.vercel.app
+          E2E_REWARDME_PUBLIC_ACCOUNT_CHECK: 'true'
+        run: npx playwright test tests/e2e/rewardme-published-accounts.spec.ts --config=playwright.remote.config.ts --workers=1
+      - name: Verify every published Wondertown role login
+        env:
+          E2E_BASE_URL: https://wondertown-rewards.vercel.app
+          E2E_REWARDME_PUBLIC_ACCOUNT_CHECK: 'true'
+        run: npx playwright test tests/e2e/rewardme-published-accounts.spec.ts --config=playwright.remote.config.ts --workers=1
+
+      - name: QR workflow and authenticated usability — RewardMe
+        env:
+          E2E_BASE_URL: https://rewardme-prod.vercel.app
+          E2E_TENANT_NAME: RewardMe
+          E2E_TENANT_CUSTOMER_EMAIL: member@rewardme.test
+          E2E_TENANT_BUSINESS_OWNER_EMAIL: owner@rewardme.test
+          E2E_TENANT_BUSINESS_STAFF_EMAIL: staff@rewardme.test
+          E2E_TENANT_BUSINESS_NAME: RewardMe QA Partner
+          E2E_TENANT_PRODUCT_NAME: QA Coffee
+          E2E_TENANT_REWARD_NAME: QA Welcome Reward
+          E2E_TENANT_GIFT_CARD_NAME: QA Gift Card
+        run: npm run test:e2e:tenant-authenticated
+      - name: QR workflow and authenticated usability — Wondertown
+        env:
+          E2E_BASE_URL: https://wondertown-rewards.vercel.app
+          E2E_TENANT_NAME: Wondertown Rewards
+          E2E_TENANT_CUSTOMER_EMAIL: member@wondertown.test
+          E2E_TENANT_NEIGHBOR_EMAIL: neighbor@wondertown.test
+          E2E_TENANT_BUSINESS_OWNER_EMAIL: owner@wondertown.test
+          E2E_TENANT_BUSINESS_STAFF_EMAIL: staff@wondertown.test
+          E2E_TENANT_BUSINESS_NAME: Moonbeam Café
+          E2E_TENANT_PRODUCT_NAME: Starlight Latte
+          E2E_TENANT_REWARD_NAME: Moonbeam Breakfast
+          E2E_TENANT_GIFT_CARD_NAME: Moonbeam Gift Card
+        run: npm run test:e2e:tenant-authenticated
+
+      - name: Gift-card issue, point preservation, wallet, and redemption — RewardMe
+        run: npm run test:e2e:rewardme-gift-cards-live
+      - name: Gift-card issue, point preservation, wallet, and redemption — Wondertown
+        run: npm run test:e2e:wondertown-gift-cards-live
+
+      - name: Reward redemption and fulfillment — RewardMe
+        env:
+          E2E_BASE_URL: https://rewardme-prod.vercel.app
+          E2E_AUTH_ENABLED: 'true'
+          E2E_CUSTOMER_EMAIL: member@rewardme.test
+          E2E_BUSINESS_OWNER_EMAIL: owner@rewardme.test
+          E2E_BUSINESS_STAFF_EMAIL: staff@rewardme.test
+          WORKFLOW_TEST_RUN_ID: rewardme-${{ github.run_id }}
+        run: npx playwright test tests/e2e/rewards-redemption.spec.ts --config=playwright.local.config.ts --workers=1
+      - name: Reward redemption and fulfillment — Wondertown
+        env:
+          E2E_BASE_URL: https://wondertown-rewards.vercel.app
+          E2E_AUTH_ENABLED: 'true'
+          E2E_CUSTOMER_EMAIL: member@wondertown.test
+          E2E_BUSINESS_OWNER_EMAIL: owner@wondertown.test
+          E2E_BUSINESS_STAFF_EMAIL: staff@wondertown.test
+          WORKFLOW_TEST_RUN_ID: wondertown-${{ github.run_id }}
+        run: npx playwright test tests/e2e/rewards-redemption.spec.ts --config=playwright.local.config.ts --workers=1
+
+      - name: RewardMe public routes, buttons, accessibility, mobile, and tablet integrity
+        env:
+          E2E_BASE_URL: https://rewardme-prod.vercel.app
+        run: >-
+          npx playwright test
+          tests/e2e/public.spec.ts
+          tests/e2e/accessibility.spec.ts
+          tests/e2e/mobile-tablet-integrity.spec.ts
+          --config=playwright.remote.config.ts
+          --workers=2
+      - name: Wondertown routes, map, branding, buttons, mobile, and tablet integrity
+        env:
+          E2E_BASE_URL: https://wondertown-rewards.vercel.app
+        run: >-
+          npx playwright test
+          tests/e2e/wondertown-public.spec.ts
+          tests/e2e/mobile-tablet-integrity.spec.ts
+          --config=playwright.remote.config.ts
+          --workers=2
+
+      - name: Upload failure traces and data audit
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: reward-sites-full-qa-${{ github.run_id }}
+          path: |
+            artifacts/monitoring/reward-sites-latest.json
+            test-results
+          if-no-files-found: warn
+          retention-days: 30
