@@ -44,6 +44,11 @@ test('business scanner finds a QR inside an uncropped phone screenshot', async (
   const scanner = page.locator('[data-customer-picker]').locator('..')
   await expect(scanner.getByText(/full phone screenshots work too/i)).toBeVisible()
 
+  const savedCustomer = page.locator('[data-customer-picker] button:not([disabled])').first()
+  await expect(savedCustomer).toBeVisible()
+  await savedCustomer.click()
+  await expect(page.getByText(/Customer selected:/i)).toBeVisible()
+
   const upload = scanner.locator('input[type="file"][accept="image/*"]')
   await upload.setInputFiles(screenshotPath)
 
@@ -54,9 +59,16 @@ test('business scanner finds a QR inside an uncropped phone screenshot', async (
   const giftCardValue = await page.locator('#gift-card-code').inputValue()
   expect(memberValue || giftCardValue).not.toBe('')
 
-  const layout = await page.evaluate(() => ({
-    viewportWidth: document.documentElement.clientWidth,
-    scrollWidth: document.documentElement.scrollWidth,
-  }))
-  expect(layout.scrollWidth - layout.viewportWidth).toBeLessThanOrEqual(1)
+  for (const viewport of [
+    { width: 320, height: 844 },
+    { width: 768, height: 1024 },
+    { width: 1440, height: 900 },
+  ]) {
+    await page.setViewportSize(viewport)
+    const layout = await page.evaluate(() => ({
+      viewportWidth: document.documentElement.clientWidth,
+      scrollWidth: document.documentElement.scrollWidth,
+    }))
+    expect(layout.scrollWidth - layout.viewportWidth).toBeLessThanOrEqual(1)
+  }
 })
