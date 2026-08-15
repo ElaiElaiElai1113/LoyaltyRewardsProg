@@ -82,6 +82,26 @@ jobs:
           E2E_REWARDME_PUBLIC_ACCOUNT_CHECK: 'true'
         run: npx playwright test tests/e2e/rewardme-published-accounts.spec.ts --config=playwright.remote.config.ts --workers=1
 
+      - name: RewardMe public routes, buttons, accessibility, mobile, and tablet integrity
+        env:
+          E2E_BASE_URL: https://rewardme-prod.vercel.app
+        run: >-
+          npx playwright test
+          tests/e2e/public.spec.ts
+          tests/e2e/accessibility.spec.ts
+          tests/e2e/mobile-tablet-integrity.spec.ts
+          --config=playwright.remote.config.ts
+          --workers=2
+      - name: Wondertown routes, map, branding, buttons, mobile, and tablet integrity
+        env:
+          E2E_BASE_URL: https://wondertown-rewards.vercel.app
+        run: >-
+          npx playwright test
+          tests/e2e/wondertown-public.spec.ts
+          tests/e2e/mobile-tablet-integrity.spec.ts
+          --config=playwright.remote.config.ts
+          --workers=2
+
       - name: Gift-card issue, point preservation, wallet, and redemption — RewardMe
         run: npm run test:e2e:rewardme-gift-cards-live
       - name: Gift-card issue, point preservation, wallet, and redemption — Wondertown
@@ -105,26 +125,6 @@ jobs:
           E2E_BUSINESS_STAFF_EMAIL: staff@wondertown.test
           WORKFLOW_TEST_RUN_ID: wondertown-${{ github.run_id }}
         run: npx playwright test tests/e2e/rewards-redemption.spec.ts --config=playwright.local.config.ts --workers=1
-
-      - name: RewardMe public routes, buttons, accessibility, mobile, and tablet integrity
-        env:
-          E2E_BASE_URL: https://rewardme-prod.vercel.app
-        run: >-
-          npx playwright test
-          tests/e2e/public.spec.ts
-          tests/e2e/accessibility.spec.ts
-          tests/e2e/mobile-tablet-integrity.spec.ts
-          --config=playwright.remote.config.ts
-          --workers=2
-      - name: Wondertown routes, map, branding, buttons, mobile, and tablet integrity
-        env:
-          E2E_BASE_URL: https://wondertown-rewards.vercel.app
-        run: >-
-          npx playwright test
-          tests/e2e/wondertown-public.spec.ts
-          tests/e2e/mobile-tablet-integrity.spec.ts
-          --config=playwright.remote.config.ts
-          --workers=2
 
       - name: Upload failure traces and data audit
         if: always()
