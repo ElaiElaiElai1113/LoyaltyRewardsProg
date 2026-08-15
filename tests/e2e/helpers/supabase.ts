@@ -169,7 +169,7 @@ export async function getBusinessBySlug(client: AppSupabaseClient, slug: string)
 export async function getBusinessById(client: AppSupabaseClient, businessId: string) {
   const { data, error } = await client
     .from('businesses')
-    .select('id, name, slug, program_id')
+    .select('id, name, slug, program_id, reward_rate_percent')
     .eq('id', businessId)
     .single()
 
@@ -177,7 +177,7 @@ export async function getBusinessById(client: AppSupabaseClient, businessId: str
     throw new Error(`Business not found for ID ${businessId}: ${error?.message ?? 'missing row'}`)
   }
 
-  return data as { id: string; name: string; slug: string; program_id: string }
+  return data as { id: string; name: string; slug: string; program_id: string; reward_rate_percent: number }
 }
 
 export async function getProfileByEmail(client: AppSupabaseClient, email: string) {

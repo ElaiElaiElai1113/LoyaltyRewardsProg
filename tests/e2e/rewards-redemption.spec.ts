@@ -38,9 +38,15 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
     customerProfileId = customer.id
 
     await ensureActiveMembership(customerClient, business.program_id)
-    await recordMemberQrSale(staffClient, customer.memberQrToken!, 85, fundingNote)
     const reward = await getFirstRewardForBusiness(customerClient, businessId)
-    const balance = await getRewardBalance(customerClient, customerProfileId)
+    let balance = await getRewardBalance(customerClient, customerProfileId)
+    const shortfall = Math.max(0, reward.points_cost - balance.points)
+    if (shortfall > 0) {
+      expect(business.reward_rate_percent).toBeGreaterThan(0)
+      const fundingPurchase = Math.ceil(((shortfall + 1) * 100) / business.reward_rate_percent)
+      await recordMemberQrSale(staffClient, customer.memberQrToken!, fundingPurchase, fundingNote)
+      balance = await getRewardBalance(customerClient, customerProfileId)
+    }
     expect(balance.points).toBeGreaterThanOrEqual(reward.points_cost)
 
     await signInCustomer(page, e2eAccounts.customer)
