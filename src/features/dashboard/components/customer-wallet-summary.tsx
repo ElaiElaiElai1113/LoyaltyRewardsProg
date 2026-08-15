@@ -6,10 +6,8 @@ import { Button } from '@/components/ui/button'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
-import type { Profile } from '@/types/domain'
 
 interface CustomerWalletSummaryProps {
-  verificationStatus?: Profile['verificationStatus'] | null
   points: number
 }
 
@@ -42,12 +40,10 @@ function getPrimaryAction({
 }
 
 export function CustomerWalletSummary({
-  verificationStatus,
   points,
 }: CustomerWalletSummaryProps) {
   const { t } = useLanguage()
   const { program } = useTenant()
-  void verificationStatus
   const isVerified = true
   const primaryAction = getPrimaryAction({ isVerified, points, programName: program.name })
 
@@ -58,13 +54,8 @@ export function CustomerWalletSummary({
       icon: Ticket,
     },
     {
-      label: 'QR status',
-      value: t('Active'),
-      icon: QrCode,
-    },
-    {
       label: 'Account status',
-      value: t('Launch ready'),
+      value: t('Active'),
       icon: BadgeCheck,
     },
   ]
@@ -99,7 +90,7 @@ export function CustomerWalletSummary({
         </Button>
       </div>
 
-      <div className="mt-5 grid gap-3 sm:grid-cols-3">
+      <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {stats.map((stat) => (
           <div key={stat.label} className="rounded-xl border border-[var(--border)] bg-[var(--muted)] p-4">
             <div className="flex items-center justify-between gap-3">

@@ -126,6 +126,36 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     expect(errors).toEqual([])
   })
 
+  test('member home stays focused and uncluttered across screen sizes', async ({ page }) => {
+    const errors = monitorUnexpectedErrors(page)
+    await signInCustomer(page)
+
+    for (const viewport of [
+      { width: 320, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1440, height: 900 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.goto('/dashboard')
+
+      const wallet = page.getByRole('heading', { name: /your member wallet|tu billetera de miembro/i })
+        .locator('xpath=ancestor::section[1]')
+      await expect(wallet).toContainText(/account status|estado de la cuenta/i)
+      await expect(wallet).toContainText(/active|activo/i)
+      await expect(wallet).not.toContainText(/QR status|estado de QR|launch ready|listo para lanzamiento/i)
+      await expect(wallet.getByRole('link', { name: /show member QR|mostrar QR de miembro/i })).toHaveCount(1)
+
+      await expect(page.getByRole('heading', { name: /next steps|pr[oó]ximos pasos/i })).toHaveCount(0)
+      await expect(page.getByRole('heading', { name: /contact details|datos de contacto/i })).toHaveCount(0)
+      await expect(page.getByRole('heading', { name: /view history|ver historial/i })).toHaveCount(0)
+      await expect(page.getByText(/walkthrough demo|demo guiada/i)).toHaveCount(0)
+      await expect(page.getByRole('link', { name: /buy gift cards|comprar gift cards/i })).toBeVisible()
+      await expectNoHorizontalClipping(page, `member dashboard at ${viewport.width}px`)
+    }
+
+    expect(errors).toEqual([])
+  })
+
   test('second member login and session work', async ({ page }) => {
     test.skip(!neighborEmail, 'Set E2E_TENANT_NEIGHBOR_EMAIL to verify an optional second member.')
     const errors = monitorUnexpectedErrors(page)

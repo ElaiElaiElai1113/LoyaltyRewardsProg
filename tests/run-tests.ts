@@ -1502,6 +1502,7 @@ runTest('customer dashboard exposes a guided onboarding checklist', () => {
   assert.match(dashboardPage, /verificationStatus=\{verificationStatus\}/)
   assert.match(dashboardPage, /points=\{points\}/)
   assert.match(dashboardPage, /recentActivity=\{recentActivity\}/)
+  assert.match(dashboardPage, /isLoading=\{rewardBalance\.isPending \|\| activities\.isPending\}/)
 
   for (const label of ['Account created', 'Contact saved', 'Unlock member QR', 'Make first QR sale', 'Review activity']) {
     assert.match(checklist, new RegExp(label))
@@ -1511,6 +1512,9 @@ runTest('customer dashboard exposes a guided onboarding checklist', () => {
   assert.match(checklist, /\/profile/)
   assert.match(checklist, /\/activity/)
   assert.match(checklist, /WhatsApp or phone/)
+  assert.match(checklist, /completedCount === steps\.length/)
+  assert.match(checklist, /return null/)
+  assert.doesNotMatch(checklist, /needed for launch/)
 })
 
 runTest('customer dashboard exposes a guided wallet summary', () => {
@@ -1518,12 +1522,14 @@ runTest('customer dashboard exposes a guided wallet summary', () => {
   const walletSummary = readFileSync('src/features/dashboard/components/customer-wallet-summary.tsx', 'utf8')
 
   assert.match(dashboardPage, /CustomerWalletSummary/)
-  assert.match(dashboardPage, /verificationStatus=\{verificationStatus\}/)
   assert.match(dashboardPage, /points=\{points\}/)
 
-  for (const label of ['Show member QR', 'Total Points', 'QR status', 'Account status', 'Launch ready']) {
+  for (const label of ['Show member QR', 'Total Points', 'Account status', 'Active']) {
     assert.match(walletSummary, new RegExp(label))
   }
+
+  assert.doesNotMatch(walletSummary, /QR status/)
+  assert.doesNotMatch(walletSummary, /Launch ready/)
 
   assert.doesNotMatch(walletSummary, /\/profile#id-verification/)
   assert.match(walletSummary, /\/profile/)
@@ -1533,6 +1539,19 @@ runTest('customer dashboard exposes a guided wallet summary', () => {
 
   assert.doesNotMatch(dashboardPage, /<MetricCard[\s\S]*Reward Credits/)
   assert.doesNotMatch(dashboardPage, /<MetricCard[\s\S]*Gift Cards/)
+})
+
+runTest('customer dashboard removes redundant home actions and internal walkthrough copy', () => {
+  const dashboardPage = readFileSync('src/features/dashboard/pages/dashboard-page.tsx', 'utf8')
+
+  assert.doesNotMatch(dashboardPage, /const quickActions/)
+  assert.doesNotMatch(dashboardPage, /title: t\('Show member QR'\)/)
+  assert.doesNotMatch(dashboardPage, /title: t\('Contact details'\)/)
+  assert.doesNotMatch(dashboardPage, /title: t\('View history'\)/)
+  assert.doesNotMatch(dashboardPage, /Walkthrough demo/)
+  assert.doesNotMatch(dashboardPage, /admin follow-up flow/)
+  assert.match(dashboardPage, /to="\/gift-cards"/)
+  assert.match(dashboardPage, /Buy gift cards/)
 })
 
 runTest('customer header exposes active QR status pill', () => {

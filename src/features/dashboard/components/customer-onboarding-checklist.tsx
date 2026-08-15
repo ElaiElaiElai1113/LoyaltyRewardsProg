@@ -10,6 +10,7 @@ interface CustomerOnboardingChecklistProps {
   verificationStatus?: Profile['verificationStatus'] | null
   points: number
   recentActivity: Activity[]
+  isLoading?: boolean
 }
 
 type ChecklistState = 'complete' | 'current' | 'pending'
@@ -27,7 +28,7 @@ function verificationStep(status: Profile['verificationStatus'] | null | undefin
   if (status === 'verified') {
     return {
       title: 'Contact saved',
-      description: 'Your account has the basic details needed for launch.',
+      description: 'Your contact details are saved.',
       state: 'complete',
     }
   }
@@ -49,6 +50,7 @@ export function CustomerOnboardingChecklist({
   verificationStatus,
   points,
   recentActivity,
+  isLoading = false,
 }: CustomerOnboardingChecklistProps) {
   const { t } = useLanguage()
   const hasEarnedReward = points > 0 || recentActivity.some((item) => item.points > 0)
@@ -88,6 +90,10 @@ export function CustomerOnboardingChecklist({
   ]
 
   const completedCount = steps.filter((step) => step.state === 'complete').length
+
+  if (isLoading || completedCount === steps.length) {
+    return null
+  }
 
   return (
     <section className="rounded-2xl border border-[var(--border)] bg-card p-5 text-card-foreground shadow-sm">
