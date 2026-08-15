@@ -1,0 +1,55 @@
+name: Preserve points for business-issued gift cards
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY GIFT CARD POINT FIX to run the scoped production migration
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reward-platform-gift-card-point-fix
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY GIFT CARD POINT FIX'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: retfuxpfstatpdsunkgj
+      MIGRATION_VERSION: '20260815090406'
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require production database credentials
+        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD"
+      - name: Link the rewards production project
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Apply only the approved gift-card point migration
+        run: npx supabase db query --linked --file supabase/migrations/20260815090406_preserve_points_for_business_gift_cards.sql
+      - name: Record the applied migration version
+        run: npx supabase migration repair --linked --status applied "$MIGRATION_VERSION" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Verify the production function contract
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ declare function_sql text;
+          begin
+          select pg_get_functiondef('public.issue_gift_card(uuid,uuid)'::regprocedure)
+          into function_sql;
+          if position('if actor_profile.role = ''customer'' then' in function_sql) = 0
+            or position('points_spent_value integer := 0' in function_sql) = 0
+            or position('set points = points - catalog_row.points_cost' in function_sql) = 0
+          then raise exception 'gift_card_point_preservation_verification_failed';
+          end if;
+          end \$\$;"

@@ -69,7 +69,24 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     await expect(page.locator('body')).toContainText(/Gift Cards|Active|Keep active/i)
   })
 
-  test('GC003 business staff can redeem an active gift card once', async ({ page }) => {
+  test('GC003 business owner can gift a card without deducting customer points', async () => {
+    const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
+    const ownerClient = await getSupabaseSessionClient(e2eAccounts.businessOwner)
+    const balanceBefore = await getRewardBalance(customerClient, customerProfileId)
+
+    const issuedCard = await issueGiftCardForCustomer(
+      ownerClient,
+      catalogId,
+      customerProfileId,
+    )
+    const balanceAfter = await getRewardBalance(customerClient, customerProfileId)
+
+    expect(issuedCard.status).toBe('active')
+    expect(issuedCard.points_spent).toBe(0)
+    expect(balanceAfter.points).toBe(balanceBefore.points)
+  })
+
+  test('GC004 business staff can redeem an active gift card once', async ({ page }) => {
     expect(giftCardId).toBeTruthy()
 
     const staffClient = await getSupabaseSessionClient(e2eAccounts.businessStaff)
