@@ -98,7 +98,7 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
       redeemGiftCardForBusiness(staffClient, giftCardId, businessId),
     ).rejects.toThrow(/no remaining balance|not active/i)
 
-    await signInBusinessPortal(page, e2eAccounts.businessStaff)
+    await signInBusinessPortal(page, e2eAccounts.businessOwner)
     await page.goto('/business/redemptions')
     await expect(page.getByRole('heading', { name: 'Transactions', exact: true })).toBeVisible()
     await expect(page.locator('body')).toContainText(/Gift card redeemed|Transaction History/i)

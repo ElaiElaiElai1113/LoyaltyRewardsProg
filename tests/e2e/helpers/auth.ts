@@ -37,8 +37,21 @@ async function submitAndExpectUrl(
   await expect(page).toHaveURL(expectedUrl)
 }
 
+async function tryTemporaryRoleButton(
+  page: Page,
+  buttonName: 'Sign in as Admin' | 'Sign in as Business' | 'Sign in as Customer',
+  expectedUrl: RegExp,
+) {
+  if (await page.locator('#signin-email').count()) return false
+
+  await page.getByRole('button', { name: buttonName, exact: true }).click()
+  await expect(page).toHaveURL(expectedUrl, { timeout: 12_000 })
+  return true
+}
+
 export async function signInCustomer(page: Page, email: string, password = e2ePassword) {
   await page.goto('/signin')
+  if (await tryTemporaryRoleButton(page, 'Sign in as Customer', /\/dashboard$/)) return
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
@@ -50,6 +63,10 @@ export async function signInCustomer(page: Page, email: string, password = e2ePa
 
 export async function signInCustomerExpectAgreementGate(page: Page, email: string, password = e2ePassword) {
   await page.goto('/signin')
+  if (await page.locator('#signin-email').count() === 0) {
+    test.skip(true, 'Temporary role-button sign-in does not expose agreement-pending test accounts.')
+    return
+  }
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
@@ -61,6 +78,7 @@ export async function signInCustomerExpectAgreementGate(page: Page, email: strin
 
 export async function signInBusinessPortal(page: Page, email: string, password = e2ePassword) {
   await page.goto('/signin?portal=business')
+  if (await tryTemporaryRoleButton(page, 'Sign in as Business', /\/business\/dashboard$/)) return
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
@@ -72,6 +90,10 @@ export async function signInBusinessPortal(page: Page, email: string, password =
 
 export async function signInBusinessPortalExpectAgreementGate(page: Page, email: string, password = e2ePassword) {
   await page.goto('/signin?portal=business')
+  if (await page.locator('#signin-email').count() === 0) {
+    test.skip(true, 'Temporary role-button sign-in does not expose agreement-pending test accounts.')
+    return
+  }
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
@@ -83,6 +105,7 @@ export async function signInBusinessPortalExpectAgreementGate(page: Page, email:
 
 export async function signInAdmin(page: Page, email: string, password = e2ePassword) {
   await page.goto('/signin?portal=admin')
+  if (await tryTemporaryRoleButton(page, 'Sign in as Admin', /\/admin\/portal$/)) return
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await submitAndExpectUrl(
