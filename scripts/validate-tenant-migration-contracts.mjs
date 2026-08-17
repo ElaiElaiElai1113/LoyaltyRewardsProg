@@ -135,6 +135,13 @@ const contracts = [
       /if found then[\s\S]{0,500}return result_redemption/,
     ],
   },
+  {
+    file: 'supabase/migrations/20260817123500_drop_legacy_anonymous_gift_card_redeemer.sql',
+    required: [
+      /drop function if exists public\.redeem_gift_card\(uuid, uuid, uuid\)/,
+      /notify pgrst, 'reload schema'/,
+    ],
+  },
 ]
 
 const failures = []

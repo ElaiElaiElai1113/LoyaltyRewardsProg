@@ -9,6 +9,10 @@ const idempotencyMigration = readFileSync(
   new URL('../../supabase/migrations/20260817120452_idempotent_gift_card_redemption.sql', import.meta.url),
   'utf8',
 )
+const legacyGiftCardRemovalMigration = readFileSync(
+  new URL('../../supabase/migrations/20260817123500_drop_legacy_anonymous_gift_card_redeemer.sql', import.meta.url),
+  'utf8',
+)
 const businessOwnerHooks = readFileSync(
   new URL('../hooks/use-business-owner-data.ts', import.meta.url),
   'utf8',
@@ -84,6 +88,13 @@ describe('program-scoped member transactions', () => {
     expect(idempotencyMigration).toContain('pg_catalog.to_jsonb(requested_gift_card_amount_value)')
     expect(idempotencyMigration).toContain("raise exception 'This request was already used for a different transaction.'")
     expect(idempotencyMigration).toContain('grant execute on function public.redeem_gift_card')
+  })
+
+  it('removes the obsolete anonymous three-argument gift-card redeemer', () => {
+    expect(legacyGiftCardRemovalMigration).toContain(
+      'drop function if exists public.redeem_gift_card(uuid, uuid, uuid)',
+    )
+    expect(legacyGiftCardRemovalMigration).toContain("notify pgrst, 'reload schema'")
   })
 
   it('refreshes transaction history, balances, activity, customer rows, and business metrics', () => {
