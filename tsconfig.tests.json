@@ -15,6 +15,7 @@
     "src/features/early-access/**/*.ts",
     "src/features/ambassadors/**/*.ts",
     "src/features/auth/landing-content.ts",
+    "playwright*.config.ts",
     "tests/**/*.ts"
   ]
 }

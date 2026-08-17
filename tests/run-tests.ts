@@ -2770,6 +2770,14 @@ runTest('hosted commerce QA confines writes to named fixtures and cleans visible
   )
 })
 
+runTest('production TypeScript build stays independent from Vercel-ignored Playwright helpers', () => {
+  const nodeConfig = readFileSync('tsconfig.node.json', 'utf8')
+  const testConfig = readFileSync('tsconfig.tests.json', 'utf8')
+
+  assert.doesNotMatch(nodeConfig, /playwright\*\.config\.ts/)
+  assert.match(testConfig, /playwright\*\.config\.ts/)
+})
+
 runTest('gift card issuing migration enables pgcrypto token generation', () => {
   const migration = readFileSync('supabase/migrations/20260528000000_enable_pgcrypto_for_gift_cards.sql', 'utf8')
 
