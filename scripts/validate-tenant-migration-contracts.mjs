@@ -1,4 +1,4 @@
-import { readFile } from 'node:fs/promises'
+import { readFile, readdir } from 'node:fs/promises'
 import { resolve } from 'node:path'
 
 const contracts = [
@@ -100,6 +100,8 @@ const contracts = [
       /'client_request_id', p_client_request_id::text/,
       /pg_catalog\.pg_advisory_xact_lock/,
       /pg_catalog\.hashtextextended/,
+      /select transaction_row\.\*[\s\S]{0,120}into result_transaction[\s\S]{0,120}from public\.record_member_transaction_once\(/,
+      /select card_row\.\*[\s\S]{0,120}into result_card[\s\S]{0,120}from public\.redeem_gift_card_once\(/,
       /requested_gift_card_amount_value numeric\(12,2\)/,
       /jsonb_typeof\(event\.metadata -> 'requested_gift_card_amount'\) = 'null'/,
       /'requested_gift_card_amount', coalesce\(/,
@@ -112,6 +114,8 @@ const contracts = [
     forbidden: [
       /p_gift_card_amount is null\s+or/,
       /when others then/,
+      /select\s+public\.record_member_transaction_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_transaction/,
+      /select\s+public\.redeem_gift_card_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_card/,
     ],
   },
   {
@@ -123,7 +127,7 @@ const contracts = [
       /normalized_pickup_window text := trim\(coalesce\(p_pickup_window, ''\)\)/,
       /normalized_notes text := nullif\(trim\(coalesce\(p_notes, ''\)\), ''\)/,
       /pg_catalog\.pg_advisory_xact_lock/,
-      /select public\.redeem_reward_once\([\s\S]*result_redemption\.program_id <> requested_program_id/,
+      /select redemption_row\.\*[\s\S]{0,120}into result_redemption[\s\S]{0,120}from public\.redeem_reward_once\(/,
       /result_redemption\.reward_id <> p_reward_id/,
       /trim\(result_redemption\.pickup_window\) <> normalized_pickup_window/,
       /result_redemption\.notes[\s\S]*is distinct from normalized_notes/,
@@ -133,6 +137,7 @@ const contracts = [
     ],
     forbidden: [
       /if found then[\s\S]{0,500}return result_redemption/,
+      /select\s+public\.redeem_reward_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_redemption/,
     ],
   },
   {
@@ -155,6 +160,9 @@ const contracts = [
       /event\.actor_id = v_actor_id/,
       /recorded_by = v_actor_id/,
       /profile_id = v_actor_id/,
+      /select transaction_row\.\*[\s\S]{0,120}into result_transaction[\s\S]{0,120}from public\.record_member_transaction_once\(/,
+      /select card_row\.\*[\s\S]{0,120}into result_card[\s\S]{0,120}from public\.redeem_gift_card_once\(/,
+      /select redemption_row\.\*[\s\S]{0,120}into result_redemption[\s\S]{0,120}from public\.redeem_reward_once\(/,
       /revoke all on function public\.record_member_transaction_once[\s\S]*from public, anon, authenticated, service_role/,
       /revoke all on function public\.redeem_gift_card_once[\s\S]*from public, anon, authenticated, service_role/,
       /revoke all on function public\.redeem_reward_once[\s\S]*from public, anon, authenticated, service_role/,
@@ -169,6 +177,37 @@ const contracts = [
       /recorded_by = actor_id/,
       /profile_id = actor_id/,
       /plpgsql\.variable_conflict/,
+      /select\s+public\.record_member_transaction_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_transaction/,
+      /select\s+public\.redeem_gift_card_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_card/,
+      /select\s+public\.redeem_reward_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_redemption/,
+    ],
+  },
+  {
+    file: 'supabase/migrations/20260817152354_fix_composite_rpc_wrapper_assignment.sql',
+    required: [
+      /create or replace function public\.record_member_transaction\(/,
+      /create or replace function public\.redeem_gift_card\(/,
+      /create or replace function public\.redeem_reward\(/,
+      /select transaction_row\.\*[\s\S]{0,120}into result_transaction[\s\S]{0,120}from public\.record_member_transaction_once\(/,
+      /select card_row\.\*[\s\S]{0,120}into result_card[\s\S]{0,120}from public\.redeem_gift_card_once\(/,
+      /select redemption_row\.\*[\s\S]{0,120}into result_redemption[\s\S]{0,120}from public\.redeem_reward_once\(/,
+      /create or replace function public\.record_member_transaction\([\s\S]*?security definer\s+set search_path = ''/,
+      /create or replace function public\.redeem_gift_card\([\s\S]*?security definer\s+set search_path = ''/,
+      /create or replace function public\.redeem_reward\([\s\S]*?security definer\s+set search_path = ''/,
+      /pg_catalog\.pg_advisory_xact_lock/g,
+      /revoke all on function public\.record_member_transaction[\s\S]*from public, anon, service_role/,
+      /revoke all on function public\.redeem_gift_card[\s\S]*from public, anon, service_role/,
+      /revoke all on function public\.redeem_reward[\s\S]*from public, anon, service_role/,
+      /grant execute on function public\.record_member_transaction[\s\S]*to authenticated/,
+      /grant execute on function public\.redeem_gift_card[\s\S]*to authenticated/,
+      /grant execute on function public\.redeem_reward[\s\S]*to authenticated/,
+      /notify pgrst, 'reload schema'/,
+    ],
+    forbidden: [
+      /create or replace function public\.(?:record_member_transaction_once|redeem_gift_card_once|redeem_reward_once)\(/,
+      /select\s+public\.record_member_transaction_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_transaction/,
+      /select\s+public\.redeem_gift_card_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_card/,
+      /select\s+public\.redeem_reward_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_redemption/,
     ],
   },
 ]
@@ -186,6 +225,29 @@ for (const contract of contracts) {
   }
   if (/security definer(?![\s\S]{0,80}set search_path)/i.test(sql)) {
     failures.push({ file: contract.file, missing: 'every security definer function must pin search_path' })
+  }
+}
+
+const compositeFunctionNames = [
+  'record_member_transaction_once',
+  'redeem_gift_card_once',
+  'redeem_reward_once',
+]
+const bareCompositeSelectInto = new RegExp(
+  `\\bselect\\s+public\\.(${compositeFunctionNames.join('|')})\\s*\\([\\s\\S]{0,1200}?\\)\\s+into\\s+`
+    + '(result_transaction|result_card|result_redemption)\\s*;',
+  'gi',
+)
+const migrationDirectory = resolve('supabase/migrations')
+for (const migrationName of await readdir(migrationDirectory)) {
+  if (!migrationName.endsWith('.sql')) continue
+  const file = `supabase/migrations/${migrationName}`
+  const sql = await readFile(resolve(file), 'utf8')
+  for (const match of sql.matchAll(bareCompositeSelectInto)) {
+    failures.push({
+      file,
+      forbidden: `bare scalar composite SELECT INTO for public.${match[1]}`,
+    })
   }
 }
 console.log(JSON.stringify({ passed: failures.length === 0, contracts: contracts.length, failures }, null, 2))

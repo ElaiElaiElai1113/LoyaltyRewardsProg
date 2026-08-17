@@ -47,12 +47,14 @@ begin
   -- customer-role, active-program, membership, and reward-business checks are
   -- never bypassed by the idempotency fast path.
   begin
-    select public.redeem_reward_once(
+    select redemption_row.*
+      into result_redemption
+    from public.redeem_reward_once(
       p_reward_id,
       normalized_pickup_window,
       normalized_notes,
       p_client_request_id
-    ) into result_redemption;
+    ) as redemption_row;
   exception
     when unique_violation then
       -- The database currently enforces request IDs per profile globally. If a

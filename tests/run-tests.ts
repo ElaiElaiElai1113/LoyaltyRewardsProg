@@ -2778,6 +2778,70 @@ runTest('production TypeScript build stays independent from Vercel-ignored Playw
   assert.match(testConfig, /playwright\*\.config\.ts/)
 })
 
+runTest('composite-returning RPC wrappers expand rows before rowtype assignment', () => {
+  const forwardMigrationPath = 'supabase/migrations/20260817152354_fix_composite_rpc_wrapper_assignment.sql'
+  const forwardMigration = readFileSync(forwardMigrationPath, 'utf8')
+  const wrapperCalls = [
+    {
+      functionName: 'record_member_transaction_once',
+      alias: 'transaction_row',
+      target: 'result_transaction',
+    },
+    {
+      functionName: 'redeem_gift_card_once',
+      alias: 'card_row',
+      target: 'result_card',
+    },
+    {
+      functionName: 'redeem_reward_once',
+      alias: 'redemption_row',
+      target: 'result_redemption',
+    },
+  ] as const
+
+  for (const wrapper of wrapperCalls) {
+    assert.match(
+      forwardMigration,
+      new RegExp(
+        `select ${wrapper.alias}\\.\\*\\s+into ${wrapper.target}\\s+from public\\.${wrapper.functionName}\\(`,
+        'i',
+      ),
+    )
+  }
+
+  const bareCompositeSelectInto = /select\s+public\.(?:record_member_transaction_once|redeem_gift_card_once|redeem_reward_once)\s*\([\s\S]{0,1200}?\)\s+into\s+(?:result_transaction|result_card|result_redemption)\s*;/i
+  for (const migrationPath of [
+    'supabase/migrations/20260817120452_idempotent_gift_card_redemption.sql',
+    'supabase/migrations/20260817121855_strict_reward_redemption_idempotency.sql',
+    'supabase/migrations/20260817125922_fix_idempotency_actor_id_ambiguity.sql',
+    forwardMigrationPath,
+  ]) {
+    assert.doesNotMatch(readFileSync(migrationPath, 'utf8'), bareCompositeSelectInto)
+  }
+
+  assert.equal((forwardMigration.match(/security definer\s+set search_path = ''/gi) ?? []).length, 3)
+  assert.equal((forwardMigration.match(/pg_catalog\.pg_advisory_xact_lock/g) ?? []).length, 3)
+  assert.doesNotMatch(
+    forwardMigration,
+    /create or replace function public\.(?:record_member_transaction_once|redeem_gift_card_once|redeem_reward_once)\(/,
+  )
+
+  for (const functionSignature of [
+    'record_member_transaction\\(text, numeric, text, text, uuid\\)',
+    'redeem_gift_card\\(uuid, uuid, numeric, text, numeric, uuid\\)',
+    'redeem_reward\\(uuid, text, text, uuid\\)',
+  ]) {
+    assert.match(
+      forwardMigration,
+      new RegExp(`revoke all on function public\\.${functionSignature}\\s+from public, anon, service_role`),
+    )
+    assert.match(
+      forwardMigration,
+      new RegExp(`grant execute on function public\\.${functionSignature}\\s+to authenticated`),
+    )
+  }
+})
+
 runTest('gift card issuing migration enables pgcrypto token generation', () => {
   const migration = readFileSync('supabase/migrations/20260528000000_enable_pgcrypto_for_gift_cards.sql', 'utf8')
 

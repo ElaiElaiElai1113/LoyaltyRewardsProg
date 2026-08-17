@@ -367,13 +367,15 @@ begin
     end if;
   end if;
 
-  select public.record_member_transaction_once(
+  select transaction_row.*
+    into result_transaction
+  from public.record_member_transaction_once(
     member_qr_token_value,
     purchase_amount_value,
     receipt_number_value,
     note_value,
     p_client_request_id
-  ) into result_transaction;
+  ) as transaction_row;
 
   return result_transaction;
 end;
@@ -863,14 +865,16 @@ begin
     end if;
   end if;
 
-  select public.redeem_gift_card_once(
+  select card_row.*
+    into result_card
+  from public.redeem_gift_card_once(
     p_gift_card_id,
     p_business_id,
     requested_original_bill_value,
     requested_receipt_number_value,
     requested_gift_card_amount_value,
     p_client_request_id
-  ) into result_card;
+  ) as card_row;
 
   if p_client_request_id is not null then
     select event.id
@@ -1148,12 +1152,14 @@ begin
   end if;
 
   begin
-    select public.redeem_reward_once(
+    select redemption_row.*
+      into result_redemption
+    from public.redeem_reward_once(
       p_reward_id,
       normalized_pickup_window,
       normalized_notes,
       p_client_request_id
-    ) into result_redemption;
+    ) as redemption_row;
   exception
     when unique_violation then
       if p_client_request_id is not null

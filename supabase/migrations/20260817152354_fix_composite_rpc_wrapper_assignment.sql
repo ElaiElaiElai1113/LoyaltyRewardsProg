@@ -1,18 +1,10 @@
--- Preserve the validated QR-sale and gift-card implementations behind strict
--- idempotency wrappers. A client request ID can replay only the exact normalized
--- payload that first used it; a changed payload is rejected instead of silently
--- returning an unrelated transaction.
+-- Composite-returning functions used as scalar SELECT expressions are not
+-- expanded into a declared %rowtype target. PostgreSQL instead attempts to
+-- coerce the complete composite value into the target row's first uuid field.
+-- Keep the existing validation and idempotency guards while selecting the
+-- private function results as rows.
 
-alter function public.record_member_transaction(text, numeric, text, text, uuid)
-  rename to record_member_transaction_once;
-
-alter function public.record_member_transaction_once(text, numeric, text, text, uuid)
-  set search_path = '';
-
-revoke all on function public.record_member_transaction_once(text, numeric, text, text, uuid)
-  from public, anon, authenticated, service_role;
-
-create function public.record_member_transaction(
+create or replace function public.record_member_transaction(
   p_member_qr_token text,
   p_purchase_amount numeric,
   p_receipt_number text,
@@ -155,16 +147,7 @@ revoke all on function public.record_member_transaction(text, numeric, text, tex
 grant execute on function public.record_member_transaction(text, numeric, text, text, uuid)
   to authenticated;
 
-alter function public.redeem_gift_card(uuid, uuid, numeric, text, numeric, uuid)
-  rename to redeem_gift_card_once;
-
-alter function public.redeem_gift_card_once(uuid, uuid, numeric, text, numeric, uuid)
-  set search_path = '';
-
-revoke all on function public.redeem_gift_card_once(uuid, uuid, numeric, text, numeric, uuid)
-  from public, anon, authenticated, service_role;
-
-create function public.redeem_gift_card(
+create or replace function public.redeem_gift_card(
   p_gift_card_id uuid,
   p_business_id uuid,
   p_original_bill numeric default null,
@@ -224,8 +207,6 @@ begin
   end if;
 
   if p_client_request_id is not null then
-    -- Serialize at wrapper entry. This covers standalone and fully covered
-    -- redemptions that do not write a member_transactions row.
     perform pg_catalog.pg_advisory_xact_lock(
       pg_catalog.hashtextextended(
         v_actor_id::text || ':' || p_client_request_id::text,
@@ -317,9 +298,6 @@ begin
         else false
       end
       and case
-        -- The validated implementation ignores a supplied receipt when there
-        -- is no bill. Locate that audit row by its applied NULL receipt, then
-        -- stamp the original requested receipt separately for strict replay.
         when requested_original_bill_value is null then
           pg_catalog.jsonb_typeof(event.metadata -> 'receipt_number') = 'null'
         when requested_receipt_number_value is null then
@@ -337,8 +315,8 @@ begin
       raise exception 'Gift card redemption audit event was not recorded.';
     end if;
 
-    update public.gift_card_events
-    set metadata = metadata || pg_catalog.jsonb_build_object(
+    update public.gift_card_events event
+    set metadata = event.metadata || pg_catalog.jsonb_build_object(
       'client_request_id', p_client_request_id::text,
       'requested_original_bill', coalesce(
         pg_catalog.to_jsonb(requested_original_bill_value),
@@ -353,7 +331,7 @@ begin
         'null'::jsonb
       )
     )
-    where id = redemption_event_id;
+    where event.id = redemption_event_id;
   end if;
 
   return result_card;
@@ -363,6 +341,89 @@ $$;
 revoke all on function public.redeem_gift_card(uuid, uuid, numeric, text, numeric, uuid)
   from public, anon, service_role;
 grant execute on function public.redeem_gift_card(uuid, uuid, numeric, text, numeric, uuid)
+  to authenticated;
+
+create or replace function public.redeem_reward(
+  p_reward_id uuid,
+  p_pickup_window text,
+  p_notes text default null,
+  p_client_request_id uuid default null
+)
+returns public.redemptions
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_actor_id uuid := auth.uid();
+  requested_program_id uuid;
+  normalized_pickup_window text := trim(coalesce(p_pickup_window, ''));
+  normalized_notes text := nullif(trim(coalesce(p_notes, '')), '');
+  result_redemption public.redemptions%rowtype;
+begin
+  if v_actor_id is null then
+    raise exception 'Authentication required';
+  end if;
+
+  if p_client_request_id is not null then
+    perform pg_catalog.pg_advisory_xact_lock(
+      pg_catalog.hashtextextended(
+        v_actor_id::text || ':' || p_client_request_id::text,
+        0
+      )
+    );
+  end if;
+
+  begin
+    select redemption_row.*
+      into result_redemption
+    from public.redeem_reward_once(
+      p_reward_id,
+      normalized_pickup_window,
+      normalized_notes,
+      p_client_request_id
+    ) as redemption_row;
+  exception
+    when unique_violation then
+      if p_client_request_id is not null
+        and exists (
+          select 1
+          from public.redemptions redemption_row
+          where redemption_row.profile_id = v_actor_id
+            and redemption_row.client_request_id = p_client_request_id
+        )
+      then
+        raise exception 'This request was already used for a different reward redemption.';
+      end if;
+      raise;
+  end;
+
+  select reward_row.program_id
+    into requested_program_id
+  from public.rewards reward_row
+  where reward_row.id = p_reward_id;
+
+  if requested_program_id is null then
+    raise exception 'Reward not found.';
+  end if;
+
+  if result_redemption.profile_id <> v_actor_id
+    or result_redemption.program_id <> requested_program_id
+    or result_redemption.reward_id <> p_reward_id
+    or trim(result_redemption.pickup_window) <> normalized_pickup_window
+    or nullif(trim(coalesce(result_redemption.notes, '')), '')
+      is distinct from normalized_notes
+  then
+    raise exception 'This request was already used for a different reward redemption.';
+  end if;
+
+  return result_redemption;
+end;
+$$;
+
+revoke all on function public.redeem_reward(uuid, text, text, uuid)
+  from public, anon, service_role;
+grant execute on function public.redeem_reward(uuid, text, text, uuid)
   to authenticated;
 
 notify pgrst, 'reload schema';
