@@ -70,7 +70,9 @@ describe('program-scoped member transactions', () => {
     expect(idempotencyMigration).toContain('lower(trim(member_transaction.receipt_number)) = lower(receipt_number_value)')
     expect(idempotencyMigration).toContain('member_transaction.note is not distinct from note_value')
     expect(idempotencyMigration).toContain("event.metadata ->> 'client_request_id' = p_client_request_id::text")
-    expect(idempotencyMigration).toContain('select public.record_member_transaction_once(')
+    expect(idempotencyMigration).toContain('select transaction_row.*')
+    expect(idempotencyMigration).toContain('from public.record_member_transaction_once(')
+    expect(idempotencyMigration).not.toContain('select public.record_member_transaction_once(')
   })
 
   it('replays a gift-card redemption using the original requested, not clamped, payload', () => {
