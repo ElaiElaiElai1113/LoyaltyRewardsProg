@@ -66,8 +66,9 @@ export function AdminGiftCardsPage() {
           <p className="text-lg text-on-surface-variant/85">{t('Review catalog items and issued cards across the platform.')}</p>
         </div>
         <div className="w-full sm:w-80">
+          <Label className="sr-only" htmlFor="admin-gift-card-business-filter">{t('Business')}</Label>
           <Select value={businessId ?? 'all'} onValueChange={changeBusiness}>
-            <SelectTrigger>
+            <SelectTrigger id="admin-gift-card-business-filter">
               <SelectValue placeholder={t('All businesses')} />
             </SelectTrigger>
             <SelectContent>
@@ -120,9 +121,9 @@ export function AdminGiftCardsPage() {
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <div className="grid gap-2">
-              <Label>{t('Gift card')}</Label>
+              <Label htmlFor="admin-gift-card-catalog-select">{t('Gift card')}</Label>
               <Select value={issueCatalogId} onValueChange={setIssueCatalogId}>
-                <SelectTrigger>
+                <SelectTrigger id="admin-gift-card-catalog-select">
                   <SelectValue placeholder={t('Choose a catalog item')} />
                 </SelectTrigger>
                 <SelectContent>
@@ -133,9 +134,9 @@ export function AdminGiftCardsPage() {
               </Select>
             </div>
             <div className="grid gap-2">
-              <Label>{t('Customer')}</Label>
+              <Label htmlFor="admin-gift-card-customer-select">{t('Customer')}</Label>
               <Select value={issueCustomerId} onValueChange={setIssueCustomerId} disabled={members.isLoading}>
-                <SelectTrigger>
+                <SelectTrigger id="admin-gift-card-customer-select">
                   <SelectValue placeholder={members.isLoading ? t('Loading customers...') : t('Choose a customer')} />
                 </SelectTrigger>
                 <SelectContent>

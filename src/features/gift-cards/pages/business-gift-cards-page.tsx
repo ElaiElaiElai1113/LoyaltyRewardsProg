@@ -170,9 +170,9 @@ export function BusinessGiftCardsPage() {
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="grid gap-2">
-            <Label>{t('Gift card')}</Label>
+            <Label htmlFor="business-gift-card-catalog-select">{t('Gift card')}</Label>
             <Select value={issueCatalogId} onValueChange={setIssueCatalogId} disabled={!business}>
-              <SelectTrigger>
+              <SelectTrigger id="business-gift-card-catalog-select">
                 <SelectValue placeholder={t('Choose a catalog item')} />
               </SelectTrigger>
               <SelectContent>
@@ -183,9 +183,9 @@ export function BusinessGiftCardsPage() {
             </Select>
           </div>
           <div className="grid gap-2">
-            <Label>{t('Customer')}</Label>
+            <Label htmlFor="business-gift-card-customer-select">{t('Customer')}</Label>
             <Select value={issueCustomerId} onValueChange={setIssueCustomerId} disabled={!business || members.isLoading}>
-              <SelectTrigger>
+              <SelectTrigger id="business-gift-card-customer-select">
                 <SelectValue placeholder={members.isLoading ? t('Loading customers...') : t('Choose a customer')} />
               </SelectTrigger>
               <SelectContent>
