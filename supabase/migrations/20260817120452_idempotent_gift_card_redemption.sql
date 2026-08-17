@@ -25,7 +25,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  actor_id uuid := auth.uid();
+  v_actor_id uuid := auth.uid();
   business_row public.businesses%rowtype;
   member_profile public.profiles%rowtype;
   result_transaction public.member_transactions%rowtype;
@@ -34,7 +34,7 @@ declare
   receipt_number_value text := nullif(trim(coalesce(p_receipt_number, '')), '');
   note_value text := nullif(trim(coalesce(p_note, '')), '');
 begin
-  if actor_id is null then
+  if v_actor_id is null then
     raise exception 'Authentication required';
   end if;
 
@@ -44,13 +44,13 @@ begin
   join public.businesses business
     on business.id = actor_profile.business_id
    and business.active = true
-  where actor_profile.id = actor_id
+  where actor_profile.id = v_actor_id
     and actor_profile.role in ('business-owner', 'business-staff')
     and exists (
       select 1
       from public.program_memberships membership
       where membership.program_id = business.program_id
-        and membership.profile_id = actor_id
+        and membership.profile_id = v_actor_id
         and membership.role::text = actor_profile.role::text
         and membership.business_id = business.id
         and membership.status = 'active'
@@ -93,7 +93,7 @@ begin
   if p_client_request_id is not null then
     perform pg_catalog.pg_advisory_xact_lock(
       pg_catalog.hashtextextended(
-        actor_id::text || ':' || p_client_request_id::text,
+        v_actor_id::text || ':' || p_client_request_id::text,
         0
       )
     );
@@ -101,7 +101,7 @@ begin
     select member_transaction.*
       into result_transaction
     from public.member_transactions member_transaction
-    where member_transaction.recorded_by = actor_id
+    where member_transaction.recorded_by = v_actor_id
       and member_transaction.client_request_id = p_client_request_id
       and member_transaction.program_id = business_row.program_id
       and member_transaction.business_id = business_row.id
@@ -112,7 +112,7 @@ begin
       and not exists (
         select 1
         from public.gift_card_events event
-        where event.actor_id = actor_id
+        where event.actor_id = v_actor_id
           and event.metadata ->> 'client_request_id' = p_client_request_id::text
       )
     limit 1;
@@ -124,12 +124,12 @@ begin
     if exists (
       select 1
       from public.member_transactions member_transaction
-      where member_transaction.recorded_by = actor_id
+      where member_transaction.recorded_by = v_actor_id
         and member_transaction.client_request_id = p_client_request_id
       union all
       select 1
       from public.gift_card_events event
-      where event.actor_id = actor_id
+      where event.actor_id = v_actor_id
         and event.metadata ->> 'client_request_id' = p_client_request_id::text
     ) then
       raise exception 'This request was already used for a different transaction.';
@@ -176,7 +176,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  actor_id uuid := auth.uid();
+  v_actor_id uuid := auth.uid();
   result_card public.gift_cards%rowtype;
   request_was_used boolean := false;
   redemption_event_id uuid;
@@ -190,7 +190,7 @@ declare
     else round(p_gift_card_amount::numeric, 2)
   end;
 begin
-  if actor_id is null then
+  if v_actor_id is null then
     raise exception 'Authentication required';
   end if;
 
@@ -200,7 +200,7 @@ begin
     join public.businesses business_row
       on business_row.id = p_business_id
      and business_row.active = true
-    where actor_profile.id = actor_id
+    where actor_profile.id = v_actor_id
       and (
         actor_profile.role = 'platform-admin'
         or (
@@ -210,7 +210,7 @@ begin
             select 1
             from public.program_memberships membership
             where membership.program_id = business_row.program_id
-              and membership.profile_id = actor_id
+              and membership.profile_id = v_actor_id
               and membership.role::text = actor_profile.role::text
               and membership.business_id = business_row.id
               and membership.status = 'active'
@@ -226,7 +226,7 @@ begin
     -- redemptions that do not write a member_transactions row.
     perform pg_catalog.pg_advisory_xact_lock(
       pg_catalog.hashtextextended(
-        actor_id::text || ':' || p_client_request_id::text,
+        v_actor_id::text || ':' || p_client_request_id::text,
         0
       )
     );
@@ -235,7 +235,7 @@ begin
       into result_card
     from public.gift_card_events event
     join public.gift_cards card on card.id = event.gift_card_id
-    where event.actor_id = actor_id
+    where event.actor_id = v_actor_id
       and event.event_type = 'redeemed'
       and event.metadata ->> 'client_request_id' = p_client_request_id::text
       and event.gift_card_id = p_gift_card_id
@@ -273,12 +273,12 @@ begin
     select exists (
       select 1
       from public.member_transactions member_transaction
-      where member_transaction.recorded_by = actor_id
+      where member_transaction.recorded_by = v_actor_id
         and member_transaction.client_request_id = p_client_request_id
       union all
       select 1
       from public.gift_card_events event
-      where event.actor_id = actor_id
+      where event.actor_id = v_actor_id
         and event.metadata ->> 'client_request_id' = p_client_request_id::text
     ) into request_was_used;
 
@@ -301,7 +301,7 @@ begin
       into redemption_event_id
     from public.gift_card_events event
     where event.gift_card_id = p_gift_card_id
-      and event.actor_id = actor_id
+      and event.actor_id = v_actor_id
       and event.event_type = 'redeemed'
       and event.metadata ->> 'business_id' = p_business_id::text
       and not (event.metadata ? 'client_request_id')

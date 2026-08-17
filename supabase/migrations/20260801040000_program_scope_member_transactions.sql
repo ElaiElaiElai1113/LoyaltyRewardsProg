@@ -11,7 +11,7 @@ security definer
 set search_path = public
 as $$
 declare
-  actor_id uuid := auth.uid();
+  v_actor_id uuid := auth.uid();
   actor_profile public.profiles%rowtype;
   business_row public.businesses%rowtype;
   member_profile public.profiles%rowtype;
@@ -24,14 +24,14 @@ declare
   points_awarded_value integer;
   commission_amount_value numeric(12,2);
 begin
-  if actor_id is null then
+  if v_actor_id is null then
     raise exception 'Authentication required';
   end if;
 
   if p_client_request_id is not null then
     select * into existing_transaction
     from public.member_transactions
-    where recorded_by = actor_id
+    where recorded_by = v_actor_id
       and client_request_id = p_client_request_id
     limit 1;
 
@@ -42,7 +42,7 @@ begin
 
   select * into actor_profile
   from public.profiles
-  where id = actor_id;
+  where id = v_actor_id;
 
   if actor_profile.role not in ('business-owner', 'business-staff')
     or actor_profile.business_id is null then
@@ -63,7 +63,7 @@ begin
     select 1
     from public.program_memberships pm
     where pm.program_id = business_row.program_id
-      and pm.profile_id = actor_id
+      and pm.profile_id = v_actor_id
       and pm.role::text = actor_profile.role::text
       and pm.business_id = business_row.id
       and pm.status = 'active'
@@ -144,7 +144,7 @@ begin
     points_awarded_value,
     business_row.commission_rate_percent,
     commission_amount_value,
-    actor_id,
+    v_actor_id,
     nullif(trim(coalesce(p_note, '')), ''),
     p_client_request_id
   )
@@ -200,7 +200,7 @@ begin
   )
   values (
     business_row.program_id,
-    actor_id,
+    v_actor_id,
     coalesce(actor_profile.full_name, 'Business staff'),
     'Member QR transaction recorded',
     format(
@@ -222,7 +222,7 @@ exception
     if p_client_request_id is not null then
       select * into existing_transaction
       from public.member_transactions
-      where recorded_by = actor_id
+      where recorded_by = v_actor_id
         and client_request_id = p_client_request_id
       limit 1;
 
@@ -253,7 +253,7 @@ security definer
 set search_path = public
 as $$
 declare
-  actor_id uuid := auth.uid();
+  v_actor_id uuid := auth.uid();
   actor_profile public.profiles%rowtype;
   business_row public.businesses%rowtype;
   card_row public.gift_cards%rowtype;
@@ -277,9 +277,9 @@ declare
   available_balance_value numeric(12,2);
   remaining_balance_after_value numeric(12,2);
 begin
-  if actor_id is null then raise exception 'Authentication required'; end if;
+  if v_actor_id is null then raise exception 'Authentication required'; end if;
 
-  select * into actor_profile from public.profiles where id = actor_id;
+  select * into actor_profile from public.profiles where id = v_actor_id;
   if not found then raise exception 'Redeeming profile not found'; end if;
 
   select * into business_row
@@ -297,7 +297,7 @@ begin
       select 1
       from public.program_memberships pm
       where pm.program_id = business_row.program_id
-        and pm.profile_id = actor_id
+        and pm.profile_id = v_actor_id
         and pm.role::text = actor_profile.role::text
         and pm.business_id = business_row.id
         and pm.status = 'active'
@@ -337,7 +337,7 @@ begin
         remaining_balance = 0,
         remaining_value_amount = 0,
         redeemed_at = coalesce(redeemed_at, now()),
-        redeemed_by = coalesce(redeemed_by, actor_id),
+        redeemed_by = coalesce(redeemed_by, v_actor_id),
         redeemed_at_business = coalesce(redeemed_at_business, p_business_id)
     where id = card_row.id;
     raise exception 'Gift card has no remaining balance';
@@ -350,7 +350,7 @@ begin
       business_row.program_id,
       card_row.id,
       'expired',
-      actor_id,
+      v_actor_id,
       jsonb_build_object('reason', 'redeem_attempt_after_expiry')
     );
     raise exception 'Gift card has expired';
@@ -435,7 +435,7 @@ begin
       remaining_value_amount = remaining_balance_after_value,
       remaining_balance = remaining_balance_after_value,
       redeemed_at = case when remaining_balance_after_value <= 0 then now() else null end,
-      redeemed_by = case when remaining_balance_after_value <= 0 then actor_id else null end,
+      redeemed_by = case when remaining_balance_after_value <= 0 then v_actor_id else null end,
       redeemed_at_business = case when remaining_balance_after_value <= 0 then p_business_id else null end,
       updated_at = now()
   where id = p_gift_card_id
@@ -450,7 +450,7 @@ begin
     business_row.program_id,
     updated_card.id,
     'redeemed',
-    actor_id,
+    v_actor_id,
     jsonb_build_object(
       'business_id', p_business_id,
       'original_bill', original_bill_value,
@@ -498,7 +498,7 @@ begin
       points_awarded_value,
       business_row.commission_rate_percent,
       commission_amount_value,
-      actor_id,
+      v_actor_id,
       format(
         'Gift card code: %s. Gift card value: %s. Gift card remaining balance: %s. Original receipt total: %s. Bill after gift card: %s. Tax added: %s. Service charge added: %s. Total before gift card: %s. Final bill after gift card: %s.',
         updated_card.code,

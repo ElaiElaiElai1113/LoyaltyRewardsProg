@@ -22,13 +22,13 @@ security definer
 set search_path = ''
 as $$
 declare
-  actor_id uuid := auth.uid();
+  v_actor_id uuid := auth.uid();
   requested_program_id uuid;
   normalized_pickup_window text := trim(coalesce(p_pickup_window, ''));
   normalized_notes text := nullif(trim(coalesce(p_notes, '')), '');
   result_redemption public.redemptions%rowtype;
 begin
-  if actor_id is null then
+  if v_actor_id is null then
     raise exception 'Authentication required';
   end if;
 
@@ -37,7 +37,7 @@ begin
     -- the race between the replay lookup and the unique redemption insert.
     perform pg_catalog.pg_advisory_xact_lock(
       pg_catalog.hashtextextended(
-        actor_id::text || ':' || p_client_request_id::text,
+        v_actor_id::text || ':' || p_client_request_id::text,
         0
       )
     );
@@ -62,7 +62,7 @@ begin
         and exists (
           select 1
           from public.redemptions redemption_row
-          where redemption_row.profile_id = actor_id
+          where redemption_row.profile_id = v_actor_id
             and redemption_row.client_request_id = p_client_request_id
         )
       then
@@ -85,7 +85,7 @@ begin
   -- The inner function has legacy replay handling for older callers. Validate
   -- its returned row as well so a racing legacy request cannot bypass strict
   -- payload matching.
-  if result_redemption.profile_id <> actor_id
+  if result_redemption.profile_id <> v_actor_id
     or result_redemption.program_id <> requested_program_id
     or result_redemption.reward_id <> p_reward_id
     or trim(result_redemption.pickup_window) <> normalized_pickup_window

@@ -1008,7 +1008,7 @@ security definer
 set search_path = public
 as $$
 declare
-  actor_id uuid := auth.uid();
+  v_actor_id uuid := auth.uid();
   actor_profile public.profiles%rowtype;
   business_row public.businesses%rowtype;
   reward_row public.rewards%rowtype;
@@ -1016,7 +1016,7 @@ declare
   existing_redemption public.redemptions%rowtype;
   inserted_redemption public.redemptions%rowtype;
 begin
-  if actor_id is null then raise exception 'Authentication required'; end if;
+  if v_actor_id is null then raise exception 'Authentication required'; end if;
   if p_reward_id is null then raise exception 'Reward not found.'; end if;
   if p_pickup_window not in ('Now', 'Within 30 mins', 'Later today') then
     raise exception 'Invalid pickup window.';
@@ -1024,7 +1024,7 @@ begin
 
   select * into actor_profile
   from public.profiles
-  where id = actor_id
+  where id = v_actor_id
     and role = 'customer';
   if not found then raise exception 'Only customer accounts can redeem rewards.'; end if;
 
@@ -1045,7 +1045,7 @@ begin
     select 1
     from public.program_memberships pm
     where pm.program_id = reward_row.program_id
-      and pm.profile_id = actor_id
+      and pm.profile_id = v_actor_id
       and pm.role = 'member'
       and pm.status = 'active'
   ) then
@@ -1056,7 +1056,7 @@ begin
     select 1
     from public.memberships m
     where m.program_id = reward_row.program_id
-      and m.profile_id = actor_id
+      and m.profile_id = v_actor_id
       and m.status = 'active'
       and m.current_period_end > now()
   ) then
@@ -1067,7 +1067,7 @@ begin
     select * into existing_redemption
     from public.redemptions
     where program_id = reward_row.program_id
-      and profile_id = actor_id
+      and profile_id = v_actor_id
       and client_request_id = p_client_request_id
     limit 1;
     if found then return existing_redemption; end if;
@@ -1078,13 +1078,13 @@ begin
   end if;
 
   insert into public.reward_balances (program_id, profile_id)
-  values (reward_row.program_id, actor_id)
+  values (reward_row.program_id, v_actor_id)
   on conflict (program_id, profile_id) do nothing;
 
   select * into balance_row
   from public.reward_balances
   where program_id = reward_row.program_id
-    and profile_id = actor_id
+    and profile_id = v_actor_id
   for update;
 
   if balance_row.points < reward_row.points_cost then
@@ -1102,7 +1102,7 @@ begin
   set points = points - reward_row.points_cost,
       updated_at = now()
   where program_id = reward_row.program_id
-    and profile_id = actor_id
+    and profile_id = v_actor_id
     and points >= reward_row.points_cost;
   if not found then raise exception 'You do not have enough XP for this reward yet.'; end if;
 
@@ -1112,7 +1112,7 @@ begin
   )
   values (
     reward_row.program_id,
-    actor_id,
+    v_actor_id,
     reward_row.id,
     reward_row.title,
     reward_row.points_cost,
@@ -1128,7 +1128,7 @@ begin
   )
   values (
     reward_row.program_id,
-    actor_id,
+    v_actor_id,
     reward_row.business_id,
     'redeemed',
     format('%s redeemed', reward_row.title),
@@ -1148,7 +1148,7 @@ begin
   insert into public.admin_logs (program_id, actor_id, actor_name, action, details)
   values (
     reward_row.program_id,
-    actor_id,
+    v_actor_id,
     coalesce(actor_profile.full_name, 'Customer redemption'),
     'Reward redeemed',
     format(
@@ -1166,7 +1166,7 @@ exception
       select * into existing_redemption
       from public.redemptions
       where program_id = reward_row.program_id
-        and profile_id = actor_id
+        and profile_id = v_actor_id
         and client_request_id = p_client_request_id
       limit 1;
       if found then return existing_redemption; end if;

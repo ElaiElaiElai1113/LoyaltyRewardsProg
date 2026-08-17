@@ -142,6 +142,35 @@ const contracts = [
       /notify pgrst, 'reload schema'/,
     ],
   },
+  {
+    file: 'supabase/migrations/20260817125922_fix_idempotency_actor_id_ambiguity.sql',
+    required: [
+      /create or replace function public\.record_member_transaction_once\(/,
+      /create or replace function public\.record_member_transaction\(/,
+      /create or replace function public\.redeem_gift_card_once\(/,
+      /create or replace function public\.redeem_gift_card\(/,
+      /create or replace function public\.redeem_reward_once\(/,
+      /create or replace function public\.redeem_reward\(/,
+      /v_actor_id uuid := auth\.uid\(\)/,
+      /event\.actor_id = v_actor_id/,
+      /recorded_by = v_actor_id/,
+      /profile_id = v_actor_id/,
+      /revoke all on function public\.record_member_transaction_once[\s\S]*from public, anon, authenticated, service_role/,
+      /revoke all on function public\.redeem_gift_card_once[\s\S]*from public, anon, authenticated, service_role/,
+      /revoke all on function public\.redeem_reward_once[\s\S]*from public, anon, authenticated, service_role/,
+      /grant execute on function public\.record_member_transaction[\s\S]*to authenticated/,
+      /grant execute on function public\.redeem_gift_card[\s\S]*to authenticated/,
+      /grant execute on function public\.redeem_reward[\s\S]*to authenticated/,
+      /notify pgrst, 'reload schema'/,
+    ],
+    forbidden: [
+      /\bactor_id uuid := auth\.uid\(\)/,
+      /event\.actor_id = actor_id/,
+      /recorded_by = actor_id/,
+      /profile_id = actor_id/,
+      /plpgsql\.variable_conflict/,
+    ],
+  },
 ]
 
 const failures = []
