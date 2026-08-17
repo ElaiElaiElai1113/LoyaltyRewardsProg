@@ -72,6 +72,37 @@ async function expectNoHorizontalClipping(page: Page, context: string) {
   expect(layout.clippedInteractiveElements, `${context} clipped controls`).toEqual([])
 }
 
+async function expectTextInPaginatedList(page: Page, text: string) {
+  const target = page.getByText(text).first()
+  const pagination = page.getByTestId('pagination')
+
+  await expect.poll(async () =>
+    (await target.isVisible()) || (await pagination.isVisible()),
+  ).toBe(true)
+
+  if (await target.isVisible()) {
+    await expect(target).toBeVisible()
+    return
+  }
+
+  await expect(pagination).toBeVisible()
+  const pageStatus = pagination.locator('[aria-live="polite"]')
+  const nextPage = pagination.getByRole('button').last()
+
+  while (!(await nextPage.isDisabled())) {
+    const previousStatus = await pageStatus.textContent()
+    await nextPage.click()
+    await expect.poll(() => pageStatus.textContent()).not.toBe(previousStatus)
+
+    if (await target.isVisible()) {
+      await expect(target).toBeVisible()
+      return
+    }
+  }
+
+  await expect(target, `Expected to find "${text}" in the paginated list`).toBeVisible()
+}
+
 async function signInCustomer(page: Page, email = customerEmail) {
   await page.goto('/signin')
   if (await page.locator('#signin-email').count() === 0) {
@@ -134,7 +165,7 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     await page.goto('/rewards')
     await expect(page).toHaveURL(/\/dashboard$/)
     await page.goto('/gift-cards')
-    await expect(page.getByText(giftCardName).first()).toBeVisible()
+    await expectTextInPaginatedList(page, giftCardName)
     expect(errors).toEqual([])
   })
 
