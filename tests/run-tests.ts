@@ -2732,11 +2732,42 @@ runTest('Supabase E2E helpers expose workflow assertion utilities', () => {
     'signUpTestCustomer',
     'getBusinessBySlug',
     'getPartnerReferralForCustomer',
-    'getLatestGiftCardForCustomer',
-    'getLatestRedemptionForCustomer',
+    'assertExpectedQaCommerceContext',
+    'deactivateGiftCardCatalogItem',
+    'getGiftCardById',
+    'redeemGiftCardForBusinessViaRpc',
+    'getRewardForBusinessByTitle',
+    'getRewardRedemptionByRequestId',
+    'restoreRewardInventoryIfUnchanged',
   ]) {
     assert.match(helper, new RegExp(`export async function ${helperName}|export function ${helperName}`))
   }
+
+  assert.doesNotMatch(helper, /export async function getLatestGiftCardForCustomer/)
+  assert.doesNotMatch(helper, /export async function getLatestRedemptionForCustomer/)
+})
+
+runTest('hosted commerce QA confines writes to named fixtures and cleans visible catalogs', () => {
+  const helper = readFileSync('tests/e2e/helpers/supabase.ts', 'utf8')
+  const giftCards = readFileSync('tests/e2e/gift-cards.spec.ts', 'utf8')
+  const rewards = readFileSync('tests/e2e/rewards-redemption.spec.ts', 'utf8')
+  const workflow = readFileSync('.github/workflows/reward-sites-full-qa.yml', 'utf8')
+
+  assert.match(helper, /qaAccountEmailPattern/)
+  assert.match(helper, /qaBusinessSlugPattern/)
+  assert.match(helper, /if \(process\.env\.CI \|\| targetsHostedSite\)[\s\S]*Supabase is unreachable during required hosted QA/)
+  assert.match(helper, /changed concurrently; inventory was not overwritten during cleanup/)
+  assert.match(giftCards, /test\.afterAll/)
+  assert.match(giftCards, /deactivateGiftCardCatalogItem/)
+  assert.match(giftCards, /Promise\.all\(\[\s*redeemGiftCardForBusinessViaRpc/)
+  assert.match(rewards, /getRewardForBusinessByTitle/)
+  assert.match(rewards, /restoreRewardInventoryIfUnchanged/)
+  assert.match(workflow, /E2E_REWARD_NAME: QA Welcome Reward/)
+  assert.match(workflow, /E2E_REWARD_NAME: Moonbeam Breakfast/)
+  assert.equal(
+    (workflow.match(/if: steps\.verify_seeded_data\.outcome == 'success'/g) ?? []).length,
+    6,
+  )
 })
 
 runTest('gift card issuing migration enables pgcrypto token generation', () => {

@@ -13,15 +13,13 @@ concurrency:
 jobs:
   qa:
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 60
     env:
       E2E_REWARDME_URL: https://rewardme-prod.vercel.app
       E2E_WONDERTOWN_URL: https://wondertown-rewards.vercel.app
       SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
       VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
-      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -30,22 +28,78 @@ jobs:
           cache: npm
       - run: npm ci
       - name: Require isolated production QA credentials
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: >-
           test -n "$SUPABASE_URL"
           && test -n "$VITE_SUPABASE_ANON_KEY"
           && test -n "$SUPABASE_SERVICE_ROLE_KEY"
           && test -n "$E2E_PASSWORD"
       - name: Build and regression tests
+        id: build_regression
+        continue-on-error: true
         run: npm run build && npm test
-      - name: Install Playwright Chromium
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright Chromium and WebKit
+        id: install_browsers
+        continue-on-error: true
+        run: npx playwright install --with-deps chromium webkit
+
+      - name: Pagination and language isolation — both tenants
+        id: pagination_languages
+        continue-on-error: true
+        env:
+          VITE_SUPABASE_URL: ''
+          VITE_SUPABASE_ANON_KEY: ''
+        run: >-
+          node scripts/run-playwright-local.mjs
+          tests/e2e/pagination.spec.ts
+          tests/e2e/home-language-isolation.spec.ts
+          tests/e2e/business-language.spec.ts
+          tests/e2e/public-language-isolation.spec.ts
+          --workers=2
 
       - name: Verify seeded accounts, isolation, catalogs, and persisted records
+        id: verify_seeded_data
+        continue-on-error: true
+        env:
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run qa:verify-reward-sites
       - name: Verify WhatsApp-style one-tap member login on both sites
+        id: in_app_login
+        continue-on-error: true
         run: npm run test:e2e:in-app-browser
 
+      - name: Critical public, sign-in, and full-screen QR upload — RewardMe
+        id: critical_rewardme
+        continue-on-error: true
+        env:
+          E2E_BASE_URL: https://rewardme-prod.vercel.app
+          E2E_QR_LIVE_UPLOAD_CHECK: 'true'
+        run: >-
+          npx playwright test
+          tests/e2e/qr-full-screenshot.spec.ts
+          --config=playwright.critical.config.ts
+          --grep="critical public and sign-in shell|shared decoder finds an off-center QR|authenticated business upload"
+          --workers=1
+      - name: Critical public, sign-in, and full-screen QR upload — Wondertown
+        id: critical_wondertown
+        continue-on-error: true
+        env:
+          E2E_BASE_URL: https://wondertown-rewards.vercel.app
+          E2E_QR_LIVE_UPLOAD_CHECK: 'true'
+        run: >-
+          npx playwright test
+          tests/e2e/qr-full-screenshot.spec.ts
+          --config=playwright.critical.config.ts
+          --grep="critical public and sign-in shell|shared decoder finds an off-center QR|authenticated business upload"
+          --workers=1
+
       - name: QR workflow and authenticated usability — RewardMe
+        id: tenant_auth_rewardme
+        if: steps.verify_seeded_data.outcome == 'success'
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://rewardme-prod.vercel.app
           E2E_TENANT_NAME: RewardMe
@@ -56,8 +110,12 @@ jobs:
           E2E_TENANT_PRODUCT_NAME: QA Coffee
           E2E_TENANT_REWARD_NAME: QA Welcome Reward
           E2E_TENANT_GIFT_CARD_NAME: QA Gift Card
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run test:e2e:tenant-authenticated
       - name: QR workflow and authenticated usability — Wondertown
+        id: tenant_auth_wondertown
+        if: steps.verify_seeded_data.outcome == 'success'
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://wondertown-rewards.vercel.app
           E2E_TENANT_NAME: Wondertown Rewards
@@ -69,20 +127,27 @@ jobs:
           E2E_TENANT_PRODUCT_NAME: Starlight Latte
           E2E_TENANT_REWARD_NAME: Moonbeam Breakfast
           E2E_TENANT_GIFT_CARD_NAME: Moonbeam Gift Card
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run test:e2e:tenant-authenticated
 
       - name: Verify every published RewardMe role login
+        id: published_accounts_rewardme
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://rewardme-prod.vercel.app
           E2E_REWARDME_PUBLIC_ACCOUNT_CHECK: 'true'
         run: npx playwright test tests/e2e/rewardme-published-accounts.spec.ts --config=playwright.remote.config.ts --workers=1
       - name: Verify every published Wondertown role login
+        id: published_accounts_wondertown
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://wondertown-rewards.vercel.app
           E2E_REWARDME_PUBLIC_ACCOUNT_CHECK: 'true'
         run: npx playwright test tests/e2e/rewardme-published-accounts.spec.ts --config=playwright.remote.config.ts --workers=1
 
       - name: RewardMe public routes, buttons, accessibility, mobile, and tablet integrity
+        id: public_rewardme
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://rewardme-prod.vercel.app
         run: >-
@@ -93,6 +158,8 @@ jobs:
           --config=playwright.remote.config.ts
           --workers=2
       - name: Wondertown routes, map, branding, buttons, mobile, and tablet integrity
+        id: public_wondertown
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://wondertown-rewards.vercel.app
         run: >-
@@ -103,36 +170,106 @@ jobs:
           --workers=2
 
       - name: Gift-card issue, point preservation, wallet, and redemption — RewardMe
+        id: gift_cards_rewardme
+        if: steps.verify_seeded_data.outcome == 'success'
+        continue-on-error: true
+        env:
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run test:e2e:rewardme-gift-cards-live
       - name: Gift-card issue, point preservation, wallet, and redemption — Wondertown
+        id: gift_cards_wondertown
+        if: steps.verify_seeded_data.outcome == 'success'
+        continue-on-error: true
+        env:
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run test:e2e:wondertown-gift-cards-live
 
       - name: Reward redemption and fulfillment — RewardMe
+        id: rewards_rewardme
+        if: steps.verify_seeded_data.outcome == 'success'
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://rewardme-prod.vercel.app
           E2E_AUTH_ENABLED: 'true'
           E2E_CUSTOMER_EMAIL: member@rewardme.test
           E2E_BUSINESS_OWNER_EMAIL: owner@rewardme.test
           E2E_BUSINESS_STAFF_EMAIL: staff@rewardme.test
+          E2E_BUSINESS_SLUG: pinas-qa-partner
+          E2E_REWARD_NAME: QA Welcome Reward
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           WORKFLOW_TEST_RUN_ID: rewardme-${{ github.run_id }}
         run: npx playwright test tests/e2e/rewards-redemption.spec.ts --config=playwright.local.config.ts --workers=1
       - name: Reward redemption and fulfillment — Wondertown
+        id: rewards_wondertown
+        if: steps.verify_seeded_data.outcome == 'success'
+        continue-on-error: true
         env:
           E2E_BASE_URL: https://wondertown-rewards.vercel.app
           E2E_AUTH_ENABLED: 'true'
           E2E_CUSTOMER_EMAIL: member@wondertown.test
           E2E_BUSINESS_OWNER_EMAIL: owner@wondertown.test
           E2E_BUSINESS_STAFF_EMAIL: staff@wondertown.test
+          E2E_BUSINESS_SLUG: wondertown-moonbeam-cafe
+          E2E_REWARD_NAME: Moonbeam Breakfast
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           WORKFLOW_TEST_RUN_ID: wondertown-${{ github.run_id }}
         run: npx playwright test tests/e2e/rewards-redemption.spec.ts --config=playwright.local.config.ts --workers=1
 
-      - name: Upload failure traces and data audit
+      - name: Upload data audit
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: reward-sites-full-qa-${{ github.run_id }}
-          path: |
-            artifacts/monitoring/reward-sites-latest.json
-            test-results
+          path: artifacts/monitoring/reward-sites-latest.json
           if-no-files-found: warn
-          retention-days: 30
+          retention-days: 7
+
+      - name: Enforce every independent QA gate
+        if: always()
+        env:
+          BUILD_REGRESSION: ${{ steps.build_regression.outcome }}
+          INSTALL_BROWSERS: ${{ steps.install_browsers.outcome }}
+          PAGINATION_LANGUAGES: ${{ steps.pagination_languages.outcome }}
+          VERIFY_SEEDED_DATA: ${{ steps.verify_seeded_data.outcome }}
+          IN_APP_LOGIN: ${{ steps.in_app_login.outcome }}
+          CRITICAL_REWARDME: ${{ steps.critical_rewardme.outcome }}
+          CRITICAL_WONDERTOWN: ${{ steps.critical_wondertown.outcome }}
+          TENANT_AUTH_REWARDME: ${{ steps.tenant_auth_rewardme.outcome }}
+          TENANT_AUTH_WONDERTOWN: ${{ steps.tenant_auth_wondertown.outcome }}
+          PUBLISHED_ACCOUNTS_REWARDME: ${{ steps.published_accounts_rewardme.outcome }}
+          PUBLISHED_ACCOUNTS_WONDERTOWN: ${{ steps.published_accounts_wondertown.outcome }}
+          PUBLIC_REWARDME: ${{ steps.public_rewardme.outcome }}
+          PUBLIC_WONDERTOWN: ${{ steps.public_wondertown.outcome }}
+          GIFT_CARDS_REWARDME: ${{ steps.gift_cards_rewardme.outcome }}
+          GIFT_CARDS_WONDERTOWN: ${{ steps.gift_cards_wondertown.outcome }}
+          REWARDS_REWARDME: ${{ steps.rewards_rewardme.outcome }}
+          REWARDS_WONDERTOWN: ${{ steps.rewards_wondertown.outcome }}
+        run: |
+          failed=0
+          for gate in \
+            "build-regression:$BUILD_REGRESSION" \
+            "install-browsers:$INSTALL_BROWSERS" \
+            "pagination-languages:$PAGINATION_LANGUAGES" \
+            "verify-seeded-data:$VERIFY_SEEDED_DATA" \
+            "in-app-login:$IN_APP_LOGIN" \
+            "critical-rewardme:$CRITICAL_REWARDME" \
+            "critical-wondertown:$CRITICAL_WONDERTOWN" \
+            "tenant-auth-rewardme:$TENANT_AUTH_REWARDME" \
+            "tenant-auth-wondertown:$TENANT_AUTH_WONDERTOWN" \
+            "published-accounts-rewardme:$PUBLISHED_ACCOUNTS_REWARDME" \
+            "published-accounts-wondertown:$PUBLISHED_ACCOUNTS_WONDERTOWN" \
+            "public-rewardme:$PUBLIC_REWARDME" \
+            "public-wondertown:$PUBLIC_WONDERTOWN" \
+            "gift-cards-rewardme:$GIFT_CARDS_REWARDME" \
+            "gift-cards-wondertown:$GIFT_CARDS_WONDERTOWN" \
+            "rewards-rewardme:$REWARDS_REWARDME" \
+            "rewards-wondertown:$REWARDS_WONDERTOWN"
+          do
+            name="${gate%%:*}"
+            outcome="${gate#*:}"
+            if [ "$outcome" != "success" ]; then
+              echo "QA gate failed: $name ($outcome)"
+              failed=1
+            fi
+          done
+          exit "$failed"

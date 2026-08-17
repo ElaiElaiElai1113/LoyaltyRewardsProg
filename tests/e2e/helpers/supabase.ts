@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'node:fs'
 import { test } from '@playwright/test'
 import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-import { e2ePassword } from './env.js'
+import { e2eBaseUrl, e2ePassword } from './env.js'
 
 type AppSupabaseClient = SupabaseClient
 
@@ -32,6 +32,17 @@ export interface E2EMemberTransaction {
   note: string | null
   clientRequestId: string | null
 }
+
+interface E2ECommerceBusiness {
+  id: string
+  name: string
+  slug: string
+  program_id: string
+  reward_rate_percent: number
+}
+
+const qaAccountEmailPattern = /(?:^|[._+-])(?:qa|test)(?:[._+@-]|$)|@(?:medellin|rewardme|rewardsplatform|velvetbrew|wondertown)\.test$/i
+const qaBusinessSlugPattern = /(?:qa|test|velvet|wondertown)/i
 
 export interface E2EAgreementAcceptance {
   id: string
@@ -88,6 +99,11 @@ function isSupabaseFetchError(error: unknown) {
 
 function skipIfSupabaseUnavailable(error: unknown) {
   if (isSupabaseFetchError(error)) {
+    const targetHostname = new URL(e2eBaseUrl).hostname
+    const targetsHostedSite = !['127.0.0.1', 'localhost'].includes(targetHostname)
+    if (process.env.CI || targetsHostedSite) {
+      throw new Error('Supabase is unreachable during required hosted QA.', { cause: error })
+    }
     test.skip(true, 'Supabase is unreachable in this environment.')
   }
 }
@@ -194,6 +210,80 @@ export async function getProfileByEmail(client: AppSupabaseClient, email: string
   }
 
   return mapProfile(data as Record<string, unknown>)
+}
+
+export function assertExpectedQaAccount(
+  profile: E2EProfile,
+  expectedEmail: string,
+  accountLabel: string,
+) {
+  const actualEmail = profile.email.trim().toLowerCase()
+  const configuredEmail = expectedEmail.trim().toLowerCase()
+
+  if (actualEmail !== configuredEmail) {
+    throw new Error(
+      `Refusing hosted commerce write: ${accountLabel} resolved to ${profile.email}, not ${expectedEmail}.`,
+    )
+  }
+
+  if (!qaAccountEmailPattern.test(configuredEmail)) {
+    throw new Error(
+      `Refusing hosted commerce write: ${accountLabel} ${expectedEmail} is not an explicitly marked QA account.`,
+    )
+  }
+}
+
+export function assertExpectedQaCommerceContext(input: {
+  business: E2ECommerceBusiness
+  expectedBusinessSlug: string
+  owner: E2EProfile
+  expectedOwnerEmail: string
+  staff: E2EProfile
+  expectedStaffEmail: string
+  customer: E2EProfile
+  expectedCustomerEmail: string
+}) {
+  assertExpectedQaOwnerBusinessContext({
+    business: input.business,
+    expectedBusinessSlug: input.expectedBusinessSlug,
+    owner: input.owner,
+    expectedOwnerEmail: input.expectedOwnerEmail,
+  })
+  assertExpectedQaAccount(input.staff, input.expectedStaffEmail, 'business staff')
+  assertExpectedQaAccount(input.customer, input.expectedCustomerEmail, 'customer')
+
+  if (input.staff.businessId !== input.business.id) {
+    throw new Error(
+      'Refusing hosted commerce write: configured QA staff account does not belong to the expected business ID.',
+    )
+  }
+}
+
+export function assertExpectedQaOwnerBusinessContext(input: {
+  business: E2ECommerceBusiness
+  expectedBusinessSlug: string
+  owner: E2EProfile
+  expectedOwnerEmail: string
+}) {
+  assertExpectedQaAccount(input.owner, input.expectedOwnerEmail, 'business owner')
+
+  if (input.business.slug !== input.expectedBusinessSlug) {
+    throw new Error(
+      `Refusing hosted commerce write: owner business ${input.business.slug} does not match configured QA business ${input.expectedBusinessSlug}.`,
+    )
+  }
+
+  if (!qaBusinessSlugPattern.test(input.expectedBusinessSlug)) {
+    throw new Error(
+      `Refusing hosted commerce write: ${input.expectedBusinessSlug} is not an explicitly marked QA business.`,
+    )
+  }
+
+  if (input.owner.businessId !== input.business.id) {
+    throw new Error(
+      'Refusing hosted commerce write: configured QA owner account does not belong to the expected business ID.',
+    )
+  }
 }
 
 export async function getRewardBalance(client: AppSupabaseClient, profileId: string): Promise<E2ERewardBalance> {
@@ -535,72 +625,96 @@ export async function createGiftCardCatalogItem(
   return data as { id: string; business_id: string; title: string; points_cost: number; is_active: boolean }
 }
 
-export async function issueGiftCardForCustomer(
+export async function deactivateGiftCardCatalogItem(
   client: AppSupabaseClient,
-  catalogId: string,
-  customerProfileId: string,
-) {
-  const { data, error } = await client.rpc('issue_gift_card', {
-    p_catalog_id: catalogId,
-    p_customer_id: customerProfileId,
-  })
-
-  const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
-  if (error || !row) {
-    throw new Error(`Could not issue gift card: ${error?.message ?? 'missing row'}`)
-  }
-
-  return row
-}
-
-export async function redeemGiftCardForBusiness(
-  client: AppSupabaseClient,
-  giftCardId: string,
   businessId: string,
-  transaction?: {
-    originalBill: number | null
-    receiptNumber: string | null
-    giftCardAmount: number | null
-    clientRequestId: string
-  },
+  catalogId: string | null,
+  expectedTitle: string,
 ) {
-  const { data, error } = await client.rpc('redeem_gift_card', {
-    p_gift_card_id: giftCardId,
-    p_business_id: businessId,
-    p_original_bill: transaction?.originalBill ?? null,
-    p_receipt_number: transaction?.receiptNumber ?? null,
-    p_gift_card_amount: transaction?.giftCardAmount ?? null,
-    p_client_request_id: transaction?.clientRequestId ?? null,
-  })
+  let lookup = client
+    .from('gift_card_catalog')
+    .select('id, business_id, title, is_active')
+    .eq('business_id', businessId)
+    .eq('title', expectedTitle)
+    .limit(2)
 
-  const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
-  if (error || !row) {
-    throw new Error(`Could not redeem gift card: ${error?.message ?? 'missing row'}`)
+  if (catalogId) {
+    lookup = lookup.eq('id', catalogId)
   }
 
-  return row
-}
+  const { data: matches, error: lookupError } = await lookup
 
-export async function getLatestGiftCardForCustomer(client: AppSupabaseClient, customerProfileId: string) {
+  if (lookupError) {
+    throw new Error(`Could not locate QA gift-card catalog item for cleanup: ${lookupError.message}`)
+  }
+
+  if ((matches ?? []).length === 0) {
+    throw new Error(
+      `QA gift-card catalog cleanup found no exact ${expectedTitle} row for business ${businessId}.`,
+    )
+  }
+
+  if ((matches ?? []).length > 1) {
+    throw new Error(
+      `QA gift-card catalog cleanup found multiple ${expectedTitle} rows for business ${businessId}; none were changed.`,
+    )
+  }
+
+  const exactCatalog = matches![0] as { id: string; business_id: string; title: string; is_active: boolean }
+  if (exactCatalog.is_active === false) {
+    return exactCatalog
+  }
+
   const { data, error } = await client
-    .from('gift_cards')
-    .select('id, business_id, customer_id, status, code, public_token, points_spent, initial_balance, remaining_balance, redeemed_at, redeemed_by, redeemed_at_business')
-    .eq('customer_id', customerProfileId)
-    .order('created_at', { ascending: false })
-    .limit(1)
+    .from('gift_card_catalog')
+    .update({ is_active: false })
+    .eq('id', exactCatalog.id)
+    .eq('business_id', businessId)
+    .eq('title', expectedTitle)
+    .eq('is_active', true)
+    .select('id, business_id, title, is_active')
+
+  if (error) {
+    throw new Error(`Could not deactivate QA gift-card catalog item ${exactCatalog.id}: ${error.message}`)
+  }
+
+  if ((data ?? []).length === 1) {
+    return data![0] as { id: string; business_id: string; title: string; is_active: boolean }
+  }
+
+  if ((data ?? []).length > 1) {
+    throw new Error(`QA gift-card catalog cleanup matched multiple rows for ${exactCatalog.id}.`)
+  }
+
+  const { data: current, error: currentError } = await client
+    .from('gift_card_catalog')
+    .select('id, business_id, title, is_active')
+    .eq('id', exactCatalog.id)
+    .eq('business_id', businessId)
+    .eq('title', expectedTitle)
     .single()
 
-  if (error || !data) {
-    throw new Error(`Gift card not found for customer ${customerProfileId}: ${error?.message ?? 'missing row'}`)
+  if (currentError || !current) {
+    throw new Error(
+      `QA gift-card catalog item ${exactCatalog.id} could not be verified after cleanup: ${currentError?.message ?? 'missing row'}`,
+    )
   }
 
-  return data as Record<string, unknown>
+  if (
+    current.business_id !== businessId
+    || current.title !== expectedTitle
+    || current.is_active !== false
+  ) {
+    throw new Error(`QA gift-card catalog item ${exactCatalog.id} changed concurrently and was not deactivated.`)
+  }
+
+  return current as { id: string; business_id: string; title: string; is_active: boolean }
 }
 
 export async function getGiftCardById(client: AppSupabaseClient, giftCardId: string) {
   const { data, error } = await client
     .from('gift_cards')
-    .select('id, business_id, customer_id, status, code, public_token, points_spent, initial_balance, remaining_balance, redeemed_at, redeemed_by, redeemed_at_business')
+    .select('id, business_id, catalog_id, customer_id, status, code, public_token, points_spent, initial_balance, remaining_balance, redeemed_at, redeemed_by, redeemed_at_business')
     .eq('id', giftCardId)
     .single()
 
@@ -611,24 +725,101 @@ export async function getGiftCardById(client: AppSupabaseClient, giftCardId: str
   return data as Record<string, unknown>
 }
 
-export async function getFirstRewardForBusiness(client: AppSupabaseClient, businessId: string) {
+export async function redeemGiftCardForBusinessViaRpc(
+  client: AppSupabaseClient,
+  giftCardId: string,
+  businessId: string,
+  transaction: {
+    originalBill: number
+    receiptNumber: string
+    giftCardAmount: number | null
+    clientRequestId: string
+  },
+) {
+  const { data, error } = await client.rpc('redeem_gift_card', {
+    p_gift_card_id: giftCardId,
+    p_business_id: businessId,
+    p_original_bill: transaction.originalBill,
+    p_receipt_number: transaction.receiptNumber,
+    p_gift_card_amount: transaction.giftCardAmount,
+    p_client_request_id: transaction.clientRequestId,
+  })
+
+  const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
+  if (error || !row) {
+    throw new Error(`Could not replay gift-card redemption: ${error?.message ?? 'missing row'}`)
+  }
+
+  return row
+}
+
+export async function getRewardForBusinessByTitle(
+  client: AppSupabaseClient,
+  businessId: string,
+  expectedTitle: string,
+) {
   const { data, error } = await client
     .from('rewards')
     .select('id, business_id, title, points_cost, inventory')
     .eq('business_id', businessId)
-    .gt('inventory', 0)
-    .order('points_cost', { ascending: true })
-    .limit(1)
+    .eq('title', expectedTitle)
     .single()
 
   if (error || !data) {
-    throw new Error(`Reward not found for business ${businessId}: ${error?.message ?? 'missing row'}`)
+    throw new Error(
+      `Configured QA reward ${expectedTitle} was not found for business ${businessId}: ${error?.message ?? 'missing row'}`,
+    )
   }
 
   return data as { id: string; business_id: string; title: string; points_cost: number; inventory: number }
 }
 
-export async function redeemRewardForCustomer(
+export async function restoreRewardInventoryIfUnchanged(
+  client: AppSupabaseClient,
+  input: {
+    rewardId: string
+    businessId: string
+    expectedTitle: string
+    expectedCurrentInventory: number
+    originalInventory: number
+  },
+) {
+  const { data, error } = await client
+    .from('rewards')
+    .update({ inventory: input.originalInventory })
+    .eq('id', input.rewardId)
+    .eq('business_id', input.businessId)
+    .eq('title', input.expectedTitle)
+    .eq('inventory', input.expectedCurrentInventory)
+    .select('id, business_id, title, points_cost, inventory')
+
+  if (error) {
+    throw new Error(`Could not restore QA reward inventory for ${input.rewardId}: ${error.message}`)
+  }
+
+  if ((data ?? []).length === 1) {
+    return data![0] as { id: string; business_id: string; title: string; points_cost: number; inventory: number }
+  }
+
+  if ((data ?? []).length > 1) {
+    throw new Error(`QA reward inventory cleanup matched multiple rows for ${input.rewardId}.`)
+  }
+
+  const current = await getRewardById(client, input.rewardId)
+  if (
+    current.business_id !== input.businessId
+    || current.title !== input.expectedTitle
+    || current.inventory !== input.originalInventory
+  ) {
+    throw new Error(
+      `QA reward ${input.rewardId} changed concurrently; inventory was not overwritten during cleanup.`,
+    )
+  }
+
+  return current
+}
+
+export async function redeemRewardForCustomerViaRpc(
   client: AppSupabaseClient,
   rewardId: string,
   notes: string,
@@ -663,29 +854,25 @@ export async function getRewardById(client: AppSupabaseClient, rewardId: string)
   return data as { id: string; business_id: string; title: string; points_cost: number; inventory: number }
 }
 
-export async function getLatestRedemptionForCustomer(client: AppSupabaseClient, customerProfileId: string) {
+export async function getRewardRedemptionByRequestId(
+  client: AppSupabaseClient,
+  customerProfileId: string,
+  rewardId: string,
+  clientRequestId: string,
+) {
   const { data, error } = await client
     .from('redemptions')
-    .select('id, profile_id, reward_id, reward_title, points_cost, status, notes')
+    .select('id, profile_id, reward_id, reward_title, points_cost, pickup_window, status, notes, client_request_id')
     .eq('profile_id', customerProfileId)
-    .order('redeemed_at', { ascending: false })
-    .limit(1)
+    .eq('reward_id', rewardId)
+    .eq('client_request_id', clientRequestId)
     .single()
 
   if (error || !data) {
-    throw new Error(`Redemption not found for customer ${customerProfileId}: ${error?.message ?? 'missing row'}`)
+    throw new Error(
+      `Reward redemption ${clientRequestId} was not found for customer ${customerProfileId}: ${error?.message ?? 'missing row'}`,
+    )
   }
 
   return data as Record<string, unknown>
-}
-
-export async function fulfillRewardRedemption(client: AppSupabaseClient, redemptionId: string) {
-  const { error } = await client
-    .from('redemptions')
-    .update({ status: 'fulfilled' })
-    .eq('id', redemptionId)
-
-  if (error) {
-    throw new Error(`Could not fulfill reward redemption ${redemptionId}: ${error.message}`)
-  }
 }

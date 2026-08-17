@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Page, type Route } from '@playwright/test'
 
 import {
   getLatestMemberTransactionByNote,
@@ -26,6 +26,26 @@ const giftCardFinalPrice = process.env.E2E_TENANT_GIFT_CARD_FINAL_PRICE ?? ''
 const password = process.env.E2E_PASSWORD ?? ''
 
 const escapedBusinessName = businessName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+const secondaryCustomerEmail = neighborEmail || (
+  customerEmail.toLowerCase() === 'member@wondertown.test'
+    ? 'neighbor@wondertown.test'
+    : customerEmail
+)
+
+type QuickSignInRole = {
+  buttonName: 'Sign in as Business' | 'Sign in as Customer'
+  defaultEmail: string
+  expectedUrl: RegExp
+}
+
+function requireQaConfiguration(name: string, value: string) {
+  if (!value.trim()) {
+    throw new Error(
+      `${name} is required when E2E_INCLUDE_TENANT_AUTH_SMOKE=true. `
+      + 'Configure the permanent QA account instead of skipping its hosted UI coverage.',
+    )
+  }
+}
 
 function monitorUnexpectedErrors(page: Page) {
   const errors: string[] = []
@@ -103,12 +123,66 @@ async function expectTextInPaginatedList(page: Page, text: string) {
   await expect(target, `Expected to find "${text}" in the paginated list`).toBeVisible()
 }
 
+async function signInWithQuickRoleButton(
+  page: Page,
+  email: string,
+  { buttonName, defaultEmail, expectedUrl }: QuickSignInRole,
+) {
+  const button = page.getByRole('button', { name: buttonName, exact: true })
+
+  if (email === defaultEmail) {
+    await button.click()
+    await expect(page).toHaveURL(expectedUrl)
+    return
+  }
+
+  let passwordRequestWasReplaced = false
+  const passwordTokenRoute = /\/auth\/v1\/token(?:\?.*)?$/
+  const replaceQuickAccount = async (route: Route) => {
+    const requestUrl = new URL(route.request().url())
+    if (requestUrl.searchParams.get('grant_type') !== 'password') {
+      await route.continue()
+      return
+    }
+
+    let requestBody: Record<string, unknown>
+    try {
+      requestBody = route.request().postDataJSON() as Record<string, unknown>
+    } catch {
+      throw new Error(`Could not read the ${buttonName} password request for ${email}.`)
+    }
+
+    passwordRequestWasReplaced = true
+    await route.continue({
+      postData: JSON.stringify({
+        ...requestBody,
+        email,
+        password,
+      }),
+    })
+  }
+
+  await page.route(passwordTokenRoute, replaceQuickAccount)
+  try {
+    await button.click()
+    await expect(page).toHaveURL(expectedUrl)
+    expect(
+      passwordRequestWasReplaced,
+      `${buttonName} did not submit a password request that could authenticate ${email}.`,
+    ).toBe(true)
+  } finally {
+    await page.unroute(passwordTokenRoute, replaceQuickAccount)
+  }
+}
+
 async function signInCustomer(page: Page, email = customerEmail) {
   await page.goto('/signin')
   if (await page.locator('#signin-email').count() === 0) {
-    test.skip(email !== customerEmail, 'Temporary test sign-in only exposes the primary customer account.')
-    await page.getByRole('button', { name: 'Sign in as Customer', exact: true }).click()
-    await expect(page).toHaveURL(/\/dashboard$/)
+    await signInWithQuickRoleButton(page, email, {
+      buttonName: 'Sign in as Customer',
+      defaultEmail: customerEmail,
+      expectedUrl: /\/dashboard$/,
+    })
     return
   }
   await page.locator('#signin-email').fill(email)
@@ -121,9 +195,11 @@ async function signInCustomer(page: Page, email = customerEmail) {
 async function signInBusiness(page: Page, email = businessOwnerEmail) {
   await page.goto('/signin?portal=business')
   if (await page.locator('#signin-email').count() === 0) {
-    test.skip(email !== businessOwnerEmail, 'Temporary test sign-in only exposes the business owner account.')
-    await page.getByRole('button', { name: 'Sign in as Business', exact: true }).click()
-    await expect(page).toHaveURL(/\/business\/dashboard$/)
+    await signInWithQuickRoleButton(page, email, {
+      buttonName: 'Sign in as Business',
+      defaultEmail: businessOwnerEmail,
+      expectedUrl: /\/business\/dashboard$/,
+    })
     return
   }
   await page.locator('#signin-email').fill(email)
@@ -135,6 +211,14 @@ async function signInBusiness(page: Page, email = businessOwnerEmail) {
 
 test.describe.serial('permanent authenticated tenant smoke', () => {
   test.skip(!enabled, 'Set E2E_INCLUDE_TENANT_AUTH_SMOKE=true with an isolated tenant QA fixture.')
+
+  test.beforeAll(() => {
+    requireQaConfiguration('E2E_TENANT_NAME', tenantName)
+    requireQaConfiguration('E2E_TENANT_CUSTOMER_EMAIL', customerEmail)
+    requireQaConfiguration('E2E_TENANT_BUSINESS_OWNER_EMAIL', businessOwnerEmail)
+    requireQaConfiguration('E2E_TENANT_BUSINESS_STAFF_EMAIL', businessStaffEmail)
+    requireQaConfiguration('E2E_PASSWORD', password)
+  })
 
   let memberProfile: E2EProfile
   let startingPoints = 0
@@ -199,16 +283,21 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     expect(errors).toEqual([])
   })
 
-  test('second member login and session work', async ({ page }) => {
-    test.skip(!neighborEmail, 'Set E2E_TENANT_NEIGHBOR_EMAIL to verify an optional second member.')
+  test('API-assisted independent customer session works, including the second member when configured', async ({ page }) => {
     const errors = monitorUnexpectedErrors(page)
+    const secondaryCustomerClient = await getSupabaseSessionClient(secondaryCustomerEmail)
+    const secondaryCustomerProfile = await getProfileByEmail(
+      secondaryCustomerClient,
+      secondaryCustomerEmail,
+    )
 
-    await signInCustomer(page, neighborEmail)
+    await signInCustomer(page, secondaryCustomerEmail)
     await expect(page.locator('body')).toContainText(tenantName)
     await page.reload()
     await expect(page).toHaveURL(/\/dashboard$/)
     await page.goto('/profile')
     await expect(page.getByRole('heading', { name: /page not found/i })).toHaveCount(0)
+    await expect(page.locator('#fullName')).toHaveValue(secondaryCustomerProfile.fullName)
     expect(errors).toEqual([])
   })
 
@@ -276,12 +365,15 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     expect(errors).toEqual([])
   })
 
-  test('business staff login and staff-safe operations work', async ({ page }) => {
-    test.skip(!businessStaffEmail, 'Set E2E_TENANT_BUSINESS_STAFF_EMAIL to verify optional staff access.')
+  test('API-assisted business staff session and staff-safe operations work', async ({ page }) => {
     const errors = monitorUnexpectedErrors(page)
+    const staffClient = await getSupabaseSessionClient(businessStaffEmail)
+    const staffProfile = await getProfileByEmail(staffClient, businessStaffEmail)
 
     await signInBusiness(page, businessStaffEmail)
     await expect(page.locator('body')).toContainText(tenantName)
+    await expect(page.locator('aside')).toContainText(staffProfile.fullName)
+    await expect(page.locator('aside')).toContainText(/business staff|personal del negocio|kawani ng negosyo/i)
     await page.reload()
     await expect(page).toHaveURL(/\/business\/dashboard$/)
 
@@ -291,6 +383,13 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
       await expect(page.getByRole('heading', { name: /page not found/i })).toHaveCount(0)
       await expect(page.locator('body')).not.toContainText(/application error|something went wrong/i)
     }
+
+    for (const linkName of [/products/i, /^rewards$/i, /promotions/i, /gift cards/i, /settings/i]) {
+      await expect(page.getByRole('link', { name: linkName })).toHaveCount(0)
+    }
+
+    await page.goto('/business/settings')
+    await expect(page).toHaveURL(/\/business\/dashboard$/)
 
     expect(errors).toEqual([])
   })
