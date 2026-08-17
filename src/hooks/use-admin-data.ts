@@ -488,7 +488,7 @@ export function useFulfillRedemption(actor?: Profile | null) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: (redemptionId: string) => adminService.fulfillRedemption(redemptionId, actor!),
+    mutationFn: (redemptionId: string) => adminService.fulfillRedemption(redemptionId),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: adminKeys.overview })
       void queryClient.invalidateQueries({ queryKey: ['businessRedemptions', actor?.businessId] })

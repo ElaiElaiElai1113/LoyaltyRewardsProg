@@ -137,6 +137,28 @@ export async function getSupabaseSessionClient(email: string, password = e2ePass
   return client
 }
 
+export async function getAdminLogById(client: AppSupabaseClient, adminLogId: string) {
+  const { data, error } = await client
+    .from('admin_logs')
+    .select('id, program_id, actor_id, actor_name, action, details, created_at')
+    .eq('id', adminLogId)
+    .single()
+
+  if (error || !data) {
+    throw new Error(`Admin audit log ${adminLogId} was not persisted: ${error?.message ?? 'missing row'}`)
+  }
+
+  return data as {
+    id: string
+    program_id: string
+    actor_id: string | null
+    actor_name: string
+    action: string
+    details: string
+    created_at: string
+  }
+}
+
 export async function signUpTestCustomer(email: string, fullName: string, password = e2ePassword) {
   const client = createSupabaseClient()
   const { data, error } = await client.auth.signUp({

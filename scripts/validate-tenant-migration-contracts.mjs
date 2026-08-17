@@ -210,6 +210,37 @@ const contracts = [
       /select\s+public\.redeem_reward_once\s*\([\s\S]{0,1200}?\)\s+into\s+result_redemption/,
     ],
   },
+  {
+    file: 'supabase/migrations/20260817235443_atomic_tenant_reward_fulfillment.sql',
+    required: [
+      /create or replace function public\.fulfill_redemption\(\s*p_redemption_id uuid\s*\)/,
+      /returns jsonb[\s\S]{0,100}security definer\s+set search_path = ''/,
+      /v_actor_id uuid := auth\.uid\(\)/,
+      /reward_row\.program_id = redemption_row\.program_id/,
+      /business_row\.program_id = redemption_row\.program_id/,
+      /where redemption_row\.id = p_redemption_id\s+for update of redemption_row/,
+      /membership\.program_id = v_target\.program_id/,
+      /membership\.business_id = v_target\.business_id/,
+      /membership\.profile_id = v_actor_id/,
+      /membership\.role in \('business-owner', 'business-staff'\)/,
+      /membership\.status = 'active'/,
+      /private\.has_required_agreements\(v_actor_id\) is not true/,
+      /redemption_row\.program_id = v_target\.program_id/,
+      /redemption_row\.reward_id = v_target\.reward_id/,
+      /redemption_row\.status = 'ready'/,
+      /insert into public\.admin_logs \(\s*program_id,\s*actor_id,\s*actor_name,\s*action,\s*details/,
+      /values \(\s*v_target\.program_id,\s*v_actor_id/,
+      /returning id into v_admin_log_id/,
+      /revoke all on function public\.fulfill_redemption\(uuid\)[\s\S]*from public, anon, authenticated, service_role/,
+      /grant execute on function public\.fulfill_redemption\(uuid\)[\s\S]*to authenticated/,
+      /notify pgrst, 'reload schema'/,
+    ],
+    forbidden: [
+      /set search_path = public/,
+      /grant execute on function public\.fulfill_redemption\(uuid\)[\s\S]*to (?:public|anon|service_role)/,
+      /insert into public\.admin_logs \(\s*actor_id/,
+    ],
+  },
 ]
 
 const failures = []

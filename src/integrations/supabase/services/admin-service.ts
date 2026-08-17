@@ -898,39 +898,33 @@ export const adminService = {
     return camelCaseRow(row as Record<string, unknown>) as unknown as Profile
   },
 
-  async fulfillRedemption(redemptionId: string, actor: Profile) {
+  async fulfillRedemption(redemptionId: string): Promise<Redemption> {
     const sb = requireSupabase()
 
-    // Fetch redemption
-    const { data: redemption, error: fetchError } = await sb
-      .from('redemptions')
-      .select('*')
-      .eq('id', redemptionId)
-      .single()
-
-    if (fetchError || !redemption) {
-      throw new Error('Redemption not found.')
-    }
-
-    // Update status
-    const { error: updateError } = await sb
-      .from('redemptions')
-      .update({ status: 'fulfilled' })
-      .eq('id', redemptionId)
-
-    if (updateError) {
-      throw new Error(updateError.message)
-    }
-
-    // Log admin action
-    const { error: logError } = await sb.from('admin_logs').insert({
-      actor_name: actor.fullName,
-      action: 'Redemption fulfilled',
-      details: `Marked reward "${redemption.reward_title}" as fulfilled for member ID: ${redemption.profile_id}.`,
+    const { data, error } = await sb.rpc('fulfill_redemption', {
+      p_redemption_id: redemptionId,
     })
 
-    if (logError) {
-      throw new Error(logError.message)
+    const result = (Array.isArray(data) ? data[0] : data) as {
+      redemption?: Record<string, unknown>
+      program_id?: unknown
+      business_id?: unknown
+      admin_log_id?: unknown
+      already_fulfilled?: unknown
+    } | null
+    const hasCommittedResult = Boolean(
+      result?.redemption
+      && result.redemption.id === redemptionId
+      && result.redemption.status === 'fulfilled'
+      && typeof result.program_id === 'string'
+      && typeof result.business_id === 'string'
+      && typeof result.already_fulfilled === 'boolean'
+      && (result.already_fulfilled || typeof result.admin_log_id === 'string'),
+    )
+    if (error || !hasCommittedResult || !result?.redemption) {
+      throw new Error(friendlySupabaseError(error, 'Failed to fulfill redemption.'))
     }
+
+    return camelCaseRow(result.redemption) as unknown as Redemption
   },
 }

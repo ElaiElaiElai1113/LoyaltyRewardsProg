@@ -2842,6 +2842,53 @@ runTest('composite-returning RPC wrappers expand rows before rowtype assignment'
   }
 })
 
+runTest('reward fulfillment is one tenant-scoped atomic database operation', () => {
+  const migration = readFileSync(
+    'supabase/migrations/20260817235443_atomic_tenant_reward_fulfillment.sql',
+    'utf8',
+  )
+  const service = readFileSync('src/integrations/supabase/services/admin-service.ts', 'utf8')
+  const hook = readFileSync('src/hooks/use-admin-data.ts', 'utf8')
+  const method = service.slice(
+    service.indexOf('async fulfillRedemption'),
+    service.indexOf('\n  },\n}', service.indexOf('async fulfillRedemption')),
+  )
+
+  assert.match(migration, /security definer\s+set search_path = ''/i)
+  assert.match(migration, /where redemption_row\.id = p_redemption_id\s+for update of redemption_row/)
+  assert.match(migration, /reward_row\.program_id = redemption_row\.program_id/)
+  assert.match(migration, /business_row\.program_id = redemption_row\.program_id/)
+  assert.match(migration, /membership\.program_id = v_target\.program_id/)
+  assert.match(migration, /membership\.business_id = v_target\.business_id/)
+  assert.match(migration, /membership\.status = 'active'/)
+  assert.match(migration, /private\.has_required_agreements\(v_actor_id\) is not true/)
+  assert.match(
+    migration,
+    /update public\.redemptions redemption_row[\s\S]*redemption_row\.program_id = v_target\.program_id[\s\S]*redemption_row\.status = 'ready'/,
+  )
+  assert.match(
+    migration,
+    /insert into public\.admin_logs \(\s*program_id,\s*actor_id,\s*actor_name,\s*action,\s*details\s*\) values \(\s*v_target\.program_id,\s*v_actor_id/,
+  )
+  assert.match(
+    migration,
+    /revoke all on function public\.fulfill_redemption\(uuid\)\s+from public, anon, authenticated, service_role/,
+  )
+  assert.match(
+    migration,
+    /grant execute on function public\.fulfill_redemption\(uuid\)\s+to authenticated/,
+  )
+
+  assert.match(method, /sb\.rpc\('fulfill_redemption'/)
+  assert.match(method, /p_redemption_id: redemptionId/)
+  assert.match(method, /result\.redemption\.id === redemptionId/)
+  assert.match(method, /result\.redemption\.status === 'fulfilled'/)
+  assert.match(method, /result\.already_fulfilled \|\| typeof result\.admin_log_id === 'string'/)
+  assert.doesNotMatch(method, /\.from\('redemptions'\)/)
+  assert.doesNotMatch(method, /\.from\('admin_logs'\)/)
+  assert.match(hook, /adminService\.fulfillRedemption\(redemptionId\)/)
+})
+
 runTest('gift card issuing migration enables pgcrypto token generation', () => {
   const migration = readFileSync('supabase/migrations/20260528000000_enable_pgcrypto_for_gift_cards.sql', 'utf8')
 

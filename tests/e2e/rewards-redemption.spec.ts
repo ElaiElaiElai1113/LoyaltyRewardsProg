@@ -6,6 +6,7 @@ import {
   assertExpectedQaCommerceContext,
   assertExpectedQaOwnerBusinessContext,
   ensureActiveMembership,
+  getAdminLogById,
   getBusinessById,
   getBusinessBySlug,
   getProfileByEmail,
@@ -19,11 +20,10 @@ import {
   restoreRewardInventoryIfUnchanged,
 } from './helpers/supabase.js'
 
-function isExactRedemptionUpdate(response: Response, redemptionId: string) {
+function isFulfillmentRpc(response: Response) {
   const url = new URL(response.url())
-  return response.request().method() === 'PATCH'
-    && url.pathname.endsWith('/rest/v1/redemptions')
-    && url.searchParams.get('id') === `eq.${redemptionId}`
+  return response.request().method() === 'POST'
+    && url.pathname.endsWith('/rest/v1/rpc/fulfill_redemption')
 }
 
 function isBusinessRedemptionsRead(response: Response) {
@@ -43,6 +43,8 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
   const redemptionNote = `reward-workflow-redemption-${runId}`
 
   let businessId = ''
+  let programId = ''
+  let ownerProfileId = ''
   let customerProfileId = ''
   let rewardId = ''
   let rewardTitle = ''
@@ -96,6 +98,8 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
       expectedCustomerEmail: e2eAccounts.customer,
     })
     businessId = business.id
+    programId = business.program_id
+    ownerProfileId = owner.id
     customerProfileId = customer.id
 
     const reward = await getRewardForBusinessByTitle(customerClient, businessId, expectedRewardName)
@@ -162,6 +166,7 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
 
   test('RW003 business can see and fulfill the reward redemption', async ({ page }) => {
     const ownerClient = await getSupabaseSessionClient(e2eAccounts.businessOwner)
+    const adminClient = await getSupabaseSessionClient(e2eAccounts.admin)
 
     const queueDataResponsePromise = page.waitForResponse(isBusinessRedemptionsRead)
     await signInBusinessPortal(page, e2eAccounts.businessOwner)
@@ -184,34 +189,49 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
     await expect(redemptionRow).toBeVisible()
     await expect(redemptionRow.getByRole('heading')).toHaveText(rewardTitle)
 
-    await page.route('**/rest/v1/redemptions*', async (route) => {
+    await page.route('**/rest/v1/rpc/fulfill_redemption', async (route) => {
       const request = route.request()
-      const url = new URL(request.url())
-      const attemptedId = url.searchParams.get('id')
-      if (request.method() === 'PATCH' && attemptedId !== `eq.${redemptionId}`) {
+      const payload = request.postDataJSON() as { p_redemption_id?: string } | null
+      if (request.method() === 'POST' && payload?.p_redemption_id !== redemptionId) {
         await route.abort('blockedbyclient')
         return
       }
       await route.continue()
     })
 
-    const anyUpdateRequestPromise = page.waitForRequest((request) => (
-      request.method() === 'PATCH'
-      && new URL(request.url()).pathname.endsWith('/rest/v1/redemptions')
+    const fulfillmentRequestPromise = page.waitForRequest((request) => (
+      request.method() === 'POST'
+      && new URL(request.url()).pathname.endsWith('/rest/v1/rpc/fulfill_redemption')
     ))
-    const updateResponsePromise = page.waitForResponse((response) => (
-      isExactRedemptionUpdate(response, redemptionId)
-    ))
+    const fulfillmentResponsePromise = page.waitForResponse(isFulfillmentRpc)
     await redemptionRow.getByRole('button', { name: /Fulfill|Completar/i }).click()
-    const updateRequest = await anyUpdateRequestPromise
-    expect(new URL(updateRequest.url()).searchParams.get('id')).toBe(`eq.${redemptionId}`)
-    const updateResponse = await updateResponsePromise
-    const updateResponseText = await updateResponse.text()
+    const fulfillmentRequest = await fulfillmentRequestPromise
+    expect(fulfillmentRequest.postDataJSON()).toEqual({ p_redemption_id: redemptionId })
+    const fulfillmentResponse = await fulfillmentResponsePromise
+    const fulfillmentResponseText = await fulfillmentResponse.text()
     expect(
-      updateResponse.ok(),
-      `PATCH ${updateResponse.url()} returned ${updateResponse.status()}: ${updateResponseText}`,
+      fulfillmentResponse.ok(),
+      `POST ${fulfillmentResponse.url()} returned ${fulfillmentResponse.status()}: ${fulfillmentResponseText}`,
     ).toBeTruthy()
+    const fulfillmentResult = JSON.parse(fulfillmentResponseText) as {
+      redemption: { id: string; status: string }
+      program_id: string
+      business_id: string
+      admin_log_id: string
+      already_fulfilled: boolean
+    }
+    expect(fulfillmentResult.redemption.id).toBe(redemptionId)
+    expect(fulfillmentResult.redemption.status).toBe('fulfilled')
+    expect(fulfillmentResult.program_id).toBe(programId)
+    expect(fulfillmentResult.business_id).toBe(businessId)
+    expect(fulfillmentResult.admin_log_id).toMatch(/^[0-9a-f-]{36}$/i)
+    expect(fulfillmentResult.already_fulfilled).toBe(false)
     await expect(page.getByText(/Redemption fulfilled successfully/i)).toBeVisible()
+    const persistedAudit = await getAdminLogById(adminClient, fulfillmentResult.admin_log_id)
+    expect(persistedAudit.program_id).toBe(programId)
+    expect(persistedAudit.actor_id).toBe(ownerProfileId)
+    expect(persistedAudit.action).toBe('Redemption fulfilled')
+    expect(persistedAudit.details).toContain(redemptionId)
 
     const fulfilledRedemption = await getRewardRedemptionByRequestId(
       ownerClient,
@@ -221,6 +241,24 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
     )
     expect(fulfilledRedemption.id).toBe(redemptionId)
     expect(fulfilledRedemption.status).toBe('fulfilled')
+
+    const { data: retryData, error: retryError } = await ownerClient.rpc('fulfill_redemption', {
+      p_redemption_id: redemptionId,
+    })
+    expect(retryError).toBeNull()
+    const retryResult = (Array.isArray(retryData) ? retryData[0] : retryData) as {
+      redemption: { id: string; status: string }
+      program_id: string
+      business_id: string
+      admin_log_id: null
+      already_fulfilled: boolean
+    }
+    expect(retryResult.redemption.id).toBe(redemptionId)
+    expect(retryResult.redemption.status).toBe('fulfilled')
+    expect(retryResult.program_id).toBe(programId)
+    expect(retryResult.business_id).toBe(businessId)
+    expect(retryResult.admin_log_id).toBeNull()
+    expect(retryResult.already_fulfilled).toBe(true)
     await expect(redemptionRow).toContainText(/Fulfilled|Completado/i)
   })
 })

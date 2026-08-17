@@ -194,6 +194,7 @@ jobs:
           E2E_CUSTOMER_EMAIL: member@rewardme.test
           E2E_BUSINESS_OWNER_EMAIL: owner@rewardme.test
           E2E_BUSINESS_STAFF_EMAIL: staff@rewardme.test
+          E2E_ADMIN_EMAIL: admin@rewardsplatform.test
           E2E_BUSINESS_SLUG: pinas-qa-partner
           E2E_REWARD_NAME: QA Welcome Reward
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
@@ -209,6 +210,7 @@ jobs:
           E2E_CUSTOMER_EMAIL: member@wondertown.test
           E2E_BUSINESS_OWNER_EMAIL: owner@wondertown.test
           E2E_BUSINESS_STAFF_EMAIL: staff@wondertown.test
+          E2E_ADMIN_EMAIL: admin@rewardsplatform.test
           E2E_BUSINESS_SLUG: wondertown-moonbeam-cafe
           E2E_REWARD_NAME: Moonbeam Breakfast
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
