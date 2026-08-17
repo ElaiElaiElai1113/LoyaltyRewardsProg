@@ -7,6 +7,60 @@ import { signInBusinessPortal } from './helpers/auth.js'
 
 const screenshotPath = process.env.E2E_QR_SCREENSHOT_PATH ?? ''
 
+test('shared decoder finds an off-center QR in a phone-screen image when the native detector fails', async ({ page }) => {
+  await page.goto('/')
+
+  const decoded = await page.evaluate(async () => {
+    Object.defineProperty(window, 'BarcodeDetector', {
+      configurable: true,
+      value: class {
+        async detect() {
+          throw new Error('Embedded browser detector is unavailable')
+        }
+      },
+    })
+
+    const qrResponse = await fetch('/rewardme-qr.svg')
+    const qrSvg = (await qrResponse.text()).replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" ')
+    const qrObjectUrl = URL.createObjectURL(new Blob([qrSvg], { type: 'image/svg+xml' }))
+    const qrImage = new Image()
+    await new Promise<void>((resolve, reject) => {
+      qrImage.onload = () => resolve()
+      qrImage.onerror = () => reject(new Error('QR fixture could not be loaded'))
+      qrImage.src = qrObjectUrl
+    })
+    const phoneCanvas = document.createElement('canvas')
+    phoneCanvas.width = 390
+    phoneCanvas.height = 844
+    const context = phoneCanvas.getContext('2d')
+    if (!context) throw new Error('Canvas is unavailable')
+
+    context.fillStyle = '#17120f'
+    context.fillRect(0, 0, phoneCanvas.width, phoneCanvas.height)
+    context.fillStyle = '#ead7b8'
+    context.fillRect(20, 34, 350, 62)
+    context.fillRect(28, 610, 334, 154)
+    context.fillStyle = '#fff'
+    context.fillRect(82, 232, 226, 226)
+    context.drawImage(qrImage, 97, 247, 196, 196)
+    URL.revokeObjectURL(qrObjectUrl)
+
+    const phoneBlob = await new Promise<Blob>((resolve, reject) => {
+      phoneCanvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error('Phone image could not be created')), 'image/png')
+    })
+    const phoneBitmap = await createImageBitmap(phoneBlob)
+    try {
+      const scannerPath = '/src/lib/qr-image-scanner.ts'
+      const scanner = await import(/* @vite-ignore */ scannerPath)
+      return await scanner.scanQrImageBitmap(phoneBitmap)
+    } finally {
+      phoneBitmap.close()
+    }
+  })
+
+  expect(decoded).toBeTruthy()
+})
+
 test('business scanner finds a QR inside an uncropped phone screenshot', async ({ page }) => {
   test.skip(!screenshotPath || !existsSync(screenshotPath), 'Set E2E_QR_SCREENSHOT_PATH to a full phone screenshot containing a QR.')
 
@@ -23,6 +77,16 @@ test('business scanner finds a QR inside an uncropped phone screenshot', async (
     const decoded = await page.locator('#qr-decoder-test-file').evaluate(async (input) => {
       const file = (input as HTMLInputElement).files?.[0]
       if (!file) return null
+
+      Object.defineProperty(window, 'BarcodeDetector', {
+        configurable: true,
+        value: class {
+          async detect() {
+            throw new Error('Embedded browser detector is unavailable')
+          }
+        },
+      })
+
       const bitmap = await createImageBitmap(file)
       try {
         const scannerPath = '/src/lib/qr-image-scanner.ts'

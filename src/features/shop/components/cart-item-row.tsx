@@ -30,6 +30,7 @@ export function CartItemRow({ product, quantity, onUpdateQuantity, onRemove }: C
           size="icon"
           className="size-10 rounded-full"
           onClick={() => onUpdateQuantity(product.id, quantity - 1)}
+          aria-label={t('Decrease quantity for {product}', { product: t(product.title) })}
         >
           <Minus className="size-4" />
         </Button>
@@ -39,6 +40,7 @@ export function CartItemRow({ product, quantity, onUpdateQuantity, onRemove }: C
           size="icon"
           className="size-10 rounded-full"
           onClick={() => onUpdateQuantity(product.id, quantity + 1)}
+          aria-label={t('Increase quantity for {product}', { product: t(product.title) })}
         >
           <Plus className="size-4" />
         </Button>
@@ -53,6 +55,7 @@ export function CartItemRow({ product, quantity, onUpdateQuantity, onRemove }: C
         size="icon"
         className="size-10 rounded-full text-on-surface-variant/60 hover:text-red-500"
         onClick={() => onRemove(product.id)}
+        aria-label={t('Remove {product} from cart', { product: t(product.title) })}
       >
         <Trash2 className="size-4" />
       </Button>

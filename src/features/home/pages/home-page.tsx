@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import { Link } from 'react-router'
 
-import { useLanguage } from '@/lib/language'
+import { languageDisplayNames, useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
 import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import carRewards from '@/assets/landing/car-rewards-clean.webp'
@@ -473,10 +473,12 @@ export function HomePage() {
                 type="button"
                 onClick={() => setLanguage(isPinasRewards ? (language === 'tl' ? 'en' : 'tl') : (language === 'es' ? 'en' : 'es'))}
                 aria-label={isPinasRewards
-                  ? (language === 'tl' ? 'Switch to English' : 'Lumipat sa Tagalog')
-                  : language === 'es' ? 'Switch to English' : 'Cambiar a español'}
+                  ? (language === 'tl' ? 'Lumipat sa Ingles' : 'Switch to Tagalog')
+                  : language === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish'}
               >
-                {isPinasRewards ? (language === 'tl' ? 'English' : 'Tagalog') : language === 'es' ? 'English' : 'Español'}
+                {languageDisplayNames[language][isPinasRewards
+                  ? (language === 'tl' ? 'en' : 'tl')
+                  : (language === 'es' ? 'en' : 'es')]}
               </button>
               <Link className="figma-home__button figma-home__button--header" to="/join">
                 {tx('Join now')}

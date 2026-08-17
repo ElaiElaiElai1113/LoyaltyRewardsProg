@@ -10,6 +10,7 @@ import { CompactSearch } from '@/components/ui/compact-search'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   useAwardPoints,
@@ -20,6 +21,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { usePagination } from '@/hooks/use-pagination'
 import { searchMatches } from '@/lib/search'
 import { getVerificationStatusLabel } from '@/lib/status-labels'
 import { cn, formatCurrency, formatPoints, getInitials } from '@/lib/utils'
@@ -47,10 +49,11 @@ function matchesCustomerStatusFilter(
 export function MembersPage() {
   const { profile } = useAuth()
   const { program } = useTenant()
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
   const { business, metrics } = useBusinessOwnerData()
   const businessCurrency = business?.currency ?? program.currency
-  const purchaseCurrencySymbol = new Intl.NumberFormat(program.locale, {
+  const selectedLocale = language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale
+  const purchaseCurrencySymbol = new Intl.NumberFormat(selectedLocale, {
     style: 'currency',
     currency: businessCurrency,
     currencyDisplay: 'narrowSymbol',
@@ -121,8 +124,13 @@ export function MembersPage() {
         member.id,
         member.points,
         member.verificationStatus,
-        getVerificationStatusLabel(member.verificationStatus),
+        t(getVerificationStatusLabel(member.verificationStatus)),
       ]),
+  )
+  const pagination = usePagination(
+    filteredMembers,
+    8,
+    `${memberSearch}:${customerStatusFilter}`,
   )
   const calculatedPoints =
     purchaseAmount && business?.earnRate
@@ -167,7 +175,7 @@ export function MembersPage() {
                   setCustomerLookup('')
                   setPurchaseAmount('')
                 } catch (error) {
-                  setActionError(error instanceof Error ? error.message : t('Failed to award points.'))
+                  setActionError(error instanceof Error ? t(error.message) : t('Failed to award points.'))
                 }
               })}
             >
@@ -180,7 +188,7 @@ export function MembersPage() {
                   <Input
                     id="customerLookup"
                     list="business-member-options"
-                    placeholder="Search by name, email, or customer ID"
+                  placeholder={t('Search by name, email, or customer ID')}
                     className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] pl-11 text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                     value={customerLookup}
                     onChange={(event) => {
@@ -201,12 +209,12 @@ export function MembersPage() {
                 <datalist id="business-member-options">
                   {(members.data ?? []).map((member) => (
                     <option key={member.id} value={member.email}>
-                      {member.fullName} - ID: {member.id}
+                      {member.fullName} - {t('ID')}: {member.id}
                     </option>
                   ))}
                 </datalist>
                 {form.formState.errors.profileId ? (
-                  <p className="text-xs text-red-500">{form.formState.errors.profileId.message}</p>
+                  <p className="text-xs text-red-500">{t(form.formState.errors.profileId.message)}</p>
                 ) : null}
               </div>
 
@@ -239,7 +247,7 @@ export function MembersPage() {
 
               <div className="grid gap-3">
                 <Label htmlFor="purchaseAmount" className="text-sm font-semibold">
-                  Purchase Amount (optional)
+                  {t('Purchase Amount (optional)')}
                 </Label>
                 <div className="relative">
                   <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-semibold text-on-surface-variant/60">
@@ -266,8 +274,12 @@ export function MembersPage() {
                 </div>
                 {purchaseAmount ? (
                   <p className="text-xs text-on-surface-variant/70">
-                    {business?.earnRate ?? 0} pts per {formatCurrency(1, businessCurrency, program.locale)} ·{' '}
-                    {formatCurrency(Number.parseFloat(purchaseAmount) || 0, businessCurrency, program.locale)} = {calculatedPoints ?? 0} pts
+                    {t('{rate} points per {unit} · {amount} = {points} points', {
+                      rate: business?.earnRate ?? 0,
+                      unit: formatCurrency(1, businessCurrency, selectedLocale),
+                      amount: formatCurrency(Number.parseFloat(purchaseAmount) || 0, businessCurrency, selectedLocale),
+                      points: calculatedPoints ?? 0,
+                    })}
                   </p>
                 ) : null}
               </div>
@@ -283,7 +295,7 @@ export function MembersPage() {
                   {...form.register('delta', { valueAsNumber: true })}
                 />
                 {form.formState.errors.delta ? (
-                  <p className="text-xs text-red-500">{form.formState.errors.delta.message}</p>
+                  <p className="text-xs text-red-500">{t(form.formState.errors.delta.message)}</p>
                 ) : null}
               </div>
 
@@ -293,12 +305,12 @@ export function MembersPage() {
                 </Label>
                 <Input
                   id="reason"
-                  placeholder={`${t('e.g., In-store purchase')} ${formatCurrency(12.5, businessCurrency, program.locale)}`}
+                  placeholder={`${t('e.g., In-store purchase')} ${formatCurrency(12.5, businessCurrency, selectedLocale)}`}
                   className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
                   {...form.register('reason')}
                 />
                 {form.formState.errors.reason ? (
-                  <p className="text-xs text-red-500">{form.formState.errors.reason.message}</p>
+                  <p className="text-xs text-red-500">{t(form.formState.errors.reason.message)}</p>
                 ) : null}
               </div>
 
@@ -317,9 +329,9 @@ export function MembersPage() {
 
           <div className="space-y-2 pb-4 border-b border-outline-variant/10">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Quick Action
+              {t('Quick Action')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">Register New Customer</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Register New Customer')}</h2>
           </div>
 
           <div className="rounded-3xl border border-outline-variant/5 bg-white p-8 shadow-sm">
@@ -346,14 +358,14 @@ export function MembersPage() {
                   })
                 } catch (error) {
                   setRegisterActionError(
-                    error instanceof Error ? error.message : 'Failed to register customer.',
+                    error instanceof Error ? t(error.message) : t('Failed to register customer.'),
                   )
                 }
               })}
             >
               <div className="grid gap-3">
                 <Label htmlFor="registerFullName" className="text-sm font-semibold">
-                  Full Name
+                  {t('Full Name')}
                 </Label>
                 <Input
                   id="registerFullName"
@@ -362,13 +374,13 @@ export function MembersPage() {
                   {...registerForm.register('fullName')}
                 />
                 {registerForm.formState.errors.fullName ? (
-                  <p className="text-xs text-red-500">{registerForm.formState.errors.fullName.message}</p>
+                  <p className="text-xs text-red-500">{t(registerForm.formState.errors.fullName.message)}</p>
                 ) : null}
               </div>
 
               <div className="grid gap-3">
                 <Label htmlFor="registerEmail" className="text-sm font-semibold">
-                  Email Address
+                  {t('Email Address')}
                 </Label>
                 <Input
                   id="registerEmail"
@@ -377,7 +389,7 @@ export function MembersPage() {
                   {...registerForm.register('email')}
                 />
                 {registerForm.formState.errors.email ? (
-                  <p className="text-xs text-red-500">{registerForm.formState.errors.email.message}</p>
+                  <p className="text-xs text-red-500">{t(registerForm.formState.errors.email.message)}</p>
                 ) : null}
               </div>
 
@@ -387,7 +399,7 @@ export function MembersPage() {
                 className="h-14 w-full rounded-full font-semibold"
                 disabled={registerCustomer.isPending}
               >
-                {registerCustomer.isPending ? 'Registering...' : 'Register Customer'}
+                {registerCustomer.isPending ? t('Registering...') : t('Register Customer')}
               </Button>
               {registerActionError ? (
                 <p className="text-sm font-bold text-red-500">{registerActionError}</p>
@@ -399,14 +411,14 @@ export function MembersPage() {
                     <div className="min-w-0 flex-1">
                       <p className="font-semibold text-primary">
                         {registeredCustomer.existing
-                          ? 'Existing customer linked and selected'
-                          : 'Customer registered and selected'}
+                          ? t('Existing customer linked and selected')
+                          : t('Customer registered and selected')}
                       </p>
                       <p className="mt-1 text-sm text-on-surface-variant/85">
                         {registeredCustomer.fullName} · {registeredCustomer.email}
                       </p>
                       <p className="mt-2 break-all font-mono text-xs text-primary">
-                        Customer ID: {registeredCustomer.id}
+                        {t('Customer ID')}: {registeredCustomer.id}
                       </p>
                       <Button
                         type="button"
@@ -416,7 +428,7 @@ export function MembersPage() {
                         onClick={() => void navigator.clipboard.writeText(registeredCustomer.id)}
                       >
                         <Copy className="size-4" />
-                        Copy customer ID
+                        {t('Copy customer ID')}
                       </Button>
                     </div>
                   </div>
@@ -470,7 +482,7 @@ export function MembersPage() {
             </div>
           ) : members.data?.length ? (
             <div className="grid gap-4">
-              {filteredMembers.length ? filteredMembers.map((member) => {
+              {filteredMembers.length ? pagination.pageItems.map((member) => {
                 const selected = member.id === selectedProfileId
 
                 return (
@@ -491,7 +503,7 @@ export function MembersPage() {
                         <p className="font-serif text-2xl leading-tight text-primary">{member.fullName}</p>
                         <p className="mt-1 text-sm font-medium text-on-surface-variant/90">{member.email}</p>
                         <p className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">
-                          ID: {member.id}
+                          {t('ID')}: {member.id}
                         </p>
                       </div>
                     </div>
@@ -514,7 +526,7 @@ export function MembersPage() {
                               : 'border-warning/25 bg-warning/10 text-warning',
                         )}
                       >
-                        {getVerificationStatusLabel(member.verificationStatus)}
+                        {t(getVerificationStatusLabel(member.verificationStatus))}
                       </Badge>
                       <Button
                         variant={selected ? 'default' : 'outline'}
@@ -541,6 +553,7 @@ export function MembersPage() {
                   description={t('Try a different search or status filter.')}
                 />
               )}
+              <PaginationControls ariaLabel={t('Business members pagination')} {...pagination} onPageChange={pagination.setPage} />
             </div>
           ) : (
             <EmptyState

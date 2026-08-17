@@ -1,6 +1,6 @@
 import { ChevronDown, Globe2 } from 'lucide-react'
 
-import { languageLabels, type Language, useLanguage } from '@/lib/language'
+import { languageDisplayNames, type Language, useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'
 
 interface LanguagePickerProps {
@@ -33,15 +33,16 @@ export function LanguagePicker({
           aria-label={t('Language')}
           value={language}
           onChange={(event) => setLanguage(event.target.value as Language)}
+          style={{ fontSize: '16px' }}
           className={cn(
-            'h-10 w-full min-w-0 appearance-none rounded-2xl border border-primary-container/25 bg-primary-container/8 text-xs font-bold uppercase tracking-[0.08em] text-current shadow-none outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary-container/40',
+            'h-10 w-full min-w-0 appearance-none rounded-2xl border border-primary-container/25 bg-primary-container/8 text-base font-bold uppercase tracking-[0.08em] text-current shadow-none outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary-container/40',
             compact ? 'px-3 pr-8' : 'px-4 pr-9',
             condenseOnNarrowScreens && compact && 'max-[379px]:px-2 max-[379px]:pr-7',
           )}
         >
           {(['en', 'tl', 'es'] as Language[]).map((option) => (
             <option key={option} value={option}>
-              {compact ? option.toUpperCase() : t(languageLabels[option])}
+              {compact ? option.toUpperCase() : languageDisplayNames[language][option]}
             </option>
           ))}
         </select>

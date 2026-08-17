@@ -34,7 +34,7 @@
     "test:e2e:rewardme-gift-cards-live": "node scripts/run-live-gift-card-workflow.mjs rewardme",
     "test:e2e:wondertown-gift-cards-live": "node scripts/run-live-gift-card-workflow.mjs wondertown",
     "test:e2e:tenant-authenticated": "node scripts/run-tenant-authenticated-smoke.mjs",
-    "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts tests/e2e/accessibility.spec.ts tests/e2e/cross-tenant-responsive.spec.ts tests/e2e/mobile-tablet-integrity.spec.ts tests/e2e/wondertown-public.spec.ts --workers=2",
+    "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts tests/e2e/accessibility.spec.ts tests/e2e/cross-tenant-responsive.spec.ts tests/e2e/mobile-tablet-integrity.spec.ts tests/e2e/pagination.spec.ts tests/e2e/qr-full-screenshot.spec.ts tests/e2e/wondertown-public.spec.ts tests/e2e/home-language-isolation.spec.ts tests/e2e/business-language.spec.ts tests/e2e/public-language-isolation.spec.ts --workers=2",
     "test:e2e:quality": "node scripts/run-playwright-local.mjs tests/e2e/performance-accessibility.spec.ts --workers=1",
     "test:playwright": "node scripts/run-playwright-local.mjs",
     "test:e2e:workflows": "node scripts/run-playwright-local.mjs --workers=1",

@@ -1,14 +1,17 @@
 import { Badge } from '@/components/ui/badge'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { usePromotions } from '@/hooks/use-customer-data'
+import { usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 
 export function PromotionsPage() {
   const promotions = usePromotions()
   const { t } = useLanguage()
+  const pagination = usePagination(promotions.data ?? [])
 
   return (
     <div className="ornate-page relative isolate w-full overflow-hidden rounded-[2rem] px-4 py-8 pb-20 sm:px-6 lg:px-8">
@@ -60,10 +63,13 @@ export function PromotionsPage() {
             description={t('Active promotions from participating businesses will appear here.')}
           />
         ) : (
-          <div className="grid gap-6 lg:grid-cols-2">
-            {(promotions.data ?? []).map((promotion) => (
-              <PromotionCard key={promotion.id} promotion={promotion} />
-            ))}
+          <div className="space-y-6">
+            <div className="grid gap-6 lg:grid-cols-2 xl:grid-cols-3">
+              {pagination.pageItems.map((promotion) => (
+                <PromotionCard key={promotion.id} promotion={promotion} />
+              ))}
+            </div>
+            <PaginationControls ariaLabel="Customer promotions pagination" {...pagination} onPageChange={pagination.setPage} />
           </div>
         )}
       </div>

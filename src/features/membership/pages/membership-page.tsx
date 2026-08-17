@@ -11,7 +11,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useMembership } from '@/hooks/use-membership'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
-import { formatCurrency, formatDate } from '@/lib/utils'
+import { formatCurrency } from '@/lib/utils'
 import { RewardMeMembershipPage } from './rewardme-membership-page'
 
 export function MembershipPage() {
@@ -21,7 +21,7 @@ export function MembershipPage() {
 }
 
 function StandardMembershipPage() {
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
   const { profile } = useAuth()
   const { membership, isActive, isLoading, subscribe, renew, cancel } = useMembership()
   const hasMembership = Boolean(membership)
@@ -62,7 +62,10 @@ function StandardMembershipPage() {
             {isActive && membership ? (
               <div className="rounded-lg bg-[var(--muted)] p-4 text-sm leading-6 text-[var(--muted-foreground)]">
                 <strong className="text-[var(--foreground)]">{t('Active.')}</strong>{' '}
-                {t('Your current renewal date is')} {formatDate(membership.currentPeriodEnd)}.
+                {t('Your current renewal date is')} {new Intl.DateTimeFormat(
+                  language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : 'en-US',
+                  { dateStyle: 'medium' },
+                ).format(new Date(membership.currentPeriodEnd))}.
               </div>
             ) : isFrozen ? (
               <div className="rounded-lg bg-[var(--muted)] p-4 text-sm leading-6 text-[var(--muted-foreground)]">
@@ -98,7 +101,7 @@ function StandardMembershipPage() {
               <span className="text-4xl font-semibold text-[var(--foreground)]">
                 {formatCurrency(MEMBERSHIP_PRICE_USD, 'USD', 'en-US')}
               </span>
-              <span className="text-sm font-medium text-[var(--muted-foreground)]">/mo</span>
+              <span className="text-sm font-medium text-[var(--muted-foreground)]">{t('/mo')}</span>
             </div>
             <p className="mt-2 text-xs leading-5 text-[var(--muted-foreground)]">
               {t('Demo mode - no real charge.')}

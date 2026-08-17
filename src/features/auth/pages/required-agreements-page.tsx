@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { useAuth } from '@/hooks/use-auth'
 import { useRequiredAgreements, useSignAgreement } from '@/hooks/use-legal-agreements'
+import { useLanguage } from '@/lib/language'
 import { getHomePathForRole } from '@/lib/role-routes'
 import { SignaturePad } from '../components/signature-pad'
 import {
@@ -20,6 +21,7 @@ import {
 import { useForm } from 'react-hook-form'
 
 export function RequiredAgreementsPage() {
+  const { language, t } = useLanguage()
   const navigate = useNavigate()
   const { profile, isLoading: isAuthLoading, signOut } = useAuth()
   const requiredAgreements = useRequiredAgreements(profile)
@@ -52,8 +54,8 @@ export function RequiredAgreementsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="space-y-3 text-center">
-          <h1 className="font-serif text-3xl text-primary">Loading</h1>
-          <p className="text-on-surface-variant/80">Preparing your account.</p>
+          <h1 className="font-serif text-3xl text-primary">{t('Loading')}</h1>
+          <p className="text-on-surface-variant/80">{t('Preparing your account.')}</p>
         </div>
       </div>
     )
@@ -74,16 +76,16 @@ export function RequiredAgreementsPage() {
           <CardContent className="space-y-6 p-8 text-center">
             <ShieldCheck className="mx-auto size-12 text-primary" />
             <div className="space-y-2">
-              <h1 className="font-serif text-3xl text-primary">Agreement Check Failed</h1>
+              <h1 className="font-serif text-3xl text-primary">{t('Agreement Check Failed')}</h1>
               <p className="text-sm text-on-surface-variant/80">
                 {requiredAgreements.error instanceof Error
-                  ? requiredAgreements.error.message
-                  : 'Required agreements could not be loaded.'}
+                  ? t(requiredAgreements.error.message)
+                  : t('Required agreements could not be loaded.')}
               </p>
             </div>
             <Button variant="outline" onClick={() => void signOut()}>
               <LogOut className="size-4" />
-              Sign out
+              {t('Sign out')}
             </Button>
           </CardContent>
         </Card>
@@ -95,8 +97,8 @@ export function RequiredAgreementsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
         <div className="space-y-3 text-center">
-          <h1 className="font-serif text-3xl text-primary">Checking agreements</h1>
-          <p className="text-on-surface-variant/80">Confirming account access requirements.</p>
+          <h1 className="font-serif text-3xl text-primary">{t('Checking agreements')}</h1>
+          <p className="text-on-surface-variant/80">{t('Confirming account access requirements.')}</p>
         </div>
       </div>
     )
@@ -109,10 +111,10 @@ export function RequiredAgreementsPage() {
           <div className="space-y-4 border-b border-outline-variant/10 pb-8">
             <div className="flex flex-wrap items-center gap-3">
               <Badge variant="accent" className="bg-secondary-container/20 text-secondary">
-                Required Agreement
+                {t('Required Agreement')}
               </Badge>
               <Badge variant="outline" className="border-primary/20 bg-primary/5 text-primary">
-                Agreement 1 of {pendingAgreements.length}
+                {t('Agreement 1 of {count}', { count: pendingAgreements.length })}
               </Badge>
             </div>
             <div className="space-y-3">
@@ -120,10 +122,16 @@ export function RequiredAgreementsPage() {
                 {currentAgreement.title}
               </h1>
               <p className="max-w-3xl text-sm font-medium leading-6 text-on-surface-variant/85">
-                Version {currentAgreement.version} effective{' '}
-                {new Date(currentAgreement.effectiveAt).toLocaleDateString()}
+                {t('Version {version} effective {date}', {
+                  version: currentAgreement.version,
+                  date: new Date(currentAgreement.effectiveAt).toLocaleDateString(
+                    language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : 'en-US',
+                  ),
+                })}
                 {remainingAgreementCount > 0 ? (
-                  <>. {remainingAgreementCount} more agreement{remainingAgreementCount === 1 ? '' : 's'} must be signed before access unlocks.</>
+                  <> {t(remainingAgreementCount === 1
+                    ? '{count} more agreement must be signed before access unlocks.'
+                    : '{count} more agreements must be signed before access unlocks.', { count: remainingAgreementCount })}</>
                 ) : null}
               </p>
             </div>
@@ -148,16 +156,16 @@ export function RequiredAgreementsPage() {
                   <FileSignature className="size-6" />
                 </div>
                 <div className="space-y-2">
-                  <h2 className="font-serif text-3xl text-primary">Sign Electronically</h2>
+                  <h2 className="font-serif text-3xl text-primary">{t('Sign Electronically')}</h2>
                   <p className="text-sm leading-6 text-on-surface-variant/80">
-                    Signed as {profile.fullName} using {profile.email}.
+                    {t('Signed as {name} using {email}.', { name: profile.fullName, email: profile.email })}
                   </p>
                 </div>
               </div>
 
               <div className="rounded-2xl border border-outline-variant/10 bg-surface-low p-4">
                 <p className="text-[0.68rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                  Pending agreements
+                  {t('Pending agreements')}
                 </p>
                 <div className="mt-3 space-y-2">
                   {pendingAgreements.map((agreement, index) => (
@@ -173,7 +181,7 @@ export function RequiredAgreementsPage() {
                         {index + 1}. {agreement.title}
                       </p>
                       <p className="mt-1 text-xs opacity-75">
-                        {agreement.businessId ? 'Business contract' : 'Platform agreement'}
+                        {agreement.businessId ? t('Business contract') : t('Platform agreement')}
                       </p>
                     </div>
                   ))}
@@ -201,11 +209,11 @@ export function RequiredAgreementsPage() {
                     className="mt-1 size-4 accent-primary"
                     {...form.register('acceptedElectronicRecords')}
                   />
-                  <span>I agree to use electronic records and electronic signatures for this agreement.</span>
+                  <span>{t('I agree to use electronic records and electronic signatures for this agreement.')}</span>
                 </label>
                 {form.formState.errors.acceptedElectronicRecords ? (
                   <p className="text-xs font-semibold text-red-500">
-                    {form.formState.errors.acceptedElectronicRecords.message}
+                    {t(form.formState.errors.acceptedElectronicRecords.message ?? '')}
                   </p>
                 ) : null}
 
@@ -215,16 +223,16 @@ export function RequiredAgreementsPage() {
                     className="mt-1 size-4 accent-primary"
                     {...form.register('acceptedTerms')}
                   />
-                  <span>I have read, understood, and agree to the terms shown on this page.</span>
+                  <span>{t('I have read, understood, and agree to the terms shown on this page.')}</span>
                 </label>
                 {form.formState.errors.acceptedTerms ? (
                   <p className="text-xs font-semibold text-red-500">
-                    {form.formState.errors.acceptedTerms.message}
+                    {t(form.formState.errors.acceptedTerms.message ?? '')}
                   </p>
                 ) : null}
 
                 <div className="grid gap-3">
-                  <Label htmlFor="typedSignature">Typed Signature</Label>
+                  <Label htmlFor="typedSignature">{t('Typed Signature')}</Label>
                   <Input
                     id="typedSignature"
                     placeholder={profile.fullName}
@@ -233,18 +241,18 @@ export function RequiredAgreementsPage() {
                   />
                   {form.formState.errors.typedSignature ? (
                     <p className="text-xs font-semibold text-red-500">
-                      {form.formState.errors.typedSignature.message}
+                      {t(form.formState.errors.typedSignature.message ?? '')}
                     </p>
                   ) : null}
                 </div>
 
                 <div className="grid gap-3">
-                  <Label>Drawn Signature</Label>
+                  <Label>{t('Drawn Signature')}</Label>
                   <input type="hidden" {...form.register('signatureSvg')} />
                   <SignaturePad
                     key={signatureResetSignal}
                     disabled={signAgreement.isPending || requiredAgreements.isFetching}
-                    error={form.formState.errors.signatureSvg?.message}
+                    error={form.formState.errors.signatureSvg?.message ? t(form.formState.errors.signatureSvg.message) : undefined}
                     onChange={(signatureSvg) =>
                       form.setValue('signatureSvg', signatureSvg, {
                         shouldDirty: true,
@@ -260,7 +268,7 @@ export function RequiredAgreementsPage() {
                   className="h-14 w-full rounded-full font-semibold"
                   disabled={signAgreement.isPending || requiredAgreements.isFetching}
                 >
-                  {signAgreement.isPending ? 'Saving signature...' : 'Sign and Continue'}
+                  {signAgreement.isPending ? t('Saving signature...') : t('Sign and Continue')}
                 </Button>
 
                 <Button
@@ -270,7 +278,7 @@ export function RequiredAgreementsPage() {
                   onClick={() => void signOut()}
                 >
                   <LogOut className="size-4" />
-                  Sign out
+                  {t('Sign out')}
                 </Button>
               </form>
             </CardContent>

@@ -17,6 +17,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
@@ -60,6 +61,7 @@ import {
   useUseCredit,
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
+import { usePagination } from '@/hooks/use-pagination'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { searchMatches } from '@/lib/search'
@@ -130,13 +132,13 @@ function isUniqueSlugError(error: unknown) {
   return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505'
 }
 
-function parseBusinessCoordinate(value: string, label: string, min: number, max: number) {
+function parseBusinessCoordinate(value: string, invalidMessage: string, min: number, max: number) {
   const trimmed = value.trim()
   if (!trimmed) return null
 
   const parsed = Number(trimmed)
   if (!Number.isFinite(parsed) || parsed < min || parsed > max) {
-    throw new Error(`${label} must be between ${min} and ${max}.`)
+    throw new Error(invalidMessage)
   }
   return parsed
 }
@@ -198,6 +200,12 @@ function verificationPriority(profile: Profile) {
 export function AdminPage() {
   const { profile } = useAuth()
   const { t } = useLanguage()
+  const localizedError = (error: unknown, fallback: string) => {
+    const fallbackMessage = t(fallback)
+    if (!(error instanceof Error)) return fallbackMessage
+    const translatedMessage = t(error.message)
+    return translatedMessage === error.message ? fallbackMessage : translatedMessage
+  }
   const [actionError, setActionError] = useState<string | null>(null)
   const [activeAdminTab, setActiveAdminTab] = useState<AdminTabValue>(() => getAdminTabFromHash())
   const users = useAdminUsers()
@@ -353,7 +361,7 @@ export function AdminPage() {
         member.referralCode,
         member.verificationIdNumber,
         member.verificationStatus,
-        getVerificationStatusLabel(member.verificationStatus),
+        t(getVerificationStatusLabel(member.verificationStatus)),
         balance?.points,
         balance?.availableCredits,
       ]),
@@ -615,6 +623,43 @@ export function AdminPage() {
         business.longitude,
       ]),
   )
+  const memberPagination = usePagination(
+    filteredCustomerMembers,
+    8,
+    `${memberSearch}:${memberVerificationFilter}`,
+  )
+  const rewardPagination = usePagination(
+    filteredRewards,
+    8,
+    `${rewardBusinessId}:${rewardSearch}`,
+  )
+  const productPagination = usePagination(
+    filteredAdminProducts,
+    8,
+    `${productBusinessId}:${productSearch}`,
+  )
+  const promotionPagination = usePagination(
+    filteredPromotions,
+    8,
+    `${promotionBusinessId}:${promotionSearch}`,
+  )
+  const partnerPagination = usePagination(
+    filteredBusinesses,
+    10,
+    `${partnerSearch}:${partnerListFilter}`,
+  )
+  const partnerReferralActivityPagination = usePagination(partnerReferrals.data ?? [], 6)
+  const verificationOrderPagination = usePagination(
+    verificationOrders.data ?? [],
+    10,
+    verificationBusinessId,
+  )
+  const ambassadorLeadPagination = usePagination(ambassadorLeads.data ?? [], 10)
+  const earlyAccessLeadPagination = usePagination(earlyAccessLeads.data ?? [], 10)
+  const referralPagination = usePagination(allReferrals.data ?? [], 10)
+  const redemptionPagination = usePagination(overview.data?.redemptions ?? [], 8)
+  const adminLogPagination = usePagination(overview.data?.adminLogs ?? [], 8)
+  const memberTransactionPagination = usePagination(memberTransactions.data ?? [], 10)
   const accessDialogBusiness =
     allBusinesses.data?.find((business) => business.id === businessAccessDialog?.businessId) ?? null
   const memberById = new Map(
@@ -636,9 +681,9 @@ export function AdminPage() {
 
     try {
       await navigator.clipboard.writeText(normalizedIdNumber)
-      toast.success('ID number copied.')
+      toast.success(t('ID number copied.'))
     } catch {
-      toast.error('Could not copy ID number.')
+      toast.error(t('Could not copy ID number.'))
     }
   }
   const ambassadorStatusOptions = ['new', 'contacted', 'converted', 'archived'] as const
@@ -754,7 +799,7 @@ export function AdminPage() {
                       </div>
                       <div className="min-w-0 flex-1 space-y-3">
                         <div className="min-w-0">
-                          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Profile Summary</p>
+                          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Profile Summary')}</p>
                           <p className="mt-1 min-w-0 truncate font-serif text-xl tracking-tight text-primary sm:text-2xl">
                             {selectedMember.profile.fullName}
                           </p>
@@ -764,23 +809,23 @@ export function AdminPage() {
                         </div>
                         <div className="member-stat-grid grid min-w-0 grid-cols-1 gap-2 sm:grid-cols-2">
                           <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
-                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Points</p>
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Points')}</p>
                             <p className="mt-1 flex items-center gap-1 font-serif text-2xl text-primary">
                               <Gift className="size-3" />
                               {selectedMember.balance?.points ?? 0}
                             </p>
                           </div>
                           <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
-                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Credits</p>
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Credits')}</p>
                             <p className="mt-1 font-serif text-2xl text-primary">{selectedMember.balance?.availableCredits ?? 0}</p>
                           </div>
                           <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
-                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Recent Value</p>
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Recent Value')}</p>
                             <p className="mt-1 truncate text-sm font-semibold text-primary">{selectedMember.profile.location || t('Unknown')}</p>
                           </div>
                           <div className="min-w-0 rounded-2xl border border-primary-container/15 bg-[var(--card)] p-3">
-                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Status</p>
-                            <p className="mt-1 truncate text-sm font-semibold text-primary">{getVerificationStatusLabel(selectedMember.profile.verificationStatus)}</p>
+                            <p className="text-[0.58rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Status')}</p>
+                            <p className="mt-1 truncate text-sm font-semibold text-primary">{t(getVerificationStatusLabel(selectedMember.profile.verificationStatus))}</p>
                           </div>
                         </div>
                         <Button
@@ -791,7 +836,7 @@ export function AdminPage() {
                           onClick={() => setCustomerPendingDelete(selectedMember.profile)}
                         >
                           <Trash2 className="size-4" />
-                          Remove Customer
+                          {t('Remove Customer')}
                         </Button>
                       </div>
                     </div>
@@ -804,9 +849,9 @@ export function AdminPage() {
 
                 <Tabs defaultValue="award-points" className="member-action-tabs min-w-0 space-y-4 border-t border-outline-variant/20 pt-5">
                   <TabsList className="grid h-auto w-full min-w-0 grid-cols-[1fr_1fr_1fr] rounded-2xl bg-[var(--muted)] p-1">
-                    <TabsTrigger value="award-points" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">Award Points</TabsTrigger>
-                    <TabsTrigger value="use-credit" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">Use Credit</TabsTrigger>
-                    <TabsTrigger value="verification" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs" title="Verification">ID</TabsTrigger>
+                    <TabsTrigger value="award-points" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">{t('Award Points')}</TabsTrigger>
+                    <TabsTrigger value="use-credit" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs">{t('Use Credit')}</TabsTrigger>
+                    <TabsTrigger value="verification" className="min-w-0 whitespace-normal rounded-xl px-1.5 text-center text-[0.68rem] leading-tight tracking-normal sm:px-2 sm:text-xs" title={t('Verification')}>{t('ID')}</TabsTrigger>
                   </TabsList>
 
                   <TabsContent value="award-points" className="outline-none">
@@ -823,7 +868,7 @@ export function AdminPage() {
                           reason: '',
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : t('Failed to adjust points.'))
+                        setActionError(localizedError(error, 'Failed to adjust points.'))
                       }
                     },
                     () => {
@@ -848,7 +893,7 @@ export function AdminPage() {
                       ))}
                     </datalist>
                     {adjustmentForm.formState.errors.profileId ? (
-                      <p className="text-xs text-red-500">{adjustmentForm.formState.errors.profileId.message}</p>
+                      <p className="text-xs text-red-500">{t(adjustmentForm.formState.errors.profileId.message ?? '')}</p>
                     ) : null}
                     {selectedMember ? (
                       <p className="break-words text-xs text-on-surface-variant/80">
@@ -861,14 +906,14 @@ export function AdminPage() {
                       <Label htmlFor="delta" className="text-sm font-semibold">{t('Points Adjustment')}</Label>
                       <Input id="delta" type="number" className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary focus-visible:ring-primary-container/25" {...adjustmentForm.register('delta', { valueAsNumber: true })} />
                       {adjustmentForm.formState.errors.delta ? (
-                        <p className="text-xs text-red-500">{adjustmentForm.formState.errors.delta.message}</p>
+                        <p className="text-xs text-red-500">{t(adjustmentForm.formState.errors.delta.message ?? '')}</p>
                       ) : null}
                     </div>
                     <div className="grid grid-rows-[2.5rem_2.75rem_auto] gap-2">
                       <Label htmlFor="reason" className="text-sm font-semibold">{t('Reason')}</Label>
                       <Input id="reason" placeholder={t('e.g., Service recovery')} className="h-11 rounded-xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25" {...adjustmentForm.register('reason')} />
                       {adjustmentForm.formState.errors.reason ? (
-                        <p className="text-xs text-red-500">{adjustmentForm.formState.errors.reason.message}</p>
+                        <p className="text-xs text-red-500">{t(adjustmentForm.formState.errors.reason.message ?? '')}</p>
                       ) : null}
                     </div>
                   </div>
@@ -886,7 +931,7 @@ export function AdminPage() {
                         {selectedMember?.balance?.availableCredits ?? 0} {t('Reward Credits')}
                       </p>
                       <p className="mt-1 text-sm leading-6 text-on-surface-variant/80">
-                        Apply one available reward credit for the selected member.
+                        {t('Apply one available reward credit for the selected member.')}
                       </p>
                       <Button
                         type="button"
@@ -925,7 +970,7 @@ export function AdminPage() {
                             </span>
                           </div>
                           <div className="grid grid-cols-[6rem_minmax(0,1fr)] gap-3">
-                            <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Verification ID</span>
+                            <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Verification ID')}</span>
                             <div className="flex min-w-0 flex-wrap items-center gap-2">
                               <span className="min-w-0 truncate font-mono text-xs" title={selectedMember.profile.verificationIdNumber ?? ''}>
                                 {selectedMember.profile.verificationIdNumber || t('Not provided')}
@@ -936,11 +981,11 @@ export function AdminPage() {
                                   size="sm"
                                   variant="ghost"
                                   className="h-7 rounded-full px-2 text-xs"
-                                  aria-label="Copy ID number"
+                                  aria-label={t('Copy ID number')}
                                   onClick={() => copyVerificationIdNumber(selectedMember.profile.verificationIdNumber)}
                                 >
                                   <Copy className="size-3" />
-                                  Copy ID number
+                                  {t('Copy ID number')}
                                 </Button>
                               ) : null}
                             </div>
@@ -958,23 +1003,23 @@ export function AdminPage() {
                           >
                             <IdCard className="mr-1 size-3" />
                             {selectedMember.profile.verificationStatus === 'submitted'
-                              ? 'ID submitted'
+                              ? t('ID submitted')
                               : selectedMember.profile.verificationStatus === 'verified'
-                                ? 'Verified'
+                                ? t('Verified')
                                 : selectedMember.profile.verificationStatus === 'rejected'
-                                  ? 'Rejected'
-                                  : 'ID missing'}
+                                  ? t('Rejected')
+                                  : t('ID missing')}
                           </Badge>
                           {selectedMember.profile.verificationIdNumber ? (
                             <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 font-mono text-xs text-primary">
-                              ID number: {selectedMember.profile.verificationIdNumber}
+                              {t('ID number:')} {selectedMember.profile.verificationIdNumber}
                             </Badge>
                           ) : null}
                           {selectedMember.profile.verificationDocumentUrl ? (
                             <Button asChild size="sm" variant="outline" className="rounded-full">
                               <a href={selectedMember.profile.verificationDocumentUrl} target="_blank" rel="noreferrer">
                                 <ExternalLink className="size-4" />
-                                View ID
+                                {t('View ID')}
                               </a>
                             </Button>
                           ) : null}
@@ -1003,7 +1048,7 @@ export function AdminPage() {
                                 }}
                               >
                                 <CheckCircle className="size-4" />
-                                Verify ID
+                                {t('Verify ID')}
                               </Button>
                               <Button
                                 type="button"
@@ -1020,13 +1065,13 @@ export function AdminPage() {
                                   setVerificationRejectionReason('')
                                 }}
                               >
-                                Reject ID
+                                {t('Reject ID')}
                               </Button>
                             </div>
                             <Textarea
                               value={verificationRejectionReason}
                               onChange={(event) => setVerificationRejectionReason(event.target.value)}
-                              placeholder="Reason required when rejecting an ID"
+                              placeholder={t('Reason required when rejecting an ID')}
                               className="min-h-16"
                             />
                           </div>
@@ -1049,7 +1094,7 @@ export function AdminPage() {
                   <h2 className="font-serif text-3xl text-primary">{t('Members')}</h2>
                   {pendingVerificationMembers.length > 0 ? (
                     <p className="mt-2 rounded-2xl border border-warning/25 bg-warning/10 px-3 py-2 text-sm font-semibold text-warning">
-                      {pendingVerificationMembers.length} IDs awaiting review. Newest submitted IDs are shown first.
+                      {t('{count} IDs awaiting review. Newest submitted IDs are shown first.', { count: pendingVerificationMembers.length })}
                     </p>
                   ) : null}
                 </div>
@@ -1077,7 +1122,7 @@ export function AdminPage() {
               </div>
 
               <div className="grid min-w-0 gap-4 pointer-events-auto">
-                {filteredCustomerMembers.map(({ profile: member, balance }) => (
+                {memberPagination.pageItems.map(({ profile: member, balance }) => (
                   <div
                     key={member.id}
                     className={`rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm group flex min-w-0 flex-col gap-5 rounded-[2rem] p-5 transition-all sm:p-6 xl:flex-row xl:items-center xl:justify-between ${
@@ -1095,7 +1140,7 @@ export function AdminPage() {
                         <p className="mt-1 break-all text-sm font-medium text-on-surface-variant/90">{member.email}</p>
                         <div className="mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
                           <span className="break-all text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
-                            ID: {member.id}
+                            {t('ID:')} {member.id}
                           </span>
                           <span className="size-1 rounded-full bg-outline-variant/30"></span>
                           <span className="text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
@@ -1115,7 +1160,7 @@ export function AdminPage() {
                         }
                       >
                         <IdCard className="size-3" />
-                        {member.verificationDocumentPath ? 'ID submitted' : 'ID missing'}
+                        {member.verificationDocumentPath ? t('ID submitted') : t('ID missing')}
                       </Badge>
                       <Badge
                         variant="accent"
@@ -1127,7 +1172,7 @@ export function AdminPage() {
                               : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
                         }
                       >
-                        {getVerificationStatusLabel(member.verificationStatus)}
+                        {t(getVerificationStatusLabel(member.verificationStatus))}
                       </Badge>
                       <Badge variant="accent" className="flex items-center gap-1.5 border-primary/25 bg-primary/12 px-3 py-1.5 font-semibold text-primary">
                         <Gift className="size-3" />
@@ -1163,7 +1208,7 @@ export function AdminPage() {
                         onClick={() => setCustomerPendingDelete(member)}
                       >
                         <Trash2 className="size-4" />
-                        Remove
+                        {t('Remove')}
                       </Button>
                     </div>
                   </div>
@@ -1181,6 +1226,7 @@ export function AdminPage() {
                     description={t('Try a different search or status filter.')}
                   />
                 ) : null}
+                <PaginationControls ariaLabel={t('Admin members pagination')} {...memberPagination} onPageChange={memberPagination.setPage} />
               </div>
             </div>
           </div>
@@ -1195,9 +1241,9 @@ export function AdminPage() {
           >
             <DialogContent className="max-w-lg rounded-3xl border border-red-200 bg-[var(--card)] p-6 text-on-surface shadow-card sm:p-8">
               <DialogHeader className="mb-5 pr-8">
-                <DialogTitle className="font-serif text-2xl text-red-600">Remove Customer</DialogTitle>
+                <DialogTitle className="font-serif text-2xl text-red-600">{t('Remove Customer')}</DialogTitle>
                 <DialogDescription className="text-sm leading-6 text-on-surface-variant/85">
-                  This permanently removes the customer account, login access, rewards, orders, activity, gift cards, and related customer records from the database. This cannot be undone.
+                  {t('This permanently removes the customer account, login access, rewards, orders, activity, gift cards, and related customer records from the database. This cannot be undone.')}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-5">
@@ -1215,7 +1261,7 @@ export function AdminPage() {
                     disabled={deleteCustomer.isPending}
                     onClick={() => setCustomerPendingDelete(null)}
                   >
-                    Cancel
+                    {t('Cancel')}
                   </Button>
                   <Button
                     type="button"
@@ -1241,7 +1287,7 @@ export function AdminPage() {
                     }}
                   >
                     <Trash2 className="size-4" />
-                    {deleteCustomer.isPending ? 'Removing...' : 'Remove Customer'}
+                    {deleteCustomer.isPending ? t('Removing...') : t('Remove Customer')}
                   </Button>
                 </div>
               </div>
@@ -1254,13 +1300,13 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-4 pb-4 border-b border-outline-variant/10">
                 <div className="space-y-2">
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Catalog</span>
-                  <h2 className="font-serif text-3xl text-primary">Rewards</h2>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Catalog')}</span>
+                  <h2 className="font-serif text-3xl text-primary">{t('Rewards')}</h2>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-[minmax(0,24rem)_minmax(0,18rem)]">
                   <div className="grid gap-2">
                     <Label htmlFor="reward-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                      Partner
+                      {t('Partner')}
                     </Label>
                     <select
                       id="reward-business-filter"
@@ -1281,7 +1327,7 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="admin-reward-search" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                      Search
+                      {t('Search')}
                     </Label>
                     <CompactSearch
                       id="admin-reward-search"
@@ -1295,18 +1341,18 @@ export function AdminPage() {
                 </div>
               </div>
               <div className="grid gap-8 sm:grid-cols-2">
-                {filteredRewards.map((reward) => (
+                {rewardPagination.pageItems.map((reward) => (
                   <div key={reward.id} className="relative group">
                     <RewardCard reward={reward} balancePoints={9999} onRedeem={() => {}} />
                     <Badge variant="outline" className="absolute top-2 left-2 border-outline-variant/20 bg-white/90">
-                      {businessNameById.get(reward.businessId) ?? 'Unknown partner'}
+                      {businessNameById.get(reward.businessId) ?? t('Unknown partner')}
                     </Badge>
                     <Button
                       variant="ghost"
                       size="icon"
                       className="absolute top-2 right-2 size-8 rounded-full text-red-500 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                       onClick={() => {
-                        if (confirm('Are you sure you want to delete this reward?')) {
+                        if (confirm(t('Are you sure you want to delete this reward?'))) {
                           deleteReward.mutate(reward.id)
                         }
                       }}
@@ -1331,18 +1377,19 @@ export function AdminPage() {
                     description={t('Try a reward title, category, or highlight.')}
                   />
                 ) : null}
+                <PaginationControls ariaLabel={t('Admin rewards pagination')} className="col-span-full" {...rewardPagination} onPageChange={rewardPagination.setPage} />
               </div>
               {!rewardBusinessId ? (
                 <div className="rounded-3xl bg-card p-6 border border-outline-variant/20 shadow-sm text-on-surface-variant">
-                  No partner is available for reward management yet.
+                  {t('No partner is available for reward management yet.')}
                 </div>
               ) : null}
             </div>
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Create</span>
-                <h2 className="font-serif text-3xl text-primary">Add Reward</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Create')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Add Reward')}</h2>
               </div>
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
@@ -1353,7 +1400,7 @@ export function AdminPage() {
                         setActionError(null)
                         const businessId = values.businessId || rewardBusinessId || availableBusinessId
                         if (!businessId) {
-                          throw new Error('No business is configured yet.')
+                          throw new Error(t('No business is configured yet.'))
                         }
 
                         await createReward.mutateAsync({ ...values, businessId })
@@ -1367,16 +1414,16 @@ export function AdminPage() {
                           highlight: '',
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : 'Failed to create reward.')
+                        setActionError(localizedError(error, 'Failed to create reward.'))
                       }
                     },
                     () => {
-                      setActionError('Please fix the highlighted reward fields.')
+                      setActionError(t('Please fix the highlighted reward fields.'))
                     },
                   )}
                 >
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-business">Partner</Label>
+                    <Label htmlFor="reward-business">{t('Partner')}</Label>
                     <select
                       id="reward-business"
                       value={rewardForm.watch('businessId') ?? ''}
@@ -1395,22 +1442,22 @@ export function AdminPage() {
                     </select>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-title">Reward Title</Label>
-                    <Input id="reward-title" placeholder="e.g., Midnight Espresso" {...rewardForm.register('title')} />
+                    <Label htmlFor="reward-title">{t('Reward Title')}</Label>
+                    <Input id="reward-title" placeholder={t('e.g., Midnight Espresso')} {...rewardForm.register('title')} />
                     {rewardForm.formState.errors.title ? (
-                      <p className="text-xs text-red-500">{rewardForm.formState.errors.title.message}</p>
+                      <p className="text-xs text-red-500">{t(rewardForm.formState.errors.title.message ?? '')}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-description">Description</Label>
-                    <Input id="reward-description" placeholder="Describe the reward..." {...rewardForm.register('description')} />
+                    <Label htmlFor="reward-description">{t('Description')}</Label>
+                    <Input id="reward-description" placeholder={t('Describe the reward...')} {...rewardForm.register('description')} />
                     {rewardForm.formState.errors.description ? (
-                      <p className="text-xs text-red-500">{rewardForm.formState.errors.description.message}</p>
+                      <p className="text-xs text-red-500">{t(rewardForm.formState.errors.description.message ?? '')}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
-                      <Label htmlFor="reward-category">Category</Label>
+                      <Label htmlFor="reward-category">{t('Category')}</Label>
                       <Input id="reward-category" list="reward-category-options" {...rewardForm.register('category')} />
                       <datalist id="reward-category-options">
                         <option value="Drink" />
@@ -1419,22 +1466,22 @@ export function AdminPage() {
                         <option value="Experience" />
                       </datalist>
                       {rewardForm.formState.errors.category ? (
-                        <p className="text-xs text-red-500">{rewardForm.formState.errors.category.message}</p>
+                        <p className="text-xs text-red-500">{t(rewardForm.formState.errors.category.message ?? '')}</p>
                       ) : null}
                     </div>
                     <div className="grid gap-3">
                       <Label htmlFor="reward-cost">{t('Points Cost')}</Label>
                       <Input id="reward-cost" type="number" {...rewardForm.register('pointsCost', { valueAsNumber: true })} />
                       {rewardForm.formState.errors.pointsCost ? (
-                        <p className="text-xs text-red-500">{rewardForm.formState.errors.pointsCost.message}</p>
+                        <p className="text-xs text-red-500">{t(rewardForm.formState.errors.pointsCost.message ?? '')}</p>
                       ) : null}
                     </div>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="reward-highlight">Highlight Tag</Label>
-                    <Input id="reward-highlight" placeholder="Seasonal / Popular / New" {...rewardForm.register('highlight')} />
+                    <Label htmlFor="reward-highlight">{t('Highlight Tag')}</Label>
+                    <Input id="reward-highlight" placeholder={t('Seasonal / Popular / New')} {...rewardForm.register('highlight')} />
                     {rewardForm.formState.errors.highlight ? (
-                      <p className="text-xs text-red-500">{rewardForm.formState.errors.highlight.message}</p>
+                      <p className="text-xs text-red-500">{t(rewardForm.formState.errors.highlight.message ?? '')}</p>
                     ) : null}
                   </div>
                   <Button
@@ -1443,11 +1490,11 @@ export function AdminPage() {
                     className="w-full rounded-full h-14"
                     disabled={createReward.isPending || allBusinesses.isLoading || !availableBusinessId}
                   >
-                    {createReward.isPending ? 'Creating...' : 'Add Reward'}
+                    {createReward.isPending ? t('Creating...') : t('Add Reward')}
                   </Button>
                   {!allBusinesses.isLoading && !availableBusinessId ? (
                     <p className="text-sm font-medium text-on-surface-variant/75">
-                      Setup is incomplete. Reward creation is disabled until the site is connected to its store record.
+                      {t('Setup is incomplete. Reward creation is disabled until the site is connected to its store record.')}
                     </p>
                   ) : null}
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
@@ -1462,13 +1509,13 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-4 pb-4 border-b border-outline-variant/10">
                 <div className="space-y-2">
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Inventory</span>
-                  <h2 className="font-serif text-3xl text-primary">Products</h2>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Inventory')}</span>
+                  <h2 className="font-serif text-3xl text-primary">{t('Products')}</h2>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-[minmax(0,24rem)_minmax(0,18rem)]">
                   <div className="grid gap-2">
                     <Label htmlFor="product-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                      Partner
+                      {t('Partner')}
                     </Label>
                     <select
                       id="product-business-filter"
@@ -1489,7 +1536,7 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="admin-product-search" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                      Search
+                      {t('Search')}
                     </Label>
                     <CompactSearch
                       id="admin-product-search"
@@ -1503,7 +1550,7 @@ export function AdminPage() {
                 </div>
               </div>
               <div className="grid gap-3">
-                {filteredAdminProducts.map((product) => (
+                {productPagination.pageItems.map((product) => (
                   <div
                     key={product.id}
                     className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg"
@@ -1519,7 +1566,7 @@ export function AdminPage() {
                         <div className="flex items-center gap-3 text-sm text-on-surface-variant/70">
                            <span>{product.category}</span>
                            <span className="size-1 rounded-full bg-outline-variant/30"></span>
-                           <span>{product.inventory} in stock</span>
+                           <span>{t('{count} in stock', { count: product.inventory })}</span>
                         </div>
                       </div>
                     </div>
@@ -1527,7 +1574,7 @@ export function AdminPage() {
                       <div className="text-right">
                         <p className="font-serif text-2xl text-primary">{formatCurrency(product.price)}</p>
                         <Badge variant="outline" className="text-[0.65rem] border-outline-variant/20 mt-1">
-                          {businessNameById.get(product.businessId) ?? 'Unknown partner'}
+                          {businessNameById.get(product.businessId) ?? t('Unknown partner')}
                         </Badge>
                       </div>
                       <Button
@@ -1535,14 +1582,14 @@ export function AdminPage() {
                         size="sm"
                         className="text-red-500 hover:text-red-600 hover:bg-red-50 rounded-full"
                         onClick={() => {
-                          if (confirm('Are you sure you want to delete this product?')) {
+                          if (confirm(t('Are you sure you want to delete this product?'))) {
                             deleteProduct.mutate(product.id)
                           }
                         }}
                         disabled={deleteProduct.isPending}
                       >
                         <Trash2 className="size-4 mr-2" />
-                        Delete
+                        {t('Delete')}
                       </Button>
                     </div>
                   </div>
@@ -1560,18 +1607,19 @@ export function AdminPage() {
                     description={t('Try a product title, category, or highlight.')}
                   />
                 ) : null}
+                <PaginationControls ariaLabel={t('Admin products pagination')} {...productPagination} onPageChange={productPagination.setPage} />
               </div>
               {!productBusinessId ? (
                 <div className="rounded-3xl bg-card p-6 border border-outline-variant/20 shadow-sm text-on-surface-variant">
-                  No partner is available for product management yet.
+                  {t('No partner is available for product management yet.')}
                 </div>
               ) : null}
             </div>
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Create</span>
-                <h2 className="font-serif text-3xl text-primary">Add Product</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Create')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Add Product')}</h2>
               </div>
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
@@ -1582,7 +1630,7 @@ export function AdminPage() {
                         setActionError(null)
                         const businessId = values.businessId || productBusinessId || availableBusinessId
                         if (!businessId) {
-                          throw new Error('No business is configured yet.')
+                          throw new Error(t('No business is configured yet.'))
                         }
 
                         await createProduct.mutateAsync({ ...values, businessId })
@@ -1597,16 +1645,16 @@ export function AdminPage() {
                           inventory: 50,
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : 'Failed to create product.')
+                        setActionError(localizedError(error, 'Failed to create product.'))
                       }
                     },
                     () => {
-                      setActionError('Please fix the highlighted product fields.')
+                      setActionError(t('Please fix the highlighted product fields.'))
                     },
                   )}
                 >
                   <div className="grid gap-3">
-                    <Label htmlFor="product-business">Partner</Label>
+                    <Label htmlFor="product-business">{t('Partner')}</Label>
                     <select
                       id="product-business"
                       value={productForm.watch('businessId') ?? ''}
@@ -1625,54 +1673,54 @@ export function AdminPage() {
                     </select>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="product-title">Product Title</Label>
-                    <Input id="product-title" placeholder="e.g., House Blend" {...productForm.register('title')} />
+                    <Label htmlFor="product-title">{t('Product Title')}</Label>
+                    <Input id="product-title" placeholder={t('e.g., House Blend')} {...productForm.register('title')} />
                     {productForm.formState.errors.title ? (
-                      <p className="text-xs text-red-500">{productForm.formState.errors.title.message}</p>
+                      <p className="text-xs text-red-500">{t(productForm.formState.errors.title.message ?? '')}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="product-description">Description</Label>
-                    <Input id="product-description" placeholder="Describe the product..." {...productForm.register('description')} />
+                    <Label htmlFor="product-description">{t('Description')}</Label>
+                    <Input id="product-description" placeholder={t('Describe the product...')} {...productForm.register('description')} />
                     {productForm.formState.errors.description ? (
-                      <p className="text-xs text-red-500">{productForm.formState.errors.description.message}</p>
+                      <p className="text-xs text-red-500">{t(productForm.formState.errors.description.message ?? '')}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
-                      <Label htmlFor="product-category">Category</Label>
+                      <Label htmlFor="product-category">{t('Category')}</Label>
                       <Input id="product-category" list="product-category-options" {...productForm.register('category')} />
                       <datalist id="product-category-options">
-                        <option value="Coffee" label="Drinks" />
-                        <option value="Pastry" label="Bites" />
-                        <option value="Merch" label="Gear" />
-                        <option value="Equipment" label="Tools" />
+                        <option value="Coffee" label={t('Drinks')} />
+                        <option value="Pastry" label={t('Bites')} />
+                        <option value="Merch" label={t('Gear')} />
+                        <option value="Equipment" label={t('Tools')} />
                       </datalist>
                       {productForm.formState.errors.category ? (
-                        <p className="text-xs text-red-500">{productForm.formState.errors.category.message}</p>
+                        <p className="text-xs text-red-500">{t(productForm.formState.errors.category.message ?? '')}</p>
                       ) : null}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="product-price">Price ($)</Label>
+                      <Label htmlFor="product-price">{t('Price ($)')}</Label>
                       <Input id="product-price" type="number" step="0.01" {...productForm.register('price', { valueAsNumber: true })} />
                       {productForm.formState.errors.price ? (
-                        <p className="text-xs text-red-500">{productForm.formState.errors.price.message}</p>
+                        <p className="text-xs text-red-500">{t(productForm.formState.errors.price.message ?? '')}</p>
                       ) : null}
                     </div>
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
-                      <Label htmlFor="product-highlight">Highlight Tag</Label>
-                      <Input id="product-highlight" placeholder="Popular / New" {...productForm.register('highlight')} />
+                      <Label htmlFor="product-highlight">{t('Highlight Tag')}</Label>
+                      <Input id="product-highlight" placeholder={t('Popular / New')} {...productForm.register('highlight')} />
                       {productForm.formState.errors.highlight ? (
-                        <p className="text-xs text-red-500">{productForm.formState.errors.highlight.message}</p>
+                        <p className="text-xs text-red-500">{t(productForm.formState.errors.highlight.message ?? '')}</p>
                       ) : null}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="product-inventory">Inventory</Label>
+                      <Label htmlFor="product-inventory">{t('Inventory')}</Label>
                       <Input id="product-inventory" type="number" {...productForm.register('inventory', { valueAsNumber: true })} />
                       {productForm.formState.errors.inventory ? (
-                        <p className="text-xs text-red-500">{productForm.formState.errors.inventory.message}</p>
+                        <p className="text-xs text-red-500">{t(productForm.formState.errors.inventory.message ?? '')}</p>
                       ) : null}
                     </div>
                   </div>
@@ -1682,11 +1730,11 @@ export function AdminPage() {
                     className="w-full rounded-full h-14"
                     disabled={createProduct.isPending || allBusinesses.isLoading || !availableBusinessId}
                   >
-                    {createProduct.isPending ? 'Creating...' : 'Add Product'}
+                    {createProduct.isPending ? t('Creating...') : t('Add Product')}
                   </Button>
                   {!allBusinesses.isLoading && !availableBusinessId ? (
                     <p className="text-sm font-medium text-on-surface-variant/75">
-                      Setup is incomplete. Product creation is disabled until the site is connected to its store record.
+                      {t('Setup is incomplete. Product creation is disabled until the site is connected to its store record.')}
                     </p>
                   ) : null}
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
@@ -1701,13 +1749,13 @@ export function AdminPage() {
             <div className="space-y-8">
               <div className="space-y-4 pb-4 border-b border-outline-variant/10">
                 <div className="space-y-2">
-                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Active</span>
-                  <h2 className="font-serif text-3xl text-primary">Live Promotions</h2>
+                  <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Active')}</span>
+                  <h2 className="font-serif text-3xl text-primary">{t('Live Promotions')}</h2>
                 </div>
                 <div className="grid gap-4 sm:grid-cols-[minmax(0,24rem)_minmax(0,18rem)]">
                   <div className="grid gap-2">
                     <Label htmlFor="promotion-business-filter" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                      Partner
+                      {t('Partner')}
                     </Label>
                     <select
                       id="promotion-business-filter"
@@ -1724,7 +1772,7 @@ export function AdminPage() {
                   </div>
                   <div className="grid gap-2">
                     <Label htmlFor="admin-promotion-search" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">
-                      Search
+                      {t('Search')}
                     </Label>
                     <CompactSearch
                       id="admin-promotion-search"
@@ -1738,18 +1786,18 @@ export function AdminPage() {
                 </div>
               </div>
               <div className="grid gap-8">
-                {filteredPromotions.map((promotion) => (
+                {promotionPagination.pageItems.map((promotion) => (
                   <div key={promotion.id} className="relative group">
                     <PromotionCard
                       promotion={promotion}
-                      businessName={businessNameById.get(promotion.businessId) ?? 'Unknown partner'}
+                      businessName={businessNameById.get(promotion.businessId) ?? t('Unknown partner')}
                     />
                     <Button
                       variant="ghost"
                       size="icon"
                       className="absolute bottom-4 right-4 size-10 rounded-full text-red-500 opacity-0 transition-opacity hover:bg-red-50 hover:text-red-600 group-hover:opacity-100"
                       onClick={() => {
-                        if (confirm('Are you sure you want to delete this promotion?')) {
+                        if (confirm(t('Are you sure you want to delete this promotion?'))) {
                           deletePromotion.mutate(promotion.id)
                         }
                       }}
@@ -1772,18 +1820,19 @@ export function AdminPage() {
                     description={t('Try a campaign title, badge, or audience.')}
                   />
                 ) : null}
+                <PaginationControls ariaLabel={t('Admin promotions pagination')} {...promotionPagination} onPageChange={promotionPagination.setPage} />
               </div>
               {!promotionBusinessId ? (
                 <div className="rounded-3xl bg-card p-6 border border-outline-variant/20 shadow-sm text-on-surface-variant">
-                  No partner is available for promotion management yet.
+                  {t('No partner is available for promotion management yet.')}
                 </div>
               ) : null}
             </div>
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Create</span>
-                <h2 className="font-serif text-3xl text-primary">New Promotion</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Create')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('New Promotion')}</h2>
               </div>
               <div className="rounded-2xl bg-surface-low p-8 border border-outline-variant/10">
                 <form
@@ -1794,7 +1843,7 @@ export function AdminPage() {
                         setActionError(null)
                         const businessId = promotionBusinessId || availableBusinessId
                         if (!businessId) {
-                          throw new Error('No business is configured yet.')
+                          throw new Error(t('No business is configured yet.'))
                         }
 
                         await createPromotion.mutateAsync({ ...values, businessId })
@@ -1806,16 +1855,16 @@ export function AdminPage() {
                           audience: '',
                         })
                       } catch (error) {
-                        setActionError(error instanceof Error ? error.message : 'Failed to create promotion.')
+                        setActionError(localizedError(error, 'Failed to create promotion.'))
                       }
                     },
                     () => {
-                      setActionError('Please fix the highlighted promotion fields.')
+                      setActionError(t('Please fix the highlighted promotion fields.'))
                     },
                   )}
                 >
                   <div className="grid gap-3">
-                    <Label htmlFor="promotion-business">Partner</Label>
+                    <Label htmlFor="promotion-business">{t('Partner')}</Label>
                     <select
                       id="promotion-business"
                       value={promotionBusinessId}
@@ -1830,65 +1879,65 @@ export function AdminPage() {
                     </select>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="promotion-title">Promotion Title</Label>
+                    <Label htmlFor="promotion-title">{t('Promotion Title')}</Label>
                     <Input
                       id="promotion-title"
                       className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                      placeholder="Weekend espresso flight"
+                      placeholder={t('Weekend espresso flight')}
                       {...promotionForm.register('title')}
                     />
                     {promotionForm.formState.errors.title ? (
-                      <p className="text-xs text-red-500">{promotionForm.formState.errors.title.message}</p>
+                      <p className="text-xs text-red-500">{t(promotionForm.formState.errors.title.message ?? '')}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="promotion-description">Description</Label>
+                    <Label htmlFor="promotion-description">{t('Description')}</Label>
                     <Textarea
                       id="promotion-description"
                       className={adminTextareaClass}
-                      placeholder="Offer a limited-time bundle, perk, or campaign members can redeem this week."
+                      placeholder={t('Offer a limited-time bundle, perk, or campaign members can redeem this week.')}
                       {...promotionForm.register('description')}
                     />
                     {promotionForm.formState.errors.description ? (
-                      <p className="text-xs text-red-500">{promotionForm.formState.errors.description.message}</p>
+                      <p className="text-xs text-red-500">{t(promotionForm.formState.errors.description.message ?? '')}</p>
                     ) : null}
                   </div>
                   <div className="grid gap-6 md:grid-cols-2">
                     <div className="grid gap-3">
-                      <Label htmlFor="promotion-badge">Badge Label</Label>
+                      <Label htmlFor="promotion-badge">{t('Badge Label')}</Label>
                       <Input
                         id="promotion-badge"
                         className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                        placeholder="e.g., New Offer"
+                        placeholder={t('e.g., New Offer')}
                         {...promotionForm.register('badge')}
                       />
                       {promotionForm.formState.errors.badge ? (
-                        <p className="text-xs text-red-500">{promotionForm.formState.errors.badge.message}</p>
+                        <p className="text-xs text-red-500">{t(promotionForm.formState.errors.badge.message ?? '')}</p>
                       ) : null}
                     </div>
                     <div className="grid gap-3">
-                      <Label htmlFor="promotion-cta">Action Label</Label>
+                      <Label htmlFor="promotion-cta">{t('Action Label')}</Label>
                       <Input
                         id="promotion-cta"
                         className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                        placeholder="Redeem Now"
+                        placeholder={t('Redeem Now')}
                         {...promotionForm.register('cta')}
                       />
                       {promotionForm.formState.errors.cta ? (
-                        <p className="text-xs text-red-500">{promotionForm.formState.errors.cta.message}</p>
+                        <p className="text-xs text-red-500">{t(promotionForm.formState.errors.cta.message ?? '')}</p>
                       ) : null}
                     </div>
                   </div>
                   <div className="grid gap-3">
-                    <Label htmlFor="promotion-audience">Target Audience</Label>
+                    <Label htmlFor="promotion-audience">{t('Target Audience')}</Label>
                     <Input
                       id="promotion-audience"
                       className="rounded-2xl h-12 border-outline-variant/20 focus:border-primary/30"
-                      placeholder="All / Bronze / Gold"
+                      placeholder={t('All / Bronze / Gold')}
                       {...promotionForm.register('audience')}
                     />
                     {promotionForm.formState.errors.audience ? (
-                      <p className="text-xs text-red-500">{promotionForm.formState.errors.audience.message}</p>
+                      <p className="text-xs text-red-500">{t(promotionForm.formState.errors.audience.message ?? '')}</p>
                     ) : null}
                   </div>
                   <Button
@@ -1897,11 +1946,11 @@ export function AdminPage() {
                     className="w-full rounded-full h-14"
                     disabled={createPromotion.isPending || allBusinesses.isLoading || !availableBusinessId}
                   >
-                    {createPromotion.isPending ? 'Creating...' : 'Launch Promotion'}
+                    {createPromotion.isPending ? t('Creating...') : t('Launch Promotion')}
                   </Button>
                   {!allBusinesses.isLoading && !availableBusinessId ? (
                     <p className="text-sm font-medium text-on-surface-variant/75">
-                      Setup is incomplete. Promotion creation is disabled until the site is connected to its store record.
+                      {t('Setup is incomplete. Promotion creation is disabled until the site is connected to its store record.')}
                     </p>
                   ) : null}
                   {actionError ? <p className="text-sm font-bold text-red-500">{actionError}</p> : null}
@@ -1915,10 +1964,10 @@ export function AdminPage() {
           <div className="partner-operations-layout space-y-8">
             <div className="flex flex-col gap-4 border-b border-outline-variant/10 pb-5 lg:flex-row lg:items-end lg:justify-between">
               <div className="space-y-2">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Partner Network</span>
-                <h2 className="font-serif text-3xl text-primary">Partner Operations</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Partner Network')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Partner Operations')}</h2>
                 <p className="max-w-2xl text-sm leading-7 text-on-surface-variant/80">
-                  Manage partner setup, access, member activity, and commission health from one operational table.
+                  {t('Manage partner setup, access, member activity, and commission health from one operational table.')}
                 </p>
               </div>
               <Button
@@ -1929,7 +1978,7 @@ export function AdminPage() {
                   setIsCreateBusinessDialogOpen(true)
                 }}
               >
-                Create Partner
+                {t('Create Partner')}
               </Button>
             </div>
 
@@ -1944,9 +1993,9 @@ export function AdminPage() {
             >
               <DialogContent className="partner-create-dialog max-h-[90vh] max-w-3xl overflow-y-auto rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
                 <DialogHeader>
-                  <DialogTitle className="font-serif text-2xl text-primary">Create Partner</DialogTitle>
+                  <DialogTitle className="font-serif text-2xl text-primary">{t('Create Partner')}</DialogTitle>
                   <DialogDescription className="text-sm text-on-surface-variant/80">
-                    Create a business and provision its partner owner login in one flow. The owner email becomes the login email.
+                    {t('Create a business and provision its partner owner login in one flow. The owner email becomes the login email.')}
                   </DialogDescription>
                 </DialogHeader>
 
@@ -1976,8 +2025,8 @@ export function AdminPage() {
                         })
                         toast.success(
                           ownerCredentials.invitationSent
-                            ? `Partner created. A secure account invitation was sent to ${ownerCredentials.email}.`
-                            : `Partner access was updated for ${ownerCredentials.email}. They can use their existing sign-in.`,
+                            ? t('Partner created. A secure account invitation was sent to {email}.', { email: ownerCredentials.email })
+                            : t('Partner access was updated for {email}. They can use their existing sign-in.', { email: ownerCredentials.email }),
                           { duration: 12000 },
                         )
 
@@ -1987,23 +2036,21 @@ export function AdminPage() {
                         if (isUniqueSlugError(error)) {
                           createBusinessForm.setError('slug', {
                             type: 'server',
-                            message: 'That slug is already in use. Choose a different one.',
+                            message: t('That slug is already in use. Choose a different one.'),
                           })
                           return
                         }
 
-                        setCreateBusinessError(
-                          error instanceof Error ? error.message : 'Failed to create business.',
-                        )
+                        setCreateBusinessError(localizedError(error, 'Failed to create business.'))
                       }
                     },
                     () => {
-                      setCreateBusinessError('Please fix the highlighted business fields.')
+                      setCreateBusinessError(t('Please fix the highlighted business fields.'))
                     },
                   )}
                 >
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-name">Name</Label>
+                    <Label htmlFor="create-partner-name">{t('Name')}</Label>
                     <Input
                       id="create-partner-name"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
@@ -2011,12 +2058,12 @@ export function AdminPage() {
                       {...createBusinessForm.register('name')}
                     />
                     {createBusinessForm.formState.errors.name ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.name.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.name.message ?? '')}</p>
                     ) : null}
                   </div>
 
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-slug">Slug</Label>
+                    <Label htmlFor="create-partner-slug">{t('Slug')}</Label>
                     <Input
                       id="create-partner-slug"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
@@ -2026,40 +2073,40 @@ export function AdminPage() {
                       })}
                     />
                     {createBusinessForm.formState.errors.slug ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.slug.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.slug.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Lowercase letters, numbers, and single hyphens only.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Lowercase letters, numbers, and single hyphens only.')}</p>
                     )}
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-description">Description</Label>
+                    <Label htmlFor="create-partner-description">{t('Description')}</Label>
                     <Textarea
                       id="create-partner-description"
                       className="min-h-24 rounded-2xl border-outline-variant/20 focus:border-primary/30"
-                      placeholder="Neighborhood espresso bar with all-day pastries."
+                      placeholder={t('Neighborhood espresso bar with all-day pastries.')}
                       {...createBusinessForm.register('description')}
                     />
                     {createBusinessForm.formState.errors.description ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.description.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.description.message ?? '')}</p>
                     ) : null}
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-address">Address</Label>
+                    <Label htmlFor="create-partner-address">{t('Address')}</Label>
                     <Input
                       id="create-partner-address"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
-                      placeholder="Business street address"
+                      placeholder={t('Business street address')}
                       {...createBusinessForm.register('address')}
                     />
                     {createBusinessForm.formState.errors.address ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.address.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.address.message ?? '')}</p>
                     ) : null}
                   </div>
 
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-latitude">Latitude</Label>
+                    <Label htmlFor="create-partner-latitude">{t('Latitude')}</Label>
                     <Input
                       id="create-partner-latitude"
                       type="number"
@@ -2071,14 +2118,14 @@ export function AdminPage() {
                       })}
                     />
                     {createBusinessForm.formState.errors.latitude ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.latitude.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.latitude.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Optional. Use exact coordinates when available.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Optional. Use exact coordinates when available.')}</p>
                     )}
                   </div>
 
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-longitude">Longitude</Label>
+                    <Label htmlFor="create-partner-longitude">{t('Longitude')}</Label>
                     <Input
                       id="create-partner-longitude"
                       type="number"
@@ -2090,14 +2137,14 @@ export function AdminPage() {
                       })}
                     />
                     {createBusinessForm.formState.errors.longitude ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.longitude.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.longitude.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Optional. Leave blank until the partner is pinned.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Optional. Leave blank until the partner is pinned.')}</p>
                     )}
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-logo-url">Logo URL</Label>
+                    <Label htmlFor="create-partner-logo-url">{t('Logo URL')}</Label>
                     <Input
                       id="create-partner-logo-url"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
@@ -2105,12 +2152,12 @@ export function AdminPage() {
                       {...createBusinessForm.register('logoUrl')}
                     />
                     {createBusinessForm.formState.errors.logoUrl ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.logoUrl.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.logoUrl.message ?? '')}</p>
                     ) : null}
                   </div>
 
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-earn-rate">Earn Rate</Label>
+                    <Label htmlFor="create-partner-earn-rate">{t('Earn Rate')}</Label>
                     <Input
                       id="create-partner-earn-rate"
                       type="number"
@@ -2119,19 +2166,19 @@ export function AdminPage() {
                       {...createBusinessForm.register('earnRate', { valueAsNumber: true })}
                     />
                     {createBusinessForm.formState.errors.earnRate ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.earnRate.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.earnRate.message ?? '')}</p>
                     ) : null}
                   </div>
 
                   <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4 md:col-span-2">
-                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">Business onboarding</p>
+                    <p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{t('Business onboarding')}</p>
                     <p className="mt-2 text-sm leading-6 text-on-surface-variant/80">
-                      Ask whether tax is added on top of the bill or already included, and whether the business adds service charge. Rewards are issued only on the bill amount before tax and service charge.
+                      {t('Ask whether tax is added on top of the bill or already included, and whether the business adds service charge. Rewards are issued only on the bill amount before tax and service charge.')}
                     </p>
                   </div>
 
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-tax-rate">Tax Rate (%)</Label>
+                    <Label htmlFor="create-partner-tax-rate">{t('Tax Rate (%)')}</Label>
                     <Input
                       id="create-partner-tax-rate"
                       type="number"
@@ -2141,9 +2188,9 @@ export function AdminPage() {
                       {...createBusinessForm.register('taxRate', { valueAsNumber: true })}
                     />
                     {createBusinessForm.formState.errors.taxRate ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.taxRate.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.taxRate.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Example: 115 total with 100 bill, 10 tax, and 5 service charge awards points only on 100.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Example: 115 total with 100 bill, 10 tax, and 5 service charge awards points only on 100.')}</p>
                     )}
                   </div>
 
@@ -2154,10 +2201,10 @@ export function AdminPage() {
                         className="size-4 rounded border-outline-variant/30"
                         {...createBusinessForm.register('taxIncludedInBill')}
                       />
-                      Tax is included in the bill
+                      {t('Tax is included in the bill')}
                     </label>
                     <p className="text-xs text-on-surface-variant/70">
-                      Leave unchecked when tax is added on top of the menu/subtotal price.
+                      {t('Leave unchecked when tax is added on top of the menu/subtotal price.')}
                     </p>
                   </div>
 
@@ -2168,15 +2215,15 @@ export function AdminPage() {
                         className="size-4 rounded border-outline-variant/30"
                         {...createBusinessForm.register('serviceChargeEnabled')}
                       />
-                      Business adds service charge
+                      {t('Business adds service charge')}
                     </label>
                     <p className="text-xs text-on-surface-variant/70">
-                      Rewards will not be issued on service charge.
+                      {t('Rewards will not be issued on service charge.')}
                     </p>
                   </div>
 
                   <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                    <Label htmlFor="create-partner-service-charge-rate">Service Charge (%)</Label>
+                    <Label htmlFor="create-partner-service-charge-rate">{t('Service Charge (%)')}</Label>
                     <Input
                       id="create-partner-service-charge-rate"
                       type="number"
@@ -2186,15 +2233,15 @@ export function AdminPage() {
                       {...createBusinessForm.register('serviceChargeRate', { valueAsNumber: true })}
                     />
                     {createBusinessForm.formState.errors.serviceChargeRate ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.serviceChargeRate.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.serviceChargeRate.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Enter 5 for a 5% service charge. Use 0 when there is no service charge.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Enter 5 for a 5% service charge. Use 0 when there is no service charge.')}</p>
                     )}
                   </div>
 
                   <div className="grid gap-5 md:col-span-2 md:grid-cols-2">
                     <div className="grid grid-rows-[1.25rem_3rem_auto] gap-3">
-                      <Label htmlFor="create-partner-currency">Currency</Label>
+                      <Label htmlFor="create-partner-currency">{t('Currency')}</Label>
                       <Input
                         id="create-partner-currency"
                         maxLength={3}
@@ -2209,7 +2256,7 @@ export function AdminPage() {
                         })}
                       />
                       {createBusinessForm.formState.errors.currency ? (
-                        <p className="text-xs text-red-500">{createBusinessForm.formState.errors.currency.message}</p>
+                        <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.currency.message ?? '')}</p>
                       ) : null}
                     </div>
 
@@ -2220,13 +2267,13 @@ export function AdminPage() {
                           className="size-4 rounded border-outline-variant/30"
                           {...createBusinessForm.register('active')}
                         />
-                        Active
+                        {t('Active')}
                       </label>
                     </div>
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-owner-email">Partner Login Email</Label>
+                    <Label htmlFor="create-partner-owner-email">{t('Partner Login Email')}</Label>
                     <Input
                       id="create-partner-owner-email"
                       type="email"
@@ -2235,39 +2282,39 @@ export function AdminPage() {
                       {...createBusinessForm.register('ownerEmail')}
                     />
                     {createBusinessForm.formState.errors.ownerEmail ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.ownerEmail.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.ownerEmail.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">A secure invitation will be sent to this email so the partner owner can create their own password.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('A secure invitation will be sent to this email so the partner owner can create their own password.')}</p>
                     )}
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-contract-title">Contract Title</Label>
+                    <Label htmlFor="create-partner-contract-title">{t('Contract Title')}</Label>
                     <Input
                       id="create-partner-contract-title"
                       className="h-12 rounded-2xl border-outline-variant/20 focus:border-primary/30"
-                      placeholder="Partner Business Contract"
+                      placeholder={t('Partner Business Contract')}
                       {...createBusinessForm.register('contractTitle')}
                     />
                     {createBusinessForm.formState.errors.contractTitle ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.contractTitle.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.contractTitle.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Optional. Leave blank to use the business name as the contract title.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Optional. Leave blank to use the business name as the contract title.')}</p>
                     )}
                   </div>
 
                   <div className="grid gap-3 md:col-span-2">
-                    <Label htmlFor="create-partner-contract-body">Contract Document To Sign</Label>
+                    <Label htmlFor="create-partner-contract-body">{t('Contract Document To Sign')}</Label>
                     <Textarea
                       id="create-partner-contract-body"
                       className="min-h-48 rounded-2xl border-outline-variant/20 focus:border-primary/30"
-                      placeholder="Paste the partner contract or special agreement terms here. The business owner must sign this before the dashboard unlocks."
+                      placeholder={t('Paste the partner contract or special agreement terms here. The business owner must sign this before the dashboard unlocks.')}
                       {...createBusinessForm.register('contractBody')}
                     />
                     {createBusinessForm.formState.errors.contractBody ? (
-                      <p className="text-xs text-red-500">{createBusinessForm.formState.errors.contractBody.message}</p>
+                      <p className="text-xs text-red-500">{t(createBusinessForm.formState.errors.contractBody.message ?? '')}</p>
                     ) : (
-                      <p className="text-xs text-on-surface-variant/70">Optional. If filled, this becomes a required e-signature agreement for this business owner.</p>
+                      <p className="text-xs text-on-surface-variant/70">{t('Optional. If filled, this becomes a required e-signature agreement for this business owner.')}</p>
                     )}
                   </div>
 
@@ -2279,14 +2326,14 @@ export function AdminPage() {
                       onClick={resetCreateBusinessForm}
                       disabled={createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending}
                     >
-                      Reset
+                      {t('Reset')}
                     </Button>
                     <Button
                       type="submit"
                       className="rounded-full"
                       disabled={createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending}
                     >
-                      {createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending ? 'Creating...' : 'Create Partner'}
+                      {createBusiness.isPending || createBusinessAgreement.isPending || provisionPartnerOwner.isPending ? t('Creating...') : t('Create Partner')}
                     </Button>
                   </div>
                   {createBusinessError ? <p className="text-sm font-bold text-red-500 md:col-span-2">{createBusinessError}</p> : null}
@@ -2296,29 +2343,29 @@ export function AdminPage() {
 
             <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
               <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Total Partners</p>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Total Partners')}</p>
                 <p className="mt-3 font-serif text-[2rem] leading-none text-primary">{allBusinesses.data?.length ?? 0}</p>
               </div>
               <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Active Partners</p>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Active Partners')}</p>
                 <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                   {allBusinesses.data?.filter((business) => business.active).length ?? 0}
                 </p>
               </div>
               <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Tracked Members</p>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Tracked Members')}</p>
                 <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                   {allBusinesses.data?.reduce((sum, business) => sum + business.totalMembers, 0) ?? 0}
                 </p>
               </div>
               <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">QR Sales</p>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('QR Sales')}</p>
                 <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                   {allBusinesses.data?.reduce((sum, business) => sum + business.memberTransactionCount, 0) ?? 0}
                 </p>
               </div>
               <div className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Commission Owed</p>
+                <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Commission Owed')}</p>
                 <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                   {formatCurrency(allBusinesses.data?.reduce((sum, business) => sum + business.commissionOwed, 0) ?? 0)}
                 </p>
@@ -2328,8 +2375,8 @@ export function AdminPage() {
             <div className="partner-management-table overflow-hidden rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card">
               <div className="flex flex-col gap-3 border-b border-outline-variant/10 px-6 py-5 md:flex-row md:items-end md:justify-between">
                 <div>
-                  <h3 className="font-serif text-2xl text-primary">Partner Management</h3>
-                  <p className="mt-1 text-sm text-on-surface-variant/75">Scan partner status, owner access, revenue, and commission from a denser list.</p>
+                  <h3 className="font-serif text-2xl text-primary">{t('Partner Management')}</h3>
+                  <p className="mt-1 text-sm text-on-surface-variant/75">{t('Scan partner status, owner access, revenue, and commission from a denser list.')}</p>
                 </div>
                 <div className="flex flex-col gap-2 md:items-end">
                   <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
@@ -2349,13 +2396,13 @@ export function AdminPage() {
                     />
                   </div>
                   <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">
-                    {filteredBusinesses.length} / {(allBusinesses.data ?? []).length} partners
+                    {filteredBusinesses.length} / {(allBusinesses.data ?? []).length} {t('partners')}
                   </span>
                 </div>
               </div>
 
               <div className="space-y-3 p-3 lg:hidden">
-                {filteredBusinesses.map((business) => (
+                {partnerPagination.pageItems.map((business) => (
                   <div
                     key={business.id}
                     className="space-y-4 rounded-2xl border border-primary-container/15 bg-[var(--muted)] p-4"
@@ -2383,21 +2430,21 @@ export function AdminPage() {
                                 : 'border-outline-variant/15 bg-outline-variant/10 text-on-surface-variant'
                             }
                           >
-                            {business.active ? 'Active' : 'Inactive'}
+                            {business.active ? t('Active') : t('Inactive')}
                           </Badge>
                         </div>
                         <p className="mt-1 truncate text-xs text-on-surface-variant/75">{business.slug}</p>
                         <p className="mt-2 break-words text-xs text-on-surface-variant/80">
-                          Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
+                          {t('Owner:')} {business.ownerName || business.ownerEmail || t('Unassigned')}
                         </p>
                         {business.ownerEmail ? (
                           <p className="mt-1 break-words text-xs text-on-surface-variant/80">
-                            Owner email: {business.ownerEmail}
+                            {t('Owner email:')} {business.ownerEmail}
                           </p>
                         ) : null}
                         {business.staffEmails.length > 0 ? (
                           <p className="mt-1 break-words text-xs text-on-surface-variant/80">
-                            Staff email{business.staffEmails.length === 1 ? '' : 's'}: {business.staffEmails.join(', ')}
+                            {t(business.staffEmails.length === 1 ? 'Staff email:' : 'Staff emails:')} {business.staffEmails.join(', ')}
                           </p>
                         ) : null}
                       </div>
@@ -2405,28 +2452,28 @@ export function AdminPage() {
 
                     <div className="grid grid-cols-2 gap-2">
                       <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
-                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Members</p>
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Members')}</p>
                         <p className="mt-1 font-serif text-xl text-primary">{business.totalMembers}</p>
                       </div>
                       <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
-                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">QR Sales</p>
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('QR Sales')}</p>
                         <p className="mt-1 font-serif text-xl text-primary">{business.memberTransactionCount}</p>
                       </div>
                       <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
-                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Revenue</p>
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Revenue')}</p>
                         <p className="mt-1 truncate font-semibold text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</p>
                       </div>
                       <div className="rounded-xl border border-primary-container/15 bg-[var(--card)] p-3">
-                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">Commission</p>
+                        <p className="text-[0.6rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/70">{t('Commission')}</p>
                         <p className="mt-1 truncate font-semibold text-primary">{formatCurrency(business.commissionOwed)}</p>
-                        <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} paid</p>
+                        <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} {t('paid')}</p>
                       </div>
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex items-start gap-2 text-xs font-semibold text-on-surface-variant/80">
                         <MapPin className="mt-0.5 size-4 shrink-0 text-primary" />
-                        <span className="min-w-0 break-words">{business.address || 'No address yet'}</span>
+                        <span className="min-w-0 break-words">{business.address || t('No address yet')}</span>
                       </div>
                       <Badge
                         variant="outline"
@@ -2436,7 +2483,7 @@ export function AdminPage() {
                             : 'border-warning/20 bg-warning/10 text-warning'
                         }
                       >
-                        {business.latitude !== null && business.longitude !== null ? 'Pinned' : 'Missing coordinates'}
+                        {t(business.latitude !== null && business.longitude !== null ? 'Pinned' : 'Missing coordinates')}
                       </Badge>
                     </div>
 
@@ -2453,7 +2500,7 @@ export function AdminPage() {
                           })
                         }}
                       >
-                        Owner
+                        {t('Owner')}
                       </Button>
                       <Button
                         type="button"
@@ -2467,7 +2514,7 @@ export function AdminPage() {
                           })
                         }}
                       >
-                        Staff
+                        {t('Staff')}
                       </Button>
                       <Button
                         type="button"
@@ -2479,7 +2526,7 @@ export function AdminPage() {
                             : beginBusinessEdit(business)
                         }
                       >
-                        {editingBusinessId === business.id ? 'Close' : 'Edit'}
+                        {editingBusinessId === business.id ? t('Close') : t('Edit')}
                       </Button>
                     </div>
 
@@ -2490,8 +2537,8 @@ export function AdminPage() {
                           event.preventDefault()
                           try {
                             setPartnerActionError(null)
-                            const latitude = parseBusinessCoordinate(businessPatch.latitude, 'Latitude', -90, 90)
-                            const longitude = parseBusinessCoordinate(businessPatch.longitude, 'Longitude', -180, 180)
+                            const latitude = parseBusinessCoordinate(businessPatch.latitude, t('Latitude must be between -90 and 90.'), -90, 90)
+                            const longitude = parseBusinessCoordinate(businessPatch.longitude, t('Longitude must be between -180 and 180.'), -180, 180)
                             await updateBusiness.mutateAsync({
                               id: business.id,
                               patch: {
@@ -2504,16 +2551,14 @@ export function AdminPage() {
                               },
                             })
                             setEditingBusinessId(null)
-                            toast.success('Business updated.')
+                            toast.success(t('Business updated.'))
                           } catch (error) {
-                            setPartnerActionError(
-                              error instanceof Error ? error.message : 'Failed to update partner info.',
-                            )
+                            setPartnerActionError(localizedError(error, 'Failed to update partner info.'))
                           }
                         }}
                       >
                         <div className="grid gap-2">
-                          <Label htmlFor={`partner-name-mobile-${business.id}`}>Name</Label>
+                          <Label htmlFor={`partner-name-mobile-${business.id}`}>{t('Name')}</Label>
                           <Input
                             id={`partner-name-mobile-${business.id}`}
                             value={businessPatch.name}
@@ -2523,7 +2568,7 @@ export function AdminPage() {
                           />
                         </div>
                         <div className="grid gap-2">
-                          <Label htmlFor={`partner-address-mobile-${business.id}`}>Address</Label>
+                          <Label htmlFor={`partner-address-mobile-${business.id}`}>{t('Address')}</Label>
                           <Input
                             id={`partner-address-mobile-${business.id}`}
                             value={businessPatch.address}
@@ -2534,7 +2579,7 @@ export function AdminPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-3">
                           <div className="grid gap-2">
-                            <Label htmlFor={`partner-latitude-mobile-${business.id}`}>Latitude</Label>
+                            <Label htmlFor={`partner-latitude-mobile-${business.id}`}>{t('Latitude')}</Label>
                             <Input
                               id={`partner-latitude-mobile-${business.id}`}
                               type="number"
@@ -2546,7 +2591,7 @@ export function AdminPage() {
                             />
                           </div>
                           <div className="grid gap-2">
-                            <Label htmlFor={`partner-longitude-mobile-${business.id}`}>Longitude</Label>
+                            <Label htmlFor={`partner-longitude-mobile-${business.id}`}>{t('Longitude')}</Label>
                             <Input
                               id={`partner-longitude-mobile-${business.id}`}
                               type="number"
@@ -2560,7 +2605,7 @@ export function AdminPage() {
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
                           <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
-                            {updateBusiness.isPending ? 'Saving...' : 'Save'}
+                            {updateBusiness.isPending ? t('Saving...') : t('Save')}
                           </Button>
                           <Button
                             type="button"
@@ -2569,7 +2614,7 @@ export function AdminPage() {
                             onClick={() => setEditingBusinessId(null)}
                             disabled={updateBusiness.isPending}
                           >
-                            Cancel
+                            {t('Cancel')}
                           </Button>
                           {partnerActionError ? (
                             <p className="basis-full text-sm font-bold text-red-500">{partnerActionError}</p>
@@ -2584,17 +2629,17 @@ export function AdminPage() {
               <ScrollArea className="hidden w-full lg:block" data-testid="partner-management-table-scroll">
                 <div className="min-w-[960px]">
                   <div className="grid grid-cols-[minmax(190px,1.15fr)_minmax(160px,0.9fr)_76px_76px_104px_112px_136px] gap-3 border-b border-outline-variant/10 bg-[var(--muted)] px-4 py-3 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                    <span>Partner</span>
-                    <span>Location</span>
-                    <span className="whitespace-nowrap">Members</span>
-                    <span className="whitespace-nowrap">QR Sales</span>
-                    <span className="whitespace-nowrap">Revenue</span>
-                    <span className="whitespace-nowrap">Commission</span>
-                    <span className="text-right">Actions</span>
+                    <span>{t('Partner')}</span>
+                    <span>{t('Location')}</span>
+                    <span className="whitespace-nowrap">{t('Members')}</span>
+                    <span className="whitespace-nowrap">{t('QR Sales')}</span>
+                    <span className="whitespace-nowrap">{t('Revenue')}</span>
+                    <span className="whitespace-nowrap">{t('Commission')}</span>
+                    <span className="text-right">{t('Actions')}</span>
                   </div>
 
                   <div className="divide-y divide-outline-variant/10">
-                    {filteredBusinesses.map((business) => (
+                    {partnerPagination.pageItems.map((business) => (
                       <div key={business.id}>
                         <div className="grid grid-cols-[minmax(190px,1.15fr)_minmax(160px,0.9fr)_76px_76px_104px_112px_136px] gap-3 px-4 py-5 text-sm">
                           <div className="flex min-w-0 items-start gap-3">
@@ -2620,16 +2665,16 @@ export function AdminPage() {
                                       : 'border-outline-variant/15 bg-outline-variant/10 text-on-surface-variant'
                                   }
                                 >
-                                  {business.active ? 'Active' : 'Inactive'}
+                                  {business.active ? t('Active') : t('Inactive')}
                                 </Badge>
                               </div>
                               <p className="mt-1 truncate text-xs text-on-surface-variant/75">{business.slug}</p>
                               <p className="mt-2 truncate text-xs text-on-surface-variant/80">
-                                Owner: {business.ownerName || business.ownerEmail || 'Unassigned'}
+                                {t('Owner:')} {business.ownerName || business.ownerEmail || t('Unassigned')}
                               </p>
                               {business.ownerEmail ? (
                                 <p className="mt-1 truncate text-xs text-on-surface-variant/80" title={business.ownerEmail}>
-                                  Owner email: {business.ownerEmail}
+                                  {t('Owner email:')} {business.ownerEmail}
                                 </p>
                               ) : null}
                               {business.staffEmails.length > 0 ? (
@@ -2637,7 +2682,7 @@ export function AdminPage() {
                                   className="mt-1 truncate text-xs text-on-surface-variant/80"
                                   title={business.staffEmails.join(', ')}
                                 >
-                                  Staff email{business.staffEmails.length === 1 ? '' : 's'}: {business.staffEmails.join(', ')}
+                                  {t(business.staffEmails.length === 1 ? 'Staff email:' : 'Staff emails:')} {business.staffEmails.join(', ')}
                                 </p>
                               ) : null}
                             </div>
@@ -2646,7 +2691,7 @@ export function AdminPage() {
                             <div className="flex items-center gap-2">
                               <MapPin className="size-4 shrink-0 text-primary" />
                               <span className="truncate text-xs font-semibold text-on-surface-variant/80">
-                                {business.address || 'No address yet'}
+                                {business.address || t('No address yet')}
                               </span>
                             </div>
                             <Badge
@@ -2657,7 +2702,7 @@ export function AdminPage() {
                                   : 'border-warning/20 bg-warning/10 text-warning'
                               }
                             >
-                              {business.latitude !== null && business.longitude !== null ? 'Pinned' : 'Missing coordinates'}
+                              {t(business.latitude !== null && business.longitude !== null ? 'Pinned' : 'Missing coordinates')}
                             </Badge>
                           </div>
                           <div className="font-semibold text-primary">{business.totalMembers}</div>
@@ -2665,7 +2710,7 @@ export function AdminPage() {
                           <div className="truncate font-semibold text-primary">{moneyFormatter(business.totalRevenue, business.currency)}</div>
                           <div className="min-w-0">
                             <p className="truncate font-semibold text-primary">{formatCurrency(business.commissionOwed)}</p>
-                            <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} paid</p>
+                            <p className="text-xs text-on-surface-variant/70">{formatCurrency(business.commissionPaid)} {t('paid')}</p>
                           </div>
                           <div className="flex min-w-0 flex-wrap justify-end gap-1.5" data-testid="partner-row-actions">
                             <Button
@@ -2680,7 +2725,7 @@ export function AdminPage() {
                                 })
                               }}
                             >
-                              Owner
+                              {t('Owner')}
                             </Button>
                             <Button
                               type="button"
@@ -2694,7 +2739,7 @@ export function AdminPage() {
                                 })
                               }}
                             >
-                              Staff
+                              {t('Staff')}
                             </Button>
                             <Button
                               type="button"
@@ -2706,7 +2751,7 @@ export function AdminPage() {
                                   : beginBusinessEdit(business)
                               }
                             >
-                              {editingBusinessId === business.id ? 'Close' : 'Edit'}
+                              {editingBusinessId === business.id ? t('Close') : t('Edit')}
                             </Button>
                           </div>
                         </div>
@@ -2718,8 +2763,8 @@ export function AdminPage() {
                               event.preventDefault()
                               try {
                                 setPartnerActionError(null)
-                                const latitude = parseBusinessCoordinate(businessPatch.latitude, 'Latitude', -90, 90)
-                                const longitude = parseBusinessCoordinate(businessPatch.longitude, 'Longitude', -180, 180)
+                                const latitude = parseBusinessCoordinate(businessPatch.latitude, t('Latitude must be between -90 and 90.'), -90, 90)
+                                const longitude = parseBusinessCoordinate(businessPatch.longitude, t('Longitude must be between -180 and 180.'), -180, 180)
                                 await updateBusiness.mutateAsync({
                                   id: business.id,
                                   patch: {
@@ -2732,16 +2777,14 @@ export function AdminPage() {
                                   },
                                 })
                                 setEditingBusinessId(null)
-                                toast.success('Business updated.')
+                                toast.success(t('Business updated.'))
                               } catch (error) {
-                                setPartnerActionError(
-                                  error instanceof Error ? error.message : 'Failed to update partner info.',
-                                )
+                                setPartnerActionError(localizedError(error, 'Failed to update partner info.'))
                               }
                             }}
                           >
                             <div className="grid gap-2">
-                              <Label htmlFor={`partner-name-${business.id}`}>Name</Label>
+                              <Label htmlFor={`partner-name-${business.id}`}>{t('Name')}</Label>
                               <Input
                                 id={`partner-name-${business.id}`}
                                 value={businessPatch.name}
@@ -2751,7 +2794,7 @@ export function AdminPage() {
                               />
                             </div>
                             <div className="grid gap-2">
-                              <Label htmlFor={`partner-description-${business.id}`}>Description</Label>
+                              <Label htmlFor={`partner-description-${business.id}`}>{t('Description')}</Label>
                               <Input
                                 id={`partner-description-${business.id}`}
                                 value={businessPatch.description}
@@ -2761,7 +2804,7 @@ export function AdminPage() {
                               />
                             </div>
                             <div className="grid gap-2">
-                              <Label htmlFor={`partner-address-${business.id}`}>Address</Label>
+                              <Label htmlFor={`partner-address-${business.id}`}>{t('Address')}</Label>
                               <Input
                                 id={`partner-address-${business.id}`}
                                 value={businessPatch.address}
@@ -2771,7 +2814,7 @@ export function AdminPage() {
                               />
                             </div>
                             <div className="grid gap-2">
-                              <Label htmlFor={`partner-latitude-${business.id}`}>Latitude</Label>
+                              <Label htmlFor={`partner-latitude-${business.id}`}>{t('Latitude')}</Label>
                               <Input
                                 id={`partner-latitude-${business.id}`}
                                 type="number"
@@ -2783,7 +2826,7 @@ export function AdminPage() {
                               />
                             </div>
                             <div className="grid gap-2">
-                              <Label htmlFor={`partner-longitude-${business.id}`}>Longitude</Label>
+                              <Label htmlFor={`partner-longitude-${business.id}`}>{t('Longitude')}</Label>
                               <Input
                                 id={`partner-longitude-${business.id}`}
                                 type="number"
@@ -2795,7 +2838,7 @@ export function AdminPage() {
                               />
                             </div>
                             <div className="grid gap-2">
-                              <Label htmlFor={`partner-logo-${business.id}`}>Logo URL</Label>
+                              <Label htmlFor={`partner-logo-${business.id}`}>{t('Logo URL')}</Label>
                               <Input
                                 id={`partner-logo-${business.id}`}
                                 value={businessPatch.logoUrl}
@@ -2806,7 +2849,7 @@ export function AdminPage() {
                             </div>
                             <div className="flex flex-wrap items-center gap-3 md:col-span-3">
                               <Button type="submit" className="rounded-full" disabled={updateBusiness.isPending}>
-                                {updateBusiness.isPending ? 'Saving...' : 'Save'}
+                                {updateBusiness.isPending ? t('Saving...') : t('Save')}
                               </Button>
                               <Button
                                 type="button"
@@ -2815,7 +2858,7 @@ export function AdminPage() {
                                 onClick={() => setEditingBusinessId(null)}
                                 disabled={updateBusiness.isPending}
                               >
-                                Cancel
+                                {t('Cancel')}
                               </Button>
                               {partnerActionError ? (
                                 <p className="text-sm font-bold text-red-500">{partnerActionError}</p>
@@ -2828,6 +2871,13 @@ export function AdminPage() {
                   </div>
                 </div>
               </ScrollArea>
+
+              <PaginationControls
+                ariaLabel={t('Partner businesses pagination')}
+                {...partnerPagination}
+                className="m-3"
+                onPageChange={partnerPagination.setPage}
+              />
 
               {allBusinesses.isLoading ? (
                 <div className="space-y-3 p-6">
@@ -2854,11 +2904,11 @@ export function AdminPage() {
 
             <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card">
               <div className="border-b border-outline-variant/10 px-6 py-5">
-                <h3 className="font-serif text-2xl text-primary">Recent Referral Activity</h3>
-                <p className="mt-1 text-sm text-on-surface-variant/75">Receptionist-level attribution across all businesses.</p>
+                <h3 className="font-serif text-2xl text-primary">{t('Recent Referral Activity')}</h3>
+                <p className="mt-1 text-sm text-on-surface-variant/75">{t('Receptionist-level attribution across all businesses.')}</p>
               </div>
               <div className="divide-y divide-outline-variant/10">
-                {(partnerReferrals.data ?? []).slice(0, 6).map((referral) => (
+                {partnerReferralActivityPagination.pageItems.map((referral) => (
                   <div key={referral.id} className="flex flex-col gap-3 px-6 py-5 md:flex-row md:items-center md:justify-between">
                     <div>
                       <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
@@ -2873,7 +2923,7 @@ export function AdminPage() {
                             : 'border-primary-container/20 bg-primary-container/12 text-primary'
                         }
                       >
-                        {getPartnerReferralStatusLabel(referral.status)}
+                        {t(getPartnerReferralStatusLabel(referral.status))}
                       </Badge>
                       <span className="text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">
                         {formatDate(referral.createdAt)}
@@ -2897,6 +2947,12 @@ export function AdminPage() {
                     description={t('Partner referral records will appear here after attribution.')}
                   />
                 ) : null}
+                <PaginationControls
+                  ariaLabel={t('Partner referral activity pagination')}
+                  {...partnerReferralActivityPagination}
+                  className="m-4"
+                  onPageChange={partnerReferralActivityPagination.setPage}
+                />
               </div>
             </div>
           </div>
@@ -2912,14 +2968,14 @@ export function AdminPage() {
             <DialogContent className="max-w-lg rounded-3xl border border-primary-container/20 bg-[var(--card)] text-on-surface shadow-card">
               <DialogHeader>
                 <DialogTitle className="font-serif text-2xl text-primary">
-                  {businessAccessDialog?.role === 'business-staff' ? 'Add Staff' : 'Assign Owner'}
+                  {businessAccessDialog?.role === 'business-staff' ? t('Add Staff') : t('Assign Owner')}
                 </DialogTitle>
                 <DialogDescription className="text-sm text-on-surface-variant/80">
                   {accessDialogBusiness
                     ? businessAccessDialog?.role === 'business-staff'
-                      ? `Add a staff account to ${accessDialogBusiness.name}.`
-                      : `Assign the canonical owner for ${accessDialogBusiness.name}.`
-                    : 'Manage business access.'}
+                      ? t('Add a staff account to {business}.', { business: accessDialogBusiness.name })
+                      : t('Assign the canonical owner for {business}.', { business: accessDialogBusiness.name })
+                    : t('Manage business access.')}
                 </DialogDescription>
               </DialogHeader>
 
@@ -2942,30 +2998,29 @@ export function AdminPage() {
                     }
                     toast.success(
                       businessAccessDialog.role === 'business-staff'
-                        ? 'Business staff assigned.'
-                        : 'Business owner assigned.',
+                        ? t('Business staff assigned.')
+                        : t('Business owner assigned.'),
                     )
                     setBusinessAccessDialog(null)
                     assignOwnerForm.reset({ email: '' })
                   } catch (error) {
                     if (error instanceof OwnerNotFoundError || error instanceof StaffNotFoundError) {
-                      toast.error('No user account matches that email.')
+                      toast.error(t('No user account matches that email.'))
                       return
                     }
 
-                    toast.error(
-                      error instanceof Error
-                        ? error.message
-                        : businessAccessDialog.role === 'business-staff'
-                          ? 'Failed to assign staff.'
-                          : 'Failed to assign business owner.',
-                    )
+                    toast.error(localizedError(
+                      error,
+                      businessAccessDialog.role === 'business-staff'
+                        ? 'Failed to assign staff.'
+                        : 'Failed to assign business owner.',
+                    ))
                   }
                 })}
               >
                 <div className="grid gap-3">
                   <Label htmlFor="assign-owner-email">
-                    {businessAccessDialog?.role === 'business-staff' ? 'Staff Email' : 'Owner Email'}
+                    {businessAccessDialog?.role === 'business-staff' ? t('Staff Email') : t('Owner Email')}
                   </Label>
                   <Input
                     id="assign-owner-email"
@@ -2979,7 +3034,7 @@ export function AdminPage() {
                     {...assignOwnerForm.register('email')}
                   />
                   {assignOwnerForm.formState.errors.email ? (
-                    <p className="text-xs text-red-500">{assignOwnerForm.formState.errors.email.message}</p>
+                    <p className="text-xs text-red-500">{t(assignOwnerForm.formState.errors.email.message ?? '')}</p>
                   ) : null}
                 </div>
 
@@ -2991,7 +3046,7 @@ export function AdminPage() {
                     onClick={() => setBusinessAccessDialog(null)}
                     disabled={assignBusinessOwnerFromList.isPending || assignBusinessStaffFromList.isPending}
                   >
-                    Cancel
+                    {t('Cancel')}
                   </Button>
                   <Button
                     type="submit"
@@ -2999,10 +3054,10 @@ export function AdminPage() {
                     disabled={assignBusinessOwnerFromList.isPending || assignBusinessStaffFromList.isPending}
                   >
                     {assignBusinessOwnerFromList.isPending || assignBusinessStaffFromList.isPending
-                      ? 'Saving...'
+                      ? t('Saving...')
                       : businessAccessDialog?.role === 'business-staff'
-                        ? 'Add Staff'
-                        : 'Assign Owner'}
+                        ? t('Add Staff')
+                        : t('Assign Owner')}
                   </Button>
                 </div>
               </form>
@@ -3012,12 +3067,12 @@ export function AdminPage() {
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
               <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Audit</span>
-                <h2 className="font-serif text-3xl text-primary">Credit Verification — Recent Orders</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Audit')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Credit Verification — Recent Orders')}</h2>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="verification-business" className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/80">
-                  Filter Partner
+                  {t('Filter Partner')}
                 </Label>
                 <select
                   id="verification-business"
@@ -3025,7 +3080,7 @@ export function AdminPage() {
                   onChange={(event) => setVerificationBusinessId(event.target.value)}
                   className="h-12 min-w-56 rounded-2xl border border-primary-container/20 bg-[var(--muted)] px-4 text-sm text-on-surface shadow-sm outline-none transition focus:border-primary/30"
                 >
-                  <option value="all">All Partners</option>
+                  <option value="all">{t('All Partners')}</option>
                   {(allBusinesses.data ?? []).map((business) => (
                     <option key={business.id} value={business.id}>
                       {business.name}
@@ -3041,17 +3096,17 @@ export function AdminPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Partner</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Member ID</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Order Total</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Expected Pts</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Awarded Pts</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Date')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Partner')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Member ID')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Order Total')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Expected Pts')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Awarded Pts')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Status')}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(verificationOrders.data ?? []).map((order) => {
+                      {verificationOrderPagination.pageItems.map((order) => {
                         const partnerCurrency =
                           allBusinesses.data?.find((business) => business.id === order.businessId)?.currency ?? 'USD'
 
@@ -3074,7 +3129,7 @@ export function AdminPage() {
                                     : 'bg-success/10 text-success border-success/20'
                                 }
                               >
-                                {order.mismatch ? 'Mismatch' : 'Match'}
+                                {order.mismatch ? t('Mismatch') : t('Match')}
                               </Badge>
                             </td>
                           </tr>
@@ -3101,6 +3156,12 @@ export function AdminPage() {
                   ) : null}
                 </div>
               </ScrollArea>
+              <PaginationControls
+                ariaLabel={t('Verification orders pagination')}
+                {...verificationOrderPagination}
+                className="m-4"
+                onPageChange={verificationOrderPagination.setPage}
+              />
             </div>
           </div>
         </TabsContent>
@@ -3109,18 +3170,18 @@ export function AdminPage() {
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
               <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Lead Generation</span>
-                <h2 className="font-serif text-3xl text-primary">Ambassador Leads</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Lead Generation')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Ambassador Leads')}</h2>
               </div>
               <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-                {(ambassadorLeads.data ?? []).length} requests
+                {(ambassadorLeads.data ?? []).length} {t('requests')}
               </span>
             </div>
 
             <div className="grid gap-4 md:grid-cols-4">
               {ambassadorStatusOptions.map((status) => (
                 <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{getAmbassadorLeadStatusLabel(status)}</p>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t(getAmbassadorLeadStatusLabel(status))}</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                     {(ambassadorLeads.data ?? []).filter((lead) => lead.status === status).length}
                   </p>
@@ -3134,15 +3195,15 @@ export function AdminPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Lead</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Socials</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Partner</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Note</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Lead')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Socials')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Partner')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Note')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Status')}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(ambassadorLeads.data ?? []).map((lead) => {
+                      {ambassadorLeadPagination.pageItems.map((lead) => {
                         const socialEntries = Object.entries(lead.socialLinks).filter(([, value]) => Boolean(value))
 
                         return (
@@ -3166,10 +3227,10 @@ export function AdminPage() {
                               </div>
                             </td>
                             <td className="px-6 py-5 text-on-surface-variant/85">
-                              {lead.businessId ? businessNameById.get(lead.businessId) ?? 'Unknown partner' : 'Platform-wide'}
+                              {lead.businessId ? businessNameById.get(lead.businessId) ?? t('Unknown partner') : t('Platform-wide')}
                             </td>
                             <td className="px-6 py-5">
-                              <p className="max-w-xs text-sm leading-6 text-on-surface-variant/80">{lead.notes || 'No note'}</p>
+                              <p className="max-w-xs text-sm leading-6 text-on-surface-variant/80">{lead.notes || t('No note')}</p>
                             </td>
                             <td className="px-6 py-5">
                               <select
@@ -3185,7 +3246,7 @@ export function AdminPage() {
                               >
                                 {ambassadorStatusOptions.map((status) => (
                                   <option key={status} value={status}>
-                                    {getAmbassadorLeadStatusLabel(status)}
+                                    {t(getAmbassadorLeadStatusLabel(status))}
                                   </option>
                                 ))}
                               </select>
@@ -3208,12 +3269,18 @@ export function AdminPage() {
                     <EmptyState
                       className="border-0 shadow-none"
                       icon={<Megaphone className="size-8" />}
-                      title="No ambassador leads yet"
-                      description="Public ambassador requests will appear here after people submit the form."
+                      title={t('No ambassador leads yet')}
+                      description={t('Public ambassador requests will appear here after people submit the form.')}
                     />
                   ) : null}
                 </div>
               </ScrollArea>
+              <PaginationControls
+                ariaLabel={t('Ambassador leads pagination')}
+                {...ambassadorLeadPagination}
+                className="m-4"
+                onPageChange={ambassadorLeadPagination.setPage}
+              />
             </div>
           </div>
         </TabsContent>
@@ -3222,18 +3289,18 @@ export function AdminPage() {
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
               <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Public Requests</span>
-                <h2 className="font-serif text-3xl text-primary">Lead Pipeline</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Public Requests')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Lead Pipeline')}</h2>
               </div>
               <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-                {(earlyAccessLeads.data ?? []).length} leads
+                {(earlyAccessLeads.data ?? []).length} {t('leads')}
               </span>
             </div>
 
             <div className="grid gap-4 md:grid-cols-4">
               {earlyAccessLeadStatusOptions.map((status) => (
                 <div key={status} className="rounded-2xl border border-primary-container/16 bg-[var(--muted)] p-5">
-                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{getEarlyAccessLeadStatusLabel(status)}</p>
+                  <p className="text-[0.62rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t(getEarlyAccessLeadStatusLabel(status))}</p>
                   <p className="mt-3 font-serif text-[2rem] leading-none text-primary">
                     {(earlyAccessLeads.data ?? []).filter((lead) => lead.status === status).length}
                   </p>
@@ -3247,31 +3314,31 @@ export function AdminPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Contact Details</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Source</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Other Information</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Contact Details')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Source')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Other Information')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Status')}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(earlyAccessLeads.data ?? []).map((lead) => (
+                      {earlyAccessLeadPagination.pageItems.map((lead) => (
                         <tr key={lead.id} className="border-b border-outline-variant/5 bg-transparent align-top">
                           <td className="px-6 py-5">
                             <div className="space-y-2">
                               <div>
-                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Name</p>
-                                <p className="font-serif text-xl text-primary">{lead.fullName || 'Public lead'}</p>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Name')}</p>
+                                <p className="font-serif text-xl text-primary">{lead.fullName || t('Public lead')}</p>
                               </div>
                               <div>
-                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">WhatsApp</p>
-                                <p className="break-all text-sm text-on-surface-variant/80">{lead.whatsapp || 'Not provided'}</p>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('WhatsApp')}</p>
+                                <p className="break-all text-sm text-on-surface-variant/80">{lead.whatsapp || t('Not provided')}</p>
                               </div>
                               <div>
-                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Email</p>
-                                <p className="break-all text-sm text-on-surface-variant/80">{lead.email || 'Not provided'}</p>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Email')}</p>
+                                <p className="break-all text-sm text-on-surface-variant/80">{lead.email || t('Not provided')}</p>
                               </div>
                               <div>
-                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Submitted</p>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Submitted')}</p>
                                 <p className="text-sm text-on-surface-variant/80">{formatDate(lead.createdAt)}</p>
                               </div>
                             </div>
@@ -3284,8 +3351,8 @@ export function AdminPage() {
                           <td className="px-6 py-5">
                             <div className="max-w-sm space-y-2 text-sm leading-6 text-on-surface-variant/80">
                               <div>
-                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Instagram / Notes</p>
-                                <p>{lead.notes || 'No note'}</p>
+                                <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Instagram / Notes')}</p>
+                                <p>{lead.notes || t('No note')}</p>
                               </div>
                             </div>
                           </td>
@@ -3303,7 +3370,7 @@ export function AdminPage() {
                             >
                               {earlyAccessLeadStatusOptions.map((status) => (
                                 <option key={status} value={status}>
-                                  {getEarlyAccessLeadStatusLabel(status)}
+                                  {t(getEarlyAccessLeadStatusLabel(status))}
                                 </option>
                               ))}
                             </select>
@@ -3325,12 +3392,18 @@ export function AdminPage() {
                     <EmptyState
                       className="border-0 shadow-none"
                       icon={<Mail className="size-8" />}
-                      title="No public leads yet"
-                      description="Early adopter and business onboarding requests will appear here after people submit the public forms."
+                      title={t('No public leads yet')}
+                      description={t('Early adopter and business onboarding requests will appear here after people submit the public forms.')}
                     />
                   ) : null}
                 </div>
               </ScrollArea>
+              <PaginationControls
+                ariaLabel={t('Early access leads pagination')}
+                {...earlyAccessLeadPagination}
+                className="m-4"
+                onPageChange={earlyAccessLeadPagination.setPage}
+              />
             </div>
           </div>
         </TabsContent>
@@ -3339,17 +3412,17 @@ export function AdminPage() {
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
               <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Referral Program</span>
-                <h2 className="font-serif text-3xl text-primary">Referrals</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Referral Program')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Referrals')}</h2>
               </div>
               <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-                {(allReferrals.data ?? []).length} records
+                {(allReferrals.data ?? []).length} {t('records')}
               </span>
             </div>
 
             <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
               <div className="space-y-3 p-3 md:hidden">
-                {(allReferrals.data ?? []).map((referral) => {
+                {referralPagination.pageItems.map((referral) => {
                   const referrer = referralProfileLabel(referral.referrerId, referral.referrer)
                   const referee = referralProfileLabel(referral.refereeId, referral.referee)
 
@@ -3361,7 +3434,7 @@ export function AdminPage() {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                            Date
+                            {t('Date')}
                           </p>
                           <p className="mt-1 text-sm font-semibold text-primary">{formatDate(referral.createdAt)}</p>
                         </div>
@@ -3375,21 +3448,21 @@ export function AdminPage() {
                                 : 'border-warning/20 bg-warning/10 text-warning'
                           }
                         >
-                          {getReferralStatusLabel(referral.status)}
+                          {t(getReferralStatusLabel(referral.status))}
                         </Badge>
                       </div>
 
                       <div className="grid gap-3">
                         <div>
                           <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                            Referrer
+                            {t('Referrer')}
                           </p>
                           <p className="mt-1 break-words font-semibold text-primary">{referrer.fullName}</p>
                           <p className="break-all text-xs text-on-surface-variant/75">{referrer.email}</p>
                         </div>
                         <div>
                           <p className="text-[0.62rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                            Referee
+                            {t('Referee')}
                           </p>
                           <p className="mt-1 break-words font-semibold text-primary">{referee.fullName}</p>
                           <p className="break-all text-xs text-on-surface-variant/75">{referee.email}</p>
@@ -3410,7 +3483,7 @@ export function AdminPage() {
                               }}
                             >
                               <CheckCircle className="size-4" />
-                              Approve
+                              {t('Approve')}
                             </Button>
                             <Button
                               type="button"
@@ -3420,11 +3493,11 @@ export function AdminPage() {
                               disabled={approveReferral.isPending || rejectReferral.isPending}
                               onClick={() => rejectReferral.mutate(referral.id)}
                             >
-                              Reject
+                              {t('Reject')}
                             </Button>
                           </div>
                         ) : (
-                          <span className="text-xs font-medium text-on-surface-variant/70">No action</span>
+                          <span className="text-xs font-medium text-on-surface-variant/70">{t('No action')}</span>
                         )}
                       </div>
                     </div>
@@ -3454,15 +3527,15 @@ export function AdminPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Referrer</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Referee</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Status</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Actions</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Date')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Referrer')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Referee')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Status')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(allReferrals.data ?? []).map((referral) => {
+                      {referralPagination.pageItems.map((referral) => {
                         const referrer = referralProfileLabel(referral.referrerId, referral.referrer)
                         const referee = referralProfileLabel(referral.refereeId, referral.referee)
 
@@ -3488,7 +3561,7 @@ export function AdminPage() {
                                     : 'bg-warning/10 text-warning border-warning/20'
                               }
                             >
-                              {getReferralStatusLabel(referral.status)}
+                              {t(getReferralStatusLabel(referral.status))}
                             </Badge>
                           </td>
                           <td className="px-6 py-4">
@@ -3505,7 +3578,7 @@ export function AdminPage() {
                                   }}
                                 >
                                   <CheckCircle className="size-4" />
-                                  Approve
+                                  {t('Approve')}
                                 </Button>
                                 <Button
                                   type="button"
@@ -3515,11 +3588,11 @@ export function AdminPage() {
                                   disabled={approveReferral.isPending || rejectReferral.isPending}
                                   onClick={() => rejectReferral.mutate(referral.id)}
                                 >
-                                  Reject
+                                  {t('Reject')}
                                 </Button>
                               </div>
                             ) : (
-                              <span className="text-xs font-medium text-on-surface-variant/70">No action</span>
+                              <span className="text-xs font-medium text-on-surface-variant/70">{t('No action')}</span>
                             )}
                           </td>
                         </tr>
@@ -3546,6 +3619,12 @@ export function AdminPage() {
                   ) : null}
                 </div>
               </ScrollArea>
+              <PaginationControls
+                ariaLabel={t('Customer referrals pagination')}
+                {...referralPagination}
+                className="m-4"
+                onPageChange={referralPagination.setPage}
+              />
             </div>
           </div>
         </TabsContent>
@@ -3563,7 +3642,7 @@ export function AdminPage() {
             isCreatingAgreement={createBusinessAgreement.isPending}
             onCreateBusinessAgreement={async (values) => {
               await createBusinessAgreement.mutateAsync(values)
-              toast.success('Required signing document added.')
+              toast.success(t('Required signing document added.'))
             }}
           />
         </TabsContent>
@@ -3572,13 +3651,13 @@ export function AdminPage() {
           <div className="grid min-w-0 gap-8 2xl:grid-cols-2">
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Fulfillment</span>
-                <h2 className="font-serif text-3xl text-primary">Fulfillment Queue</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Fulfillment')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Fulfillment Queue')}</h2>
               </div>
               <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
                   <div className="space-y-2 p-3 sm:p-4">
-                    {(overview.data?.redemptions ?? []).map((redemption) => (
+                    {redemptionPagination.pageItems.map((redemption) => (
                       <div key={redemption.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-4 border border-outline-variant/5 hover:border-outline-variant/10 transition-all sm:p-5">
                         <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
                           <div className="flex min-w-0 items-start gap-3 sm:gap-4">
@@ -3588,7 +3667,7 @@ export function AdminPage() {
                             <div className="min-w-0 space-y-1">
                               <p className="font-serif text-lg tracking-tight text-primary sm:text-xl">{redemption.rewardTitle}</p>
                               <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">
-                                Member ID: {redemption.profileId.slice(0, 8)}...
+                                {t('Member ID:')} {redemption.profileId.slice(0, 8)}...
                               </p>
                             </div>
                           </div>
@@ -3598,7 +3677,7 @@ export function AdminPage() {
                                 ? 'border-warning/50 text-warning bg-warning/10'
                                 : 'bg-success/10 text-success border-success/20'
                             }>
-                              {getRedemptionStatusLabel(redemption.status)}
+                              {t(getRedemptionStatusLabel(redemption.status))}
                             </Badge>
                             {redemption.status === 'ready' && (
                               <Button
@@ -3609,7 +3688,7 @@ export function AdminPage() {
                                 disabled={fulfillRedemption.isPending}
                               >
                                 <CheckCircle className="size-4 mr-1.5" />
-                                Fulfill
+                                {t('Fulfill')}
                               </Button>
                             )}
                           </div>
@@ -3635,18 +3714,24 @@ export function AdminPage() {
                     )}
                   </div>
                 </ScrollArea>
+                <PaginationControls
+                  ariaLabel={t('Fulfillment queue pagination')}
+                  {...redemptionPagination}
+                  className="m-4"
+                  onPageChange={redemptionPagination.setPage}
+                />
               </div>
             </div>
 
             <div className="space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10">
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Audit Log</span>
-                <h2 className="font-serif text-3xl text-primary">Admin Logs</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Audit Log')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Admin Logs')}</h2>
               </div>
                <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
                 <ScrollArea className="h-[500px]">
                   <div className="space-y-2 p-3 sm:p-4">
-                    {(overview.data?.adminLogs ?? []).map((log) => (
+                    {adminLogPagination.pageItems.map((log) => (
                       <div key={log.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-4 border border-outline-variant/5 hover:border-outline-variant/10 transition-all sm:p-5">
                         <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
                           <div className="flex min-w-0 items-start gap-3 sm:gap-4">
@@ -3664,7 +3749,7 @@ export function AdminPage() {
                         </div>
                         <div className="mt-4 pt-4 border-t border-outline-variant/5">
                            <div className="flex items-center gap-2">
-                             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">By {log.actorName}</span>
+                             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">{t('By')} {log.actorName}</span>
                            </div>
                         </div>
                       </div>
@@ -3679,6 +3764,12 @@ export function AdminPage() {
                     ) : null}
                   </div>
                 </ScrollArea>
+                <PaginationControls
+                  ariaLabel={t('Admin logs pagination')}
+                  {...adminLogPagination}
+                  className="m-4"
+                  onPageChange={adminLogPagination.setPage}
+                />
               </div>
             </div>
           </div>
@@ -3686,20 +3777,20 @@ export function AdminPage() {
           <div className="space-y-8">
             <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex items-end justify-between">
               <div>
-                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">All Activity</span>
-                <h2 className="font-serif text-3xl text-primary">Recent Activity</h2>
+                <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('All Activity')}</span>
+                <h2 className="font-serif text-3xl text-primary">{t('Recent Activity')}</h2>
               </div>
-              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">Latest 6</span>
+              <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">{t('All activity')}</span>
             </div>
-            <ActivityList items={overview.data?.activities.slice(0, 6) ?? []} />
+            <ActivityList items={overview.data?.activities ?? []} paginationAriaLabel={t('Admin activity pagination')} />
           </div>
         </TabsContent>
 
         <TabsContent value="commissions" className="space-y-12 outline-none">
           <div className="space-y-8">
             <div className="space-y-2 border-b border-outline-variant/10 pb-4">
-              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Commission Ledger</span>
-              <h2 className="font-serif text-3xl text-primary">Member QR Transactions</h2>
+              <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Commission Ledger')}</span>
+              <h2 className="font-serif text-3xl text-primary">{t('Member QR Transactions')}</h2>
             </div>
 
             <div className="rounded-3xl border border-primary-container/18 bg-[var(--card)] shadow-card overflow-hidden">
@@ -3708,35 +3799,35 @@ export function AdminPage() {
                   <table className="w-full text-sm">
                     <thead className="bg-[var(--muted)] text-left">
                       <tr className="border-b border-outline-variant/10">
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Date</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Business</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Member</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Purchase</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Rewards</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Commission</th>
-                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">Action</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Date')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Business')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Member')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Purchase')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Rewards')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Commission')}</th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-[0.16em] text-[0.65rem] text-on-surface-variant/70">{t('Action')}</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {(memberTransactions.data ?? []).map((transaction) => (
+                      {memberTransactionPagination.pageItems.map((transaction) => (
                         <tr key={transaction.id} className="border-b border-outline-variant/5 bg-transparent">
                           <td className="px-6 py-4 text-on-surface-variant/85">{formatDate(transaction.createdAt)}</td>
                           <td className="px-6 py-4">
-                            <p className="font-semibold text-primary">{transaction.business?.name ?? businessNameById.get(transaction.businessId) ?? 'Unknown business'}</p>
+                            <p className="font-semibold text-primary">{transaction.business?.name ?? businessNameById.get(transaction.businessId) ?? t('Unknown business')}</p>
                           </td>
                           <td className="px-6 py-4">
-                            <p className="font-semibold text-primary">{transaction.member?.fullName ?? 'Unknown member'}</p>
+                            <p className="font-semibold text-primary">{transaction.member?.fullName ?? t('Unknown member')}</p>
                             <p className="text-xs text-on-surface-variant/75">{transaction.member?.email ?? transaction.profileId}</p>
                           </td>
                           <td className="px-6 py-4">
                             <p className="font-semibold text-primary">{formatCurrency(transaction.purchaseAmount)}</p>
                             <p className="text-xs text-on-surface-variant/75">
-                              Receipt: {transaction.receiptNumber ?? 'Not recorded'}
+                              {t('Receipt:')} {transaction.receiptNumber ?? t('Not recorded')}
                             </p>
                           </td>
                           <td className="px-6 py-4">
                             <p className="font-semibold text-primary">{formatCurrency(transaction.rewardValue)}</p>
-                            <p className="text-xs text-on-surface-variant/75">{transaction.pointsAwarded} points</p>
+                            <p className="text-xs text-on-surface-variant/75">{transaction.pointsAwarded} {t('points')}</p>
                           </td>
                           <td className="px-6 py-4">
                             <Badge
@@ -3747,7 +3838,7 @@ export function AdminPage() {
                                   : 'border-warning/20 bg-warning/10 text-warning'
                               }
                             >
-                              {formatCurrency(transaction.commissionAmount)} · {transaction.commissionStatus === 'commission_paid' ? 'paid' : 'owed'}
+                              {formatCurrency(transaction.commissionAmount)} · {transaction.commissionStatus === 'commission_paid' ? t('paid') : t('owed')}
                             </Badge>
                           </td>
                           <td className="px-6 py-4">
@@ -3759,11 +3850,11 @@ export function AdminPage() {
                                 disabled={markCommissionPaid.isPending}
                                 onClick={() => markCommissionPaid.mutate({ transactionId: transaction.id })}
                               >
-                                Mark paid
+                                {t('Mark paid')}
                               </Button>
                             ) : (
                               <span className="text-xs font-medium text-on-surface-variant/70">
-                                {transaction.commissionPaidAt ? formatDate(transaction.commissionPaidAt) : 'Paid'}
+                                {transaction.commissionPaidAt ? formatDate(transaction.commissionPaidAt) : t('Paid')}
                               </span>
                             )}
                           </td>
@@ -3784,12 +3875,18 @@ export function AdminPage() {
                     <EmptyState
                       className="border-0 shadow-none"
                       icon={<ReceiptText className="size-8" />}
-                      title="No member QR transactions yet"
-                      description="Scanned outside-app purchases will appear here for commission tracking."
+                      title={t('No member QR transactions yet')}
+                      description={t('Scanned outside-app purchases will appear here for commission tracking.')}
                     />
                   ) : null}
                 </div>
               </ScrollArea>
+              <PaginationControls
+                ariaLabel={t('Member transactions pagination')}
+                {...memberTransactionPagination}
+                className="m-4"
+                onPageChange={memberTransactionPagination.setPage}
+              />
             </div>
           </div>
         </TabsContent>

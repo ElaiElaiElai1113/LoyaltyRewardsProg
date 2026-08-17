@@ -42,7 +42,7 @@ const navigation = [
   { to: '/admin/import', label: 'Tenant Import', icon: Database },
   { to: '/admin/portal', label: 'Operations', icon: LayoutDashboard },
   { to: '/admin/gift-cards', label: 'Gift Cards', icon: CreditCard },
-  { to: '/admin/guide', label: 'Guia', icon: MonitorPlay },
+  { to: '/admin/guide', label: 'Guide', icon: MonitorPlay },
 ]
 
 const adminPortalSections = [
@@ -63,8 +63,10 @@ export function AdminLayout() {
   const location = useLocation()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   usePlatformDocumentBrand()
-  const isAdminPortal = location.pathname === '/admin/portal'
-  const activeAdminSection = location.hash.replace('#', '') || 'members'
+  const usesOperationsSidebar = location.pathname === '/admin/portal' || location.pathname === '/admin/guide'
+  const activeAdminSection = location.pathname === '/admin/portal'
+    ? location.hash.replace('#', '') || 'members'
+    : null
 
   return (
     <div className="soft-luxe-shell flex min-h-screen">
@@ -117,17 +119,23 @@ export function AdminLayout() {
           </Button>
         </div>
 
-        {isAdminPortal ? (
+        {usesOperationsSidebar ? (
           <nav className="mt-7 flex-1 min-h-0 overflow-y-auto pr-1">
             <div className="grid content-start gap-1">
               <NavLink
-                title="Guia"
+                title={t('Guide')}
                 to="/admin/guide"
                 onClick={() => setIsSidebarOpen(false)}
-                className="group mb-3 flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
+                className={({ isActive }) =>
+                  `group mb-3 flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors ${
+                    isActive
+                      ? 'bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
+                      : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                  }`
+                }
               >
                 <MonitorPlay className="mr-3 size-5 shrink-0 opacity-80 group-hover:opacity-100" />
-                <span className="truncate">Guia</span>
+                <span className="truncate">{t('Guide')}</span>
               </NavLink>
               {adminPortalSections.map((item) => (
                 <a
@@ -210,7 +218,7 @@ export function AdminLayout() {
       </aside>
 
       <main className="min-h-screen min-w-0 flex-1 xl:ml-72">
-        <div className="mx-auto w-full max-w-7xl min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12">
+        <div className="w-full min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12 2xl:px-12">
           <ProgramInvitations />
           <Outlet />
         </div>

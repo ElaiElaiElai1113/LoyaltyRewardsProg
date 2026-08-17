@@ -23,7 +23,7 @@ describe('public calls to action', () => {
     expect(businessPage).toContain('to="/guide"')
     expect(businessPage).toContain('View Demo Guide')
     expect(publicLayout).toContain('program.featureFlags.demoTenant')
-    expect(publicLayout).toContain('<NavLink to="/guide">Demo guide</NavLink>')
+    expect(publicLayout).toContain('<NavLink to="/guide">{t(\'Demo guide\')}</NavLink>')
     expect(customerLayout).toContain('program.featureFlags.demoTenant')
     expect(customerLayout).toContain('href={`mailto:${program.supportEmail}`}')
   })

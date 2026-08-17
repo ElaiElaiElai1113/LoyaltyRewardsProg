@@ -58,7 +58,8 @@ describe('RewardMe flagship branding', () => {
 
   it('tenantizes legacy compatibility copy before rendering', () => {
     expect(homePage).toContain(".replaceAll('Medellin Rewards', program.name)")
-    expect(businessPage).toContain("text.replaceAll('Medellin Rewards', program.name)")
+    expect(businessPage).toContain('program: program.name')
+    expect(businessPage).not.toContain('Medellin Rewards')
   })
 
   it('ships host-aware install metadata and neutral static discovery fallbacks', () => {

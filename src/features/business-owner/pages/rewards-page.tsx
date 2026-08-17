@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
@@ -17,6 +18,7 @@ import { useCreateReward, useDeleteReward, useUpdateReward } from '@/hooks/use-a
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { usePagination } from '@/hooks/use-pagination'
 import { searchMatches } from '@/lib/search'
 import { formatPoints } from '@/lib/utils'
 import type { Reward } from '@/types/domain'
@@ -90,7 +92,7 @@ export function RewardsPage() {
       setOpen(false)
       setEditingId(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('Action failed.'))
+      setError(err instanceof Error ? t(err.message) : t('Action failed.'))
     }
   })
   const filteredRewards = rewards.filter((reward) =>
@@ -103,6 +105,7 @@ export function RewardsPage() {
       reward.inventory,
     ]),
   )
+  const pagination = usePagination(filteredRewards, 8, rewardSearch)
 
   return (
     <div className="space-y-16">
@@ -142,11 +145,11 @@ export function RewardsPage() {
               <Input
                 id="reward-title"
                 className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
-                placeholder="Free bonus item"
+                placeholder={t('Free bonus item')}
                 {...form.register('title')}
               />
               {form.formState.errors.title && (
-                <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.title.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -154,11 +157,11 @@ export function RewardsPage() {
               <Textarea
                 id="reward-description"
                 className="min-h-28 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
-                placeholder="A bonus item, discount, or member-only perk"
+                placeholder={t('A bonus item, discount, or member-only perk')}
                 {...form.register('description')}
               />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.description.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -181,7 +184,7 @@ export function RewardsPage() {
                 )}
               />
               {form.formState.errors.category && (
-                <p className="text-xs text-red-500">{form.formState.errors.category.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.category.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -194,7 +197,7 @@ export function RewardsPage() {
                 {...form.register('pointsCost', { valueAsNumber: true })}
               />
               {form.formState.errors.pointsCost && (
-                <p className="text-xs text-red-500">{form.formState.errors.pointsCost.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.pointsCost.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -202,7 +205,7 @@ export function RewardsPage() {
               <Input
                 id="reward-highlight"
                 className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary placeholder:text-on-surface-variant/55 focus-visible:ring-primary-container/25"
-                placeholder="Most popular"
+                placeholder={t('Most popular')}
                 {...form.register('highlight')}
               />
             </div>
@@ -221,7 +224,7 @@ export function RewardsPage() {
 
       {/* Rewards Grid */}
       {isLoading ? (
-        <div className="grid gap-8 sm:grid-cols-2">
+        <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
           {Array.from({ length: 4 }).map((_, index) => (
             <div key={index} className="rounded-[2.5rem] border border-[var(--border)] bg-white p-8 shadow-sm">
               <div className="flex justify-between">
@@ -258,7 +261,7 @@ export function RewardsPage() {
               description={t('Try a reward title, category, or highlight.')}
             />
           ) : (
-          filteredRewards.map((reward) => (
+          pagination.pageItems.map((reward) => (
             <div
               key={reward.id}
               className="group relative overflow-hidden rounded-[2.5rem] border border-[var(--border)] bg-white p-8 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm"
@@ -278,10 +281,10 @@ export function RewardsPage() {
                     )}
                   </div>
                   <div className="flex shrink-0 gap-2">
-                    <Button variant="ghost" size="icon" className="size-8 rounded-full text-on-surface-variant hover:bg-primary-container/10 hover:text-primary" onClick={() => handleEdit(reward)}>
+                    <Button aria-label={t('Edit {item}', { item: reward.title })} variant="ghost" size="icon" className="size-8 rounded-full text-on-surface-variant hover:bg-primary-container/10 hover:text-primary" onClick={() => handleEdit(reward)}>
                       <Edit2 className="size-4" />
                     </Button>
-                    <Button variant="ghost" size="icon" className="size-8 rounded-full text-error hover:bg-error/10 hover:text-error" onClick={() => handleDelete(reward.id)}>
+                    <Button aria-label={t('Delete {item}', { item: reward.title })} variant="ghost" size="icon" className="size-8 rounded-full text-error hover:bg-error/10 hover:text-error" onClick={() => handleDelete(reward.id)}>
                       <Trash2 className="size-4" />
                     </Button>
                   </div>
@@ -289,10 +292,10 @@ export function RewardsPage() {
 
                 <div className="mt-7 grow space-y-4">
                   <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
-                    {t(reward.title)}
+                    {reward.title}
                   </h3>
                   <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium">
-                    {t(reward.description)}
+                    {reward.description}
                   </p>
                 </div>
 
@@ -322,6 +325,7 @@ export function RewardsPage() {
           )}
         </div>
       )}
+      <PaginationControls ariaLabel={t('Business rewards pagination')} {...pagination} onPageChange={pagination.setPage} />
     </div>
   )
 }

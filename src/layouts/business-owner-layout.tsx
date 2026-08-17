@@ -35,7 +35,7 @@ const businessNavigationItems = [
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
   { to: '/business/partners', label: 'Partners', icon: Hotel },
-  { to: '/business/guide', label: 'Guia', icon: MonitorPlay },
+  { to: '/business/guide', label: 'Guide', icon: MonitorPlay },
   { to: '/business/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -44,6 +44,11 @@ export function BusinessOwnerLayout() {
   const { business, isBusinessLoading, error } = useBusinessOwnerData()
   const { t } = useLanguage()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const translatedBusinessError = error instanceof Error ? t(error.message) : null
+  const businessSetupMessage =
+    error instanceof Error && translatedBusinessError !== error.message
+      ? translatedBusinessError
+      : t('This account does not have a business assigned yet.')
 
   if (isBusinessLoading) {
     return (
@@ -82,11 +87,7 @@ export function BusinessOwnerLayout() {
         </div>
         <div className="text-center space-y-4">
           <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t('Business Setup Required')}</h1>
-          <p className="text-[var(--muted-foreground)]">
-            {error instanceof Error
-              ? error.message
-              : t('This account does not have a business assigned yet.')}
-          </p>
+          <p className="text-[var(--muted-foreground)]">{businessSetupMessage}</p>
           <Button onClick={() => void signOut()}>{t('Sign out')}</Button>
         </div>
       </div>
@@ -185,7 +186,7 @@ export function BusinessOwnerLayout() {
             <div className="flex min-w-0 flex-col overflow-hidden">
               <span className="truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
               <span className="text-xs text-[var(--muted-foreground)]">
-                {profile?.role === 'business-owner' ? t('Business Owner') : 'Business Staff'}
+                {profile?.role === 'business-owner' ? t('Business Owner') : t('Business Staff')}
               </span>
             </div>
           </div>
@@ -214,7 +215,7 @@ export function BusinessOwnerLayout() {
 
       {/* Main Content */}
       <main className="min-h-screen min-w-0 flex-1 xl:ml-72">
-        <div className="mx-auto w-full max-w-7xl min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12">
+        <div className="w-full min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12 2xl:px-12">
           <ProgramInvitations />
           <Outlet />
         </div>

@@ -7,11 +7,13 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useLanguage } from '@/lib/language'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useRewardBalance } from '@/hooks/use-customer-data'
+import { usePagination } from '@/hooks/use-pagination'
 import type { GiftCardCatalogItem } from '@/types/domain'
 import { GiftCardTile } from '../components/gift-card-tile'
 import { IssueConfirmationDialog } from '../components/issue-confirmation-dialog'
@@ -37,6 +39,11 @@ export function GiftCardsPage() {
     && !rewardActionsLocked
   )
   const visibleGiftCards = showClaimableOnly ? claimableGiftCards : catalogItems
+  const pagination = usePagination(
+    visibleGiftCards,
+    8,
+    `${selectedBusiness ?? 'all'}:${showClaimableOnly ? 'claimable' : 'all'}`,
+  )
   const selectedBusinessName = selectedBusiness
     ? businesses.data?.find((business) => business.id === selectedBusiness)?.name ?? t('Selected business')
     : t('All businesses')
@@ -74,12 +81,12 @@ export function GiftCardsPage() {
     <div className="min-w-0 space-y-12 overflow-x-hidden pb-20">
       <div className="animate-soft-reveal flex flex-col gap-8 border-b border-primary-container/15 pb-10 lg:flex-row lg:items-end lg:justify-between">
         <div className="max-w-3xl space-y-4">
-          <Badge variant="accent">Gift Cards</Badge>
+          <Badge variant="accent">{t('Gift Cards')}</Badge>
           <h1 className="font-serif text-4xl font-bold uppercase tracking-[0.02em] text-primary-container sm:text-5xl xl:text-7xl">
-            Gift Card Shop
+            {t('Gift Card Shop')}
           </h1>
           <p className="text-lg font-medium leading-relaxed text-on-surface-variant/85">
-            Use points from member QR purchases to buy existing gift cards from partner businesses.
+            {t('Use points from member QR purchases to buy existing gift cards from partner businesses.')}
           </p>
           <Button asChild variant="secondary" className="h-12 rounded-full px-5 font-semibold">
             <Link to="/wallet/gift-cards">
@@ -93,7 +100,7 @@ export function GiftCardsPage() {
             <Gift className="size-6" />
           </div>
           <div>
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant">Available Points</p>
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant">{t('Available Points')}</p>
             <p className="animate-soft-reveal font-serif text-4xl text-primary-container">{balancePoints}</p>
           </div>
         </div>
@@ -142,12 +149,12 @@ export function GiftCardsPage() {
         <div className="absolute bottom-6 right-28 h-20 w-32 -rotate-6 rounded-[1.25rem] border border-primary/20 bg-card shadow-soft" />
         <div className="relative flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
           <div className="max-w-2xl">
-            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-primary">Giftable moments</p>
+            <p className="text-[0.68rem] font-bold uppercase tracking-[0.22em] text-primary">{t('Giftable moments')}</p>
             <h2 className="mt-3 font-serif text-4xl leading-none text-primary-container md:text-5xl">
-              Buy a partner gift card with points, then show its QR at that business.
+              {t('Buy a partner gift card with points, then show its QR at that business.')}
             </h2>
             <p className="mt-4 max-w-2xl text-sm font-medium leading-6 text-on-surface-variant/80">
-              Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining bill before tax and service charge.
+              {t('Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining bill before tax and service charge.')}
             </p>
           </div>
           <div className="animate-float-soft flex size-20 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-soft">
@@ -166,10 +173,10 @@ export function GiftCardsPage() {
         <div className="space-y-6">
           <div className="max-w-2xl space-y-2">
             <h2 className="font-serif text-4xl font-semibold leading-none text-primary-container md:text-5xl">
-              Featured gift cards
+              {t('Featured gift cards')}
             </h2>
             <p className="text-sm font-medium leading-6 text-on-surface-variant/85">
-              A warm showcase for credits that feel personal, pretty, and quick to claim.
+              {t('A warm showcase for credits that feel personal, pretty, and quick to claim.')}
             </p>
           </div>
           <LoadingState
@@ -193,14 +200,14 @@ export function GiftCardsPage() {
         <section className="space-y-5">
           <div className="max-w-2xl space-y-2">
             <h2 className="font-serif text-4xl font-semibold leading-none text-primary-container md:text-5xl">
-              Featured gift cards
+              {t('Featured gift cards')}
             </h2>
             <p className="text-sm font-medium leading-6 text-on-surface-variant/85">
-              A warm showcase for credits that feel personal, pretty, and quick to claim.
+              {t('A warm showcase for credits that feel personal, pretty, and quick to claim.')}
             </p>
           </div>
           <div className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,17rem),1fr))] gap-5">
-            {visibleGiftCards.map((item) => (
+            {pagination.pageItems.map((item) => (
               <GiftCardTile
                 key={item.id}
                 item={item}
@@ -212,6 +219,7 @@ export function GiftCardsPage() {
               />
             ))}
           </div>
+          <PaginationControls ariaLabel="Gift card catalog pagination" {...pagination} onPageChange={pagination.setPage} />
         </section>
       )}
 

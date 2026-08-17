@@ -6,10 +6,12 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { formatDate } from '@/lib/utils'
+import { usePagination } from '@/hooks/use-pagination'
+import { useLanguage } from '@/lib/language'
 import type { AgreementStatusRecord } from '@/types/domain'
 
 type AgreementBusinessOption = {
@@ -45,6 +47,19 @@ export function AgreementStatusPanel({
   isCreatingAgreement = false,
   onCreateBusinessAgreement,
 }: AgreementStatusPanelProps) {
+  const { language, t } = useLanguage()
+  const agreementFilterLabel = (value: AgreementStatusFilter) => {
+    if (value === 'signed') return t('Signed')
+    if (value === 'unsigned') return t('Unsigned')
+    return t('All')
+  }
+  const agreementRoleLabel = (role: AgreementStatusRecord['role']) => {
+    if (role === 'platform-admin') return t('Platform administrator')
+    if (role === 'business-owner') return t('Business owner')
+    if (role === 'business-staff') return t('Business staff')
+    return t('Customer')
+  }
+  const locale = language === 'es' ? 'es-CO' : language === 'tl' ? 'fil-PH' : 'en-US'
   const [filter, setFilter] = useState<AgreementStatusFilter>('all')
   const [selectedBusinessId, setSelectedBusinessId] = useState('')
   const [documentTitle, setDocumentTitle] = useState('')
@@ -60,6 +75,7 @@ export function AgreementStatusPanel({
     if (filter === 'unsigned') return records.filter((record) => !record.isSigned)
     return records
   }, [filter, records])
+  const pagination = usePagination(filteredRecords, 10, filter)
 
   async function handleCreateDocumentSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -67,7 +83,7 @@ export function AgreementStatusPanel({
 
     const body = documentBody.trim()
     if (body.length < 20) {
-      setCreateError('Add the document text the business owner needs to agree to.')
+      setCreateError(t('Add the document text the business owner needs to agree to.'))
       return
     }
 
@@ -82,8 +98,8 @@ export function AgreementStatusPanel({
       setDocumentTitle('')
       setDocumentBody('')
       setSelectedBusinessId('')
-    } catch (error) {
-      setCreateError(error instanceof Error ? error.message : 'Failed to add required document.')
+    } catch {
+      setCreateError(t('Failed to add required document.'))
     }
   }
 
@@ -92,9 +108,9 @@ export function AgreementStatusPanel({
       <div className="flex flex-col gap-5 border-b border-outline-variant/10 pb-4 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-2">
           <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-            Agreement Gate
+            {t('Agreement Gate')}
           </span>
-          <h2 className="font-serif text-3xl text-primary">Signed Agreements</h2>
+          <h2 className="font-serif text-3xl text-primary">{t('Signed Agreements')}</h2>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -107,7 +123,7 @@ export function AgreementStatusPanel({
               className="rounded-full capitalize"
               onClick={() => setFilter(value)}
             >
-              {value}
+              {agreementFilterLabel(value)}
             </Button>
           ))}
         </div>
@@ -115,15 +131,15 @@ export function AgreementStatusPanel({
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-2xl border border-[var(--border)] bg-[var(--card)] p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">Required</p>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">{t('Required')}</p>
           <p className="mt-2 font-serif text-4xl text-primary">{records.length}</p>
         </div>
         <div className="rounded-2xl border border-success/15 bg-success/5 p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-success">Signed</p>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-success">{t('Signed')}</p>
           <p className="mt-2 font-serif text-4xl text-success">{signedCount}</p>
         </div>
         <div className="rounded-2xl border border-warning/15 bg-warning/5 p-5 shadow-sm">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-warning">Unsigned</p>
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-warning">{t('Unsigned')}</p>
           <p className="mt-2 font-serif text-4xl text-warning">{unsignedCount}</p>
         </div>
       </div>
@@ -140,18 +156,18 @@ export function AgreementStatusPanel({
               </span>
               <div className="space-y-2">
                 <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                  Required Documents
+                  {t('Required Documents')}
                 </p>
-                <h3 className="font-serif text-2xl text-primary">Add document for signing</h3>
+                <h3 className="font-serif text-2xl text-primary">{t('Add document for signing')}</h3>
                 <p className="text-sm leading-relaxed text-on-surface-variant/80">
-                  Add another document to an active business account. The business owner must sign it before continuing.
+                  {t('Add another document to an active business account. The business owner must sign it before continuing.')}
                 </p>
               </div>
             </div>
 
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="agreement-business">Business</Label>
+                <Label htmlFor="agreement-business">{t('Business')}</Label>
                 <select
                   id="agreement-business"
                   className="h-11 rounded-2xl border border-outline-variant/20 bg-surface-highest px-3 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15"
@@ -169,11 +185,11 @@ export function AgreementStatusPanel({
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="agreement-document-title">Document Title</Label>
+                <Label htmlFor="agreement-document-title">{t('Document Title')}</Label>
                 <Input
                   id="agreement-document-title"
                   className="h-11 rounded-2xl border-outline-variant/20 bg-surface-highest focus:border-primary/30"
-                  placeholder="Updated Partner Terms"
+                  placeholder={t('Updated Partner Terms')}
                   value={documentTitle}
                   onChange={(event) => setDocumentTitle(event.target.value)}
                   disabled={isCreatingAgreement}
@@ -181,11 +197,11 @@ export function AgreementStatusPanel({
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="agreement-document-body">Document Text</Label>
+                <Label htmlFor="agreement-document-body">{t('Document Text')}</Label>
                 <Textarea
                   id="agreement-document-body"
                   className="min-h-40 rounded-2xl border-outline-variant/20 bg-surface-highest text-on-surface placeholder:text-on-surface-variant/60 focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15"
-                  placeholder="Paste the document or agreement text here."
+                  placeholder={t('Paste the document or agreement text here.')}
                   value={documentBody}
                   onChange={(event) => setDocumentBody(event.target.value)}
                   disabled={isCreatingAgreement}
@@ -199,7 +215,7 @@ export function AgreementStatusPanel({
                 className="h-11 rounded-full"
                 disabled={!selectedBusiness || isCreatingAgreement || businessOptions.length === 0}
               >
-                {isCreatingAgreement ? 'Adding...' : 'Add Required Document'}
+                {isCreatingAgreement ? t('Adding...') : t('Add Required Document')}
               </Button>
             </div>
           </div>
@@ -213,24 +229,24 @@ export function AgreementStatusPanel({
               <thead className="bg-[var(--muted)] text-left">
                 <tr className="border-b border-outline-variant/10">
                   <th className="px-6 py-4 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                    User
+                    {t('User')}
                   </th>
                   <th className="px-6 py-4 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                    Agreement
+                    {t('Agreement')}
                   </th>
                   <th className="px-6 py-4 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                    Status
+                    {t('Status')}
                   </th>
                   <th className="px-6 py-4 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                    Signature
+                    {t('Signature')}
                   </th>
                   <th className="px-6 py-4 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/70">
-                    Signed
+                    {t('Signed')}
                   </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredRecords.map((record) => (
+                {pagination.pageItems.map((record) => (
                   <tr
                     key={`${record.profileId}:${record.agreementVersionId}`}
                     className="border-b border-outline-variant/5 bg-transparent"
@@ -239,12 +255,12 @@ export function AgreementStatusPanel({
                       <p className="font-semibold text-primary">{record.fullName}</p>
                       <p className="text-xs text-on-surface-variant/75">{record.email}</p>
                       <Badge variant="outline" className="mt-2 capitalize">
-                        {record.role.replace('-', ' ')}
+                        {agreementRoleLabel(record.role)}
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
                       <p className="font-semibold text-primary">{record.agreementTitle}</p>
-                      <p className="text-xs text-on-surface-variant/75">Version {record.agreementVersion}</p>
+                      <p className="text-xs text-on-surface-variant/75">{t('Version {version}', { version: record.agreementVersion })}</p>
                     </td>
                     <td className="px-6 py-4">
                       <Badge
@@ -256,7 +272,7 @@ export function AgreementStatusPanel({
                         }
                       >
                         {record.isSigned ? <CheckCircle className="size-3" /> : <XCircle className="size-3" />}
-                        {record.isSigned ? 'Signed' : 'Unsigned'}
+                        {record.isSigned ? t('Signed') : t('Unsigned')}
                       </Badge>
                     </td>
                     <td className="px-6 py-4">
@@ -265,23 +281,23 @@ export function AgreementStatusPanel({
                           <div className="flex h-20 w-56 items-center justify-center overflow-hidden rounded-xl border border-[var(--border)] bg-white p-2">
                             <img
                               src={signatureDataUrl(record.signatureSvg)}
-                              alt={`Signature by ${record.fullName}`}
+                              alt={t('Signature by {name}', { name: record.fullName })}
                               className="max-h-full max-w-full"
                             />
                           </div>
                           <p className="text-xs text-on-surface-variant/75">
-                            Typed: {record.typedSignature ?? 'Not recorded'}
+                            {t('Typed: {signature}', { signature: record.typedSignature ?? t('Not recorded') })}
                           </p>
                         </div>
                       ) : (
                         <span className="flex items-center gap-2 text-xs font-semibold text-on-surface-variant/70">
                           <Clock className="size-4" />
-                          Awaiting signature
+                          {t('Awaiting signature')}
                         </span>
                       )}
                     </td>
                     <td className="px-6 py-4 text-on-surface-variant/85">
-                      {record.signedAt ? formatDate(record.signedAt) : 'Pending'}
+                      {record.signedAt ? new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(record.signedAt)) : t('Pending')}
                     </td>
                   </tr>
                 ))}
@@ -300,12 +316,18 @@ export function AgreementStatusPanel({
               <EmptyState
                 className="border-0 shadow-none"
                 icon={<FileSignature className="size-8" />}
-                title="No agreement records"
-                description="Required agreement status records will appear here."
+                title={t('No agreement records')}
+                description={t('Required agreement status records will appear here.')}
               />
             ) : null}
           </div>
         </ScrollArea>
+        <PaginationControls
+          ariaLabel={t('Agreement records pagination')}
+          {...pagination}
+          className="m-4"
+          onPageChange={pagination.setPage}
+        />
       </div>
     </div>
   )

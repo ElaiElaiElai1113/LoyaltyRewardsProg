@@ -59,17 +59,52 @@ export default defineConfig({
   build: {
     rolldownOptions: {
       output: {
-        manualChunks(id) {
-          if (id.includes('node_modules')) {
-            if (id.includes('@supabase')) return 'vendor-supabase'
-            if (id.includes('react') || id.includes('@tanstack')) return 'vendor-react'
-            if (id.includes('lucide-react') || id.includes('@radix-ui')) return 'vendor-ui'
-            return 'vendor'
-          }
-
-          const feature = id.match(/[\\/]src[\\/]features[\\/]([^\\/]+)/)
-          if (feature) return `feature-${feature[1]}`
-          return undefined
+        strictExecutionOrder: true,
+        codeSplitting: {
+          groups: [
+            {
+              name: 'language-catalog',
+              test: /[\\/]src[\\/]lib[\\/]language\.tsx(?:\?|$)/,
+              includeDependenciesRecursively: false,
+              priority: 60,
+            },
+            {
+              name: 'vendor-supabase',
+              test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+              includeDependenciesRecursively: false,
+              priority: 50,
+            },
+            {
+              name: 'vendor-react',
+              test: (id) => id.includes('node_modules') && (
+                /[\\/]node_modules[\\/](?:react|react-dom|react-hook-form|react-router)[\\/]/.test(id)
+                || /[\\/]node_modules[\\/]@tanstack[\\/]/.test(id)
+              ),
+              includeDependenciesRecursively: false,
+              priority: 40,
+            },
+            {
+              name: 'vendor-ui',
+              test: (id) => id.includes('node_modules') && (id.includes('lucide-react') || id.includes('@radix-ui')),
+              includeDependenciesRecursively: false,
+              priority: 30,
+            },
+            {
+              name: 'vendor',
+              test: /[\\/]node_modules[\\/]/,
+              includeDependenciesRecursively: false,
+              priority: 20,
+            },
+            {
+              name: (id) => {
+                const feature = id.match(/[\\/]src[\\/]features[\\/]([^\\/]+)/)
+                return feature ? `feature-${feature[1]}` : null
+              },
+              test: /[\\/]src[\\/]features[\\/]/,
+              includeDependenciesRecursively: true,
+              priority: 10,
+            },
+          ],
         },
       },
     },

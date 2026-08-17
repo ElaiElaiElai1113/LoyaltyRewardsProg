@@ -26,6 +26,7 @@ import { memberTransactionSchema, type MemberTransactionFormValues } from '@/typ
 import type { MemberTransaction } from '@/types/domain'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 import { useTenant } from '@/hooks/use-tenant'
+import { useLanguage } from '@/lib/language'
 
 type GiftCardSaleContext = {
   originalBill: number
@@ -59,6 +60,7 @@ function readGiftCardSaleContext(): GiftCardSaleContext | null {
 
 export function MemberSalePage() {
   const { program } = useTenant()
+  const { t } = useLanguage()
   const { token = '' } = useParams()
   const { business } = useBusinessOwnerData()
   const formatCurrency = (value: number) => formatBaseCurrency(
@@ -133,15 +135,15 @@ export function MemberSalePage() {
   }, [form, giftCardSaleContext])
 
   if (member.isLoading || !business) {
-    return <LoadingState title="Loading member" description="Preparing the scanned member sale." />
+    return <LoadingState title={t('Loading member')} description={t('Preparing the scanned member sale.')} />
   }
 
   if (!member.data) {
     return (
       <EmptyState
         icon={<IdCard className="size-8" />}
-        title="Member QR not found"
-        description="Ask the customer to open their current member QR code and scan again."
+        title={t('Member QR not found')}
+        description={t('Ask the customer to open their current member QR code and scan again.')}
       />
     )
   }
@@ -155,17 +157,17 @@ export function MemberSalePage() {
     <div className="mx-auto max-w-5xl space-y-10 pb-20">
       <div className="space-y-4 border-b border-outline-variant/10 pb-8">
         <Badge variant="accent" className="w-fit">
-          {isMemberEligible ? 'Launch member' : 'Member'}
+          {isMemberEligible ? t('Active member') : t('Member')}
         </Badge>
         <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div>
-            <h1 className="font-serif text-5xl tracking-tight text-primary">Record Member Sale</h1>
+            <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Record Member Sale')}</h1>
             <p className="mt-3 text-lg text-on-surface-variant/85">
-              {business.name} can record an outside-app purchase and award rewards automatically.
+              {t('{business} can record an outside-app purchase and award rewards automatically.', { business: business.name })}
             </p>
           </div>
           <div className="rounded-2xl border border-outline-variant/20 bg-card px-5 py-4">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">Member</p>
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Member')}</p>
             <p className="font-serif text-2xl text-primary">{member.data.fullName}</p>
             <p className="text-sm text-on-surface-variant/75">{member.data.email}</p>
           </div>
@@ -179,12 +181,14 @@ export function MemberSalePage() {
               <CheckCircle className="size-6" />
             </div>
             <div className="space-y-2">
-              <h2 className="font-serif text-3xl text-primary">Transaction recorded</h2>
+              <h2 className="font-serif text-3xl text-primary">{t('Transaction recorded')}</h2>
               <p className="text-on-surface-variant/85">
-                Awarded {formatPoints(recordedTransaction.pointsAwarded)} points from{' '}
-                {formatCurrency(recordedTransaction.purchaseAmount)} of rewardable bill.
+                {t('Awarded {points} points from {amount} of rewardable bill.', {
+                  points: formatPoints(recordedTransaction.pointsAwarded),
+                  amount: formatCurrency(recordedTransaction.purchaseAmount),
+                })}
               </p>
-              <p className="font-mono text-xs text-on-surface-variant/70">ID: {recordedTransaction.id}</p>
+              <p className="font-mono text-xs text-on-surface-variant/70">{t('ID')}: {recordedTransaction.id}</p>
             </div>
           </div>
         </div>
@@ -220,14 +224,14 @@ export function MemberSalePage() {
               <ReceiptText className="size-5" />
             </div>
             <div>
-              <h2 className="font-serif text-3xl text-primary">Purchase Details</h2>
-              <p className="text-sm text-on-surface-variant/70">Payment is handled outside {program.name}.</p>
+              <h2 className="font-serif text-3xl text-primary">{t('Purchase Details')}</h2>
+              <p className="text-sm text-on-surface-variant/70">{t('Payment is handled outside {program}.', { program: program.name })}</p>
             </div>
           </div>
 
           <div className="grid gap-6">
             <div className="grid gap-3">
-              <Label htmlFor="purchaseAmount">Bill Before Tax/Service</Label>
+              <Label htmlFor="purchaseAmount">{t('Bill Before Tax/Service')}</Label>
               <Input
                 id="purchaseAmount"
                 type="number"
@@ -237,26 +241,28 @@ export function MemberSalePage() {
                 {...form.register('purchaseAmount', { valueAsNumber: true })}
               />
               {form.formState.errors.purchaseAmount ? (
-                <p className="text-sm font-bold text-red-500">{form.formState.errors.purchaseAmount.message}</p>
+                <p className="text-sm font-bold text-red-500">{t(form.formState.errors.purchaseAmount.message)}</p>
               ) : (
                 <p className="text-sm text-on-surface-variant/70">
-                  Enter the bill amount before tax and service charge. Tax and service charge can be added to the customer total, but rewards stay based on this bill amount after any gift card.
+                  {t('Enter the bill amount before tax and service charge. Tax and service charge can be added to the customer total, but rewards stay based on this bill amount after any gift card.')}
                 </p>
               )}
             </div>
 
             {giftCardSaleContext ? (
               <div className="rounded-2xl border border-primary/15 bg-primary/5 p-4 text-sm">
-                <p className="font-bold text-primary">Gift card applied from staff scan</p>
+                <p className="font-bold text-primary">{t('Gift card applied from staff scan')}</p>
                 <p className="mt-1 text-on-surface-variant/80">
-                  Original bill {formatCurrency(giftCardSaleContext.originalBill)} minus gift card{' '}
-                  {formatCurrency(giftCardSaleContext.giftCardAmount)}.
+                  {t('Original bill {bill} minus gift card {giftCard}.', {
+                    bill: formatCurrency(giftCardSaleContext.originalBill),
+                    giftCard: formatCurrency(giftCardSaleContext.giftCardAmount),
+                  })}
                 </p>
               </div>
             ) : null}
 
             <div className="grid gap-3">
-              <Label htmlFor="giftCardAmount">Gift Card / Credit Applied</Label>
+              <Label htmlFor="giftCardAmount">{t('Gift Card / Credit Applied')}</Label>
               <Input
                 id="giftCardAmount"
                 type="number"
@@ -266,36 +272,36 @@ export function MemberSalePage() {
                 {...form.register('giftCardAmount', { valueAsNumber: true })}
               />
               {form.formState.errors.giftCardAmount ? (
-                <p className="text-sm font-bold text-red-500">{form.formState.errors.giftCardAmount.message}</p>
+                <p className="text-sm font-bold text-red-500">{t(form.formState.errors.giftCardAmount.message)}</p>
               ) : (
                 <p className="text-sm text-on-surface-variant/70">
-                  This autofills after a gift card scan. Leave 0 when no gift card was used.
+                  {t('This autofills after a gift card scan. Leave 0 when no gift card was used.')}
                 </p>
               )}
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="receiptNumber">Receipt / Bill Number</Label>
+              <Label htmlFor="receiptNumber">{t('Receipt / Bill Number')}</Label>
               <Input
                 id="receiptNumber"
                 className="h-14 rounded-2xl text-lg"
-                placeholder="Receipt #, factura #, POS bill #"
+                placeholder={t('Receipt #, invoice #, POS bill #')}
                 {...form.register('receiptNumber')}
               />
               {form.formState.errors.receiptNumber ? (
-                <p className="text-sm font-bold text-red-500">{form.formState.errors.receiptNumber.message}</p>
+                <p className="text-sm font-bold text-red-500">{t(form.formState.errors.receiptNumber.message)}</p>
               ) : (
                 <p className="text-sm text-on-surface-variant/70">
-                  Required. This prevents staff from recording the same bill more than once.
+                  {t('Required. This prevents staff from recording the same bill more than once.')}
                 </p>
               )}
             </div>
 
             <div className="grid gap-3">
-              <Label htmlFor="note">Cashier Note</Label>
+              <Label htmlFor="note">{t('Cashier Note')}</Label>
               <Textarea
                 id="note"
-                placeholder="Optional cashier note"
+                placeholder={t('Optional cashier note')}
                 className="min-h-28 rounded-2xl"
                 {...form.register('note')}
               />
@@ -309,56 +315,56 @@ export function MemberSalePage() {
               <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
                 <DollarSign className="size-5" />
               </div>
-              <h2 className="font-serif text-2xl text-primary">Preview</h2>
+              <h2 className="font-serif text-2xl text-primary">{t('Preview')}</h2>
             </div>
 
             <div className="space-y-4 text-sm">
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Reward rate</span>
+                <span className="text-on-surface-variant/75">{t('Reward rate')}</span>
                 <strong>{business.rewardRatePercent}%</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Bill before tax/service</span>
+                <span className="text-on-surface-variant/75">{t('Bill before tax/service')}</span>
                 <strong>{formatCurrency(rewardableBreakdown?.originalReceiptTotal ?? purchaseAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Gift card deducted</span>
+                <span className="text-on-surface-variant/75">{t('Gift card deducted')}</span>
                 <strong>-{formatCurrency(rewardableBreakdown?.giftCardAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Bill after gift card</span>
+                <span className="text-on-surface-variant/75">{t('Bill after gift card')}</span>
                 <strong>{formatCurrency(rewardableBreakdown?.amountAfterGiftCard ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">
-                  {business.taxIncludedInBill ? 'Tax added to customer total' : 'Tax not charged'} {business.taxRate > 0 ? `(${(business.taxRate * 100).toFixed(2)}%)` : ''}
+                  {business.taxIncludedInBill ? t('Tax added to customer total') : t('Tax not charged')} {business.taxRate > 0 ? `(${(business.taxRate * 100).toFixed(2)}%)` : ''}
                 </span>
                 <strong>{business.taxIncludedInBill ? `+${formatCurrency(rewardableBreakdown?.taxableChargeAmount ?? 0)}` : formatCurrency(0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
                 <span className="text-on-surface-variant/75">
-                  Service charge added {business.serviceChargeEnabled ? `(${(business.serviceChargeRate * 100).toFixed(2)}%)` : ''}
+                  {t('Service charge added')} {business.serviceChargeEnabled ? `(${(business.serviceChargeRate * 100).toFixed(2)}%)` : ''}
                 </span>
                 <strong>+{formatCurrency(rewardableBreakdown?.serviceChargeAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Customer total</span>
+                <span className="text-on-surface-variant/75">{t('Customer total')}</span>
                 <strong>{formatCurrency(rewardableBreakdown?.finalPriceAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Rewardable bill</span>
+                <span className="text-on-surface-variant/75">{t('Rewardable bill')}</span>
                 <strong>{formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-4">
-                <span className="text-on-surface-variant/75">Reward value</span>
+                <span className="text-on-surface-variant/75">{t('Reward value')}</span>
                 <strong>{formatCurrency(rewardValue)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4">
-                <span className="text-on-surface-variant/75">Points awarded</span>
+                <span className="text-on-surface-variant/75">{t('Points awarded')}</span>
                 <strong>{formatPoints(pointsAwarded)}</strong>
               </div>
               <div className="flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-4">
-                <span className="text-on-surface-variant/75">Commission owed</span>
+                <span className="text-on-surface-variant/75">{t('Commission owed')}</span>
                 <strong>{formatCurrency(commissionAmount)}</strong>
               </div>
             </div>
@@ -370,7 +376,7 @@ export function MemberSalePage() {
             className="h-14 w-full rounded-full font-semibold"
             disabled={!preview || recordTransaction.isPending}
           >
-            {recordTransaction.isPending ? 'Recording...' : 'Record Sale'}
+            {recordTransaction.isPending ? t('Recording...') : t('Record Sale')}
           </Button>
         </div>
       </form>

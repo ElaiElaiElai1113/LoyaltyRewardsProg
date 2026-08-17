@@ -49,7 +49,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
         if (!isMounted) return
 
         if (!hasSession) {
-          setSessionError(`Auth session missing. Open the latest ${linkLabel} link again.`)
+          setSessionError('Auth session missing. Open the latest {link} link again.')
           return
         }
 
@@ -62,7 +62,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
         setSessionError(
           error instanceof Error
             ? error.message
-            : `Auth session missing. Open the latest ${linkLabel} link again.`,
+            : 'Auth session missing. Open the latest {link} link again.',
         )
       })
 
@@ -76,7 +76,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
 
     if (!isSessionReady) {
       form.setError('root', {
-        message: sessionError ?? `Auth session missing. Open the latest ${linkLabel} link again.`,
+        message: sessionError ?? 'Auth session missing. Open the latest {link} link again.',
       })
       return
     }
@@ -103,56 +103,56 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
             {isInvitation ? t('Accept Invitation') : t('Reset Password')}
           </p>
           <h1 className="font-serif text-3xl text-[var(--foreground)]">
-            {isInvitation ? 'Create your password' : 'Set a new password'}
+            {isInvitation ? t('Create your password') : t('Set a new password')}
           </h1>
           <p className="text-sm font-medium leading-6 text-[var(--muted-foreground)]">
             {isInvitation
-              ? 'Set a password to finish accepting your customer invitation.'
-              : `Use at least ${PASSWORD_MIN_LENGTH} characters for your new password.`}
+              ? t('Set a password to finish accepting your customer invitation.')
+              : t('Use at least {count} characters for your new password.', { count: PASSWORD_MIN_LENGTH })}
           </p>
         </div>
 
         {!isSessionReady && !sessionError ? (
           <p className="text-center text-sm font-medium text-[var(--muted-foreground)]">
-            Preparing secure {linkLabel} session...
+            {t('Preparing secure {link} session...', { link: t(linkLabel) })}
           </p>
         ) : null}
 
         {sessionError ? (
-          <p className="text-center text-sm font-bold text-red-500">{sessionError}</p>
+          <p className="text-center text-sm font-bold text-red-500">{t(sessionError, { link: t(linkLabel) })}</p>
         ) : null}
 
         <div className="grid gap-2">
-          <Label htmlFor="new-password">New password</Label>
+          <Label htmlFor="new-password">{t('New password')}</Label>
           <Input id="new-password" type="password" autoComplete="new-password" {...form.register('password')} />
           {form.formState.errors.password ? (
-            <p className="text-xs font-bold text-red-500">{form.formState.errors.password.message}</p>
+            <p className="text-xs font-bold text-red-500">{t(form.formState.errors.password.message ?? '')}</p>
           ) : null}
         </div>
 
         <div className="grid gap-2">
-          <Label htmlFor="confirm-password">Confirm password</Label>
+          <Label htmlFor="confirm-password">{t('Confirm password')}</Label>
           <Input id="confirm-password" type="password" autoComplete="new-password" {...form.register('confirmPassword')} />
           {form.formState.errors.confirmPassword ? (
-            <p className="text-xs font-bold text-red-500">{form.formState.errors.confirmPassword.message}</p>
+            <p className="text-xs font-bold text-red-500">{t(form.formState.errors.confirmPassword.message ?? '')}</p>
           ) : null}
         </div>
 
         {form.formState.isSubmitSuccessful ? (
           <p className="rounded-2xl border border-success/20 bg-success/10 px-4 py-3 text-center text-sm font-bold text-success">
             {isInvitation
-              ? 'Invitation accepted. Opening your account...'
-              : 'Password updated. You can sign in with your new password.'}
+              ? t('Invitation accepted. Opening your account...')
+              : t('Password updated. You can sign in with your new password.')}
           </p>
         ) : null}
 
         {form.formState.errors.root ? (
-          <p className="text-center text-sm font-bold text-red-500">{form.formState.errors.root.message}</p>
+          <p className="text-center text-sm font-bold text-red-500">{t(form.formState.errors.root.message ?? '', { link: t(linkLabel) })}</p>
         ) : null}
 
         <div className="flex flex-col gap-3">
           <Button type="submit" disabled={form.formState.isSubmitting || !isSessionReady}>
-            {form.formState.isSubmitting ? t('Saving...') : 'Update password'}
+            {form.formState.isSubmitting ? t('Saving...') : t('Update password')}
           </Button>
           <Button asChild type="button" variant="outline">
             <Link to="/signin">{t('Back to sign in')}</Link>

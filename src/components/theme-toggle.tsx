@@ -2,6 +2,7 @@ import { Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 import { cn } from '@/lib/utils'
 
@@ -17,6 +18,7 @@ function applyTheme(theme: Theme) {
 }
 
 export function ThemeToggle({ className }: { className?: string }) {
+  const { t } = useLanguage()
   const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
   useEffect(() => {
@@ -32,8 +34,8 @@ export function ThemeToggle({ className }: { className?: string }) {
       variant="ghost"
       size="icon"
       className={cn(className)}
-      aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
-      title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+      aria-label={isDark ? t('Switch to light mode') : t('Switch to dark mode')}
+      title={isDark ? t('Switch to light mode') : t('Switch to dark mode')}
       onClick={() => setTheme(isDark ? 'light' : 'dark')}
     >
       {isDark ? <Sun className="size-5" /> : <Moon className="size-5" />}

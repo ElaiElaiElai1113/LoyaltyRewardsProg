@@ -10,6 +10,7 @@ import {
   summarizeLaunchReadiness,
   type LaunchReadinessStatus,
 } from '@/features/platform/launch-readiness'
+import { useLanguage } from '@/lib/language'
 
 const statusPresentation: Record<LaunchReadinessStatus, { icon: typeof CheckCircle2; iconClass: string; badgeClass: string }> = {
   verified: { icon: CheckCircle2, iconClass: 'text-success', badgeClass: 'border-success/25 bg-success/10 text-success' },
@@ -19,26 +20,27 @@ const statusPresentation: Record<LaunchReadinessStatus, { icon: typeof CheckCirc
 }
 
 export function LaunchReadinessPage() {
+  const { t } = useLanguage()
   const summary = summarizeLaunchReadiness()
   return (
     <div className="space-y-8" data-launch-readiness-dashboard>
       <header className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.12em] text-primary"><ShieldCheck className="size-4" />RewardMe control register</div>
-          <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">Launch readiness</h1>
-          <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-on-surface-variant/80 sm:text-base">A truthful view of what is verified, executable now, awaiting business approval, or waiting for production inputs. Approval-gated work never becomes active from this page.</p>
+          <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-[0.12em] text-primary"><ShieldCheck className="size-4" />{t('RewardMe control register')}</div>
+          <h1 className="mt-2 font-serif text-4xl text-primary sm:text-5xl">{t('Launch readiness')}</h1>
+          <p className="mt-3 max-w-3xl text-sm font-medium leading-6 text-on-surface-variant/80 sm:text-base">{t('A truthful view of what is verified, executable now, awaiting business approval, or waiting for production inputs. Approval-gated work never becomes active from this page.')}</p>
         </div>
-        <Badge variant="outline" className="w-fit normal-case tracking-normal">Updated 12 Aug 2026</Badge>
+        <Badge variant="outline" className="w-fit normal-case tracking-normal">{t('Updated 12 Aug 2026')}</Badge>
       </header>
 
-      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label="Readiness summary">
-        <SummaryMetric label="Verified" value={summary.verified} status="verified" />
-        <SummaryMetric label="Ready to execute" value={summary.ready} status="ready" />
-        <SummaryMetric label="Needs approval" value={summary['approval-required']} status="approval-required" />
-        <SummaryMetric label="Needs external input" value={summary['external-required']} status="external-required" />
+      <section className="grid grid-cols-2 gap-3 lg:grid-cols-4" aria-label={t('Readiness summary')}>
+        <SummaryMetric label={t('Verified')} value={summary.verified} status="verified" />
+        <SummaryMetric label={t('Ready to execute')} value={summary.ready} status="ready" />
+        <SummaryMetric label={t('Needs approval')} value={summary['approval-required']} status="approval-required" />
+        <SummaryMetric label={t('Needs external input')} value={summary['external-required']} status="external-required" />
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-2" aria-label="RewardMe launch workstreams">
+      <section className="grid gap-4 lg:grid-cols-2" aria-label={t('RewardMe launch workstreams')}>
         {rewardMeLaunchWorkstreams.map((workstream) => {
           const presentation = statusPresentation[workstream.status]
           const StatusIcon = presentation.icon
@@ -46,17 +48,17 @@ export function LaunchReadinessPage() {
             <Card className="rounded-[1.5rem]" key={workstream.id} data-readiness-status={workstream.status}>
               <CardHeader className="gap-4 sm:flex-row sm:items-start sm:justify-between">
                 <div className="min-w-0">
-                  <CardTitle className="flex items-start gap-3 text-xl"><StatusIcon className={`mt-0.5 size-5 shrink-0 ${presentation.iconClass}`} />{workstream.title}</CardTitle>
-                  <CardDescription className="mt-3 leading-6">{workstream.description}</CardDescription>
+                  <CardTitle className="flex items-start gap-3 text-xl"><StatusIcon className={`mt-0.5 size-5 shrink-0 ${presentation.iconClass}`} />{t(workstream.title)}</CardTitle>
+                  <CardDescription className="mt-3 leading-6">{t(workstream.description)}</CardDescription>
                 </div>
-                <Badge variant="outline" className={`w-fit shrink-0 ${presentation.badgeClass}`}>{launchReadinessStatusLabels[workstream.status]}</Badge>
+                <Badge variant="outline" className={`w-fit shrink-0 ${presentation.badgeClass}`}>{t(launchReadinessStatusLabels[workstream.status])}</Badge>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="grid gap-3 rounded-2xl border border-primary/10 bg-[var(--muted)]/60 p-4 sm:grid-cols-[9rem_1fr]">
-                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-on-surface-variant/70">Owner</p><p className="text-sm font-semibold text-[var(--foreground)]">{workstream.owner}</p>
-                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-on-surface-variant/70">Next action</p><p className="text-sm leading-6 text-on-surface-variant/85">{workstream.nextAction}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-on-surface-variant/70">{t('Owner')}</p><p className="text-sm font-semibold text-[var(--foreground)]">{t(workstream.owner)}</p>
+                  <p className="text-xs font-bold uppercase tracking-[0.1em] text-on-surface-variant/70">{t('Next action')}</p><p className="text-sm leading-6 text-on-surface-variant/85">{t(workstream.nextAction)}</p>
                 </div>
-                {workstream.href && workstream.actionLabel ? <Button asChild variant="outline" size="sm" className="w-full sm:w-auto"><Link to={workstream.href}>{workstream.actionLabel}<ArrowUpRight className="size-4" /></Link></Button> : null}
+                {workstream.href && workstream.actionLabel ? <Button asChild variant="outline" size="sm" className="w-full sm:w-auto"><Link to={workstream.href}>{t(workstream.actionLabel)}<ArrowUpRight className="size-4" /></Link></Button> : null}
               </CardContent>
             </Card>
           )
@@ -64,8 +66,8 @@ export function LaunchReadinessPage() {
       </section>
 
       <aside className="rounded-[1.5rem] border border-warning/25 bg-warning/10 p-5 text-sm leading-6 text-[var(--foreground)] sm:p-6">
-        <p className="font-bold">Approval boundary</p>
-        <p className="mt-2 text-on-surface-variant/85">This register is operational evidence, not authorization. Owner, legal, tax, accounting, partner, and credential-dependent rows must retain their current status until dated evidence is attached and the corresponding release test passes.</p>
+        <p className="font-bold">{t('Approval boundary')}</p>
+        <p className="mt-2 text-on-surface-variant/85">{t('This register is operational evidence, not authorization. Owner, legal, tax, accounting, partner, and credential-dependent rows must retain their current status until dated evidence is attached and the corresponding release test passes.')}</p>
       </aside>
     </div>
   )

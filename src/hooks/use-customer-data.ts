@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { activityService } from '@/integrations/supabase/services/activity-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
 import { cartService } from '@/integrations/supabase/services/cart-service'
@@ -124,12 +125,13 @@ export function useCart() {
 
 export function useAddToCart() {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
   return useMutation({
     mutationFn: ({ productId, quantity }: { productId: string; quantity?: number }) =>
       cartService.addItem(productId, quantity),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: customerKeys.cart })
-      toast.success('Added to cart.')
+      toast.success(t('Added to cart.'))
       window.dispatchEvent(new CustomEvent('customer-cart-updated'))
     },
   })
@@ -244,6 +246,7 @@ export function useAttributePartnerReferral(profileId?: string) {
 
 export function useUpdateProfile(profileId?: string) {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (values: ProfileFormValues) => profileService.updateProfile(profileId!, values),
@@ -251,7 +254,7 @@ export function useUpdateProfile(profileId?: string) {
       if (!profileId) return
       queryClient.setQueryData(customerKeys.profile(profileId), updatedProfile)
       void queryClient.invalidateQueries({ queryKey: customerKeys.profile(profileId) })
-      toast.success('Profile saved')
+      toast.success(t('Profile saved'))
     },
   })
 }

@@ -10,20 +10,21 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Textarea } from '@/components/ui/textarea'
 import { useDeletePromotion, useUpdatePromotion } from '@/hooks/use-admin-data'
 import { useBusinessOwnerData, useCreateOwnerPromotion } from '@/hooks/use-business-owner-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { usePagination } from '@/hooks/use-pagination'
 import { searchMatches } from '@/lib/search'
-import { formatDate } from '@/lib/utils'
 import type { Promotion } from '@/types/domain'
 import { promotionDraftSchema, type PromotionDraftFormValues } from '@/types/forms'
 
 export function PromotionsPage() {
   const { business, promotions } = useBusinessOwnerData()
   const { profile } = useAuth()
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
   const createPromotion = useCreateOwnerPromotion(profile, business?.id)
   const deletePromotion = useDeletePromotion(profile?.fullName)
   const updatePromotion = useUpdatePromotion(profile?.fullName)
@@ -57,7 +58,7 @@ export function PromotionsPage() {
 
   const handleOpenForCreate = () => {
     if (!business) {
-      setError('Business context is still loading. Please try again in a moment.')
+      setError(t('Business context is still loading. Please try again in a moment.'))
       return
     }
 
@@ -93,7 +94,7 @@ export function PromotionsPage() {
       setOpen(false)
       setEditingId(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('Action failed.'))
+      setError(err instanceof Error ? t(err.message) : t('Action failed.'))
     }
   })
   const filteredPromotions = promotions.filter((promotion) =>
@@ -106,6 +107,7 @@ export function PromotionsPage() {
       promotion.expiresAt,
     ]),
   )
+  const pagination = usePagination(filteredPromotions, 8, campaignSearch)
 
   return (
     <div className="space-y-16">
@@ -147,37 +149,37 @@ export function PromotionsPage() {
           <form onSubmit={handleSubmit} className="space-y-6 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="promo-title">{t('Title')}</Label>
-              <Input id="promo-title" placeholder="Double Points Weekend" {...form.register('title')} />
+              <Input id="promo-title" placeholder={t('Double Points Weekend')} {...form.register('title')} />
               {form.formState.errors.title && (
-                <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.title.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-description">{t('Description')}</Label>
-              <Textarea id="promo-description" placeholder="Earn 2x points on eligible purchases this weekend." {...form.register('description')} />
+              <Textarea id="promo-description" placeholder={t('Earn 2x points on eligible purchases this weekend.')} {...form.register('description')} />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.description.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-badge">{t('Badge Label')}</Label>
-              <Input id="promo-badge" placeholder="2x points" {...form.register('badge')} />
+              <Input id="promo-badge" placeholder={t('2x points')} {...form.register('badge')} />
               {form.formState.errors.badge && (
-                <p className="text-xs text-red-500">{form.formState.errors.badge.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.badge.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-cta">{t('Call to Action')}</Label>
-              <Input id="promo-cta" placeholder="Shop now and earn double" {...form.register('cta')} />
+              <Input id="promo-cta" placeholder={t('Shop now and earn double')} {...form.register('cta')} />
               {form.formState.errors.cta && (
-                <p className="text-xs text-red-500">{form.formState.errors.cta.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.cta.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="promo-audience">{t('Audience')}</Label>
-              <Input id="promo-audience" placeholder="All members" {...form.register('audience')} />
+              <Input id="promo-audience" placeholder={t('All members')} {...form.register('audience')} />
               {form.formState.errors.audience && (
-                <p className="text-xs text-red-500">{form.formState.errors.audience.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.audience.message)}</p>
               )}
             </div>
             {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
@@ -194,7 +196,7 @@ export function PromotionsPage() {
       </Dialog>
 
       {/* Promotions Grid */}
-      <div className="grid gap-6 sm:grid-cols-2">
+      <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
         {promotions.length === 0 ? (
           <EmptyState
             className="col-span-full"
@@ -216,7 +218,7 @@ export function PromotionsPage() {
             description={t('Try a campaign title, badge, or audience.')}
           />
         ) : (
-          filteredPromotions.map((promotion) => {
+          pagination.pageItems.map((promotion) => {
             const active = isActive(promotion.expiresAt)
 
             return (
@@ -238,7 +240,7 @@ export function PromotionsPage() {
                           : 'border-outline-variant/25 bg-muted text-muted-foreground'
                       }`}
                     >
-                      {t(promotion.badge)}
+                      {promotion.badge}
                     </Badge>
                     <div className="flex items-center gap-3">
                       <div className="flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
@@ -246,10 +248,10 @@ export function PromotionsPage() {
                         {active ? t('Active') : t('Expired')}
                       </div>
                       <div className="flex gap-2">
-                        <Button variant="ghost" size="icon" className="size-8 rounded-full" onClick={() => handleEdit(promotion)}>
+                        <Button aria-label={t('Edit {item}', { item: promotion.title })} variant="ghost" size="icon" className="size-8 rounded-full" onClick={() => handleEdit(promotion)}>
                           <Edit2 className="size-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" className="size-8 rounded-full text-error hover:text-error hover:bg-error/10" onClick={() => handleDelete(promotion.id)}>
+                        <Button aria-label={t('Delete {item}', { item: promotion.title })} variant="ghost" size="icon" className="size-8 rounded-full text-error hover:text-error hover:bg-error/10" onClick={() => handleDelete(promotion.id)}>
                           <Trash2 className="size-4" />
                         </Button>
                       </div>
@@ -258,18 +260,18 @@ export function PromotionsPage() {
 
                   <div className="space-y-4">
                     <h3 className="font-serif text-3xl tracking-tight text-primary leading-tight">
-                      {t(promotion.title)}
+                      {promotion.title}
                     </h3>
                     <p className="text-sm leading-relaxed text-on-surface-variant/85 font-medium italic">
-                      "{t(promotion.description)}"
+                      "{promotion.description}"
                     </p>
                   </div>
 
                   <div className="mt-4 rounded-xl bg-surface-lowest p-5 flex items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-sm font-bold text-primary">{t(promotion.cta)}</p>
+                      <p className="text-sm font-bold text-primary">{promotion.cta}</p>
                       <p className="text-[0.65rem] uppercase tracking-wider text-on-surface-variant/70">
-                        {t(promotion.audience)}
+                        {promotion.audience}
                       </p>
                     </div>
                     <div className="size-8 rounded-full bg-surface-low flex items-center justify-center text-primary shadow-sm">
@@ -279,7 +281,7 @@ export function PromotionsPage() {
 
                   <div className="pt-4 border-t border-outline-variant/5">
                     <span className="text-xs text-on-surface-variant/60">
-                      {t('Expires')}: {formatDate(promotion.expiresAt)}
+                      {t('Expires')}: {new Date(promotion.expiresAt).toLocaleDateString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : 'en-US')}
                     </span>
                   </div>
                 </div>
@@ -288,6 +290,7 @@ export function PromotionsPage() {
           })
         )}
       </div>
+      <PaginationControls ariaLabel={t('Business promotions pagination')} {...pagination} onPageChange={pagination.setPage} />
     </div>
   )
 }

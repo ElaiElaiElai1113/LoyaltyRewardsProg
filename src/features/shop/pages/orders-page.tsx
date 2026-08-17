@@ -4,10 +4,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses, useOrders } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import { usePagination } from '@/hooks/use-pagination'
 import { formatCurrency, formatDate } from '@/lib/utils'
 
 export function OrdersPage() {
@@ -15,6 +17,7 @@ export function OrdersPage() {
   const { t } = useLanguage()
   const orders = useOrders(profile?.id)
   const businesses = useBusinesses()
+  const pagination = usePagination(orders.data ?? [])
 
   const getBusinessName = (businessId: string) =>
     businesses.data?.find((b) => b.id === businessId)?.name ?? 'Unknown'
@@ -58,7 +61,7 @@ export function OrdersPage() {
         />
       ) : (
         <div className="space-y-4">
-          {(orders.data ?? []).map((order) => (
+          {pagination.pageItems.map((order) => (
             <div
               key={order.id}
               className="rounded-2xl bg-surface-low p-6 border border-outline-variant/5 shadow-sm space-y-4"
@@ -100,6 +103,7 @@ export function OrdersPage() {
               </div>
             </div>
           ))}
+          <PaginationControls ariaLabel="Orders pagination" {...pagination} onPageChange={pagination.setPage} />
         </div>
       )}
     </div>

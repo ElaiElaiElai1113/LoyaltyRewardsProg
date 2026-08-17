@@ -1,5 +1,6 @@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import type { GiftCardCatalogItem } from '@/types/domain'
 
 interface IssueConfirmationDialogProps {
@@ -17,19 +18,24 @@ export function IssueConfirmationDialog({
   onOpenChange,
   onConfirm,
 }: IssueConfirmationDialogProps) {
+  const { t } = useLanguage()
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Issue gift card</DialogTitle>
+          <DialogTitle>{t('Issue gift card')}</DialogTitle>
           <DialogDescription>
-            {item ? `Spend ${item.pointsCost} points for ${item.title}. This card expires in ${item.expiryDays} days.` : ''}
+            {item ? t('Spend {points} points for {title}. This card expires in {days} days.', {
+              points: item.pointsCost,
+              title: item.title,
+              days: item.expiryDays,
+            }) : ''}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>{t('Cancel')}</Button>
           <Button type="button" variant="secondary" disabled={!item || isSubmitting} isLoading={isSubmitting} onClick={onConfirm}>
-            {isSubmitting ? 'Issuing...' : 'Confirm'}
+            {isSubmitting ? t('Issuing...') : t('Confirm')}
           </Button>
         </DialogFooter>
       </DialogContent>

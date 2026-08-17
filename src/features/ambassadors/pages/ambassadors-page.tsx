@@ -13,6 +13,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { useBusinesses } from '@/hooks/use-customer-data'
 import { useTenant } from '@/hooks/use-tenant'
+import { useLanguage } from '@/lib/language'
 import { ambassadorLeadSchema, type AmbassadorLeadFormValues } from '@/types/forms'
 import {
   ambassadorCreatorSignals,
@@ -45,6 +46,7 @@ const compactTextareaClass = 'min-h-14 rounded-xl border-[var(--border)] bg-[var
 const compactErrorClass = 'text-[0.62rem] font-bold leading-3 text-error'
 
 export function AmbassadorsPage() {
+  const { t } = useLanguage()
   const { program } = useTenant()
   const [searchParams] = useSearchParams()
   const businesses = useBusinesses()
@@ -72,10 +74,10 @@ export function AmbassadorsPage() {
           <div className="flex h-full min-h-0 flex-col justify-between gap-6">
             <div className="flex items-center justify-between gap-4">
               <Badge className="border-[var(--champagne)]/35 bg-[var(--cream)]/12 text-[var(--champagne)]">
-                VIP creator invites
+                {t('VIP creator invites')}
               </Badge>
               <Link to="/shop" className="text-sm font-bold text-[var(--champagne)] transition hover:text-[var(--cream)]">
-                Partner map
+                {t('Partner map')}
               </Link>
             </div>
 
@@ -95,15 +97,15 @@ export function AmbassadorsPage() {
 
               <div className="space-y-4">
                 <h1 className="font-serif text-[clamp(3.4rem,6vw,6rem)] font-semibold leading-[0.92] tracking-[0.01em]">
-                  {ambassadorVipHeadline}
+                  {t(ambassadorVipHeadline)}
                 </h1>
                 <p className="max-w-2xl text-sm font-medium leading-6 text-[var(--cream)]/78 xl:text-base">
-                  {ambassadorVipSupportingCopy.replaceAll('Medellin Rewards', program.name)}
+                  {t(ambassadorVipSupportingCopy).replaceAll('Medellin Rewards', program.name)}
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {ambassadorCreatorSignals.map((signal) => (
                     <span key={signal} className="rounded-full border border-[var(--champagne)]/30 bg-[var(--cream)]/12 px-3 py-1 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--champagne)]">
-                      {signal}
+                      {t(signal)}
                     </span>
                   ))}
                 </div>
@@ -117,8 +119,8 @@ export function AmbassadorsPage() {
                 return (
                   <div key={perk.title} className="rounded-[1rem] border border-[var(--champagne)]/20 bg-[var(--cream)]/12 p-3 shadow-soft">
                     <Icon className="size-4 text-[var(--champagne)]" />
-                    <h2 className="mt-3 font-serif text-base leading-tight text-[var(--cream)]">{perk.title}</h2>
-                    <p className="mt-1.5 text-[0.68rem] font-medium leading-4 text-[var(--cream)]/70">{perk.body}</p>
+                    <h2 className="mt-3 font-serif text-base leading-tight text-[var(--cream)]">{t(perk.title)}</h2>
+                    <p className="mt-1.5 text-[0.68rem] font-medium leading-4 text-[var(--cream)]/70">{t(perk.body)}</p>
                   </div>
                 )
               })}
@@ -135,14 +137,14 @@ export function AmbassadorsPage() {
                 </div>
                 <div className="space-y-3">
                   <h2 className="font-serif text-3xl leading-tight text-[var(--foreground)] sm:text-4xl">
-                    {ambassadorSuccessTitle}
+                    {t(ambassadorSuccessTitle)}
                   </h2>
                   <p className="mx-auto max-w-md text-sm font-medium leading-6 text-[var(--muted-foreground)]">
-                    {ambassadorSuccessMessage}
+                    {t(ambassadorSuccessMessage)}
                   </p>
                 </div>
                 <Button asChild variant="secondary" size="lg" className="rounded-full border border-primary/30 bg-[var(--card)] text-primary hover:bg-[var(--muted)]">
-                  <Link to="/shop">Explore businesses</Link>
+                  <Link to="/shop">{t('Explore businesses')}</Link>
                 </Button>
               </div>
             ) : (
@@ -154,8 +156,8 @@ export function AmbassadorsPage() {
                     await ambassadorService.createLead(values, businessId)
                     form.reset(defaultValues)
                     setIsSubmitted(true)
-                  } catch (error) {
-                    setSubmitError(error instanceof Error ? error.message : 'Unable to submit ambassador request.')
+                  } catch {
+                    setSubmitError(t('Unable to submit ambassador request.'))
                   }
                 })}
               >
@@ -163,62 +165,62 @@ export function AmbassadorsPage() {
                   <div className="mx-auto hidden size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground sm:flex">
                     <Crown className="size-5" />
                   </div>
-                  <h2 className="font-serif text-2xl leading-none text-[var(--foreground)] sm:text-3xl">Join the VIP Creator Circle</h2>
+                  <h2 className="font-serif text-2xl leading-none text-[var(--foreground)] sm:text-3xl">{t('Join the VIP Creator Circle')}</h2>
                   <p className="text-xs font-medium leading-5 text-[var(--muted-foreground)]">
-                    {ambassadorFormIntro}
+                    {t(ambassadorFormIntro)}
                   </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <div className="grid gap-1">
-                    <Label htmlFor="ambassador-name" className={compactLabelClass}>Full name</Label>
+                    <Label htmlFor="ambassador-name" className={compactLabelClass}>{t('Full name')}</Label>
                     <Input id="ambassador-name" className={compactInputClass} placeholder="Alex Rivera" {...form.register('fullName')} />
-                    {form.formState.errors.fullName ? <p className={compactErrorClass}>{form.formState.errors.fullName.message}</p> : null}
+                    {form.formState.errors.fullName ? <p className={compactErrorClass}>{t(form.formState.errors.fullName.message ?? '')}</p> : null}
                   </div>
 
                   <div className="grid gap-1">
                     <Label htmlFor="ambassador-email" className={compactLabelClass}>Email</Label>
                     <Input id="ambassador-email" className={compactInputClass} type="email" placeholder="alex@example.com" {...form.register('email')} />
-                    {form.formState.errors.email ? <p className={compactErrorClass}>{form.formState.errors.email.message}</p> : null}
+                    {form.formState.errors.email ? <p className={compactErrorClass}>{t(form.formState.errors.email.message ?? '')}</p> : null}
                   </div>
 
                   <div className="grid gap-1">
-                    <Label htmlFor="ambassador-phone" className={compactLabelClass}>Phone</Label>
-                    <Input id="ambassador-phone" className={compactInputClass} placeholder="Optional" {...form.register('phone')} />
+                    <Label htmlFor="ambassador-phone" className={compactLabelClass}>{t('Phone')}</Label>
+                    <Input id="ambassador-phone" className={compactInputClass} placeholder={t('Optional')} {...form.register('phone')} />
                   </div>
 
                   <div className="grid gap-1">
-                    <Label htmlFor="ambassador-city" className={compactLabelClass}>Location</Label>
+                    <Label htmlFor="ambassador-city" className={compactLabelClass}>{t('Location')}</Label>
                     <Input id="ambassador-city" className={compactInputClass} placeholder={program.name.replace(/\s+Rewards$/i, '')} {...form.register('city')} />
-                    {form.formState.errors.city ? <p className={compactErrorClass}>{form.formState.errors.city.message}</p> : null}
+                    {form.formState.errors.city ? <p className={compactErrorClass}>{t(form.formState.errors.city.message ?? '')}</p> : null}
                   </div>
                 </div>
 
                 <div className="grid gap-2">
                   <div className="grid gap-1">
                     <Label htmlFor="ambassador-instagram" className={compactLabelClass}>Instagram</Label>
-                    <Input id="ambassador-instagram" className={compactInputClass} placeholder="@yourhandle or profile link" {...form.register('instagram')} />
-                    {form.formState.errors.instagram ? <p className={compactErrorClass}>{form.formState.errors.instagram.message}</p> : null}
+                    <Input id="ambassador-instagram" className={compactInputClass} placeholder={t('@yourhandle or profile link')} {...form.register('instagram')} />
+                    {form.formState.errors.instagram ? <p className={compactErrorClass}>{t(form.formState.errors.instagram.message ?? '')}</p> : null}
                   </div>
                   <div className="grid gap-1">
                     <Label htmlFor="ambassador-tiktok" className={compactLabelClass}>TikTok</Label>
-                    <Input id="ambassador-tiktok" className={compactInputClass} placeholder="@yourhandle or profile link" {...form.register('tiktok')} />
+                    <Input id="ambassador-tiktok" className={compactInputClass} placeholder={t('@yourhandle or profile link')} {...form.register('tiktok')} />
                   </div>
                   <div className="grid gap-1">
-                    <Label htmlFor="ambassador-other" className={compactLabelClass}>Other social link</Label>
-                    <Input id="ambassador-other" className={compactInputClass} placeholder="YouTube, blog, community, or another profile" {...form.register('otherSocial')} />
+                    <Label htmlFor="ambassador-other" className={compactLabelClass}>{t('Other social link')}</Label>
+                    <Input id="ambassador-other" className={compactInputClass} placeholder={t('YouTube, blog, community, or another profile')} {...form.register('otherSocial')} />
                   </div>
                 </div>
 
                 <div className="grid gap-1">
-                  <Label htmlFor="ambassador-notes" className={compactLabelClass}>Where do you usually recommend places?</Label>
+                  <Label htmlFor="ambassador-notes" className={compactLabelClass}>{t('Where do you usually recommend places?')}</Label>
                   <Textarea
                     id="ambassador-notes"
                     className={compactTextareaClass}
-                    placeholder="Group chats, hotel guests, Instagram stories, neighborhood guides..."
+                    placeholder={t('Group chats, hotel guests, Instagram stories, neighborhood guides...')}
                     {...form.register('notes')}
                   />
-                  {form.formState.errors.notes ? <p className={compactErrorClass}>{form.formState.errors.notes.message}</p> : null}
+                  {form.formState.errors.notes ? <p className={compactErrorClass}>{t(form.formState.errors.notes.message ?? '')}</p> : null}
                 </div>
 
                 <label className="flex items-start gap-2 rounded-xl border border-[var(--border)] bg-[var(--card)] p-2.5 text-xs font-medium leading-5 text-[var(--muted-foreground)] sm:p-3">
@@ -228,11 +230,11 @@ export function AmbassadorsPage() {
                     {...form.register('marketingConsent')}
                   />
                   <span>
-                    I am 18 or older and agree to be contacted with rewards, discounts, and ambassador next steps.
+                    {t('I am 18 or older and agree to be contacted with rewards, discounts, and ambassador next steps.')}
                   </span>
                 </label>
                 {form.formState.errors.marketingConsent ? (
-                  <p className={compactErrorClass}>{form.formState.errors.marketingConsent.message}</p>
+                  <p className={compactErrorClass}>{t(form.formState.errors.marketingConsent.message ?? '')}</p>
                 ) : null}
 
                 {submitError ? (
@@ -248,7 +250,7 @@ export function AmbassadorsPage() {
                   isLoading={form.formState.isSubmitting}
                 >
                   <Mail className="size-4" />
-                  {ambassadorPrimaryCta}
+                  {t(ambassadorPrimaryCta)}
                 </Button>
               </form>
             )}

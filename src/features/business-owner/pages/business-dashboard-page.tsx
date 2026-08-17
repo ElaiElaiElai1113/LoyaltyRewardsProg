@@ -23,6 +23,7 @@ import { BusinessMetricCard } from '@/components/business-metric-card'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
   useBusinessOwnerData,
@@ -33,8 +34,9 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
 import { useLanguage } from '@/lib/language'
+import { usePagination } from '@/hooks/use-pagination'
 import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/status-labels'
-import { formatCurrency as formatBaseCurrency, formatDate, formatPoints } from '@/lib/utils'
+import { formatCurrency as formatBaseCurrency, formatPoints } from '@/lib/utils'
 
 export function BusinessDashboardPage() {
   const { program } = useTenant()
@@ -45,13 +47,16 @@ export function BusinessDashboardPage() {
     program.locale,
   )
   const { profile } = useAuth()
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
   const signupQrRef = useRef<HTMLDivElement | null>(null)
   const [copiedSignupUrl, setCopiedSignupUrl] = useState(false)
   const [pendingFulfillmentId, setPendingFulfillmentId] = useState<string | null>(null)
   const fulfillRedemption = useFulfillRedemption(profile)
   const partnerPerformance = usePartnerPerformance(business?.id)
   const partnerReferrals = usePartnerReferrals(business?.id)
+  const partnerPerformancePagination = usePagination(partnerPerformance.data ?? [], 4)
+  const partnerReferralPagination = usePagination(partnerReferrals.data ?? [], 6)
+  const redemptionPagination = usePagination(redemptions, 5)
 
   if (!metrics) {
     return (
@@ -171,40 +176,40 @@ export function BusinessDashboardPage() {
           helper={t('Promotions currently live')}
         />
         <BusinessMetricCard
-          title="Partner Referrals"
+          title={t('Partner Referrals')}
           value={partnerReferralCount.toString()}
           icon={<Hotel className="size-6" />}
-          helper="Customers attributed to partner contacts"
+          helper={t('Customers attributed to partner contacts')}
         />
         <BusinessMetricCard
-          title="Partner Credits"
+          title={t('Partner Credits')}
           value={partnerCreditsEarned.toString()}
           icon={<Gift className="size-6" />}
-          helper="Credits earned by referral sources"
+          helper={t('Credits earned by referral sources')}
         />
         <BusinessMetricCard
-          title="Outstanding Credits"
+          title={t('Outstanding Credits')}
           value={outstandingPartnerCredits.toString()}
           icon={<QrCode className="size-6" />}
-          helper="Partner credits not yet marked redeemed"
+          helper={t('Partner credits not yet marked redeemed')}
         />
         <BusinessMetricCard
-          title="QR Transactions"
+          title={t('QR Transactions')}
           value={(metrics.memberTransactionCount ?? 0).toString()}
           icon={<ReceiptText className="size-6" />}
-          helper="Outside-app sales recorded from member QR scans"
+          helper={t('Outside-app sales recorded from member QR scans')}
         />
         <BusinessMetricCard
-          title="QR Revenue"
+          title={t('QR Revenue')}
           value={formatCurrency(metrics.inPersonRevenue ?? 0)}
           icon={<DollarSign className="size-6" />}
-          helper="Outside-app purchase volume recorded"
+          helper={t('Outside-app purchase volume recorded')}
         />
         <BusinessMetricCard
-          title="Commission Owed"
+          title={t('Commission Owed')}
           value={formatCurrency(metrics.commissionOwed ?? 0)}
           icon={<TrendingUp className="size-6" />}
-          helper={`Unpaid ${program.name} commission`}
+          helper={t('Unpaid {program} commission', { program: program.name })}
         />
         <BusinessMetricCard
           title={t('Pending Fulfillment')}
@@ -279,7 +284,7 @@ export function BusinessDashboardPage() {
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">Partners</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Partners')}</p>
                 <p className="font-serif text-3xl text-primary group-hover:text-white">{partnerPerformance.data?.length ?? 0}</p>
               </div>
               <Hotel className="size-8 text-primary/70 group-hover:text-white/70" />
@@ -295,7 +300,7 @@ export function BusinessDashboardPage() {
             <div className="space-y-2">
               <h2 className="font-serif text-2xl text-primary">{t('Signup Portal')}</h2>
               <p className="max-w-2xl text-sm leading-relaxed text-on-surface-variant/70">
-                Display this portal at checkout or on signage. New customers scan it to create an account and earn rewards.
+                {t('Display this portal at checkout or on signage. New customers scan it to create an account and earn rewards.')}
               </p>
             </div>
             <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
@@ -335,7 +340,7 @@ export function BusinessDashboardPage() {
           </div>
           <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} {t('signup portal')}</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
-            Customer invite credits remain available for the legacy referral flow.
+            {t('Customer invite credits remain available for the legacy referral flow.')}
           </p>
           <Button
             type="button"
@@ -354,11 +359,11 @@ export function BusinessDashboardPage() {
       <div>
         <div className="flex items-center justify-between mb-6">
           <div className="space-y-1">
-            <h2 className="font-serif text-2xl text-primary">Partner Referrals</h2>
-            <p className="text-sm text-on-surface-variant/70">Track hotel/front-desk referrals and reward partners after first paid orders.</p>
+            <h2 className="font-serif text-2xl text-primary">{t('Partner Referrals')}</h2>
+            <p className="text-sm text-on-surface-variant/70">{t('Track hotel/front-desk referrals and reward partners after first paid orders.')}</p>
           </div>
           <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70 italic">
-            {partnerCreditsEarned} credits earned
+            {t('{count} credits earned', { count: partnerCreditsEarned })}
           </span>
         </div>
 
@@ -374,14 +379,14 @@ export function BusinessDashboardPage() {
                   <Skeleton className="h-10 w-12" />
                 </div>
               ))
-            ) : (partnerPerformance.data ?? []).slice(0, 4).map((entry) => (
+            ) : partnerPerformancePagination.pageItems.map((entry) => (
               <div key={entry.partnerReferrerId} className="flex items-center justify-between p-5">
                 <div>
                   <p className="font-serif text-xl text-primary">{entry.contactName}</p>
                 </div>
                 <div className="text-right">
                   <p className="font-serif text-2xl text-primary">{entry.creditsEarned}</p>
-                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-on-surface-variant/70">credits</p>
+                  <p className="text-[0.65rem] uppercase tracking-[0.18em] text-on-surface-variant/70">{t('credits')}</p>
                 </div>
               </div>
             ))}
@@ -393,6 +398,12 @@ export function BusinessDashboardPage() {
                 description={t('Create partner contacts to track hotel and front-desk referrals.')}
               />
             ) : null}
+            <PaginationControls
+              ariaLabel={t('Partner performance pagination')}
+              {...partnerPerformancePagination}
+              className="m-4"
+              onPageChange={partnerPerformancePagination.setPage}
+            />
           </div>
 
           <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
@@ -423,27 +434,33 @@ export function BusinessDashboardPage() {
               />
           ) : null}
 
-          {(partnerReferrals.data ?? []).slice(0, 6).map((referral) => (
+          {partnerReferralPagination.pageItems.map((referral) => (
             <div key={referral.id} className="p-6 flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
               <div className="grid flex-1 gap-6 md:grid-cols-2">
                 <div className="space-y-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Referral Source</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Referral Source')}</p>
                   <p className="font-serif text-xl text-primary">{referral.partnerReferrer.contactName}</p>
                 </div>
                 <div className="space-y-1">
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Attributed Customer</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Attributed Customer')}</p>
                   <p className="font-serif text-xl text-primary">{referral.customer.fullName}</p>
                   <p className="text-sm font-medium text-on-surface-variant/75">{referral.customer.email}</p>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-3">
-                <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">{formatDate(referral.createdAt)}</span>
-                <Button type="button" size="sm" variant="outline" className="rounded-full">
-                  {getPartnerReferralStatusLabel(referral.status)}
-                </Button>
+                <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant/70">{new Date(referral.createdAt).toLocaleDateString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale)}</span>
+                <span className="inline-flex h-8 items-center rounded-full border border-input bg-background px-3 text-xs font-medium shadow-xs">
+                  {t(getPartnerReferralStatusLabel(referral.status))}
+                </span>
               </div>
             </div>
           ))}
+          <PaginationControls
+            ariaLabel={t('Partner referrals pagination')}
+            {...partnerReferralPagination}
+            className="m-4"
+            onPageChange={partnerReferralPagination.setPage}
+          />
         </div>
         </div>
       </div>
@@ -466,7 +483,7 @@ export function BusinessDashboardPage() {
               description={t('Reward claims will appear here when customers redeem points.')}
             />
           ) : (
-            redemptions.slice(0, 5).map((redemption) => (
+            redemptionPagination.pageItems.map((redemption) => (
               <div key={redemption.id} className="p-6 flex items-center justify-between group hover:bg-surface-low transition-colors">
                 <div className="flex items-center gap-4">
                   <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -476,8 +493,8 @@ export function BusinessDashboardPage() {
                     <h4 className="font-semibold text-primary">{redemption.rewardTitle}</h4>
                     <p className="text-xs text-on-surface-variant/70">
                       {t('Redeemed {date} at {time}', {
-                        date: new Date(redemption.redeemedAt).toLocaleDateString(),
-                        time: new Date(redemption.redeemedAt).toLocaleTimeString(),
+                        date: new Date(redemption.redeemedAt).toLocaleDateString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale),
+                        time: new Date(redemption.redeemedAt).toLocaleTimeString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale),
                       })}
                     </p>
                   </div>
@@ -489,7 +506,7 @@ export function BusinessDashboardPage() {
                       ? 'bg-amber-100 text-amber-700' 
                       : 'bg-green-100 text-green-700'
                   }`}>
-                    {getRedemptionStatusLabel(redemption.status)}
+                    {t(getRedemptionStatusLabel(redemption.status))}
                   </div>
                   
                   {redemption.status === 'ready' && (
@@ -513,6 +530,12 @@ export function BusinessDashboardPage() {
               </div>
             ))
           )}
+          <PaginationControls
+            ariaLabel={t('Fulfillment queue pagination')}
+            {...redemptionPagination}
+            className="m-4"
+            onPageChange={redemptionPagination.setPage}
+          />
         </div>
       </div>
     </div>

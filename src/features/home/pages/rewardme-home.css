@@ -46,6 +46,8 @@
 .rewardme-home__nav a, .rewardme-home__text-link, .rewardme-home__footer nav a { text-decoration: none; }
 .rewardme-home__nav a:hover, .rewardme-home__text-link:hover, .rewardme-home__footer nav a:hover { text-decoration: underline; text-underline-offset: 4px; }
 .rewardme-home__header-actions { display: flex; align-items: center; gap: 16px; font-size: 12px; font-weight: 700; }
+.rewardme-home__language { color: var(--rm-ink); }
+.rewardme-home__language select { border-color: var(--rm-line); background: var(--rm-paper); }
 
 .rewardme-home__button {
   min-height: 46px;
@@ -159,7 +161,9 @@
 @media (max-width: 560px) {
   .rewardme-home__header, .rewardme-home__hero, .rewardme-home__feature-image, .rewardme-home__section, .rewardme-home__savings, .rewardme-home__business, .rewardme-home__footer { width: min(100% - 28px, 1120px); }
   .rewardme-home__header { gap: 14px; min-height: 68px; }
+  .rewardme-home__header-actions { gap: 8px; }
   .rewardme-home__header-actions .rewardme-home__text-link { display: none; }
+  .rewardme-home__header-join { display: none; }
   .rewardme-home__nav { flex-wrap: wrap; gap: 8px 16px; overflow: visible; white-space: normal; }
   .rewardme-home__hero { padding-top: 52px; }
   .rewardme-home__hero h1 { font-size: clamp(42px, 13vw, 58px); }

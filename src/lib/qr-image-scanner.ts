@@ -97,9 +97,15 @@ export function scanQrSourceWithJsQr(
 export async function scanQrImageBitmap(source: ImageBitmap) {
   const BarcodeDetector = getBarcodeDetectorCtor()
   if (BarcodeDetector) {
-    const detected = await new BarcodeDetector({ formats: ['qr_code'] }).detect(source)
-    const rawValue = detected[0]?.rawValue
-    if (rawValue) return rawValue
+    try {
+      const detected = await new BarcodeDetector({ formats: ['qr_code'] }).detect(source)
+      const rawValue = detected[0]?.rawValue
+      if (rawValue) return rawValue
+    } catch {
+      // Some embedded browsers expose BarcodeDetector even though QR detection
+      // is not implemented for uploaded images. Continue with the jsQR scan so
+      // a full-phone screenshot still works in those browsers.
+    }
   }
 
   return scanQrSourceWithJsQr(source, document.createElement('canvas'), true)

@@ -66,7 +66,7 @@ export function RewardCard({
             {reward.featured ? (
               <Badge variant="accent" className="gap-1 text-[0.62rem]">
                 <Sparkles className="size-3" />
-                Featured
+                {t('Featured')}
               </Badge>
             ) : null}
           </div>

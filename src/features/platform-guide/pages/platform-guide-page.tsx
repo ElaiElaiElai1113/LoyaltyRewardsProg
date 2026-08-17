@@ -23,7 +23,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage, type Language } from '@/lib/language'
 
-const screenshotGalleryByLanguage: Record<Exclude<Language, 'tl'>, {
+const screenshotGalleryByLanguage: Record<Language, {
   eyebrow: string
   title: string
   badge: string
@@ -103,6 +103,43 @@ const screenshotGalleryByLanguage: Record<Exclude<Language, 'tl'>, {
       {
         title: 'Admin login',
         caption: 'The operations team enters to review members, partners, and commissions.',
+        imageSrc: '/walkthrough-screenshots/admin-login.png',
+        route: '/signin?portal=admin',
+      },
+    ],
+  },
+  tl: {
+    eyebrow: 'Mga aktuwal na larawan',
+    title: 'Mga larawang gagamitin sa gabay',
+    badge: 'Handa para sa pagsasalin',
+    items: [
+      {
+        title: 'Pampublikong gabay',
+        caption: 'Ang pangunahing pahina na nagpapaliwanag sa programa at sa pagkakasunod-sunod ng pagpapakita.',
+        imageSrc: '/walkthrough-screenshots/guide.png',
+        route: '/guide',
+      },
+      {
+        title: 'Mapa ng mga negosyo',
+        caption: 'Tinitingnan ng mga kostumer ang mga katuwang na negosyo at pinipili kung saan mamimili.',
+        imageSrc: '/walkthrough-screenshots/public-map.png',
+        route: '/shop',
+      },
+      {
+        title: 'Pahina para sa mga negosyo',
+        caption: 'Ipinapaliwanag ng pangkat ang halaga para sa mga katuwang bago buksan ang pahina ng negosyo.',
+        imageSrc: '/walkthrough-screenshots/business-page.png',
+        route: '/business',
+      },
+      {
+        title: 'Pagpasok ng negosyo',
+        caption: 'Binubuksan ng kawani at may-ari ang pahina ng negosyo upang magtala ng mga bentang gamit ang QR.',
+        imageSrc: '/walkthrough-screenshots/business-login.png',
+        route: '/signin?portal=business',
+      },
+      {
+        title: 'Pagpasok ng tagapangasiwa',
+        caption: 'Pumapasok ang pangkat ng operasyon upang suriin ang mga miyembro, katuwang, at komisyon.',
         imageSrc: '/walkthrough-screenshots/admin-login.png',
         route: '/signin?portal=admin',
       },
@@ -225,7 +262,64 @@ const guideContent = {
       'Follow the storyboard in order to show the customer, business, and administrator experience without skipping a step.',
     badges: ['English version', 'Complete walkthrough'],
   },
-} satisfies Record<Exclude<Language, 'tl'>, {
+  tl: {
+    eyebrow: 'Panloob at gabay para sa kostumer',
+    title: 'Gabay sa plataporma',
+    intro:
+      'Isang maikli at malinaw na paliwanag tungkol sa programa, kung paano ito ginagamit, at kung ano ang dapat ipakita ng pangkat sa pagpapakita.',
+    links: {
+      map: 'Tingnan ang mapa',
+      business: 'Pahina ng negosyo',
+      admin: 'Tagapangasiwa',
+      openView: 'Buksan',
+    },
+    videoTitle: 'Gabay sa buong pagpapakita',
+    videoBody: 'Sundin ang mga bahagi at ayos ng pahinang ito upang matapos ang pagpapakita mula simula hanggang dulo.',
+    chapters: ['Panimula', 'Pagpapakita para sa kostumer', 'Pagpapakita para sa negosyo', 'Pagpapakita para sa tagapangasiwa'],
+    storyboardEyebrow: 'Ayos ng mga pahina',
+    storyboardTitle: 'Mga larawang gagamitin sa bidyo',
+    storyboardBadge: 'Bersiyong teksto muna',
+    storyboard: [
+      {
+        icon: QrCode,
+        label: 'Kostumer',
+        title: 'Personal na QR',
+        route: '/profile',
+        caption: 'Ipinapakita ng kostumer ang kanilang QR upang kumita ng puntos mula sa personal na pagbili.',
+        mock: ['Natiyak na pagkakakilanlan', 'QR ng miyembro', 'Talaan ng aktibidad'],
+      },
+      {
+        icon: MapPinned,
+        label: 'Pagtuklas',
+        title: 'Mapa ng mga negosyo',
+        route: '/shop',
+        caption: 'Tinitingnan ng mga gumagamit ang mga katuwang na negosyo at pinipili kung saan mamimili.',
+        mock: ['Biswal na mapa', 'Mga marka ng katuwang', 'Mga produkto ng negosyo'],
+      },
+      {
+        icon: ScanLine,
+        label: 'Negosyo',
+        title: 'Mga transaksiyon',
+        route: '/business/redemptions',
+        caption: 'Itinatala ng negosyo ang mga benta na mayroon o walang kard na regalo at sinusuri ang kasaysayan.',
+        mock: ['QR ng kostumer', 'Opsiyonal na kard na regalo', 'Mga puntos at kabuuan'],
+      },
+      {
+        icon: ShieldCheck,
+        label: 'Tagapangasiwa',
+        title: 'Mga operasyon',
+        route: '/admin/portal#members',
+        caption: 'Pinamamahalaan ng pangkat ang mga miyembro, katuwang, pagpapatunay, kard na regalo, at komisyon.',
+        mock: ['Mga miyembro', 'Mga kard na regalo', 'Mga komisyon'],
+      },
+    ],
+    nextEyebrow: 'Susunod na hakbang',
+    nextTitle: 'Gamitin ang gabay na ito ngayon',
+    nextBody:
+      'Sundin ang ayos upang maipakita ang karanasan ng kostumer, negosyo, at tagapangasiwa nang walang nalalaktawang hakbang.',
+    badges: ['Bersiyong Tagalog', 'Kumpletong gabay'],
+  },
+} satisfies Record<Language, {
   eyebrow: string
   title: string
   intro: string
@@ -278,7 +372,7 @@ type RoleGuideContent = {
   } | null
 }
 
-const roleScopedGuideContent: Record<Exclude<Language, 'tl'>, Record<RoleScopedGuideAudience, RoleGuideContent>> = {
+const roleScopedGuideContent: Record<Language, Record<RoleScopedGuideAudience, RoleGuideContent>> = {
   es: {
     public: {
       eyebrow: 'Guia del programa',
@@ -427,6 +521,80 @@ const roleScopedGuideContent: Record<Exclude<Language, 'tl'>, Record<RoleScopedG
       gallery: null,
     },
   },
+  tl: {
+    public: {
+      eyebrow: 'Gabay sa programa',
+      intro: 'Alamin kung paano gumagana ang programa ng mga gantimpala, tingnan ang mga katuwang na negosyo, at piliin kung saan magsisimula.',
+      panelTitle: 'Magsimula rito',
+      panelBody: 'Isang maikling panimula para sa mga bisita bago gumawa ng kuwenta o pumasok.',
+      chapters: ['Paano gumagana ang mga gantimpala', 'Tingnan ang mga katuwang na negosyo', 'Sumali o pumasok'],
+      actions: [
+        { icon: MapPinned, label: 'Tingnan ang mapa', route: '/shop' },
+        { icon: ScanLine, label: 'Para sa mga negosyo', route: '/business' },
+        { icon: LogIn, label: 'Pumasok', route: '/signin' },
+      ],
+      nextTitle: 'Piliin ang susunod mong hakbang',
+      nextBody: 'Tingnan ang mga negosyong magagamit, alamin ang programa para sa mga katuwang, o pumasok sa iyong kuwenta.',
+      badges: ['Pampublikong gabay', 'Hindi kailangan ng kuwenta'],
+      gallery: {
+        eyebrow: 'Mga pampublikong pahina',
+        title: 'Tingnan ang programa',
+        badge: 'Hindi kailangan ng kuwenta',
+      },
+    },
+    customer: {
+      eyebrow: 'Gabay para sa kostumer',
+      intro: 'Lahat ng kailangan upang makahanap ng mga katuwang, gamitin ang QR ng miyembro, at suriin ang iyong mga gantimpala.',
+      panelTitle: 'Mahahalagang gamit para sa kostumer',
+      panelBody: 'Ito lamang ang mga gamit na magagamit sa iyong kuwenta bilang kostumer.',
+      chapters: ['Buksan ang iyong pangunahing pahina', 'Hanapin ang mga katuwang na negosyo', 'Ipakita ang QR ng miyembro', 'Suriin ang aktibidad ng mga gantimpala'],
+      actions: [
+        { icon: LayoutDashboard, label: 'Aking pangunahing pahina', route: '/dashboard' },
+        { icon: MapPinned, label: 'Tingnan ang mapa', route: '/shop' },
+        { icon: QrCode, label: 'Aking QR', route: '/profile' },
+      ],
+      nextTitle: 'Magpatuloy gamit ang iyong kuwenta',
+      nextBody: 'Gamitin ang mapa upang pumili ng negosyo o buksan ang iyong QR kapag handa ka nang kumita ng mga gantimpala.',
+      badges: ['Para lamang sa kostumer', 'Mahahalagang gamit'],
+      gallery: {
+        eyebrow: 'Sanggunian ng kostumer',
+        title: 'Hanapin ang mga kasaling negosyo',
+        badge: 'Para lamang sa kostumer',
+      },
+    },
+    business: {
+      eyebrow: 'Gabay para sa negosyo',
+      intro: 'Ang mga gamit na kailangan upang maglingkod sa mga kostumer, magtala ng mga transaksiyon, at suriin ang aktibidad ng negosyo.',
+      panelTitle: 'Mahahalagang gamit para sa negosyo',
+      panelBody: 'Ipinapakita lamang ng gabay na ito ang mga gamit para sa mga may-ari at kawani.',
+      chapters: ['Buksan ang pangunahing pahina ng negosyo', 'Magtala ng transaksiyon ng kostumer', 'Suriin ang mga kostumer at aktibidad'],
+      actions: [
+        { icon: LayoutDashboard, label: 'Pangunahing pahina ng negosyo', route: '/business/dashboard' },
+        { icon: ScanLine, label: 'Mga transaksiyon', route: '/business/redemptions' },
+        { icon: Users, label: 'Mga kostumer', route: '/business/members' },
+      ],
+      nextTitle: 'Magpatuloy sa mga operasyon',
+      nextBody: 'Buksan ang pangunahing pahina upang maglingkod sa mga kostumer, magtala ng pagbili, o suriin ang kamakailang aktibidad.',
+      badges: ['Para lamang sa negosyo', 'Mga gamit sa operasyon'],
+      gallery: null,
+    },
+    admin: {
+      eyebrow: 'Gabay para sa tagapangasiwa',
+      intro: 'Direktang daan sa pamamahala ng plataporma, mga kasapian, at mga kard na regalo.',
+      panelTitle: 'Mahahalagang gamit para sa tagapangasiwa',
+      panelBody: 'Ipinapakita lamang ng gabay na ito ang mga gamit para sa mga tagapangasiwa ng plataporma.',
+      chapters: ['Buksan ang mga operasyon', 'Pamahalaan ang mga miyembro at katuwang', 'Suriin ang mga kasapian at kard na regalo'],
+      actions: [
+        { icon: ShieldCheck, label: 'Pahina ng tagapangasiwa', route: '/admin/portal' },
+        { icon: Gift, label: 'Mga kard na regalo', route: '/admin/gift-cards' },
+        { icon: Users, label: 'Mga kasapian', route: '/admin/memberships' },
+      ],
+      nextTitle: 'Magpatuloy sa pamamahala',
+      nextBody: 'Buksan ang kailangan mong gamit sa pamamahala nang hindi dumaraan sa mga pahina ng kostumer o negosyo.',
+      badges: ['Para lamang sa tagapangasiwa', 'Mga operasyon ng plataporma'],
+      gallery: null,
+    },
+  },
 }
 
 function ScreenshotMockup({ items }: { items: string[] }) {
@@ -455,11 +623,52 @@ function ScreenshotMockup({ items }: { items: string[] }) {
   )
 }
 
+function GuideMediaPreview({
+  caption,
+  imageSrc,
+  language,
+  route,
+  title,
+}: {
+  caption: string
+  imageSrc: string
+  language: Language
+  route: string
+  title: string
+}) {
+  if (language === 'en') {
+    return (
+      <img
+        src={imageSrc}
+        alt={title}
+        loading="lazy"
+        className="h-full w-full object-cover object-top"
+      />
+    )
+  }
+
+  const PreviewIcon = route.startsWith('/shop') ? MapPinned : ScanLine
+
+  return (
+    <div
+      aria-label={title}
+      className="flex h-full w-full flex-col items-center justify-center gap-4 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.55),transparent_32%),linear-gradient(145deg,var(--surface-low),var(--card))] p-8 text-center"
+      data-testid="localized-guide-preview"
+      role="img"
+    >
+      <span className="flex size-16 items-center justify-center rounded-3xl border border-primary-container/20 bg-[var(--card)] text-primary shadow-soft">
+        <PreviewIcon className="size-8" aria-hidden="true" />
+      </span>
+      <p className="font-serif text-2xl text-primary">{title}</p>
+      <p className="max-w-sm text-sm leading-6 text-on-surface-variant/80">{caption}</p>
+    </div>
+  )
+}
+
 export function PlatformGuidePage() {
   const { language } = useLanguage()
   const { program } = useTenant()
   const { profile } = useAuth()
-  const resolvedLanguage = language === 'tl' ? 'en' : language
   const tenantize = <T,>(value: T): T => {
     if (typeof value === 'string') {
       return value
@@ -474,10 +683,10 @@ export function PlatformGuidePage() {
     }
     return value
   }
-  const content = tenantize(guideContent[resolvedLanguage])
+  const content = tenantize(guideContent[language])
   const isRoleScopedGuide = isRoleScopedGuideProgram(program.slug)
   const guideAudience = resolveRoleScopedGuideAudience(profile?.role)
-  const roleGuideContent = tenantize(roleScopedGuideContent[resolvedLanguage][guideAudience])
+  const roleGuideContent = tenantize(roleScopedGuideContent[language][guideAudience])
   const activeGuideContent = isRoleScopedGuide
     ? {
         eyebrow: roleGuideContent.eyebrow,
@@ -525,7 +734,7 @@ export function PlatformGuidePage() {
   const tenantScreenshotDirectory = tenantScreenshotSlug
     ? `/walkthrough-screenshots/${tenantScreenshotSlug}`
     : '/walkthrough-screenshots'
-  const tenantScreenshotGallery = tenantize(screenshotGalleryByLanguage[resolvedLanguage])
+  const tenantScreenshotGallery = tenantize(screenshotGalleryByLanguage[language])
   const screenshotGallery = {
     ...tenantScreenshotGallery,
     items: tenantScreenshotGallery.items.map((item) => ({
@@ -546,7 +755,7 @@ export function PlatformGuidePage() {
 
   return (
     <div
-      className="mx-auto max-w-7xl space-y-12 pb-10"
+      className="w-full space-y-12 pb-10"
       data-guide-audience={isRoleScopedGuide ? guideAudience : 'legacy'}
       data-testid="platform-guide"
     >
@@ -612,11 +821,12 @@ export function PlatformGuidePage() {
             className="min-h-64 overflow-hidden bg-surface-low sm:min-h-80 lg:min-h-[34rem]"
             data-testid="customer-guide-resource-media"
           >
-            <img
-              src={customerResourceScreen.imageSrc}
-              alt={customerResourceScreen.title}
-              loading="lazy"
-              className="h-full w-full object-cover object-top"
+            <GuideMediaPreview
+              caption={customerResourceScreen.caption}
+              imageSrc={customerResourceScreen.imageSrc}
+              language={language}
+              route={customerResourceScreen.route}
+              title={customerResourceScreen.title}
             />
           </div>
 
@@ -686,11 +896,12 @@ export function PlatformGuidePage() {
             {visibleScreenshotItems.map((screen) => (
               <article key={screen.imageSrc} className="overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-sm">
                 <div className="aspect-[4/3] overflow-hidden bg-surface-low">
-                  <img
-                    src={screen.imageSrc}
-                    alt={screen.title}
-                    loading="lazy"
-                    className="h-full w-full object-cover object-top"
+                  <GuideMediaPreview
+                    caption={screen.caption}
+                    imageSrc={screen.imageSrc}
+                    language={language}
+                    route={screen.route}
+                    title={screen.title}
                   />
                 </div>
                 <div className="p-5">

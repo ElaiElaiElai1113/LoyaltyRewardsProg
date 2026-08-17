@@ -368,7 +368,7 @@ runTest('promotion cards avoid overlapping admin badges and use branded contrast
   assert.match(promotionCard, /bg-\[var\(--espresso-soft\)\]/)
   assert.match(promotionCard, /hover:border-primary\/30/)
   assert.doesNotMatch(promotionCard, /bg-neutral-100/)
-  assert.match(adminPage, /businessName=\{businessNameById\.get\(promotion\.businessId\) \?\? 'Unknown partner'\}/)
+  assert.match(adminPage, /businessName=\{businessNameById\.get\(promotion\.businessId\) \?\? t\('Unknown partner'\)\}/)
   assert.doesNotMatch(adminPage, /absolute top-4 left-4 border-outline-variant\/20 bg-white\/90/)
 })
 
@@ -778,6 +778,7 @@ runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
   const publicLayout = readFileSync('src/layouts/public-browse-layout.tsx', 'utf8')
   const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
   const businessLayout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
   const businessPolicy = readFileSync('src/lib/business-role-policy.ts', 'utf8')
   const packageJson = readFileSync('package.json', 'utf8')
   const guideConfig = readFileSync('playwright.guide.config.ts', 'utf8')
@@ -792,6 +793,7 @@ runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
   assert.match(router, /path: '\/business\/guide', element: <PlatformGuidePage \/>/)
 
   assert.match(guidePage, /Guia de la plataforma/)
+  assert.match(guidePage, /Gabay sa plataporma/)
   assert.match(guidePage, /Recorrido guiado de la demo/)
   assert.doesNotMatch(guidePage, /Guion en espanol/)
   assert.doesNotMatch(guidePage, /Script base para grabar/)
@@ -806,6 +808,9 @@ runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
   assert.match(guidePage, /!isRoleScopedGuide/)
   assert.match(guidePage, /data-guide-audience/)
   assert.match(guidePage, /getRoleScopedScreenshotRoutes/)
+  assert.match(guidePage, /Record<Language, Record<RoleScopedGuideAudience, RoleGuideContent>>/)
+  assert.doesNotMatch(guidePage, /resolvedLanguage/)
+  assert.doesNotMatch(guidePage, /language === 'tl' \? 'en'/)
   assert.match(guidePage, /\/shop/)
   assert.match(guidePage, /\/business\/redemptions/)
   assert.match(guidePage, /with or without a gift card/)
@@ -822,10 +827,26 @@ runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
     assert.match(walkthrough, /Transaction History/i)
   }
 
-  assert.match(publicLayout, /to: '\/guide', label: 'Guia'/)
-  assert.match(adminLayout, /to: '\/admin\/guide', label: 'Guia'/)
+  assert.match(publicLayout, /to: '\/guide', label: 'Guide'/)
+  assert.match(adminLayout, /to: '\/admin\/guide', label: 'Guide'/)
   assert.match(adminLayout, /to="\/admin\/guide"/)
-  assert.match(businessLayout, /to: '\/business\/guide', label: 'Guia'/)
+  assert.match(businessLayout, /to: '\/business\/guide', label: 'Guide'/)
+  for (const sidebarKey of [
+    'Programs',
+    'Launch Readiness',
+    'Memberships',
+    'Tenant Import',
+    'Operations',
+    'Ambassadors',
+    'Leads',
+    'Agreements',
+    'Commissions',
+    'Transactions',
+    'Customers',
+  ]) {
+    const escapedKey = sidebarKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    assert.equal((language.match(new RegExp(`(?:^|\\n)\\s*['"]?${escapedKey}['"]?:`, 'g')) ?? []).length, 2)
+  }
   assert.match(businessPolicy, /'\/business\/guide'/)
   assert.match(packageJson, /"test:guide": "node scripts\/run-guide-playwright\.mjs"/)
   assert.match(packageJson, /"test:playwright": "node scripts\/run-playwright-local\.mjs"/)
@@ -854,10 +875,13 @@ runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
   assert.match(guideScope, /if \(role === 'platform-admin'\) return 'admin'/)
   assert.match(guideSpec, /public guide explains the program without exposing private role portals/)
   assert.match(guideSpec, /public guide follows the English language preference without Spanish guide copy/)
+  assert.match(guideSpec, /public guide follows the Tagalog preference without English or Spanish guide copy/)
   assert.match(guideSpec, /rewards:pinas:language/)
   assert.match(guideAuthSpec, /authenticated platform guide workflow/)
   assert.match(guideAuthSpec, /workflowAuthEnabled/)
   assert.match(guideAuthSpec, /data-guide-audience/)
+  assert.match(guideAuthSpec, /tagalogAdminOperationsLabels/)
+  assert.match(guideAuthSpec, /tagalogBusinessStaffLabels/)
   assert.match(guideAuthSpec, /customer sees only customer guidance and destinations/)
 })
 
@@ -1076,7 +1100,7 @@ runTest('member signup page follows the compact member portal layout', () => {
   assert.match(activeJoin, /t\('Already have an account\?'\)/)
   assert.match(activeJoin, /t\('Sign in'\)/)
   assert.match(language, /'Create my account': 'Crear mi cuenta'/)
-  assert.match(language, /'Already have an account\?': 'Ya tienes cuenta\?'/)
+  assert.match(language, /'Already have an account\?': '¿Ya tienes cuenta\?'/)
   assert.match(activeJoin, /Eye/)
   assert.doesNotMatch(activeJoin, /min-h-\[31rem\]/)
   assert.doesNotMatch(activeJoin, /soft-luxe-shell/)
@@ -1107,11 +1131,139 @@ runTest('early access page uses tenant-scoped language preferences and exposes a
   assert.match(language, /tenantStorageKey\('language'\)/)
   assert.match(language, /stored === 'es' \|\| stored === 'tl'/)
   assert.match(languagePicker, /\(\['en', 'tl', 'es'\] as Language\[\]\)/)
+  assert.match(languagePicker, /languageDisplayNames\[language\]\[option\]/)
+  assert.match(language, /const languageDisplayNames: Record<Language, Record<Language, string>>/)
+  assert.match(language, /en: 'English',[\s\S]*tl: 'Tagalog',[\s\S]*es: 'Spanish'/)
+  assert.match(language, /en: 'Inglés',[\s\S]*tl: 'Tagalo',[\s\S]*es: 'Español'/)
+  assert.match(language, /en: 'Ingles',[\s\S]*tl: 'Tagalog',[\s\S]*es: 'Espanyol'/)
   assert.match(earlyAccessPage, /LanguagePicker/)
   assert.match(earlyAccessPage, /t\(line\)/)
   assert.match(language, /'Hey,': 'Hola,'/)
   assert.match(language, /'Subscribe': 'Suscribirse'/)
   assert.match(language, /'When we officially launch, subscribers will be the first to know/)
+})
+
+runTest('dynamic workflow status labels are translated before they are displayed or searched', () => {
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const membersPage = readFileSync('src/features/business-owner/pages/members-page.tsx', 'utf8')
+  const partnersPage = readFileSync('src/features/business-owner/pages/partners-page.tsx', 'utf8')
+  const businessDashboard = readFileSync('src/features/business-owner/pages/business-dashboard-page.tsx', 'utf8')
+
+  for (const sourceKey of [
+    'Needs document',
+    'Not submitted',
+    'Contacted',
+    'Converted',
+    'Archived',
+    'Invited',
+    'Pending review',
+    'Credited',
+    'Voided',
+    'Attributed',
+    'Fulfilled',
+    'Ready for pickup',
+  ]) {
+    const escapedKey = sourceKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    assert.equal((language.match(new RegExp(`(?:^|\\n)\\s*['"]?${escapedKey}['"]?:`, 'g')) ?? []).length, 2)
+  }
+
+  for (const sourceKey of [
+    'All',
+    'Active',
+    'Inactive',
+    'Pinned',
+    'Search members',
+    'Search customers',
+    'Search products',
+    'Search rewards',
+    'Search campaigns',
+    'Search partners',
+    'Search contacts',
+    'Search leads',
+    'Search referrals',
+    'Search credits',
+    'Filter members by verification status',
+    'Filter customers by verification status',
+    'Filter partners by status',
+    'Missing ID',
+    'Active only',
+    'Inactive only',
+    'Missing coordinates',
+    'Missing owner',
+    'No customers match this search',
+    'No products match this search',
+    'No rewards match this search',
+    'No campaigns match this search',
+    'No partners match this search',
+    'No contacts match this search',
+    'No leads match this search',
+    'No referrals match this search',
+    'No credits match this search',
+    'Try a name, email, or customer ID.',
+    'Try a product title, category, or highlight.',
+    'Try a reward title, category, or highlight.',
+    'Try a campaign title, badge, or audience.',
+    'Try a partner name, owner, address, or slug.',
+    'Try a contact name, code, email, or note.',
+    'Try a name, email, city, or social handle.',
+    'Try a customer, email, source, code, or status.',
+    'Try a referral source, credit type, or details.',
+    'Try a different search or status filter.',
+    'Try a different search or partner filter.',
+  ]) {
+    const escapedKey = sourceKey.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    assert.equal((language.match(new RegExp(`(?:^|\\n)\\s*['"]?${escapedKey}['"]?:`, 'g')) ?? []).length, 2)
+  }
+
+  assert.match(adminPage, /t\(getVerificationStatusLabel\(/)
+  assert.match(adminPage, /t\(getAmbassadorLeadStatusLabel\(/)
+  assert.match(adminPage, /t\(getEarlyAccessLeadStatusLabel\(/)
+  assert.match(adminPage, /t\(getPartnerReferralStatusLabel\(/)
+  assert.match(adminPage, /t\(getReferralStatusLabel\(/)
+  assert.match(adminPage, /t\(getRedemptionStatusLabel\(/)
+  assert.match(membersPage, /t\(getVerificationStatusLabel\(/)
+  assert.match(partnersPage, /t\(getAmbassadorLeadStatusLabel\(/)
+  assert.match(partnersPage, /t\(getPartnerReferralStatusLabel\(/)
+  assert.match(businessDashboard, /t\(getPartnerReferralStatusLabel\(/)
+  assert.match(businessDashboard, /t\(getRedemptionStatusLabel\(/)
+})
+
+runTest('pagination announcements have Spanish and Tagalog labels', () => {
+  const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
+  const walletGiftCards = readFileSync('src/features/gift-cards/pages/wallet-gift-cards-page.tsx', 'utf8')
+  const translationKeyPattern =
+    /(?:^|\n)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z][A-Za-z0-9_]*))\s*:/g
+  const translatedKeys = (dictionaryName: 'spanishTranslations' | 'tagalogTranslations') => {
+    const dictionary = languageSource.match(
+      new RegExp(`const ${dictionaryName}: Record<string, string> = \\{([\\s\\S]*?)\\n\\}`),
+    )?.[1]
+    assert.ok(dictionary)
+    return new Set(
+      [...dictionary.matchAll(translationKeyPattern)].map((match) => match[1] ?? match[2] ?? match[3]),
+    )
+  }
+
+  const paginationLabels = new Set([
+    'Activity pagination',
+    'Active gift cards pagination',
+    'Redeemed gift cards pagination',
+    'Expired gift cards pagination',
+  ])
+  const ariaLabelPattern = /(?:ariaLabel|paginationAriaLabel)="([^"]+)"/g
+
+  for (const filePath of getSourceFiles('src')) {
+    const source = readFileSync(filePath, 'utf8')
+    for (const match of source.matchAll(ariaLabelPattern)) paginationLabels.add(match[1])
+  }
+
+  for (const dictionaryName of ['spanishTranslations', 'tagalogTranslations'] as const) {
+    const keys = translatedKeys(dictionaryName)
+    assert.deepEqual([...paginationLabels].filter((label) => !keys.has(label)).sort(), [])
+  }
+
+  assert.match(walletGiftCards, /giftCardPaginationLabels\[status\]/)
+  assert.doesNotMatch(walletGiftCards, /\$\{status\} gift cards pagination/)
 })
 
 runTest('public homepage never renders internal headline labels', () => {
@@ -1213,6 +1365,92 @@ runTest('all literal translated UI strings have Spanish entries', () => {
   assert.deepEqual(missingKeys, [])
 })
 
+runTest('all literal translated UI strings have Tagalog entries', () => {
+  const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
+  const translationsSource = languageSource.match(
+    /const tagalogTranslations: Record<string, string> = \{([\s\S]*?)\n\}/,
+  )?.[1]
+
+  assert.ok(translationsSource)
+
+  const translatedKeys = new Set<string>()
+  const translationKeyPattern =
+    /(?:^|\n)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z][A-Za-z0-9_]*))\s*:/g
+
+  for (const match of translationsSource.matchAll(translationKeyPattern)) {
+    translatedKeys.add(match[1] ?? match[2] ?? match[3])
+  }
+
+  const usedKeys = new Set<string>()
+  const literalTranslationPattern = /\bt\(\s*(?:'([^']+)'|"([^"]+)")/g
+
+  for (const value of Object.values(landingClientHero)) {
+    usedKeys.add(value)
+  }
+
+  for (const item of [
+    ...landingWhyJoinItems,
+    ...landingEarlySubscriberBenefits,
+    ...landingRewardsSteps,
+    ...landingMembershipAdvantages,
+  ]) {
+    usedKeys.add(item.title)
+    usedKeys.add(item.body)
+  }
+
+  for (const filePath of getSourceFiles('src')) {
+    const source = readFileSync(filePath, 'utf8')
+
+    for (const match of source.matchAll(literalTranslationPattern)) {
+      usedKeys.add(match[1] ?? match[2])
+    }
+  }
+
+  const intentionallyInvariantKeys = new Set([
+    'CVC', // International payment-card security acronym.
+  ])
+  const missingKeys = [...usedKeys]
+    .filter((key) => !translatedKeys.has(key) && !intentionallyInvariantKeys.has(key))
+    .sort()
+
+  if (missingKeys.length > 0) {
+    console.error(`Missing Tagalog translation keys:\n${missingKeys.join('\n')}`)
+  }
+
+  assert.deepEqual(missingKeys, [])
+})
+
+runTest('Spanish and Tagalog translations preserve interpolation placeholders', () => {
+  const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
+  const placeholderKeys = [
+    'Showing {start}-{end} of {total}',
+    'Page {page} of {totalPages}',
+    'Sign in as {role}',
+    'Join {program}',
+    'Redeemed {date} at {time}',
+    '{program} member homepage',
+    'Made for businesses in {location}',
+    'Join the {program} network and turn every member purchase into a new regular.',
+    'Local business owner ready to welcome {program} members',
+    'A {program} member makes a purchase at your business and shows the QR code from their app.',
+  ]
+
+  const placeholdersFor = (text: string) =>
+    [...text.matchAll(/\{([A-Za-z0-9_]+)\}/g)].map((match) => match[1]).sort()
+
+  for (const key of placeholderKeys) {
+    const escapedKey = key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const translatedValues = [
+      ...languageSource.matchAll(new RegExp(`'${escapedKey}':\\s*'([^']*)'`, 'g')),
+    ].map((match) => match[1])
+
+    assert.equal(translatedValues.length, 2, `${key} must exist in Spanish and Tagalog`)
+    for (const translatedValue of translatedValues) {
+      assert.deepEqual(placeholdersFor(translatedValue), placeholdersFor(key))
+    }
+  }
+})
+
 runTest('supabase seed can be rerun without duplicate seeded rows', () => {
   const seed = readFileSync('supabase/seed.sql', 'utf8')
 
@@ -1261,7 +1499,7 @@ runTest('member transaction migration creates QR tokens, transaction ledger, and
 
 runTest('customer profile exposes the scannable member QR during launch', () => {
   const profilePage = readFileSync('src/features/profile/pages/profile-page.tsx', 'utf8')
-  const qrSectionStart = profilePage.indexOf('<h2 className="font-serif text-2xl text-primary">Member QR</h2>')
+  const qrSectionStart = profilePage.indexOf('<h2 className="font-serif text-2xl text-primary">{t(\'Member QR\')}</h2>')
   const preferencesStart = profilePage.indexOf('<span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t(\'Preferences\')}</span>')
 
   assert.ok(qrSectionStart > -1)
@@ -1293,7 +1531,7 @@ runTest('business member-sale page allows launch member QR transactions', () => 
 
   assert.match(page, /const isMemberEligible = Boolean\(member\.data\.id\)/)
   assert.match(page, /disabled=\{!preview \|\| recordTransaction\.isPending\}/)
-  assert.match(page, /Launch member/)
+  assert.match(page, /t\('Active member'\)/)
   assert.doesNotMatch(page, /complete ID verification before recording rewards/)
 })
 
@@ -1310,6 +1548,9 @@ runTest('business dashboard keeps transaction scanning out of the dashboard tab'
   assert.match(sharedScanner, /createImageBitmap/)
   assert.match(imageScanner, /cropSizes/)
   assert.match(imageScanner, /precisionCropSize/)
+  assert.match(imageScanner, /Continue with the jsQR scan/)
+  assert.match(sharedScanner, /setScannerState\('detected'\)/)
+  assert.match(sharedScanner, /detectionInFlightRef/)
   assert.match(sharedScanner, /Checking the whole image for a QR code/)
   assert.match(giftCardScanner, /export \{ QrScanner \} from '@\/components\/qr-scanner'/)
   assert.match(transactionsPage, /<QrScanner/)
@@ -1383,7 +1624,7 @@ runTest('admin member action tabs use short labels that fit the compact panel', 
   assert.match(actionTabs, /grid-cols-\[1fr_1fr_1fr\]/)
   assert.match(actionTabs, /min-w-0/)
   assert.match(actionTabs, /whitespace-normal/)
-  assert.match(actionTabs, />ID<\/TabsTrigger>/)
+  assert.match(actionTabs, />\{t\('ID'\)\}<\/TabsTrigger>/)
   assert.doesNotMatch(actionTabs, />Verification<\/TabsTrigger>/)
 })
 
@@ -1414,11 +1655,29 @@ runTest('admin layout renders admin portal section navigation inside the sidebar
   const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
 
   assert.match(adminLayout, /adminPortalSections/)
-  assert.match(adminLayout, /isAdminPortal \? \(/)
+  assert.match(adminLayout, /location\.pathname === '\/admin\/portal' \|\| location\.pathname === '\/admin\/guide'/)
+  assert.match(adminLayout, /usesOperationsSidebar \? \(/)
+  assert.match(adminLayout, /location\.pathname === '\/admin\/portal'[\s\S]*: null/)
   assert.match(adminLayout, /href=\{`\/admin\/portal#\$\{item\.value\}`\}/)
   assert.match(adminLayout, /overflow-y-auto/)
   assert.match(adminLayout, /flex-1 min-h-0/)
-  assert.doesNotMatch(adminLayout, /isAdminPortal \? \(\s*<div className="flex-1" \/>/)
+  assert.doesNotMatch(adminLayout, /usesOperationsSidebar \? \(\s*<div className="flex-1" \/>/)
+})
+
+runTest('authenticated portal shells use the available wide-screen workspace', () => {
+  const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
+  const businessLayout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
+  const programAdminLayout = readFileSync('src/layouts/program-admin-layout.tsx', 'utf8')
+  const platformGuide = readFileSync('src/features/platform-guide/pages/platform-guide-page.tsx', 'utf8')
+
+  for (const layout of [adminLayout, businessLayout, programAdminLayout]) {
+    assert.doesNotMatch(layout, /max-w-7xl/)
+  }
+
+  assert.match(adminLayout, /className="w-full min-w-0 px-4/)
+  assert.match(businessLayout, /className="w-full min-w-0 px-4/)
+  assert.match(programAdminLayout, /className="grid w-full gap-6/)
+  assert.match(platformGuide, /className="w-full space-y-12 pb-10"/)
 })
 
 runTest('admin portal page uses controlled tab content without duplicating sidebar navigation', () => {
@@ -1889,8 +2148,8 @@ runTest('admin partners page uses table-first operations layout with modal creat
   assert.match(partnersSection, /lg:hidden/)
   assert.match(partnersSection, /hidden w-full lg:block/)
   assert.match(partnersSection, /min-w-\[960px\]/)
-  assert.match(partnersSection, /whitespace-nowrap">QR Sales/)
-  assert.match(partnersSection, /whitespace-nowrap">Commission/)
+  assert.match(partnersSection, /whitespace-nowrap">\{t\('QR Sales'\)\}/)
+  assert.match(partnersSection, /whitespace-nowrap">\{t\('Commission'\)\}/)
   assert.match(partnersSection, /data-testid="partner-row-actions"/)
   assert.match(partnersSection, /Owner email:/)
   assert.match(partnersSection, /Staff email/)
@@ -2177,23 +2436,23 @@ runTest('public business page follows the supplied local-partner reference', () 
   assert.match(layout, /useLocation/)
   assert.match(layout, /isBusinessOnboarding/)
   assert.match(layout, /business-public-shell/)
-  assert.match(layout, /Benefits/)
-  assert.match(layout, /How It Works/)
-  assert.match(layout, /Get Started/)
-  assert.match(layout, /Business Login/)
-  assert.match(layout, /FOR BUSINESSES/)
+  assert.match(layout, /t\('Benefits'\)/)
+  assert.match(layout, /t\('How It Works'\)/)
+  assert.match(layout, /t\('Get Started'\)/)
+  assert.match(layout, /t\('Business Login'\)/)
+  assert.match(layout, /t\('FOR BUSINESSES'\)/)
   assert.match(layout, /program\.slug === 'pinas' \? null/)
-  assert.match(layout, /Privacy policy/)
-  assert.match(layout, /Member site/)
+  assert.match(layout, /t\('Privacy policy'\)/)
+  assert.match(layout, /t\('Member site'\)/)
   assert.match(layout, /<Outlet \/>/)
 
   assert.match(page, /business-landing/)
-  assert.match(page, /Helping local/)
-  assert.match(page, /businesses <em>grow,/)
-  assert.match(page, /<em>Rewards<\/em> to our/)
-  assert.match(page, /A steady stream of loyal, spending/)
-  assert.match(page, /Three steps\. That’s it\./)
-  assert.match(page, /Sign the agreement\. We’ll take/)
+  assert.match(page, /t\('Helping local'\)/)
+  assert.match(page, /t\('businesses'\)[\s\S]*<em>\{t\('grow,'\)\}<\/em>/)
+  assert.match(page, /<em>\{t\('Rewards'\)\}<\/em> \{t\('to our'\)\}/)
+  assert.match(page, /t\('A steady stream of loyal, spending customers'\)/)
+  assert.match(page, /t\('Three steps\. That’s it\.'\)/)
+  assert.match(page, /t\('Sign the agreement\. We’ll take it from there\.'\)/)
   assert.match(page, /local-business-owner\.png/)
   assert.match(page, /hotel-partner\.png/)
   assert.match(page, /salon-partner\.png/)
@@ -2203,8 +2462,8 @@ runTest('public business page follows the supplied local-partner reference', () 
   assert.match(page, /id="how-it-works"/)
   assert.match(page, /id="get-started"/)
   assert.match(page, /id="book-demo"/)
-  assert.match(layout, /isBusinessOnboarding[\s\S]*Get Started/)
-  assert.match(layout, /isBusinessOnboarding[\s\S]*Business Login/)
+  assert.match(layout, /isBusinessOnboarding[\s\S]*t\('Get Started'\)/)
+  assert.match(layout, /isBusinessOnboarding[\s\S]*t\('Business Login'\)/)
   assert.doesNotMatch(page, /earlyAccessService/)
 })
 

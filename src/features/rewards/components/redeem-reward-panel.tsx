@@ -98,12 +98,12 @@ export function RedeemRewardPanel({
             <Label htmlFor="pickupWindow">{t('Pickup window')}</Label>
             <Input id="pickupWindow" list="pickup-window-options" {...form.register('pickupWindow')} />
             <datalist id="pickup-window-options">
-              <option value="Now" />
-              <option value="Within 30 mins" />
-              <option value="Later today" />
+              <option value="Now">{t('Now')}</option>
+              <option value="Within 30 mins">{t('Within 30 mins')}</option>
+              <option value="Later today">{t('Later today')}</option>
             </datalist>
             {form.formState.errors.pickupWindow ? (
-              <p className="text-xs font-bold text-red-500">{form.formState.errors.pickupWindow.message}</p>
+              <p className="text-xs font-bold text-red-500">{t(form.formState.errors.pickupWindow.message ?? '')}</p>
             ) : null}
           </div>
 
@@ -115,7 +115,7 @@ export function RedeemRewardPanel({
               {...form.register('notes')}
             />
             {form.formState.errors.notes ? (
-              <p className="text-xs font-bold text-red-500">{form.formState.errors.notes.message}</p>
+              <p className="text-xs font-bold text-red-500">{t(form.formState.errors.notes.message ?? '')}</p>
             ) : null}
           </div>
         </div>

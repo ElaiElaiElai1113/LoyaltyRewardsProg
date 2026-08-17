@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useAuth } from '@/hooks/use-auth'
 import { useAddToCart, useBusinesses, useProducts } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
+import { usePagination } from '@/hooks/use-pagination'
 import { formatCurrency } from '@/lib/utils'
 import type { Business, Product } from '@/types/domain'
 import { getBusinessMapPositions, hasExactMapPin } from '@/features/shop/business-map-layout'
@@ -57,6 +59,8 @@ function PartnerMapBackdrop({
   labels: readonly [string, string, string, string] | string[]
   isWondertown: boolean
 }) {
+  const { t } = useLanguage()
+
   return (
     <>
       <svg
@@ -150,9 +154,9 @@ function PartnerMapBackdrop({
 
         <g fontFamily="Manrope, sans-serif" fontWeight="700">
           <g fill="#5f665b" fontSize="13" letterSpacing="1.6" opacity="0.82">
-            <text x="49" y="65">NORTH GARDENS</text>
-            <text x="813" y="64">CIVIC PARK</text>
-            <text x="41" y="536">RIVER GREEN</text>
+            <text x="49" y="65">{t('NORTH GARDENS')}</text>
+            <text x="813" y="64">{t('CIVIC PARK')}</text>
+            <text x="41" y="536">{t('RIVER GREEN')}</text>
           </g>
           <g fill="#737067" fontSize="13" opacity="0.85">
             <text transform="rotate(-5 143 220)" x="143" y="220">{labels[0]}</text>
@@ -162,9 +166,9 @@ function PartnerMapBackdrop({
           </g>
           {isWondertown ? (
             <g fill="#77746c" fontSize="11" opacity="0.72">
-              <text transform="rotate(-6 354 323)" x="354" y="323">GRAND AVENUE</text>
-              <text transform="rotate(-35 526 273)" x="526" y="273">LANTERN BOULEVARD</text>
-              <text transform="rotate(4 780 606)" x="780" y="606">SILVER CREEK</text>
+              <text transform="rotate(-6 354 323)" x="354" y="323">{t('GRAND AVENUE')}</text>
+              <text transform="rotate(-35 526 273)" x="526" y="273">{t('LANTERN BOULEVARD')}</text>
+              <text transform="rotate(4 780 606)" x="780" y="606">{t('SILVER CREEK')}</text>
             </g>
           ) : null}
         </g>
@@ -228,6 +232,8 @@ export function ShopPage() {
   const selectedProducts = selectedBusiness
     ? partnerProducts.filter((product) => product.businessId === selectedBusiness.id)
     : []
+  const businessPagination = usePagination(partnerBusinesses, 6)
+  const productPagination = usePagination(selectedProducts, 5, selectedBusinessId ?? 'none')
 
   const openBusiness = (business: Business) => {
     setSelectedBusinessId(business.id)
@@ -276,7 +282,9 @@ export function ShopPage() {
               {t('Explore Businesses')}
             </h1>
             <p className="max-w-2xl text-base font-medium leading-7 text-on-surface-variant/85 sm:text-lg">
-              {t(`Find partner businesses in ${program.name} and open their products from the map.`)}
+              {t('Find partner businesses in {program} and open their products from the map.', {
+                program: program.name,
+              })}
             </p>
           </div>
 
@@ -392,7 +400,7 @@ export function ShopPage() {
                       title={t('Directory coming soon')}
                       description={t('Published partner businesses will be listed here with their exact locations and available products.')}
                     />
-                  ) : partnerBusinesses.map((business) => (
+                  ) : businessPagination.pageItems.map((business) => (
                     <button
                       key={business.id}
                       type="button"
@@ -425,6 +433,12 @@ export function ShopPage() {
                     </button>
                   ))}
                 </div>
+                <PaginationControls
+                  ariaLabel="Business directory pagination"
+                  {...businessPagination}
+                  className="mt-5"
+                  onPageChange={businessPagination.setPage}
+                />
               </div>
 
               {previewPinnedBusinesses.length > 0 ? (
@@ -476,7 +490,7 @@ export function ShopPage() {
                 <div className="rounded-2xl border border-primary/12 bg-[var(--muted)] p-4">
                   <Ticket className="size-4 text-primary" />
                   <p className="mt-2 text-xs font-bold uppercase tracking-[0.12em] text-on-surface-variant/70">{t('Earn Rate')}</p>
-                  <p className="mt-1 font-serif text-2xl text-primary">{selectedBusiness.earnRate} pts/$</p>
+                  <p className="mt-1 font-serif text-2xl text-primary">{selectedBusiness.earnRate} {t('pts/$')}</p>
                 </div>
                 <div className="rounded-2xl border border-primary/12 bg-[var(--muted)] p-4">
                   <MapPin className="size-4 text-primary" />
@@ -547,8 +561,8 @@ export function ShopPage() {
                     action={<Button type="button" variant="outline" onClick={() => setSelectedBusinessId(null)}>{t('Browse other partners')}</Button>}
                   />
                 ) : (
-                  <div className="max-h-[38vh] space-y-3 overflow-y-auto pr-1">
-                    {selectedProducts.map((product) => (
+                  <div className="space-y-3">
+                    {productPagination.pageItems.map((product) => (
                       <div key={product.id} className="rounded-2xl border border-primary/12 bg-card p-4">
                         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                           <div className="min-w-0">
@@ -577,6 +591,11 @@ export function ShopPage() {
                         </div>
                       </div>
                     ))}
+                    <PaginationControls
+                      ariaLabel="Partner products pagination"
+                      {...productPagination}
+                      onPageChange={productPagination.setPage}
+                    />
                   </div>
                 )}
               </div>

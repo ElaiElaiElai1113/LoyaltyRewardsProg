@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { membershipService } from '@/integrations/supabase/services/membership-service'
 
 export const membershipKeys = {
@@ -23,7 +24,12 @@ function requireLaunchCustomer(profile: { id?: string | null; fullName?: string 
 
 export function useMembership() {
   const { profile } = useAuth()
+  const { t } = useLanguage()
   const queryClient = useQueryClient()
+  const localizedMembershipError = (error: Error, fallback: string) => {
+    const translated = t(error.message)
+    return translated === error.message ? t(fallback) : translated
+  }
   const query = useQuery({
     queryKey: membershipKeys.mine(profile?.id),
     queryFn: () => membershipService.getMyMembership(),
@@ -46,9 +52,9 @@ export function useMembership() {
     },
     onSuccess: () => {
       invalidateMembershipData()
-      toast.success('Demo membership activated. $10 credit added.')
+      toast.success(t('Demo membership activated. $10 credit added.'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(localizedMembershipError(error, 'Membership could not be activated.')),
   })
 
   const renew = useMutation({
@@ -58,18 +64,18 @@ export function useMembership() {
     },
     onSuccess: () => {
       invalidateMembershipData()
-      toast.success('Demo renewal complete.')
+      toast.success(t('Demo renewal complete.'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(localizedMembershipError(error, 'Membership could not be renewed.')),
   })
 
   const cancel = useMutation({
     mutationFn: () => membershipService.mockCancel(),
     onSuccess: () => {
       invalidateMembershipData()
-      toast.success('Membership canceled. Your balance is preserved.')
+      toast.success(t('Membership canceled. Your balance is preserved.'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(localizedMembershipError(error, 'Membership could not be canceled.')),
   })
 
   const membership = query.data ?? null

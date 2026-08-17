@@ -150,7 +150,7 @@ export function SettingsPage() {
                     {...form.register('earnRate', { valueAsNumber: true })}
                   />
                   {form.formState.errors.earnRate && (
-                    <p className="text-xs text-red-500">{form.formState.errors.earnRate.message}</p>
+                    <p className="text-xs text-red-500">{t(form.formState.errors.earnRate.message)}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
                     {t('Customers earn rewards from every eligible purchase.')}
@@ -170,7 +170,7 @@ export function SettingsPage() {
                     {...form.register('taxRate', { valueAsNumber: true })}
                   />
                   {form.formState.errors.taxRate && (
-                    <p className="text-xs text-red-500">{form.formState.errors.taxRate.message}</p>
+                    <p className="text-xs text-red-500">{t(form.formState.errors.taxRate.message)}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
                     {t('Enter as decimal (e.g., 0.0875 for 8.75%)')}
@@ -183,7 +183,7 @@ export function SettingsPage() {
                     className="size-4 rounded border-outline-variant/30"
                     {...form.register('taxIncludedInBill')}
                   />
-                  Tax is included in the customer bill
+                  {t('Tax is included in the customer bill')}
                 </label>
 
                 <label className="flex min-h-12 items-center gap-3 rounded-xl border border-outline-variant/20 bg-surface-low px-4 text-sm font-semibold text-on-surface">
@@ -192,13 +192,13 @@ export function SettingsPage() {
                     className="size-4 rounded border-outline-variant/30"
                     {...form.register('serviceChargeEnabled')}
                   />
-                  This business adds a service charge
+                  {t('This business adds a service charge')}
                 </label>
 
                 <div className="grid gap-2">
                   <Label htmlFor="service-charge-rate" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    Service Charge Rate
+                    {t('Service Charge Rate')}
                   </Label>
                   <Input
                     id="service-charge-rate"
@@ -208,17 +208,17 @@ export function SettingsPage() {
                     {...form.register('serviceChargeRate', { valueAsNumber: true })}
                   />
                   {form.formState.errors.serviceChargeRate && (
-                    <p className="text-xs text-red-500">{form.formState.errors.serviceChargeRate.message}</p>
+                    <p className="text-xs text-red-500">{t(form.formState.errors.serviceChargeRate.message)}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    Enter as decimal. Use 0 if the business does not add service charge.
+                    {t('Enter as decimal. Use 0 if the business does not add service charge.')}
                   </p>
                 </div>
 
                 <div className="grid gap-2">
                   <Label htmlFor="reward-rate-percent" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    Reward Rate %
+                    {t('Reward Rate %')}
                   </Label>
                   <Input
                     id="reward-rate-percent"
@@ -228,17 +228,17 @@ export function SettingsPage() {
                     {...form.register('rewardRatePercent', { valueAsNumber: true })}
                   />
                   {form.formState.errors.rewardRatePercent && (
-                    <p className="text-xs text-red-500">{form.formState.errors.rewardRatePercent.message}</p>
+                    <p className="text-xs text-red-500">{t(form.formState.errors.rewardRatePercent.message)}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    Percentage of outside-app purchases converted into reward value.
+                    {t('Percentage of outside-app purchases converted into reward value.')}
                   </p>
                 </div>
 
                 <div className="grid gap-2">
                   <Label htmlFor="commission-rate-percent" className="flex items-center gap-2">
                     <DollarSign className="size-4" />
-                    {program.name} Commission %
+                    {t('{program} Commission %', { program: program.name })}
                   </Label>
                   <Input
                     id="commission-rate-percent"
@@ -248,10 +248,10 @@ export function SettingsPage() {
                     {...form.register('commissionRatePercent', { valueAsNumber: true })}
                   />
                   {form.formState.errors.commissionRatePercent && (
-                    <p className="text-xs text-red-500">{form.formState.errors.commissionRatePercent.message}</p>
+                    <p className="text-xs text-red-500">{t(form.formState.errors.commissionRatePercent.message)}</p>
                   )}
                   <p className="text-xs text-on-surface-variant/60">
-                    Minimum 10%. Used to calculate commission owed from scanned member purchases.
+                    {t('Minimum 10%. Used to calculate commission owed from scanned member purchases.')}
                   </p>
                 </div>
               </div>
@@ -283,7 +283,7 @@ export function SettingsPage() {
           {updateSettings.isError && (
             <p className="text-sm font-bold text-red-500">
               {updateSettings.error instanceof Error
-                ? updateSettings.error.message
+                ? t(updateSettings.error.message)
                 : t('Failed to save settings. Please try again.')}
             </p>
           )}

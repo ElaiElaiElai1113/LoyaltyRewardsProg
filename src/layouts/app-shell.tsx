@@ -15,6 +15,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 
 const memberNavigation = [
@@ -34,6 +35,7 @@ function navClassName({ isActive }: { isActive: boolean }) {
 
 export function AppShell() {
   const { profile, signOut } = useAuth()
+  const { t } = useLanguage()
 
   const navigation = [
     ...memberNavigation,
@@ -48,7 +50,7 @@ export function AppShell() {
             <div>
               <BrandLogo markClassName="h-9" textClassName="text-lg text-foreground" />
               <h1 className="mt-1 font-serif text-3xl tracking-[-0.04em] text-foreground">
-                Menu
+                {t('Menu')}
               </h1>
             </div>
             <div className="rounded-full bg-secondary/80 p-3 text-primary">
@@ -67,9 +69,9 @@ export function AppShell() {
           </div>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <Badge variant="outline">Member</Badge>
+            <Badge variant="outline">{t('Member')}</Badge>
             <Badge variant={profile?.role === 'platform-admin' ? 'success' : 'accent'}>
-              {profile?.role === 'platform-admin' ? 'Platform Admin' : 'Member'}
+              {profile?.role === 'platform-admin' ? t('Platform Admin') : t('Member')}
             </Badge>
           </div>
 
@@ -79,15 +81,15 @@ export function AppShell() {
             {navigation.map((item) => (
               <NavLink key={item.to} className={navClassName} to={item.to}>
                 <item.icon className="size-4" />
-                {item.label}
+                {t(item.label)}
               </NavLink>
             ))}
           </nav>
 
           <div className="mt-6 rounded-[1.6rem] bg-[var(--muted)] p-4">
-            <p className="text-sm font-medium text-foreground">Built for repeat customers.</p>
+            <p className="text-sm font-medium text-foreground">{t('Built for repeat customers.')}</p>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              The data and services support multi-location and multi-brand reward programs.
+              {t('The data and services support multi-location and multi-brand reward programs.')}
             </p>
           </div>
 
@@ -99,7 +101,7 @@ export function AppShell() {
             }}
           >
             <LogOut className="size-4" />
-            Sign out
+            {t('Sign out')}
           </Button>
         </aside>
 
@@ -107,16 +109,16 @@ export function AppShell() {
           <header className="mb-6 flex items-center justify-between rounded-[2rem] border border-border/80 bg-background/70 px-5 py-4 shadow-panel ">
             <div>
               <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
-                Warm, premium member experience
+                {t('Warm, premium member experience')}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Manage balances, rewards, redemptions, and promotions from one interface.
+                {t('Manage balances, rewards, redemptions, and promotions from one interface.')}
               </p>
             </div>
             <Button asChild variant="secondary" size="sm">
               <NavLink to={profile?.role === 'platform-admin' ? '/admin/portal' : '/profile'}>
                 <Settings2 className="size-4" />
-                {profile?.role === 'platform-admin' ? 'Staff tools' : 'Open QR'}
+                {profile?.role === 'platform-admin' ? t('Staff tools') : t('Open QR')}
               </NavLink>
             </Button>
           </header>

@@ -68,9 +68,9 @@ export function EarlyAccessPage() {
           <div className="space-y-5">
             {isMembershipRequest ? (
               <div className="max-w-3xl border-l-2 border-black pl-4">
-                <h1 className="text-[1.5rem] font-bold leading-tight text-black">Request Regular or Gold access</h1>
+                <h1 className="text-[1.5rem] font-bold leading-tight text-black">{t('Request Regular or Gold access')}</h1>
                 <p className="mt-2 text-base font-medium leading-7 text-neutral-700">
-                  RewardMe does not collect payments online. Leave your details and the team will contact you about eligibility, reference prices, terms, and manual activation.
+                  {t('RewardMe does not collect payments online. Leave your details and the team will contact you about eligibility, reference prices, terms, and manual activation.')}
                 </p>
               </div>
             ) : null}
@@ -82,9 +82,9 @@ export function EarlyAccessPage() {
 
             {isSubmitted ? (
               <div className="max-w-xl space-y-3 border-l-2 border-black pl-4">
-                <h2 className="text-xl font-semibold leading-tight text-black">{isMembershipRequest ? 'Your membership request was received.' : t("You're on the early list.")}</h2>
+                <h2 className="text-xl font-semibold leading-tight text-black">{isMembershipRequest ? t('Your membership request was received.') : t("You're on the early list.")}</h2>
                 <p className="text-base font-medium leading-7 text-neutral-700">
-                  {isMembershipRequest ? 'The RewardMe team will contact you about the next manual enrollment steps.' : tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
+                  {isMembershipRequest ? t('The RewardMe team will contact you about the next manual enrollment steps.') : tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
                 </p>
               </div>
             ) : (
@@ -93,7 +93,7 @@ export function EarlyAccessPage() {
                 className="h-12 rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d]"
                 onClick={openLeadModal}
               >
-                {isMembershipRequest ? 'Send membership request' : t(earlyAccessSubscribeButtonLabel)}
+                {isMembershipRequest ? t('Send membership request') : t(earlyAccessSubscribeButtonLabel)}
               </button>
             )}
           </div>
@@ -145,9 +145,9 @@ export function EarlyAccessPage() {
             })}
           >
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-black">{isMembershipRequest ? 'Request membership access' : t('Join early access')}</DialogTitle>
+              <DialogTitle className="text-xl font-bold text-black">{isMembershipRequest ? t('Request membership access') : t('Join early access')}</DialogTitle>
               <DialogDescription className="text-sm font-semibold leading-6 text-neutral-700">
-                {isMembershipRequest ? 'No payment details are required. The RewardMe team will contact you about manual enrollment.' : tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
+                {isMembershipRequest ? t('No payment details are required. The RewardMe team will contact you about manual enrollment.') : tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
               </DialogDescription>
             </DialogHeader>
 
@@ -159,19 +159,19 @@ export function EarlyAccessPage() {
 
             <div className="grid gap-3">
               <label htmlFor="early-access-whatsapp" className={labelClass}>WhatsApp</label>
-              <input id="early-access-whatsapp" className={inputClass} placeholder="International phone number" {...leadForm.register('whatsapp')} />
+              <input id="early-access-whatsapp" className={inputClass} placeholder={t('International phone number')} {...leadForm.register('whatsapp')} />
               {leadForm.formState.errors.whatsapp ? <p className={errorClass}>{t(leadForm.formState.errors.whatsapp.message ?? '')}</p> : null}
             </div>
 
             <div className="grid gap-3">
               <label htmlFor="early-access-instagram" className={labelClass}>{t('Instagram optional')}</label>
-              <input id="early-access-instagram" className={inputClass} placeholder="@yourhandle" {...leadForm.register('instagram')} />
+              <input id="early-access-instagram" className={inputClass} placeholder={t('@yourhandle')} {...leadForm.register('instagram')} />
               {leadForm.formState.errors.instagram ? <p className={errorClass}>{t(leadForm.formState.errors.instagram.message ?? '')}</p> : null}
             </div>
 
             <div className="grid gap-3">
               <label htmlFor="early-access-email" className={labelClass}>{t('Email')}</label>
-              <input id="early-access-email" className={inputClass} placeholder="you@example.com" {...leadForm.register('email')} />
+              <input id="early-access-email" className={inputClass} placeholder={t('you@example.com')} {...leadForm.register('email')} />
               {leadForm.formState.errors.email ? <p className={errorClass}>{t(leadForm.formState.errors.email.message ?? '')}</p> : null}
             </div>
 
@@ -186,7 +186,7 @@ export function EarlyAccessPage() {
               className="h-12 w-full rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d] disabled:opacity-60"
               disabled={leadForm.formState.isSubmitting}
             >
-              {leadForm.formState.isSubmitting ? t('Submitting...') : isMembershipRequest ? 'Send membership request' : t(earlyAccessSubscribeButtonLabel)}
+              {leadForm.formState.isSubmitting ? t('Submitting...') : isMembershipRequest ? t('Send membership request') : t(earlyAccessSubscribeButtonLabel)}
             </button>
           </form>
         </DialogContent>

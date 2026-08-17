@@ -5,10 +5,12 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LoadingState } from '@/components/ui/loading-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { normalizeCheckoutItems } from '@/features/critical-flows/critical-flow'
 import { CartItemRow } from '@/features/shop/components/cart-item-row'
 import { useBusinesses, useCart, useProducts, useRemoveFromCart, useUpdateCartItem } from '@/hooks/use-customer-data'
+import { usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
 
@@ -52,6 +54,7 @@ export function CartPage() {
   const total = +(subtotal + tax).toFixed(2)
   const earnRate = business?.earnRate ?? 10
   const estimatedPoints = Math.floor(total * earnRate)
+  const pagination = usePagination(resolvedItems, 6)
 
   return (
     <div className="space-y-16 pb-20">
@@ -94,7 +97,7 @@ export function CartPage() {
       ) : (
         <div className="grid gap-16 lg:grid-cols-[1fr_380px]">
           <div className="space-y-4">
-            {resolvedItems.map(({ product, quantity }) => (
+            {pagination.pageItems.map(({ product, quantity }) => (
               <CartItemRow
                 key={product.id}
                 product={product}
@@ -103,6 +106,7 @@ export function CartPage() {
                 onRemove={(id) => removeCartItem.mutate(id)}
               />
             ))}
+            <PaginationControls ariaLabel="Cart items pagination" {...pagination} onPageChange={pagination.setPage} />
           </div>
 
           <div className="rounded-[2rem] bg-surface-low p-8 border border-outline-variant/10 shadow-card space-y-6 h-fit sticky top-32">
@@ -126,7 +130,7 @@ export function CartPage() {
               <span className="text-on-surface-variant/80"> {t('estimated after partner staff scan your QR at purchase')}</span>
             </div>
             {cartValidationError ? (
-              <p className="text-sm font-semibold text-red-500">{cartValidationError}</p>
+              <p className="text-sm font-semibold text-red-500">{t(cartValidationError)}</p>
             ) : null}
             <Button
               asChild={!cartValidationError}

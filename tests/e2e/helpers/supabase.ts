@@ -28,7 +28,9 @@ export interface E2EMemberTransaction {
   businessId: string
   purchaseAmount: number
   pointsAwarded: number
+  receiptNumber: string | null
   note: string | null
+  clientRequestId: string | null
 }
 
 export interface E2EAgreementAcceptance {
@@ -266,7 +268,7 @@ export async function getLatestMemberTransactionByNote(
 ): Promise<E2EMemberTransaction> {
   const { data, error } = await client
     .from('member_transactions')
-    .select('id, profile_id, business_id, purchase_amount, points_awarded, note')
+    .select('id, profile_id, business_id, purchase_amount, points_awarded, receipt_number, note, client_request_id')
     .like('note', `${note}%`)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -283,7 +285,38 @@ export async function getLatestMemberTransactionByNote(
     businessId: row.business_id as string,
     purchaseAmount: Number(row.purchase_amount),
     pointsAwarded: Number(row.points_awarded),
+    receiptNumber: (row.receipt_number as string | null) ?? null,
     note: (row.note as string | null) ?? null,
+    clientRequestId: (row.client_request_id as string | null) ?? null,
+  }
+}
+
+export async function getMemberTransactionByReceipt(
+  client: AppSupabaseClient,
+  businessId: string,
+  receiptNumber: string,
+): Promise<E2EMemberTransaction> {
+  const { data, error } = await client
+    .from('member_transactions')
+    .select('id, profile_id, business_id, purchase_amount, points_awarded, receipt_number, note, client_request_id')
+    .eq('business_id', businessId)
+    .eq('receipt_number', receiptNumber)
+    .single()
+
+  if (error || !data) {
+    throw new Error(`Member transaction not found for receipt ${receiptNumber}: ${error?.message ?? 'missing row'}`)
+  }
+
+  const row = data as Record<string, unknown>
+  return {
+    id: row.id as string,
+    profileId: row.profile_id as string,
+    businessId: row.business_id as string,
+    purchaseAmount: Number(row.purchase_amount),
+    pointsAwarded: Number(row.points_awarded),
+    receiptNumber: (row.receipt_number as string | null) ?? null,
+    note: (row.note as string | null) ?? null,
+    clientRequestId: (row.client_request_id as string | null) ?? null,
   }
 }
 
@@ -520,10 +553,20 @@ export async function redeemGiftCardForBusiness(
   client: AppSupabaseClient,
   giftCardId: string,
   businessId: string,
+  transaction?: {
+    originalBill: number
+    receiptNumber: string
+    giftCardAmount: number
+    clientRequestId: string
+  },
 ) {
   const { data, error } = await client.rpc('redeem_gift_card', {
     p_gift_card_id: giftCardId,
     p_business_id: businessId,
+    p_original_bill: transaction?.originalBill ?? null,
+    p_receipt_number: transaction?.receiptNumber ?? null,
+    p_gift_card_amount: transaction?.giftCardAmount ?? null,
+    p_client_request_id: transaction?.clientRequestId ?? null,
   })
 
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
@@ -537,7 +580,7 @@ export async function redeemGiftCardForBusiness(
 export async function getLatestGiftCardForCustomer(client: AppSupabaseClient, customerProfileId: string) {
   const { data, error } = await client
     .from('gift_cards')
-    .select('id, business_id, customer_id, status, public_token, points_spent, redeemed_at')
+    .select('id, business_id, customer_id, status, code, public_token, points_spent, initial_balance, remaining_balance, redeemed_at, redeemed_by, redeemed_at_business')
     .eq('customer_id', customerProfileId)
     .order('created_at', { ascending: false })
     .limit(1)
@@ -545,6 +588,20 @@ export async function getLatestGiftCardForCustomer(client: AppSupabaseClient, cu
 
   if (error || !data) {
     throw new Error(`Gift card not found for customer ${customerProfileId}: ${error?.message ?? 'missing row'}`)
+  }
+
+  return data as Record<string, unknown>
+}
+
+export async function getGiftCardById(client: AppSupabaseClient, giftCardId: string) {
+  const { data, error } = await client
+    .from('gift_cards')
+    .select('id, business_id, customer_id, status, code, public_token, points_spent, initial_balance, remaining_balance, redeemed_at, redeemed_by, redeemed_at_business')
+    .eq('id', giftCardId)
+    .single()
+
+  if (error || !data) {
+    throw new Error(`Gift card ${giftCardId} could not be loaded: ${error?.message ?? 'missing row'}`)
   }
 
   return data as Record<string, unknown>

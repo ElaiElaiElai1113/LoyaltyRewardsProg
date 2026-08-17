@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
 import { LuxeCarousel } from '@/components/ui/luxe-carousel'
 import { LoadingState } from '@/components/ui/loading-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { VerificationStatusNotice } from '@/features/membership/components/verification-status-notice'
 import { useAuth } from '@/hooks/use-auth'
 import { useLoginGate } from '@/hooks/use-login-gate'
 import { useMembership } from '@/hooks/use-membership'
+import { usePagination } from '@/hooks/use-pagination'
 import { useBusinesses, useRedeemReward, useRewardBalance, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import type { Reward } from '@/types/domain'
@@ -55,6 +57,11 @@ export function RewardsPage() {
   const filteredRewards = activeFilter === 'Claimable'
     ? claimableRewards
     : categoryFilteredRewards
+  const pagination = usePagination(
+    filteredRewards,
+    8,
+    `${selectedBusiness ?? 'all'}:${activeFilter}`,
+  )
   const featuredRewards = filteredRewards.filter((reward) => reward.featured).slice(0, 5)
   const emptyStateTitle = activeFilter === 'Claimable'
     ? 'No claimable rewards yet'
@@ -249,18 +256,21 @@ export function RewardsPage() {
           description={t(emptyStateDescription)}
         />
       ) : (
-        <div className="relative z-10 grid gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 min-[1900px]:grid-cols-5 min-[2400px]:grid-cols-6">
-          {filteredRewards.map((reward) => (
-            <RewardCard
-              key={reward.id}
-              reward={reward}
-              balancePoints={balancePoints}
-              businessName={getBusinessName(reward.businessId)}
-              requirePoints={Boolean(profile)}
-              actionLocked={rewardActionsLocked}
-              onRedeem={handleRedeem}
-            />
-          ))}
+        <div className="relative z-10 space-y-6">
+          <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 min-[1900px]:grid-cols-5 min-[2400px]:grid-cols-6">
+            {pagination.pageItems.map((reward) => (
+              <RewardCard
+                key={reward.id}
+                reward={reward}
+                balancePoints={balancePoints}
+                businessName={getBusinessName(reward.businessId)}
+                requirePoints={Boolean(profile)}
+                actionLocked={rewardActionsLocked}
+                onRedeem={handleRedeem}
+              />
+            ))}
+          </div>
+          <PaginationControls ariaLabel="Rewards catalog pagination" {...pagination} onPageChange={pagination.setPage} />
         </div>
       )}
 

@@ -27,7 +27,8 @@ function getPrimaryAction({
       label: 'Show member QR',
       to: '/profile',
       status: 'Ready to earn',
-      helper: `Show your QR at a ${programName} partner business so staff can award points.`,
+      helper: 'Show your QR at a {program} partner business so staff can award points.',
+      helperValues: { program: programName },
     }
   }
 
@@ -36,6 +37,7 @@ function getPrimaryAction({
     to: '/profile',
     status: 'Start earning',
     helper: 'Buy at a participating business and show your QR to earn points.',
+    helperValues: undefined,
   }
 }
 
@@ -77,7 +79,7 @@ export function CustomerWalletSummary({
           <div>
             <h2 className="text-2xl font-semibold text-[var(--foreground)]">{t('Your member wallet')}</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
-              {t(primaryAction.helper)}
+              {t(primaryAction.helper, primaryAction.helperValues)}
             </p>
           </div>
         </div>

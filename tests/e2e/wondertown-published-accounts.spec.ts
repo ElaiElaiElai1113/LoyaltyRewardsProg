@@ -63,6 +63,46 @@ test.describe('published Wondertown test accounts', () => {
         visibleRuntimeError: /application error|unexpected error|something went wrong/i.test(document.body.innerText),
       }))
       expect(pageIntegrity).toEqual({ emptyLinks: 0, overflow: false, visibleRuntimeError: false })
+
+      if (account.label === 'business owner') {
+        for (const width of [305, 320]) {
+          await page.setViewportSize({ width, height: 844 })
+          await page.goto('/business/redemptions')
+          await expect(page.getByRole('heading', { name: 'Transaction History', exact: true })).toBeVisible()
+
+          const transactionLayout = await page.evaluate(() => {
+            const viewportWidth = document.documentElement.clientWidth
+            const clippedControls = Array.from(document.querySelectorAll<HTMLElement>(
+              'a, button, input, select, textarea, summary, [role="button"], [role="tab"]',
+            ))
+              .filter((element) => element.offsetParent !== null)
+              .map((element) => {
+                const rect = element.getBoundingClientRect()
+                return {
+                  label: (element.getAttribute('aria-label') ?? element.textContent ?? '')
+                    .replace(/\s+/g, ' ')
+                    .trim()
+                    .slice(0, 80),
+                  left: Math.round(rect.left),
+                  right: Math.round(rect.right),
+                }
+              })
+              .filter((element) =>
+                (element.left < -1 && element.right > 1)
+                || (element.right > viewportWidth + 1 && element.left < viewportWidth - 1),
+              )
+
+            return {
+              clippedControls,
+              overflow: Math.max(0, document.documentElement.scrollWidth - viewportWidth),
+            }
+          })
+
+          expect(transactionLayout.overflow, `${width}px document overflow`).toBeLessThanOrEqual(1)
+          expect(transactionLayout.clippedControls, `${width}px clipped controls`).toEqual([])
+        }
+      }
+
       expect(runtimeErrors).toEqual([])
     })
   }

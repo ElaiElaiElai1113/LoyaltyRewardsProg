@@ -5,11 +5,12 @@ import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useTenant } from '@/hooks/use-tenant'
+import { useLanguage } from '@/lib/language'
 import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import type { GiftCard, PublicGiftCard } from '@/types/domain'
 
-function formatDate(value: string) {
-  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(value))
+function formatDate(value: string, locale: string) {
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(value))
 }
 
 function parseGiftCardValue(valueLabel?: string) {
@@ -28,21 +29,23 @@ interface GiftCardDisplayProps {
 
 export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: GiftCardDisplayProps) {
   const { program } = useTenant()
-  const displayTitle = title ?? giftCard.catalog?.title ?? 'Gift card'
+  const { language, t } = useLanguage()
+  const displayTitle = title ?? giftCard.catalog?.title ?? t('Gift card')
   const displayValue = 'valueLabel' in giftCard ? giftCard.valueLabel : giftCard.catalog?.valueLabel
   const displayBusiness = businessName ?? ('businessName' in giftCard ? giftCard.businessName : giftCard.business?.name)
   const initialBalance = giftCard.initialBalance ?? parseGiftCardValue(displayValue)
   const remainingBalance = Math.max(giftCard.remainingBalance ?? initialBalance, 0)
   const currencyContext = {
     currency: giftCard.business?.currency ?? program.currency,
-    locale: program.locale,
+    locale: language === 'es' ? 'es-CO' : language === 'tl' ? 'fil-PH' : program.locale,
   }
+  const languageLocale = language === 'es' ? 'es-CO' : language === 'tl' ? 'fil-PH' : program.locale
   const formatBalance = (value: number) => formatTenantCurrency(value, currencyContext)
   const isActive = giftCard.status === 'active' && new Date(giftCard.expiresAt) > new Date()
 
   async function copyLink() {
     await navigator.clipboard.writeText(publicUrl)
-    toast.success('Gift card link copied')
+    toast.success(t('Gift card link copied'))
   }
 
   return (
@@ -55,7 +58,7 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
         <div className="flex min-w-0 flex-col gap-6">
           <div className="flex flex-wrap items-start justify-between gap-4">
             <div className="space-y-3">
-              <Badge variant={isActive ? 'default' : 'outline'}>{giftCard.status}</Badge>
+              <Badge variant={isActive ? 'default' : 'outline'}>{t(giftCard.status)}</Badge>
               <h1 className="text-3xl font-semibold text-[var(--foreground)]">
                 {displayTitle}
               </h1>
@@ -63,32 +66,32 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
             </div>
             {displayValue ? (
               <div className="rounded-lg bg-[var(--muted)] px-5 py-3 text-[var(--foreground)]">
-                <span className="text-xs font-medium text-[var(--muted-foreground)]">Available Balance</span>
+                <span className="text-xs font-medium text-[var(--muted-foreground)]">{t('Available Balance')}</span>
                 <p className="text-2xl font-semibold">{formatBalance(remainingBalance)}</p>
-                <p className="text-xs font-medium text-[var(--muted-foreground)]">Original value: {displayValue}</p>
+                <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Original value: {value}', { value: displayValue })}</p>
               </div>
             ) : null}
           </div>
 
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Code</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Code')}</p>
               <p className="mt-1 break-all font-mono text-lg font-semibold text-[var(--foreground)]">{giftCard.code}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Expires</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatDate(giftCard.expiresAt)}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Expires')}</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatDate(giftCard.expiresAt, languageLocale)}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">Remaining</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatBalance(remainingBalance)} of {formatBalance(initialBalance)}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Remaining')}</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{t('{remaining} of {initial}', { remaining: formatBalance(remainingBalance), initial: formatBalance(initialBalance) })}</p>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-3">
             <Button type="button" variant="secondary" onClick={copyLink}>
               <Copy className="size-4" />
-              Copy Link
+              {t('Copy Link')}
             </Button>
             <Button
               type="button"
@@ -98,7 +101,7 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
               }}
             >
               <Share2 className="size-4" />
-              Share
+              {t('Share')}
             </Button>
           </div>
         </div>

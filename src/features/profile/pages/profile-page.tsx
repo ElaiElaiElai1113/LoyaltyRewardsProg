@@ -102,7 +102,7 @@ export function ProfilePage() {
               <QrCode className="size-5" />
             </div>
             <div className="space-y-2">
-              <h2 className="font-serif text-2xl text-primary">Member QR</h2>
+              <h2 className="font-serif text-2xl text-primary">{t('Member QR')}</h2>
               <p className="max-w-2xl text-sm font-medium leading-6 text-on-surface-variant/80">
                 {t(memberQrStatusMessage)}
               </p>
@@ -130,11 +130,11 @@ export function ProfilePage() {
               onClick={async () => {
                 if (!memberQrUrl) return
                 await navigator.clipboard.writeText(memberQrUrl)
-                toast.success('Member QR link copied')
+                toast.success(t('Member QR link copied'))
               }}
             >
               <Copy className="size-4" />
-              Copy QR Link
+              {t('Copy QR Link')}
             </Button>
           </div>
         </div>
@@ -167,7 +167,7 @@ export function ProfilePage() {
                 <IdCard className="size-5" />
               </div>
               <div className="space-y-2">
-                <h2 className="font-serif text-2xl text-primary">Future ID verification</h2>
+                <h2 className="font-serif text-2xl text-primary">{t('Future ID verification')}</h2>
                 <Badge
                   variant="accent"
                   className={
@@ -179,12 +179,12 @@ export function ProfilePage() {
                   }
                 >
                   {verificationStatus === 'verified'
-                    ? 'Verified'
+                    ? t('Verified')
                     : verificationStatus === 'rejected'
-                      ? 'Rejected'
+                      ? t('Rejected')
                       : verificationStatus === 'submitted'
-                        ? 'Submitted'
-                        : 'Optional'}
+                        ? t('Submitted')
+                        : t('Optional')}
                 </Badge>
                 {profile.data?.verificationRejectionReason ? (
                   <p className="text-sm font-medium leading-6 text-red-600">
@@ -192,7 +192,7 @@ export function ProfilePage() {
                   </p>
                 ) : (
                   <p className="text-sm font-medium leading-6 text-on-surface-variant/80">
-                    ID is not required during launch. We may ask for it later as an extra security step to protect member rewards.
+                    {t('ID is not required during launch. We may ask for it later as an extra security step to protect member rewards.')}
                   </p>
                 )}
               </div>
@@ -239,20 +239,20 @@ export function ProfilePage() {
                 })}
               >
                 <div className="grid gap-3">
-                  <Label htmlFor="verification-id">Verification ID number</Label>
+                  <Label htmlFor="verification-id">{t('Verification ID number')}</Label>
                   <Input
                     id="verification-id"
-                    placeholder="ID number"
+                    placeholder={t('ID number')}
                     {...verificationForm.register('verificationIdNumber')}
                   />
                   {verificationForm.formState.errors.verificationIdNumber ? (
                     <p className="text-xs font-bold text-red-500">
-                      {verificationForm.formState.errors.verificationIdNumber.message}
+                      {t(verificationForm.formState.errors.verificationIdNumber.message ?? '')}
                     </p>
                   ) : null}
                 </div>
                 <div className="grid gap-3">
-                  <Label htmlFor="verification-document">Photo or PDF of ID</Label>
+                  <Label htmlFor="verification-document">{t('Photo or PDF of ID')}</Label>
                   <Input
                     id="verification-document"
                     type="file"
@@ -260,10 +260,10 @@ export function ProfilePage() {
                     onChange={(event) => setVerificationDocument(event.target.files?.[0] ?? null)}
                   />
                 </div>
-                {verificationError ? <p className="text-sm font-bold text-red-500">{verificationError}</p> : null}
+                {verificationError ? <p className="text-sm font-bold text-red-500">{t(verificationError)}</p> : null}
                 <Button type="submit" disabled={submitVerification.isPending || updateProfile.isPending}>
                   <Upload className="size-4" />
-                  {submitVerification.isPending || updateProfile.isPending ? 'Submitting...' : 'Submit optional ID'}
+                  {submitVerification.isPending || updateProfile.isPending ? t('Submitting...') : t('Submit optional ID')}
                 </Button>
               </form>
             ) : null}
@@ -288,7 +288,7 @@ export function ProfilePage() {
                 <Label htmlFor="fullName">{t('Full Name')}</Label>
                 <Input id="fullName" placeholder={t('Your name')} {...form.register('fullName')} />
                 {form.formState.errors.fullName ? (
-                  <p className="text-xs font-bold text-red-500">{form.formState.errors.fullName.message}</p>
+                  <p className="text-xs font-bold text-red-500">{t(form.formState.errors.fullName.message ?? '')}</p>
                 ) : null}
               </div>
 
@@ -297,14 +297,14 @@ export function ProfilePage() {
                   <Label htmlFor="phone">{t('Phone Number')}</Label>
                   <Input id="phone" placeholder="+1 (555) 000-0000" {...form.register('phone')} />
                   {form.formState.errors.phone ? (
-                    <p className="text-xs font-bold text-red-500">{form.formState.errors.phone.message}</p>
+                    <p className="text-xs font-bold text-red-500">{t(form.formState.errors.phone.message ?? '')}</p>
                   ) : null}
                 </div>
                 <div className="grid gap-3">
                   <Label htmlFor="location">{t('Home Business')}</Label>
-                  <Input id="location" placeholder="e.g., Downtown" {...form.register('location')} />
+                  <Input id="location" placeholder={t('e.g., Downtown')} {...form.register('location')} />
                   {form.formState.errors.location ? (
-                    <p className="text-xs font-bold text-red-500">{form.formState.errors.location.message}</p>
+                    <p className="text-xs font-bold text-red-500">{t(form.formState.errors.location.message ?? '')}</p>
                   ) : null}
                 </div>
               </div>
@@ -313,7 +313,7 @@ export function ProfilePage() {
                 <Label htmlFor="favoriteOrder">{t('Favorite Order')}</Label>
                 <Input id="favoriteOrder" placeholder={t('Your favorite drink...')} {...form.register('favoriteOrder')} />
                 {form.formState.errors.favoriteOrder ? (
-                  <p className="text-xs font-bold text-red-500">{form.formState.errors.favoriteOrder.message}</p>
+                  <p className="text-xs font-bold text-red-500">{t(form.formState.errors.favoriteOrder.message ?? '')}</p>
                 ) : null}
                 <p className="mt-1 text-[0.65rem] italic font-medium text-on-surface-variant/75">{t('This helps staff prepare your order.')}</p>
               </div>

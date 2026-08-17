@@ -791,7 +791,7 @@ export function LegacyAuthPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="reset-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                      <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
+                      <Input id="reset-email" className={authInputClass} placeholder={t('your@email.com')} {...resetForm.register('email')} />
                     </div>
 
                     {error ? <p className="text-sm font-bold text-red-500 text-center">{t(error)}</p> : null}
@@ -855,7 +855,7 @@ export function LegacyAuthPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="signin-email" className="text-[var(--champagne)]">{t('Email Address')}</Label>
-                      <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
+                      <Input id="signin-email" className={authInputClass} placeholder={t('your@email.com')} {...signInForm.register('email')} />
                       {signInForm.formState.errors.email ? (
                         <p className="text-xs font-bold text-red-500">
                           {t(signInForm.formState.errors.email.message ?? '')}
@@ -865,7 +865,7 @@ export function LegacyAuthPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="signin-password" className="text-[var(--champagne)]">{t('Password')}</Label>
-                      <Input id="signin-password" className={authInputClass} type="password" placeholder="Password" {...signInForm.register('password')} />
+                      <Input id="signin-password" className={authInputClass} type="password" placeholder={t('Password')} {...signInForm.register('password')} />
                       {signInForm.formState.errors.password ? (
                         <p className="text-xs font-bold text-red-500">
                           {t(signInForm.formState.errors.password.message ?? '')}
@@ -1019,7 +1019,7 @@ export function CompactAuthPage() {
         </div>
 
         <div
-          aria-label="Choose sign-in account type"
+          aria-label={t('Choose sign-in account type')}
           className="mt-7 grid gap-3"
           role="group"
         >
@@ -1079,7 +1079,7 @@ export function CompactAuthPage() {
       </div>
 
       <div
-        aria-label="Choose sign-in account type"
+        aria-label={t('Choose sign-in account type')}
         className="mb-6 grid gap-2 sm:grid-cols-3"
         role="group"
       >
@@ -1144,7 +1144,7 @@ export function CompactAuthPage() {
 
           <div className="grid gap-2">
             <Label htmlFor="reset-email" className={authLabelClass}>{t('Email address')}</Label>
-            <Input id="reset-email" className={authInputClass} placeholder="your@email.com" {...resetForm.register('email')} />
+            <Input id="reset-email" className={authInputClass} placeholder={t('your@email.com')} {...resetForm.register('email')} />
           </div>
 
           {error ? <p className={authErrorClass}>{t(error)}</p> : null}
@@ -1210,7 +1210,7 @@ export function CompactAuthPage() {
 
           <div className="grid gap-2">
             <Label htmlFor="signin-email" className={authLabelClass}>{t('Email address')}</Label>
-            <Input id="signin-email" className={authInputClass} placeholder="your@email.com" {...signInForm.register('email')} />
+            <Input id="signin-email" className={authInputClass} placeholder={t('your@email.com')} {...signInForm.register('email')} />
             {signInForm.formState.errors.email ? (
               <p className="text-xs font-bold text-red-400">
                 {t(signInForm.formState.errors.email.message ?? '')}
@@ -1225,13 +1225,13 @@ export function CompactAuthPage() {
                 id="signin-password"
                 className={`${authInputClass} pr-10`}
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
+                placeholder={t('Password')}
                 {...signInForm.register('password')}
               />
               <button
                 type="button"
                 className="absolute inset-y-0 right-3 flex items-center text-[#6b7280] transition hover:text-[#111827]"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('Hide password') : t('Show password')}
                 onClick={() => setShowPassword((value) => !value)}
               >
                 {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

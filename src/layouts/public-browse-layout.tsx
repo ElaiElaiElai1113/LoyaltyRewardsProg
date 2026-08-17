@@ -8,7 +8,7 @@ import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
 
 const navigation = [
-  { to: '/guide', label: 'Guia' },
+  { to: '/guide', label: 'Guide' },
   { to: '/promotions', label: 'Promotions' },
   { to: '/business', label: 'For Businesses' },
 ]
@@ -22,7 +22,7 @@ const legalLinks = [
 
 export function PublicBrowseLayout() {
   const { program } = useTenant()
-  const { language, setLanguage, t } = useLanguage()
+  const { t } = useLanguage()
   const location = useLocation()
   const isBusinessOnboarding = location.pathname === '/business'
 
@@ -31,34 +31,33 @@ export function PublicBrowseLayout() {
       <div className={`business-public-shell${program.slug === 'pinas' ? ' business-public-shell--rewardme' : ''}`}>
         <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
-            <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
+            <NavLink
+              to="/"
+              className="business-public-shell__brand"
+              aria-label={t('{program} member homepage', { program: program.name })}
+            >
               <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
               <span className="business-public-shell__brand-copy">
                 {program.name.toUpperCase()}
-                <small>FOR BUSINESSES</small>
+                <small>{t('FOR BUSINESSES')}</small>
               </span>
             </NavLink>
 
-            <nav className="business-public-shell__nav" aria-label="Business page navigation">
-              <a href="#benefits">Benefits</a>
-              <a href="#how-it-works">How It Works</a>
-              {program.slug === 'pinas' ? null : <NavLink to="/cost-calculator">Cost Calculator</NavLink>}
-              <a href="#get-started">Get Started</a>
+            <nav className="business-public-shell__nav" aria-label={t('Business page navigation')}>
+              <a href="#benefits">{t('Benefits')}</a>
+              <a href="#how-it-works">{t('How It Works')}</a>
+              {program.slug === 'pinas' ? null : <NavLink to="/cost-calculator">{t('Cost Calculator')}</NavLink>}
+              <a href="#get-started">{t('Get Started')}</a>
             </nav>
 
             <div className="business-public-shell__header-actions">
-              {program.slug === 'pinas' ? (
-                <button
-                  className="business-public-shell__language-toggle"
-                  type="button"
-                  onClick={() => setLanguage(language === 'tl' ? 'en' : 'tl')}
-                  aria-label={language === 'tl' ? 'Switch to English' : 'Lumipat sa Tagalog'}
-                >
-                  {language === 'tl' ? 'English' : 'Tagalog'}
-                </button>
-              ) : null}
+              <LanguagePicker
+                className="business-public-shell__language-picker"
+                compact
+                condenseOnNarrowScreens
+              />
               <NavLink to="/signin?portal=business" className="business-public-shell__login">
-                Business Login
+                {t('Business Login')}
               </NavLink>
             </div>
           </div>
@@ -72,25 +71,33 @@ export function PublicBrowseLayout() {
           <div className="business-public-shell__container">
             <div className="business-public-shell__footer-top">
               <div>
-                <NavLink to="/" className="business-public-shell__brand" aria-label={`${program.name} member homepage`}>
+                <NavLink
+                  to="/"
+                  className="business-public-shell__brand"
+                  aria-label={t('{program} member homepage', { program: program.name })}
+                >
                   <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
                   <span className="business-public-shell__brand-copy">{program.name.toUpperCase()}</span>
                 </NavLink>
-                <p>Helping local businesses grow while<br />giving amazing Rewards to our members.</p>
+                <p>{t('Helping local businesses grow while giving amazing Rewards to our members.')}</p>
               </div>
-              <nav aria-label="Business footer navigation">
-                <NavLink to="/privacy">Privacy policy</NavLink>
+              <nav aria-label={t('Business footer navigation')}>
+                <NavLink to="/privacy">{t('Privacy policy')}</NavLink>
                 {program.featureFlags.demoTenant ? (
-                  <NavLink to="/guide">Demo guide</NavLink>
+                  <NavLink to="/guide">{t('Demo guide')}</NavLink>
                 ) : (
-                  <a href={`mailto:${program.supportEmail}`}>Contact</a>
+                  <a href={`mailto:${program.supportEmail}`}>{t('Contact')}</a>
                 )}
-                <NavLink to="/">Member site</NavLink>
+                <NavLink to="/">{t('Member site')}</NavLink>
               </nav>
             </div>
             <div className="business-public-shell__footer-bottom">
-              <span>© 2026 {program.name}. All rights reserved.</span>
-              <span>{program.countryCode === 'PH' ? 'Made for businesses in the Philippines' : `Made for businesses in ${program.countryCode}`}</span>
+              <span>© 2026 {program.name}. {t('All rights reserved.')}</span>
+              <span>
+                {t('Made for businesses in {location}', {
+                  location: program.countryCode === 'PH' ? t('the Philippines') : program.countryCode,
+                })}
+              </span>
             </div>
           </div>
         </footer>
@@ -107,7 +114,7 @@ export function PublicBrowseLayout() {
               <BrandLogo markClassName="h-9" textClassName="text-xl text-primary-container sm:text-2xl" />
               <span className="hidden h-6 w-px bg-[var(--border)] xl:block" />
               <span className="hidden text-xs font-semibold uppercase tracking-[0.22em] text-[var(--primary-container)] xl:block">
-                Golden Circle
+                {t('Golden Circle')}
               </span>
             </NavLink>
 
@@ -131,7 +138,11 @@ export function PublicBrowseLayout() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <LanguagePicker className="hidden text-[var(--muted-foreground)] sm:inline-flex" compact />
+            <LanguagePicker
+              className="inline-flex text-[var(--muted-foreground)]"
+              compact
+              condenseOnNarrowScreens
+            />
             <div className="hidden sm:block">
               <ThemeToggle />
             </div>

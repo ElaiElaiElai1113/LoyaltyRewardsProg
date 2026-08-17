@@ -146,7 +146,7 @@ export function CheckoutPage() {
                     <QrCode className="size-5" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="font-serif text-2xl text-primary">Member QR</h3>
+                    <h3 className="font-serif text-2xl text-primary">{t('Member QR')}</h3>
                     <p className="max-w-xl text-sm font-medium leading-6 text-on-surface-variant/80">
                       {rewardActionsLocked
                         ? t('Add your WhatsApp or phone first so staff can contact you about reward support.')
@@ -176,11 +176,11 @@ export function CheckoutPage() {
                     onClick={async () => {
                       if (rewardActionsLocked || !memberQrUrl) return
                       await navigator.clipboard.writeText(memberQrUrl)
-                      toast.success('Member QR link copied')
+                      toast.success(t('Member QR link copied'))
                     }}
                   >
                     <Copy className="size-4" />
-                    Copy QR Link
+                    {t('Copy QR Link')}
                   </Button>
                 </div>
               </div>
@@ -201,7 +201,7 @@ export function CheckoutPage() {
                   return
                 }
                 if (rewardActionsLocked) {
-                  setError('Add WhatsApp or phone in your profile before earning rewards')
+                  setError(t('Add WhatsApp or phone in your profile before earning rewards'))
                   return
                 }
 
@@ -213,7 +213,7 @@ export function CheckoutPage() {
                     items: checkoutItems,
                     partnerCode,
                   })
-                  toast.success('Purchase made successfully.')
+                  toast.success(t('Purchase made successfully.'))
                   if (partnerCode.trim()) {
                     sessionStorage.removeItem('partnerReferrerCode')
                     sessionStorage.removeItem('partnerBusinessId')
@@ -265,21 +265,21 @@ export function CheckoutPage() {
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="partner-code">Partner Code</Label>
+                <Label htmlFor="partner-code">{t('Partner Code')}</Label>
                 <Input
                   id="partner-code"
                   value={partnerCode}
-                  placeholder="Optional front-desk or receptionist code"
+                  placeholder={t('Optional front-desk or receptionist code')}
                   className="uppercase"
                   onChange={(event) => setPartnerCode(event.target.value.toUpperCase())}
                 />
                 <p className="text-xs text-on-surface-variant/75">
-                  Add a receptionist or front-desk code if someone from a hotel, hostel, or partner business referred you.
+                  {t('Add a receptionist or front-desk code if someone from a hotel, hostel, or partner business referred you.')}
                 </p>
               </div>
 
               {(validationError || error) && (
-                <p className="text-sm font-bold text-red-500 text-center">{validationError ?? error}</p>
+                <p className="text-sm font-bold text-red-500 text-center">{t(validationError ?? error ?? '')}</p>
               )}
 
               <EarnRedeemGate action="earn">

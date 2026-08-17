@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { giftCardCatalogService } from '@/integrations/supabase/services/gift-card-catalog-service'
 import { giftCardsService } from '@/integrations/supabase/services/gift-cards-service'
 import { useAuth } from '@/hooks/use-auth'
+import { useLanguage } from '@/lib/language'
 import type { GiftCardCatalogItemFormValues, OwnerGiftCardCatalogItemFormValues } from '@/types/forms'
 
 export const giftCardKeys = {
@@ -23,6 +24,7 @@ export function useGiftCardCatalog(businessId?: string) {
 
 export function useCreateGiftCardCatalogItem(createdBy?: string) {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (values: GiftCardCatalogItemFormValues) =>
@@ -30,14 +32,15 @@ export function useCreateGiftCardCatalogItem(createdBy?: string) {
     onSuccess: (item) => {
       void queryClient.invalidateQueries({ queryKey: ['gift-card-catalog'] })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(item.businessId) })
-      toast.success('Gift card catalog item created')
+      toast.success(t('Gift card catalog item created'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 
 export function useCreateOwnerGiftCardCatalogItem(businessId?: string) {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (values: OwnerGiftCardCatalogItemFormValues) =>
@@ -46,14 +49,15 @@ export function useCreateOwnerGiftCardCatalogItem(businessId?: string) {
       void queryClient.invalidateQueries({ queryKey: ['gift-card-catalog'] })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(item.businessId) })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(businessId) })
-      toast.success('Gift card catalog item created')
+      toast.success(t('Gift card catalog item created'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 
 export function useUpdateGiftCardCatalogItem() {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: ({ id, values }: { id: string; values: Partial<GiftCardCatalogItemFormValues> }) =>
@@ -61,22 +65,23 @@ export function useUpdateGiftCardCatalogItem() {
     onSuccess: (item) => {
       void queryClient.invalidateQueries({ queryKey: ['gift-card-catalog'] })
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.catalog(item.businessId) })
-      toast.success('Gift card catalog item updated')
+      toast.success(t('Gift card catalog item updated'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 
 export function useDeleteGiftCardCatalogItem() {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (id: string) => giftCardCatalogService.deleteCatalogItem(id),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ['gift-card-catalog'] })
-      toast.success('Gift card catalog item deleted')
+      toast.success(t('Gift card catalog item deleted'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 
@@ -105,6 +110,7 @@ export function useGiftCard(id?: string) {
 export function useIssueGiftCard(customerId?: string) {
   const queryClient = useQueryClient()
   const { profile } = useAuth()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (catalogId: string) => {
@@ -125,16 +131,17 @@ export function useIssueGiftCard(customerId?: string) {
       void queryClient.invalidateQueries({ queryKey: giftCardKeys.myCards })
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', customerId] })
       void queryClient.invalidateQueries({ queryKey: ['activities', customerId] })
-      toast.success('Gift card issued')
+      toast.success(t('Gift card issued'))
       return giftCard
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 
 export function useIssueGiftCardToCustomer(customerId?: string, businessId?: string) {
   const queryClient = useQueryClient()
   const { profile } = useAuth()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (catalogId: string) => {
@@ -153,15 +160,16 @@ export function useIssueGiftCardToCustomer(customerId?: string, businessId?: str
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', giftCard.customerId] })
       void queryClient.invalidateQueries({ queryKey: ['activities', giftCard.customerId] })
       void queryClient.invalidateQueries({ queryKey: ['businessMembers', giftCard.businessId] })
-      toast.success('Gift card issued')
+      toast.success(t('Gift card issued'))
       return giftCard
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 
 export function useRedeemGiftCard(businessId?: string) {
   const queryClient = useQueryClient()
+  const { t } = useLanguage()
 
   return useMutation({
     mutationFn: (input: {
@@ -179,9 +187,9 @@ export function useRedeemGiftCard(businessId?: string) {
       void queryClient.invalidateQueries({ queryKey: ['businessMembers', businessId] })
       void queryClient.invalidateQueries({ queryKey: ['reward-balance', giftCard.customerId] })
       void queryClient.invalidateQueries({ queryKey: ['activities', giftCard.customerId] })
-      toast.success('Gift card redeemed')
+      toast.success(t('Gift card redeemed'))
     },
-    onError: (error: Error) => toast.error(error.message),
+    onError: (error: Error) => toast.error(t(error.message)),
   })
 }
 

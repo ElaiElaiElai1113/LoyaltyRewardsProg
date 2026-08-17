@@ -82,6 +82,16 @@
   justify-self: end;
 }
 
+.business-public-shell__language-picker {
+  color: #a17b14;
+  flex: 0 0 auto;
+}
+
+.business-public-shell__language-picker select {
+  background-color: #fff;
+  border-color: #d4ad22;
+}
+
 .business-public-shell__language-toggle {
   background: #fff;
   border: 1px solid #d4ad22;
@@ -1071,6 +1081,10 @@
 
   .business-public-shell__header-actions {
     gap: 8px;
+  }
+
+  .business-public-shell__language-picker {
+    gap: 4px;
   }
 
   .business-public-shell__language-toggle {

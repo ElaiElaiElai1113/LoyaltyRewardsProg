@@ -64,7 +64,7 @@ describe('current UI process safeguards', () => {
     expect(redemptions).not.toContain("?? 'PHP'")
     expect(redemptions).not.toContain('formatBaseCurrency')
     expect(members).toContain('{purchaseCurrencySymbol}')
-    expect(members).toContain('formatCurrency(Number.parseFloat(purchaseAmount) || 0, businessCurrency, program.locale)')
+    expect(members).toContain('formatCurrency(Number.parseFloat(purchaseAmount) || 0, businessCurrency, selectedLocale)')
     expect(members).not.toContain('pts per $1')
     expect(calculator).toContain('formatTenantCurrency(value, program)')
     expect(calculator).not.toMatch(/currency:\s*'USD'/)
@@ -101,6 +101,17 @@ describe('current UI process safeguards', () => {
     expect(programTeam).toContain('Invite first administrator')
     expect(platformPrograms).toContain('Clear filters')
     expect(shop).toContain("t('Browse other partners')")
+  })
+
+  it('keeps business transaction controls inside narrow screens and statuses non-interactive', () => {
+    const redemptions = source('src/features/gift-cards/pages/redemptions-page.tsx')
+    const dashboard = source('src/features/business-owner/pages/business-dashboard-page.tsx')
+
+    expect(redemptions).toContain('xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]')
+    expect(redemptions).toContain('[&_button]:whitespace-normal')
+    expect(redemptions).toContain('w-full whitespace-normal py-2 text-center leading-snug sm:w-auto')
+    expect(redemptions).toContain('w-full whitespace-normal py-3 text-center leading-snug')
+    expect(dashboard).not.toMatch(/<Button[^>]*>\s*\{t\(getPartnerReferralStatusLabel/)
   })
 
   it('registers the protected launch dashboard and keeps approvals explicit', () => {

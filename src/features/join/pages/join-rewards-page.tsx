@@ -94,7 +94,7 @@ export function LegacyJoinRewardsPage() {
                   </p>
                   {signUpWarning ? (
                     <p className="mx-auto max-w-md text-sm font-bold leading-6 text-warning">
-                      {signUpWarning}
+                      {t(signUpWarning)}
                     </p>
                   ) : null}
                 </div>
@@ -153,7 +153,7 @@ export function LegacyJoinRewardsPage() {
 
                 <div className="grid gap-3">
                   <Label htmlFor="join-email" className={joinLabelClass}>{t('Email address')}</Label>
-                  <Input id="join-email" className={joinInputClass} type="email" placeholder="your@email.com" {...form.register('email')} />
+                  <Input id="join-email" className={joinInputClass} type="email" placeholder={t('your@email.com')} {...form.register('email')} />
                   {form.formState.errors.email ? (
                     <p className="text-xs font-bold text-error">{t(form.formState.errors.email.message ?? '')}</p>
                   ) : null}
@@ -241,9 +241,9 @@ export function CompactJoinRewardsPage() {
 
       {isRewardMe ? (
         <aside className="mb-6 rounded-lg border border-[#b77b1f]/30 bg-[#f4efdf] p-4 text-left text-[#173f32]">
-          <p className="font-serif text-lg font-bold">Three-month free access</p>
+          <p className="font-serif text-lg font-bold">{t('Three-month free access')}</p>
           <p className="mt-1 text-xs leading-5 text-[#5f655d]">
-            Explore RewardMe without adding a payment card. Rewards and referral bonuses begin after the RewardMe team activates an eligible Regular or Gold membership.
+            {t('Explore RewardMe without adding a payment card. Rewards and referral bonuses begin after the RewardMe team activates an eligible Regular or Gold membership.')}
           </p>
         </aside>
       ) : null}
@@ -261,7 +261,7 @@ export function CompactJoinRewardsPage() {
               {t('Your account is created. Sign in to use your member QR and rewards. We will use your contact details for reward updates and account support.')}
             </p>
             {signUpWarning ? (
-              <p className="text-xs font-bold leading-5 text-warning">{signUpWarning}</p>
+              <p className="text-xs font-bold leading-5 text-warning">{t(signUpWarning)}</p>
             ) : null}
           </div>
           <Button asChild className="h-[46px] w-full rounded-[6px] bg-[#d1ad4a] text-[14px] font-bold text-[#080808] hover:bg-[#c5a141]">
@@ -306,7 +306,7 @@ export function CompactJoinRewardsPage() {
 
           <div className="grid gap-2">
             <Label htmlFor="join-email" className="text-[12px] font-semibold text-[#8f8f8f]">{t('Email address')}</Label>
-            <Input id="join-email" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" type="email" placeholder="your@email.com" {...form.register('email')} />
+            <Input id="join-email" className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35" type="email" placeholder={t('your@email.com')} {...form.register('email')} />
             {form.formState.errors.email ? (
               <p className="text-xs font-bold text-red-400">{t(form.formState.errors.email.message ?? '')}</p>
             ) : null}
@@ -327,13 +327,13 @@ export function CompactJoinRewardsPage() {
                 id="join-password"
                 className="h-[42px] rounded-none border-[#d8dce4] bg-[#f8f9fb] px-3.5 pr-10 text-[15px] text-[#111827] shadow-none placeholder:text-[#6b7280] focus-visible:ring-[#d1ad4a]/35"
                 type={showPassword ? 'text' : 'password'}
-                placeholder="Password"
+                placeholder={t('Password')}
                 {...form.register('password')}
               />
               <button
                 type="button"
                 className="absolute inset-y-0 right-3 flex items-center text-[#6b7280] transition hover:text-[#111827]"
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-label={showPassword ? t('Hide password') : t('Show password')}
                 onClick={() => setShowPassword((value) => !value)}
               >
                 {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
@@ -464,7 +464,7 @@ export function SplitJoinRewardsPage() {
                         {t('Your account is created. Sign in to use your member QR and rewards. We will use your contact details for reward updates and account support.')}
                       </p>
                       {signUpWarning ? (
-                        <p className="text-xs font-bold leading-5 text-warning">{signUpWarning}</p>
+                        <p className="text-xs font-bold leading-5 text-warning">{t(signUpWarning)}</p>
                       ) : null}
                     </div>
                     <Button asChild className="h-12 w-full bg-[var(--champagne)] font-bold tracking-[0.12em] text-[var(--espresso)] uppercase hover:bg-[var(--cream)]">
@@ -509,7 +509,7 @@ export function SplitJoinRewardsPage() {
 
                     <div className="grid gap-3">
                       <Label htmlFor="join-email" className="text-[var(--champagne)]">{t('Email address')}</Label>
-                      <Input id="join-email" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" type="email" placeholder="your@email.com" {...form.register('email')} />
+                      <Input id="join-email" className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 text-[var(--cream)]" type="email" placeholder={t('your@email.com')} {...form.register('email')} />
                       {form.formState.errors.email ? (
                         <p className="text-xs font-bold text-red-500">{t(form.formState.errors.email.message ?? '')}</p>
                       ) : null}
@@ -530,13 +530,13 @@ export function SplitJoinRewardsPage() {
                           id="join-password"
                           className="border-[var(--champagne)]/22 bg-[var(--espresso)]/42 pr-10 text-[var(--cream)]"
                           type={showPassword ? 'text' : 'password'}
-                          placeholder="Password"
+                          placeholder={t('Password')}
                           {...form.register('password')}
                         />
                         <button
                           type="button"
                           className="absolute inset-y-0 right-3 flex items-center text-[var(--champagne)]/75 transition hover:text-[var(--champagne)]"
-                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          aria-label={showPassword ? t('Hide password') : t('Show password')}
                           onClick={() => setShowPassword((value) => !value)}
                         >
                           {showPassword ? <EyeOff className="size-4" /> : <Eye className="size-4" />}

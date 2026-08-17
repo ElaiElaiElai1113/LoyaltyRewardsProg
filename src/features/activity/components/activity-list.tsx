@@ -4,6 +4,8 @@ import { Link } from 'react-router'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { EmptyState } from '@/components/ui/empty-state'
+import { PaginationControls } from '@/components/ui/pagination-controls'
+import { usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import { formatDate, formatPoints, formatTime } from '@/lib/utils'
 import type { Activity } from '@/types/domain'
@@ -12,6 +14,7 @@ interface ActivityListProps {
   items: Activity[]
   emptyActionTo?: string
   emptyActionLabel?: string
+  paginationAriaLabel?: string
 }
 
 function getIcon(type: Activity['type']) {
@@ -44,8 +47,9 @@ function getActivityKind(type: Activity['type']) {
   }
 }
 
-export function ActivityList({ items, emptyActionTo, emptyActionLabel }: ActivityListProps) {
+export function ActivityList({ items, emptyActionTo, emptyActionLabel, paginationAriaLabel = 'Activity pagination' }: ActivityListProps) {
   const { t } = useLanguage()
+  const pagination = usePagination(items)
 
   if (items.length === 0) {
     return (
@@ -66,7 +70,7 @@ export function ActivityList({ items, emptyActionTo, emptyActionLabel }: Activit
 
   return (
     <div className="space-y-3">
-      {items.map((item) => {
+      {pagination.pageItems.map((item) => {
         const Icon = getIcon(item.type)
         const activityKind = getActivityKind(item.type)
 
@@ -105,6 +109,7 @@ export function ActivityList({ items, emptyActionTo, emptyActionLabel }: Activit
           </div>
         )
       })}
+      <PaginationControls ariaLabel={paginationAriaLabel} {...pagination} onPageChange={pagination.setPage} />
     </div>
   )
 }

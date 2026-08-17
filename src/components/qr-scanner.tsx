@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { scanQrImageBitmap, scanQrSourceWithJsQr } from '@/lib/qr-image-scanner'
+import { useLanguage } from '@/lib/language'
 
 type BarcodeDetectorLike = {
   detect: (source: ImageBitmap | HTMLCanvasElement | HTMLVideoElement) => Promise<Array<{ rawValue?: string }>>
@@ -24,17 +25,28 @@ interface QrScannerProps {
 }
 
 export function QrScanner({
-  idleMessage = 'Point the device camera at a QR code or upload a screenshot.',
-  detectedMessage = 'QR detected. Review the result before continuing.',
-  unavailableMessage = 'Live camera scanning is not available in this browser. Use upload or paste the code.',
+  idleMessage,
+  detectedMessage,
+  unavailableMessage,
   onDetected,
 }: QrScannerProps) {
-  const [scannerState, setScannerState] = useState<'idle' | 'starting' | 'scanning' | 'processing'>('idle')
-  const [message, setMessage] = useState(idleMessage)
+  const { t } = useLanguage()
+  const idleCopy = idleMessage ?? t('Point the device camera at a QR code or upload a screenshot.')
+  const detectedCopy = detectedMessage ?? t('QR detected. Review the result before continuing.')
+  const unavailableCopy = unavailableMessage ?? t('Live camera scanning is not available in this browser. Use upload or paste the code.')
+  const localizedScannerError = (error: unknown, fallback: string) => {
+    if (!(error instanceof Error)) return t(fallback)
+    const translated = t(error.message)
+    return translated === error.message ? t(fallback) : translated
+  }
+  const [scannerState, setScannerState] = useState<'idle' | 'starting' | 'scanning' | 'processing' | 'detected'>('idle')
+  const [message, setMessage] = useState(idleCopy)
   const videoRef = useRef<HTMLVideoElement | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const scanIntervalRef = useRef<number | null>(null)
   const detectorRef = useRef<BarcodeDetectorLike | null>(null)
+  const detectionInFlightRef = useRef(false)
+  const detectedRef = useRef(false)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
@@ -47,19 +59,33 @@ export function QrScanner({
     }
   }, [])
 
-  function stopCamera() {
+  useEffect(() => {
+    if (scannerState === 'idle') setMessage(idleCopy)
+  }, [idleCopy, scannerState])
+
+  function stopMedia() {
     if (scanIntervalRef.current) {
       window.clearInterval(scanIntervalRef.current)
       scanIntervalRef.current = null
     }
     streamRef.current?.getTracks().forEach((track) => track.stop())
     streamRef.current = null
+    detectionInFlightRef.current = false
+  }
+
+  function stopCamera() {
+    stopMedia()
+    detectedRef.current = false
     setScannerState('idle')
   }
 
   function handleDetected(value: string) {
-    setMessage(detectedMessage)
-    stopCamera()
+    if (detectedRef.current) return
+
+    detectedRef.current = true
+    stopMedia()
+    setMessage(detectedCopy)
+    setScannerState('detected')
     onDetected(value)
   }
 
@@ -71,10 +97,15 @@ export function QrScanner({
   async function detectQrCode(source: ImageBitmap | HTMLVideoElement, exhaustive = false) {
     const BarcodeDetector = getBarcodeDetectorCtor()
     if (BarcodeDetector) {
-      detectorRef.current = detectorRef.current ?? new BarcodeDetector({ formats: ['qr_code'] })
-      const codes = await detectorRef.current.detect(source)
-      const rawValue = codes.find((code) => code.rawValue)?.rawValue
-      if (rawValue) return rawValue
+      try {
+        detectorRef.current = detectorRef.current ?? new BarcodeDetector({ formats: ['qr_code'] })
+        const codes = await detectorRef.current.detect(source)
+        const rawValue = codes.find((code) => code.rawValue)?.rawValue
+        if (rawValue) return rawValue
+      } catch {
+        // Fall through to jsQR when an embedded browser advertises the API but
+        // cannot process the current camera frame.
+      }
     }
 
     return scanQrSourceWithJsQr(source, getCanvas(), exhaustive)
@@ -82,13 +113,14 @@ export function QrScanner({
 
   async function startCamera() {
     if (!navigator.mediaDevices?.getUserMedia) {
-      setMessage(unavailableMessage)
+      setMessage(unavailableCopy)
       return
     }
 
     try {
+      detectedRef.current = false
       setScannerState('starting')
-      setMessage('Starting camera...')
+      setMessage(t('Starting camera...'))
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: { ideal: 'environment' } },
         audio: false,
@@ -102,21 +134,31 @@ export function QrScanner({
       }
 
       setScannerState('scanning')
-      setMessage('Scanning for QR code...')
+      setMessage(t('Scanning for QR code...'))
 
       scanIntervalRef.current = window.setInterval(() => {
         const video = videoRef.current
 
-        if (!video || video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA) return
+        if (
+          !video ||
+          video.readyState < HTMLMediaElement.HAVE_ENOUGH_DATA ||
+          detectionInFlightRef.current ||
+          detectedRef.current
+        ) return
 
+        detectionInFlightRef.current = true
         void detectQrCode(video).then((rawValue) => {
           if (rawValue) handleDetected(rawValue)
+        }).catch(() => {
+          // A transient frame failure should not end the camera session.
+        }).finally(() => {
+          detectionInFlightRef.current = false
         })
       }, 900)
     } catch (error) {
       stopCamera()
-      setMessage('Camera access was blocked. Use upload or paste the code.')
-      toast.error(error instanceof Error ? error.message : 'Unable to access the camera.')
+      setMessage(t('Camera access was blocked. Use upload or paste the code.'))
+      toast.error(localizedScannerError(error, 'Unable to access the camera.'))
     }
   }
 
@@ -126,8 +168,9 @@ export function QrScanner({
     if (!file) return
 
     try {
+      detectedRef.current = false
       setScannerState('processing')
-      setMessage('Checking the whole image for a QR code...')
+      setMessage(t('Checking the whole image for a QR code...'))
       const bitmap = await createImageBitmap(file)
       let rawValue: string | null = null
       try {
@@ -138,16 +181,16 @@ export function QrScanner({
 
       if (!rawValue) {
         setScannerState('idle')
-        setMessage('No QR found. Try a clearer screenshot or use the camera.')
-        toast.error('No QR code was found in that image.')
+        setMessage(t('No QR found. Try a clearer screenshot or use the camera.'))
+        toast.error(t('No QR code was found in that image.'))
         return
       }
 
       handleDetected(rawValue)
     } catch (error) {
       setScannerState('idle')
-      setMessage(idleMessage)
-      toast.error(error instanceof Error ? error.message : 'Unable to scan the uploaded QR image.')
+      setMessage(idleCopy)
+      toast.error(localizedScannerError(error, 'Unable to scan the uploaded QR image.'))
     }
   }
 
@@ -172,17 +215,17 @@ export function QrScanner({
         {scannerState === 'scanning' || scannerState === 'starting' ? (
           <Button type="button" variant="outline" className="sm:col-span-2" onClick={stopCamera}>
             <RefreshCw className="size-4" />
-            Stop Camera
+            {t('Stop Camera')}
           </Button>
         ) : (
           <>
             <Button type="button" onClick={() => void startCamera()} disabled={scannerState === 'processing'}>
               <Camera className="size-4" />
-              Scan With Camera
+              {t('Scan With Camera')}
             </Button>
             <Button type="button" variant="secondary" disabled={scannerState === 'processing'} onClick={() => fileInputRef.current?.click()}>
               <ImageUp className="size-4" />
-              {scannerState === 'processing' ? 'Checking Screenshot...' : 'Choose Screenshot'}
+              {scannerState === 'processing' ? t('Checking Screenshot...') : t('Choose Screenshot')}
             </Button>
           </>
         )}

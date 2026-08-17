@@ -11,6 +11,7 @@ import { CompactSearch } from '@/components/ui/compact-search'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -25,6 +26,7 @@ import {
   useRedeemPartnerCredit,
   useUpdateBusinessAmbassadorLeadStatus,
 } from '@/hooks/use-business-owner-data'
+import { usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import { searchMatches } from '@/lib/search'
 import { getAmbassadorLeadStatusLabel, getPartnerReferralStatusLabel } from '@/lib/status-labels'
@@ -55,7 +57,7 @@ function downloadCsv(filename: string, rows: Array<Record<string, string | numbe
 
 export function PartnersPage() {
   const { business } = useBusinessOwnerData()
-  const { t } = useLanguage()
+  const { language, t } = useLanguage()
   const referrers = usePartnerReferrers(business?.id)
   const referrals = usePartnerReferrals(business?.id)
   const performance = usePartnerPerformance(business?.id)
@@ -149,7 +151,6 @@ export function PartnersPage() {
       referral.firstOrder?.total,
     ]),
   )
-  const recentReferrals = filteredReferrals.slice(0, 6)
   const filteredUnredeemedCredits = unreedeemedCredits.filter((entry) => {
     const referral = referrals.data?.find((item) => item.id === entry.partnerReferralId)
     return searchMatches(creditSearch, [
@@ -166,6 +167,12 @@ export function PartnersPage() {
       referral?.customer.email,
     ])
   })
+  const activeLeadPagination = usePagination(visibleActiveAmbassadorLeads, 6, leadSearch)
+  const archivedLeadPagination = usePagination(visibleArchivedAmbassadorLeads, 6, leadSearch)
+  const activeReferrerPagination = usePagination(visibleActiveReferrers, 8, partnerContactSearch)
+  const archivedReferrerPagination = usePagination(visibleArchivedReferrers, 6, partnerContactSearch)
+  const referralPagination = usePagination(filteredReferrals, 8, referralSearch)
+  const creditPagination = usePagination(filteredUnredeemedCredits, 8, creditSearch)
   const ambassadorUrl =
     business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/ambassadors?business=${business.id}`
@@ -207,28 +214,28 @@ export function PartnersPage() {
     <div className="space-y-16">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
-          <h1 className="font-serif text-5xl tracking-tight text-primary">Partner Referrals</h1>
+          <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Partner Referrals')}</h1>
           <p className="text-lg text-on-surface-variant/85">
-            Track hotel/front-desk referrals and reward partners after first paid orders.
+            {t('Track hotel/front-desk referrals and reward partners after first paid orders.')}
           </p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Badge variant="accent" className="rounded-full border-primary-container/25 bg-primary-container/12 px-5 py-3 text-primary">
-            {activeCount} active contacts
+            {t('{count} active contacts', { count: activeCount })}
           </Badge>
           <Badge variant="accent" className="rounded-full border-secondary-container/25 bg-secondary-container/15 px-5 py-3 text-secondary">
-            {totalCredits} partner credits earned
+            {t('{count} partner credits earned', { count: totalCredits })}
           </Badge>
         </div>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {[
-          ['Active Contacts', activeCount],
-          ['Attributed Customers', attributedCount],
-          ['Credited Orders', creditedCount],
-          ['Credits Redeemed', redeemedCredits],
-          ['Outstanding Credits', outstandingCredits],
+          [t('Active Contacts'), activeCount],
+          [t('Attributed Customers'), attributedCount],
+          [t('Credited Orders'), creditedCount],
+          [t('Credits Redeemed'), redeemedCredits],
+          [t('Outstanding Credits'), outstandingCredits],
         ].map(([label, value]) => (
           <div key={label} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-5">
             <p className="text-sm font-medium text-[var(--muted-foreground)]">{label}</p>
@@ -244,9 +251,9 @@ export function PartnersPage() {
               <Megaphone className="size-5" />
             </div>
             <div className="space-y-2">
-              <h2 className="font-serif text-3xl text-primary">Ambassador Page</h2>
+              <h2 className="font-serif text-3xl text-primary">{t('Ambassador Page')}</h2>
               <p className="text-sm leading-6 text-on-surface-variant/80">
-                Share this public link with local creators and promoters. Submitted requests appear here for follow-up.
+                {t('Share this public link with local creators and promoters. Submitted requests appear here for follow-up.')}
               </p>
             </div>
           </div>
@@ -264,11 +271,11 @@ export function PartnersPage() {
               onClick={async () => {
                 if (!ambassadorUrl) return
                 await navigator.clipboard.writeText(ambassadorUrl)
-                toast.success('Ambassador lead link copied')
+                toast.success(t('Ambassador lead link copied'))
               }}
             >
               <Copy className="size-4" />
-              Copy Link
+              {t('Copy Link')}
             </Button>
           </div>
         </div>
@@ -276,8 +283,8 @@ export function PartnersPage() {
         <div className="rounded-[2rem] border border-[var(--border)] bg-white shadow-sm">
           <div className="flex flex-col gap-3 border-b border-outline-variant/10 p-6 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Lead Follow-up</p>
-              <h2 className="mt-1 font-serif text-3xl text-primary">Ambassador Leads</h2>
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Lead Follow-up')}</p>
+              <h2 className="mt-1 font-serif text-3xl text-primary">{t('Ambassador Leads')}</h2>
             </div>
             <div className="flex flex-col gap-2 sm:items-end">
               <CompactSearch
@@ -287,7 +294,7 @@ export function PartnersPage() {
                 aria-label={t('Search leads')}
               />
               <Badge variant="accent" className="w-fit border-primary-container/25 bg-primary-container/12 text-primary">
-                {activeAmbassadorLeads.length} active requests
+                {t('{count} active requests', { count: activeAmbassadorLeads.length })}
               </Badge>
             </div>
           </div>
@@ -301,13 +308,13 @@ export function PartnersPage() {
                 </div>
               ))
             ) : visibleActiveAmbassadorLeads.length ? (
-              visibleActiveAmbassadorLeads.slice(0, 6).map((lead) => (
+              activeLeadPagination.pageItems.map((lead) => (
                 <div key={lead.id} className="flex flex-col gap-4 p-6 lg:flex-row lg:items-start lg:justify-between">
                   <div className="min-w-0">
                     <p className="font-serif text-2xl text-primary">{lead.fullName}</p>
                     <p className="mt-1 text-sm text-on-surface-variant/80">{lead.email}</p>
                     <p className="mt-2 text-xs uppercase tracking-[0.16em] text-on-surface-variant/65">
-                      {lead.city} · {new Date(lead.createdAt).toLocaleDateString()}
+                      {lead.city} · {new Date(lead.createdAt).toLocaleDateString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : 'en-US')}
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {Object.entries(lead.socialLinks)
@@ -321,6 +328,7 @@ export function PartnersPage() {
                     {lead.notes ? <p className="mt-3 text-sm leading-6 text-on-surface-variant/80">{lead.notes}</p> : null}
                   </div>
                   <select
+                    aria-label={t('Update status for {name}', { name: lead.fullName })}
                     className="h-11 rounded-2xl border border-outline-variant/20 bg-surface-highest px-4 text-sm font-medium text-on-surface shadow-sm outline-none"
                     value={lead.status}
                     disabled={updateAmbassadorLeadStatus.isPending}
@@ -333,7 +341,7 @@ export function PartnersPage() {
                   >
                     {ambassadorStatusOptions.map((status) => (
                       <option key={status} value={status}>
-                        {getAmbassadorLeadStatusLabel(status)}
+                        {t(getAmbassadorLeadStatusLabel(status))}
                       </option>
                     ))}
                   </select>
@@ -354,24 +362,36 @@ export function PartnersPage() {
                 description={t('Share the ambassador link to collect creator and promoter requests.')}
               />
             )}
+            <PaginationControls
+              ariaLabel={t('Active ambassador leads pagination')}
+              {...activeLeadPagination}
+              className="m-4"
+              onPageChange={activeLeadPagination.setPage}
+            />
           </div>
 
           {archivedAmbassadorLeads.length ? (
             <div className="border-t border-outline-variant/10">
               <div className="flex items-center justify-between gap-4 p-6">
                 <div>
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">Archived</p>
-                  <h3 className="mt-1 font-serif text-2xl text-primary">Archived Leads</h3>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Archived')}</p>
+                  <h3 className="mt-1 font-serif text-2xl text-primary">{t('Archived Leads')}</h3>
                 </div>
                 <Badge variant="outline">{visibleArchivedAmbassadorLeads.length}</Badge>
               </div>
               <div className="divide-y divide-outline-variant/10">
-                {visibleArchivedAmbassadorLeads.slice(0, 6).map((lead) => (
+                {archivedLeadPagination.pageItems.map((lead) => (
                   <div key={lead.id} className="flex flex-col gap-2 p-6">
                     <p className="font-serif text-xl text-primary">{lead.fullName}</p>
                     <p className="text-sm text-on-surface-variant/80">{lead.email}</p>
                   </div>
                 ))}
+                <PaginationControls
+                  ariaLabel={t('Archived ambassador leads pagination')}
+                  {...archivedLeadPagination}
+                  className="m-4"
+                  onPageChange={archivedLeadPagination.setPage}
+                />
               </div>
             </div>
           ) : null}
@@ -382,9 +402,9 @@ export function PartnersPage() {
         <div className="space-y-8">
           <div className="space-y-2 border-b border-outline-variant/10 pb-4">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Partner Setup
+              {t('Partner Setup')}
             </span>
-            <h2 className="font-serif text-3xl text-primary">Add Receptionist Code</h2>
+            <h2 className="font-serif text-3xl text-primary">{t('Add Receptionist Code')}</h2>
           </div>
 
           <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8">
@@ -406,38 +426,47 @@ export function PartnersPage() {
               })}
             >
               <div className="grid gap-3">
-                <Label htmlFor="source-label">Referral Source</Label>
+                <Label htmlFor="source-label">{t('Referral Source')}</Label>
                 <Input
                   id="source-label"
                   className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary"
-                  placeholder="Ana - Harbor View Hotel"
+                  placeholder={t('Ana - Harbor View Hotel')}
                   {...form.register('sourceLabel')}
                 />
+                {form.formState.errors.sourceLabel ? (
+                  <p className="text-xs text-red-500">{t(form.formState.errors.sourceLabel.message)}</p>
+                ) : null}
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="contact-email">Contact Email</Label>
+                <Label htmlFor="contact-email">{t('Contact Email')}</Label>
                 <Input
                   id="contact-email"
                   className="h-12 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary"
-                  placeholder="optional@email.com"
+                  placeholder={t('optional@email.com')}
                   {...form.register('contactEmail')}
                 />
+                {form.formState.errors.contactEmail ? (
+                  <p className="text-xs text-red-500">{t(form.formState.errors.contactEmail.message)}</p>
+                ) : null}
               </div>
 
               <div className="grid gap-3">
-                <Label htmlFor="partner-notes">Notes</Label>
+                <Label htmlFor="partner-notes">{t('Notes')}</Label>
                 <Textarea
                   id="partner-notes"
                   className="min-h-28 rounded-2xl border border-primary-container/15 bg-[var(--card)] text-primary"
-                  placeholder="Reward terms, front-desk context, or handoff notes"
+                  placeholder={t('Reward terms, front-desk context, or handoff notes')}
                   {...form.register('notes')}
                 />
+                {form.formState.errors.notes ? (
+                  <p className="text-xs text-red-500">{t(form.formState.errors.notes.message)}</p>
+                ) : null}
               </div>
 
               <Button type="submit" variant="secondary" className="h-14 w-full rounded-full" disabled={form.formState.isSubmitting}>
                 <UserRoundPlus className="size-4" />
-                {form.formState.isSubmitting ? t('Saving...') : 'Create Partner Code'}
+                {form.formState.isSubmitting ? t('Saving...') : t('Create Partner Code')}
               </Button>
             </form>
           </div>
@@ -448,9 +477,9 @@ export function PartnersPage() {
                   <Gift className="size-5" />
                 </div>
                 <div className="space-y-2">
-                  <h3 className="font-serif text-2xl text-primary">Partner Credit Rule</h3>
+                  <h3 className="font-serif text-2xl text-primary">{t('Partner Credit Rule')}</h3>
                   <p className="text-sm leading-relaxed text-on-surface-variant/80">
-                    Each referral source earns 1 partner credit after the referred customer places their first paid order.
+                    {t('Each referral source earns 1 partner credit after the referred customer places their first paid order.')}
                   </p>
                 </div>
               </div>
@@ -461,9 +490,9 @@ export function PartnersPage() {
           <div className="flex flex-col gap-4 border-b border-outline-variant/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-2">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                Active Directory
+                {t('Active Directory')}
               </span>
-              <h2 className="font-serif text-3xl text-primary">Partner Contacts</h2>
+              <h2 className="font-serif text-3xl text-primary">{t('Partner Contacts')}</h2>
             </div>
             <CompactSearch
               value={partnerContactSearch}
@@ -493,7 +522,7 @@ export function PartnersPage() {
             </div>
           ) : visibleActiveReferrers.length ? (
             <div className="grid gap-5">
-              {visibleActiveReferrers.slice(0, 12).map((referrer) => {
+              {activeReferrerPagination.pageItems.map((referrer) => {
                 const stats = performance.data?.find((entry) => entry.partnerReferrerId === referrer.id)
                 const partnerUrl =
                   business?.id && typeof window !== 'undefined'
@@ -514,13 +543,13 @@ export function PartnersPage() {
                           </div>
                           <div className="flex flex-wrap gap-2">
                             <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 text-primary">
-                              {stats?.referralsAttributed ?? 0} attributed
+                              {t('{count} attributed', { count: stats?.referralsAttributed ?? 0 })}
                             </Badge>
                             <Badge variant="accent" className="border-secondary-container/25 bg-secondary-container/15 text-secondary">
-                              {stats?.creditsEarned ?? 0} credits earned
+                              {t('{count} credits earned', { count: stats?.creditsEarned ?? 0 })}
                             </Badge>
                             <Badge variant="accent" className="border-success/25 bg-success/12 text-success">
-                              {stats?.creditsRedeemed ?? 0} redeemed
+                              {t('{count} redeemed', { count: stats?.creditsRedeemed ?? 0 })}
                             </Badge>
                           </div>
                           {referrer.notes ? (
@@ -541,11 +570,11 @@ export function PartnersPage() {
                             onClick={async () => {
                               if (!partnerUrl) return
                               await navigator.clipboard.writeText(partnerUrl)
-                              toast.success('Partner referral link copied')
+                              toast.success(t('Partner referral link copied'))
                             }}
                           >
                             <Copy className="size-4" />
-                            Copy Link
+                            {t('Copy Link')}
                           </Button>
                           <Button
                             type="button"
@@ -554,7 +583,7 @@ export function PartnersPage() {
                             onClick={() => archivePartnerReferrer.mutate(referrer.id)}
                           >
                             <Archive className="size-4" />
-                            Archive
+                            {t('Archive')}
                           </Button>
                         </div>
                       </div>
@@ -562,6 +591,11 @@ export function PartnersPage() {
                   </div>
                 )
               })}
+              <PaginationControls
+                ariaLabel={t('Active partner contacts pagination')}
+                {...activeReferrerPagination}
+                onPageChange={activeReferrerPagination.setPage}
+              />
             </div>
           ) : activeReferrers.length ? (
             <EmptyState
@@ -583,17 +617,22 @@ export function PartnersPage() {
             <div className="space-y-5 pt-4">
               <div className="space-y-2 border-t border-outline-variant/10 pt-6">
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-                  Archived
+                  {t('Archived')}
                 </span>
-                <h3 className="font-serif text-2xl text-primary">Archived Contacts</h3>
+                <h3 className="font-serif text-2xl text-primary">{t('Archived Contacts')}</h3>
               </div>
               <div className="grid gap-4">
-                {visibleArchivedReferrers.slice(0, 6).map((referrer) => (
+                {archivedReferrerPagination.pageItems.map((referrer) => (
                   <div key={referrer.id} className="rounded-[2rem] border border-[var(--border)] bg-white p-5 shadow-sm">
                     <p className="font-serif text-2xl text-primary">{referrer.contactName}</p>
                     <p className="mt-1 text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">{referrer.code}</p>
                   </div>
                 ))}
+                <PaginationControls
+                  ariaLabel={t('Archived partner contacts pagination')}
+                  {...archivedReferrerPagination}
+                  onPageChange={archivedReferrerPagination.setPage}
+                />
               </div>
             </div>
           ) : null}
@@ -604,10 +643,10 @@ export function PartnersPage() {
         <div className="space-y-6">
           <div className="space-y-2 border-b border-outline-variant/10 pb-4">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Recent Activity
+              {t('Recent Activity')}
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="font-serif text-3xl text-primary">Attributed Customers</h2>
+              <h2 className="font-serif text-3xl text-primary">{t('Attributed Customers')}</h2>
               <div className="flex flex-col gap-2 sm:items-end">
                 <CompactSearch
                   value={referralSearch}
@@ -623,7 +662,7 @@ export function PartnersPage() {
                   onClick={handleExportReferrals}
                 >
                   <Download className="size-4" />
-                  Export CSV
+                  {t('Export CSV')}
                 </Button>
               </div>
             </div>
@@ -638,8 +677,8 @@ export function PartnersPage() {
                   <Skeleton className="mt-5 h-4 w-32" />
                 </div>
               ))
-            ) : recentReferrals.length ? (
-              recentReferrals.map((referral) => (
+            ) : filteredReferrals.length ? (
+              referralPagination.pageItems.map((referral) => (
                 <div key={referral.id} className="flex flex-col gap-4 p-6">
                   <div className="flex items-center justify-between gap-4">
                     <div>
@@ -654,11 +693,11 @@ export function PartnersPage() {
                           : 'border-primary-container/25 bg-primary-container/12 text-primary'
                       }
                     >
-                      {getPartnerReferralStatusLabel(referral.status)}
+                      {t(getPartnerReferralStatusLabel(referral.status))}
                     </Badge>
                   </div>
                   <p className="text-sm text-on-surface-variant/75">
-                    Source: {referral.partnerReferrer.contactName}
+                    {t('Source')}: {referral.partnerReferrer.contactName}
                   </p>
                 </div>
               ))
@@ -677,16 +716,22 @@ export function PartnersPage() {
                 description={t('Attributed customers will appear here after referral links are used.')}
               />
             )}
+            <PaginationControls
+              ariaLabel={t('Attributed customers pagination')}
+              {...referralPagination}
+              className="m-4"
+              onPageChange={referralPagination.setPage}
+            />
           </div>
         </div>
 
         <div className="space-y-6">
           <div className="space-y-2 border-b border-outline-variant/10 pb-4">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
-              Offline Redemption
+              {t('Offline Redemption')}
             </span>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <h2 className="font-serif text-3xl text-primary">Outstanding Partner Credits</h2>
+              <h2 className="font-serif text-3xl text-primary">{t('Outstanding Partner Credits')}</h2>
               <div className="flex flex-col gap-2 sm:items-end">
                 <CompactSearch
                   value={creditSearch}
@@ -702,7 +747,7 @@ export function PartnersPage() {
                   onClick={handleExportCredits}
                 >
                   <Download className="size-4" />
-                  Export CSV
+                  {t('Export CSV')}
                 </Button>
               </div>
             </div>
@@ -717,16 +762,16 @@ export function PartnersPage() {
                 </div>
               ))
             ) : filteredUnredeemedCredits.length ? (
-              filteredUnredeemedCredits.map((entry) => {
+              creditPagination.pageItems.map((entry) => {
                 const referral = referrals.data?.find((item) => item.id === entry.partnerReferralId)
                 return (
                   <div key={entry.id} className="flex flex-col gap-4 p-6 md:flex-row md:items-center md:justify-between">
                     <div>
                       <p className="font-serif text-2xl text-primary">
-                        {referral?.partnerReferrer.contactName ?? 'Referral Source'}
+                        {referral?.partnerReferrer.contactName ?? t('Referral Source')}
                       </p>
                       <p className="mt-2 text-xs uppercase tracking-[0.18em] text-on-surface-variant/70">
-                        {entry.creditUnits} partner credit
+                        {t('{count} partner credit', { count: entry.creditUnits })}
                       </p>
                     </div>
                     <Button
@@ -735,7 +780,7 @@ export function PartnersPage() {
                       className="rounded-full"
                       onClick={() => redeemPartnerCredit.mutate(entry.id)}
                     >
-                      Mark Redeemed
+                      {t('Mark Redeemed')}
                     </Button>
                   </div>
                 )
@@ -755,6 +800,12 @@ export function PartnersPage() {
                 description={t('Redeemable partner credits will appear here once referrals earn credits.')}
               />
             )}
+            <PaginationControls
+              ariaLabel={t('Outstanding partner credits pagination')}
+              {...creditPagination}
+              className="m-4"
+              onPageChange={creditPagination.setPage}
+            />
           </div>
         </div>
       </div>

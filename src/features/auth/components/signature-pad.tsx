@@ -2,6 +2,7 @@ import { useMemo, useRef, useState, type PointerEvent } from 'react'
 import { RotateCcw } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { useLanguage } from '@/lib/language'
 import {
   SIGNATURE_VIEWBOX_HEIGHT,
   SIGNATURE_VIEWBOX_WIDTH,
@@ -30,6 +31,7 @@ function getPointFromPointer(
 }
 
 export function SignaturePad({ onChange, error, disabled = false }: SignaturePadProps) {
+  const { t } = useLanguage()
   const svgRef = useRef<SVGSVGElement | null>(null)
   const [strokes, setStrokes] = useState<SignatureStroke[]>([])
   const [activeStroke, setActiveStroke] = useState<SignatureStroke | null>(null)
@@ -82,7 +84,7 @@ export function SignaturePad({ onChange, error, disabled = false }: SignaturePad
         <svg
           ref={svgRef}
           role="img"
-          aria-label="Drawn signature"
+          aria-label={t('Drawn signature')}
           viewBox={`0 0 ${SIGNATURE_VIEWBOX_WIDTH} ${SIGNATURE_VIEWBOX_HEIGHT}`}
           className="block aspect-[30/11] w-full touch-none bg-white"
           onPointerDown={handlePointerDown}
@@ -114,11 +116,11 @@ export function SignaturePad({ onChange, error, disabled = false }: SignaturePad
 
       <div className="flex items-center justify-between gap-3">
         <p className={`text-sm font-medium ${error ? 'text-destructive' : 'text-[var(--muted-foreground)]'}`}>
-          {error ?? (hasSignature ? 'Signature captured' : 'Draw your signature')}
+          {error ?? (hasSignature ? t('Signature captured') : t('Draw your signature'))}
         </p>
         <Button type="button" variant="outline" size="sm" onClick={clearSignature} disabled={disabled || !hasSignature}>
           <RotateCcw className="size-4" />
-          Clear
+          {t('Clear')}
         </Button>
       </div>
     </div>

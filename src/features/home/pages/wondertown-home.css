@@ -122,6 +122,15 @@
   justify-self: end;
 }
 
+.wondertown-home__language {
+  color: var(--wonder-ink);
+}
+
+.wondertown-home__language select {
+  background: var(--wonder-paper);
+  border-color: rgb(79 59 120 / 24%);
+}
+
 .wondertown-home__text-link {
   font-size: 13px;
   font-weight: 750;
@@ -613,6 +622,7 @@
   }
 
   .wondertown-home__header-inner {
+    gap: 14px;
     min-height: 76px;
   }
 
@@ -747,6 +757,12 @@
 
   .wondertown-home__footer nav {
     justify-self: start;
+  }
+}
+
+@media (max-width: 520px) {
+  .wondertown-home__header-join {
+    display: none;
   }
 }
 

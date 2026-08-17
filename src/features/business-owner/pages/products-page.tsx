@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useBusinessOwnerData, useCreateOwnerProduct } from '@/hooks/use-business-owner-data'
@@ -16,6 +17,7 @@ import { useDeleteProduct, useUpdateProduct } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { usePagination } from '@/hooks/use-pagination'
 import { searchMatches } from '@/lib/search'
 import { formatCurrency as formatBaseCurrency } from '@/lib/utils'
 import type { Product } from '@/types/domain'
@@ -25,13 +27,13 @@ import { Controller } from 'react-hook-form'
 export function ProductsPage() {
   const { business, products } = useBusinessOwnerData()
   const { program } = useTenant()
+  const { profile } = useAuth()
+  const { language, t } = useLanguage()
   const formatCurrency = (value: number) => formatBaseCurrency(
     value,
     business?.currency ?? program.currency,
-    program.locale,
+    language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale,
   )
-  const { profile } = useAuth()
-  const { t } = useLanguage()
   const createProduct = useCreateOwnerProduct(profile, business?.id)
   const deleteProduct = useDeleteProduct(profile?.fullName)
   const updateProduct = useUpdateProduct(profile?.fullName)
@@ -68,7 +70,7 @@ export function ProductsPage() {
 
   const handleOpenForCreate = () => {
     if (!business) {
-      setError('Business context is still loading. Please try again in a moment.')
+      setError(t('Business context is still loading. Please try again in a moment.'))
       return
     }
 
@@ -103,7 +105,7 @@ export function ProductsPage() {
       setOpen(false)
       setEditingId(null)
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('Action failed.'))
+      setError(err instanceof Error ? t(err.message) : t('Action failed.'))
     }
   })
 
@@ -121,6 +123,7 @@ export function ProductsPage() {
       product.price,
     ]),
   )
+  const pagination = usePagination(filteredProducts, 8, productSearch)
 
   return (
     <div className="space-y-16">
@@ -162,16 +165,16 @@ export function ProductsPage() {
           <form onSubmit={handleSubmit} className="space-y-5 pt-2">
             <div className="grid gap-2">
               <Label htmlFor="product-title">{t('Title')}</Label>
-              <Input id="product-title" placeholder="Nitro Cold Brew" {...form.register('title')} />
+              <Input id="product-title" placeholder={t('Nitro Cold Brew')} {...form.register('title')} />
               {form.formState.errors.title && (
-                <p className="text-xs text-red-500">{form.formState.errors.title.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.title.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="product-description">{t('Description')}</Label>
-              <Textarea id="product-description" placeholder="Our signature nitro brew..." {...form.register('description')} />
+              <Textarea id="product-description" placeholder={t('Our signature nitro brew...')} {...form.register('description')} />
               {form.formState.errors.description && (
-                <p className="text-xs text-red-500">{form.formState.errors.description.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.description.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -194,7 +197,7 @@ export function ProductsPage() {
                 )}
               />
               {form.formState.errors.category && (
-                <p className="text-xs text-red-500">{form.formState.errors.category.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.category.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -207,7 +210,7 @@ export function ProductsPage() {
                 {...form.register('price', { valueAsNumber: true })}
               />
               {form.formState.errors.price && (
-                <p className="text-xs text-red-500">{form.formState.errors.price.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.price.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
@@ -221,12 +224,12 @@ export function ProductsPage() {
                 {...form.register('inventory', { valueAsNumber: true })}
               />
               {form.formState.errors.inventory && (
-                <p className="text-xs text-red-500">{form.formState.errors.inventory.message}</p>
+                <p className="text-xs text-red-500">{t(form.formState.errors.inventory.message)}</p>
               )}
             </div>
             <div className="grid gap-2">
               <Label htmlFor="product-highlight">{t('Highlight')}</Label>
-              <Input id="product-highlight" placeholder="Special Roast" {...form.register('highlight')} />
+              <Input id="product-highlight" placeholder={t('Special Roast')} {...form.register('highlight')} />
             </div>
             {error && <p className="text-sm font-bold text-red-500 text-center">{error}</p>}
             <div className="flex justify-end gap-3 pt-2">
@@ -242,7 +245,7 @@ export function ProductsPage() {
       </Dialog>
 
       {/* Products Grid */}
-      <div className="grid gap-4">
+      <div className="grid gap-4 xl:grid-cols-2">
         {products.length === 0 ? (
           <EmptyState
             icon={<Package className="size-8" />}
@@ -262,10 +265,10 @@ export function ProductsPage() {
             description={t('Try a product title, category, or highlight.')}
           />
         ) : (
-          filteredProducts.map((product) => (
+          pagination.pageItems.map((product) => (
             <div
               key={product.id}
-              className="group flex items-center justify-between rounded-3xl bg-card hover:bg-surface-low p-6 border border-outline-variant/20 hover:border-primary/30 transition-all hover:shadow-lg"
+              className="group flex min-w-0 flex-col gap-5 rounded-3xl border border-outline-variant/20 bg-card p-5 transition-all hover:border-primary/30 hover:bg-surface-low hover:shadow-lg sm:flex-row sm:items-center sm:justify-between sm:p-6"
             >
               <div className="flex items-center gap-4">
                 <div
@@ -296,10 +299,10 @@ export function ProductsPage() {
                   )}
                 </div>
                 <div className="flex gap-2">
-                  <Button variant="ghost" size="icon" className="size-9 rounded-full" onClick={() => handleEdit(product)}>
+                  <Button aria-label={t('Edit {item}', { item: product.title })} variant="ghost" size="icon" className="size-9 rounded-full" onClick={() => handleEdit(product)}>
                     <Edit2 className="size-4" />
                   </Button>
-                  <Button variant="ghost" size="icon" className="size-9 rounded-full text-error hover:text-error hover:bg-error/10" onClick={() => handleDelete(product.id)}>
+                  <Button aria-label={t('Delete {item}', { item: product.title })} variant="ghost" size="icon" className="size-9 rounded-full text-error hover:text-error hover:bg-error/10" onClick={() => handleDelete(product.id)}>
                     <Trash2 className="size-4" />
                   </Button>
                 </div>
@@ -308,6 +311,7 @@ export function ProductsPage() {
           ))
         )}
       </div>
+      <PaginationControls ariaLabel={t('Business products pagination')} {...pagination} onPageChange={pagination.setPage} />
     </div>
   )
 }

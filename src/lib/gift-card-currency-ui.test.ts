@@ -24,7 +24,7 @@ describe('gift-card currency UI', () => {
     const admin = source('src/features/gift-cards/pages/admin-gift-cards-page.tsx')
 
     expect(admin).toContain('card.business?.currency ?? selectedBusiness?.currency')
-    expect(admin).toContain('Balance: {formatCardBalance(card)}')
+    expect(admin).toContain("t('Balance: {balance}', { balance: formatCardBalance(card) })")
     expect(admin).not.toContain('currency: program.currency')
   })
 

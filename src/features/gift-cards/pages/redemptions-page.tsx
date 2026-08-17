@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PaginationControls } from '@/components/ui/pagination-controls'
 import { createClientRequestId } from '@/features/critical-flows/critical-flow'
 import {
   calculateMemberTransaction,
@@ -20,8 +21,10 @@ import {
   useScannedMember,
 } from '@/hooks/use-business-owner-data'
 import { useTenant } from '@/hooks/use-tenant'
+import { usePagination } from '@/hooks/use-pagination'
 import { giftCardsService } from '@/integrations/supabase/services/gift-cards-service'
 import { formatTenantCurrency } from '@/lib/tenant-commerce'
+import { useLanguage } from '@/lib/language'
 import { formatPoints } from '@/lib/utils'
 import type { GiftCard } from '@/types/domain'
 import { QrScanner } from '../components/qr-scanner'
@@ -105,10 +108,10 @@ function getGiftCardAvailableBalance(card?: GiftCard | null) {
   return Math.max(card.remainingBalance ?? getGiftCardInitialBalance(card), 0)
 }
 
-function formatDateTime(value?: string | null) {
-  if (!value) return 'Not recorded'
+function formatDateTime(value: string | null | undefined, locale: string, fallback: string) {
+  if (!value) return fallback
 
-  return new Date(value).toLocaleString(undefined, {
+  return new Date(value).toLocaleString(locale, {
     dateStyle: 'medium',
     timeStyle: 'short',
   })
@@ -117,10 +120,12 @@ function formatDateTime(value?: string | null) {
 export function RedemptionsPage() {
   const queryClient = useQueryClient()
   const { program } = useTenant()
+  const { language, t } = useLanguage()
   const { business, memberTransactions } = useBusinessOwnerData()
+  const selectedLocale = language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale
   const formatCurrency = (value: number) => formatTenantCurrency(value, {
     currency: business?.currency ?? program.currency,
-    locale: program.locale,
+    locale: selectedLocale,
   })
   const [manualInput, setManualInput] = useState('')
   const [memberInput, setMemberInput] = useState('')
@@ -143,11 +148,10 @@ export function RedemptionsPage() {
   const filteredCustomers = useMemo(() => {
     const query = customerSearch.trim().toLowerCase()
     const customers = businessCustomers.data ?? []
-    if (!query) return customers.slice(0, 8)
+    if (!query) return customers
 
     return customers
       .filter((customer) => `${customer.fullName} ${customer.email}`.toLowerCase().includes(query))
-      .slice(0, 12)
   }, [businessCustomers.data, customerSearch])
   const transactionRows = useMemo<TransactionHistoryItem[]>(() => {
     const usedGiftCardCodes = new Set(
@@ -159,7 +163,7 @@ export function RedemptionsPage() {
     const saleRows: TransactionHistoryItem[] = memberTransactions.map((transaction) => {
       const giftCardCode = extractGiftCardCode(transaction.note)
       const currency = transaction.business?.currency ?? business?.currency ?? program.currency
-      const currencyContext = { currency, locale: program.locale }
+      const currencyContext = { currency, locale: selectedLocale }
       const giftCardValue = extractMoneyFromGiftCardNote(transaction.note, 'Gift card value') ?? 0
       const originalTotal = extractMoneyFromGiftCardNote(transaction.note, 'Original receipt total') ?? transaction.purchaseAmount + giftCardValue
       const finalPrice = extractMoneyFromGiftCardNote(transaction.note, 'Final bill after gift card') ?? Math.max(originalTotal - giftCardValue, 0)
@@ -186,7 +190,7 @@ export function RedemptionsPage() {
       .map((card) => {
         const currencyContext = {
           currency: business?.currency ?? program.currency,
-          locale: program.locale,
+          locale: selectedLocale,
         }
         const giftCardValue = card.redemptionGiftCardAmount ?? 0
         const originalTotal = card.redemptionOriginalBill ?? giftCardValue
@@ -220,7 +224,7 @@ export function RedemptionsPage() {
             ? `-${formatTenantCurrency(giftCardValue, currencyContext)}`
             : formatTenantCurrency(0, currencyContext),
           finalPriceLabel: formatTenantCurrency(finalPrice, currencyContext),
-          pointsLabel: fallbackPreview ? formatPoints(fallbackPreview.pointsAwarded) : 'Not recorded',
+          pointsLabel: fallbackPreview ? formatPoints(fallbackPreview.pointsAwarded) : t('Not recorded'),
           giftCardCode: card.code,
           statusLabel: 'Gift card redeemed',
         }
@@ -229,7 +233,9 @@ export function RedemptionsPage() {
     return [...saleRows, ...standaloneGiftCardRows].sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
-  }, [business, cards, memberTransactions, program.currency, program.locale])
+  }, [business, cards, memberTransactions, program.currency, selectedLocale, t])
+  const customerPagination = usePagination(filteredCustomers, 5, customerSearch)
+  const transactionPagination = usePagination(transactionRows)
   const selectedGiftCardAvailableBalance = getGiftCardAvailableBalance(selectedCard)
   const baseBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(originalBill) || originalBill <= 0) return null
@@ -445,13 +451,13 @@ export function RedemptionsPage() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="min-w-0 space-y-8">
       <section>
         <div>
-          <Badge variant="accent" className="w-fit">Business Transactions</Badge>
-          <h1 className="mt-3 font-serif text-5xl tracking-tight text-primary">Transactions</h1>
+          <Badge variant="accent" className="w-fit">{t('Business Transactions')}</Badge>
+          <h1 className="mt-3 break-words font-serif text-4xl tracking-tight text-primary sm:text-5xl">{t('Transactions')}</h1>
           <p className="mt-2 max-w-3xl text-on-surface-variant">
-            Choose the customer, enter the bill, and complete the sale. The website calculates rewards automatically.
+            {t('Choose the customer, enter the bill, and complete the sale. The website calculates rewards automatically.')}
           </p>
         </div>
       </section>
@@ -462,68 +468,71 @@ export function RedemptionsPage() {
             <div className="flex items-start gap-3">
               <CheckCircle2 className="mt-1 size-5 text-success" />
               <div>
-                <p className="font-serif text-2xl text-primary">Transaction complete</p>
+                <p className="font-serif text-2xl text-primary">{t('Transaction complete')}</p>
                 <p className="text-sm text-on-surface-variant/75">
                   {selectedCard
-                    ? `Gift card charged ${formatCurrency(rewardableBreakdown?.giftCardAmount ?? selectedGiftCardValue)}. Remaining balance: ${formatCurrency(getGiftCardAvailableBalance(selectedCard))}.`
+                    ? t('Gift card charged {amount}. Remaining balance: {balance}.', {
+                        amount: formatCurrency(rewardableBreakdown?.giftCardAmount ?? selectedGiftCardValue),
+                        balance: formatCurrency(getGiftCardAvailableBalance(selectedCard)),
+                      })
                     : preview
-                      ? `Rewards issued from ${formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0)} rewardable bill.`
-                      : 'Gift card covered the full bill, so no points were awarded.'}
+                      ? t('Rewards issued from {amount} rewardable bill.', { amount: formatCurrency(rewardableBreakdown?.rewardableAmount ?? 0) })
+                      : t('Gift card covered the full bill, so no points were awarded.')}
                 </p>
               </div>
             </div>
             <Button type="button" variant="secondary" className="rounded-full" onClick={startNewTransaction}>
-              New Transaction
+              {t('New Transaction')}
             </Button>
           </CardContent>
         </Card>
       ) : null}
 
-      <section className="grid gap-6 xl:grid-cols-[1fr,0.9fr]">
-        <Card>
-          <CardHeader>
-            <Badge variant="outline" className="w-fit">Step 1</Badge>
-            <CardTitle>Choose the Customer</CardTitle>
-            <CardDescription>Pick a saved customer, scan with the camera, or choose a screenshot. You only need one method.</CardDescription>
+      <section className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+        <Card className="min-w-0 overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <Badge variant="outline" className="w-fit">{t('Step 1')}</Badge>
+            <CardTitle>{t('Choose the Customer')}</CardTitle>
+            <CardDescription>{t('Pick a saved customer, scan with the camera, or choose a screenshot. You only need one method.')}</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="rounded-xl border border-outline-variant/20 bg-surface-low p-4" data-customer-picker>
+          <CardContent className="min-w-0 space-y-5 p-4 pt-0 sm:p-6 sm:pt-0">
+            <div className="min-w-0 rounded-xl border border-outline-variant/20 bg-surface-low p-3 sm:p-4" data-customer-picker>
               <div className="flex items-start gap-3">
                 <div className="rounded-lg bg-primary/10 p-2 text-primary">
                   <Users className="size-5" />
                 </div>
                 <div>
-                  <p className="font-semibold text-primary">Pick a saved customer</p>
-                  <p className="text-sm text-on-surface-variant/75">Search by name or email, then tap the customer.</p>
+                  <p className="font-semibold text-primary">{t('Pick a saved customer')}</p>
+                  <p className="text-sm text-on-surface-variant/75">{t('Search by name or email, then tap the customer.')}</p>
                 </div>
               </div>
 
               <div className="relative mt-4">
                 <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-on-surface-variant/60" />
                 <Input
-                  aria-label="Search customers"
+                  aria-label={t('Search customers')}
                   className="pl-10"
                   value={customerSearch}
                   onChange={(event) => setCustomerSearch(event.target.value)}
-                  placeholder="Search customer name or email"
+                  placeholder={t('Search customer name or email')}
                 />
               </div>
 
-              <div className="mt-3 max-h-56 space-y-2 overflow-y-auto" role="list" aria-label="Saved customers">
+              <div className="mt-3 space-y-2" role="list" aria-label={t('Saved customers')}>
                 {businessCustomers.isLoading ? (
-                  <p className="p-3 text-sm text-on-surface-variant/70">Loading customers...</p>
+                  <p className="p-3 text-sm text-on-surface-variant/70">{t('Loading customers...')}</p>
                 ) : businessCustomers.isError ? (
-                  <p className="rounded-lg bg-warning/10 p-3 text-sm font-semibold text-warning">Customer list could not be loaded. Scan their QR instead.</p>
+                  <p className="rounded-lg bg-warning/10 p-3 text-sm font-semibold text-warning">{t('Customer list could not be loaded. Scan their QR instead.')}</p>
                 ) : filteredCustomers.length === 0 ? (
-                  <p className="p-3 text-sm text-on-surface-variant/70">No saved customer matches that search. Scan their member QR for the first sale.</p>
+                  <p className="p-3 text-sm text-on-surface-variant/70">{t('No saved customer matches that search. Scan their member QR for the first sale.')}</p>
                 ) : (
-                  filteredCustomers.map((customer) => (
+                  customerPagination.pageItems.map((customer) => (
                     <button
                       key={customer.id}
                       type="button"
                       className="flex min-h-14 w-full items-center justify-between gap-3 rounded-lg border border-outline-variant/15 bg-card px-4 py-3 text-left transition hover:border-primary/35 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                       disabled={!customer.memberQrToken}
-                      aria-label={`Select ${customer.fullName}`}
+                      aria-label={t('Select {name}', { name: customer.fullName })}
                       onClick={() => selectCustomer(customer.memberQrToken, customer.fullName)}
                     >
                       <span className="min-w-0">
@@ -531,58 +540,72 @@ export function RedemptionsPage() {
                         <span className="block truncate text-xs text-on-surface-variant/70">{customer.email}</span>
                       </span>
                       <span className="shrink-0 text-xs font-semibold text-on-surface-variant/70">
-                        {customer.memberQrToken ? 'Choose' : 'QR required'}
+                        {customer.memberQrToken ? t('Choose') : t('QR required')}
                       </span>
                     </button>
                   ))
                 )}
               </div>
+              <PaginationControls
+                ariaLabel={t('Saved customers pagination')}
+                {...customerPagination}
+                className="mt-3 bg-card"
+                onPageChange={customerPagination.setPage}
+              />
             </div>
 
             <div className="flex items-center gap-3 text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/55">
               <span className="h-px flex-1 bg-outline-variant/20" />
-              Or scan
+              {t('Or scan')}
               <span className="h-px flex-1 bg-outline-variant/20" />
             </div>
 
-            <QrScanner
-              idleMessage="Scan a member QR or gift card QR. Full phone screenshots work too."
-              detectedMessage="QR detected. The transaction form was updated."
-              onDetected={scanTransactionQr}
-            />
+            <div className="min-w-0 [&_button]:h-auto [&_button]:min-h-10 [&_button]:min-w-0 [&_button]:whitespace-normal [&_button]:py-2 [&_button]:text-center [&_button]:leading-snug">
+              <QrScanner
+                idleMessage={t('Scan a member QR or gift card QR. Full phone screenshots work too.')}
+                detectedMessage={t('QR detected. The transaction form was updated.')}
+                onDetected={scanTransactionQr}
+              />
+            </div>
 
             <details className="rounded-lg border border-outline-variant/15 bg-surface-low px-4 py-3">
-              <summary className="cursor-pointer text-sm font-semibold text-primary">Enter a QR link or code manually</summary>
-              <div className="mt-3 flex flex-col gap-3 sm:flex-row">
+              <summary className="cursor-pointer text-sm font-semibold text-primary">{t('Enter a QR link or code manually')}</summary>
+              <div className="mt-3 flex min-w-0 flex-col gap-3 sm:flex-row">
                 <Input
                   id="member-qr-token"
-                  aria-label="Member QR link or token"
+                  aria-label={t('Member QR link or token')}
+                  className="min-w-0"
                   value={memberInput}
                   onChange={(event) => setMemberInput(event.target.value)}
-                  placeholder="Paste the member QR link or token"
+                  placeholder={t('Paste the member QR link or token')}
                 />
-                <Button type="button" variant="secondary" onClick={() => scanMember(memberInput)}>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="h-auto min-h-10 w-full whitespace-normal py-2 text-center leading-snug sm:w-auto sm:shrink-0"
+                  onClick={() => scanMember(memberInput)}
+                >
                   <ShieldCheck className="size-4" />
-                  Load Customer
+                  {t('Load Customer')}
                 </Button>
               </div>
             </details>
 
             {scannedMember.isLoading ? (
-              <p className="rounded-lg bg-surface-low p-3 text-sm font-semibold text-on-surface-variant/70">Loading customer...</p>
+              <p className="rounded-lg bg-surface-low p-3 text-sm font-semibold text-on-surface-variant/70">{t('Loading customer...')}</p>
             ) : scannedMember.data ? (
               <p className="rounded-lg bg-success/10 p-3 text-sm font-semibold text-success" role="status">
-                Customer selected: {scannedMember.data.fullName}
+                {t('Customer selected: {name}', { name: scannedMember.data.fullName })}
               </p>
             ) : memberToken ? (
               <p className="rounded-lg bg-warning/10 p-3 text-sm font-semibold text-warning">
-                Customer not found. Ask them to open their current member QR and scan again.
+                {t('Customer not found. Ask them to open their current member QR and scan again.')}
               </p>
             ) : null}
 
             <div className="grid gap-4 md:grid-cols-2">
               <div className="grid gap-2">
-                <Label htmlFor="original-bill">Step 2 — Bill before tax/service</Label>
+                <Label htmlFor="original-bill">{t('Step 2 — Bill before tax/service')}</Label>
                 <Input
                   id="original-bill"
                   type="number"
@@ -594,77 +617,83 @@ export function RedemptionsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="gift-card-receipt-number">Step 3 — Receipt / bill number</Label>
+                <Label htmlFor="gift-card-receipt-number">{t('Step 3 — Receipt / bill number')}</Label>
                 <Input
                   id="gift-card-receipt-number"
                   value={receiptNumber}
                   onChange={(event) => setReceiptNumber(event.target.value)}
-                  placeholder="Receipt #, factura #, POS bill #"
+                  placeholder={t('Receipt #, invoice #, POS bill #')}
                 />
               </div>
             </div>
 
             <div className="rounded border border-primary-container/20 bg-surface-low p-4">
-              <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="mb-3 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Optional gift card</p>
-                  <p className="text-sm text-on-surface-variant/75">Use only when the customer is paying with a gift card.</p>
+                  <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Optional gift card')}</p>
+                  <p className="text-sm text-on-surface-variant/75">{t('Use only when the customer is paying with a gift card.')}</p>
                 </div>
                 <Badge variant={validationStatus === 'active' ? 'accent' : validationStatus === 'idle' ? 'outline' : 'secondary'}>
-                  {validationStatus === 'idle' ? 'No gift card' : validationStatus.replace('_', ' ')}
+                  {validationStatus === 'idle' ? t('No gift card') : t(validationStatus.replace('_', ' '))}
                 </Badge>
               </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
+              <div className="flex min-w-0 flex-col gap-3 sm:flex-row">
                 <Input
                   id="gift-card-code"
+                  className="min-w-0"
                   value={manualInput}
                   onChange={(event) => updateGiftCardInput(event.target.value)}
-                  placeholder="GC-260429-A1B2C3 or gift card QR link"
+                  placeholder={t('GC-260429-A1B2C3 or gift card QR link')}
                 />
-                <Button type="button" disabled={isValidating} onClick={() => void validate(manualInput)}>
+                <Button
+                  type="button"
+                  className="h-auto min-h-10 w-full whitespace-normal py-2 text-center leading-snug sm:w-auto sm:shrink-0"
+                  disabled={isValidating}
+                  onClick={() => void validate(manualInput)}
+                >
                   <ShieldCheck className="size-4" />
-                  {isValidating ? 'Validating...' : 'Validate Gift Card'}
+                  {isValidating ? t('Validating...') : t('Validate Gift Card')}
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <Badge variant="accent">Step 4</Badge>
-            <CardTitle>Check and Complete</CardTitle>
-            <CardDescription>Confirm these three details, then tap the single button below.</CardDescription>
+        <Card className="min-w-0 overflow-hidden">
+          <CardHeader className="p-4 sm:p-6">
+            <Badge variant="accent">{t('Step 4')}</Badge>
+            <CardTitle>{t('Check and Complete')}</CardTitle>
+            <CardDescription>{t('Confirm these three details, then tap the single button below.')}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="min-w-0 p-4 pt-0 sm:p-6 sm:pt-0">
             <div className="space-y-4 text-sm">
               <div className="rounded-xl bg-surface-low p-4">
-                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Customer</span>
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Customer')}</span>
                 <strong className="mt-1 block text-lg text-primary">
-                  {scannedMember.data?.fullName ?? selectedCard?.customerFirstName ?? 'Choose or scan a customer'}
+                  {scannedMember.data?.fullName ?? selectedCard?.customerFirstName ?? t('Choose or scan a customer')}
                 </strong>
               </div>
               <div className="rounded-xl bg-surface-low p-4">
-                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Customer pays</span>
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Customer pays')}</span>
                 <strong className="mt-1 block text-2xl text-primary">
                   {formatCurrency(rewardableBreakdown?.finalPriceAmount ?? 0)}
                 </strong>
                 {selectedGiftCardValue > 0 ? (
                   <span className="mt-1 block text-xs text-on-surface-variant/70">
-                    Gift card covers {formatCurrency(selectedGiftCardValue)}.
+                    {t('Gift card covers {amount}.', { amount: formatCurrency(selectedGiftCardValue) })}
                   </span>
                 ) : null}
               </div>
               <div className="rounded-xl bg-surface-low p-4">
-                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Customer earns</span>
-                <strong className="mt-1 block text-2xl text-primary">{formatPoints(preview?.pointsAwarded ?? 0)} points</strong>
+                <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Customer earns')}</span>
+                <strong className="mt-1 block text-2xl text-primary">{t('{count} points', { count: formatPoints(preview?.pointsAwarded ?? 0) })}</strong>
               </div>
 
               {selectedCard ? (
                 <div className="rounded-xl border border-primary-container/20 bg-primary/5 p-4">
-                  <p className="font-semibold text-primary-container">{selectedCard.catalog?.title ?? 'Gift card'}</p>
+                  <p className="font-semibold text-primary-container">{selectedCard.catalog?.title ?? t('Gift card')}</p>
                   <p className="mt-1 text-sm text-on-surface-variant">
-                    Balance after this sale: {formatCurrency(Math.max(selectedGiftCardAvailableBalance - selectedGiftCardValue, 0))}
+                    {t('Balance after this sale: {balance}', { balance: formatCurrency(Math.max(selectedGiftCardAvailableBalance - selectedGiftCardValue, 0)) })}
                   </p>
                 </div>
               ) : null}
@@ -674,10 +703,10 @@ export function RedemptionsPage() {
                   <AlertTriangle className="size-5 text-error" />
                   <p>
                     {validationStatus === 'redeemed'
-                      ? 'This gift card has already been redeemed.'
+                      ? t('This gift card has already been redeemed.')
                       : validationStatus === 'wrong_business'
-                        ? 'This gift card belongs to a different business.'
-                        : 'This gift card cannot be redeemed.'}
+                        ? t('This gift card belongs to a different business.')
+                        : t('This gift card cannot be redeemed.')}
                   </p>
                 </div>
               ) : null}
@@ -686,20 +715,20 @@ export function RedemptionsPage() {
                 {hasGiftCardEntry ? (
                   <Button
                     type="button"
-                    className="min-h-12 w-full"
+                    className="h-auto min-h-12 w-full whitespace-normal py-3 text-center leading-snug"
                     disabled={!canProcessWithGiftCard}
                     onClick={() => setConfirmOpen(true)}
                   >
-                    {redeemGiftCard.isPending ? 'Completing Sale...' : 'Redeem Gift Card and Complete Sale'}
+                    {redeemGiftCard.isPending ? t('Completing Sale...') : t('Redeem Gift Card and Complete Sale')}
                   </Button>
                 ) : (
                   <Button
                     type="button"
-                    className="min-h-12 w-full"
+                    className="h-auto min-h-12 w-full whitespace-normal py-3 text-center leading-snug"
                     disabled={!canProcessWithoutGiftCard}
                     onClick={() => void recordStandardTransaction()}
                   >
-                    {recordTransaction.isPending ? 'Completing Sale...' : 'Complete Sale'}
+                    {recordTransaction.isPending ? t('Completing Sale...') : t('Complete Sale')}
                   </Button>
                 )}
               </div>
@@ -711,34 +740,36 @@ export function RedemptionsPage() {
       <section className="space-y-4">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <Badge variant="outline" className="w-fit">History</Badge>
-            <h2 className="mt-3 font-serif text-3xl text-primary">Transaction History</h2>
+            <Badge variant="outline" className="w-fit">{t('History')}</Badge>
+            <h2 className="mt-3 font-serif text-3xl text-primary">{t('Transaction History')}</h2>
             <p className="mt-1 text-sm text-on-surface-variant/75">
-              Recorded customer purchases for {business?.name ?? 'this business'} appear here, including normal member QR sales and gift card transactions.
+              {t('Recorded customer purchases for {business} appear here, including normal member QR sales and gift card transactions.', {
+                business: business?.name ?? t('this business'),
+              })}
             </p>
           </div>
           <p className="text-sm font-semibold text-on-surface-variant/70">
-            {transactionRows.length} transactions
+            {t('{count} transactions', { count: transactionRows.length })}
           </p>
         </div>
 
         {giftCards.isLoading ? (
           <Card>
             <CardContent className="p-6 text-sm font-medium text-on-surface-variant">
-              Loading transaction history...
+              {t('Loading transaction history...')}
             </CardContent>
           </Card>
         ) : transactionRows.length === 0 ? (
           <EmptyState
             className="rounded-[1.5rem] py-10"
             icon={<History className="size-8" />}
-            title="No transactions yet"
-            description="After staff redeem a gift card or scan a member QR and record a purchase, the receipt, rewardable bill, points, commission, and optional gift card code will appear here."
+            title={t('No transactions yet')}
+            description={t('After staff redeem a gift card or scan a member QR and record a purchase, the receipt, rewardable bill, points, commission, and optional gift card code will appear here.')}
           />
         ) : (
           <Card>
             <CardContent className="divide-y divide-outline-variant/10 p-0">
-              {transactionRows.map((transaction) => (
+              {transactionPagination.pageItems.map((transaction) => (
                 <div
                   key={transaction.id}
                   className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,2fr)_minmax(0,1.25fr)] lg:items-start"
@@ -747,33 +778,33 @@ export function RedemptionsPage() {
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge variant={transaction.giftCardCode ? 'secondary' : 'outline'} className="w-fit">
-                        {transaction.statusLabel}
+                        {t(transaction.statusLabel)}
                       </Badge>
                     </div>
-                    <p className="mt-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Receipt</p>
+                    <p className="mt-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Receipt')}</p>
                     <p className="mt-1 break-words font-serif text-xl text-primary-container">
-                      {transaction.receiptNumber ?? (transaction.kind === 'gift_card_redemption' ? 'Gift card only' : 'No receipt')}
+                      {transaction.receiptNumber ?? (transaction.kind === 'gift_card_redemption' ? t('Gift card only') : t('No receipt'))}
                     </p>
-                    <p className="mt-1 text-xs font-semibold text-on-surface-variant">{formatDateTime(transaction.createdAt)}</p>
-                    <p className="mt-4 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Customer</p>
+                    <p className="mt-1 text-xs font-semibold text-on-surface-variant">{formatDateTime(transaction.createdAt, selectedLocale, t('Not recorded'))}</p>
+                    <p className="mt-4 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Customer')}</p>
                     <p className="mt-1 font-semibold text-on-surface">{transaction.customer}</p>
                   </div>
 
                   <div className="grid min-w-0 gap-3 sm:grid-cols-3">
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Total</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Total')}</p>
                       <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-total">
                         {transaction.totalAmountLabel}
                       </p>
                     </div>
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Gift Card Discount</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Gift Card Discount')}</p>
                       <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-gift-card-discount">
                         {transaction.discountLabel}
                       </p>
                     </div>
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Final Price</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Final Price')}</p>
                       <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-final-price">
                         {transaction.finalPriceLabel}
                       </p>
@@ -782,12 +813,12 @@ export function RedemptionsPage() {
 
                   <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-1">
                     <div className="rounded-xl border border-primary/15 bg-primary/5 p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Points</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Points')}</p>
                       <p className="mt-2 text-lg font-semibold text-on-surface">{transaction.pointsLabel}</p>
                     </div>
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">Gift Card</p>
-                      <p className="mt-2 break-all font-mono text-xs font-semibold text-on-surface">{transaction.giftCardCode ?? 'None'}</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Gift Card')}</p>
+                      <p className="mt-2 break-all font-mono text-xs font-semibold text-on-surface">{transaction.giftCardCode ?? t('None')}</p>
                     </div>
                   </div>
                 </div>
@@ -795,6 +826,7 @@ export function RedemptionsPage() {
             </CardContent>
           </Card>
         )}
+        <PaginationControls ariaLabel={t('Transaction history pagination')} {...transactionPagination} onPageChange={transactionPagination.setPage} />
       </section>
 
       <RedemptionConfirmationDialog

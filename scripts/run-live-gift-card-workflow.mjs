@@ -17,10 +17,11 @@ if (existsSync('.env')) {
 const target = String(process.argv[2] ?? '').trim().toLowerCase()
 const configurations = {
   rewardme: {
-    baseUrl: process.env.E2E_REWARDME_URL ?? 'https://loyalty-rewards-prog.vercel.app',
+    baseUrl: process.env.E2E_REWARDME_URL ?? 'https://rewardme-prod.vercel.app',
     customer: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
     owner: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
     staff: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
+    admin: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
     businessSlug: 'pinas-qa-partner',
   },
   wondertown: {
@@ -28,6 +29,7 @@ const configurations = {
     customer: process.env.E2E_WONDERTOWN_CUSTOMER_EMAIL ?? 'member@wondertown.test',
     owner: process.env.E2E_WONDERTOWN_BUSINESS_OWNER_EMAIL ?? 'owner@wondertown.test',
     staff: process.env.E2E_WONDERTOWN_BUSINESS_STAFF_EMAIL ?? 'staff@wondertown.test',
+    admin: process.env.E2E_WONDERTOWN_ADMIN_EMAIL ?? process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
     businessSlug: 'wondertown-moonbeam-cafe',
   },
 }
@@ -60,6 +62,7 @@ const child = spawn(process.execPath, [
     E2E_CUSTOMER_EMAIL: configuration.customer,
     E2E_BUSINESS_OWNER_EMAIL: configuration.owner,
     E2E_BUSINESS_STAFF_EMAIL: configuration.staff,
+    E2E_ADMIN_EMAIL: configuration.admin,
     E2E_BUSINESS_SLUG: configuration.businessSlug,
     WORKFLOW_TEST_RUN_ID: `${target}-${Date.now()}`,
   },
