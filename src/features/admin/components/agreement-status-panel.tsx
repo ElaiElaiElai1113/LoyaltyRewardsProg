@@ -10,7 +10,7 @@ import { PaginationControls } from '@/components/ui/pagination-controls'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Skeleton } from '@/components/ui/skeleton'
 import { Textarea } from '@/components/ui/textarea'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import type { AgreementStatusRecord } from '@/types/domain'
 
@@ -75,7 +75,7 @@ export function AgreementStatusPanel({
     if (filter === 'unsigned') return records.filter((record) => !record.isSigned)
     return records
   }, [filter, records])
-  const pagination = usePagination(filteredRecords, 10, filter)
+  const pagination = usePagination(filteredRecords, COMPACT_LIST_PAGE_SIZE, filter)
 
   async function handleCreateDocumentSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()

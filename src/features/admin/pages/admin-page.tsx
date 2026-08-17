@@ -12,6 +12,7 @@ import { RewardCard } from '@/features/rewards/components/reward-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CompactFilter } from '@/components/ui/compact-filter'
+import { CompactRecordList, CompactRecordRow } from '@/components/ui/compact-record-list'
 import { CompactSearch } from '@/components/ui/compact-search'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { EmptyState } from '@/components/ui/empty-state'
@@ -61,7 +62,7 @@ import {
   useUseCredit,
 } from '@/hooks/use-admin-data'
 import { useAuth } from '@/hooks/use-auth'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { usePromotions, useRewards } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
 import { searchMatches } from '@/lib/search'
@@ -625,7 +626,7 @@ export function AdminPage() {
   )
   const memberPagination = usePagination(
     filteredCustomerMembers,
-    8,
+    COMPACT_LIST_PAGE_SIZE,
     `${memberSearch}:${memberVerificationFilter}`,
   )
   const rewardPagination = usePagination(
@@ -645,21 +646,21 @@ export function AdminPage() {
   )
   const partnerPagination = usePagination(
     filteredBusinesses,
-    10,
+    COMPACT_LIST_PAGE_SIZE,
     `${partnerSearch}:${partnerListFilter}`,
   )
-  const partnerReferralActivityPagination = usePagination(partnerReferrals.data ?? [], 6)
+  const partnerReferralActivityPagination = usePagination(partnerReferrals.data ?? [], COMPACT_LIST_PAGE_SIZE)
   const verificationOrderPagination = usePagination(
     verificationOrders.data ?? [],
-    10,
+    COMPACT_LIST_PAGE_SIZE,
     verificationBusinessId,
   )
-  const ambassadorLeadPagination = usePagination(ambassadorLeads.data ?? [], 10)
-  const earlyAccessLeadPagination = usePagination(earlyAccessLeads.data ?? [], 10)
-  const referralPagination = usePagination(allReferrals.data ?? [], 10)
-  const redemptionPagination = usePagination(overview.data?.redemptions ?? [], 8)
-  const adminLogPagination = usePagination(overview.data?.adminLogs ?? [], 8)
-  const memberTransactionPagination = usePagination(memberTransactions.data ?? [], 10)
+  const ambassadorLeadPagination = usePagination(ambassadorLeads.data ?? [], COMPACT_LIST_PAGE_SIZE)
+  const earlyAccessLeadPagination = usePagination(earlyAccessLeads.data ?? [], COMPACT_LIST_PAGE_SIZE)
+  const referralPagination = usePagination(allReferrals.data ?? [], COMPACT_LIST_PAGE_SIZE)
+  const redemptionPagination = usePagination(overview.data?.redemptions ?? [], COMPACT_LIST_PAGE_SIZE)
+  const adminLogPagination = usePagination(overview.data?.adminLogs ?? [], COMPACT_LIST_PAGE_SIZE)
+  const memberTransactionPagination = usePagination(memberTransactions.data ?? [], COMPACT_LIST_PAGE_SIZE)
   const accessDialogBusiness =
     allBusinesses.data?.find((business) => business.id === businessAccessDialog?.businessId) ?? null
   const memberById = new Map(
@@ -1121,25 +1122,24 @@ export function AdminPage() {
                 </div>
               </div>
 
-              <div className="grid min-w-0 gap-4 pointer-events-auto">
+              <div className="min-w-0 space-y-3 pointer-events-auto">
+                {memberPagination.pageItems.length > 0 ? (
+                <CompactRecordList aria-label={t('Members')}>
                 {memberPagination.pageItems.map(({ profile: member, balance }) => (
-                  <div
+                  <CompactRecordRow
                     key={member.id}
-                    className={`rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm group flex min-w-0 flex-col gap-5 rounded-[2rem] p-5 transition-all sm:p-6 xl:flex-row xl:items-center xl:justify-between ${
-                      selectedProfileId === member.id
-                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
-                        : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm'
-                    }`}
+                    selected={selectedProfileId === member.id}
+                    className="group flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
                   >
-                    <div className="flex min-w-0 flex-col gap-4 sm:flex-row sm:items-center sm:gap-5">
-                       <div className="size-14 shrink-0 rounded-2xl bg-gradient-to-br from-primary to-primary-container flex items-center justify-center font-serif text-2xl text-primary-foreground shadow-lg transition-transform group-hover:scale-105 sm:size-16">
+                    <div className="flex min-w-0 items-center gap-3">
+                       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-container font-serif text-lg text-primary-foreground shadow-sm">
                           {member.fullName.charAt(0)}
                        </div>
                       <div className="min-w-0">
-                        <p className="font-serif text-2xl tracking-tight text-primary leading-tight">{member.fullName}</p>
-                        <p className="mt-1 break-all text-sm font-medium text-on-surface-variant/90">{member.email}</p>
-                        <div className="mt-2 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                          <span className="break-all text-[0.6rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/75 italic">
+                        <p className="truncate font-serif text-lg leading-tight text-primary">{member.fullName}</p>
+                        <p className="mt-0.5 truncate text-sm font-medium text-on-surface-variant/90">{member.email}</p>
+                        <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                          <span className="max-w-full truncate text-[0.6rem] font-bold uppercase tracking-[0.12em] text-on-surface-variant/75 italic">
                             {t('ID:')} {member.id}
                           </span>
                           <span className="size-1 rounded-full bg-outline-variant/30"></span>
@@ -1149,14 +1149,14 @@ export function AdminPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex w-full flex-wrap items-center gap-2 sm:gap-3 xl:w-auto xl:justify-end">
-                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-3 py-1.5 font-semibold text-primary">{member.role}</Badge>
+                    <div className="flex w-full flex-wrap items-center gap-2 pl-13 lg:w-auto lg:justify-end lg:pl-0">
+                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-2.5 py-1 font-semibold text-primary">{member.role}</Badge>
                       <Badge
                         variant="accent"
                         className={
                           member.verificationDocumentPath
-                            ? 'border-success/25 bg-success/10 px-3 py-1.5 font-semibold text-success'
-                            : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
+                            ? 'border-success/25 bg-success/10 px-2.5 py-1 font-semibold text-success'
+                            : 'border-warning/25 bg-warning/10 px-2.5 py-1 font-semibold text-warning'
                         }
                       >
                         <IdCard className="size-3" />
@@ -1166,19 +1166,19 @@ export function AdminPage() {
                         variant="accent"
                         className={
                           member.verificationStatus === 'verified'
-                            ? 'border-success/25 bg-success/10 px-3 py-1.5 font-semibold text-success'
+                            ? 'border-success/25 bg-success/10 px-2.5 py-1 font-semibold text-success'
                             : member.verificationStatus === 'rejected'
-                              ? 'border-red-200 bg-red-50 px-3 py-1.5 font-semibold text-red-600'
-                              : 'border-warning/25 bg-warning/10 px-3 py-1.5 font-semibold text-warning'
+                              ? 'border-red-200 bg-red-50 px-2.5 py-1 font-semibold text-red-600'
+                              : 'border-warning/25 bg-warning/10 px-2.5 py-1 font-semibold text-warning'
                         }
                       >
                         {t(getVerificationStatusLabel(member.verificationStatus))}
                       </Badge>
-                      <Badge variant="accent" className="flex items-center gap-1.5 border-primary/25 bg-primary/12 px-3 py-1.5 font-semibold text-primary">
+                      <Badge variant="accent" className="flex items-center gap-1 border-primary/25 bg-primary/12 px-2.5 py-1 font-semibold text-primary">
                         <Gift className="size-3" />
                         {balance?.points ?? 0} {t('points')}
                       </Badge>
-                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/15 px-3 py-1.5 font-semibold text-primary">
+                      <Badge variant="accent" className="border-primary-container/25 bg-primary-container/15 px-2.5 py-1 font-semibold text-primary">
                         {balance?.availableCredits ?? 0} {t('Reward Credits')}
                       </Badge>
                       <Button
@@ -1211,8 +1211,10 @@ export function AdminPage() {
                         {t('Remove')}
                       </Button>
                     </div>
-                  </div>
+                  </CompactRecordRow>
                 ))}
+                </CompactRecordList>
+                ) : null}
                 {customerMembers.length === 0 ? (
                   <EmptyState
                     icon={<Users className="size-8" />}
@@ -3654,24 +3656,24 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Fulfillment')}</span>
                 <h2 className="font-serif text-3xl text-primary">{t('Fulfillment Queue')}</h2>
               </div>
-              <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
-                <ScrollArea className="h-[500px]">
-                  <div className="space-y-2 p-3 sm:p-4">
+              <div className="space-y-3">
+                {(overview.data?.redemptions?.length ?? 0) > 0 ? (
+                  <CompactRecordList aria-label={t('Fulfillment Queue')}>
                     {redemptionPagination.pageItems.map((redemption) => (
-                      <div key={redemption.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-4 border border-outline-variant/5 hover:border-outline-variant/10 transition-all sm:p-5">
-                        <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
-                          <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-                            <div className="size-11 rounded-xl bg-tertiary/30 flex items-center justify-center text-primary shrink-0 sm:size-12">
-                              <Gift className="size-5" />
+                      <CompactRecordRow key={redemption.id} className="space-y-2">
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-tertiary/30 text-primary">
+                              <Gift className="size-4" />
                             </div>
-                            <div className="min-w-0 space-y-1">
-                              <p className="font-serif text-lg tracking-tight text-primary sm:text-xl">{redemption.rewardTitle}</p>
-                              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">
+                            <div className="min-w-0">
+                              <p className="truncate font-serif text-base text-primary sm:text-lg">{redemption.rewardTitle}</p>
+                              <p className="truncate text-[0.6rem] font-bold uppercase tracking-widest text-on-surface-variant/75 italic">
                                 {t('Member ID:')} {redemption.profileId.slice(0, 8)}...
                               </p>
                             </div>
                           </div>
-                          <div className="flex flex-wrap items-center gap-2 sm:flex-col sm:items-end sm:gap-3">
+                          <div className="flex flex-wrap items-center gap-2 pl-12 sm:pl-0">
                             <Badge variant={redemption.status === 'ready' ? 'outline' : 'accent'} className={
                               redemption.status === 'ready'
                                 ? 'border-warning/50 text-warning bg-warning/10'
@@ -3693,31 +3695,29 @@ export function AdminPage() {
                             )}
                           </div>
                         </div>
-                        <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-outline-variant/5 pt-4">
+                        <div className="flex flex-wrap items-center justify-between gap-2 pl-12 text-xs sm:pl-12">
                            <div className="flex items-center gap-2">
-                             <TrendingUp className="size-4 text-secondary" />
-                             <span className="text-sm font-bold text-primary">{redemption.pointsCost} {t('points')}</span>
+                             <TrendingUp className="size-3.5 text-secondary" />
+                             <span className="font-bold text-primary">{redemption.pointsCost} {t('points')}</span>
                            </div>
-                           <span className="flex items-center gap-1 text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
+                           <span className="flex items-center gap-1 text-[0.6rem] font-bold uppercase tracking-widest text-on-surface-variant/80">
                              {formatDate(redemption.redeemedAt)}
                            </span>
                         </div>
-                      </div>
+                      </CompactRecordRow>
                     ))}
-                    {(overview.data?.redemptions?.length ?? 0) === 0 && (
-                      <EmptyState
-                        className="border-0 shadow-none"
-                        icon={<Gift className="size-8" />}
-                        title={t('No redemptions yet')}
-                        description={t('Reward fulfillment requests will appear here.')}
-                      />
-                    )}
-                  </div>
-                </ScrollArea>
+                  </CompactRecordList>
+                ) : (
+                  <EmptyState
+                    className="border-0 shadow-none"
+                    icon={<Gift className="size-8" />}
+                    title={t('No redemptions yet')}
+                    description={t('Reward fulfillment requests will appear here.')}
+                  />
+                )}
                 <PaginationControls
                   ariaLabel={t('Fulfillment queue pagination')}
                   {...redemptionPagination}
-                  className="m-4"
                   onPageChange={redemptionPagination.setPage}
                 />
               </div>
@@ -3728,46 +3728,42 @@ export function AdminPage() {
                 <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Audit Log')}</span>
                 <h2 className="font-serif text-3xl text-primary">{t('Admin Logs')}</h2>
               </div>
-               <div className="rounded-3xl bg-card border border-outline-variant/20 shadow-sm overflow-hidden">
-                <ScrollArea className="h-[500px]">
-                  <div className="space-y-2 p-3 sm:p-4">
+               <div className="space-y-3">
+                {(overview.data?.adminLogs?.length ?? 0) > 0 ? (
+                  <CompactRecordList aria-label={t('Admin Logs')}>
                     {adminLogPagination.pageItems.map((log) => (
-                      <div key={log.id} className="rounded-2xl bg-surface-lowest hover:bg-surface-low p-4 border border-outline-variant/5 hover:border-outline-variant/10 transition-all sm:p-5">
-                        <div className="grid gap-3 sm:flex sm:items-start sm:justify-between sm:gap-4">
-                          <div className="flex min-w-0 items-start gap-3 sm:gap-4">
-                            <div className="size-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0 sm:size-12">
-                              <Activity className="size-5" />
+                      <CompactRecordRow key={log.id}>
+                        <div className="flex min-w-0 items-start gap-3">
+                            <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                              <Activity className="size-4" />
                             </div>
-                            <div className="min-w-0 space-y-1">
-                              <p className="font-serif text-lg tracking-tight text-primary leading-tight">{log.action}</p>
-                              <p className="mt-2 break-words text-sm font-medium leading-relaxed text-on-surface-variant/85">{log.details}</p>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                                <p className="font-serif text-base leading-tight text-primary sm:text-lg">{log.action}</p>
+                                <span className="shrink-0 text-[0.6rem] font-bold uppercase tracking-widest text-on-surface-variant/75">
+                                  {formatDate(log.createdAt)}
+                                </span>
+                              </div>
+                              <p className="mt-1 break-words text-sm font-medium leading-5 text-on-surface-variant/85">{log.details}</p>
+                              <p className="mt-1 text-[0.6rem] font-bold uppercase tracking-widest text-primary italic">
+                                {t('By')} {log.actorName}
+                              </p>
                             </div>
-                          </div>
-                          <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/75 sm:whitespace-nowrap">
-                            {formatDate(log.createdAt)}
-                          </span>
                         </div>
-                        <div className="mt-4 pt-4 border-t border-outline-variant/5">
-                           <div className="flex items-center gap-2">
-                             <span className="text-[0.65rem] font-bold uppercase tracking-widest text-primary italic">{t('By')} {log.actorName}</span>
-                           </div>
-                        </div>
-                      </div>
+                      </CompactRecordRow>
                     ))}
-                    {(overview.data?.adminLogs?.length ?? 0) === 0 ? (
-                      <EmptyState
-                        className="border-0 shadow-none"
-                        icon={<Activity className="size-8" />}
-                        title={t('No admin logs yet')}
-                        description={t('Administrative changes will appear here.')}
-                      />
-                    ) : null}
-                  </div>
-                </ScrollArea>
+                  </CompactRecordList>
+                ) : (
+                  <EmptyState
+                    className="border-0 shadow-none"
+                    icon={<Activity className="size-8" />}
+                    title={t('No admin logs yet')}
+                    description={t('Administrative changes will appear here.')}
+                  />
+                )}
                 <PaginationControls
                   ariaLabel={t('Admin logs pagination')}
                   {...adminLogPagination}
-                  className="m-4"
                   onPageChange={adminLogPagination.setPage}
                 />
               </div>

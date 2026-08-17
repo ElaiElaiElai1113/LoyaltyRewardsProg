@@ -9,6 +9,7 @@ import {
   getFirstRewardForBusiness,
   getLatestRedemptionForCustomer,
   getProfileByEmail,
+  getRewardById,
   getRewardBalance,
   getSupabaseSessionClient,
   recordMemberQrSale,
@@ -59,12 +60,23 @@ test.describe.serial('reward redemption and fulfillment workflow automation', ()
   test('RW002 verified customer can redeem a reward and see activity', async ({ page }) => {
     const customerClient = await getSupabaseSessionClient(e2eAccounts.customer)
     const reward = await getFirstRewardForBusiness(customerClient, businessId)
-    const redeemed = await redeemRewardForCustomer(customerClient, reward.id, redemptionNote)
+    const balanceBefore = await getRewardBalance(customerClient, customerProfileId)
+    const requestId = crypto.randomUUID()
+    const redeemed = await redeemRewardForCustomer(customerClient, reward.id, redemptionNote, requestId)
+    const replayed = await redeemRewardForCustomer(customerClient, reward.id, redemptionNote, requestId)
+    await expect(
+      redeemRewardForCustomer(customerClient, reward.id, `${redemptionNote}-different`, requestId),
+    ).rejects.toThrow(/different reward redemption/i)
     const latestRedemption = await getLatestRedemptionForCustomer(customerClient, customerProfileId)
+    const balanceAfter = await getRewardBalance(customerClient, customerProfileId)
+    const rewardAfter = await getRewardById(customerClient, reward.id)
     redemptionId = latestRedemption.id as string
 
     expect(latestRedemption.id).toBe(redeemed.id)
+    expect(replayed.id).toBe(redeemed.id)
     expect(latestRedemption.status).toBe('ready')
+    expect(balanceAfter.points).toBe(balanceBefore.points - reward.points_cost)
+    expect(rewardAfter.inventory).toBe(reward.inventory - 1)
 
     await signInCustomer(page, e2eAccounts.customer)
     await page.goto('/activity')

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 export const DEFAULT_PAGE_SIZE = 8
+export const COMPACT_LIST_PAGE_SIZE = 5
 
 export function resolvePaginationPage(requestedPage: number, totalPages: number, reset = false) {
   if (reset) return 1

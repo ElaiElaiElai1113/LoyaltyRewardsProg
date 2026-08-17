@@ -210,7 +210,7 @@ export function useRedeemReward(profileId?: string) {
   const { profile } = useAuth()
 
   return useMutation({
-    mutationFn: (values: RedeemFormValues & { rewardId: string }) => {
+    mutationFn: (values: RedeemFormValues & { rewardId: string; clientRequestId: string }) => {
       requireLaunchCustomer(profile)
       return rewardsService.redeemReward({
         ...values,

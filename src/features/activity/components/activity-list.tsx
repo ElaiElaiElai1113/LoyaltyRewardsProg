@@ -3,9 +3,10 @@ import { Link } from 'react-router'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { CompactRecordList, CompactRecordRow } from '@/components/ui/compact-record-list'
 import { EmptyState } from '@/components/ui/empty-state'
 import { PaginationControls } from '@/components/ui/pagination-controls'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import { formatDate, formatPoints, formatTime } from '@/lib/utils'
 import type { Activity } from '@/types/domain'
@@ -49,7 +50,7 @@ function getActivityKind(type: Activity['type']) {
 
 export function ActivityList({ items, emptyActionTo, emptyActionLabel, paginationAriaLabel = 'Activity pagination' }: ActivityListProps) {
   const { t } = useLanguage()
-  const pagination = usePagination(items)
+  const pagination = usePagination(items, COMPACT_LIST_PAGE_SIZE)
 
   if (items.length === 0) {
     return (
@@ -70,45 +71,43 @@ export function ActivityList({ items, emptyActionTo, emptyActionLabel, paginatio
 
   return (
     <div className="space-y-3">
-      {pagination.pageItems.map((item) => {
-        const Icon = getIcon(item.type)
-        const activityKind = getActivityKind(item.type)
+      <CompactRecordList aria-label={t('Recent Activity')}>
+        {pagination.pageItems.map((item) => {
+          const Icon = getIcon(item.type)
+          const activityKind = getActivityKind(item.type)
 
-        return (
-          <div key={item.id} className="group relative flex flex-col gap-4 rounded-2xl bg-surface-low p-4 transition-all hover:bg-surface-highest/40 sm:p-5 md:flex-row md:items-center md:justify-between md:gap-6 md:p-6">
-            <div className="flex min-w-0 items-start gap-3 sm:gap-4 md:items-center md:gap-6">
-              <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-surface-lowest text-primary shadow-sm transition-all group-hover:shadow-md sm:size-12 md:size-14">
-                <Icon className="size-5 md:size-6" />
-              </div>
-              <div className="min-w-0 space-y-2">
-                <div className="flex flex-wrap items-center gap-2 md:gap-3">
-                  <h3 className="min-w-0 break-words font-serif text-lg leading-tight tracking-tight text-primary sm:text-xl">{t(item.title)}</h3>
-                  <Badge variant="outline" className="rounded-full px-2 py-1 text-[0.65rem] tracking-[0.08em] md:px-3">
-                    {t(activityKind)}
-                  </Badge>
-                  <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full px-2 py-1 text-[0.65rem] tracking-[0.08em] md:px-3">
-                    {item.points >= 0 ? `+${formatPoints(item.points)} ${t('points')}` : `${formatPoints(item.points)} ${t('points')}`}
-                  </Badge>
-                  {item.status === 'pending' ? (
-                    <Badge variant="secondary" className="rounded-full px-2 py-1 text-[0.65rem] tracking-[0.08em] md:px-3">
-                      {t('Pending')}
-                    </Badge>
-                  ) : null}
+          return (
+            <CompactRecordRow key={item.id} className="group flex items-start gap-3">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-surface-low text-primary sm:size-10">
+                  <Icon className="size-4 sm:size-5" />
                 </div>
-                <p className="break-words text-sm font-medium leading-6 text-on-surface-variant/80">{t(item.description)}</p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-outline-variant/10 pt-3 md:flex-col md:items-end md:gap-1 md:border-t-0 md:pt-0">
-              <div className="flex flex-col md:items-end">
-                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/70">{t('Date')}</span>
-                <p className="text-sm font-semibold text-on-surface-variant/70">{formatDate(item.createdAt)}</p>
-              </div>
-              <p className="hidden text-[0.65rem] font-bold uppercase tracking-widest text-on-surface-variant/65 italic md:block">{formatTime(item.createdAt)}</p>
-            </div>
-          </div>
-        )
-      })}
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+                    <h3 className="min-w-0 font-serif text-base leading-tight text-primary sm:text-lg">{t(item.title)}</h3>
+                    <div className="shrink-0 text-[0.6rem] font-bold uppercase tracking-widest text-on-surface-variant/70 sm:text-right">
+                      <p>{formatDate(item.createdAt)}</p>
+                      <p className="italic">{formatTime(item.createdAt)}</p>
+                    </div>
+                  </div>
+                  <p className="mt-1 break-words text-sm font-medium leading-5 text-on-surface-variant/80">{t(item.description)}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-1.5">
+                    <Badge variant="outline" className="rounded-full px-2 py-0.5 text-[0.6rem] tracking-[0.08em]">
+                      {t(activityKind)}
+                    </Badge>
+                    <Badge variant={item.points >= 0 ? 'success' : 'default'} className="rounded-full px-2 py-0.5 text-[0.6rem] tracking-[0.08em]">
+                      {item.points >= 0 ? `+${formatPoints(item.points)} ${t('points')}` : `${formatPoints(item.points)} ${t('points')}`}
+                    </Badge>
+                    {item.status === 'pending' ? (
+                      <Badge variant="secondary" className="rounded-full px-2 py-0.5 text-[0.6rem] tracking-[0.08em]">
+                        {t('Pending')}
+                      </Badge>
+                    ) : null}
+                  </div>
+                </div>
+            </CompactRecordRow>
+          )
+        })}
+      </CompactRecordList>
       <PaginationControls ariaLabel={paginationAriaLabel} {...pagination} onPageChange={pagination.setPage} />
     </div>
   )

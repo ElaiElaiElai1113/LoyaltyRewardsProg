@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input'
 import { LoadingState } from '@/components/ui/loading-state'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { programService, type ProgramTeamMember } from '@/features/program/program-service'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 
 type Translator = (text: string | null | undefined, values?: Record<string, string | number>) => string
@@ -35,7 +35,7 @@ export function ProgramTeamPage() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [loadError, setLoadError] = useState<string | null>(null)
-  const pagination = usePagination(team, 10)
+  const pagination = usePagination(team, COMPACT_LIST_PAGE_SIZE)
   const load = useCallback(async () => {
     setIsLoading(true)
     setLoadError(null)

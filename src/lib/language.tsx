@@ -38,6 +38,8 @@ const languageDisplayNames: Record<Language, Record<Language, string>> = {
 }
 
 const spanishTranslations: Record<string, string> = {
+  'Loading customers': 'Cargando clientes',
+  items: 'artículos',
   Pagination: 'Paginación',
   Previous: 'Anterior',
   Next: 'Siguiente',
@@ -3223,6 +3225,8 @@ const spanishTranslations: Record<string, string> = {
 }
 
 const tagalogTranslations: Record<string, string> = {
+  'Loading customers': 'Naglo-load ng mga customer',
+  items: 'mga item',
   Pagination: 'Paglipat ng pahina',
   'Showing {start}-{end} of {total}': 'Ipinapakita ang {start}-{end} sa {total}',
   'Page {page} of {totalPages}': 'Pahina {page} sa {totalPages}',

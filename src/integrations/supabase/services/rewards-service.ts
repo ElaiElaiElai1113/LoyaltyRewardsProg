@@ -1,4 +1,4 @@
-import { createClientRequestId, isPickupWindow } from '@/features/critical-flows/critical-flow'
+import { isPickupWindow } from '@/features/critical-flows/critical-flow'
 import type { Redemption, Reward } from '@/types/domain'
 import type { RedeemFormValues, RewardDraftFormValues } from '@/types/forms'
 import { camelCaseRow, friendlySupabaseError, requireSupabase, snakeCaseObj } from './shared'
@@ -7,6 +7,7 @@ import { getActiveProgram } from '@/features/tenant/tenant-service'
 interface RedeemInput extends RedeemFormValues {
   profileId: string
   rewardId: string
+  clientRequestId: string
 }
 
 export const rewardsService = {
@@ -51,7 +52,7 @@ export const rewardsService = {
       p_reward_id: input.rewardId,
       p_pickup_window: input.pickupWindow,
       p_notes: input.notes ?? null,
-      p_client_request_id: createClientRequestId(),
+      p_client_request_id: input.clientRequestId,
     })
 
     const redemptionRow = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null

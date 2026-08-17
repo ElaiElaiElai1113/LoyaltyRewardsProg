@@ -1593,6 +1593,76 @@ runTest('business transaction page previews rewards and commission before record
   assert.match(page, /recordTransaction/)
 })
 
+runTest('QR and gift-card transaction retries keep one client request identity', () => {
+  const memberSalePage = readFileSync('src/features/business-owner/pages/member-sale-page.tsx', 'utf8')
+  const transactionsPage = readFileSync('src/features/gift-cards/pages/redemptions-page.tsx', 'utf8')
+  const migration = readFileSync(
+    'supabase/migrations/20260817120452_idempotent_gift_card_redemption.sql',
+    'utf8',
+  )
+
+  assert.match(memberSalePage, /useState\(createClientRequestId\)/)
+  assert.match(memberSalePage, /clientRequestId: transactionRequestId/)
+  assert.match(memberSalePage, /setTransactionRequestId\(createClientRequestId\(\)\)/)
+  assert.match(memberSalePage, /Keep the request ID and form values so a retry cannot record the sale twice/)
+  assert.match(transactionsPage, /giftCardRequestIdRef/)
+  assert.match(transactionsPage, /standardTransactionRequestIdRef/)
+  assert.match(transactionsPage, /giftCardRequestIdRef\.current \?\? createClientRequestId\(\)/)
+  assert.match(transactionsPage, /standardTransactionRequestIdRef\.current \?\? createClientRequestId\(\)/)
+  assert.match(migration, /rename to record_member_transaction_once/)
+  assert.match(migration, /alter function public\.record_member_transaction_once[\s\S]*set search_path = ''/)
+  assert.match(migration, /member_transaction\.profile_id = member_profile\.id/)
+  assert.match(migration, /member_transaction\.purchase_amount = purchase_amount_value/)
+  assert.match(migration, /lower\(trim\(member_transaction\.receipt_number\)\) = lower\(receipt_number_value\)/)
+  assert.match(migration, /member_transaction\.note is not distinct from note_value/)
+  assert.match(migration, /rename to redeem_gift_card_once/)
+  assert.match(migration, /alter function public\.redeem_gift_card_once[\s\S]*set search_path = ''/)
+  assert.match(migration, /metadata ->> 'client_request_id' = p_client_request_id::text/)
+  assert.match(migration, /pg_catalog\.pg_advisory_xact_lock/)
+  assert.match(migration, /pg_catalog\.hashtextextended/)
+  assert.match(migration, /requested_gift_card_amount_value numeric\(12,2\)/)
+  assert.match(migration, /jsonb_typeof\(event\.metadata -> 'requested_gift_card_amount'\) = 'null'/)
+  assert.match(migration, /'requested_gift_card_amount', coalesce\(/)
+  assert.match(migration, /to_jsonb\(requested_gift_card_amount_value\)/)
+  assert.match(migration, /This request was already used for a different transaction/)
+  assert.match(migration, /revoke all on function public\.redeem_gift_card_once[\s\S]*from public, anon, authenticated/)
+})
+
+runTest('reward redemption retries preserve one ID and reject changed payloads', () => {
+  const panel = readFileSync('src/features/rewards/components/redeem-reward-panel.tsx', 'utf8')
+  const service = readFileSync('src/integrations/supabase/services/rewards-service.ts', 'utf8')
+  const migration = readFileSync(
+    'supabase/migrations/20260817121855_strict_reward_redemption_idempotency.sql',
+    'utf8',
+  )
+
+  assert.match(panel, /useState\(createClientRequestId\)/)
+  assert.match(panel, /clientRequestId,/)
+  assert.ok(panel.indexOf('setClientRequestId(createClientRequestId())') > panel.indexOf('await onSubmit({'))
+  assert.match(service, /p_client_request_id: input\.clientRequestId/)
+  assert.match(migration, /rename to redeem_reward_once/)
+  assert.match(migration, /alter function public\.redeem_reward_once[\s\S]*set search_path = ''/)
+  assert.match(migration, /pg_catalog\.pg_advisory_xact_lock/)
+  assert.match(migration, /normalized_pickup_window/)
+  assert.match(migration, /normalized_notes/)
+  assert.match(migration, /result_redemption\.program_id <> requested_program_id/)
+  assert.match(migration, /result_redemption\.reward_id <> p_reward_id/)
+  assert.match(migration, /result_redemption\.notes[\s\S]*is distinct from normalized_notes/)
+  assert.match(migration, /This request was already used for a different reward redemption/)
+  assert.match(migration, /revoke all on function public\.redeem_reward_once[\s\S]*from public, anon, authenticated/)
+})
+
+runTest('business transaction picker keeps customer and gift-card modes unambiguous', () => {
+  const transactionsPage = readFileSync('src/features/gift-cards/pages/redemptions-page.tsx', 'utf8')
+
+  assert.match(transactionsPage, /function clearMemberSelection\(\)/)
+  assert.match(transactionsPage, /function clearGiftCardSelection\(\)/)
+  assert.match(transactionsPage, /function scanMember[\s\S]*clearGiftCardSelection\(\)/)
+  assert.match(transactionsPage, /async function validate[\s\S]*clearMemberSelection\(\)/)
+  assert.match(transactionsPage, /function updateGiftCardInput[\s\S]*clearMemberSelection\(\)/)
+  assert.match(transactionsPage, /selectedCard\?\.customerFirstName \?\? scannedMember\.data\?\.fullName/)
+})
+
 runTest('admin members profile panel uses compact stats and action tabs instead of one long vertical card', () => {
   const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
   const membersStart = adminPage.indexOf('<TabsContent value="members"')

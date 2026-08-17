@@ -71,6 +71,7 @@ export function MemberSalePage() {
   const member = useScannedMember(token)
   const [recordedTransaction, setRecordedTransaction] = useState<MemberTransaction | null>(null)
   const [giftCardSaleContext, setGiftCardSaleContext] = useState<GiftCardSaleContext | null>(() => readGiftCardSaleContext())
+  const [transactionRequestId, setTransactionRequestId] = useState(createClientRequestId)
   const recordTransaction = useRecordMemberTransaction(business?.id, member.data?.id)
 
   const form = useForm<MemberTransactionFormValues>({
@@ -134,6 +135,35 @@ export function MemberSalePage() {
     }
   }, [form, giftCardSaleContext])
 
+  async function submitTransaction(values: MemberTransactionFormValues) {
+    let transaction: MemberTransaction
+    try {
+      transaction = await recordTransaction.mutateAsync({
+        token,
+        purchaseAmount: rewardableBreakdown?.rewardableAmount ?? values.purchaseAmount,
+        receiptNumber: values.receiptNumber,
+        note: [
+          values.note,
+          rewardableBreakdown
+            ? `Bill before tax/service: ${formatCurrency(rewardableBreakdown.originalReceiptTotal)}; gift card: ${formatCurrency(rewardableBreakdown.giftCardAmount)}; tax added: ${formatCurrency(rewardableBreakdown.taxableChargeAmount)}; service charge added: ${formatCurrency(rewardableBreakdown.serviceChargeAmount)}; customer total: ${formatCurrency(rewardableBreakdown.finalPriceAmount)}.`
+            : null,
+          giftCardSaleContext?.giftCardCode ? `Gift card code: ${giftCardSaleContext.giftCardCode}.` : null,
+        ].filter(Boolean).join(' '),
+        clientRequestId: transactionRequestId,
+      })
+    } catch {
+      // Keep the request ID and form values so a retry cannot record the sale twice.
+      return
+    }
+    setRecordedTransaction(transaction)
+    setTransactionRequestId(createClientRequestId())
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem(tenantStorageKey('pending-gift-card-sale'))
+    }
+    setGiftCardSaleContext(null)
+    form.reset({ purchaseAmount: 50, giftCardAmount: 0, receiptNumber: '', note: '' })
+  }
+
   if (member.isLoading || !business) {
     return <LoadingState title={t('Loading member')} description={t('Preparing the scanned member sale.')} />
   }
@@ -196,27 +226,7 @@ export function MemberSalePage() {
 
       <form
         className="grid gap-8 lg:grid-cols-[1fr_340px]"
-        onSubmit={form.handleSubmit(async (values) => {
-          const transaction = await recordTransaction.mutateAsync({
-            token,
-            purchaseAmount: rewardableBreakdown?.rewardableAmount ?? values.purchaseAmount,
-            receiptNumber: values.receiptNumber,
-            note: [
-              values.note,
-              rewardableBreakdown
-                ? `Bill before tax/service: ${formatCurrency(rewardableBreakdown.originalReceiptTotal)}; gift card: ${formatCurrency(rewardableBreakdown.giftCardAmount)}; tax added: ${formatCurrency(rewardableBreakdown.taxableChargeAmount)}; service charge added: ${formatCurrency(rewardableBreakdown.serviceChargeAmount)}; customer total: ${formatCurrency(rewardableBreakdown.finalPriceAmount)}.`
-                : null,
-              giftCardSaleContext?.giftCardCode ? `Gift card code: ${giftCardSaleContext.giftCardCode}.` : null,
-            ].filter(Boolean).join(' '),
-            clientRequestId: createClientRequestId(),
-          })
-          setRecordedTransaction(transaction)
-          if (typeof window !== 'undefined') {
-            window.sessionStorage.removeItem(tenantStorageKey('pending-gift-card-sale'))
-          }
-          setGiftCardSaleContext(null)
-          form.reset({ purchaseAmount: 50, giftCardAmount: 0, receiptNumber: '', note: '' })
-        })}
+        onSubmit={form.handleSubmit(submitTransaction)}
       >
         <div className="rounded-3xl border border-outline-variant/20 bg-card p-8 shadow-sm">
           <div className="mb-8 flex items-center gap-3">

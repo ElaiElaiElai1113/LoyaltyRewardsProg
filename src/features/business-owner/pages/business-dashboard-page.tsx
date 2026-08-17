@@ -21,6 +21,7 @@ import { toast } from 'sonner'
 
 import { BusinessMetricCard } from '@/components/business-metric-card'
 import { Button } from '@/components/ui/button'
+import { CompactRecordList, CompactRecordRow } from '@/components/ui/compact-record-list'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
 import { PaginationControls } from '@/components/ui/pagination-controls'
@@ -34,7 +35,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useFulfillRedemption } from '@/hooks/use-admin-data'
 import { useLanguage } from '@/lib/language'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/status-labels'
 import { formatCurrency as formatBaseCurrency, formatPoints } from '@/lib/utils'
 
@@ -55,8 +56,8 @@ export function BusinessDashboardPage() {
   const partnerPerformance = usePartnerPerformance(business?.id)
   const partnerReferrals = usePartnerReferrals(business?.id)
   const partnerPerformancePagination = usePagination(partnerPerformance.data ?? [], 4)
-  const partnerReferralPagination = usePagination(partnerReferrals.data ?? [], 6)
-  const redemptionPagination = usePagination(redemptions, 5)
+  const partnerReferralPagination = usePagination(partnerReferrals.data ?? [], COMPACT_LIST_PAGE_SIZE)
+  const redemptionPagination = usePagination(redemptions, COMPACT_LIST_PAGE_SIZE)
 
   if (!metrics) {
     return (
@@ -474,7 +475,7 @@ export function BusinessDashboardPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border border-[var(--border)] bg-card text-card-foreground shadow-sm divide-y divide-outline-variant/10 overflow-hidden">
+        <div className="space-y-3">
           {redemptions.length === 0 ? (
             <EmptyState
               className="border-0 shadow-none"
@@ -483,57 +484,56 @@ export function BusinessDashboardPage() {
               description={t('Reward claims will appear here when customers redeem points.')}
             />
           ) : (
-            redemptionPagination.pageItems.map((redemption) => (
-              <div key={redemption.id} className="p-6 flex items-center justify-between group hover:bg-surface-low transition-colors">
-                <div className="flex items-center gap-4">
-                  <div className="size-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                    <Gift className="size-5" />
+            <CompactRecordList aria-label={t('Fulfillment Queue')}>
+              {redemptionPagination.pageItems.map((redemption) => (
+                <CompactRecordRow key={redemption.id} className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <Gift className="size-4" />
+                    </div>
+                    <div className="min-w-0">
+                      <h4 className="truncate font-semibold text-primary">{redemption.rewardTitle}</h4>
+                      <p className="truncate text-xs text-on-surface-variant/70">
+                        {t('Redeemed {date} at {time}', {
+                          date: new Date(redemption.redeemedAt).toLocaleDateString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale),
+                          time: new Date(redemption.redeemedAt).toLocaleTimeString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale),
+                        })}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h4 className="font-semibold text-primary">{redemption.rewardTitle}</h4>
-                    <p className="text-xs text-on-surface-variant/70">
-                      {t('Redeemed {date} at {time}', {
-                        date: new Date(redemption.redeemedAt).toLocaleDateString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale),
-                        time: new Date(redemption.redeemedAt).toLocaleTimeString(language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale),
-                      })}
-                    </p>
+                  <div className="flex items-center gap-2 pl-12 sm:pl-0">
+                    <div className={`rounded-full px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-widest ${
+                      redemption.status === 'ready'
+                        ? 'bg-amber-100 text-amber-700'
+                        : 'bg-green-100 text-green-700'
+                    }`}>
+                      {t(getRedemptionStatusLabel(redemption.status))}
+                    </div>
+                    {redemption.status === 'ready' && (
+                      <Button
+                        size="sm"
+                        className="h-8 rounded-full px-3 text-xs font-bold"
+                        onClick={() => {
+                          setPendingFulfillmentId(redemption.id)
+                          fulfillRedemption.mutate(redemption.id, {
+                            onSettled: () => {
+                              setPendingFulfillmentId((current) => (current === redemption.id ? null : current))
+                            },
+                          })
+                        }}
+                        disabled={pendingFulfillmentId !== null}
+                      >
+                        {pendingFulfillmentId === redemption.id ? '...' : t('Fulfill')}
+                      </Button>
+                    )}
                   </div>
-                </div>
-                
-                <div className="flex items-center gap-4">
-                   <div className={`px-3 py-1 rounded-full text-[0.65rem] font-bold uppercase tracking-widest ${
-                    redemption.status === 'ready' 
-                      ? 'bg-amber-100 text-amber-700' 
-                      : 'bg-green-100 text-green-700'
-                  }`}>
-                    {t(getRedemptionStatusLabel(redemption.status))}
-                  </div>
-                  
-                  {redemption.status === 'ready' && (
-                    <Button 
-                      size="sm" 
-                      className="rounded-full h-8 px-4 text-xs font-bold"
-                      onClick={() => {
-                        setPendingFulfillmentId(redemption.id)
-                        fulfillRedemption.mutate(redemption.id, {
-                          onSettled: () => {
-                            setPendingFulfillmentId((current) => (current === redemption.id ? null : current))
-                          },
-                        })
-                      }}
-                      disabled={pendingFulfillmentId !== null}
-                    >
-                      {pendingFulfillmentId === redemption.id ? '...' : t('Fulfill')}
-                    </Button>
-                  )}
-                </div>
-              </div>
-            ))
+                </CompactRecordRow>
+              ))}
+            </CompactRecordList>
           )}
           <PaginationControls
             ariaLabel={t('Fulfillment queue pagination')}
             {...redemptionPagination}
-            className="m-4"
             onPageChange={redemptionPagination.setPage}
           />
         </div>

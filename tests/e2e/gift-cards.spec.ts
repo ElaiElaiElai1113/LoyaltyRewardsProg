@@ -62,6 +62,59 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     }
     expect(balance.points).toBeGreaterThanOrEqual(catalogItem.points_cost)
 
+    const replayRequestId = crypto.randomUUID()
+    const replayReceiptNumber = `QR-REPLAY-${runId}`
+    const replayNote = `qr-idempotency-${runId}`
+    const replayPurchaseAmount = 12.34
+    const replayBalanceBefore = await getRewardBalance(customerClient, customerProfileId)
+    const firstTransaction = await recordMemberQrSale(
+      staffClient,
+      customer.memberQrToken!,
+      replayPurchaseAmount,
+      replayNote,
+      { receiptNumber: replayReceiptNumber, clientRequestId: replayRequestId },
+    )
+    const replayBalanceAfterFirst = await getRewardBalance(customerClient, customerProfileId)
+    const replayedTransaction = await recordMemberQrSale(
+      staffClient,
+      customer.memberQrToken!,
+      replayPurchaseAmount,
+      replayNote,
+      { receiptNumber: replayReceiptNumber, clientRequestId: replayRequestId },
+    )
+    const replayBalanceAfterRetry = await getRewardBalance(customerClient, customerProfileId)
+
+    expect(replayedTransaction.id).toBe(firstTransaction.id)
+    expect(replayBalanceAfterFirst.points).toBeGreaterThanOrEqual(replayBalanceBefore.points)
+    expect(replayBalanceAfterRetry.points).toBe(replayBalanceAfterFirst.points)
+    await expect(
+      recordMemberQrSale(
+        staffClient,
+        customer.memberQrToken!,
+        replayPurchaseAmount + 1,
+        replayNote,
+        { receiptNumber: replayReceiptNumber, clientRequestId: replayRequestId },
+      ),
+    ).rejects.toThrow(/already used for a different transaction/i)
+    await expect(
+      recordMemberQrSale(
+        staffClient,
+        customer.memberQrToken!,
+        replayPurchaseAmount,
+        replayNote,
+        { receiptNumber: `${replayReceiptNumber}-CHANGED`, clientRequestId: replayRequestId },
+      ),
+    ).rejects.toThrow(/already used for a different transaction/i)
+    await expect(
+      recordMemberQrSale(
+        staffClient,
+        customer.memberQrToken!,
+        replayPurchaseAmount,
+        `${replayNote}-changed`,
+        { receiptNumber: replayReceiptNumber, clientRequestId: replayRequestId },
+      ),
+    ).rejects.toThrow(/already used for a different transaction/i)
+
     await signInCustomer(page, e2eAccounts.customer)
     await page.goto('/gift-cards')
     await expect(page.locator('body')).toContainText(/Gift Card Catalog|Available Points|Claimable/i)
@@ -192,17 +245,27 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     const balanceBefore = await getRewardBalance(customerClient, customerProfileId)
     const receiptNumber = `GC-FINAL-${runId}`
     const clientRequestId = crypto.randomUUID()
-    const originalBill = 100
-    const redeemedCard = await redeemGiftCardForBusiness(staffClient, ownerGiftCardId, businessId, {
-      originalBill,
-      receiptNumber,
-      giftCardAmount: remainingAmount,
-      clientRequestId,
-    })
+    const originalBill = Math.max(100, remainingAmount * 2)
+    const requestedGiftCardAmount = remainingAmount + 100
+    const [redeemedCard, replayedCard] = await Promise.all([
+      redeemGiftCardForBusiness(staffClient, ownerGiftCardId, businessId, {
+        originalBill,
+        receiptNumber,
+        giftCardAmount: requestedGiftCardAmount,
+        clientRequestId,
+      }),
+      redeemGiftCardForBusiness(staffClient, ownerGiftCardId, businessId, {
+        originalBill,
+        receiptNumber,
+        giftCardAmount: requestedGiftCardAmount,
+        clientRequestId,
+      }),
+    ])
     const persistedCard = await getGiftCardById(customerClient, ownerGiftCardId)
     const transaction = await getMemberTransactionByReceipt(ownerClient, businessId, receiptNumber)
     const balanceAfter = await getRewardBalance(customerClient, customerProfileId)
     const expectedPoints = Math.floor(originalBill * businessRewardRatePercent / 100)
+    const balanceAfterConcurrentReplay = await getRewardBalance(customerClient, customerProfileId)
 
     expect(redeemedCard.status).toBe('redeemed')
     expect(redeemedCard.redeemed_at).toBeTruthy()
@@ -213,6 +276,17 @@ test.describe.serial('gift card issue and redeem workflow automation', () => {
     expect(transaction.pointsAwarded).toBe(expectedPoints)
     expect(transaction.clientRequestId).toBe(clientRequestId)
     expect(balanceAfter.points).toBe(balanceBefore.points + expectedPoints)
+    expect(replayedCard.id).toBe(redeemedCard.id)
+    expect(Number(replayedCard.remaining_balance)).toBe(0)
+    expect(balanceAfterConcurrentReplay.points).toBe(balanceAfter.points)
+    await expect(
+      redeemGiftCardForBusiness(staffClient, ownerGiftCardId, businessId, {
+        originalBill,
+        receiptNumber,
+        giftCardAmount: null,
+        clientRequestId,
+      }),
+    ).rejects.toThrow(/already used for a different transaction/i)
     await expect(
       redeemGiftCardForBusiness(staffClient, ownerGiftCardId, businessId),
     ).rejects.toThrow(/no remaining balance|not active/i)

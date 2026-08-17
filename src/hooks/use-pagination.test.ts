@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { paginateItems, resolvePaginationPage } from './use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, paginateItems, resolvePaginationPage } from './use-pagination'
 
 describe('pagination helpers', () => {
   const items = Array.from({ length: 10 }, (_, index) => index + 1)
@@ -26,5 +26,10 @@ describe('pagination helpers', () => {
   it('resets to page one when a filter or context key changes', () => {
     expect(resolvePaginationPage(4, 8, true)).toBe(1)
     expect(resolvePaginationPage(4, 3)).toBe(3)
+  })
+
+  it('keeps operational lists to five records per mobile-friendly page', () => {
+    expect(COMPACT_LIST_PAGE_SIZE).toBe(5)
+    expect(paginateItems(items, 1, COMPACT_LIST_PAGE_SIZE).pageItems).toEqual([1, 2, 3, 4, 5])
   })
 })

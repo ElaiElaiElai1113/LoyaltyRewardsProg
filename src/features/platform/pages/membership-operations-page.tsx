@@ -12,7 +12,7 @@ import { PaginationControls } from '@/components/ui/pagination-controls'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { manualMembershipKeys } from '@/hooks/use-manual-membership'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { manualMembershipService } from '@/integrations/supabase/services/manual-membership-service'
 import { useLanguage } from '@/lib/language'
 import type {
@@ -97,8 +97,8 @@ export function MembershipOperationsPage() {
     approved: (requests.data ?? []).filter((request) => request.status === 'approved').length,
     closed: (requests.data ?? []).filter((request) => request.status === 'rejected' || request.status === 'canceled').length,
   }), [requests.data])
-  const requestPagination = usePagination(filteredRequests, 8, statusFilter)
-  const eventPagination = usePagination(events.data ?? [], 10)
+  const requestPagination = usePagination(filteredRequests, COMPACT_LIST_PAGE_SIZE, statusFilter)
+  const eventPagination = usePagination(events.data ?? [], COMPACT_LIST_PAGE_SIZE)
 
   function refreshOperations() {
     void queryClient.invalidateQueries({ queryKey: manualMembershipKeys.operations })

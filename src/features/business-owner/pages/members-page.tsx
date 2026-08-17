@@ -6,6 +6,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { CompactFilter } from '@/components/ui/compact-filter'
+import { CompactRecordList, CompactRecordRow } from '@/components/ui/compact-record-list'
 import { CompactSearch } from '@/components/ui/compact-search'
 import { EmptyState } from '@/components/ui/empty-state'
 import { Input } from '@/components/ui/input'
@@ -21,7 +22,7 @@ import {
 import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { searchMatches } from '@/lib/search'
 import { getVerificationStatusLabel } from '@/lib/status-labels'
 import { cn, formatCurrency, formatPoints, getInitials } from '@/lib/utils'
@@ -129,7 +130,7 @@ export function MembersPage() {
   )
   const pagination = usePagination(
     filteredMembers,
-    8,
+    COMPACT_LIST_PAGE_SIZE,
     `${memberSearch}:${customerStatusFilter}`,
   )
   const calculatedPoints =
@@ -465,87 +466,87 @@ export function MembersPage() {
           </div>
 
           {members.isLoading ? (
-            <div className="grid gap-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <div key={index} className="flex flex-col gap-5 rounded-[2rem] border border-[var(--border)] bg-white p-6 shadow-sm md:flex-row md:items-center md:justify-between">
-                  <div className="flex items-center gap-5">
-                    <Skeleton className="size-14 rounded-2xl" />
-                    <div className="space-y-3">
-                      <Skeleton className="h-7 w-44" />
-                      <Skeleton className="h-4 w-56" />
-                      <Skeleton className="h-3 w-32" />
+            <CompactRecordList aria-label={t('Loading customers')}>
+              {Array.from({ length: COMPACT_LIST_PAGE_SIZE }).map((_, index) => (
+                <CompactRecordRow key={index} className="flex items-center justify-between gap-3">
+                  <div className="flex min-w-0 items-center gap-3">
+                    <Skeleton className="size-10 shrink-0 rounded-xl" />
+                    <div className="min-w-0 space-y-2">
+                      <Skeleton className="h-5 w-36" />
+                      <Skeleton className="h-3 w-48 max-w-full" />
                     </div>
                   </div>
-                  <Skeleton className="h-10 w-28 rounded-full" />
-                </div>
+                  <Skeleton className="h-8 w-20 shrink-0 rounded-full" />
+                </CompactRecordRow>
               ))}
-            </div>
+            </CompactRecordList>
           ) : members.data?.length ? (
-            <div className="grid gap-4">
-              {filteredMembers.length ? pagination.pageItems.map((member) => {
-                const selected = member.id === selectedProfileId
+            <div className="space-y-3">
+              {filteredMembers.length ? (
+                <CompactRecordList aria-label={t('Your Customers')}>
+                  {pagination.pageItems.map((member) => {
+                    const selected = member.id === selectedProfileId
 
-                return (
-                  <div
-                    key={member.id}
-                    className={cn(
-                      'rounded-xl border border-[var(--border)] bg-white shadow-sm flex flex-col gap-5 rounded-[2rem] p-6 transition-all md:flex-row md:items-center md:justify-between',
-                      selected
-                        ? 'border-primary-container/35 bg-primary-container/[0.08] shadow-sm'
-                        : 'hover:border-primary-container/35 hover:bg-[var(--muted)] hover:shadow-sm',
-                    )}
-                  >
-                    <div className="flex items-center gap-5">
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-lg text-primary-foreground shadow-lg">
-                        {getInitials(member.fullName)}
-                      </div>
-                      <div>
-                        <p className="font-serif text-2xl leading-tight text-primary">{member.fullName}</p>
-                        <p className="mt-1 text-sm font-medium text-on-surface-variant/90">{member.email}</p>
-                        <p className="mt-2 text-[0.65rem] font-bold uppercase tracking-[0.15em] text-on-surface-variant/70">
-                          {t('ID')}: {member.id}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <Badge
-                        variant="accent"
-                        className="flex items-center gap-1.5 rounded-full border border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
+                    return (
+                      <CompactRecordRow
+                        key={member.id}
+                        selected={selected}
+                        className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
                       >
-                        <Gift className="size-3" />
-                        {formatPoints(member.points)} {t('points')}
-                      </Badge>
-                      <Badge
-                        variant="accent"
-                        className={cn(
-                          'rounded-full px-4 py-2',
-                          member.verificationStatus === 'verified'
-                            ? 'border-success/25 bg-success/10 text-success'
-                            : member.verificationStatus === 'rejected'
-                              ? 'border-red-200 bg-red-50 text-red-600'
-                              : 'border-warning/25 bg-warning/10 text-warning',
-                        )}
-                      >
-                        {t(getVerificationStatusLabel(member.verificationStatus))}
-                      </Badge>
-                      <Button
-                        variant={selected ? 'default' : 'outline'}
-                        className={cn(
-                          'rounded-full',
-                          !selected &&
-                            'border-primary-container/30 bg-[var(--card)] text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary',
-                        )}
-                        onClick={() => {
-                          form.setValue('profileId', member.id, { shouldValidate: true })
-                          setCustomerLookup(member.email)
-                        }}
-                      >
-                        {selected ? t('Selected') : t('Select')}
-                      </Button>
-                    </div>
-                  </div>
-                )
-              }) : (
+                        <div className="flex min-w-0 items-center gap-3">
+                          <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-container font-serif text-sm text-primary-foreground shadow-sm">
+                            {getInitials(member.fullName)}
+                          </div>
+                          <div className="min-w-0">
+                            <p className="truncate font-serif text-lg leading-tight text-primary">{member.fullName}</p>
+                            <p className="mt-0.5 truncate text-sm font-medium text-on-surface-variant/90">{member.email}</p>
+                            <p className="mt-1 truncate text-[0.6rem] font-bold uppercase tracking-[0.12em] text-on-surface-variant/70">
+                              {t('ID')}: {member.id}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex flex-wrap items-center gap-2 pl-13 md:justify-end md:pl-0">
+                          <Badge
+                            variant="accent"
+                            className="flex items-center gap-1 rounded-full border border-primary-container/25 bg-primary-container/12 px-2.5 py-1 text-primary"
+                          >
+                            <Gift className="size-3" />
+                            {formatPoints(member.points)} {t('points')}
+                          </Badge>
+                          <Badge
+                            variant="accent"
+                            className={cn(
+                              'rounded-full px-2.5 py-1',
+                              member.verificationStatus === 'verified'
+                                ? 'border-success/25 bg-success/10 text-success'
+                                : member.verificationStatus === 'rejected'
+                                  ? 'border-red-200 bg-red-50 text-red-600'
+                                  : 'border-warning/25 bg-warning/10 text-warning',
+                            )}
+                          >
+                            {t(getVerificationStatusLabel(member.verificationStatus))}
+                          </Badge>
+                          <Button
+                            variant={selected ? 'default' : 'outline'}
+                            size="sm"
+                            className={cn(
+                              'h-8 rounded-full px-3',
+                              !selected &&
+                                'border-primary-container/30 bg-[var(--card)] text-primary hover:border-primary-container/60 hover:bg-primary-container/10 hover:text-primary',
+                            )}
+                            onClick={() => {
+                              form.setValue('profileId', member.id, { shouldValidate: true })
+                              setCustomerLookup(member.email)
+                            }}
+                          >
+                            {selected ? t('Selected') : t('Select')}
+                          </Button>
+                        </div>
+                      </CompactRecordRow>
+                    )
+                  })}
+                </CompactRecordList>
+              ) : (
                 <EmptyState
                   className="rounded-[2rem]"
                   icon={<Users className="size-8" />}

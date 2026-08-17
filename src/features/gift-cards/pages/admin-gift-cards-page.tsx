@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useAdminAllBusinesses } from '@/hooks/use-admin-data'
 import { useBusinessMembers } from '@/hooks/use-business-owner-data'
 import { useTenant } from '@/hooks/use-tenant'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import type { GiftCard } from '@/types/domain'
@@ -30,7 +30,7 @@ export function AdminGiftCardsPage() {
   const catalogItems = catalog.data ?? []
   const issuedCards = giftCards.data ?? []
   const catalogPagination = usePagination(catalogItems, 8, businessId ?? 'all')
-  const issuedPagination = usePagination(issuedCards, 8, businessId ?? 'all')
+  const issuedPagination = usePagination(issuedCards, COMPACT_LIST_PAGE_SIZE, businessId ?? 'all')
 
   function formatCardBalance(card: GiftCard) {
     const value = card.remainingBalance ?? card.initialBalance ?? 0

@@ -26,7 +26,7 @@ import {
   useRedeemPartnerCredit,
   useUpdateBusinessAmbassadorLeadStatus,
 } from '@/hooks/use-business-owner-data'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import { searchMatches } from '@/lib/search'
 import { getAmbassadorLeadStatusLabel, getPartnerReferralStatusLabel } from '@/lib/status-labels'
@@ -167,12 +167,12 @@ export function PartnersPage() {
       referral?.customer.email,
     ])
   })
-  const activeLeadPagination = usePagination(visibleActiveAmbassadorLeads, 6, leadSearch)
-  const archivedLeadPagination = usePagination(visibleArchivedAmbassadorLeads, 6, leadSearch)
-  const activeReferrerPagination = usePagination(visibleActiveReferrers, 8, partnerContactSearch)
-  const archivedReferrerPagination = usePagination(visibleArchivedReferrers, 6, partnerContactSearch)
-  const referralPagination = usePagination(filteredReferrals, 8, referralSearch)
-  const creditPagination = usePagination(filteredUnredeemedCredits, 8, creditSearch)
+  const activeLeadPagination = usePagination(visibleActiveAmbassadorLeads, COMPACT_LIST_PAGE_SIZE, leadSearch)
+  const archivedLeadPagination = usePagination(visibleArchivedAmbassadorLeads, COMPACT_LIST_PAGE_SIZE, leadSearch)
+  const activeReferrerPagination = usePagination(visibleActiveReferrers, COMPACT_LIST_PAGE_SIZE, partnerContactSearch)
+  const archivedReferrerPagination = usePagination(visibleArchivedReferrers, COMPACT_LIST_PAGE_SIZE, partnerContactSearch)
+  const referralPagination = usePagination(filteredReferrals, COMPACT_LIST_PAGE_SIZE, referralSearch)
+  const creditPagination = usePagination(filteredUnredeemedCredits, COMPACT_LIST_PAGE_SIZE, creditSearch)
   const ambassadorUrl =
     business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/ambassadors?business=${business.id}`

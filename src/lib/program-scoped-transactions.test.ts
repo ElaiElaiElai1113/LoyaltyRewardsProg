@@ -5,6 +5,22 @@ const migration = readFileSync(
   new URL('../../supabase/migrations/20260801040000_program_scope_member_transactions.sql', import.meta.url),
   'utf8',
 )
+const idempotencyMigration = readFileSync(
+  new URL('../../supabase/migrations/20260817120452_idempotent_gift_card_redemption.sql', import.meta.url),
+  'utf8',
+)
+const businessOwnerHooks = readFileSync(
+  new URL('../hooks/use-business-owner-data.ts', import.meta.url),
+  'utf8',
+)
+const giftCardHooks = readFileSync(
+  new URL('../features/gift-cards/hooks/use-gift-cards.ts', import.meta.url),
+  'utf8',
+)
+const transactionPage = readFileSync(
+  new URL('../features/gift-cards/pages/redemptions-page.tsx', import.meta.url),
+  'utf8',
+)
 
 describe('program-scoped member transactions', () => {
   it('uses the composite reward balance identity for QR sales', () => {
@@ -39,5 +55,59 @@ describe('program-scoped member transactions', () => {
     expect(migration).toContain("if card_row.status = 'redeemed' then raise exception 'Gift card has no remaining balance'")
     expect(migration).toContain("if card_row.status <> 'active' then raise exception 'Gift card is not active'")
     expect(migration).toContain("raise exception 'This receipt or bill number has already been recorded.'")
+  })
+
+  it('replays only an exact QR transaction payload for one request identity', () => {
+    expect(idempotencyMigration).toContain('rename to record_member_transaction_once')
+    expect(idempotencyMigration).toContain('alter function public.record_member_transaction_once')
+    expect(idempotencyMigration).toContain("set search_path = ''")
+    expect(idempotencyMigration).toContain('member_transaction.profile_id = member_profile.id')
+    expect(idempotencyMigration).toContain('member_transaction.purchase_amount = purchase_amount_value')
+    expect(idempotencyMigration).toContain('lower(trim(member_transaction.receipt_number)) = lower(receipt_number_value)')
+    expect(idempotencyMigration).toContain('member_transaction.note is not distinct from note_value')
+    expect(idempotencyMigration).toContain("event.metadata ->> 'client_request_id' = p_client_request_id::text")
+    expect(idempotencyMigration).toContain('select public.record_member_transaction_once(')
+  })
+
+  it('replays a gift-card redemption using the original requested, not clamped, payload', () => {
+    expect(idempotencyMigration).toContain('rename to redeem_gift_card_once')
+    expect(idempotencyMigration).toContain('alter function public.redeem_gift_card_once')
+    expect(idempotencyMigration).toContain('revoke all on function public.redeem_gift_card_once')
+    expect(idempotencyMigration).toContain("event.metadata ->> 'client_request_id' = p_client_request_id::text")
+    expect(idempotencyMigration).toContain("'client_request_id', p_client_request_id::text")
+    expect(idempotencyMigration).toContain('pg_catalog.pg_advisory_xact_lock')
+    expect(idempotencyMigration).toContain('pg_catalog.hashtextextended')
+    expect(idempotencyMigration).toContain("'requested_original_bill'")
+    expect(idempotencyMigration).toContain("'requested_receipt_number'")
+    expect(idempotencyMigration).toContain("'requested_gift_card_amount'")
+    expect(idempotencyMigration).toContain("pg_catalog.jsonb_typeof(event.metadata -> 'requested_gift_card_amount') = 'null'")
+    expect(idempotencyMigration).toContain('pg_catalog.to_jsonb(requested_gift_card_amount_value)')
+    expect(idempotencyMigration).toContain("raise exception 'This request was already used for a different transaction.'")
+    expect(idempotencyMigration).toContain('grant execute on function public.redeem_gift_card')
+  })
+
+  it('refreshes transaction history, balances, activity, customer rows, and business metrics', () => {
+    for (const queryKey of [
+      "['member-transactions', businessId]",
+      "['businessMembers', businessId]",
+      "['metrics', businessId]",
+      "['reward-balance', profileId]",
+      "['activities', profileId]",
+    ]) {
+      expect(businessOwnerHooks).toContain(queryKey)
+    }
+
+    for (const queryKey of [
+      "['member-transactions', businessId]",
+      "['businessMembers', businessId]",
+      "['metrics', businessId]",
+      "['reward-balance', giftCard.customerId]",
+      "['activities', giftCard.customerId]",
+    ]) {
+      expect(giftCardHooks).toContain(queryKey)
+    }
+
+    expect(transactionPage).toContain("queryClient.refetchQueries({ queryKey: ['member-transactions', business?.id], type: 'active' })")
+    expect(transactionPage).toContain("queryClient.refetchQueries({ queryKey: ['gift-cards', 'business', business?.id ?? 'missing'], type: 'active' })")
   })
 })

@@ -5,7 +5,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { PaginationControls } from '@/components/ui/pagination-controls'
 import { analyzeTenantImport, tenantImportCollections, type TenantImportAnalysis } from '@/lib/tenant-import'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 
 const targetFields: Partial<Record<(typeof tenantImportCollections)[number], string[]>> = {
@@ -56,8 +56,8 @@ export function TenantImportPage() {
   const [analysis, setAnalysis] = useState<TenantImportAnalysis | null>(null)
   const [parseError, setParseError] = useState<string | null>(null)
   const [mappings, setMappings] = useState<Record<string, string>>({})
-  const errorPagination = usePagination(analysis?.errors ?? [], 10, fileName)
-  const warningPagination = usePagination(analysis?.warnings ?? [], 10, fileName)
+  const errorPagination = usePagination(analysis?.errors ?? [], COMPACT_LIST_PAGE_SIZE, fileName)
+  const warningPagination = usePagination(analysis?.warnings ?? [], COMPACT_LIST_PAGE_SIZE, fileName)
 
   async function inspectFile(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]

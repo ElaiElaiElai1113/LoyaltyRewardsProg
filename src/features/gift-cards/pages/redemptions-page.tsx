@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { useQueryClient } from '@tanstack/react-query'
 import { AlertTriangle, CheckCircle2, History, Search, ShieldCheck, Users } from 'lucide-react'
 
@@ -21,7 +21,7 @@ import {
   useScannedMember,
 } from '@/hooks/use-business-owner-data'
 import { useTenant } from '@/hooks/use-tenant'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { giftCardsService } from '@/integrations/supabase/services/gift-cards-service'
 import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import { useLanguage } from '@/lib/language'
@@ -138,6 +138,8 @@ export function RedemptionsPage() {
   const [originalBill, setOriginalBill] = useState<number>(0)
   const [receiptNumber, setReceiptNumber] = useState('')
   const [isValidating, setIsValidating] = useState(false)
+  const giftCardRequestIdRef = useRef<string | null>(null)
+  const standardTransactionRequestIdRef = useRef<string | null>(null)
   const giftCards = useBusinessGiftCards(business?.id)
   const redeemGiftCard = useRedeemGiftCard(business?.id)
   const businessCustomers = useBusinessMembers(business?.id)
@@ -234,8 +236,8 @@ export function RedemptionsPage() {
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     )
   }, [business, cards, memberTransactions, program.currency, selectedLocale, t])
-  const customerPagination = usePagination(filteredCustomers, 5, customerSearch)
-  const transactionPagination = usePagination(transactionRows)
+  const customerPagination = usePagination(filteredCustomers, COMPACT_LIST_PAGE_SIZE, customerSearch)
+  const transactionPagination = usePagination(transactionRows, COMPACT_LIST_PAGE_SIZE)
   const selectedGiftCardAvailableBalance = getGiftCardAvailableBalance(selectedCard)
   const baseBreakdown = useMemo(() => {
     if (!business || !Number.isFinite(originalBill) || originalBill <= 0) return null
@@ -305,6 +307,8 @@ export function RedemptionsPage() {
       return
     }
 
+    clearMemberSelection()
+
     setIsValidating(true)
 
     try {
@@ -347,6 +351,8 @@ export function RedemptionsPage() {
 
   async function redeem() {
     if (!selectedCard) return
+    const clientRequestId = giftCardRequestIdRef.current ?? createClientRequestId()
+    giftCardRequestIdRef.current = clientRequestId
     let updatedCard: GiftCard
     try {
       updatedCard = await redeemGiftCard.mutateAsync({
@@ -354,7 +360,7 @@ export function RedemptionsPage() {
         originalBill,
         receiptNumber: receiptNumber.trim(),
         giftCardAmount: selectedGiftCardValue,
-        clientRequestId: createClientRequestId(),
+        clientRequestId,
       })
     } catch {
       // Mutation failures are already reported by the owning hook.
@@ -373,6 +379,8 @@ export function RedemptionsPage() {
 
   async function recordStandardTransaction() {
     if (!business || !scannedMember.data || !rewardableBreakdown || !preview) return
+    const clientRequestId = standardTransactionRequestIdRef.current ?? createClientRequestId()
+    standardTransactionRequestIdRef.current = clientRequestId
 
     try {
       await recordTransaction.mutateAsync({
@@ -386,7 +394,7 @@ export function RedemptionsPage() {
           `Tax added: ${rewardableBreakdown.taxableChargeAmount.toFixed(2)}.`,
           `Service charge added: ${rewardableBreakdown.serviceChargeAmount.toFixed(2)}.`,
         ].join(' '),
-        clientRequestId: createClientRequestId(),
+        clientRequestId,
       })
     } catch {
       // Mutation failures are already reported by the owning hook.
@@ -401,6 +409,8 @@ export function RedemptionsPage() {
   }
 
   function startNewTransaction() {
+    giftCardRequestIdRef.current = null
+    standardTransactionRequestIdRef.current = null
     setManualInput('')
     setMemberInput('')
     setMemberToken('')
@@ -415,6 +425,7 @@ export function RedemptionsPage() {
 
   function scanMember(value: string) {
     const token = extractTokenOrCode(value)
+    clearGiftCardSelection()
     setMemberInput(value)
     setMemberToken(token)
   }
@@ -434,6 +445,8 @@ export function RedemptionsPage() {
       return
     }
 
+    clearMemberSelection()
+
     if (selectedCard && extractTokenOrCode(value) !== selectedCard.publicToken && extractTokenOrCode(value).toLowerCase() !== selectedCard.code.toLowerCase()) {
       setSelectedCard(null)
       setValidationStatus('idle')
@@ -448,6 +461,18 @@ export function RedemptionsPage() {
     }
 
     scanMember(value)
+  }
+
+  function clearMemberSelection() {
+    setMemberInput('')
+    setMemberToken('')
+    setCustomerSearch('')
+  }
+
+  function clearGiftCardSelection() {
+    setManualInput('')
+    setSelectedCard(null)
+    setValidationStatus('idle')
   }
 
   return (
@@ -670,7 +695,7 @@ export function RedemptionsPage() {
               <div className="rounded-xl bg-surface-low p-4">
                 <span className="text-xs font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Customer')}</span>
                 <strong className="mt-1 block text-lg text-primary">
-                  {scannedMember.data?.fullName ?? selectedCard?.customerFirstName ?? t('Choose or scan a customer')}
+                  {selectedCard?.customerFirstName ?? scannedMember.data?.fullName ?? t('Choose or scan a customer')}
                 </strong>
               </div>
               <div className="rounded-xl bg-surface-low p-4">

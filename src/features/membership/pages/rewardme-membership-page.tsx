@@ -9,7 +9,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { useAuth } from '@/hooks/use-auth'
 import { useManualMembership } from '@/hooks/use-manual-membership'
 import { useMembership } from '@/hooks/use-membership'
-import { usePagination } from '@/hooks/use-pagination'
+import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
 import type { ManualMembershipEventType, ManualMembershipTier } from '@/types/domain'
 
@@ -60,7 +60,7 @@ export function RewardMeMembershipPage() {
   const pendingRequest = manual.requests.data?.find((request) => request.status === 'pending')
   const hasLoadError = manual.requests.isError || manual.events.isError
   const isLoading = Boolean(profile) && (membershipLoading || manual.requests.isLoading || manual.events.isLoading)
-  const eventPagination = usePagination(manual.events.data ?? [], 6, profile?.id ?? 'guest')
+  const eventPagination = usePagination(manual.events.data ?? [], COMPACT_LIST_PAGE_SIZE, profile?.id ?? 'guest')
 
   async function submitMembershipRequest() {
     try {

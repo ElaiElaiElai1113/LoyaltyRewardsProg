@@ -125,7 +125,7 @@ export function PlatformProgramsPage() {
     : sort === 'plan'
       ? left.planName.localeCompare(right.planName) || left.name.localeCompare(right.name)
       : left.name.localeCompare(right.name))
-  const pageSize = 10
+  const pageSize = 5
   const totalPages = Math.max(1, Math.ceil(filteredPrograms.length / pageSize))
   const visiblePrograms = filteredPrograms.slice((Math.min(page, totalPages) - 1) * pageSize, Math.min(page, totalPages) * pageSize)
 

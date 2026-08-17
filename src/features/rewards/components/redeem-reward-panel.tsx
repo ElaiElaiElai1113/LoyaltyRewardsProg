@@ -1,10 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { createClientRequestId } from '@/features/critical-flows/critical-flow'
 import { EarnRedeemGate } from '@/features/membership/components/earn-redeem-gate'
 import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
@@ -17,7 +19,7 @@ interface RedeemRewardPanelProps {
   balancePoints: number
   isSubmitting?: boolean
   actionLocked?: boolean
-  onSubmit: (values: RedeemFormValues) => Promise<void> | void
+  onSubmit: (values: RedeemFormValues & { clientRequestId: string }) => Promise<void> | void
 }
 
 export function RedeemRewardPanel({
@@ -29,6 +31,7 @@ export function RedeemRewardPanel({
 }: RedeemRewardPanelProps) {
   const { t } = useLanguage()
   const { isActive: isMembershipActive } = useMembership()
+  const [clientRequestId, setClientRequestId] = useState(createClientRequestId)
   const form = useForm<RedeemFormValues>({
     resolver: zodResolver(redeemSchema),
     defaultValues: {
@@ -90,7 +93,11 @@ export function RedeemRewardPanel({
       <form
         className="grid gap-5 lg:grid-cols-[1fr_auto] lg:items-end"
         onSubmit={form.handleSubmit(async (values) => {
-          await onSubmit(values)
+          await onSubmit({
+            ...values,
+            clientRequestId,
+          })
+          setClientRequestId(createClientRequestId())
         })}
       >
         <div className="grid gap-4 sm:grid-cols-2">

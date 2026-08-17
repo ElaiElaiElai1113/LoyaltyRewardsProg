@@ -244,14 +244,18 @@ export async function recordMemberQrSale(
   token: string,
   purchaseAmount: number,
   note: string,
+  request: {
+    receiptNumber?: string
+    clientRequestId?: string
+  } = {},
 ) {
-  const receiptNumber = `E2E-${note}`
+  const receiptNumber = request.receiptNumber ?? `E2E-${note}`
   const { data, error } = await client.rpc('record_member_transaction', {
     p_member_qr_token: token,
     p_purchase_amount: purchaseAmount,
     p_receipt_number: receiptNumber,
     p_note: note,
-    p_client_request_id: crypto.randomUUID(),
+    p_client_request_id: request.clientRequestId ?? crypto.randomUUID(),
   })
 
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
@@ -554,9 +558,9 @@ export async function redeemGiftCardForBusiness(
   giftCardId: string,
   businessId: string,
   transaction?: {
-    originalBill: number
-    receiptNumber: string
-    giftCardAmount: number
+    originalBill: number | null
+    receiptNumber: string | null
+    giftCardAmount: number | null
     clientRequestId: string
   },
 ) {
@@ -624,12 +628,17 @@ export async function getFirstRewardForBusiness(client: AppSupabaseClient, busin
   return data as { id: string; business_id: string; title: string; points_cost: number; inventory: number }
 }
 
-export async function redeemRewardForCustomer(client: AppSupabaseClient, rewardId: string, notes: string) {
+export async function redeemRewardForCustomer(
+  client: AppSupabaseClient,
+  rewardId: string,
+  notes: string,
+  clientRequestId = crypto.randomUUID(),
+) {
   const { data, error } = await client.rpc('redeem_reward', {
     p_reward_id: rewardId,
     p_pickup_window: 'Now',
     p_notes: notes,
-    p_client_request_id: crypto.randomUUID(),
+    p_client_request_id: clientRequestId,
   })
 
   const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
@@ -638,6 +647,20 @@ export async function redeemRewardForCustomer(client: AppSupabaseClient, rewardI
   }
 
   return row
+}
+
+export async function getRewardById(client: AppSupabaseClient, rewardId: string) {
+  const { data, error } = await client
+    .from('rewards')
+    .select('id, business_id, title, points_cost, inventory')
+    .eq('id', rewardId)
+    .single()
+
+  if (error || !data) {
+    throw new Error(`Reward ${rewardId} could not be loaded: ${error?.message ?? 'missing row'}`)
+  }
+
+  return data as { id: string; business_id: string; title: string; points_cost: number; inventory: number }
 }
 
 export async function getLatestRedemptionForCustomer(client: AppSupabaseClient, customerProfileId: string) {
