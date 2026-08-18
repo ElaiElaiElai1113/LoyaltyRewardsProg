@@ -2022,7 +2022,7 @@ runTest('business transactions page shows transaction history with optional gift
   assert.match(redemptionsPage, /totalAmountLabel/)
   assert.match(redemptionsPage, /discountLabel/)
   assert.match(redemptionsPage, /finalPriceLabel/)
-  assert.match(redemptionsPage, /Gift Card Discount/)
+  assert.match(redemptionsPage, /Credit Applied/)
   assert.match(redemptionsPage, /Final Price/)
   assert.match(redemptionsPage, /After staff redeem a gift card or scan a member QR/)
   assert.match(redemptionsPage, /No transactions yet/)
@@ -3040,4 +3040,42 @@ runTest('business customer picker receives QR tokens only from its permission-ch
   assert.match(memberHook, /sb\.rpc\('get_business_customers'/)
   assert.doesNotMatch(memberHook, /\.from\('profiles'\)/)
   assert.match(memberHook, /customer\.member_qr_token/)
+})
+
+runTest('business accounting report keeps gross sales separate from credit and restricts tenant access', () => {
+  const migration = readFileSync(
+    'supabase/migrations/20260818070531_business_accounting_report.sql',
+    'utf8',
+  )
+  const page = readFileSync(
+    'src/features/business-owner/pages/accounting-report-page.tsx',
+    'utf8',
+  )
+  const service = readFileSync(
+    'src/integrations/supabase/services/business-accounting-service.ts',
+    'utf8',
+  )
+  const routes = readFileSync('src/routes/router.tsx', 'utf8')
+  const policy = readFileSync('src/lib/business-role-policy.ts', 'utf8')
+
+  assert.match(migration, /security definer\s+set search_path = ''/)
+  assert.match(migration, /public\.has_active_business_program_access\([\s\S]*'business-owner'/)
+  assert.match(migration, /private\.has_required_agreements\(v_actor_id\) is not true/)
+  assert.match(migration, /card\.business_id = p_business_id/)
+  assert.match(migration, /event\.event_type = 'redeemed'/)
+  assert.match(migration, /'program_points'/)
+  assert.match(migration, /'program_grant'/)
+  assert.match(migration, /redemption\.gift_card_applied/)
+  assert.match(migration, /from public, anon, authenticated, service_role/)
+  assert.match(migration, /to authenticated/)
+  assert.doesNotMatch(migration, /set search_path = public/)
+
+  assert.match(service, /sb\.rpc\('get_business_accounting_report'/)
+  assert.match(page, /Full sales recorded/)
+  assert.match(page, /Gift-card credit applied/)
+  assert.match(page, /Estimated reimbursement/)
+  assert.match(page, /Export CSV/)
+  assert.match(page, /PaginationControls/)
+  assert.match(routes, /path: '\/business\/accounting'[\s\S]*OwnerOnlyBusinessRoute/)
+  assert.match(policy, /'\/business\/accounting'/)
 })

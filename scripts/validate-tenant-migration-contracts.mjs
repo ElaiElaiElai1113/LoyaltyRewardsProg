@@ -241,6 +241,29 @@ const contracts = [
       /insert into public\.admin_logs \(\s*actor_id/,
     ],
   },
+  {
+    file: 'supabase/migrations/20260818070531_business_accounting_report.sql',
+    required: [
+      /create or replace function public\.get_business_accounting_report\(/,
+      /returns table \([\s\S]*gift_card_applied numeric[\s\S]*reimbursement_estimate numeric/,
+      /security definer\s+set search_path = ''/,
+      /public\.has_active_business_program_access\([\s\S]*array\['business-owner'\]::public\.program_role\[\]/,
+      /private\.has_required_agreements\(v_actor_id\) is not true/,
+      /card\.business_id = p_business_id/,
+      /event\.event_type = 'redeemed'/,
+      /event\.metadata \? 'gift_card_amount'/,
+      /when redemption\.points_spent > 0 then 'program_points'/,
+      /when redemption\.issuer_role = 'platform-admin' then 'program_grant'/,
+      /then redemption\.gift_card_applied/,
+      /revoke all on function public\.get_business_accounting_report\(uuid, timestamptz, timestamptz\)[\s\S]*from public, anon, authenticated, service_role/,
+      /grant execute on function public\.get_business_accounting_report\(uuid, timestamptz, timestamptz\)[\s\S]*to authenticated/,
+      /notify pgrst, 'reload schema'/,
+    ],
+    forbidden: [
+      /set search_path = public/,
+      /grant execute on function public\.get_business_accounting_report[\s\S]*to (?:public|anon|service_role)/,
+    ],
+  },
 ]
 
 const failures = []

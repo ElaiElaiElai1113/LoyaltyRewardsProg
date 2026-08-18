@@ -823,7 +823,7 @@ export function RedemptionsPage() {
                       </p>
                     </div>
                     <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Gift Card Discount')}</p>
+                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Credit Applied')}</p>
                       <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-gift-card-discount">
                         {transaction.discountLabel}
                       </p>

@@ -64,6 +64,7 @@ const OrderConfirmationPage = lazy(() => import('@/features/shop/pages/order-con
 const OrdersPage = lazy(() => import('@/features/shop/pages/orders-page').then((module) => ({ default: module.OrdersPage })))
 const ShopPage = lazy(() => import('@/features/shop/pages/shop-page').then((module) => ({ default: module.ShopPage })))
 const BusinessDashboardPage = lazy(() => import('@/features/business-owner/pages/business-dashboard-page').then((module) => ({ default: module.BusinessDashboardPage })))
+const AccountingReportPage = lazy(() => import('@/features/business-owner/pages/accounting-report-page').then((module) => ({ default: module.AccountingReportPage })))
 const MemberSalePage = lazy(() => import('@/features/business-owner/pages/member-sale-page').then((module) => ({ default: module.MemberSalePage })))
 const MembersPage = lazy(() => import('@/features/business-owner/pages/members-page').then((module) => ({ default: module.MembersPage })))
 const PartnersPage = lazy(() => import('@/features/business-owner/pages/partners-page').then((module) => ({ default: module.PartnersPage })))
@@ -513,6 +514,7 @@ const router = createBrowserRouter([
         element: <ProtectedBusinessOwnerRoute />,
         children: [
           { path: '/business/dashboard', element: <BusinessDashboardPage /> },
+          { path: '/business/accounting', element: <OwnerOnlyBusinessRoute><AccountingReportPage /></OwnerOnlyBusinessRoute> },
           { path: '/business/member-sale/:token', element: <MemberSalePage /> },
           { path: '/business/products', element: <OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute> },
           { path: '/business/rewards', element: <OwnerOnlyBusinessRoute><BusinessRewardsPage /></OwnerOnlyBusinessRoute> },

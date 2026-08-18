@@ -1,6 +1,7 @@
 import {
   CreditCard,
   Hotel,
+  Landmark,
   LayoutDashboard,
   LogOut,
   Menu,
@@ -30,6 +31,7 @@ import { cn, getInitials } from '@/lib/utils'
 
 const businessNavigationItems = [
   { to: '/business/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/business/accounting', label: 'Accounting', icon: Landmark },
   { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/business/redemptions', label: 'Transactions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },

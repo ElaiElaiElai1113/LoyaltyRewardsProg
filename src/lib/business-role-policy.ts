@@ -1,6 +1,7 @@
 import type { UserRole } from '@/types/domain'
 
 export const businessOwnerOnlyPaths = [
+  '/business/accounting',
   '/business/products',
   '/business/rewards',
   '/business/promotions',

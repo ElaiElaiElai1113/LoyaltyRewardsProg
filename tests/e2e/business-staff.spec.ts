@@ -15,7 +15,7 @@ test.describe('business staff workflow smoke test', () => {
       await expect(page.locator('body')).not.toContainText(/application error|something went wrong|page not found/i)
     }
 
-    for (const linkName of [/products/i, /^rewards$/i, /promotions/i, /gift cards/i, /settings/i]) {
+    for (const linkName of [/accounting/i, /products/i, /^rewards$/i, /promotions/i, /gift cards/i, /settings/i]) {
       await expect(page.getByRole('link', { name: linkName })).toHaveCount(0)
     }
   })
@@ -24,6 +24,7 @@ test.describe('business staff workflow smoke test', () => {
     await signInBusinessPortal(page, e2eAccounts.businessStaff)
 
     for (const path of [
+      '/business/accounting',
       '/business/products',
       '/business/rewards',
       '/business/promotions',
@@ -34,6 +35,7 @@ test.describe('business staff workflow smoke test', () => {
       await expect(page).toHaveURL(/\/business\/dashboard$/)
     }
 
+    await expect(page.getByRole('link', { name: /accounting/i })).toHaveCount(0)
     await expect(page.getByRole('link', { name: /gift cards/i })).toHaveCount(0)
   })
 })
