@@ -1,0 +1,77 @@
+name: Apply business accounting report
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY BUSINESS ACCOUNTING REPORT to run the scoped production migration
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reward-platform-business-accounting-report
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY BUSINESS ACCOUNTING REPORT'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: retfuxpfstatpdsunkgj
+      MIGRATION_VERSION: '20260818070531'
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require production database credentials
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: test -n "$SUPABASE_ACCESS_TOKEN" && test -n "$SUPABASE_DB_PASSWORD"
+      - name: Link the approved production project
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Apply only the approved accounting migration
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: npx supabase db query --linked --file supabase/migrations/20260818070531_business_accounting_report.sql
+      - name: Record the applied migration version
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: npx supabase migration repair --linked --status applied "$MIGRATION_VERSION" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Verify the live report security contract
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ declare function_sql text; function_settings text[];
+          begin
+          if to_regprocedure('public.get_business_accounting_report(uuid,timestamptz,timestamptz)') is null
+          then raise exception 'business_accounting_report_missing';
+          end if;
+          select pg_get_functiondef(p.oid), p.proconfig
+          into function_sql, function_settings
+          from pg_proc p
+          where p.oid = 'public.get_business_accounting_report(uuid,timestamptz,timestamptz)'::regprocedure;
+          if position('SECURITY DEFINER' in function_sql) = 0
+            or not ('search_path=\"\"' = any(coalesce(function_settings, array[]::text[])))
+            or position('card.business_id = p_business_id' in function_sql) = 0
+            or position('has_active_business_program_access' in function_sql) = 0
+          then raise exception 'business_accounting_report_definition_invalid';
+          end if;
+          if not has_function_privilege('authenticated', 'public.get_business_accounting_report(uuid,timestamptz,timestamptz)', 'execute')
+            or has_function_privilege('anon', 'public.get_business_accounting_report(uuid,timestamptz,timestamptz)', 'execute')
+            or has_function_privilege('service_role', 'public.get_business_accounting_report(uuid,timestamptz,timestamptz)', 'execute')
+          then raise exception 'business_accounting_report_acl_invalid';
+          end if;
+          end \$\$;"
