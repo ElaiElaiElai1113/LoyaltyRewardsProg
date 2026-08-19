@@ -10,7 +10,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$projectRef = 'retfuxpfstatpdsunkgj'
+$projectRef = 'bftuvmywtmpflizsomim'
 $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 
 if ($Reset -and $Target -ne 'Wondertown') {
@@ -75,7 +75,7 @@ public static class RewardMeCredentialReader
 }
 
 function Get-RewardMeManagementToken {
-  $bytes = [RewardMeCredentialReader]::ReadGenericSecret('Supabase CLI:supabase')
+  $bytes = [RewardMeCredentialReader]::ReadGenericSecret('Supabase CLI:synergizebusinessgroup')
   $candidates = @(
     [Text.Encoding]::UTF8.GetString($bytes).Trim([char]0),
     [Text.Encoding]::Unicode.GetString($bytes).Trim([char]0)

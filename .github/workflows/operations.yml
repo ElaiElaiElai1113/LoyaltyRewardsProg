@@ -78,7 +78,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      PROJECT_REF: retfuxpfstatpdsunkgj
+      PROJECT_REF: bftuvmywtmpflizsomim
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6

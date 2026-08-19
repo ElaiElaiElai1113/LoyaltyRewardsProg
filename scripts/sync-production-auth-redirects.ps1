@@ -63,7 +63,7 @@ public static class WindowsCredentialReader
 }
 
 function Get-SupabaseAccessToken {
-  $bytes = [WindowsCredentialReader]::ReadGenericSecret('Supabase CLI:supabase')
+  $bytes = [WindowsCredentialReader]::ReadGenericSecret('Supabase CLI:synergizebusinessgroup')
   $candidates = @(
     [Text.Encoding]::UTF8.GetString($bytes).Trim([char]0),
     [Text.Encoding]::Unicode.GetString($bytes).Trim([char]0)
@@ -75,7 +75,7 @@ function Get-SupabaseAccessToken {
   return $token
 }
 
-$projectRef = 'retfuxpfstatpdsunkgj'
+$projectRef = 'bftuvmywtmpflizsomim'
 $endpoint = "https://api.supabase.com/v1/projects/$projectRef/config/auth"
 $headers = @{
   Accept = 'application/json'

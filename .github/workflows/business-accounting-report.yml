@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
-      PROJECT_REF: retfuxpfstatpdsunkgj
+      PROJECT_REF: bftuvmywtmpflizsomim
       MIGRATION_VERSION: '20260818070531'
     steps:
       - uses: actions/checkout@v6
