@@ -17,7 +17,6 @@ export const AUTH_COPY_KEYS = Object.freeze([
   "mailer_secure_email_change_enabled",
   "mailer_otp_exp",
   "mailer_otp_length",
-  "rate_limit_email_sent",
   "password_min_length",
   "external_email_enabled",
   "external_phone_enabled",
@@ -54,7 +53,7 @@ async function managementRequest(token, path, options = {}) {
   });
   if (!response.ok)
     throw new Error(
-      `Supabase Management API request failed with ${response.status}.`,
+      `Supabase Management API ${options.method ?? "GET"} ${path} failed with ${response.status}.`,
     );
   if (response.status === 204) return null;
   return response.json();
@@ -118,6 +117,7 @@ export async function syncRewardsSupabaseConfig(environment = process.env) {
     targetProjectRef: TARGET_PROJECT_REF,
     copiedAuthFields: AUTH_COPY_KEYS,
     deliberatelyExcluded: [
+      "Plan-managed email delivery rate limits",
       "SMTP credentials",
       "OAuth provider secrets",
       "JWT secrets",

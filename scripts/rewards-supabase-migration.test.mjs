@@ -63,6 +63,7 @@ test("copies only approved non-secret Auth configuration fields", () => {
 
   const patch = buildSafeAuthPatch(source);
   assert.deepEqual(Object.keys(patch), AUTH_COPY_KEYS);
+  assert.equal(AUTH_COPY_KEYS.includes("rate_limit_email_sent"), false);
   assert.equal(patch.smtp_pass, undefined);
   assert.equal(patch.external_google_secret, undefined);
   assert.equal(patch.jwt_secret, undefined);
