@@ -89,4 +89,9 @@ test("resume mode accepts only the exact restored clone and recreates migration 
     workflow,
     /truncate table supabase_migrations\.schema_migrations/,
   );
+  assert.equal(
+    workflow.match(/p\.proname='rls_auto_enable'/g)?.length,
+    2,
+    "source/target parity should ignore only Supabase's platform-managed automatic-RLS helper",
+  );
 });
