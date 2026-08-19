@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 
 import {
@@ -65,4 +66,26 @@ test("copies only approved non-secret Auth configuration fields", () => {
   assert.equal(patch.smtp_pass, undefined);
   assert.equal(patch.external_google_secret, undefined);
   assert.equal(patch.jwt_secret, undefined);
+});
+
+test("resume mode accepts only the exact restored clone and recreates migration history safely", async () => {
+  const workflow = await readFile(
+    new URL("../.github/workflows/rewards-supabase-clone.yml", import.meta.url),
+    "utf8",
+  );
+
+  assert.match(workflow, /resume_restored_database:/);
+  assert.match(workflow, /test "\$counts" = "55\|54\|13"/);
+  assert.match(
+    workflow,
+    /create schema if not exists supabase_migrations authorization postgres/,
+  );
+  assert.match(
+    workflow,
+    /create table if not exists supabase_migrations\.schema_migrations \(version text primary key, statements text\[\], name text\)/,
+  );
+  assert.match(
+    workflow,
+    /truncate table supabase_migrations\.schema_migrations/,
+  );
 });

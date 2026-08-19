@@ -11,6 +11,11 @@ on:
         description: Type CLONE_REWARDS_TO_BFTUVMYWTMPFLIZSOMIM
         required: true
         type: string
+      resume_restored_database:
+        description: Resume only after a verified database restore completed but finalization failed
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   actions: read
@@ -78,7 +83,7 @@ jobs:
           fi
           psql --version
 
-      - name: Confirm the target project is empty
+      - name: Confirm the target is empty or the exact resumable clone
         env:
           TARGET_DB_PASSWORD: ${{ secrets.NEW_SUPABASE_DB_PASSWORD }}
         shell: bash
@@ -88,7 +93,11 @@ jobs:
             --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres \
             --no-psqlrc --tuples-only --no-align --field-separator='|' \
             --command "select (select count(*) from pg_tables where schemaname='public'), (select count(*) from auth.users), (select count(*) from storage.objects);")"
-          test "$counts" = "0|0|0"
+          if [ "${{ inputs.resume_restored_database }}" = "true" ]; then
+            test "$counts" = "55|54|13"
+          else
+            test "$counts" = "0|0|0"
+          fi
 
       - name: Download the approved encrypted backup
         uses: actions/download-artifact@v7
@@ -165,13 +174,15 @@ jobs:
           umask 077
           root="$RUNNER_TEMP/rewards-clone"
           backup_dir="$root/rewards-${{ inputs.backup_run_id }}"
-          PGPASSWORD="$TARGET_DB_PASSWORD" psql \
-            --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres \
-            --no-psqlrc --single-transaction --variable ON_ERROR_STOP=1 \
-            --file "$backup_dir/roles.sql" \
-            --file "$backup_dir/schema.sql" \
-            --command 'SET session_replication_role = replica' \
-            --file "$backup_dir/data.sql"
+          if [ "${{ inputs.resume_restored_database }}" != "true" ]; then
+            PGPASSWORD="$TARGET_DB_PASSWORD" psql \
+              --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres \
+              --no-psqlrc --single-transaction --variable ON_ERROR_STOP=1 \
+              --file "$backup_dir/roles.sql" \
+              --file "$backup_dir/schema.sql" \
+              --command 'SET session_replication_role = replica' \
+              --file "$backup_dir/data.sql"
+          fi
 
           PGPASSWORD="$SOURCE_DB_PASSWORD" psql \
             --host "$SOURCE_PGHOST" --port 5432 --username "$SOURCE_PGUSER" --dbname postgres --no-psqlrc \
@@ -179,6 +190,8 @@ jobs:
           PGPASSWORD="$TARGET_DB_PASSWORD" psql \
             --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres --no-psqlrc \
             --variable ON_ERROR_STOP=1 \
+            --command 'create schema if not exists supabase_migrations authorization postgres' \
+            --command 'create table if not exists supabase_migrations.schema_migrations (version text primary key, statements text[], name text)' \
             --command 'truncate table supabase_migrations.schema_migrations' \
             --command "\copy supabase_migrations.schema_migrations(version, statements, name) from '$root/source-migrations.csv' with (format csv, header true)"
 
