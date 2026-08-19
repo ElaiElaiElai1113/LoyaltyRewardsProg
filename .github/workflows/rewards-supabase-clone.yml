@@ -1,0 +1,285 @@
+name: Clone Rewards Supabase to the new organization
+
+on:
+  workflow_dispatch:
+    inputs:
+      backup_run_id:
+        description: Successful Production operations run containing the encrypted Rewards backup
+        required: true
+        type: string
+      confirmation:
+        description: Type CLONE_REWARDS_TO_BFTUVMYWTMPFLIZSOMIM
+        required: true
+        type: string
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: rewards-supabase-clone
+  cancel-in-progress: false
+
+jobs:
+  clone:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      SOURCE_PROJECT_REF: retfuxpfstatpdsunkgj
+      TARGET_PROJECT_REF: bftuvmywtmpflizsomim
+      SOURCE_SUPABASE_URL: https://retfuxpfstatpdsunkgj.supabase.co
+      TARGET_SUPABASE_URL: https://bftuvmywtmpflizsomim.supabase.co
+      SOURCE_PGHOST: aws-1-ap-northeast-2.pooler.supabase.com
+      TARGET_PGHOST: aws-0-ap-northeast-1.pooler.supabase.com
+      SOURCE_PGUSER: postgres.retfuxpfstatpdsunkgj
+      TARGET_PGUSER: postgres.bftuvmywtmpflizsomim
+      MIGRATION_CONFIRMATION: ${{ inputs.confirmation }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+
+      - name: Require exact target and migration credentials
+        env:
+          SOURCE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          TARGET_DB_PASSWORD: ${{ secrets.NEW_SUPABASE_DB_PASSWORD }}
+          SOURCE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TARGET_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
+          SOURCE_SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          TARGET_SUPABASE_ACCESS_TOKEN: ${{ secrets.NEW_SUPABASE_ACCESS_TOKEN }}
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+          TARGET_ANON_KEY: ${{ secrets.NEW_VITE_SUPABASE_ANON_KEY }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$MIGRATION_CONFIRMATION" = "CLONE_REWARDS_TO_BFTUVMYWTMPFLIZSOMIM"
+          [[ "${{ inputs.backup_run_id }}" =~ ^[0-9]+$ ]]
+          test -n "$SOURCE_DB_PASSWORD"
+          test -n "$TARGET_DB_PASSWORD"
+          test -n "$SOURCE_SERVICE_ROLE_KEY"
+          test -n "$TARGET_SERVICE_ROLE_KEY"
+          test -n "$SOURCE_SUPABASE_ACCESS_TOKEN"
+          test -n "$TARGET_SUPABASE_ACCESS_TOKEN"
+          test -n "$BACKUP_ENCRYPTION_PASSPHRASE"
+          test -n "$TARGET_ANON_KEY"
+          test -n "$E2E_PASSWORD"
+
+      - name: Install PostgreSQL client
+        shell: bash
+        run: |
+          set -euo pipefail
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install --yes postgresql-client
+          fi
+          psql --version
+
+      - name: Confirm the target project is empty
+        env:
+          TARGET_DB_PASSWORD: ${{ secrets.NEW_SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          counts="$(PGPASSWORD="$TARGET_DB_PASSWORD" psql \
+            --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres \
+            --no-psqlrc --tuples-only --no-align --field-separator='|' \
+            --command "select (select count(*) from pg_tables where schemaname='public'), (select count(*) from auth.users), (select count(*) from storage.objects);")"
+          test "$counts" = "0|0|0"
+
+      - name: Download the approved encrypted backup
+        uses: actions/download-artifact@v7
+        with:
+          name: encrypted-at-rest-database-backup-${{ inputs.backup_run_id }}
+          path: ${{ runner.temp }}/rewards-clone/encrypted
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: ${{ inputs.backup_run_id }}
+
+      - name: Decrypt and verify the backup
+        env:
+          BACKUP_ENCRYPTION_PASSPHRASE: ${{ secrets.BACKUP_ENCRYPTION_PASSPHRASE }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          root="$RUNNER_TEMP/rewards-clone"
+          encrypted="$root/encrypted/rewards-${{ inputs.backup_run_id }}.tar.gz.gpg"
+          checksum="$encrypted.sha256"
+          archive="$root/rewards-${{ inputs.backup_run_id }}.tar.gz"
+          test -f "$encrypted"
+          test -f "$checksum"
+          (cd "$(dirname "$encrypted")" && sha256sum -c "$(basename "$checksum")")
+          printf '%s' "$BACKUP_ENCRYPTION_PASSPHRASE" | gpg \
+            --decrypt --batch --yes --pinentry-mode loopback --passphrase-fd 0 \
+            --output "$archive" "$encrypted"
+          tar -xzf "$archive" -C "$root"
+          backup_dir="$root/rewards-${{ inputs.backup_run_id }}"
+          (cd "$backup_dir" && sha256sum -c SHA256SUMS)
+          node -e "const m=require(process.argv[1]); if(m.projectRef!=='retfuxpfstatpdsunkgj'||m.runId!=='${{ inputs.backup_run_id }}') process.exit(1)" "$backup_dir/manifest.json"
+
+      - name: Capture the source database inventory
+        env:
+          SOURCE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/rewards-clone"
+          collect_inventory() {
+            local host="$1" user="$2" password="$3" output="$4"
+            {
+              PGPASSWORD="$password" psql --host "$host" --port 5432 --username "$user" --dbname postgres --no-psqlrc --tuples-only --no-align --field-separator=$'\t' --command "
+                select 'auth.users', count(*)::text from auth.users
+                union all select 'auth.users.fingerprint', coalesce(md5(string_agg(id::text || ':' || coalesce(email,'') || ':' || coalesce(encrypted_password,''), '|' order by id)), '') from auth.users
+                union all select 'auth.identities', count(*)::text from auth.identities
+                union all select 'auth.identities.fingerprint', coalesce(md5(string_agg(id::text || ':' || user_id::text || ':' || provider || ':' || provider_id, '|' order by id)), '') from auth.identities
+                union all select 'public.tables', count(*)::text from pg_tables where schemaname='public'
+                union all select 'public.tables_without_rls', count(*)::text from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity
+                union all select 'public.functions', count(*)::text from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public'
+                union all select 'storage.buckets', count(*)::text from storage.buckets
+                union all select 'storage.objects', count(*)::text from storage.objects
+                union all select 'storage.bytes', coalesce(sum((metadata->>'size')::bigint),0)::text from storage.objects
+                union all select 'storage.ownership.fingerprint', coalesce(md5(string_agg(bucket_id || '/' || name || '/' || coalesce(owner::text,'') || '/' || coalesce(owner_id,''), '|' order by bucket_id,name)), '') from storage.objects
+                union all select 'supabase_migrations.rows', count(*)::text from supabase_migrations.schema_migrations
+                union all select 'supabase_migrations.fingerprint', coalesce(md5(string_agg(version || ':' || coalesce(name,'') || ':' || array_to_string(statements, E'\\n'), '|' order by version)), '') from supabase_migrations.schema_migrations
+                union all select 'realtime.tables', count(*)::text from pg_publication_tables where pubname='supabase_realtime'
+                union all select 'realtime.tables.fingerprint', coalesce(md5(string_agg(schemaname || '.' || tablename, '|' order by schemaname,tablename)), '') from pg_publication_tables where pubname='supabase_realtime';"
+              while IFS= read -r table_name; do
+                count="$(PGPASSWORD="$password" psql --host "$host" --port 5432 --username "$user" --dbname postgres --no-psqlrc --tuples-only --no-align --command "select count(*) from $table_name;")"
+                printf '%s\t%s\n' "$table_name" "$count"
+              done < <(PGPASSWORD="$password" psql --host "$host" --port 5432 --username "$user" --dbname postgres --no-psqlrc --tuples-only --no-align --command "select format('%I.%I', schemaname, tablename) from pg_tables where schemaname='public' order by tablename;")
+            } | sed '/^[[:space:]]*$/d' | sort > "$output"
+          }
+          collect_inventory "$SOURCE_PGHOST" "$SOURCE_PGUSER" "$SOURCE_DB_PASSWORD" "$root/source-before.tsv"
+
+      - name: Restore database, Auth data, and migration history
+        env:
+          SOURCE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          TARGET_DB_PASSWORD: ${{ secrets.NEW_SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          root="$RUNNER_TEMP/rewards-clone"
+          backup_dir="$root/rewards-${{ inputs.backup_run_id }}"
+          PGPASSWORD="$TARGET_DB_PASSWORD" psql \
+            --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres \
+            --no-psqlrc --single-transaction --variable ON_ERROR_STOP=1 \
+            --file "$backup_dir/roles.sql" \
+            --file "$backup_dir/schema.sql" \
+            --command 'SET session_replication_role = replica' \
+            --file "$backup_dir/data.sql"
+
+          PGPASSWORD="$SOURCE_DB_PASSWORD" psql \
+            --host "$SOURCE_PGHOST" --port 5432 --username "$SOURCE_PGUSER" --dbname postgres --no-psqlrc \
+            --command "\copy (select version, statements, name from supabase_migrations.schema_migrations order by version) to '$root/source-migrations.csv' with (format csv, header true)"
+          PGPASSWORD="$TARGET_DB_PASSWORD" psql \
+            --host "$TARGET_PGHOST" --port 5432 --username "$TARGET_PGUSER" --dbname postgres --no-psqlrc \
+            --variable ON_ERROR_STOP=1 \
+            --command 'truncate table supabase_migrations.schema_migrations' \
+            --command "\copy supabase_migrations.schema_migrations(version, statements, name) from '$root/source-migrations.csv' with (format csv, header true)"
+
+      - name: Copy and byte-verify Storage objects
+        env:
+          SOURCE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+          TARGET_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
+          MIGRATION_REPORT_PATH: ${{ runner.temp }}/rewards-clone/storage-report.json
+        run: node scripts/migrate-rewards-storage.mjs
+
+      - name: Copy safe Auth configuration
+        env:
+          SOURCE_SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          TARGET_SUPABASE_ACCESS_TOKEN: ${{ secrets.NEW_SUPABASE_ACCESS_TOKEN }}
+          CONFIG_REPORT_PATH: ${{ runner.temp }}/rewards-clone/config-report.json
+        run: node scripts/sync-rewards-supabase-config.mjs
+
+      - name: Deploy the three Rewards Edge Functions
+        env:
+          NO_COLOR: "1"
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.NEW_SUPABASE_ACCESS_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx supabase functions deploy --project-ref "$TARGET_PROJECT_REF" --use-api
+          functions="$(npx supabase functions list --project-ref "$TARGET_PROJECT_REF" --output-format json)"
+          node -e "const rows=JSON.parse(process.argv[1]); const names=rows.map(x=>x.name).sort(); const expected=['provision-partner-owner','register-customer','sign-agreement']; if(JSON.stringify(names)!==JSON.stringify(expected)) process.exit(1)" "$functions"
+
+      - name: Verify parity and source stability
+        env:
+          SOURCE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+          TARGET_DB_PASSWORD: ${{ secrets.NEW_SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          root="$RUNNER_TEMP/rewards-clone"
+          collect_inventory() {
+            local host="$1" user="$2" password="$3" output="$4"
+            {
+              PGPASSWORD="$password" psql --host "$host" --port 5432 --username "$user" --dbname postgres --no-psqlrc --tuples-only --no-align --field-separator=$'\t' --command "
+                select 'auth.users', count(*)::text from auth.users
+                union all select 'auth.users.fingerprint', coalesce(md5(string_agg(id::text || ':' || coalesce(email,'') || ':' || coalesce(encrypted_password,''), '|' order by id)), '') from auth.users
+                union all select 'auth.identities', count(*)::text from auth.identities
+                union all select 'auth.identities.fingerprint', coalesce(md5(string_agg(id::text || ':' || user_id::text || ':' || provider || ':' || provider_id, '|' order by id)), '') from auth.identities
+                union all select 'public.tables', count(*)::text from pg_tables where schemaname='public'
+                union all select 'public.tables_without_rls', count(*)::text from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='public' and c.relkind='r' and not c.relrowsecurity
+                union all select 'public.functions', count(*)::text from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public'
+                union all select 'storage.buckets', count(*)::text from storage.buckets
+                union all select 'storage.objects', count(*)::text from storage.objects
+                union all select 'storage.bytes', coalesce(sum((metadata->>'size')::bigint),0)::text from storage.objects
+                union all select 'storage.ownership.fingerprint', coalesce(md5(string_agg(bucket_id || '/' || name || '/' || coalesce(owner::text,'') || '/' || coalesce(owner_id,''), '|' order by bucket_id,name)), '') from storage.objects
+                union all select 'supabase_migrations.rows', count(*)::text from supabase_migrations.schema_migrations
+                union all select 'supabase_migrations.fingerprint', coalesce(md5(string_agg(version || ':' || coalesce(name,'') || ':' || array_to_string(statements, E'\\n'), '|' order by version)), '') from supabase_migrations.schema_migrations
+                union all select 'realtime.tables', count(*)::text from pg_publication_tables where pubname='supabase_realtime'
+                union all select 'realtime.tables.fingerprint', coalesce(md5(string_agg(schemaname || '.' || tablename, '|' order by schemaname,tablename)), '') from pg_publication_tables where pubname='supabase_realtime';"
+              while IFS= read -r table_name; do
+                count="$(PGPASSWORD="$password" psql --host "$host" --port 5432 --username "$user" --dbname postgres --no-psqlrc --tuples-only --no-align --command "select count(*) from $table_name;")"
+                printf '%s\t%s\n' "$table_name" "$count"
+              done < <(PGPASSWORD="$password" psql --host "$host" --port 5432 --username "$user" --dbname postgres --no-psqlrc --tuples-only --no-align --command "select format('%I.%I', schemaname, tablename) from pg_tables where schemaname='public' order by tablename;")
+            } | sed '/^[[:space:]]*$/d' | sort > "$output"
+          }
+          collect_inventory "$SOURCE_PGHOST" "$SOURCE_PGUSER" "$SOURCE_DB_PASSWORD" "$root/source-after.tsv"
+          collect_inventory "$TARGET_PGHOST" "$TARGET_PGUSER" "$TARGET_DB_PASSWORD" "$root/target.tsv"
+          diff --unified "$root/source-before.tsv" "$root/source-after.tsv"
+          diff --unified "$root/source-before.tsv" "$root/target.tsv"
+
+      - name: Verify cloned accounts, tenants, catalogs, and persisted data
+        env:
+          SUPABASE_URL: ${{ env.TARGET_SUPABASE_URL }}
+          VITE_SUPABASE_URL: ${{ env.TARGET_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.NEW_VITE_SUPABASE_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+        run: npm run qa:verify-reward-sites -- "$RUNNER_TEMP/rewards-clone/reward-sites-verification.json"
+
+      - name: Run target database advisors
+        env:
+          TARGET_DB_PASSWORD: ${{ secrets.NEW_SUPABASE_DB_PASSWORD }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          target_url="postgresql://$TARGET_PGUSER:$TARGET_DB_PASSWORD@$TARGET_PGHOST:5432/postgres?sslmode=require"
+          npx supabase db advisors --db-url "$target_url" --type security --level warn --fail-on error
+          npx supabase db advisors --db-url "$target_url" --type performance --level warn --fail-on error
+
+      - name: Upload sanitized clone evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rewards-supabase-clone-${{ github.run_id }}
+          path: |
+            ${{ runner.temp }}/rewards-clone/source-before.tsv
+            ${{ runner.temp }}/rewards-clone/source-after.tsv
+            ${{ runner.temp }}/rewards-clone/target.tsv
+            ${{ runner.temp }}/rewards-clone/storage-report.json
+            ${{ runner.temp }}/rewards-clone/config-report.json
+            ${{ runner.temp }}/rewards-clone/reward-sites-verification.json
+          if-no-files-found: warn
+          retention-days: 7
+
+      - name: Remove decrypted migration material
+        if: always()
+        shell: bash
+        run: rm -rf -- "$RUNNER_TEMP/rewards-clone"

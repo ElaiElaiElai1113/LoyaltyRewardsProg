@@ -71,7 +71,7 @@
     "test:image-delivery": "node scripts/check-image-delivery.mjs",
     "test:email-readiness": "node scripts/validate-email-readiness.mjs && node scripts/validate-auth-email-flows.mjs",
     "test:legal-readiness": "node scripts/validate-legal-readiness.mjs",
-    "test:operations-readiness": "node scripts/validate-operations-readiness.mjs && node --test scripts/validate-scheduled-backup.test.mjs scripts/deploy-tenant-sites.test.mjs",
+    "test:operations-readiness": "node scripts/validate-operations-readiness.mjs && node --test scripts/validate-scheduled-backup.test.mjs scripts/deploy-tenant-sites.test.mjs scripts/rewards-supabase-migration.test.mjs",
     "test:tenant-packages": "node scripts/validate-tenant-packages.mjs",
     "test:mobile-readiness": "node scripts/validate-mobile-readiness.mjs",
     "ops:migrations:validate": "node scripts/validate-migration-release.mjs",
