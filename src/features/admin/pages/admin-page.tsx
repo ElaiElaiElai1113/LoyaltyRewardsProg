@@ -1,8 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy, MapPin, MonitorPlay } from 'lucide-react'
-import { Link } from 'react-router'
+import { TrendingUp, Users, Gift, Activity, Trash2, CheckCircle, Store, Megaphone, ExternalLink, IdCard, Mail, ReceiptText, Copy, MapPin } from 'lucide-react'
 import { toast } from 'sonner'
 
 import { ActivityList } from '@/features/activity/components/activity-list'
@@ -759,29 +758,6 @@ export function AdminPage() {
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-primary-container/18 bg-[var(--card)] p-5 shadow-sm sm:p-6 xl:p-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 gap-4">
-            <div className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-container/12 text-primary">
-              <MonitorPlay className="size-6" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Walkthrough demo')}</p>
-              <h2 className="mt-2 font-serif text-3xl leading-tight text-primary">{t('See the admin walkthrough')}</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-on-surface-variant/80">
-                {t('Open the guided demo for member review, partner setup, verification, and commission operations.')}
-              </p>
-            </div>
-          </div>
-          <Button asChild className="shrink-0 rounded-full">
-            <Link to="/admin/guide">
-              <MonitorPlay className="size-4" />
-              {t('Open walkthrough')}
-            </Link>
-          </Button>
-        </div>
-      </div>
-
       <Tabs value={activeAdminTab} onValueChange={handleAdminTabChange} className="min-w-0 space-y-12">
         <TabsContent value="members" className="space-y-12 outline-none">
           <div className="grid min-w-0 gap-8 2xl:grid-cols-[360px_minmax(0,1fr)]">
@@ -1088,13 +1064,13 @@ export function AdminPage() {
               </div>
             </div>
 
-            <div className="space-y-8">
+            <div className="min-w-0 space-y-8">
               <div className="space-y-2 pb-4 border-b border-outline-variant/10 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
                 <div>
                   <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">{t('Active Members')}</span>
                   <h2 className="font-serif text-3xl text-primary">{t('Members')}</h2>
                   {pendingVerificationMembers.length > 0 ? (
-                    <p className="mt-2 rounded-2xl border border-warning/25 bg-warning/10 px-3 py-2 text-sm font-semibold text-warning">
+                    <p className="mt-2 max-w-full break-words rounded-2xl border border-warning/25 bg-warning/10 px-3 py-2 text-sm font-semibold text-warning [overflow-wrap:anywhere]">
                       {t('{count} IDs awaiting review. Newest submitted IDs are shown first.', { count: pendingVerificationMembers.length })}
                     </p>
                   ) : null}
@@ -1129,17 +1105,17 @@ export function AdminPage() {
                   <CompactRecordRow
                     key={member.id}
                     selected={selectedProfileId === member.id}
-                    className="group flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between"
+                    className="group flex min-w-0 flex-col gap-3 overflow-hidden lg:flex-row lg:items-center lg:justify-between"
                   >
-                    <div className="flex min-w-0 items-center gap-3">
+                    <div className="flex min-w-0 items-start gap-3 lg:items-center">
                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-container font-serif text-lg text-primary-foreground shadow-sm">
                           {member.fullName.charAt(0)}
                        </div>
-                      <div className="min-w-0">
+                      <div className="min-w-0 flex-1">
                         <p className="truncate font-serif text-lg leading-tight text-primary">{member.fullName}</p>
                         <p className="mt-0.5 truncate text-sm font-medium text-on-surface-variant/90">{member.email}</p>
                         <div className="mt-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
-                          <span className="max-w-full truncate text-[0.6rem] font-bold uppercase tracking-[0.12em] text-on-surface-variant/75 italic">
+                          <span className="block min-w-0 max-w-full truncate text-[0.6rem] font-bold uppercase tracking-[0.12em] text-on-surface-variant/75 italic">
                             {t('ID:')} {member.id}
                           </span>
                           <span className="size-1 rounded-full bg-outline-variant/30"></span>
@@ -1149,7 +1125,7 @@ export function AdminPage() {
                         </div>
                       </div>
                     </div>
-                    <div className="flex w-full flex-wrap items-center gap-2 pl-13 lg:w-auto lg:justify-end lg:pl-0">
+                    <div className="flex w-full min-w-0 flex-wrap items-center gap-2 pl-0 sm:pl-[3.25rem] lg:w-auto lg:justify-end lg:pl-0">
                       <Badge variant="accent" className="border-primary-container/25 bg-primary-container/12 px-2.5 py-1 font-semibold text-primary">{member.role}</Badge>
                       <Badge
                         variant="accent"

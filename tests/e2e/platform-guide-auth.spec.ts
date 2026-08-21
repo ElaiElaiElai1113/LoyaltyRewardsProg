@@ -17,7 +17,7 @@ async function sidebarHrefs(page: Page) {
 }
 
 const tagalogAdminOperationsLabels = [
-  'Mga Miyembro',
+  'Pangunahing Pahina',
   'Mga Promosyon',
   'Mga Katuwang',
   'Mga Kinatawan',
@@ -47,14 +47,14 @@ test.describe('authenticated platform guide workflow', () => {
 
     const sidebar = page.getByRole('complementary')
     const guideLink = sidebar.getByRole('link', { name: 'Gabay', exact: true })
-    const membersLink = sidebar.locator('a[href="/admin/portal#members"]')
+    const dashboardLink = sidebar.locator('a[href="/admin/portal"]')
     const operationsNavigation = await sidebarHrefs(page)
 
     expect(operationsNavigation).toHaveLength(tagalogAdminOperationsLabels.length)
     for (const label of tagalogAdminOperationsLabels) {
       await expect(sidebar.getByRole('link', { name: label, exact: true })).toBeVisible()
     }
-    await expect(membersLink).toHaveClass(/shadow-soft/)
+    await expect(dashboardLink).toHaveClass(/shadow-soft/)
     await guideLink.click()
 
     await expect(page).toHaveURL(/\/admin\/guide$/)
@@ -62,7 +62,7 @@ test.describe('authenticated platform guide workflow', () => {
     expect(await sidebarHrefs(page)).toEqual(operationsNavigation)
     await expect(guideLink).toHaveAttribute('href', '/admin/guide')
     await expect(guideLink).toHaveAttribute('aria-current', 'page')
-    await expect(membersLink).not.toHaveClass(/shadow-soft/)
+    await expect(dashboardLink).not.toHaveClass(/shadow-soft/)
     await expect(sidebar.locator('a[aria-current="page"]')).toHaveCount(1)
     await expect(page.getByTestId('platform-guide')).toHaveAttribute('data-guide-audience', 'admin')
     await expect(page.getByTestId('platform-guide').getByText('Mahahalagang gamit para sa tagapangasiwa')).toBeVisible()

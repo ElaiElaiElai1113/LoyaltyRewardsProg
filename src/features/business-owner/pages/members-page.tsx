@@ -491,21 +491,21 @@ export function MembersPage() {
                       <CompactRecordRow
                         key={member.id}
                         selected={selected}
-                        className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between"
+                        className="flex min-w-0 flex-col gap-3 overflow-hidden md:flex-row md:items-center md:justify-between"
                       >
-                        <div className="flex min-w-0 items-center gap-3">
+                        <div className="flex min-w-0 items-start gap-3 md:items-center">
                           <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-container font-serif text-sm text-primary-foreground shadow-sm">
                             {getInitials(member.fullName)}
                           </div>
-                          <div className="min-w-0">
+                          <div className="min-w-0 flex-1">
                             <p className="truncate font-serif text-lg leading-tight text-primary">{member.fullName}</p>
                             <p className="mt-0.5 truncate text-sm font-medium text-on-surface-variant/90">{member.email}</p>
-                            <p className="mt-1 truncate text-[0.6rem] font-bold uppercase tracking-[0.12em] text-on-surface-variant/70">
+                            <p className="mt-1 block min-w-0 max-w-full truncate text-[0.6rem] font-bold uppercase tracking-[0.12em] text-on-surface-variant/70">
                               {t('ID')}: {member.id}
                             </p>
                           </div>
                         </div>
-                        <div className="flex flex-wrap items-center gap-2 pl-13 md:justify-end md:pl-0">
+                        <div className="flex w-full min-w-0 flex-wrap items-center gap-2 pl-0 sm:pl-[3.25rem] md:w-auto md:justify-end md:pl-0">
                           <Badge
                             variant="accent"
                             className="flex items-center gap-1 rounded-full border border-primary-container/25 bg-primary-container/12 px-2.5 py-1 text-primary"

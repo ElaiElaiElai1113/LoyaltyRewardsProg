@@ -6,7 +6,6 @@ import {
   DollarSign,
   Gift,
   Hotel,
-  MonitorPlay,
   QrCode,
   ReceiptText,
   ShoppingBag,
@@ -124,29 +123,6 @@ export function BusinessDashboardPage() {
           <p className="mt-3 text-base font-medium text-white/80">
             {t('Scan customer member QR codes, record purchases, award points, and track commission from one workspace.')}
           </p>
-        </div>
-      </div>
-
-      <div className="rounded-3xl border border-primary/15 bg-card p-5 shadow-sm sm:p-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex min-w-0 gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-              <MonitorPlay className="size-5" />
-            </div>
-            <div className="min-w-0">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/70">{t('Walkthrough demo')}</p>
-              <h2 className="mt-1 font-serif text-2xl leading-tight text-primary">{t('See the business walkthrough')}</h2>
-              <p className="mt-1 max-w-2xl text-sm leading-5 text-on-surface-variant/80">
-                {t('Open the guided demo for scanning a customer QR, recording the purchase, awarding points, and tracking commission.')}
-              </p>
-            </div>
-          </div>
-          <Button asChild className="shrink-0 rounded-full">
-            <Link to="/business/guide">
-              <MonitorPlay className="size-4" />
-              {t('Open walkthrough')}
-            </Link>
-          </Button>
         </div>
       </div>
 

@@ -149,24 +149,12 @@ export function BusinessGiftCardsPage() {
       ) : null}
 
       <section className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <Badge variant="outline">{t('Issue gift card')}</Badge>
-            <h2 className="mt-3 font-serif text-3xl text-primary-container">{t('Give a customer a gift card')}</h2>
-            <p className="mt-2 text-sm text-on-surface-variant">
-              {t('Business-issued cards start with the catalog value and do not deduct customer points.')}
-            </p>
-          </div>
-          <Button
-            type="button"
-            variant="secondary"
-            className="h-12 rounded-full px-6"
-            disabled={!issueCatalogId || !issueCustomerId || issueGiftCard.isPending}
-            onClick={() => void issueToCustomer()}
-          >
-            <Gift className="size-4" />
-            {issueGiftCard.isPending ? t('Issuing...') : t('Issue Card')}
-          </Button>
+        <div>
+          <Badge variant="outline">{t('Issue gift card')}</Badge>
+          <h2 className="mt-3 font-serif text-3xl text-primary-container">{t('Give a customer a gift card')}</h2>
+          <p className="mt-2 text-sm text-on-surface-variant">
+            {t('Business-issued cards start with the catalog value and do not deduct customer points.')}
+          </p>
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           <div className="grid gap-2">
@@ -195,6 +183,18 @@ export function BusinessGiftCardsPage() {
               </SelectContent>
             </Select>
           </div>
+        </div>
+        <div className="mt-5 flex justify-end">
+          <Button
+            type="button"
+            variant="secondary"
+            className="h-12 w-full rounded-full px-6 sm:w-auto"
+            disabled={!issueCatalogId || !issueCustomerId || issueGiftCard.isPending}
+            onClick={() => void issueToCustomer()}
+          >
+            <Gift className="size-4" />
+            {issueGiftCard.isPending ? t('Issuing...') : t('Issue Card')}
+          </Button>
         </div>
       </section>
 

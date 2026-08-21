@@ -17,7 +17,6 @@ import {
   ShieldCheck,
   Sparkles,
   TrendingUp,
-  Users,
   X,
 } from 'lucide-react'
 import { useState } from 'react'
@@ -46,7 +45,7 @@ const navigation = [
 ]
 
 const adminPortalSections = [
-  { value: 'members', label: 'Members', icon: Users },
+  { value: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { value: 'promotions', label: 'Promotions', icon: Sparkles },
   { value: 'partners', label: 'Partners', icon: Hotel },
   { value: 'ambassadors', label: 'Ambassadors', icon: Megaphone },
@@ -65,7 +64,7 @@ export function AdminLayout() {
   usePlatformDocumentBrand()
   const usesOperationsSidebar = location.pathname === '/admin/portal' || location.pathname === '/admin/guide'
   const activeAdminSection = location.pathname === '/admin/portal'
-    ? location.hash.replace('#', '') || 'members'
+    ? location.hash.replace('#', '') || 'dashboard'
     : null
 
   return (
@@ -141,7 +140,7 @@ export function AdminLayout() {
                 <a
                   key={item.value}
                   title={t(item.label)}
-                  href={`/admin/portal#${item.value}`}
+                  href={item.value === 'dashboard' ? '/admin/portal' : `/admin/portal#${item.value}`}
                   onClick={() => setIsSidebarOpen(false)}
                   className={`group flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors ${
                     activeAdminSection === item.value

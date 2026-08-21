@@ -15,7 +15,7 @@ function SelectTrigger({
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        'flex h-12 w-full items-center justify-between rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 text-left text-sm text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30',
+        'flex h-12 min-w-0 w-full items-center justify-between gap-2 overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] px-4 text-left text-sm text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30 [&>span:first-child]:min-w-0 [&>span:first-child]:truncate',
         className,
       )}
       {...props}
@@ -38,7 +38,7 @@ function SelectContent({
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          'z-[9999] max-h-72 min-w-[var(--radix-select-trigger-width)] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] p-1 text-[var(--foreground)] shadow-lg',
+          'z-[9999] max-h-72 w-[var(--radix-select-trigger-width)] max-w-[calc(100vw-2rem)] overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--card)] p-1 text-[var(--foreground)] shadow-lg sm:w-auto sm:min-w-[var(--radix-select-trigger-width)]',
           position === 'popper' && 'translate-y-1',
           className,
         )}
@@ -61,7 +61,7 @@ function SelectItem({
   return (
     <SelectPrimitive.Item
       className={cn(
-        'relative flex w-full cursor-default select-none items-center rounded-md py-2.5 pl-9 pr-3 text-sm outline-none transition-colors focus:bg-[var(--muted)] focus:text-[var(--foreground)] data-[highlighted]:bg-[var(--muted)] data-[highlighted]:text-[var(--foreground)] data-[state=checked]:text-[var(--foreground)]',
+        'relative flex w-full min-w-0 cursor-default select-none items-center rounded-md py-2.5 pl-9 pr-3 text-sm outline-none transition-colors focus:bg-[var(--muted)] focus:text-[var(--foreground)] data-[highlighted]:bg-[var(--muted)] data-[highlighted]:text-[var(--foreground)] data-[state=checked]:text-[var(--foreground)]',
         className,
       )}
       {...props}
@@ -71,7 +71,7 @@ function SelectItem({
           <Check className="size-4" />
         </SelectPrimitive.ItemIndicator>
       </span>
-      <SelectPrimitive.ItemText>{children}</SelectPrimitive.ItemText>
+      <SelectPrimitive.ItemText className="block min-w-0 max-w-full truncate">{children}</SelectPrimitive.ItemText>
     </SelectPrimitive.Item>
   )
 }

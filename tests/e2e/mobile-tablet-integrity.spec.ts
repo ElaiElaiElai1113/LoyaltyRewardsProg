@@ -180,4 +180,68 @@ test.describe('RewardMe mobile and tablet integrity', () => {
       expect(layout.clippedControls, `${width}px transaction harness clipped controls`).toEqual([])
     }
   })
+
+  test('member lists and gift-card selectors stay contained from phone to desktop', async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 844 })
+    await page.goto('/guide?tenant=wondertown')
+
+    await page.evaluate(async () => {
+      const fixturePath = '/tests/e2e/fixtures/responsive-portal-harness.tsx'
+      const { mountResponsivePortalHarness } = await import(/* @vite-ignore */ fixturePath)
+      const host = document.createElement('div')
+      host.id = 'responsive-portal-test-root'
+      document.body.append(host)
+      mountResponsivePortalHarness(host)
+    })
+
+    const harness = page.getByTestId('responsive-portal-harness')
+    await expect(harness).toBeVisible()
+
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 844 })
+      const giftCardTrigger = harness.getByRole('combobox', { name: 'Gift card' })
+      const customerTrigger = harness.getByRole('combobox', { name: 'Customer' })
+      const issueButton = harness.getByTestId('issue-card-action')
+      const selectorBoxes = await Promise.all([giftCardTrigger.boundingBox(), customerTrigger.boundingBox()])
+      const issueBox = await issueButton.boundingBox()
+
+      expect(selectorBoxes[0]).not.toBeNull()
+      expect(selectorBoxes[1]).not.toBeNull()
+      expect(issueBox).not.toBeNull()
+      expect(issueBox!.y).toBeGreaterThan(selectorBoxes[1]!.y + selectorBoxes[1]!.height - 1)
+      if (width >= 768) {
+        expect(Math.abs(selectorBoxes[0]!.y - selectorBoxes[1]!.y)).toBeLessThanOrEqual(1)
+      } else {
+        expect(selectorBoxes[1]!.y).toBeGreaterThan(selectorBoxes[0]!.y)
+      }
+
+      await giftCardTrigger.click()
+      const option = page.getByRole('option', { name: /deliberately long catalog item/i })
+      await expect(option).toBeVisible()
+      const optionBox = await option.boundingBox()
+      expect(optionBox).not.toBeNull()
+      expect(optionBox!.x).toBeGreaterThanOrEqual(-1)
+      expect(optionBox!.x + optionBox!.width).toBeLessThanOrEqual(width + 1)
+      await page.keyboard.press('Escape')
+      await expect(option).toBeHidden()
+
+      const integrity = await page.evaluate(() => {
+        const viewportWidth = document.documentElement.clientWidth
+        const clipped = Array.from(document.querySelectorAll<HTMLElement>(
+          '[data-testid="responsive-portal-harness"] button, [data-testid="responsive-portal-harness"] [role="combobox"]',
+        ))
+          .map((element) => element.getBoundingClientRect())
+          .filter((rect) => rect.left < -1 || rect.right > viewportWidth + 1)
+          .length
+
+        return {
+          clipped,
+          overflow: Math.max(0, document.documentElement.scrollWidth - viewportWidth),
+        }
+      })
+
+      expect(integrity.overflow, `${width}px member/select harness overflow`).toBeLessThanOrEqual(1)
+      expect(integrity.clipped, `${width}px clipped member/select controls`).toBe(0)
+    }
+  })
 })

@@ -1568,11 +1568,7 @@ runTest('business dashboard keeps transaction scanning out of the dashboard tab'
   assert.doesNotMatch(dashboard, /<QrScanner/)
   assert.match(dashboard, /space-y-5 xl:space-y-7/)
   assert.match(dashboard, /grid gap-3 sm:grid-cols-2 xl:grid-cols-4/)
-  assert.ok(
-    dashboard.indexOf("t('See the business walkthrough')") <
-      dashboard.indexOf('{/* Metrics Grid */}'),
-    'Business walkthrough callout should render before dashboard metrics.',
-  )
+  assert.doesNotMatch(dashboard, /See the business walkthrough/)
 })
 
 runTest('router exposes protected business member-sale route', () => {
@@ -1725,13 +1721,61 @@ runTest('admin layout renders admin portal section navigation inside the sidebar
   const adminLayout = readFileSync('src/layouts/admin-layout.tsx', 'utf8')
 
   assert.match(adminLayout, /adminPortalSections/)
+  assert.match(adminLayout, /value: 'dashboard', label: 'Dashboard'/)
+  assert.doesNotMatch(adminLayout, /value: 'members', label: 'Members'/)
   assert.match(adminLayout, /location\.pathname === '\/admin\/portal' \|\| location\.pathname === '\/admin\/guide'/)
   assert.match(adminLayout, /usesOperationsSidebar \? \(/)
   assert.match(adminLayout, /location\.pathname === '\/admin\/portal'[\s\S]*: null/)
-  assert.match(adminLayout, /href=\{`\/admin\/portal#\$\{item\.value\}`\}/)
+  assert.match(adminLayout, /item\.value === 'dashboard' \? '\/admin\/portal' : `\/admin\/portal#\$\{item\.value\}`/)
   assert.match(adminLayout, /overflow-y-auto/)
   assert.match(adminLayout, /flex-1 min-h-0/)
   assert.doesNotMatch(adminLayout, /usesOperationsSidebar \? \(\s*<div className="flex-1" \/>/)
+})
+
+runTest('admin and business dashboards rely on the sidebar for guide access', () => {
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const businessDashboard = readFileSync('src/features/business-owner/pages/business-dashboard-page.tsx', 'utf8')
+
+  assert.doesNotMatch(adminPage, /See the admin walkthrough/)
+  assert.doesNotMatch(adminPage, /to="\/admin\/guide"/)
+  assert.doesNotMatch(businessDashboard, /See the business walkthrough/)
+  assert.doesNotMatch(businessDashboard, /to="\/business\/guide"/)
+})
+
+runTest('gift-card issue actions follow their required dropdown selections', () => {
+  for (const file of [
+    'src/features/gift-cards/pages/business-gift-cards-page.tsx',
+    'src/features/gift-cards/pages/admin-gift-cards-page.tsx',
+  ]) {
+    const page = readFileSync(file, 'utf8')
+    const selectorsStart = page.indexOf('className="mt-5 grid gap-4 md:grid-cols-2"')
+    const actionContainer = page.indexOf('className="mt-5 flex justify-end"', selectorsStart)
+    const issueAction = page.indexOf("t('Issue Card')")
+
+    assert.ok(selectorsStart >= 0, `${file} should render the required dropdown grid.`)
+    assert.ok(actionContainer > selectorsStart, `${file} should place its issue action after the dropdown grid.`)
+    assert.ok(issueAction > actionContainer, `${file} issue action should render below both dropdowns.`)
+  }
+})
+
+runTest('shared select popovers and compact member rows stay inside phone viewports', () => {
+  const select = readFileSync('src/components/ui/select.tsx', 'utf8')
+  const adminPage = readFileSync('src/features/admin/pages/admin-page.tsx', 'utf8')
+  const businessMembers = readFileSync('src/features/business-owner/pages/members-page.tsx', 'utf8')
+
+  assert.match(select, /max-w-\[calc\(100vw-2rem\)\]/)
+  assert.match(select, /\[&>span:first-child\]:truncate/)
+  assert.match(select, /ItemText className="block min-w-0 max-w-full truncate"/)
+  assert.match(adminPage, /group flex min-w-0 flex-col gap-3 overflow-hidden/)
+  assert.match(businessMembers, /flex min-w-0 flex-col gap-3 overflow-hidden/)
+})
+
+runTest('business sidebar presents guide before dashboard', () => {
+  const layout = readFileSync('src/layouts/business-owner-layout.tsx', 'utf8')
+  const guide = layout.indexOf("{ to: '/business/guide', label: 'Guide'")
+  const dashboard = layout.indexOf("{ to: '/business/dashboard', label: 'Dashboard'")
+
+  assert.ok(guide >= 0 && dashboard >= 0 && guide < dashboard)
 })
 
 runTest('authenticated portal shells use the available wide-screen workspace', () => {

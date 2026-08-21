@@ -30,6 +30,7 @@ import { useLanguage } from '@/lib/language'
 import { cn, getInitials } from '@/lib/utils'
 
 const businessNavigationItems = [
+  { to: '/business/guide', label: 'Guide', icon: MonitorPlay },
   { to: '/business/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/business/accounting', label: 'Accounting', icon: Landmark },
   { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
@@ -37,7 +38,6 @@ const businessNavigationItems = [
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },
   { to: '/business/members', label: 'Customers', icon: Users },
   { to: '/business/partners', label: 'Partners', icon: Hotel },
-  { to: '/business/guide', label: 'Guide', icon: MonitorPlay },
   { to: '/business/settings', label: 'Settings', icon: Settings },
 ]
 

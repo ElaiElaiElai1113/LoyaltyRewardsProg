@@ -156,7 +156,7 @@ export function MembershipOperationsPage() {
         <Button variant="outline" className="w-full sm:w-auto" onClick={() => { void requests.refetch(); void events.refetch() }} disabled={isLoading}><RefreshCw className={`size-4 ${isLoading ? 'animate-spin' : ''}`} />{t('Refresh queue')}</Button>
       </header>
 
-      <section className="grid grid-cols-3 gap-3" aria-label={t('Membership operations summary')}>
+      <section className="grid gap-3 sm:grid-cols-3" aria-label={t('Membership operations summary')}>
         <Metric label={t('Pending')} value={counts.pending} icon={ClipboardList} />
         <Metric label={t('Approved')} value={counts.approved} icon={CheckCircle2} />
         <Metric label={t('Closed')} value={counts.closed} icon={XCircle} />

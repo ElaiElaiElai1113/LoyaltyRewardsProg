@@ -100,24 +100,12 @@ export function AdminGiftCardsPage() {
 
       {businessId ? (
         <section className="rounded-xl border border-[var(--border)] bg-white p-6 shadow-sm">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <Badge variant="outline">{t('Admin issue')}</Badge>
-              <h2 className="mt-3 font-serif text-3xl text-primary-container">{t('Issue a Gift Card')}</h2>
-              <p className="mt-2 text-sm text-on-surface-variant">
-                {t('Admin-issued cards use the catalog value and do not deduct customer points.')}
-              </p>
-            </div>
-            <Button
-              type="button"
-              variant="secondary"
-              className="h-12 rounded-full px-6"
-              disabled={!issueCatalogId || !issueCustomerId || issueGiftCard.isPending}
-              onClick={() => void issueToCustomer()}
-            >
-              <Gift className="size-4" />
-              {issueGiftCard.isPending ? t('Issuing...') : t('Issue Card')}
-            </Button>
+          <div>
+            <Badge variant="outline">{t('Admin issue')}</Badge>
+            <h2 className="mt-3 font-serif text-3xl text-primary-container">{t('Issue a Gift Card')}</h2>
+            <p className="mt-2 text-sm text-on-surface-variant">
+              {t('Admin-issued cards use the catalog value and do not deduct customer points.')}
+            </p>
           </div>
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <div className="grid gap-2">
@@ -147,6 +135,18 @@ export function AdminGiftCardsPage() {
               </Select>
             </div>
           </div>
+          <div className="mt-5 flex justify-end">
+            <Button
+              type="button"
+              variant="secondary"
+              className="h-12 w-full rounded-full px-6 sm:w-auto"
+              disabled={!issueCatalogId || !issueCustomerId || issueGiftCard.isPending}
+              onClick={() => void issueToCustomer()}
+            >
+              <Gift className="size-4" />
+              {issueGiftCard.isPending ? t('Issuing...') : t('Issue Card')}
+            </Button>
+          </div>
         </section>
       ) : null}
 
@@ -154,12 +154,12 @@ export function AdminGiftCardsPage() {
         <h2 className="font-serif text-3xl text-primary-container">{t('Catalog')}</h2>
         <div className="grid gap-4">
           {catalogPagination.pageItems.map((item) => (
-            <div key={item.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm flex items-center justify-between gap-4 p-5">
-              <div>
-                <h3 className="font-serif text-2xl text-primary-container">{item.title}</h3>
-                <p className="text-sm text-on-surface-variant">{item.business?.name} · {t('{points} points', { points: item.pointsCost })} · {item.valueLabel}</p>
+            <div key={item.id} className="flex min-w-0 flex-col gap-4 rounded-xl border border-[var(--border)] bg-white p-5 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+              <div className="min-w-0">
+                <h3 className="break-words font-serif text-2xl text-primary-container">{item.title}</h3>
+                <p className="break-words text-sm text-on-surface-variant">{item.business?.name} · {t('{points} points', { points: item.pointsCost })} · {item.valueLabel}</p>
               </div>
-              <Badge variant={item.isActive ? 'accent' : 'outline'}>{item.isActive ? t('Active') : t('Inactive')}</Badge>
+              <Badge className="w-fit shrink-0" variant={item.isActive ? 'accent' : 'outline'}>{item.isActive ? t('Active') : t('Inactive')}</Badge>
             </div>
           ))}
         </div>

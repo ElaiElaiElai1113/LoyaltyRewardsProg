@@ -226,7 +226,7 @@ export function CheckoutPage() {
             >
               <div className="grid gap-3">
                 <Label>{t('Card Type')}</Label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid gap-3 sm:grid-cols-3">
                   {[
                     { value: 'visa', label: 'Visa •••• 4242' },
                     { value: 'mastercard', label: 'Mastercard •••• 8888' },

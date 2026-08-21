@@ -132,11 +132,11 @@ export function ProgramOnboardingPage() {
           {values.name ? <p className="mt-2 text-sm text-[var(--muted-foreground)]">{t('Draft progress is saved automatically on this device.')}</p> : null}
         </header>
 
-        <div className="mt-8 grid grid-cols-3 border-y border-[var(--border)]">
+        <div className="mt-8 grid border-y border-[var(--border)] sm:grid-cols-3">
           {steps.map((label, index) => (
-            <div className="flex items-center gap-2 py-4 text-sm" key={label}>
+            <div className="flex min-w-0 items-center gap-2 border-b border-[var(--border)] py-4 text-sm last:border-b-0 sm:border-b-0" key={label}>
               <span className={`flex size-7 items-center justify-center rounded-full border ${index <= step ? 'border-[var(--tenant-accent)] bg-[var(--tenant-accent-soft)]' : 'border-[var(--border)]'}`}>{index + 1}</span>
-              <span className={index <= step ? 'font-semibold' : 'text-[var(--muted-foreground)]'}>{onboardingStepLabel(label, t)}</span>
+              <span className={`min-w-0 break-words ${index <= step ? 'font-semibold' : 'text-[var(--muted-foreground)]'}`}>{onboardingStepLabel(label, t)}</span>
             </div>
           ))}
         </div>
