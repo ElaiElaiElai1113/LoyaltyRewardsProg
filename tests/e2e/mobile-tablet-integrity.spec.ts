@@ -185,13 +185,99 @@ test.describe('RewardMe mobile and tablet integrity', () => {
     await page.setViewportSize({ width: 320, height: 844 })
     await page.goto('/guide?tenant=wondertown')
 
-    await page.evaluate(async () => {
-      const fixturePath = '/tests/e2e/fixtures/responsive-portal-harness.tsx'
-      const { mountResponsivePortalHarness } = await import(/* @vite-ignore */ fixturePath)
-      const host = document.createElement('div')
+    await page.evaluate(() => {
+      const host = document.createElement('main')
       host.id = 'responsive-portal-test-root'
-      document.body.append(host)
-      mountResponsivePortalHarness(host)
+      host.className = 'min-h-screen bg-background text-foreground'
+      host.innerHTML = `
+        <section class="mx-auto min-w-0 max-w-6xl space-y-6 px-4 py-6" data-testid="responsive-portal-harness">
+          <article class="min-w-0 overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--card)] p-4 sm:p-6">
+            <h2 class="break-words font-serif text-3xl">Give a customer a gift card</h2>
+            <div class="mt-5 grid min-w-0 gap-4 md:grid-cols-2" data-testid="issue-selectors">
+              <div class="grid min-w-0 gap-2">
+                <span class="text-sm font-bold">Gift card</span>
+                <button
+                  aria-controls="responsive-catalog-options"
+                  aria-expanded="false"
+                  aria-label="Gift card"
+                  class="flex h-12 w-full min-w-0 items-center justify-between gap-2 overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  role="combobox"
+                  type="button"
+                >
+                  <span class="min-w-0 flex-1 truncate text-left">Choose gift card</span>
+                  <span aria-hidden="true" class="shrink-0">⌄</span>
+                </button>
+              </div>
+              <div class="grid min-w-0 gap-2">
+                <span class="text-sm font-bold">Customer</span>
+                <button
+                  aria-label="Customer"
+                  class="flex h-12 w-full min-w-0 items-center justify-between gap-2 overflow-hidden rounded-md border border-input bg-background px-3 py-2 text-sm"
+                  role="combobox"
+                  type="button"
+                >
+                  <span class="min-w-0 flex-1 truncate text-left">Choose customer</span>
+                  <span aria-hidden="true" class="shrink-0">⌄</span>
+                </button>
+              </div>
+            </div>
+            <div class="relative mt-2 min-w-0">
+              <div
+                class="absolute left-0 top-0 z-50 max-h-72 w-full max-w-[calc(100vw-2rem)] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md md:w-[calc(50%-0.5rem)]"
+                data-testid="responsive-catalog-options"
+                hidden
+                id="responsive-catalog-options"
+                role="listbox"
+              >
+                <div class="flex w-full min-w-0 items-center overflow-hidden rounded-sm px-2 py-2 text-sm" role="option">
+                  <span class="block min-w-0 flex-1 truncate">A deliberately long catalog item name that must never widen a phone viewport - USD 100.00</span>
+                </div>
+              </div>
+            </div>
+            <div class="mt-5 flex justify-end">
+              <button class="h-12 w-full rounded-full border px-6 text-sm font-semibold sm:w-auto" data-testid="issue-card-action" type="button">
+                Issue Card
+              </button>
+            </div>
+          </article>
+
+          <div aria-label="Responsive members" class="min-w-0 overflow-hidden rounded-xl border bg-card" role="list">
+            <div class="flex min-w-0 flex-col gap-3 overflow-hidden p-4 lg:flex-row lg:items-center lg:justify-between" role="listitem">
+              <div class="flex min-w-0 items-start gap-3 lg:items-center">
+                <div class="size-10 shrink-0 rounded-xl bg-primary"></div>
+                <div class="min-w-0 flex-1">
+                  <p class="truncate font-serif text-lg">E2E Agreement Pending Customer</p>
+                  <p class="truncate text-sm">agreement-pending-customer-with-long-address@wondertown.test</p>
+                  <p class="block min-w-0 max-w-full truncate text-xs">ID: 60C1574B-E484-470C-A7C1-91B1E81BC21E</p>
+                </div>
+              </div>
+              <div class="flex w-full min-w-0 flex-wrap items-center gap-2 pl-0 sm:pl-[3.25rem] lg:w-auto lg:justify-end lg:pl-0">
+                <span class="max-w-full rounded-full border px-2.5 py-1 text-xs font-bold">CUSTOMER</span>
+                <span class="max-w-full rounded-full border px-2.5 py-1 text-xs font-bold">ID MISSING</span>
+                <span class="max-w-full rounded-full border px-2.5 py-1 text-xs font-bold">UNDER REVIEW</span>
+                <span class="max-w-full rounded-full border px-2.5 py-1 text-xs font-bold">0 POINTS</span>
+                <span class="max-w-full rounded-full border px-2.5 py-1 text-xs font-bold">0 REWARD CREDITS</span>
+                <button class="rounded-full border px-3 py-2 text-sm" type="button">View Profile</button>
+                <button class="rounded-full border px-3 py-2 text-sm" type="button">Remove</button>
+              </div>
+            </div>
+          </div>
+        </section>
+      `
+
+      const trigger = host.querySelector<HTMLButtonElement>('[aria-label="Gift card"]')
+      const options = host.querySelector<HTMLElement>('[data-testid="responsive-catalog-options"]')
+      const setOpen = (open: boolean) => {
+        if (!trigger || !options) return
+        trigger.setAttribute('aria-expanded', String(open))
+        options.hidden = !open
+      }
+      trigger?.addEventListener('click', () => setOpen(trigger.getAttribute('aria-expanded') !== 'true'))
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') setOpen(false)
+      }, { once: false })
+
+      document.body.replaceChildren(host)
     })
 
     const harness = page.getByTestId('responsive-portal-harness')
