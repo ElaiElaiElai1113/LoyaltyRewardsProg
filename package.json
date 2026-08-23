@@ -20,7 +20,7 @@
     "ios:sync": "npm run build && cap sync ios",
     "ios:open": "cap open ios",
     "test": "tsc -p tsconfig.tests.json && node .tmp-tests/tests/run-tests.js",
-    "test:unit": "vitest run src api --exclude .tools/**",
+    "test:unit": "vitest run src api --exclude .tools/** --exclude SynergizeBusinessGroup/**",
     "test:e2e": "node scripts/run-playwright-local.mjs",
     "test:e2e:doctor": "node scripts/check-e2e-readiness.mjs",
     "test:e2e:hosted-safe": "node scripts/run-playwright-local.mjs tests/e2e/hosted-safe.spec.ts --workers=1",
@@ -156,6 +156,6 @@
   "overrides": {
     "esbuild": "0.27.2",
     "postcss": "8.5.25",
-    "nanoid": "3.3.17"
+    "nanoid": "3.3.18"
   }
 }

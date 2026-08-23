@@ -82,7 +82,7 @@ function GiftCardStatusList({
   function emptyDescription() {
     if (status === 'active') return 'Gift cards you can still use will appear here.'
     if (status === 'redeemed') return 'Redeemed gift cards appear here after partner staff scan and redeem them.'
-    return 'Expired gift cards will appear here after their use-by date passes.'
+    return 'Cancelled gift cards will appear here if the issuing business cancels one.'
   }
 
   if (isLoading) {
@@ -154,7 +154,7 @@ export function WalletGiftCardsPage() {
           <h1 className="font-serif text-4xl font-bold uppercase tracking-[0.02em] text-primary-container sm:text-5xl">
             {t('Gift Cards')}
           </h1>
-          <p className="text-on-surface-variant">{t('Keep active, redeemed, and expired cards in one place.')}</p>
+          <p className="text-on-surface-variant">{t('Keep active and redeemed cards in one place. Gift cards never expire.')}</p>
         </div>
         <Button asChild variant="secondary">
           <Link to="/gift-cards">{t('Browse Gift Cards')}</Link>
@@ -162,8 +162,8 @@ export function WalletGiftCardsPage() {
       </div>
 
       <Tabs defaultValue="active">
-        <TabsList className="grid h-auto w-full min-w-0 grid-cols-3 p-1 sm:inline-flex sm:h-16 sm:w-auto sm:p-2">
-          {(['active', 'redeemed', 'expired'] as const).map((status) => (
+        <TabsList className="grid h-auto w-full min-w-0 grid-cols-2 p-1 sm:inline-flex sm:h-16 sm:w-auto sm:p-2">
+          {(['active', 'redeemed'] as const).map((status) => (
             <TabsTrigger
               key={status}
               value={status}
@@ -174,7 +174,7 @@ export function WalletGiftCardsPage() {
             </TabsTrigger>
           ))}
         </TabsList>
-        {(['active', 'redeemed', 'expired'] as const).map((status) => (
+        {(['active', 'redeemed'] as const).map((status) => (
           <TabsContent key={status} value={status} className="space-y-4">
             <GiftCardStatusList
               cards={byStatus(status)}

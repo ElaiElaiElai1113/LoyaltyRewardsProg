@@ -25,10 +25,9 @@ export function IssueConfirmationDialog({
         <DialogHeader>
           <DialogTitle>{t('Issue gift card')}</DialogTitle>
           <DialogDescription>
-            {item ? t('Spend {points} points for {title}. This card expires in {days} days.', {
+            {item ? t('Spend {points} points for {title}. This gift card never expires.', {
               points: item.pointsCost,
               title: item.title,
-              days: item.expiryDays,
             }) : ''}
           </DialogDescription>
         </DialogHeader>

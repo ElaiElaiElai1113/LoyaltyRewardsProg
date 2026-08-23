@@ -1,0 +1,99 @@
+name: Apply confirmed non-expiring gift-card policy
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY NON EXPIRING GIFT CARD POLICY to run the scoped production migration
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reward-platform-non-expiring-gift-card-policy
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY NON EXPIRING GIFT CARD POLICY'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROJECT_REF: bftuvmywtmpflizsomim
+      MIGRATION_VERSION: "20260823150645"
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Require production database and QA credentials
+        run: >-
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          && test -n "$SUPABASE_DB_PASSWORD"
+          && test -n "$VITE_SUPABASE_URL"
+          && test -n "$VITE_SUPABASE_ANON_KEY"
+          && test -n "$E2E_PASSWORD"
+      - name: Link the rewards production project
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Capture the gift-card state before migration
+        run: >-
+          npx supabase db query --linked --output json
+          "select
+          count(*) as gift_card_count,
+          count(*) filter (where expires_at is not null) as cards_with_expiry,
+          count(*) filter (where status = 'expired') as expired_cards
+          from public.gift_cards;"
+          > "$RUNNER_TEMP/gift-card-policy-before.json"
+      - name: Apply only the approved non-expiring policy migration
+        run: npx supabase db query --linked --file supabase/migrations/20260823150645_align_gift_cards_with_confirmed_non_expiring_policy.sql
+      - name: Record the applied migration version
+        run: npx supabase migration repair --linked --status applied "$MIGRATION_VERSION" --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Verify the production policy and report contract
+        run: >-
+          npx supabase db query --linked
+          "do \$\$ declare report_sql text;
+          begin
+          if exists (select 1 from public.gift_cards where expires_at is not null or status = 'expired')
+          then raise exception 'gift_card_expiration_policy_not_applied';
+          end if;
+          if not exists (
+            select 1 from pg_trigger
+            where tgrelid = 'public.gift_cards'::regclass
+              and tgname = 'enforce_non_expiring_gift_card'
+              and not tgisinternal
+          ) then raise exception 'non_expiring_gift_card_trigger_missing';
+          end if;
+          select pg_get_functiondef('public.get_business_accounting_report(uuid,timestamptz,timestamptz)'::regprocedure)
+          into report_sql;
+          if position('0::numeric as reimbursement_estimate' in report_sql) = 0
+            or position('not_applicable' in report_sql) = 0
+          then raise exception 'gift_card_accounting_policy_invalid';
+          end if;
+          if not has_function_privilege('authenticated', 'public.get_business_accounting_report(uuid,timestamptz,timestamptz)', 'execute')
+            or has_function_privilege('anon', 'public.get_business_accounting_report(uuid,timestamptz,timestamptz)', 'execute')
+          then raise exception 'gift_card_accounting_acl_invalid';
+          end if;
+          end \$\$;"
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Verify RewardMe gift-card issuance and redemption
+        run: npm run test:e2e:rewardme-gift-cards-live
+      - name: Verify Wondertown gift-card issuance and redemption
+        run: npm run test:e2e:wondertown-gift-cards-live
+      - name: Upload the retained before-state
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: gift-card-policy-before-${{ github.run_id }}
+          path: ${{ runner.temp }}/gift-card-policy-before.json
+          if-no-files-found: warn
+          retention-days: 30

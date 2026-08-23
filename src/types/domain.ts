@@ -414,7 +414,7 @@ export interface GiftCard {
   pointsSpent: number
   initialBalance?: number | null
   remainingBalance?: number | null
-  expiresAt: string
+  expiresAt: string | null
   redeemedAt: string | null
   redeemedBy: string | null
   redeemedAtBusiness: string | null

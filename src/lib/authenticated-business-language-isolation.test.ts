@@ -39,7 +39,7 @@ describe('authenticated business language isolation', () => {
     expect(transactions).toContain("t('Transaction History')")
     expect(transactions).toContain("t('Transaction history pagination')")
     expect(giftCards).toContain("t('Gift Card Catalog')")
-    expect(giftCards).toContain("t('Business-issued cards start with the catalog value and do not deduct customer points.')")
+    expect(giftCards).toContain("t('Business-issued cards start with the catalog value, do not deduct customer points, and never expire.')")
     expect(members).toContain("t('Search by name, email, or customer ID')")
     expect(scanner).toContain("t('Checking the whole image for a QR code...')")
     expect(scanner).toContain("t('No QR found. Try a clearer screenshot or use the camera.')")

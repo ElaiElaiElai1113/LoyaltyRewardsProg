@@ -24,7 +24,7 @@ function mapGiftCard(row: Record<string, unknown>): GiftCard {
     remainingBalance: (mapped.remainingBalance as number | null)
       ?? (mapped.remainingValueAmount as number | null)
       ?? null,
-    expiresAt: mapped.expiresAt as string,
+    expiresAt: (mapped.expiresAt as string | null) ?? null,
     redeemedAt: (mapped.redeemedAt as string | null) ?? null,
     redeemedBy: (mapped.redeemedBy as string | null) ?? null,
     redeemedAtBusiness: (mapped.redeemedAtBusiness as string | null) ?? null,
@@ -72,7 +72,7 @@ function mapPublicGiftCard(row: Record<string, unknown>): PublicGiftCard {
     remainingBalance: (mapped.remainingBalance as number | null)
       ?? (mapped.remainingValueAmount as number | null)
       ?? null,
-    expiresAt: mapped.expiresAt as string,
+    expiresAt: (mapped.expiresAt as string | null) ?? null,
     redeemedAt: (mapped.redeemedAt as string | null) ?? null,
     redeemedBy: null,
     redeemedAtBusiness: null,
@@ -144,7 +144,7 @@ function mapBusinessGiftCard(row: Record<string, unknown>): GiftCard {
     remainingBalance: (mapped.remainingBalance as number | null)
       ?? (mapped.remainingValueAmount as number | null)
       ?? null,
-    expiresAt: mapped.expiresAt as string,
+    expiresAt: (mapped.expiresAt as string | null) ?? null,
     redeemedAt: (mapped.redeemedAt as string | null) ?? null,
     redeemedBy: (mapped.redeemedBy as string | null) ?? null,
     redeemedAtBusiness: (mapped.redeemedAtBusiness as string | null) ?? null,

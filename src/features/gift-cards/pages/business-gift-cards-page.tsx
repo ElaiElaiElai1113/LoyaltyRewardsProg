@@ -153,7 +153,7 @@ export function BusinessGiftCardsPage() {
           <Badge variant="outline">{t('Issue gift card')}</Badge>
           <h2 className="mt-3 font-serif text-3xl text-primary-container">{t('Give a customer a gift card')}</h2>
           <p className="mt-2 text-sm text-on-surface-variant">
-            {t('Business-issued cards start with the catalog value and do not deduct customer points.')}
+            {t('Business-issued cards start with the catalog value, do not deduct customer points, and never expire.')}
           </p>
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
@@ -218,7 +218,7 @@ export function BusinessGiftCardsPage() {
               <Label htmlFor="gift-card-image">{t('Image URL')}</Label>
               <Input id="gift-card-image" {...form.register('imageUrl')} />
             </div>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div className="grid gap-2">
                 <Label htmlFor="gift-card-points">{t('Points')}</Label>
                 <Input id="gift-card-points" type="number" {...form.register('pointsCost', { valueAsNumber: true })} />
@@ -228,11 +228,6 @@ export function BusinessGiftCardsPage() {
                 <Label htmlFor="gift-card-value">{t('Value')}</Label>
                 <Input id="gift-card-value" {...form.register('valueLabel')} />
                 {form.formState.errors.valueLabel ? <p className="text-xs text-red-500">{t(form.formState.errors.valueLabel.message)}</p> : null}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="gift-card-expiry">{t('Expiry Days')}</Label>
-                <Input id="gift-card-expiry" type="number" {...form.register('expiryDays', { valueAsNumber: true })} />
-                {form.formState.errors.expiryDays ? <p className="text-xs text-red-500">{t(form.formState.errors.expiryDays.message)}</p> : null}
               </div>
             </div>
             <label className="flex items-center gap-3 text-sm font-semibold">
@@ -269,7 +264,7 @@ export function BusinessGiftCardsPage() {
             <div className="mt-6 flex justify-between text-sm font-bold text-on-surface">
               <span>{t('{count} points', { count: item.pointsCost })}</span>
               <span>{item.valueLabel}</span>
-              <span>{t('{count} days', { count: item.expiryDays })}</span>
+              <span>{t('Never expires')}</span>
             </div>
           </div>
         ))}

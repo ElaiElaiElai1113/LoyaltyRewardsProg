@@ -1,0 +1,83 @@
+name: Apply confirmed Synergize credit limit
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type APPLY SYNERGIZE CREDIT LIMIT to run the scoped production migration
+        required: true
+        type: string
+      migration_base64:
+        description: Base64-encoded reviewed migration (verified against the pinned SHA-256)
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: synergize-confirmed-credit-limit
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    if: inputs.confirmation == 'APPLY SYNERGIZE CREDIT LIMIT'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PROJECT_REF: vxoskzawxahnbiemgsku
+      MIGRATION_VERSION: "20260823151211"
+      EXPECTED_SHA256: a2d1b276e28a6a5cbe59621bf7c9c6a8c1eaf16ce12180b553102ddccf19599d
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      MIGRATION_BASE64: ${{ inputs.migration_base64 }}
+    steps:
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Require the production management credential
+        run: test -n "$SUPABASE_ACCESS_TOKEN"
+      - name: Materialize and verify the exact reviewed migration
+        shell: bash
+        run: |
+          printf '%s' "$MIGRATION_BASE64" | base64 --decode > "$RUNNER_TEMP/synergize-credit-limit.sql"
+          echo "$EXPECTED_SHA256  $RUNNER_TEMP/synergize-credit-limit.sql" | sha256sum --check --strict
+      - name: Link the Synergize production project
+        run: npx --yes supabase@2.103.0 link --project-ref "$PROJECT_REF"
+      - name: Capture the member balance state before migration
+        run: >-
+          npx --yes supabase@2.103.0 db query --linked --output json
+          "select count(*) as member_count,
+          coalesce(sum(credit_balance), 0) as total_credit_balance
+          from public.synergize_members;"
+          > "$RUNNER_TEMP/synergize-credit-limit-before.json"
+      - name: Apply only the reviewed Synergize credit-limit migration
+        run: npx --yes supabase@2.103.0 db query --linked --file "$RUNNER_TEMP/synergize-credit-limit.sql"
+      - name: Record the applied migration version
+        run: npx --yes supabase@2.103.0 migration repair --linked --status applied "$MIGRATION_VERSION" --yes
+      - name: Verify the live credit-limit contract
+        run: >-
+          npx --yes supabase@2.103.0 db query --linked
+          "do \$\$ declare trade_sql text;
+          begin
+          if not exists (
+            select 1 from information_schema.columns
+            where table_schema = 'public'
+              and table_name = 'synergize_members'
+              and column_name = 'credit_limit'
+              and column_default = '1000'::numeric::text
+          ) then raise exception 'synergize_credit_limit_column_invalid';
+          end if;
+          select pg_get_functiondef('public.admin_create_synergize_manual_trade(uuid,uuid,uuid,numeric,numeric,text,text)'::regprocedure)
+          into trade_sql;
+          if position('v_buyer_balance - v_credit_amount < -v_buyer_credit_limit' in trade_sql) = 0
+          then raise exception 'synergize_credit_limit_enforcement_missing';
+          end if;
+          end \$\$;"
+      - name: Upload the retained before-state
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: synergize-credit-limit-before-${{ github.run_id }}
+          path: ${{ runner.temp }}/synergize-credit-limit-before.json
+          if-no-files-found: warn
+          retention-days: 30

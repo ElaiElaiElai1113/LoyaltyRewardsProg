@@ -184,7 +184,7 @@ export function AdminGiftCardsPage() {
                 </div>
                 <div className="shrink-0 text-left sm:text-right">
                   <Badge className="capitalize" variant={card.status === 'active' ? 'accent' : 'outline'}>{t(card.status)}</Badge>
-                  <p className="mt-2 text-xs text-on-surface-variant">{t('Expires {date}', { date: new Date(card.expiresAt).toLocaleDateString(language === 'es' ? 'es-CO' : language === 'tl' ? 'fil-PH' : program.locale) })}</p>
+                  <p className="mt-2 text-xs text-on-surface-variant">{t('Never expires')}</p>
                   {card.catalog?.valueLabel ? <p className="mt-1 text-sm font-semibold text-on-surface">{card.catalog.valueLabel}</p> : null}
                 </div>
               </div>

@@ -54,7 +54,7 @@ const legalPages: Record<LegalPageKind, { title: string; intro: string; sections
       },
       {
         title: 'Reward availability',
-        body: 'Rewards may have inventory, expiration, eligibility, location, point cost, or verification requirements before they can be claimed.',
+        body: 'Rewards may have inventory, eligibility, location, point cost, or verification requirements before they can be claimed. Issued gift cards and stored balances do not expire.',
       },
       {
         title: 'Redemption review',

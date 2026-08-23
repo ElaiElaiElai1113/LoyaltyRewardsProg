@@ -335,7 +335,7 @@ export function RedemptionsPage() {
         return
       }
 
-      if (card.status !== 'active' || new Date(card.expiresAt) <= new Date()) {
+      if (card.status !== 'active') {
         setValidationStatus('expired')
         return
       }

@@ -9,10 +9,6 @@ import { useLanguage } from '@/lib/language'
 import { formatTenantCurrency } from '@/lib/tenant-commerce'
 import type { GiftCard, PublicGiftCard } from '@/types/domain'
 
-function formatDate(value: string, locale: string) {
-  return new Intl.DateTimeFormat(locale, { dateStyle: 'medium' }).format(new Date(value))
-}
-
 function parseGiftCardValue(valueLabel?: string) {
   if (!valueLabel) return 0
 
@@ -39,9 +35,8 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
     currency: giftCard.business?.currency ?? program.currency,
     locale: language === 'es' ? 'es-CO' : language === 'tl' ? 'fil-PH' : program.locale,
   }
-  const languageLocale = language === 'es' ? 'es-CO' : language === 'tl' ? 'fil-PH' : program.locale
   const formatBalance = (value: number) => formatTenantCurrency(value, currencyContext)
-  const isActive = giftCard.status === 'active' && new Date(giftCard.expiresAt) > new Date()
+  const isActive = giftCard.status === 'active'
 
   async function copyLink() {
     await navigator.clipboard.writeText(publicUrl)
@@ -79,8 +74,8 @@ export function GiftCardDisplay({ giftCard, publicUrl, title, businessName }: Gi
               <p className="mt-1 break-all font-mono text-lg font-semibold text-[var(--foreground)]">{giftCard.code}</p>
             </div>
             <div>
-              <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Expires')}</p>
-              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{formatDate(giftCard.expiresAt, languageLocale)}</p>
+              <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Expiration')}</p>
+              <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">{t('Never expires')}</p>
             </div>
             <div>
               <p className="text-xs font-medium text-[var(--muted-foreground)]">{t('Remaining')}</p>

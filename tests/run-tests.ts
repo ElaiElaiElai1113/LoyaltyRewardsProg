@@ -1248,7 +1248,6 @@ runTest('pagination announcements have Spanish and Tagalog labels', () => {
     'Activity pagination',
     'Active gift cards pagination',
     'Redeemed gift cards pagination',
-    'Expired gift cards pagination',
   ])
   const ariaLabelPattern = /(?:ariaLabel|paginationAriaLabel)="([^"]+)"/g
 
@@ -2152,6 +2151,27 @@ runTest('gift cards use declining balances and can be issued by businesses or ad
   assert.match(adminGiftCardsPage, /Admin-issued cards use the catalog value/)
   assert.match(display, /Available Balance/)
   assert.match(display, /Original value:/)
+})
+
+runTest('gift cards never expire and accounting does not promise a Synergize Credit transfer', () => {
+  const migration = readFileSync(
+    'supabase/migrations/20260823150645_align_gift_cards_with_confirmed_non_expiring_policy.sql',
+    'utf8',
+  )
+  const wallet = readFileSync('src/features/gift-cards/pages/wallet-gift-cards-page.tsx', 'utf8')
+  const display = readFileSync('src/features/gift-cards/components/gift-card-display.tsx', 'utf8')
+  const confirmation = readFileSync('src/features/gift-cards/components/issue-confirmation-dialog.tsx', 'utf8')
+
+  assert.match(migration, /alter column expires_at drop not null/)
+  assert.match(migration, /new\.expires_at := null/)
+  assert.match(migration, /create trigger enforce_non_expiring_gift_card/)
+  assert.match(migration, /0::numeric as reimbursement_estimate/)
+  assert.match(migration, /then 'not_applicable'/)
+  assert.match(wallet, /Gift cards never expire/)
+  assert.doesNotMatch(wallet, /\['active', 'redeemed', 'expired'\]/)
+  assert.match(display, /Never expires/)
+  assert.doesNotMatch(display, /new Date\(giftCard\.expiresAt\)/)
+  assert.match(confirmation, /This gift card never expires/)
 })
 
 runTest('gift card balance compatibility migration repairs legacy and current hosted contracts', () => {
@@ -3091,6 +3111,10 @@ runTest('business accounting report keeps gross sales separate from credit and r
     'supabase/migrations/20260818070531_business_accounting_report.sql',
     'utf8',
   )
+  const policyMigration = readFileSync(
+    'supabase/migrations/20260823150645_align_gift_cards_with_confirmed_non_expiring_policy.sql',
+    'utf8',
+  )
   const page = readFileSync(
     'src/features/business-owner/pages/accounting-report-page.tsx',
     'utf8',
@@ -3113,11 +3137,15 @@ runTest('business accounting report keeps gross sales separate from credit and r
   assert.match(migration, /from public, anon, authenticated, service_role/)
   assert.match(migration, /to authenticated/)
   assert.doesNotMatch(migration, /set search_path = public/)
+  assert.match(policyMigration, /0::numeric as reimbursement_estimate/)
+  assert.match(policyMigration, /then 'not_applicable'/)
 
   assert.match(service, /sb\.rpc\('get_business_accounting_report'/)
   assert.match(page, /Full sales recorded/)
   assert.match(page, /Gift-card credit applied/)
-  assert.match(page, /Estimated reimbursement/)
+  assert.match(page, /Synergize Credits received/)
+  assert.match(page, /Gift-card use does not transfer Synergize Credits/)
+  assert.doesNotMatch(page, /Estimated reimbursement/)
   assert.match(page, /Export CSV/)
   assert.match(page, /PaginationControls/)
   assert.match(routes, /path: '\/business\/accounting'[\s\S]*OwnerOnlyBusinessRoute/)

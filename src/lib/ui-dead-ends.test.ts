@@ -30,7 +30,7 @@ describe('current UI process safeguards', () => {
 
     expect(page).not.toContain('/wallet/gift-cards/')
     expect(page).toContain('Customer ID:')
-    expect(page).toContain('Expires ')
+    expect(page).toContain('Never expires')
   })
 
   it('consumes rejected mutation promises at the UI boundary', () => {

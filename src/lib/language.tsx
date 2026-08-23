@@ -2207,6 +2207,8 @@ const spanishTranslations: Record<string, string> = {
   'Issuing...': 'Emitiendo...',
   'Keep active, redeemed, and expired cards in one place.':
     'Mantén las tarjetas activas, canjeadas y vencidas en un solo lugar.',
+  'Keep active and redeemed cards in one place. Gift cards never expire.':
+    'Mantén las tarjetas activas y canjeadas en un solo lugar. Las tarjetas de regalo nunca vencen.',
   'Later today': 'Más tarde hoy',
   'Member QR link copied': 'Enlace del QR de miembro copiado',
   'Membership canceled. Your balance is preserved.': 'Membresía cancelada. Tu saldo se conserva.',
@@ -2223,6 +2225,10 @@ const spanishTranslations: Record<string, string> = {
   Share: 'Compartir',
   'Spend {points} points for {title}. This card expires in {days} days.':
     'Usa {points} puntos para {title}. Esta tarjeta vence en {days} días.',
+  'Spend {points} points for {title}. This gift card never expires.':
+    'Usa {points} puntos para {title}. Esta tarjeta de regalo nunca vence.',
+  Expiration: 'Vencimiento',
+  'Never expires': 'Nunca vence',
   'Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining bill before tax and service charge.':
     'El personal canjea primero la tarjeta de regalo. Después escanea tu QR de miembro y los puntos se otorgan solo sobre el saldo restante antes de impuestos y cargos por servicio.',
   'Submit optional ID': 'Enviar identificación opcional',
@@ -2315,6 +2321,8 @@ const spanishTranslations: Record<string, string> = {
     'La información del negocio todavía se está cargando. Inténtalo de nuevo en un momento.',
   'Business-issued cards start with the catalog value and do not deduct customer points.':
     'Las tarjetas emitidas por el negocio comienzan con el valor del catálogo y no descuentan puntos al cliente.',
+  'Business-issued cards start with the catalog value, do not deduct customer points, and never expire.':
+    'Las tarjetas emitidas por el negocio comienzan con el valor del catálogo, no descuentan puntos al cliente y nunca vencen.',
   'Camera access was blocked. Use upload or paste the code.':
     'Se bloqueó el acceso a la cámara. Sube una imagen o pega el código.',
   'Cashier Note': 'Nota de caja',
@@ -3230,6 +3238,7 @@ const spanishTranslations: Record<string, string> = {
   'Card balance before': 'Saldo de la tarjeta antes',
   'Commission tracked': 'Comisión registrada',
   'Credit and reimbursement report': 'Informe de créditos y reembolsos',
+  'Sales and gift-card report': 'Informe de ventas y tarjetas de regalo',
   'Credit Applied': 'Crédito aplicado',
   'Credit applied': 'Crédito aplicado',
   'Credit transactions': 'Transacciones con crédito',
@@ -3239,6 +3248,7 @@ const spanishTranslations: Record<string, string> = {
   'Full sale': 'Venta completa',
   'Full sales recorded': 'Ventas completas registradas',
   'Funding and reimbursement': 'Financiación y reembolso',
+  'Issuance and credit treatment': 'Emisión y tratamiento del crédito',
   'Funding source': 'Fuente de financiación',
   'Gift-card credit applied': 'Crédito de tarjeta de regalo aplicado',
   'Gift-card payments will appear here after a business completes a sale.': 'Los pagos con tarjeta de regalo aparecerán aquí después de que el negocio complete una venta.',
@@ -3254,24 +3264,35 @@ const spanishTranslations: Record<string, string> = {
   'Reimbursement estimate': 'Reembolso estimado',
   'Reimbursement is an estimate for member-point and program-issued cards. Final fees, approval, and payout timing must follow the signed business agreement.': 'El reembolso es una estimación para tarjetas emitidas con puntos de miembros o por el programa. Las comisiones finales, la aprobación y el calendario de pago deben seguir el acuerdo comercial firmado.',
   'Reimbursement status': 'Estado del reembolso',
+  'Synergize Credits received': 'Créditos Synergize recibidos',
+  'Credit transfer status': 'Estado de transferencia de créditos',
   'Report period': 'Período del informe',
   'The start date must be before the end date.': 'La fecha inicial debe ser anterior a la fecha final.',
   'To date': 'Fecha final',
   'Track the full bill, gift-card payment, customer balance due, remaining card balance, and estimated program reimbursement.': 'Registra la factura completa, el pago con tarjeta de regalo, el saldo que debe pagar el cliente, el saldo restante de la tarjeta y el reembolso estimado del programa.',
+  'Track the full bill, gift-card payment, customer balance due, and remaining card balance.': 'Registra la factura completa, el pago con tarjeta de regalo, el saldo que debe pagar el cliente y el saldo restante de la tarjeta.',
   'Transaction ID': 'ID de la transacción',
   '{count} credit transactions': '{count} transacciones con crédito',
   '{count} full-credit · {split} split-payment': '{count} con crédito total · {split} con pago dividido',
   '{count} transactions need a funding review.': '{count} transacciones necesitan revisión de financiación.',
   'Member points': 'Puntos del miembro',
+  'Claimed with member points': 'Canjeada con puntos del miembro',
   'Program-issued credit': 'Crédito emitido por el programa',
+  'Issued by the platform': 'Emitida por la plataforma',
   'Business-issued card': 'Tarjeta emitida por el negocio',
+  'Issued by this business': 'Emitida por este negocio',
   'Funding review required': 'Se requiere revisar la financiación',
   'Estimated reimbursement': 'Reembolso estimado',
   'No program reimbursement': 'Sin reembolso del programa',
+  'No Synergize Credit transfer': 'Sin transferencia de Créditos Synergize',
+  'Review required': 'Revisión necesaria',
   'Review funding source': 'Revisar la fuente de financiación',
   'Outstanding card balance': 'Saldo pendiente de tarjetas',
   'Active cards that can still be used on future visits.': 'Tarjetas activas que todavía pueden utilizarse en visitas futuras.',
   'Tracked separately and not automatically deducted from reimbursement.': 'Se registra por separado y no se descuenta automáticamente del reembolso.',
+  'Gift-card use does not transfer Synergize Credits into the business account.': 'El uso de una tarjeta de regalo no transfiere Créditos Synergize a la cuenta del negocio.',
+  'Gift cards are store credit issued and honored by the listed business. Using one does not transfer Synergize Credits. Cash commission is tracked separately.': 'Las tarjetas de regalo son crédito de tienda emitido y aceptado por el negocio indicado. Su uso no transfiere Créditos Synergize. La comisión en efectivo se registra por separado.',
+  'Rewards may have inventory, eligibility, location, point cost, or verification requirements before they can be claimed. Issued gift cards and stored balances do not expire.': 'Las recompensas pueden tener requisitos de inventario, elegibilidad, ubicación, costo en puntos o verificación antes de reclamarse. Las tarjetas de regalo emitidas y sus saldos no vencen.',
 }
 
 const tagalogTranslations: Record<string, string> = {
@@ -4558,6 +4579,8 @@ const tagalogTranslations: Record<string, string> = {
   'Issuing...': 'Ibinibigay...',
   'Keep active, redeemed, and expired cards in one place.':
     'Panatilihin sa iisang lugar ang mga aktibo, nagamit, at paso nang kard.',
+  'Keep active and redeemed cards in one place. Gift cards never expire.':
+    'Panatilihin sa iisang lugar ang mga aktibo at nagamit na kard. Hindi nawawalan ng bisa ang mga kard na regalo.',
   'Later today': 'Mamaya ngayong araw',
   'Member QR link copied': 'Nakopya ang kawing ng QR ng miyembro',
   'Membership canceled. Your balance is preserved.': 'Kinansela ang kasapian. Nananatili ang iyong balanse.',
@@ -4576,6 +4599,10 @@ const tagalogTranslations: Record<string, string> = {
   Share: 'Ibahagi',
   'Spend {points} points for {title}. This card expires in {days} days.':
     'Gumamit ng {points} puntos para sa {title}. Mawawalan ng bisa ang kard na ito pagkalipas ng {days} araw.',
+  'Spend {points} points for {title}. This gift card never expires.':
+    'Gumamit ng {points} puntos para sa {title}. Hindi mawawalan ng bisa ang kard na regalong ito.',
+  Expiration: 'Pagkawala ng bisa',
+  'Never expires': 'Hindi nawawalan ng bisa',
   'Staff redeem the gift card first. Then they scan your member QR and points are awarded only on the remaining bill before tax and service charge.':
     'Gagamitin muna ng kawani ang kard na regalo. Pagkatapos ay i-scan nila ang QR ng miyembro at magbibigay lamang ng puntos sa natitirang bayarin bago ang buwis at singil sa serbisyo.',
   'Submit optional ID': 'Isumite ang hindi sapilitang ID',
@@ -4693,6 +4720,8 @@ const tagalogTranslations: Record<string, string> = {
     'Inihahanda pa ang impormasyon ng negosyo. Subukan muli pagkaraan ng ilang sandali.',
   'Business-issued cards start with the catalog value and do not deduct customer points.':
     'Nagsisimula sa halagang nasa katalogo ang mga kard na ibinigay ng negosyo at hindi nito binabawasan ang puntos ng kostumer.',
+  'Business-issued cards start with the catalog value, do not deduct customer points, and never expire.':
+    'Nagsisimula sa halagang nasa katalogo ang mga kard na ibinigay ng negosyo, hindi nito binabawasan ang puntos ng kostumer, at hindi ito nawawalan ng bisa.',
   'Camera access was blocked. Use upload or paste the code.':
     'Hinarang ang paggamit ng kamera. Mag-upload ng larawan o ilagay ang kodigo.',
   'Cashier Note': 'Tala ng Kahera',
@@ -5609,6 +5638,7 @@ const tagalogTranslations: Record<string, string> = {
   'Card balance before': 'Balanse bago gamitin',
   'Commission tracked': 'Naitalang komisyon',
   'Credit and reimbursement report': 'Ulat ng kredito at ibabalik na bayad',
+  'Sales and gift-card report': 'Ulat ng benta at mga kard na regalo',
   'Credit Applied': 'Kreditong ginamit',
   'Credit applied': 'Kreditong ginamit',
   'Credit transactions': 'Mga transaksyong may kredito',
@@ -5618,6 +5648,7 @@ const tagalogTranslations: Record<string, string> = {
   'Full sale': 'Buong halaga ng benta',
   'Full sales recorded': 'Kabuuang benta na naitala',
   'Funding and reimbursement': 'Pinagmulan at ibabalik na bayad',
+  'Issuance and credit treatment': 'Paglalabas at pagtrato sa kredito',
   'Funding source': 'Pinagmulan ng pondo',
   'Gift-card credit applied': 'Kredito mula sa kard na regalo na ginamit',
   'Gift-card payments will appear here after a business completes a sale.': 'Lalabas dito ang mga bayad gamit ang kard na regalo matapos kumpletuhin ng negosyo ang benta.',
@@ -5633,24 +5664,35 @@ const tagalogTranslations: Record<string, string> = {
   'Reimbursement estimate': 'Tinatayang ibabalik na bayad',
   'Reimbursement is an estimate for member-point and program-issued cards. Final fees, approval, and payout timing must follow the signed business agreement.': 'Tantiya lamang ang ibabalik na bayad para sa mga kard mula sa puntos ng miyembro o inilabas ng programa. Ang huling bayarin, pag-apruba, at oras ng pagbayad ay dapat sumunod sa pirmadong kasunduan ng negosyo.',
   'Reimbursement status': 'Katayuan ng ibabalik na bayad',
+  'Synergize Credits received': 'Natanggap na Synergize Credits',
+  'Credit transfer status': 'Katayuan ng paglilipat ng kredito',
   'Report period': 'Panahon ng ulat',
   'The start date must be before the end date.': 'Dapat mauna ang petsa ng simula sa petsa ng pagtatapos.',
   'To date': 'Petsa ng pagtatapos',
   'Track the full bill, gift-card payment, customer balance due, remaining card balance, and estimated program reimbursement.': 'Subaybayan ang buong bayarin, bayad gamit ang kard na regalo, natitirang babayaran ng kostumer, natitirang balanse ng kard, at tinatayang ibabalik na bayad ng programa.',
+  'Track the full bill, gift-card payment, customer balance due, and remaining card balance.': 'Subaybayan ang buong bayarin, bayad gamit ang kard na regalo, natitirang babayaran ng kostumer, at natitirang balanse ng kard.',
   'Transaction ID': 'ID ng transaksyon',
   '{count} credit transactions': '{count} transaksyong may kredito',
   '{count} full-credit · {split} split-payment': '{count} buong binayaran ng kredito · {split} hati ang bayad',
   '{count} transactions need a funding review.': '{count} transaksyon ang kailangang suriin ang pinagmulan ng pondo.',
   'Member points': 'Puntos ng miyembro',
+  'Claimed with member points': 'Kinuha gamit ang puntos ng miyembro',
   'Program-issued credit': 'Kreditong inilabas ng programa',
+  'Issued by the platform': 'Inilabas ng plataporma',
   'Business-issued card': 'Kard na inilabas ng negosyo',
+  'Issued by this business': 'Inilabas ng negosyong ito',
   'Funding review required': 'Kailangang suriin ang pinagmulan ng pondo',
   'Estimated reimbursement': 'Tinatayang ibabalik na bayad',
   'No program reimbursement': 'Walang ibabalik na bayad mula sa programa',
+  'No Synergize Credit transfer': 'Walang paglilipat ng Synergize Credit',
+  'Review required': 'Kailangang suriin',
   'Review funding source': 'Suriin ang pinagmulan ng pondo',
   'Outstanding card balance': 'Natitirang balanse ng mga kard',
   'Active cards that can still be used on future visits.': 'Mga aktibong kard na maaari pang gamitin sa mga susunod na pagbisita.',
   'Tracked separately and not automatically deducted from reimbursement.': 'Hiwalay itong itinatala at hindi kusang ibinabawas sa ibabalik na bayad.',
+  'Gift-card use does not transfer Synergize Credits into the business account.': 'Ang paggamit ng kard na regalo ay hindi naglilipat ng Synergize Credits sa kuwenta ng negosyo.',
+  'Gift cards are store credit issued and honored by the listed business. Using one does not transfer Synergize Credits. Cash commission is tracked separately.': 'Ang mga kard na regalo ay kredito sa tindahan na inilabas at tinatanggap ng nakalistang negosyo. Ang paggamit nito ay hindi naglilipat ng Synergize Credits. Hiwalay na itinatala ang komisyon sa cash.',
+  'Rewards may have inventory, eligibility, location, point cost, or verification requirements before they can be claimed. Issued gift cards and stored balances do not expire.': 'Maaaring may mga kailangang imbentaryo, pagiging karapat-dapat, lokasyon, halaga sa puntos, o beripikasyon bago makuha ang gantimpala. Hindi nawawalan ng bisa ang inilabas na kard na regalo at natitirang balanse.',
 }
 
 const LanguageContext = createContext<LanguageContextValue | null>(null)

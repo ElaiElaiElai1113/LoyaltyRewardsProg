@@ -40,17 +40,17 @@ function downloadCsv(filename: string, rows: Array<Record<string, string | numbe
 
 function fundingLabel(row: BusinessAccountingRow) {
   switch (row.fundingSource) {
-    case 'program_points': return 'Member points'
-    case 'program_grant': return 'Program-issued credit'
-    case 'business_issued': return 'Business-issued card'
+    case 'program_points': return 'Claimed with member points'
+    case 'program_grant': return 'Issued by the platform'
+    case 'business_issued': return 'Issued by this business'
     default: return 'Funding review required'
   }
 }
 
 function reimbursementLabel(row: BusinessAccountingRow) {
   switch (row.reimbursementStatus) {
-    case 'estimated': return 'Estimated reimbursement'
-    case 'not_applicable': return 'No program reimbursement'
+    case 'estimated': return 'Review required'
+    case 'not_applicable': return 'No Synergize Credit transfer'
     default: return 'Review funding source'
   }
 }
@@ -102,8 +102,8 @@ export function AccountingReportPage() {
       [t('Card balance before')]: row.balanceBefore.toFixed(2),
       [t('Card balance after')]: row.balanceAfter.toFixed(2),
       [t('Funding source')]: t(fundingLabel(row)),
-      [t('Reimbursement estimate')]: row.reimbursementEstimate.toFixed(2),
-      [t('Reimbursement status')]: t(reimbursementLabel(row)),
+      [t('Synergize Credits received')]: row.reimbursementEstimate.toFixed(2),
+      [t('Credit transfer status')]: t(reimbursementLabel(row)),
       [t('Commission tracked')]: row.commissionAmount.toFixed(2),
       [t('Transaction ID')]: row.transactionId,
       [t('Event ID')]: row.eventId,
@@ -114,7 +114,7 @@ export function AccountingReportPage() {
     { label: 'Full sales recorded', value: money(summary.grossSales), detail: t('{count} credit transactions', { count: rows.length }), icon: ReceiptText },
     { label: 'Gift-card credit applied', value: money(summary.giftCardApplied), detail: t('{count} full-credit · {split} split-payment', { count: summary.fullCreditSales, split: summary.splitPaymentSales }), icon: WalletCards },
     { label: 'Other payment due', value: money(summary.otherPaymentsDue), detail: t('Paid separately by cash, card, or the business POS.'), icon: Calculator },
-    { label: 'Estimated reimbursement', value: money(summary.estimatedReimbursement), detail: t('Program-funded credit before approved fees and settlement terms.'), icon: Landmark },
+    { label: 'Synergize Credits received', value: money(summary.estimatedReimbursement), detail: t('Gift-card use does not transfer Synergize Credits into the business account.'), icon: Landmark },
     { label: 'Outstanding card balance', value: money(summary.outstandingCardBalance), detail: t('Active cards that can still be used on future visits.'), icon: CircleDollarSign },
     { label: 'Commission tracked', value: money(summary.commissionTracked), detail: t('Tracked separately and not automatically deducted from reimbursement.'), icon: Scale },
   ] as const
@@ -124,9 +124,9 @@ export function AccountingReportPage() {
       <section className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <Badge variant="accent" className="w-fit">{t('Accounting')}</Badge>
-          <h1 className="mt-3 break-words font-serif text-4xl tracking-tight text-primary sm:text-5xl">{t('Credit and reimbursement report')}</h1>
+          <h1 className="mt-3 break-words font-serif text-4xl tracking-tight text-primary sm:text-5xl">{t('Sales and gift-card report')}</h1>
           <p className="mt-2 max-w-3xl text-on-surface-variant">
-            {t('Track the full bill, gift-card payment, customer balance due, remaining card balance, and estimated program reimbursement.')}
+            {t('Track the full bill, gift-card payment, customer balance due, and remaining card balance.')}
           </p>
         </div>
         <Button type="button" variant="outline" className="w-full sm:w-auto" disabled={rows.length === 0} onClick={exportReport}>
@@ -175,7 +175,7 @@ export function AccountingReportPage() {
       <Card className="border-warning/25 bg-warning/5">
         <CardContent className="p-5 text-sm text-on-surface-variant">
           <strong className="text-primary">{t('Important:')}</strong>{' '}
-          {t('Reimbursement is an estimate for member-point and program-issued cards. Final fees, approval, and payout timing must follow the signed business agreement.')}
+          {t('Gift cards are store credit issued and honored by the listed business. Using one does not transfer Synergize Credits. Cash commission is tracked separately.')}
           {summary.reviewRequired > 0 ? ` ${t('{count} transactions need a funding review.', { count: summary.reviewRequired })}` : ''}
         </CardContent>
       </Card>
@@ -235,7 +235,7 @@ export function AccountingReportPage() {
                   ))}
 
                   <div className="min-w-0 rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Funding and reimbursement')}</p>
+                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Issuance and credit treatment')}</p>
                     <p className="mt-1 font-semibold text-on-surface">{t(fundingLabel(row))}</p>
                     <p className={cn('mt-1 text-sm font-semibold', row.reimbursementStatus === 'review_required' ? 'text-warning' : 'text-primary')}>
                       {money(row.reimbursementEstimate)}
