@@ -308,9 +308,10 @@ test.describe.serial('permanent authenticated tenant smoke', () => {
     await page.goto('/wallet/gift-cards')
 
     await expect(page.getByRole('heading', { name: 'Gift Cards', exact: true })).toBeVisible()
-    for (const status of ['Active', 'Redeemed', 'Expired']) {
+    for (const status of ['Active', 'Redeemed']) {
       await expect(page.getByRole('tab', { name: new RegExp(status, 'i') })).toBeVisible()
     }
+    await expect(page.getByRole('tab', { name: /Expired/i })).toHaveCount(0)
     await page.getByRole('tab', { name: /redeemed/i }).click()
     if (giftCardCode) {
       await expect(page.getByText(giftCardCode, { exact: true })).toBeVisible()
