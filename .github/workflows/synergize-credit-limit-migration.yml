@@ -39,8 +39,10 @@ jobs:
       - name: Materialize and verify the exact reviewed migration
         shell: bash
         run: |
-          printf '%s' "$MIGRATION_BASE64" | base64 --decode > "$RUNNER_TEMP/synergize-credit-limit.sql"
-          echo "$EXPECTED_SHA256  $RUNNER_TEMP/synergize-credit-limit.sql" | sha256sum --check --strict
+          mkdir -p supabase/migrations
+          migration_file="supabase/migrations/${MIGRATION_VERSION}_add_confirmed_default_credit_limit.sql"
+          printf '%s' "$MIGRATION_BASE64" | base64 --decode > "$migration_file"
+          echo "$EXPECTED_SHA256  $migration_file" | sha256sum --check --strict
       - name: Link the Synergize production project
         run: npx --yes supabase@2.103.0 link --project-ref "$PROJECT_REF"
       - name: Capture the member balance state before migration
@@ -51,7 +53,7 @@ jobs:
           from public.synergize_members;"
           > "$RUNNER_TEMP/synergize-credit-limit-before.json"
       - name: Apply only the reviewed Synergize credit-limit migration
-        run: npx --yes supabase@2.103.0 db query --linked --file "$RUNNER_TEMP/synergize-credit-limit.sql"
+        run: npx --yes supabase@2.103.0 db query --linked --file "supabase/migrations/${MIGRATION_VERSION}_add_confirmed_default_credit_limit.sql"
       - name: Record the applied migration version
         run: npx --yes supabase@2.103.0 migration repair --linked --status applied "$MIGRATION_VERSION" --yes
       - name: Verify the live credit-limit contract

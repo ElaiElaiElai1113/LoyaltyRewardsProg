@@ -4,6 +4,11 @@
 
 begin;
 
+-- Direct production migrations run without an end-user JWT. Mark only this
+-- transaction as service-role work so the tenant write guard permits the
+-- one-time data normalization below; the setting disappears on commit/rollback.
+select set_config('request.jwt.claim.role', 'service_role', true);
+
 alter table public.gift_cards
   alter column expires_at drop not null;
 
