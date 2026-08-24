@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { e2ePassword } from './helpers/env'
+
 function runtimeErrors(page: Page) {
   const errors: string[] = []
   page.on('pageerror', (error) => errors.push(error.message))
@@ -66,6 +68,36 @@ test.describe('Loyality public product', () => {
       await expect(page.getByLabel('Full name')).toBeVisible()
       await expect(page.locator('.ly-auth')).toBeVisible()
 
+      const layout = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth,
+      }))
+      expect(layout.pageWidth).toBeLessThanOrEqual(layout.viewport + 1)
+      expect(errors).toEqual([])
+    })
+  }
+})
+
+test.describe('Loyality signed-in visual system', () => {
+  test.skip(process.env.LOYALITY_E2E_AUTH_ENABLED !== 'true', 'Live Loyality QA accounts are required.')
+
+  for (const account of [
+    { portal: 'customer', email: 'customer@loyality.test', shell: '.ly-shell--customer', destination: /\/dashboard/ },
+    { portal: 'business', email: 'owner@loyality.test', shell: '.ly-workspace--business', destination: /\/business\/dashboard/ },
+    { portal: 'admin', email: 'admin@loyality.test', shell: '.ly-workspace--admin', destination: /\/admin\/portal/ },
+  ]) {
+    test(`${account.portal} uses the Loyality shell on desktop and phone`, async ({ page }) => {
+      const errors = runtimeErrors(page)
+      await page.goto(`/signin?portal=${account.portal}`)
+      await page.getByLabel('Email address').fill(account.email)
+      await page.locator('#loyality-password').fill(e2ePassword)
+      await page.getByRole('button', { name: `Sign in as ${account.portal}`, exact: true }).click()
+      await expect(page).toHaveURL(account.destination)
+      await expect(page.locator(account.shell)).toBeVisible()
+      await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
+
+      await page.setViewportSize({ width: 390, height: 844 })
+      await expect(page.locator(account.shell)).toBeVisible()
       const layout = await page.evaluate(() => ({
         viewport: document.documentElement.clientWidth,
         pageWidth: document.documentElement.scrollWidth,
