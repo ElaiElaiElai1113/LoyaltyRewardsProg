@@ -5,6 +5,7 @@ const tenantOrigins = {
   'rewardme-prod.vercel.app': 'https://loyalty-rewards-prog.vercel.app',
   'pinas-rewards.vercel.app': 'https://pinas-rewards.vercel.app',
   'wondertown-rewards.vercel.app': 'https://wondertown-rewards.vercel.app',
+  'loyality-rewards.vercel.app': 'https://loyality-rewards.vercel.app',
 } as const
 
 const publicRoutes = [

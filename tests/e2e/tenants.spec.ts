@@ -22,6 +22,12 @@ const tenants = [
     color: '#4f3b78',
     heading: 'Every little thing feels rewarding.',
   },
+  {
+    slug: 'loyality',
+    name: 'Loyality',
+    color: '#173b3f',
+    heading: 'Turn every visit into the next one.',
+  },
 ] as const
 
 function collectRuntimeErrors(page: Page) {
@@ -42,7 +48,9 @@ test.describe('white-label tenant resolution', () => {
       await page.goto(`/?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle(tenant.name)
-      if (tenant.slug === 'wondertown') {
+      if (tenant.slug === 'loyality') {
+        await expect(page.locator('.loyality-site__brand').first()).toBeVisible()
+      } else if (tenant.slug === 'wondertown') {
         await expect(page.locator('.wondertown-home__brand').first()).toContainText('Wondertown')
         await expect(page.locator('.wondertown-home__brand').first()).toContainText('Rewards')
       } else if (tenant.slug === 'pinas') {

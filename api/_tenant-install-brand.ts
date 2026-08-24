@@ -1,4 +1,4 @@
-export type InstallBrandSlug = 'platform' | 'medellin' | 'guatemala' | 'synergize' | 'pinas' | 'pinasrewards' | 'wondertown'
+export type InstallBrandSlug = 'platform' | 'medellin' | 'guatemala' | 'synergize' | 'pinas' | 'pinasrewards' | 'wondertown' | 'loyality'
 
 export type InstallBrand = {
   slug: InstallBrandSlug
@@ -90,6 +90,17 @@ const brands: Record<InstallBrandSlug, InstallBrand> = {
     startUrl: '/',
     iconBase: 'wondertown',
   },
+  loyality: {
+    slug: 'loyality',
+    name: 'Loyality',
+    shortName: 'Loyality',
+    description: 'A private, single-business loyalty and customer referral program.',
+    locale: 'en',
+    themeColor: '#173b3f',
+    backgroundColor: '#fff8ee',
+    startUrl: '/',
+    iconBase: 'loyality',
+  },
 }
 
 const hostSlugs: Record<string, InstallBrandSlug> = {
@@ -102,6 +113,7 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'rewardme-prod.vercel.app': 'pinas',
   'pinas-rewards.vercel.app': 'pinasrewards',
   'wondertown-rewards.vercel.app': 'wondertown',
+  'loyality-rewards.vercel.app': 'loyality',
 }
 
 function normalizeHost(host: string | undefined) {
@@ -138,6 +150,7 @@ export function resolveInstallBrand(hostHeader: string | undefined, tenantValue?
 }
 
 export function getInstallIconPath(brand: InstallBrand, size: 180 | 192 | 512) {
+  if (brand.slug === 'loyality') return '/loyality-logo.svg'
   return `/install-icons/${brand.iconBase}-${size}.png`
 }
 
@@ -160,14 +173,14 @@ export function buildInstallManifest(brand: InstallBrand) {
     icons: [
       {
         src: `/api/tenant-icon?size=192&${tenantQuery}`,
-        sizes: '192x192',
-        type: 'image/png',
+        sizes: brand.slug === 'loyality' ? 'any' : '192x192',
+        type: brand.slug === 'loyality' ? 'image/svg+xml' : 'image/png',
         purpose: 'any',
       },
       {
         src: `/api/tenant-icon?size=512&${tenantQuery}`,
-        sizes: '512x512',
-        type: 'image/png',
+        sizes: brand.slug === 'loyality' ? 'any' : '512x512',
+        type: brand.slug === 'loyality' ? 'image/svg+xml' : 'image/png',
         purpose: 'any maskable',
       },
     ],

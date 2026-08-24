@@ -3,6 +3,7 @@ import { NavLink, useLocation } from 'react-router'
 
 import { useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'
+import { useTenant } from '@/hooks/use-tenant'
 import type { Profile } from '@/types/domain'
 
 const tabs = [
@@ -10,6 +11,13 @@ const tabs = [
   { to: '/shop', label: 'Businesses', icon: MapPin, match: ['/shop'] },
   { to: '/profile', label: 'QR', icon: QrCode, match: ['/profile'] },
   { to: '/activity', label: 'Activity', icon: Activity, match: ['/activity'] },
+]
+
+const loyalityTabs = [
+  { to: '/dashboard', label: 'Home', icon: Home, match: ['/dashboard'] },
+  { to: '/promotions', label: 'Offers', icon: MapPin, match: ['/promotions', '/offer'] },
+  { to: '/profile', label: 'Member QR', icon: QrCode, match: ['/profile'] },
+  { to: '/activity', label: 'Visits', icon: Activity, match: ['/activity'] },
 ]
 
 interface CustomerBottomNavProps {
@@ -38,6 +46,7 @@ function getVerificationStatus(status: Profile['verificationStatus'] | null | un
 export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps) {
   const { pathname } = useLocation()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const status = getVerificationStatus(verificationStatus)
   const StatusIcon = status.icon
 
@@ -55,7 +64,7 @@ export function CustomerBottomNav({ verificationStatus }: CustomerBottomNavProps
         {t(status.label)}
       </NavLink>
       <div className="grid grid-cols-4 gap-1">
-        {tabs.map((item) => {
+        {(program.slug === 'loyality' ? loyalityTabs : tabs).map((item) => {
           const isActive = item.match.some((prefix) => pathname.startsWith(prefix))
 
           return (

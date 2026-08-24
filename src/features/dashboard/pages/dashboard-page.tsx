@@ -11,9 +11,17 @@ import {
   useRewardBalance,
 } from '@/hooks/use-customer-data'
 import { useAuth } from '@/hooks/use-auth'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { LoyalityCustomerDashboard } from '@/features/loyality/pages/loyality-customer-dashboard'
 
 export function DashboardPage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityCustomerDashboard />
+  return <DefaultDashboardPage />
+}
+
+function DefaultDashboardPage() {
   const { profile } = useAuth()
   const { t } = useLanguage()
   const rewardBalance = useRewardBalance(profile?.id)

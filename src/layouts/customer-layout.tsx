@@ -36,6 +36,13 @@ const customerNavigation = [
   { to: '/activity', label: 'Activity' },
 ]
 
+const loyalityCustomerNavigation = [
+  { to: '/dashboard', label: 'Home' },
+  { to: '/promotions', label: 'Offers' },
+  { to: '/profile', label: 'Member QR' },
+  { to: '/activity', label: 'Visit history' },
+]
+
 export function CustomerLayout() {
   const { profile, signOut } = useAuth()
   const cart = useCart()
@@ -43,6 +50,7 @@ export function CustomerLayout() {
   const { t } = useLanguage()
   const { pathname } = useLocation()
   const cartCount = (cart.data ?? []).reduce((sum, item) => sum + item.quantity, 0)
+  const isLoyality = program.slug === 'loyality'
   const compactGiftCardAction = pathname.startsWith('/gift-cards')
     ? { to: '/wallet/gift-cards', label: 'My Gift Cards', icon: WalletCards }
     : { to: '/gift-cards', label: 'Gift Cards', icon: Gift }
@@ -61,7 +69,7 @@ export function CustomerLayout() {
             </NavLink>
 
             <nav className="hidden items-center gap-0.5 xl:flex">
-              {customerNavigation.map((item) => (
+              {(isLoyality ? loyalityCustomerNavigation : customerNavigation).map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}
@@ -88,15 +96,15 @@ export function CustomerLayout() {
 
             <div className="flex items-center gap-1 sm:gap-3 xl:gap-4">
               <VerificationStatusPill status={profile?.verificationStatus} className="hidden xl:inline-flex" />
-              <NavLink
+              {!isLoyality ? <NavLink
                 to={compactGiftCardAction.to}
                 className="relative rounded-full p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)] xl:hidden"
                 aria-label={t(compactGiftCardAction.label)}
                 title={t(compactGiftCardAction.label)}
               >
                 <CompactGiftCardIcon className="size-5" />
-              </NavLink>
-              <NavLink
+              </NavLink> : null}
+              {!isLoyality ? <NavLink
                 to="/cart"
                 className="relative rounded-full p-2 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]"
                 aria-label={t('View cart')}
@@ -107,7 +115,7 @@ export function CustomerLayout() {
                     {cartCount}
                   </span>
                 ) : null}
-              </NavLink>
+              </NavLink> : null}
               <LanguagePicker className="text-[var(--muted-foreground)]" compact condenseOnNarrowScreens />
               <ThemeToggle />
               <Button
@@ -157,7 +165,9 @@ export function CustomerLayout() {
             <div className="max-w-xs">
               <BrandLogo markClassName="h-10" textClassName="text-lg text-[var(--foreground)]" />
               <p className="mt-4 text-sm leading-relaxed text-[var(--muted-foreground)]">
-                {t('Use one member QR across partner businesses and keep every recorded purchase connected to your account.')}
+                {isLoyality
+                  ? 'Use your member QR at this business. Visits, specific vouchers, referral rewards, and prize entries stay connected to your account.'
+                  : t('Use one member QR across partner businesses and keep every recorded purchase connected to your account.')}
               </p>
             </div>
             <div className="grid grid-cols-2 gap-12 sm:grid-cols-4">
@@ -166,8 +176,8 @@ export function CustomerLayout() {
                   {t('Platform')}
                 </span>
                 <nav className="flex flex-col gap-2">
-                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Partner Map')}</NavLink>
-                  <NavLink to="/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink>
+                  {!isLoyality ? <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Partner Map')}</NavLink> : null}
+                  {!isLoyality ? <NavLink to="/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink> : <NavLink to="/dashboard" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">My vouchers</NavLink>}
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Member QR')}</NavLink>
                   <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Activity')}</NavLink>
                 </nav>
@@ -183,7 +193,7 @@ export function CustomerLayout() {
                   ) : (
                     <a href={`mailto:${program.supportEmail}`} className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Contact')}</a>
                   )}
-                  <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Store Locator')}</NavLink>
+                  {!isLoyality ? <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Store Locator')}</NavLink> : null}
                 </nav>
               </div>
               <div className="flex flex-col gap-4">
@@ -192,7 +202,7 @@ export function CustomerLayout() {
                 </span>
                 <nav className="flex flex-col gap-2">
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Settings')}</NavLink>
-                  <NavLink to="/orders" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Order History')}</NavLink>
+                  {!isLoyality ? <NavLink to="/orders" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Order History')}</NavLink> : <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">Visit history</NavLink>}
                 </nav>
               </div>
               <div className="flex flex-col gap-4">

@@ -7,6 +7,7 @@ import {
   Menu,
   MonitorPlay,
   Package,
+  Repeat2,
   Settings,
   Sparkles,
   Users,
@@ -27,6 +28,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { canAccessBusinessPath } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
 import { cn, getInitials } from '@/lib/utils'
 
 const businessNavigationItems = [
@@ -41,10 +43,20 @@ const businessNavigationItems = [
   { to: '/business/settings', label: 'Settings', icon: Settings },
 ]
 
+const loyalityBusinessNavigationItems = [
+  { to: '/business/guide', label: 'Guide', icon: MonitorPlay },
+  { to: '/business/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/business/members', label: 'Customers & visits', icon: Users },
+  { to: '/business/growth', label: 'Offers & rewards', icon: Repeat2 },
+  { to: '/business/redemptions', label: 'Transactions', icon: CreditCard },
+  { to: '/business/settings', label: 'Business settings', icon: Settings },
+]
+
 export function BusinessOwnerLayout() {
   const { profile, signOut } = useAuth()
   const { business, isBusinessLoading, error } = useBusinessOwnerData()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const translatedBusinessError = error instanceof Error ? t(error.message) : null
   const businessSetupMessage =
@@ -151,7 +163,7 @@ export function BusinessOwnerLayout() {
 
         {/* Navigation */}
         <nav className="mt-7 grid min-h-0 flex-1 content-start gap-1 overflow-y-auto pr-1">
-          {businessNavigationItems
+          {(program.slug === 'loyality' ? loyalityBusinessNavigationItems : businessNavigationItems)
             .filter((item) => canAccessBusinessPath(profile?.role, item.to))
             .map((item) => (
             <NavLink

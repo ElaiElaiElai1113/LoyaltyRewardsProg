@@ -72,6 +72,9 @@ const ProductsPage = lazy(() => import('@/features/business-owner/pages/products
 const BusinessPromotionsPage = lazy(() => import('@/features/business-owner/pages/promotions-page').then((module) => ({ default: module.PromotionsPage })))
 const BusinessRewardsPage = lazy(() => import('@/features/business-owner/pages/rewards-page').then((module) => ({ default: module.RewardsPage })))
 const SettingsPage = lazy(() => import('@/features/business-owner/pages/settings-page').then((module) => ({ default: module.SettingsPage })))
+const LoyalityOfferPage = lazy(() => import('@/features/loyality/pages/loyality-offer-page').then((module) => ({ default: module.LoyalityOfferPage })))
+const LoyalityBusinessGrowthPage = lazy(() => import('@/features/loyality/pages/loyality-business-growth-page').then((module) => ({ default: module.LoyalityBusinessGrowthPage })))
+const LoyalityVoucherRedeemPage = lazy(() => import('@/features/loyality/pages/loyality-voucher-redeem-page').then((module) => ({ default: module.LoyalityVoucherRedeemPage })))
 
 function getSignInPath() {
   const tenant = new URLSearchParams(window.location.search).get('tenant')
@@ -450,6 +453,7 @@ const router = createBrowserRouter([
         element: <PublicBrowseLayout />,
         children: [
           { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
+          { path: '/offer/:publicToken', element: <LoyalityOfferPage /> },
           { path: '/cost-calculator', element: <CostCalculatorPage /> },
           { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
         ],
@@ -514,6 +518,8 @@ const router = createBrowserRouter([
         element: <ProtectedBusinessOwnerRoute />,
         children: [
           { path: '/business/dashboard', element: <BusinessDashboardPage /> },
+          { path: '/business/growth', element: <OwnerOnlyBusinessRoute><LoyalityBusinessGrowthPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/voucher/:publicToken', element: <LoyalityVoucherRedeemPage /> },
           { path: '/business/accounting', element: <OwnerOnlyBusinessRoute><AccountingReportPage /></OwnerOnlyBusinessRoute> },
           { path: '/business/member-sale/:token', element: <MemberSalePage /> },
           { path: '/business/products', element: <OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute> },

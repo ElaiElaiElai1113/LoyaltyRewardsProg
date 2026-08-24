@@ -7,8 +7,16 @@ import { PromotionCard } from '@/features/rewards/components/promotion-card'
 import { usePromotions } from '@/hooks/use-customer-data'
 import { usePagination } from '@/hooks/use-pagination'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
+import { LoyalityOffersListPage } from '@/features/loyality/pages/loyality-offers-list-page'
 
 export function PromotionsPage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityOffersListPage />
+  return <DefaultPromotionsPage />
+}
+
+function DefaultPromotionsPage() {
   const promotions = usePromotions()
   const { t } = useLanguage()
   const pagination = usePagination(promotions.data ?? [])

@@ -37,8 +37,15 @@ import { useLanguage } from '@/lib/language'
 import { COMPACT_LIST_PAGE_SIZE, usePagination } from '@/hooks/use-pagination'
 import { getPartnerReferralStatusLabel, getRedemptionStatusLabel } from '@/lib/status-labels'
 import { formatCurrency as formatBaseCurrency, formatPoints } from '@/lib/utils'
+import { LoyalityBusinessGrowthPage } from '@/features/loyality/pages/loyality-business-growth-page'
 
 export function BusinessDashboardPage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityBusinessGrowthPage />
+  return <DefaultBusinessDashboardPage />
+}
+
+function DefaultBusinessDashboardPage() {
   const { program } = useTenant()
   const { business, metrics, promotions, redemptions } = useBusinessOwnerData()
   const formatCurrency = (value: number) => formatBaseCurrency(
