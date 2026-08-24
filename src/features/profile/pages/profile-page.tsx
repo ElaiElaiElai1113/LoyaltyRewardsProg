@@ -14,6 +14,8 @@ import { MembershipBadge } from '@/features/membership/components/membership-bad
 import { useAuth } from '@/hooks/use-auth'
 import { useProfile, useSubmitMemberVerification, useUpdateProfile } from '@/hooks/use-customer-data'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
+import { LoyalityProfilePage } from '@/features/loyality/pages/loyality-profile-page'
 import {
   memberVerificationSchema,
   profileSchema,
@@ -22,6 +24,12 @@ import {
 } from '@/types/forms'
 
 export function ProfilePage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityProfilePage />
+  return <RewardsProfilePage />
+}
+
+function RewardsProfilePage() {
   const { profile: sessionProfile, syncProfile } = useAuth()
   const { t } = useLanguage()
   const profile = useProfile(sessionProfile?.id)

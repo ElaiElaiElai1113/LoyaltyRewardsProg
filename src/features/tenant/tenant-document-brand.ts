@@ -6,6 +6,7 @@ function setMetaContent(selector: string, value: string) {
 
 export function applyProgramDocumentBrand(program: Program) {
   const root = document.documentElement
+  root.dataset.program = program.slug
   const description = `${program.name} rewards and local business benefits.`
   const tenant = encodeURIComponent(program.slug)
   const iconHref = `/api/tenant-icon?size=192&tenant=${tenant}`

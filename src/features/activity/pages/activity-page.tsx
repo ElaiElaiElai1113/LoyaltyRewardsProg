@@ -6,8 +6,16 @@ import { ActivityList } from '@/features/activity/components/activity-list'
 import { useActivityRewardBalance, useActivityTimeline } from '@/hooks/use-activity-data'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
+import { useTenant } from '@/hooks/use-tenant'
+import { LoyalityActivityPage } from '@/features/loyality/pages/loyality-activity-page'
 
 export function ActivityPage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityActivityPage />
+  return <RewardsActivityPage />
+}
+
+function RewardsActivityPage() {
   const { profile } = useAuth()
   const { t } = useLanguage()
   const activities = useActivityTimeline(profile?.id)

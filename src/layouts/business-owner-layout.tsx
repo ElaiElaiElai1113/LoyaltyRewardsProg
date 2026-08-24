@@ -25,6 +25,7 @@ import { Button } from '@/components/ui/button'
 import { LoadingState } from '@/components/ui/loading-state'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { LoyalityWorkspaceShell } from '@/features/loyality/components/loyality-app-shell'
 import { useBusinessOwnerData } from '@/hooks/use-business-owner-data'
 import { canAccessBusinessPath } from '@/lib/business-role-policy'
 import { useLanguage } from '@/lib/language'
@@ -105,6 +106,17 @@ export function BusinessOwnerLayout() {
           <Button onClick={() => void signOut()}>{t('Sign out')}</Button>
         </div>
       </div>
+    )
+  }
+
+  if (program.slug === 'loyality') {
+    return (
+      <LoyalityWorkspaceShell
+        businessName={business.name}
+        kind="business"
+        profile={profile}
+        signOut={signOut}
+      />
     )
   }
 

@@ -68,7 +68,9 @@ export function AppInstallPrompt() {
     }
   }, [])
 
-  if (isStandalone || isDismissed || (!installEvent && !showIosInstructions)) return null
+  const isLoyalityAuthScreen = program.slug === 'loyality'
+    && (window.location.pathname === '/signin' || window.location.pathname === '/join')
+  if (isLoyalityAuthScreen || isStandalone || isDismissed || (!installEvent && !showIosInstructions)) return null
 
   const dismissPrompt = () => {
     setIsDismissed(true)

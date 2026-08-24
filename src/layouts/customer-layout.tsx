@@ -15,6 +15,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { VerificationStatusPill } from '@/features/membership/components/verification-status-pill'
+import { LoyalityCustomerShell } from '@/features/loyality/components/loyality-app-shell'
 import { useAuth } from '@/hooks/use-auth'
 import { useCart } from '@/hooks/use-customer-data'
 import { useTenant } from '@/hooks/use-tenant'
@@ -55,6 +56,10 @@ export function CustomerLayout() {
     ? { to: '/wallet/gift-cards', label: 'My Gift Cards', icon: WalletCards }
     : { to: '/gift-cards', label: 'Gift Cards', icon: Gift }
   const CompactGiftCardIcon = compactGiftCardAction.icon
+
+  if (isLoyality) {
+    return <LoyalityCustomerShell profile={profile} signOut={signOut} />
+  }
 
   return (
     <div className="flex min-h-screen flex-col bg-transparent">

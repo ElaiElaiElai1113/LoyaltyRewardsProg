@@ -45,4 +45,33 @@ test.describe('Loyality public product', () => {
     await expect(page).toHaveURL(/\/signin\?portal=business/)
     await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
   })
+
+  for (const viewport of [
+    { name: 'phone', width: 360, height: 780 },
+    { name: 'desktop', width: 1440, height: 900 },
+  ]) {
+    test(`sign in and join continue the Loyality visual system on ${viewport.name}`, async ({ page }) => {
+      const errors = runtimeErrors(page)
+      await page.setViewportSize(viewport)
+
+      await page.goto('/signin?tenant=loyality&portal=customer')
+      await expect(page.locator('html')).toHaveAttribute('data-program', 'loyality')
+      await expect(page.getByRole('heading', { name: 'Return. Recognized. Rewarded.' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Step into your loop.' })).toBeVisible()
+      await expect(page.locator('.ly-auth')).toBeVisible()
+      await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
+
+      await page.goto('/join?tenant=loyality')
+      await expect(page.getByRole('heading', { name: 'Join the loop.' })).toBeVisible()
+      await expect(page.getByLabel('Full name')).toBeVisible()
+      await expect(page.locator('.ly-auth')).toBeVisible()
+
+      const layout = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth,
+      }))
+      expect(layout.pageWidth).toBeLessThanOrEqual(layout.viewport + 1)
+      expect(errors).toEqual([])
+    })
+  }
 })

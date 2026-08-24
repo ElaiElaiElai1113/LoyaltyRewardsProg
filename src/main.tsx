@@ -4,6 +4,7 @@ import { registerSW } from 'virtual:pwa-register'
 import App from '@/App'
 import { reportMonitoringEvent } from '@/lib/monitoring'
 import './index.css'
+import './features/loyality/loyality-app.css'
 
 window.addEventListener('error', (event) => {
   reportMonitoringEvent({

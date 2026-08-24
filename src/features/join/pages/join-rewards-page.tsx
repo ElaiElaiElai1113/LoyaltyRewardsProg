@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { useAuth } from '@/hooks/use-auth'
+import { LoyalityJoinPage } from '@/features/loyality/pages/loyality-join-page'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
@@ -578,5 +579,7 @@ export function SplitJoinRewardsPage() {
 }
 
 export function JoinRewardsPage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityJoinPage />
   return <CompactJoinRewardsPage />
 }

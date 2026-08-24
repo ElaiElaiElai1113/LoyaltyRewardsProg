@@ -36,6 +36,7 @@ import {
 } from '@/features/auth/wondertown-test-accounts'
 import { platformBrand } from '@/features/platform/platform-brand'
 import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
+import { LoyalityAuthPage } from '@/features/loyality/pages/loyality-auth-page'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -1287,5 +1288,7 @@ export function CompactAuthPage() {
 }
 
 export function AuthPage() {
+  const { program } = useTenant()
+  if (program.slug === 'loyality') return <LoyalityAuthPage />
   return <CompactAuthPage />
 }

@@ -29,6 +29,8 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuth } from '@/hooks/use-auth'
+import { LoyalityWorkspaceShell } from '@/features/loyality/components/loyality-app-shell'
+import { useTenant } from '@/hooks/use-tenant'
 import { platformBrand } from '@/features/platform/platform-brand'
 import { usePlatformDocumentBrand } from '@/features/platform/use-platform-document-brand'
 import { useLanguage } from '@/lib/language'
@@ -59,13 +61,18 @@ const adminPortalSections = [
 export function AdminLayout() {
   const { profile, signOut } = useAuth()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const location = useLocation()
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
-  usePlatformDocumentBrand()
+  usePlatformDocumentBrand(program.slug !== 'loyality')
   const usesOperationsSidebar = location.pathname === '/admin/portal' || location.pathname === '/admin/guide'
   const activeAdminSection = location.pathname === '/admin/portal'
     ? location.hash.replace('#', '') || 'dashboard'
     : null
+
+  if (program.slug === 'loyality') {
+    return <LoyalityWorkspaceShell kind="admin" profile={profile} signOut={signOut} />
+  }
 
   return (
     <div className="soft-luxe-shell flex min-h-screen">
