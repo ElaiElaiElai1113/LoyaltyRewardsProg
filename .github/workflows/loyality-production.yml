@@ -92,7 +92,7 @@ jobs:
           set -euo pipefail
           for attempt in {1..12}; do
             status="$(curl --silent --output /tmp/loyality-home.html --write-out '%{http_code}' https://loyality-rewards.vercel.app/)"
-            if [ "$status" = "200" ] && grep -q '<title>Loyality' /tmp/loyality-home.html; then
+            if [ "$status" = "200" ] && grep -q 'id="root"' /tmp/loyality-home.html; then
               break
             fi
             if [ "$attempt" = "12" ]; then
