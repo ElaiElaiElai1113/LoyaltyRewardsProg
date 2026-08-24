@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { randomBytes } from 'node:crypto'
 
 const supabaseUrl = process.env.SUPABASE_URL ?? process.env.VITE_SUPABASE_URL
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
@@ -79,16 +80,28 @@ async function ensureUser(account) {
     user = data.user
   }
 
-  const { error: profileError } = await adminClient
+  const profileValues = {
+    id: user.id,
+    full_name: account.fullName,
+    email,
+    role: account.role,
+    business_id: businessId,
+    ...(account.role === 'customer' ? { verification_status: 'verified' } : {}),
+  }
+  const { data: existingProfile, error: profileReadError } = await adminClient
     .from('profiles')
-    .update({
-      full_name: account.fullName,
-      email,
-      role: account.role,
-      business_id: businessId,
-      ...(account.role === 'customer' ? { verification_status: 'verified' } : {}),
-    })
+    .select('id')
     .eq('id', user.id)
+    .maybeSingle()
+  if (profileReadError) throw profileReadError
+
+  const profileWrite = existingProfile
+    ? adminClient.from('profiles').update(profileValues).eq('id', user.id)
+    : adminClient.from('profiles').insert({
+        ...profileValues,
+        referral_code: randomBytes(4).toString('hex').toUpperCase(),
+      })
+  const { error: profileError } = await profileWrite
   if (profileError) throw profileError
 
   return { account, user, businessId }
