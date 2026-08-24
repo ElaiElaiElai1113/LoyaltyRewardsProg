@@ -53,7 +53,7 @@ jobs:
             --header "apikey: $LOYALITY_SUPABASE_ANON_KEY" \
             --header "Authorization: Bearer $LOYALITY_SUPABASE_ANON_KEY" \
             --header 'Content-Type: application/json' \
-            --data '{"requested_hostname":"loyality-rewards.vercel.app"}' \
+            --data '{"p_hostname":"loyality-rewards.vercel.app"}' \
             "$LOYALITY_SUPABASE_URL/rest/v1/rpc/resolve_program_by_hostname")"
           node -e "const rows=JSON.parse(process.argv[1]); if(!Array.isArray(rows)||rows[0]?.slug!=='loyality') process.exit(1)" "$response"
 
@@ -106,6 +106,6 @@ jobs:
             --header "apikey: $LOYALITY_SUPABASE_ANON_KEY" \
             --header "Authorization: Bearer $LOYALITY_SUPABASE_ANON_KEY" \
             --header 'Content-Type: application/json' \
-            --data '{"requested_hostname":"loyality-rewards.vercel.app"}' \
+            --data '{"p_hostname":"loyality-rewards.vercel.app"}' \
             "$LOYALITY_SUPABASE_URL/rest/v1/rpc/resolve_program_by_hostname" \
             | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const rows=JSON.parse(s);if(!Array.isArray(rows)||rows[0]?.slug!=='loyality')process.exit(1)})"
