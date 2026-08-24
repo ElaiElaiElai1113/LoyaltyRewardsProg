@@ -82,9 +82,18 @@ test.describe('Loyality signed-in visual system', () => {
   test.skip(process.env.LOYALITY_E2E_AUTH_ENABLED !== 'true', 'Live Loyality QA accounts are required.')
 
   for (const account of [
-    { portal: 'customer', email: 'customer@loyality.test', shell: '.ly-shell--customer', destination: /\/dashboard/ },
-    { portal: 'business', email: 'owner@loyality.test', shell: '.ly-workspace--business', destination: /\/business\/dashboard/ },
-    { portal: 'admin', email: 'admin@loyality.test', shell: '.ly-workspace--admin', destination: /\/admin\/portal/ },
+    {
+      portal: 'customer', email: 'customer@loyality.test', shell: '.ly-shell--customer', destination: /\/dashboard/,
+      routes: ['/dashboard', '/promotions', '/profile', '/activity'],
+    },
+    {
+      portal: 'business', email: 'owner@loyality.test', shell: '.ly-workspace--business', destination: /\/business\/dashboard/,
+      routes: ['/business/dashboard', '/business/members', '/business/growth', '/business/redemptions', '/business/settings', '/business/guide'],
+    },
+    {
+      portal: 'admin', email: 'admin@loyality.test', shell: '.ly-workspace--admin', destination: /\/admin\/portal/,
+      routes: ['/admin/portal', '/admin/programs', '/admin/memberships', '/admin/readiness', '/admin/gift-cards', '/admin/guide'],
+    },
   ]) {
     test(`${account.portal} uses the Loyality shell on desktop and phone`, async ({ page }) => {
       const errors = runtimeErrors(page)
@@ -93,16 +102,18 @@ test.describe('Loyality signed-in visual system', () => {
       await page.locator('#loyality-password').fill(e2ePassword)
       await page.getByRole('button', { name: `Sign in as ${account.portal}`, exact: true }).click()
       await expect(page).toHaveURL(account.destination)
-      await expect(page.locator(account.shell)).toBeVisible()
-      await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
-
-      await page.setViewportSize({ width: 390, height: 844 })
-      await expect(page.locator(account.shell)).toBeVisible()
-      const layout = await page.evaluate(() => ({
-        viewport: document.documentElement.clientWidth,
-        pageWidth: document.documentElement.scrollWidth,
-      }))
-      expect(layout.pageWidth).toBeLessThanOrEqual(layout.viewport + 1)
+      for (const route of account.routes) {
+        await page.goto(route)
+        await expect(page.locator(account.shell)).toBeVisible()
+        await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
+        await page.setViewportSize({ width: 390, height: 844 })
+        const layout = await page.evaluate(() => ({
+          viewport: document.documentElement.clientWidth,
+          pageWidth: document.documentElement.scrollWidth,
+        }))
+        expect(layout.pageWidth, `${route} should not overflow on phone`).toBeLessThanOrEqual(layout.viewport + 1)
+        await page.setViewportSize({ width: 1440, height: 900 })
+      }
       expect(errors).toEqual([])
     })
   }
