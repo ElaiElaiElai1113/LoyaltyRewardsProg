@@ -38,6 +38,11 @@ test.describe('cross-tenant public responsive layouts', () => {
               '.wondertown-home__steps-grid article',
               '.wondertown-home__cta-card',
               '.wondertown-home__button',
+              '.reference-rewardme__nav-inner',
+              '.reference-rewardme__hero-grid',
+              '.reference-rewardme__phone-wrap',
+              '.reference-rewardme__feat-card',
+              '.reference-rewardme__cta-actions',
             ].join(',')
             const clipped = Array.from(document.querySelectorAll<HTMLElement>(criticalSelector))
               .filter((element) => element.offsetParent !== null)
@@ -59,8 +64,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               && Math.abs(membershipCards[0].top - membershipCards[1].top) < 2
 
             const homeNav = document.querySelector<HTMLElement>('.figma-home__nav')
-            const rewardMeNav = document.querySelector<HTMLElement>('.rewardme-home__nav')
-            const wondertownNav = document.querySelector<HTMLElement>('.wondertown-home__nav')
+            const referenceRewardMeNav = document.querySelector<HTMLElement>('.reference-rewardme__nav')
             const businessNav = document.querySelector<HTMLElement>('.business-public-shell__nav')
 
             return {
@@ -68,8 +72,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               clipped,
               membershipCardsShareRow,
               homeNavPosition: homeNav ? getComputedStyle(homeNav).position : null,
-              rewardMeNavDisplay: rewardMeNav ? getComputedStyle(rewardMeNav).display : null,
-              wondertownNavDisplay: wondertownNav ? getComputedStyle(wondertownNav).display : null,
+              referenceRewardMeNavDisplay: referenceRewardMeNav ? getComputedStyle(referenceRewardMeNav).display : null,
               businessNavPosition: businessNav ? getComputedStyle(businessNav).position : null,
             }
           })
@@ -82,12 +85,8 @@ test.describe('cross-tenant public responsive layouts', () => {
             expect(layout.homeNavPosition, `${tenant} home navigation at ${width}px`).toBe('fixed')
           }
 
-          if (route === '/' && tenant === 'pinas') {
-            expect(layout.rewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('flex')
-          }
-
-          if (route === '/' && width <= 1050 && tenant === 'wondertown') {
-            expect(layout.wondertownNavDisplay, `${tenant} home navigation at ${width}px`).toBe('none')
+          if (route === '/' && (tenant === 'pinas' || tenant === 'wondertown')) {
+            expect(layout.referenceRewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('block')
           }
 
           if (route === '/business' && width <= 820) {

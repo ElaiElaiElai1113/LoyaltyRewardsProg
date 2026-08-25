@@ -20,17 +20,19 @@ test.describe('Wondertown public testing experience', () => {
       await page.setViewportSize(viewport)
       await page.goto('/?tenant=wondertown')
 
-      const header = page.locator('.wondertown-home__header')
-      await expect(header.getByRole('link', { name: 'Member sign in' })).toHaveAttribute('href', '/signin')
-      await expect(header.getByRole('link', { name: 'Member sign in' })).toBeVisible()
+      const header = page.getByLabel('Wondertown Rewards navigation')
+      await expect(header.getByRole('link', { name: 'Sign In' })).toHaveAttribute('href', '/signin')
+      await expect(header.getByRole('link', { name: 'Sign In' })).toBeVisible()
       for (const [name, href] of [
-        ['Store', '/shop'],
-        ['Membership', '/membership'],
-        ['Businesses', '/business'],
-        ['Guide', '/guide'],
+        ['How It Works', '#how'],
+        ['For Business', '/business'],
+        ['Rewards', '#rewards'],
       ] as const) {
-        await expect(page.locator('.wondertown-home__footer').getByRole('link', { name })).toHaveAttribute('href', href)
+        const link = header.locator(`a[href="${href}"]`)
+        await expect(link).toHaveAttribute('href', href)
+        await expect(link).toHaveText(name)
       }
+      await expect(page.locator('.reference-rewardme__footer').getByRole('link', { name: 'Sign In' })).toHaveAttribute('href', '/signin')
 
       const width = await page.evaluate(() => ({
         client: document.documentElement.clientWidth,

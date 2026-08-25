@@ -130,56 +130,47 @@ test.describe('public acquisition workflow', () => {
     await page.goto('/')
 
     await expect(page).toHaveTitle('RewardMe')
-    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
-    await expect(page.getByRole('heading', { name: "Three steps. That's the whole system." })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Most places, 20% or more back. Some days, all of it.' })).toBeVisible()
-    await expect(page.getByText('No rewards or referral bonuses are paid during the trial.', { exact: false })).toBeVisible()
-    await expect(page.getByText('$25/month', { exact: true })).toBeVisible()
-    await expect(page.getByText('$100/year', { exact: true })).toBeVisible()
-    await expect(page.getByText('PLANNED · NOT LIVE', { exact: true })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Start your free access' })).toHaveAttribute('href', '/join')
-    await expect(page.getByRole('link', { name: 'Browse the store' })).toHaveAttribute('href', '/shop')
-    await expect(page.getByRole('link', { name: 'See how businesses join' })).toHaveAttribute('href', '/business')
-    const header = page.locator('.rewardme-home__header')
-    await expect(header.getByRole('link', { name: 'Store' })).toHaveAttribute('href', '/shop')
-    await expect(header.getByRole('link', { name: 'Membership' })).toHaveAttribute('href', '/membership')
-    await expect(header.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '/business')
-    await expect(header.getByRole('link', { name: 'Guide' })).toHaveAttribute('href', '/guide')
-    await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Three steps. Zero cost.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Built to feel like a win, every visit.' })).toBeVisible()
+    await expect(page.getByText('No cost to join, no catch', { exact: false })).toBeVisible()
+    await expect(page.getByText('2,340 PTS', { exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Join Free' }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how')
+    const header = page.getByLabel('RewardMe navigation')
+    await expect(header.getByRole('link', { name: 'How It Works' })).toHaveAttribute('href', '#how')
+    await expect(header.getByRole('link', { name: 'For Business' })).toHaveAttribute('href', '/business')
+    await expect(header.getByRole('link', { name: 'Rewards' })).toHaveAttribute('href', '#rewards')
+    await expect(header.getByRole('link', { name: 'Sign In' })).toHaveAttribute('href', '/signin')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
   })
 
   test('legacy landing URL resolves to the RewardMe homepage', async ({ page }) => {
     await page.goto('/landing-page')
-    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
   })
 
   test('homepage uses the approved editorial typography and clean media', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." }))
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' }))
       .toHaveCSS('font-family', /Anton/)
-    await expect(page.getByText('RewardMe connects everyday spending', { exact: false }))
+    await expect(page.getByText('Earn real rewards every time', { exact: false }))
       .toHaveCSS('font-family', /Inter/)
-    await expect(page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }))
-      .toHaveAttribute('src', /coffee-member-wide(?:-[\w-]+)?\.webp/)
-    const homeImageFraming = await page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }).evaluate((image: HTMLImageElement) => ({
-      naturalRatio: image.naturalWidth / image.naturalHeight,
-      renderedRatio: image.clientWidth / image.clientHeight,
-    }))
-    expect(Math.abs(homeImageFraming.naturalRatio - homeImageFraming.renderedRatio)).toBeLessThan(0.02)
-    await expect(page.locator('.rewardme-home__brand').first()).toContainText('RewardMe')
-    await expect(page.locator('.rewardme-home__ledger')).toContainText('ILLUSTRATION')
+    await expect(page.locator('.reference-rewardme img')).toHaveCount(0)
+    await expect(page.locator('.reference-rewardme__phone')).toBeVisible()
+    await expect(page.locator('.reference-rewardme__logo')).toContainText('REWARDME')
+    await expect(page.locator('.reference-rewardme__balance-card')).toContainText('2,340 PTS')
   })
 
   test('mobile homepage has no horizontal overflow and keeps every CTA reachable', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Start your free access' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Join Free' }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
-    await expect(page.locator('.rewardme-home__header').getByRole('link', { name: 'Sign in' })).toBeVisible()
+    await expect(page.getByLabel('RewardMe navigation').getByRole('link', { name: 'Sign In' })).toBeVisible()
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

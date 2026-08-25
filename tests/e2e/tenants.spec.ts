@@ -8,7 +8,7 @@ const tenants = [
     slug: 'pinas',
     name: 'RewardMe',
     color: '#d4af37',
-    heading: "Turn what you already spend into what you're saving for.",
+    heading: 'Get rewarded for spending where you already love.',
   },
   {
     slug: 'pinasrewards',
@@ -20,13 +20,13 @@ const tenants = [
     slug: 'wondertown',
     name: 'Wondertown Rewards',
     color: '#d4af37',
-    heading: 'Every little thing feels rewarding.',
+    heading: 'Get rewarded for spending where you already love.',
   },
   {
     slug: 'loyality',
     name: 'Loyality',
     color: '#173b3f',
-    heading: 'Turn every visit into the next one.',
+    heading: 'Your loyalty card, reimagined.',
   },
 ] as const
 
@@ -49,12 +49,11 @@ test.describe('white-label tenant resolution', () => {
 
       await expect(page).toHaveTitle(tenant.name)
       if (tenant.slug === 'loyality') {
-        await expect(page.locator('.loyality-site__brand').first()).toBeVisible()
+        await expect(page.locator('.reference-loyality__logo')).toHaveText('Loyality')
       } else if (tenant.slug === 'wondertown') {
-        await expect(page.locator('.wondertown-home__brand').first()).toContainText('Wondertown')
-        await expect(page.locator('.wondertown-home__brand').first()).toContainText('Rewards')
+        await expect(page.locator('.reference-rewardme__logo')).toHaveText('WONDERTOWN REWARDS')
       } else if (tenant.slug === 'pinas') {
-        await expect(page.locator('.rewardme-home__brand').first()).toContainText('RewardMe')
+        await expect(page.locator('.reference-rewardme__logo')).toHaveText('REWARDME')
       } else {
         await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
       }
