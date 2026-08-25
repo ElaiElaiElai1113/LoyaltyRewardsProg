@@ -14,7 +14,8 @@ import '@fontsource/source-serif-4/latin-600.css'
 import '@fontsource/source-serif-4/latin-700.css'
 import './index.css'
 import './features/loyality/loyality-app.css'
-import './reference-design-systems.css'
+
+const referenceDesignSystemReady = import('./reference-design-systems.css')
 
 window.addEventListener('error', (event) => {
   reportMonitoringEvent({
@@ -57,8 +58,10 @@ const updateServiceWorker = registerSW({
   },
 })
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+void referenceDesignSystemReady.then(() => {
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <App />
+    </StrictMode>,
+  )
+})
