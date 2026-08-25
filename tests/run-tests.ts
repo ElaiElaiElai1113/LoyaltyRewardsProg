@@ -484,7 +484,7 @@ runTest('member signup page uses the compact member portal layout', () => {
   const splitJoinStart = joinPage.indexOf('export function SplitJoinRewardsPage')
   const compactJoin = joinPage.slice(compactJoinStart, splitJoinStart)
 
-  assert.match(joinPage, /export function JoinRewardsPage\(\) {\s*return <CompactJoinRewardsPage \/>/)
+  assert.match(joinPage, /if \(program\.slug === 'loyality'\) return <LoyalityJoinPage \/>[\s\S]*return <CompactJoinRewardsPage \/>/)
   assert.match(compactJoin, /AuthPortalShell activeTab="signup"/)
   assert.match(compactJoin, /\{program\.name\}/)
   assert.match(compactJoin, /t\('Member Portal'\)\.toUpperCase\(\)/)
@@ -1011,8 +1011,8 @@ runTest('all account roles use the approved unified auth portal', () => {
   assert.match(authShell, /to="\/join"/)
   assert.match(authShell, /activeTab === 'signin'/)
   assert.match(authShell, /activeTab === 'signup'/)
-  assert.match(authPage, /export function AuthPage\(\) {\s*return <CompactAuthPage \/>/)
-  assert.match(joinPage, /export function JoinRewardsPage\(\) {\s*return <CompactJoinRewardsPage \/>/)
+  assert.match(authPage, /if \(program\.slug === 'loyality'\) return <LoyalityAuthPage \/>[\s\S]*return <CompactAuthPage \/>/)
+  assert.match(joinPage, /if \(program\.slug === 'loyality'\) return <LoyalityJoinPage \/>[\s\S]*return <CompactJoinRewardsPage \/>/)
   assert.match(joinPage, /activeTab="signup"/)
   assert.match(authPage, /SIGN_IN_PORTALS\.map/)
   assert.match(authPage, /t\('Sign in as \{role\}'/)
@@ -1089,7 +1089,7 @@ runTest('member signup page follows the compact member portal layout', () => {
   const splitJoinStart = joinPage.indexOf('export function SplitJoinRewardsPage')
   const activeJoin = joinPage.slice(compactJoinStart, splitJoinStart)
 
-  assert.match(joinPage, /export function JoinRewardsPage\(\) {\s*return <CompactJoinRewardsPage \/>/)
+  assert.match(joinPage, /if \(program\.slug === 'loyality'\) return <LoyalityJoinPage \/>[\s\S]*return <CompactJoinRewardsPage \/>/)
   assert.match(activeJoin, /AuthPortalShell activeTab="signup"/)
   assert.match(activeJoin, /\{program\.name\}/)
   assert.match(activeJoin, /t\('Member Portal'\)\.toUpperCase\(\)/)
@@ -1819,7 +1819,7 @@ runTest('customer layout exposes full desktop navigation in the header', () => {
   assert.match(customerLayout, /pathname\.startsWith\('\/gift-cards'\)/)
   assert.match(customerLayout, /to: '\/wallet\/gift-cards'/)
   assert.match(headerMarkup, /hidden items-center gap-0\.5 xl:flex/)
-  assert.match(headerMarkup, /customerNavigation\.map/)
+  assert.match(headerMarkup, /loyalityCustomerNavigation : customerNavigation\)\.map/)
   for (const path of ['/dashboard', '/shop', '/rewards', '/gift-cards', '/activity', '/profile']) {
     assert.match(headerMarkup, new RegExp(`to: '${path}'|to=\\{item\\.to\\}`))
   }

@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 96" role="img" aria-labelledby="title">
   <title id="title">RewardMe</title>
-  <rect x="4" y="12" width="72" height="72" rx="16" fill="#173f32"/>
-  <path d="M27 30h21c7 0 12 5 12 12 0 5-3 9-8 11l8 13H49L42 55h-5v11H27V30Zm10 9v8h10c2 0 4-2 4-4s-2-4-4-4H37Z" fill="#f4efdf"/>
-  <path d="M18 31v34" stroke="#b77b1f" stroke-width="4" stroke-linecap="round"/>
-  <text x="94" y="62" fill="#173f32" font-family="Georgia, 'Times New Roman', serif" font-size="48" font-weight="700">RewardMe</text>
+  <rect x="4" y="12" width="72" height="72" rx="16" fill="#141414" stroke="#D4AF37" stroke-width="2"/>
+  <path d="M27 30h21c7 0 12 5 12 12 0 5-3 9-8 11l8 13H49L42 55h-5v11H27V30Zm10 9v8h10c2 0 4-2 4-4s-2-4-4-4H37Z" fill="#F5F1E8"/>
+  <path d="M18 31v34" stroke="#D2601A" stroke-width="4" stroke-linecap="round"/>
+  <text x="94" y="62" fill="#D4AF37" font-family="Anton, Impact, sans-serif" font-size="48" font-weight="400">REWARDME</text>
 </svg>

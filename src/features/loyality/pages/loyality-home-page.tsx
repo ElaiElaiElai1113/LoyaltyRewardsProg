@@ -104,7 +104,7 @@ export function LoyalityHomePage() {
           <div className="loyality-site__scan-card">
             <div className="loyality-site__scan-top"><span>TRACKABLE OFFER</span><ScanLine size={22} /></div>
             <div className="loyality-site__qr-wrap">
-              <QRCodeSVG value={offerUrl} size={132} bgColor="transparent" fgColor="#173b3f" level="H" />
+              <QRCodeSVG value={offerUrl} size={132} bgColor="transparent" fgColor="#1b2a41" level="H" />
               <span className="loyality-site__scan-line" />
             </div>
             <div><strong>Welcome treat</strong><small>Scan to claim your first-visit offer</small></div>

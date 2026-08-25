@@ -7,7 +7,7 @@ const tenants = [
   {
     slug: 'pinas',
     name: 'RewardMe',
-    color: '#173f32',
+    color: '#d4af37',
     heading: "Turn what you already spend into what you're saving for.",
   },
   {
@@ -19,7 +19,7 @@ const tenants = [
   {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
-    color: '#4f3b78',
+    color: '#d4af37',
     heading: 'Every little thing feels rewarding.',
   },
   {

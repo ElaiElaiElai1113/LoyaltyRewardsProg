@@ -152,7 +152,7 @@ test.describe('public acquisition workflow', () => {
     await page.goto('/')
 
     await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." }))
-      .toHaveCSS('font-family', /Georgia/)
+      .toHaveCSS('font-family', /Anton/)
     await expect(page.getByText('RewardMe connects everyday spending', { exact: false }))
       .toHaveCSS('font-family', /Inter/)
     await expect(page.getByRole('img', { name: 'A customer checking a mobile rewards account in a local café' }))

@@ -3,8 +3,18 @@ import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from '@/App'
 import { reportMonitoringEvent } from '@/lib/monitoring'
+import '@fontsource/inter/400.css'
+import '@fontsource/inter/500.css'
+import '@fontsource/inter/600.css'
+import '@fontsource/inter/700.css'
+import '@fontsource/inter/800.css'
+import '@fontsource/anton/400.css'
+import '@fontsource/source-serif-4/500.css'
+import '@fontsource/source-serif-4/600.css'
+import '@fontsource/source-serif-4/700.css'
 import './index.css'
 import './features/loyality/loyality-app.css'
+import './reference-design-systems.css'
 
 window.addEventListener('error', (event) => {
   reportMonitoringEvent({

@@ -1,0 +1,629 @@
+/*
+ * Production design systems sourced from the approved RewardMe, Wondertown,
+ * and Loyality HTML concepts. Imported last so legacy tenant styling cannot
+ * leak into public, authentication, customer, business, or admin screens.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* RewardMe + Wondertown                                                       */
+/* -------------------------------------------------------------------------- */
+
+:root[data-program="pinas"],
+:root[data-program="wondertown"],
+:root[data-program="pinas"][data-theme="dark"],
+:root[data-program="wondertown"][data-theme="dark"] {
+  --rm-black: #0a0a0a;
+  --rm-black-soft: #141414;
+  --rm-gold: #d4af37;
+  --rm-ember: #d2601a;
+  --rm-cream: #f5f1e8;
+  --rm-slate: #a8a290;
+  --background: var(--rm-black) !important;
+  --foreground: var(--rm-cream) !important;
+  --card: var(--rm-black-soft) !important;
+  --card-foreground: var(--rm-cream) !important;
+  --muted: #24231f !important;
+  --muted-foreground: #b8b2a0 !important;
+  --border: #35332d !important;
+  --input: #181816 !important;
+  --primary: var(--rm-gold) !important;
+  --primary-foreground: var(--rm-black) !important;
+  --secondary: var(--rm-ember) !important;
+  --secondary-foreground: #fff8f0 !important;
+  --accent: #2b261c !important;
+  --accent-foreground: var(--rm-gold) !important;
+  --destructive: #ee8060 !important;
+  --destructive-foreground: var(--rm-black) !important;
+  --success: #8fbf82 !important;
+  --warning: #e6b957 !important;
+  --ring: var(--rm-gold) !important;
+  --tenant-accent: var(--rm-gold) !important;
+  --tenant-accent-foreground: var(--rm-black) !important;
+  --tenant-accent-soft: #2f291a !important;
+  --surface: var(--rm-black) !important;
+  --surface-container-low: #10100f !important;
+  --surface-container-lowest: #080808 !important;
+  --surface-container-highest: #2b2a26 !important;
+  --primary-container: var(--rm-gold) !important;
+  --primary-fixed: #e4c34f !important;
+  --on-primary: var(--rm-black) !important;
+  --secondary-container: var(--rm-ember) !important;
+  --secondary-fixed: #ec8b4e !important;
+  --tertiary: var(--rm-ember) !important;
+  --on-surface: var(--rm-cream) !important;
+  --on-surface-variant: var(--rm-slate) !important;
+  --outline-variant: #35332d !important;
+  --error: #ee8060 !important;
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+  --font-serif: Anton, Impact, sans-serif;
+  color-scheme: dark;
+}
+
+:root[data-program="pinas"] body,
+:root[data-program="wondertown"] body {
+  background: var(--rm-black);
+  color: var(--rm-cream);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+:root[data-program="pinas"] :is(h1, h2),
+:root[data-program="wondertown"] :is(h1, h2),
+:root[data-program="pinas"] .font-serif,
+:root[data-program="wondertown"] .font-serif {
+  font-family: Anton, Impact, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] :is(input, select, textarea),
+:root[data-program="wondertown"] :is(input, select, textarea) {
+  border-color: var(--border) !important;
+  background: var(--input) !important;
+  color: var(--foreground) !important;
+}
+
+:root[data-program="pinas"] :is(input, select, textarea):focus,
+:root[data-program="wondertown"] :is(input, select, textarea):focus {
+  border-color: var(--rm-gold) !important;
+  box-shadow: 0 0 0 3px rgb(212 175 55 / 16%) !important;
+}
+
+:root[data-program="pinas"] :is(.soft-luxe-shell, .gold-wash),
+:root[data-program="wondertown"] :is(.soft-luxe-shell, .gold-wash) {
+  background: var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] :is(.gold-frame, .luxe-card),
+:root[data-program="wondertown"] :is(.gold-frame, .luxe-card) {
+  border-color: var(--border) !important;
+  background: var(--rm-black-soft) !important;
+  box-shadow: 0 22px 52px -36px rgb(0 0 0 / 80%) !important;
+}
+
+:root[data-program="pinas"] .luxe-card::before,
+:root[data-program="wondertown"] .luxe-card::before {
+  display: none !important;
+}
+
+:root[data-program="pinas"] .luxe-art,
+:root[data-program="wondertown"] .luxe-art {
+  background: rgb(212 175 55 / 14%) !important;
+  color: var(--rm-gold) !important;
+}
+
+:root[data-program="pinas"] aside,
+:root[data-program="wondertown"] aside {
+  border-color: var(--border) !important;
+  background: rgb(10 10 10 / 97%) !important;
+  box-shadow: none !important;
+  backdrop-filter: blur(12px);
+}
+
+:root[data-program="pinas"] aside nav a,
+:root[data-program="wondertown"] aside nav a {
+  border-radius: 10px !important;
+}
+
+:root[data-program="pinas"] aside nav a[class*="bg-[var(--muted)]"],
+:root[data-program="wondertown"] aside nav a[class*="bg-[var(--muted)]"] {
+  color: var(--rm-gold) !important;
+}
+
+:root[data-program="pinas"] [class*="rounded-[2rem]"],
+:root[data-program="wondertown"] [class*="rounded-[2rem]"],
+:root[data-program="pinas"] [class*="rounded-[2.25rem]"],
+:root[data-program="wondertown"] [class*="rounded-[2.25rem]"],
+:root[data-program="pinas"] [class*="rounded-3xl"],
+:root[data-program="wondertown"] [class*="rounded-3xl"],
+:root[data-program="pinas"] [class*="rounded-2xl"],
+:root[data-program="wondertown"] [class*="rounded-2xl"] {
+  border-radius: 16px !important;
+}
+
+:root[data-program="pinas"] .auth-portal-shell,
+:root[data-program="wondertown"] .auth-portal-shell {
+  background: var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] .auth-portal-backdrop,
+:root[data-program="wondertown"] .auth-portal-backdrop {
+  background: radial-gradient(circle at 80% 10%, rgb(212 175 55 / 10%), transparent 32%) !important;
+}
+
+/* RewardMe public site */
+.rewardme-home {
+  --rm-cream: #0a0a0a;
+  --rm-paper: #141414;
+  --rm-ink: #f5f1e8;
+  --rm-gold: #d4af37;
+  --rm-line: #35332d;
+  background: #0a0a0a;
+  color: #f5f1e8;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.rewardme-home h1,
+.rewardme-home h2,
+.rewardme-home__brand {
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.rewardme-home__dark-intro,
+.rewardme-home__feature-image,
+.rewardme-home__section,
+.rewardme-home__business,
+.rewardme-home__footer {
+  background-color: #0a0a0a;
+}
+
+.rewardme-home__header {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  width: 100%;
+  padding-inline: max(32px, calc((100% - 1116px) / 2));
+  border-color: #201f1b;
+  background: rgb(10 10 10 / 92%);
+  backdrop-filter: blur(10px);
+}
+
+.rewardme-home__brand,
+.rewardme-home__eyebrow,
+.rewardme-home__rates span,
+.rewardme-home__plan-label {
+  color: #d4af37;
+}
+
+.rewardme-home__lead,
+.rewardme-home__section-heading > p,
+.rewardme-home__store > div > p,
+.rewardme-home__savings > div > p,
+.rewardme-home__business > div > p,
+.rewardme-home__steps p,
+.rewardme-home__rates p,
+.rewardme-home__plans p,
+.rewardme-home__bridge p,
+.rewardme-home__footer > p {
+  color: #b8b2a0 !important;
+}
+
+.rewardme-home__button {
+  border-color: #d4af37;
+  border-radius: 30px;
+  background: #d4af37;
+  color: #0a0a0a !important;
+  font-weight: 800;
+}
+
+.rewardme-home__button:hover { background: #e4c34f; }
+.rewardme-home__button--outline { border-color: #3a3a38; background: transparent; color: #f5f1e8 !important; }
+.rewardme-home__button--outline:hover { border-color: #d4af37; background: transparent; color: #d4af37 !important; }
+.rewardme-home__hero { min-height: 680px; }
+.rewardme-home__hero h1 { font-size: clamp(42px, 5.5vw, 64px); line-height: .98; }
+.rewardme-home__hero-media { border-radius: 16px; background: #141414; }
+.rewardme-home__ledger { border: 1px solid #35332d; border-radius: 16px; background: #141414; color: #f5f1e8; }
+.rewardme-home__ledger-head,
+.rewardme-home__ledger-total { border-color: #4a4840; }
+.rewardme-home__ledger-head { font-family: Inter, sans-serif; font-weight: 700; }
+.rewardme-home__ledger-row { border-color: #35332d; color: #b8b2a0; }
+.rewardme-home__ledger-row strong { color: #d4af37; }
+.rewardme-home__ledger-total strong { font-family: Anton, Impact, sans-serif; color: #d4af37; }
+.rewardme-home__feature-image { border-radius: 16px; background: #141414; box-shadow: none; }
+.rewardme-home__feature-image figcaption { border-radius: 4px; background: rgb(10 10 10 / 90%); }
+.rewardme-home__section { border-color: #35332d; }
+.rewardme-home__steps { border-color: #f5f1e8; }
+.rewardme-home__steps li,
+.rewardme-home__rates,
+.rewardme-home__plans,
+.rewardme-home__rates article,
+.rewardme-home__plans article { border-color: #35332d; }
+.rewardme-home__rates article,
+.rewardme-home__plans article { background: #141414; }
+.rewardme-home__savings { border: 1px solid #35332d; border-radius: 16px; background: #141414; color: #f5f1e8; }
+.rewardme-home__planned-card { border-radius: 12px; background: #0a0a0a; }
+.rewardme-home__plans .rewardme-home__plan--featured { background: #262115; }
+.rewardme-home__business { border-color: #35332d; border-radius: 16px; background: #141414; }
+.rewardme-home__bridge { border-color: #d4af37; background: #0a0a0a; }
+.rewardme-home__footer { border-color: #35332d; }
+
+/* Wondertown uses RewardMe's visual system with Wondertown content. */
+.wondertown-home {
+  --wonder-ink: #f5f1e8;
+  --wonder-indigo: #141414;
+  --wonder-plum: #d4af37;
+  --wonder-coral: #d2601a;
+  --wonder-aqua: #d4af37;
+  --wonder-gold: #d4af37;
+  --wonder-cream: #0a0a0a;
+  --wonder-paper: #141414;
+  background: #0a0a0a;
+  color: #f5f1e8;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.wondertown-home :is(h1, h2),
+.wondertown-home__brand strong {
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.wondertown-home__header { position: sticky; background: rgb(10 10 10 / 92%); border-color: #201f1b; }
+.wondertown-home__brand small,
+.wondertown-home__eyebrow { color: #d4af37; }
+.wondertown-home__language select { border-color: #35332d; background: #141414; color: #f5f1e8; }
+.wondertown-home__button { min-height: 50px; border: 1px solid #d4af37; border-radius: 30px; background: #d4af37; box-shadow: none; color: #0a0a0a !important; }
+.wondertown-home__button:hover { background: #e4c34f; box-shadow: none; }
+.wondertown-home__button--glass,
+.wondertown-home__button--outline { border-color: #57544c; background: rgb(10 10 10 / 68%); color: #f5f1e8 !important; }
+.wondertown-home__hero { min-height: 720px; padding-top: 84px; }
+.wondertown-home__hero-shade { background: linear-gradient(90deg, rgb(10 10 10 / 94%) 0%, rgb(10 10 10 / 77%) 46%, rgb(10 10 10 / 22%) 78%), linear-gradient(0deg, rgb(10 10 10 / 58%), transparent 50%); }
+.wondertown-home__demo-label { border-radius: 4px; background: rgb(10 10 10 / 62%); }
+.wondertown-home__hero h1 { font-size: clamp(44px, 6vw, 72px); line-height: .98; }
+.wondertown-home__intro { background: #141414; }
+.wondertown-home__intro-copy { border-color: #35332d; }
+.wondertown-home__businesses,
+.wondertown-home__steps,
+.wondertown-home__cta { background: #0a0a0a; }
+.wondertown-home__section-heading > p,
+.wondertown-home__steps-heading > p,
+.wondertown-home__business-card > span,
+.wondertown-home__steps-grid p { color: #b8b2a0; }
+.wondertown-home__business-grid { gap: 24px; }
+.wondertown-home__business-card { min-height: 300px; border: 1px solid #35332d; border-radius: 16px; background: #141414; box-shadow: none; color: #d4af37 !important; }
+.wondertown-home__business-card::after,
+.wondertown-home__cta-orbit { display: none; }
+.wondertown-home__business-icon { border-radius: 12px; background: rgb(212 175 55 / 14%); color: #d4af37; }
+.wondertown-home__business-card h3 { color: #f5f1e8; }
+.wondertown-home__steps-grid article,
+.wondertown-home__steps-grid article:last-child { border-color: #35332d; }
+.wondertown-home__step-top { color: #d4af37; }
+.wondertown-home__cta-card { border: 1px solid #35332d; border-radius: 16px; background: #141414; }
+.wondertown-home__footer { border-top: 1px solid #35332d; background: #0a0a0a; }
+
+/* Keep Wondertown's copy and city imagery, but use RewardMe's final visual language. */
+:root[data-program="wondertown"] .wondertown-home {
+  --wonder-ink: #f5f1e8;
+  --wonder-indigo: #141414;
+  --wonder-plum: #d4af37;
+  --wonder-coral: #d4af37;
+  --wonder-aqua: #d2601a;
+  --wonder-gold: #d4af37;
+  --wonder-cream: #0a0a0a;
+  --wonder-paper: #0a0a0a;
+  background: #0a0a0a !important;
+  color: #f5f1e8 !important;
+}
+:root[data-program="wondertown"] .wondertown-home :is(h1, h2, h3),
+:root[data-program="wondertown"] .wondertown-home__brand strong {
+  color: #f5f1e8;
+  font-family: Anton, Impact, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .01em !important;
+  text-transform: uppercase;
+}
+:root[data-program="wondertown"] .wondertown-home__header {
+  position: sticky;
+  border-color: #35332d;
+  background: rgb(10 10 10 / 94%);
+  color: #f5f1e8;
+}
+:root[data-program="wondertown"] .wondertown-home__nav,
+:root[data-program="wondertown"] .wondertown-home__text-link,
+:root[data-program="wondertown"] .wondertown-home__language { color: #f5f1e8; }
+:root[data-program="wondertown"] .wondertown-home__brand small,
+:root[data-program="wondertown"] .wondertown-home__eyebrow { color: #d4af37; }
+:root[data-program="wondertown"] .wondertown-home__language select {
+  border-color: #35332d;
+  background: #141414;
+  color: #f5f1e8;
+}
+:root[data-program="wondertown"] .wondertown-home__button {
+  border: 1px solid #d4af37;
+  background: #d4af37;
+  box-shadow: none;
+  color: #0a0a0a !important;
+}
+:root[data-program="wondertown"] .wondertown-home__button:hover { background: #e4c34f; box-shadow: none; }
+:root[data-program="wondertown"] .wondertown-home__button--glass,
+:root[data-program="wondertown"] .wondertown-home__button--outline {
+  border-color: #777268;
+  background: rgb(10 10 10 / 72%);
+  color: #f5f1e8 !important;
+}
+:root[data-program="wondertown"] .wondertown-home__hero-shade {
+  background: linear-gradient(90deg, rgb(10 10 10 / 96%) 0%, rgb(10 10 10 / 80%) 44%, rgb(10 10 10 / 28%) 76%), linear-gradient(0deg, rgb(10 10 10 / 68%), transparent 55%);
+}
+:root[data-program="wondertown"] .wondertown-home__demo-label { background: rgb(10 10 10 / 68%); border-color: #777268; }
+:root[data-program="wondertown"] .wondertown-home__hero h1 em { color: #d4af37; font-family: inherit; }
+:root[data-program="wondertown"] .wondertown-home__hero-notes li::before { background: #d2601a; }
+:root[data-program="wondertown"] .wondertown-home__intro { background: #141414; color: #f5f1e8; }
+:root[data-program="wondertown"] .wondertown-home__intro-copy { border-color: #35332d; }
+:root[data-program="wondertown"] .wondertown-home__intro-copy p,
+:root[data-program="wondertown"] .wondertown-home__section-heading > p,
+:root[data-program="wondertown"] .wondertown-home__steps-heading > p,
+:root[data-program="wondertown"] .wondertown-home__business-card > span,
+:root[data-program="wondertown"] .wondertown-home__steps-grid p { color: #b8b2a0; }
+:root[data-program="wondertown"] .wondertown-home__intro-copy a { color: #d4af37; }
+:root[data-program="wondertown"] .wondertown-home__businesses,
+:root[data-program="wondertown"] .wondertown-home__steps,
+:root[data-program="wondertown"] .wondertown-home__cta { background: #0a0a0a; color: #f5f1e8; }
+:root[data-program="wondertown"] .wondertown-home__business-card,
+:root[data-program="wondertown"] .wondertown-home__business-card:nth-child(4),
+:root[data-program="wondertown"] .wondertown-home__business-card:nth-child(5) {
+  border-color: #35332d;
+  border-radius: 16px;
+  background: #141414;
+  box-shadow: none;
+  color: #d4af37;
+}
+:root[data-program="wondertown"] .wondertown-home__business-card::after,
+:root[data-program="wondertown"] .wondertown-home__cta-orbit { display: none; }
+:root[data-program="wondertown"] .wondertown-home__business-icon {
+  border-radius: 12px;
+  background: rgb(212 175 55 / 14%);
+  color: #d4af37;
+}
+:root[data-program="wondertown"] .wondertown-home__steps-grid article,
+:root[data-program="wondertown"] .wondertown-home__steps-grid article:last-child { border-color: #35332d; }
+:root[data-program="wondertown"] .wondertown-home__step-top { color: #d4af37; }
+:root[data-program="wondertown"] .wondertown-home__cta-card {
+  border: 1px solid #35332d;
+  border-radius: 16px;
+  background: #141414;
+  color: #f5f1e8;
+}
+:root[data-program="wondertown"] .wondertown-home__footer {
+  border-top: 1px solid #35332d;
+  background: #0a0a0a;
+  color: #f5f1e8;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Loyality                                                                    */
+/* -------------------------------------------------------------------------- */
+
+:root[data-program="loyality"],
+:root[data-program="loyality"][data-theme="dark"] {
+  --ly-navy: #1b2a41;
+  --ly-navy-deep: #121e30;
+  --ly-teal: #3e8e8a;
+  --ly-amber: #d9a441;
+  --ly-grey: #8a8f98;
+  --ly-offwhite: #f4efe6;
+  --ly-white: #ffffff;
+  --ly-ink: var(--ly-navy);
+  --ly-deep: var(--ly-navy-deep);
+  --ly-coral: var(--ly-teal);
+  --ly-coral-dark: #337572;
+  --ly-lime: var(--ly-amber);
+  --ly-cream: var(--ly-offwhite);
+  --ly-paper: var(--ly-white);
+  --ly-mist: #ece8df;
+  --ly-line: #e5dfd1;
+  --background: var(--ly-offwhite) !important;
+  --foreground: var(--ly-navy-deep) !important;
+  --card: var(--ly-white) !important;
+  --card-foreground: var(--ly-navy-deep) !important;
+  --muted: #ede8dc !important;
+  --muted-foreground: #626870 !important;
+  --border: #e5dfd1 !important;
+  --input: #ffffff !important;
+  --primary: var(--ly-navy) !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: var(--ly-teal) !important;
+  --secondary-foreground: #ffffff !important;
+  --accent: #e1efed !important;
+  --accent-foreground: var(--ly-navy-deep) !important;
+  --ring: var(--ly-teal) !important;
+  --success: #4f8077 !important;
+  --warning: #b7832f !important;
+  --destructive: #a84f4f !important;
+  --surface: var(--ly-offwhite) !important;
+  --surface-container-low: #eee9df !important;
+  --surface-container-lowest: #ffffff !important;
+  --surface-container-highest: #ddd7cc !important;
+  --primary-container: var(--ly-navy-deep) !important;
+  --primary-fixed: var(--ly-navy) !important;
+  --on-primary: #ffffff !important;
+  --secondary-container: var(--ly-teal) !important;
+  --secondary-fixed: #87b9b5 !important;
+  --tertiary: var(--ly-amber) !important;
+  --on-surface: var(--ly-navy-deep) !important;
+  --on-surface-variant: #626870 !important;
+  --outline-variant: #e5dfd1 !important;
+  color-scheme: light;
+}
+
+:root[data-program="loyality"] body {
+  background: var(--ly-offwhite);
+  color: var(--ly-navy-deep);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+:root[data-program="loyality"] :is(h1, h2, h3, .font-serif),
+.loyality-site :is(h1, h2, h3) {
+  font-family: "Source Serif 4", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+:root[data-program="loyality"] [class*="rounded-full"] { border-radius: 3px !important; }
+:root[data-program="loyality"] [class*="rounded-[2rem]"],
+:root[data-program="loyality"] [class*="rounded-[2.25rem]"],
+:root[data-program="loyality"] [class*="rounded-3xl"],
+:root[data-program="loyality"] [class*="rounded-2xl"] { border-radius: 8px !important; }
+:root[data-program="loyality"] [class*="bg-[#173b3f]"] { background: var(--ly-navy) !important; }
+:root[data-program="loyality"] [class*="bg-[#ff6b4a]"] { background: var(--ly-teal) !important; }
+:root[data-program="loyality"] [class*="bg-[#b9e769]"] { background: rgb(217 164 65 / 18%) !important; }
+:root[data-program="loyality"] [class*="text-[#ff6b4a]"] { color: var(--ly-teal) !important; }
+:root[data-program="loyality"] [class*="text-[#b9e769]"] { color: var(--ly-amber) !important; }
+:root[data-program="loyality"] [class*="text-[#4c8222]"] { color: var(--ly-teal) !important; }
+:root[data-program="loyality"] [class*="text-[#b8422b]"] { color: var(--ly-teal) !important; }
+:root[data-program="loyality"] [class*="bg-[#fff8ee]"] { background: var(--ly-offwhite) !important; }
+
+.ly-shell { background: var(--ly-offwhite); }
+.ly-wordmark { color: var(--ly-navy); }
+.ly-wordmark__mark { border-radius: 3px; background: var(--ly-navy); color: #fff; }
+.ly-wordmark--inverse .ly-wordmark__mark { background: var(--ly-teal); color: #fff; }
+.ly-wordmark strong { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; }
+.ly-customer-header { border-color: #eae6dc; background: rgb(255 255 255 / 94%); backdrop-filter: blur(8px); }
+.ly-icon-button { border-radius: 3px; }
+.ly-icon-button:hover { border-color: var(--ly-teal); color: var(--ly-teal); }
+.ly-shell-link { border-radius: 3px; }
+.ly-shell-link:hover { background: #e1efed; }
+.ly-shell-link--active { background: var(--ly-navy); color: #fff; }
+.ly-shell-link--active .ly-shell-link__icon { color: var(--ly-amber); }
+.ly-customer-footer { border-color: #eae6dc; background: var(--ly-white); }
+.ly-rail { background: var(--ly-navy-deep); color: #fff; }
+.ly-rail::after { display: none; }
+.ly-rail__identity { border-color: var(--ly-teal); }
+.ly-rail__identity > span { border-radius: 3px; background: var(--ly-teal); }
+.ly-rail__identity p { color: var(--ly-amber); }
+.ly-rail .ly-shell-link { border-radius: 3px; }
+.ly-rail .ly-shell-link--active { background: var(--ly-teal); color: #fff; }
+.ly-rail .ly-shell-link--active::after { background: var(--ly-amber); }
+.ly-user-chip > span { border-radius: 3px; background: var(--ly-amber); color: var(--ly-navy-deep); }
+.ly-rail__utilities > button:last-child { border-radius: 3px; }
+.ly-workspace-kicker span { background: var(--ly-teal); }
+.ly-page-frame [class*="rounded-"][class*="bg-card"],
+.ly-page-frame [class*="rounded-"][class*="bg-[var(--card)]"] { border-color: #e5dfd1; border-radius: 8px !important; box-shadow: none; }
+.ly-page-frame button[class*="bg-primary"],
+.ly-page-frame a[class*="bg-primary"] { border-radius: 3px; background: var(--ly-navy); }
+.ly-page-frame button[class*="bg-primary"]:hover,
+.ly-page-frame a[class*="bg-primary"]:hover { background: var(--ly-teal); }
+
+.ly-auth { background: var(--ly-offwhite); color: var(--ly-navy-deep); }
+.ly-auth__story { background: var(--ly-navy-deep); }
+.ly-auth__story .ly-wordmark--inverse,
+.ly-auth__story .ly-wordmark--inverse strong { color: #fff; }
+.ly-auth__story .ly-wordmark--inverse .ly-wordmark__mark {
+  background: var(--ly-teal);
+  color: #fff;
+}
+.ly-auth__story::before,
+.ly-auth__story::after { display: none; }
+.ly-auth__eyebrow { color: var(--ly-amber); }
+.ly-auth__story h1 { font-family: "Source Serif 4", Georgia, serif; font-weight: 600; letter-spacing: -.025em; line-height: 1.02; }
+.ly-auth__story h1 em { color: var(--ly-teal); font-family: inherit; }
+.ly-auth__loop span { border-radius: 3px; }
+.ly-auth__loop span:nth-child(2) { border-color: var(--ly-teal); color: #8ec4c0; }
+.ly-auth__form-side { background: var(--ly-offwhite); background-image: none; }
+.ly-auth-card { border-color: #e5dfd1; border-radius: 12px; background: #fff; box-shadow: none; }
+.ly-auth-card__header p { color: var(--ly-teal); }
+.ly-auth-card__header h2 { letter-spacing: -.02em; }
+.ly-field input { border-radius: 3px; background: #fff; }
+.ly-field input:focus { border-color: var(--ly-teal); box-shadow: 0 0 0 3px rgb(62 142 138 / 14%); }
+.ly-auth-submit { border-radius: 3px; background: var(--ly-teal); font-weight: 700; }
+.ly-auth-submit:hover { background: #337572; }
+.ly-auth__helper a,
+.ly-auth__helper button { color: var(--ly-teal); }
+.ly-auth__message { border-radius: 3px; background: rgb(217 164 65 / 15%); }
+.ly-auth__message--error { background: rgb(168 79 79 / 10%); }
+
+.ly-account-hero p,
+.ly-history-hero p,
+.ly-profile-panel__heading p { color: var(--ly-teal); }
+.ly-account-hero__stamp,
+.ly-history-score,
+.ly-profile-facts > div { border-radius: 8px; }
+.ly-history-score { background: var(--ly-amber); }
+.ly-qr-ticket { border-radius: 12px; background: var(--ly-navy-deep); }
+.ly-qr-ticket::before { display: none; }
+.ly-qr-ticket > p { color: var(--ly-amber); }
+.ly-qr-ticket__code { border-radius: 8px; }
+.ly-qr-ticket > button { border-radius: 3px; }
+.ly-profile-panel { border-color: var(--ly-teal); background: #fff; box-shadow: none; }
+.ly-profile-facts svg,
+.ly-timeline__copy small { color: var(--ly-teal); }
+.ly-profile-save { border-radius: 3px !important; background: var(--ly-teal) !important; }
+.ly-timeline__marker { background: var(--ly-navy); color: var(--ly-amber); }
+.ly-timeline__marker--voucher { background: var(--ly-teal); }
+.ly-history-footer { border-radius: 8px; background: var(--ly-navy-deep); }
+
+/* Loyality public site */
+.loyality-site {
+  --ly-ink: #1b2a41;
+  --ly-deep: #121e30;
+  --ly-coral: #3e8e8a;
+  --ly-lime: #d9a441;
+  --ly-cream: #f4efe6;
+  --ly-paper: #ffffff;
+  --ly-line: #e5dfd1;
+  background: #fff;
+  color: #121e30;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+.loyality-site__header { position: sticky; top: 0; background: rgb(255 255 255 / 94%); backdrop-filter: blur(8px); }
+.loyality-site__brand img { width: 150px; }
+.loyality-site__header nav { color: #54595f; font-weight: 500; }
+.loyality-site__header nav a:hover,
+.loyality-site__text-link:hover { color: var(--ly-coral); }
+.loyality-site__button { border-color: var(--ly-ink); border-radius: 3px; background: var(--ly-ink); font-weight: 600; }
+.loyality-site__button:hover { background: var(--ly-coral); box-shadow: none; }
+.loyality-site__button--outline { background: transparent; }
+.loyality-site__button--light { border-color: var(--ly-coral); background: var(--ly-coral); color: #fff !important; }
+.loyality-site__hero { min-height: 680px; background: #fff; background-image: none; }
+.loyality-site__hero::after { display: none; }
+.loyality-site__eyebrow { color: var(--ly-coral); font-weight: 600; letter-spacing: .1em; }
+.loyality-site__hero h1 { font-size: clamp(36px, 4.8vw, 54px); letter-spacing: -.01em; line-height: 1.1; }
+.loyality-site__hero h1 em { color: var(--ly-coral); font-family: inherit; }
+.loyality-site__lede { color: #565b62; font-size: 17.5px; }
+.loyality-site__proof { color: #565b62; font-weight: 600; }
+.loyality-site__hero-photo { border-radius: 12px; background: var(--ly-deep); box-shadow: none; }
+.loyality-site__scan-card { border-radius: 12px; background: var(--ly-cream); box-shadow: 0 18px 42px rgb(18 30 48 / 16%); transform: none; }
+.loyality-site__qr-wrap { border-radius: 8px; background: #fff; }
+.loyality-site__scan-line { background: var(--ly-coral); box-shadow: 0 0 14px var(--ly-coral); }
+.loyality-site__loop-card { border-radius: 8px; box-shadow: 0 10px 24px rgb(18 30 48 / 12%); }
+.loyality-site__signal { background: var(--ly-deep); }
+.loyality-site__signal i { background: var(--ly-amber); }
+.loyality-site__photo-story { background: var(--ly-cream); }
+.loyality-site__photo-story figure { border-radius: 12px; }
+.loyality-site__photo-story > div > p:not(.loyality-site__eyebrow),
+.loyality-site__section-heading > p,
+.loyality-site__feature-grid p,
+.loyality-site__voucher > div:last-child > p:not(.loyality-site__eyebrow),
+.loyality-site__secondary > p { color: #5a5f65; }
+.loyality-site__feature-grid { gap: 1px; background: #eae6dc; border: 1px solid #eae6dc; }
+.loyality-site__feature-grid article { min-height: 300px; border: 0; border-radius: 0; background: #fff; }
+.loyality-site__workflow { background: var(--ly-deep); }
+.loyality-site__workflow li > span { color: var(--ly-amber); }
+.loyality-site__voucher-card { border-color: #e5dfd1; border-radius: 12px; background: var(--ly-cream); box-shadow: 12px 12px 0 rgb(62 142 138 / 22%); transform: none; }
+.loyality-site__voucher-mark { border-radius: 8px; background: var(--ly-navy); }
+.loyality-site__secondary { border-radius: 8px; background: #fff; }
+.loyality-site__cta { background: var(--ly-cream); color: var(--ly-deep); }
+.loyality-site__footer { background: var(--ly-deep); color: #aeb5bf; }
+.loyality-site__footer p { color: #aeb5bf; }
+.loyality-site__footer nav { color: #fff; }
+.loyality-site__footer img { filter: brightness(0) invert(1); }
+
+@media (max-width: 700px) {
+  .rewardme-home__header { padding-inline: 14px; }
+  .wondertown-home__hero-shade { background: linear-gradient(0deg, rgb(10 10 10 / 97%) 0%, rgb(10 10 10 / 76%) 60%, rgb(10 10 10 / 24%) 100%); }
+  .loyality-site__hero h1 { font-size: clamp(2.8rem, 13vw, 4rem); }
+}

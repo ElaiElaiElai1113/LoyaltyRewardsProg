@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { e2ePassword } from './helpers/env'
+import { e2ePassword } from './helpers/env.js'
 
 function runtimeErrors(page: Page) {
   const errors: string[] = []
