@@ -37,6 +37,12 @@
       logo: '/wondertown-rewards-logo.svg',
       description: 'A fictional rewards city built for safe, end-to-end platform testing.',
     },
+    loyality: { name: 'Loyality',
+      color: '#1b2a41',
+      locale: 'en',
+      logo: '/loyality-logo.svg',
+      description: 'A private loyalty loop for one business and its customers.',
+    },
   }
   var neutralBrand = {
     name: 'Rewards Program',
@@ -59,11 +65,14 @@
     'pinasrewards.localhost': 'pinasrewards',
     'wondertown-rewards.vercel.app': 'wondertown',
     'wondertown.localhost': 'wondertown',
+    'loyality-rewards.vercel.app': 'loyality',
+    'loyality.localhost': 'loyality',
   }
   var canUsePreviewOverride = hostname === 'localhost'
     || hostname.indexOf('127.') === 0
     || hostname === 'pinas-rewards.vercel.app'
     || hostname === 'wondertown-rewards.vercel.app'
+    || hostname === 'loyality-rewards.vercel.app'
     || hostname.endsWith('.rewardsplatform.app')
     || (hostname.indexOf('loyalty-rewards-prog-') === 0 && hostname.endsWith('-elaielaielai1113s-projects.vercel.app'))
   var querySlug = canUsePreviewOverride ? new URLSearchParams(window.location.search).get('tenant') : null
@@ -98,6 +107,7 @@
   var canonicalUrl = window.location.origin + '/'
   document.title = brand.name
   document.documentElement.lang = brand.locale
+  if (slug) document.documentElement.dataset.program = slug
   document.documentElement.dataset.tenantBrand = isPlatformAdmin ? 'platform' : (slug || 'neutral')
   document.documentElement.style.setProperty('--tenant-accent', brand.color)
   setContent('meta[name="theme-color"]', brand.color)

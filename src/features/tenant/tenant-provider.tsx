@@ -19,6 +19,7 @@ function isPlatformAdminPath() {
 
 function applyProgram(program: Program, applyDocumentBrand = true) {
   setActiveProgram(program)
+  document.documentElement.dataset.program = program.slug
   if (applyDocumentBrand && !isPlatformAdminPath()) applyProgramDocumentBrand(program)
 }
 

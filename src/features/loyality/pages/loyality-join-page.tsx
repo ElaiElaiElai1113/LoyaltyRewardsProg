@@ -7,6 +7,7 @@ import { Link, Navigate } from 'react-router'
 import { useAuth } from '@/hooks/use-auth'
 import { getHomePathForRole } from '@/lib/role-routes'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
+import '@/features/loyality/loyality-app.css'
 import { LoyalityAuthStory } from './loyality-auth-page'
 
 const defaultValues: MemberSignUpFormValues = {

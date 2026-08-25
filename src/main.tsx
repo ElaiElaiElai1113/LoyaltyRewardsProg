@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { registerSW } from 'virtual:pwa-register'
 import App from '@/App'
 import { reportMonitoringEvent } from '@/lib/monitoring'
+import referenceDesignSystemHref from './reference-design-systems.css?url'
 import '@fontsource/inter/latin-400.css'
 import '@fontsource/inter/latin-500.css'
 import '@fontsource/inter/latin-600.css'
@@ -13,9 +14,6 @@ import '@fontsource/source-serif-4/latin-500.css'
 import '@fontsource/source-serif-4/latin-600.css'
 import '@fontsource/source-serif-4/latin-700.css'
 import './index.css'
-import './features/loyality/loyality-app.css'
-
-const referenceDesignSystemReady = import('./reference-design-systems.css')
 
 window.addEventListener('error', (event) => {
   reportMonitoringEvent({
@@ -58,10 +56,37 @@ const updateServiceWorker = registerSW({
   },
 })
 
-void referenceDesignSystemReady.then(() => {
+function renderApp() {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />
     </StrictMode>,
   )
+}
+
+function loadReferenceDesignSystem() {
+  return new Promise<void>((resolve, reject) => {
+    const existing = document.querySelector<HTMLLinkElement>('link[data-reference-design-system]')
+    if (existing?.sheet) {
+      resolve()
+      return
+    }
+
+    const stylesheet = existing ?? document.createElement('link')
+    stylesheet.rel = 'stylesheet'
+    stylesheet.href = referenceDesignSystemHref
+    stylesheet.dataset.referenceDesignSystem = 'true'
+    stylesheet.addEventListener('load', () => resolve(), { once: true })
+    stylesheet.addEventListener('error', () => reject(new Error('Reference design system could not be loaded.')), { once: true })
+    if (!existing) document.head.appendChild(stylesheet)
+  })
+}
+
+void loadReferenceDesignSystem().then(renderApp).catch((error) => {
+  reportMonitoringEvent({
+    level: 'error',
+    name: 'reference_design_system_load_failed',
+    message: error instanceof Error ? error.message : String(error),
+  })
+  renderApp()
 })

@@ -20,6 +20,7 @@ import { useState, type ComponentType } from 'react'
 import { NavLink, Outlet } from 'react-router'
 
 import { ThemeToggle } from '@/components/theme-toggle'
+import '@/features/loyality/loyality-app.css'
 import { getInitials } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
 

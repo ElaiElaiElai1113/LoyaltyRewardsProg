@@ -16,6 +16,7 @@ import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { getHomePathForRole } from '@/lib/role-routes'
 import { authSchema, type AuthFormValues } from '@/types/forms'
+import '@/features/loyality/loyality-app.css'
 
 const defaultValues: AuthFormValues = {
   fullName: '',
