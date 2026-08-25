@@ -36,7 +36,7 @@ export function LoyalityJoinPage() {
               <h2>Account created.</h2>
               <span>Your customer account is ready. Sign in to open your personal QR and begin recording visits.</span>
               {warning ? <p className="ly-auth__message mt-5">{warning}</p> : null}
-              <Link className="ly-auth-submit mt-6" to="/signin?portal=customer"><Repeat2 /> Go to sign in</Link>
+              <Link className="ly-auth-submit mt-6" to="/signin"><Repeat2 /> Go to sign in</Link>
             </div>
           ) : (
             <>
@@ -88,7 +88,7 @@ export function LoyalityJoinPage() {
                   {form.formState.isSubmitting ? <LoaderCircle className="animate-spin" /> : <Repeat2 />}
                   {form.formState.isSubmitting ? 'Creating your account…' : 'Create customer account'}
                 </button>
-                <div className="ly-auth__helper"><span>Already a member?</span><Link to="/signin?portal=customer">Sign in</Link></div>
+                <div className="ly-auth__helper"><span>Already a member?</span><Link to="/signin">Sign in</Link></div>
               </form>
             </>
           )}

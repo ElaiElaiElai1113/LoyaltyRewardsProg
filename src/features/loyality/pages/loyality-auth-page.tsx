@@ -1,13 +1,10 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
   ArrowLeft,
-  BriefcaseBusiness,
   Eye,
   EyeOff,
   LoaderCircle,
   Repeat2,
-  ShieldCheck,
-  UserRound,
 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -16,12 +13,6 @@ import { Link, useNavigate, useSearchParams } from 'react-router'
 import { useAuth } from '@/hooks/use-auth'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { getHomePathForRole } from '@/lib/role-routes'
-import {
-  getRequestedRoleForPortal,
-  getSignInPortal,
-  SIGN_IN_PORTALS,
-  type SignInPortal,
-} from '@/lib/sign-in-portals'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
 const defaultValues: AuthFormValues = {
@@ -31,17 +22,10 @@ const defaultValues: AuthFormValues = {
   role: 'customer',
 }
 
-const roleIcons = {
-  admin: ShieldCheck,
-  business: BriefcaseBusiness,
-  customer: UserRound,
-} satisfies Record<SignInPortal, typeof ShieldCheck>
-
 export function LoyalityAuthPage() {
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
-  const { signIn } = useAuth()
-  const [portal, setPortal] = useState<SignInPortal>(() => getSignInPortal(searchParams.get('portal')))
+  const [searchParams] = useSearchParams()
+  const { signInAutomatically } = useAuth()
   const [showPassword, setShowPassword] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
@@ -57,17 +41,6 @@ export function LoyalityAuthPage() {
     defaultValues,
   })
 
-  const choosePortal = (nextPortal: SignInPortal) => {
-    const next = new URLSearchParams(searchParams)
-    next.set('portal', nextPortal)
-    setSearchParams(next, { replace: true })
-    setPortal(nextPortal)
-    form.setValue('role', getRequestedRoleForPortal(nextPortal))
-    form.clearErrors()
-    setError(null)
-    setMessage(null)
-  }
-
   return (
     <main className="ly-auth">
       <LoyalityAuthStory />
@@ -80,33 +53,9 @@ export function LoyalityAuthPage() {
             <span>
               {forgotPassword
                 ? 'Enter your account email and we will send you a secure reset link.'
-                : 'Choose the workspace that belongs to you. Loyality checks your assigned role before opening it.'}
+                : 'Enter your email and password. We will open the workspace assigned to your account.'}
             </span>
           </div>
-
-          {!forgotPassword ? (
-            <div className="ly-auth__roles" role="group" aria-label="Choose sign-in account type">
-              {SIGN_IN_PORTALS.map((item) => {
-                const Icon = roleIcons[item.id]
-                const active = portal === item.id
-                return (
-                  <button
-                    aria-label={`Sign in as ${item.label}`}
-                    aria-pressed={active}
-                    className={`ly-auth__role${active ? ' ly-auth__role--active' : ''}`}
-                    data-testid={`sign-in-portal-${item.id}`}
-                    key={item.id}
-                    onClick={() => choosePortal(item.id)}
-                    type="button"
-                  >
-                    <Icon />
-                    <strong>{item.label}</strong>
-                    <small>{item.description}</small>
-                  </button>
-                )
-              })}
-            </div>
-          ) : null}
 
           {forgotPassword ? (
             <form
@@ -138,12 +87,15 @@ export function LoyalityAuthPage() {
             </form>
           ) : (
             <form
-              aria-label={`Sign in as ${portal}`}
+              aria-label="Sign in to Loyality"
               className="ly-auth-form"
               onSubmit={form.handleSubmit(async (values) => {
                 try {
                   setError(null)
-                  const profile = await signIn({ ...values, role: getRequestedRoleForPortal(portal) })
+                  const profile = await signInAutomatically({
+                    email: values.email,
+                    password: values.password,
+                  })
                   navigate(searchParams.get('redirect') || getHomePathForRole(profile.role))
                 } catch (signInError) {
                   setError(signInError instanceof Error ? signInError.message : 'Unable to sign in.')
@@ -166,11 +118,11 @@ export function LoyalityAuthPage() {
               {error ? <p className="ly-auth__message ly-auth__message--error">{error}</p> : null}
               <button className="ly-auth-submit" disabled={form.formState.isSubmitting} type="submit">
                 {form.formState.isSubmitting ? <LoaderCircle className="animate-spin" /> : <Repeat2 />}
-                {form.formState.isSubmitting ? 'Opening your workspace…' : `Sign in as ${portal}`}
+                {form.formState.isSubmitting ? 'Opening your workspace…' : 'Sign in'}
               </button>
               <div className="ly-auth__helper">
                 <button onClick={() => { setForgotPassword(true); setError(null) }} type="button">Forgot password?</button>
-                {portal === 'customer' ? <Link to="/join">Create an account</Link> : <span>Private access</span>}
+                <Link to="/join">Create an account</Link>
               </div>
             </form>
           )}

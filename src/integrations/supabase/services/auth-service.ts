@@ -11,7 +11,7 @@ import {
   type PasswordSetupType,
 } from '@/lib/password-setup'
 
-let pendingSignInRole: AuthFormValues['role'] | null = null
+let pendingSignInRole: AuthFormValues['role'] | 'auto' | null = null
 
 function getUrlTokenParams() {
   if (typeof window === 'undefined') {
@@ -187,6 +187,46 @@ export const authService = {
     return profile
   },
 
+  async signInAutomatically(
+    input: Pick<AuthFormValues, 'email' | 'password'>,
+  ): Promise<Profile> {
+    const sb = requireSupabase()
+    const email = input.email.trim().toLowerCase()
+    pendingSignInRole = 'auto'
+
+    const rejectSignIn = async (message: string): Promise<never> => {
+      try {
+        await sb.auth.signOut({ scope: 'local' })
+      } finally {
+        pendingSignInRole = null
+      }
+      throw new Error(message)
+    }
+
+    const { data, error: authError } = await sb.auth.signInWithPassword({
+      email,
+      password: input.password,
+    })
+
+    if (authError) {
+      pendingSignInRole = null
+      throw new Error(authError.message)
+    }
+
+    const userId = data.user?.id
+    if (!userId) {
+      pendingSignInRole = null
+      throw new Error('Sign-in succeeded but the session user could not be loaded.')
+    }
+
+    const profile = await getProfileByUserId(userId)
+    if (!profile) {
+      return rejectSignIn('Profile not found. Try creating an account first.')
+    }
+
+    return profile
+  },
+
   async signUp(input: MemberSignUpSubmission): Promise<Profile> {
     const sb = requireSupabase()
 
@@ -356,7 +396,7 @@ export const authService = {
     return this.getSessionProfile()
   },
 
-  getPendingSignInRole(): AuthFormValues['role'] | null {
+  getPendingSignInRole(): AuthFormValues['role'] | 'auto' | null {
     return pendingSignInRole
   },
 

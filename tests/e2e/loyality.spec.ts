@@ -43,10 +43,11 @@ test.describe('Loyality public product', () => {
   test('business and customer calls to action have real destinations', async ({ page }) => {
     await page.goto('/?tenant=loyality')
     await expect(page.getByRole('link', { name: 'Join as a customer' })).toHaveAttribute('href', '/join')
-    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/signin?portal=business')
+    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/signin')
     await page.getByRole('link', { name: 'Business sign in' }).click()
-    await expect(page).toHaveURL(/\/signin\?portal=business/)
-    await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(page).toHaveURL(/\/signin$/)
+    await expect(page.getByRole('group', { name: 'Choose sign-in account type' })).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
   })
 
   for (const viewport of [
@@ -57,13 +58,14 @@ test.describe('Loyality public product', () => {
       const errors = runtimeErrors(page)
       await page.setViewportSize(viewport)
 
-      await page.goto('/signin?tenant=loyality&portal=customer')
+      await page.goto('/signin?tenant=loyality')
       await expect(page.locator('html')).toHaveAttribute('data-program', 'loyality')
       await expect(page.getByRole('heading', { name: 'Return. Recognized. Rewarded.' })).toBeVisible()
       await expect(page.getByRole('heading', { name: 'Step into your loop.' })).toBeVisible()
       await expect(page.locator('.ly-auth')).toBeVisible()
       await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
       await expect(page.getByLabel('Language')).toHaveCount(0)
+      await expect(page.getByRole('group', { name: 'Choose sign-in account type' })).toHaveCount(0)
 
       await page.goto('/join?tenant=loyality')
       await expect(page.getByRole('heading', { name: 'Join the loop.' })).toBeVisible()
@@ -99,10 +101,10 @@ test.describe('Loyality signed-in visual system', () => {
   ]) {
     test(`${account.portal} uses the Loyality shell on desktop and phone`, async ({ page }) => {
       const errors = runtimeErrors(page)
-      await page.goto(`/signin?portal=${account.portal}`)
+      await page.goto('/signin')
       await page.getByLabel('Email address').fill(account.email)
       await page.locator('#loyality-password').fill(e2ePassword)
-      await page.getByRole('button', { name: `Sign in as ${account.portal}`, exact: true }).click()
+      await page.getByRole('button', { name: 'Sign in', exact: true }).click()
       await expect(page).toHaveURL(account.destination)
       for (const route of account.routes) {
         await page.goto(route)

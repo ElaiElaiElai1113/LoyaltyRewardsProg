@@ -167,6 +167,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
       })
       return sessionProfile
     },
+    async signInAutomatically(values: Pick<AuthFormValues, 'email' | 'password'>) {
+      const sessionProfile = await authService.signInAutomatically(values)
+      authService.clearPendingSignInRole()
+      authRevision.current += 1
+      queryClient.clear()
+      setProfile(sessionProfile)
+      setSession({
+        profileId: sessionProfile.id,
+        role: sessionProfile.role,
+        businessId: sessionProfile.businessId,
+      })
+      return sessionProfile
+    },
     async signUp(values: MemberSignUpSubmission): Promise<SignUpResult> {
       const sessionProfile = await authService.signUp(values)
       authRevision.current += 1

@@ -78,7 +78,7 @@ export function LoyalityHomePage() {
           </p>
           <div className="loyality-site__hero-actions">
             <Link to="/join" className="loyality-site__button">Join as a customer <ArrowRight size={18} /></Link>
-            <Link to="/signin?portal=business" className="loyality-site__button loyality-site__button--outline">Business sign in</Link>
+            <Link to="/signin" className="loyality-site__button loyality-site__button--outline">Business sign in</Link>
           </div>
           <ul className="loyality-site__proof" aria-label="Product highlights">
             <li><BadgeCheck size={17} /> No hardware</li>
@@ -127,7 +127,7 @@ export function LoyalityHomePage() {
           <p className="loyality-site__eyebrow">Built for non-technical teams</p>
           <h2 id="loyality-workflow-title">Four steps. No checkout gymnastics.</h2>
           <p>The business keeps using its normal checkout. Loyality only records the visit and presents a clear voucher when a reward is ready.</p>
-          <Link to="/signin?portal=business" className="loyality-site__button loyality-site__button--light">Open the business workspace <ArrowRight size={18} /></Link>
+          <Link to="/signin" className="loyality-site__button loyality-site__button--light">Open the business workspace <ArrowRight size={18} /></Link>
         </div>
         <ol>
           {workflow.map(([title, body], index) => (

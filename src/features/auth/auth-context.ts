@@ -13,6 +13,7 @@ export interface AuthContextValue {
   session: SessionUser | null
   isLoading: boolean
   signIn: (values: AuthFormValues) => Promise<Profile>
+  signInAutomatically: (values: Pick<AuthFormValues, 'email' | 'password'>) => Promise<Profile>
   signUp: (values: MemberSignUpSubmission) => Promise<SignUpResult>
   continueAsDemo: (role: UserRole) => Promise<Profile>
   signOut: (options?: { redirectTo?: string; skipRedirect?: boolean }) => Promise<void>
