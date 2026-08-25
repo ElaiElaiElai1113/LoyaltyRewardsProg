@@ -624,6 +624,9 @@
 
 @media (max-width: 700px) {
   .rewardme-home__header { padding-inline: 14px; }
+  .rewardme-home__header-actions .rewardme-home__text-link,
+  .wondertown-home__header-actions .wondertown-home__text-link,
+  .loyality-site__header-actions .loyality-site__text-link { display: inline-flex !important; }
   .wondertown-home__hero-shade { background: linear-gradient(0deg, rgb(10 10 10 / 97%) 0%, rgb(10 10 10 / 76%) 60%, rgb(10 10 10 / 24%) 100%); }
   .loyality-site__hero h1 { font-size: clamp(2.8rem, 13vw, 4rem); }
 }

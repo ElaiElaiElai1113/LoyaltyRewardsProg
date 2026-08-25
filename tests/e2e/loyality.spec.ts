@@ -44,6 +44,10 @@ test.describe('Loyality public product', () => {
 
   test('business and customer calls to action have real destinations', async ({ page }) => {
     await page.goto('/?tenant=loyality')
+    const header = page.locator('.loyality-site__header')
+    await expect(header.getByRole('link', { name: 'Business page' })).toHaveAttribute('href', '/business')
+    await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
+    await expect(header.getByRole('link', { name: 'Join free' })).toHaveAttribute('href', '/join')
     await expect(page.getByRole('link', { name: 'Join as a customer' })).toHaveAttribute('href', '/join')
     await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/signin')
     await page.getByRole('link', { name: 'Business sign in' }).click()

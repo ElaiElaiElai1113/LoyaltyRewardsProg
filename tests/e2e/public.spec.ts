@@ -140,6 +140,12 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('link', { name: 'Start your free access' })).toHaveAttribute('href', '/join')
     await expect(page.getByRole('link', { name: 'Browse the store' })).toHaveAttribute('href', '/shop')
     await expect(page.getByRole('link', { name: 'See how businesses join' })).toHaveAttribute('href', '/business')
+    const header = page.locator('.rewardme-home__header')
+    await expect(header.getByRole('link', { name: 'Store' })).toHaveAttribute('href', '/shop')
+    await expect(header.getByRole('link', { name: 'Membership' })).toHaveAttribute('href', '/membership')
+    await expect(header.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '/business')
+    await expect(header.getByRole('link', { name: 'Guide' })).toHaveAttribute('href', '/guide')
+    await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
   })
 
@@ -173,6 +179,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('heading', { name: "Turn what you already spend into what you're saving for." })).toBeVisible()
     await expect(page.getByRole('link', { name: 'Start your free access' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
+    await expect(page.locator('.rewardme-home__header').getByRole('link', { name: 'Sign in' })).toBeVisible()
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

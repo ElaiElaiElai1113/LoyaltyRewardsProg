@@ -12,6 +12,34 @@ function collectRuntimeErrors(page: Page) {
 }
 
 test.describe('Wondertown public testing experience', () => {
+  test('homepage exposes the complete public journey on desktop and phone', async ({ page }) => {
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 1440, height: 900 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.goto('/?tenant=wondertown')
+
+      const header = page.locator('.wondertown-home__header')
+      await expect(header.getByRole('link', { name: 'Member sign in' })).toHaveAttribute('href', '/signin')
+      await expect(header.getByRole('link', { name: 'Member sign in' })).toBeVisible()
+      for (const [name, href] of [
+        ['Store', '/shop'],
+        ['Membership', '/membership'],
+        ['Businesses', '/business'],
+        ['Guide', '/guide'],
+      ] as const) {
+        await expect(page.locator('.wondertown-home__footer').getByRole('link', { name })).toHaveAttribute('href', href)
+      }
+
+      const width = await page.evaluate(() => ({
+        client: document.documentElement.clientWidth,
+        scroll: document.documentElement.scrollWidth,
+      }))
+      expect(width.scroll).toBeLessThanOrEqual(width.client + 1)
+    }
+  })
+
   test('partner map spreads locations across the town on mobile and desktop', async ({ page }) => {
     const runtimeErrors = collectRuntimeErrors(page)
 

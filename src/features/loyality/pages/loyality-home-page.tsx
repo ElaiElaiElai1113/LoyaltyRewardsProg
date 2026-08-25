@@ -64,6 +64,7 @@ export function LoyalityHomePage() {
           <a href="#how-it-works">How it works</a>
           <a href="#business">For business</a>
           <a href="#rewards">Rewards</a>
+          <Link to="/business">Business page</Link>
         </nav>
         <div className="loyality-site__header-actions">
           <ThemeToggle />
@@ -199,7 +200,7 @@ export function LoyalityHomePage() {
       <footer className="loyality-site__footer">
         <img src="/loyality-logo.svg" alt="Loyality" />
         <p>Private loyalty software for one business at a time.</p>
-        <nav aria-label="Footer"><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/business">For business</Link></nav>
+        <nav aria-label="Footer"><Link to="/signin">Sign in</Link><Link to="/join">Create account</Link><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/business">For business</Link></nav>
       </footer>
     </main>
   )

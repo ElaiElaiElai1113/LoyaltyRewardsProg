@@ -69,6 +69,9 @@ interface WondertownHomeCopy {
   backToTop: string
   footerBody: string
   footerNavigationLabel: string
+  store: string
+  membership: string
+  guide: string
   privacy: string
   terms: string
   businessesLink: string
@@ -94,7 +97,7 @@ const wondertownHomeCopy: Record<Language, WondertownHomeCopy> = {
       { number: '02', title: 'Collect a little magic', body: 'A business records your visit and your rewards appear in the same real platform flow.' },
       { number: '03', title: 'Treat yourself', body: 'Spend rewards on products, gift cards, and playful offers from participating businesses.' },
     ],
-    ctaEyebrow: 'YOUR TEST DRIVE STARTS HERE', ctaTitle: 'Ready to try the whole town?', ctaBody: 'Sign in with a demo role, award a few Sparks, redeem an offer, and decide what the real programs should become.', signIn: 'Sign in', createAccount: 'Create account', backToTop: 'Back to the top', footerBody: 'A fictional city powered by real Rewards Platform workflows.', footerNavigationLabel: 'Footer navigation', privacy: 'Privacy', terms: 'Terms', businessesLink: 'Businesses',
+    ctaEyebrow: 'YOUR TEST DRIVE STARTS HERE', ctaTitle: 'Ready to try the whole town?', ctaBody: 'Sign in with a demo role, award a few Sparks, redeem an offer, and decide what the real programs should become.', signIn: 'Sign in', createAccount: 'Create account', backToTop: 'Back to the top', footerBody: 'A fictional city powered by real Rewards Platform workflows.', footerNavigationLabel: 'Footer navigation', store: 'Store', membership: 'Membership', guide: 'Guide', privacy: 'Privacy', terms: 'Terms', businessesLink: 'Businesses',
   },
   es: {
     homeLabel: 'Inicio de Wondertown Rewards',
@@ -115,7 +118,7 @@ const wondertownHomeCopy: Record<Language, WondertownHomeCopy> = {
       { number: '02', title: 'Reúne un poco de magia', body: 'Un negocio registra tu visita y tus recompensas aparecen en el mismo flujo real de la plataforma.' },
       { number: '03', title: 'Date un gusto', body: 'Usa recompensas en productos, tarjetas de regalo y ofertas divertidas de los negocios participantes.' },
     ],
-    ctaEyebrow: 'TU PRUEBA COMIENZA AQUÍ', ctaTitle: '¿Listo para probar toda la ciudad?', ctaBody: 'Inicia sesión con un rol de demostración, entrega algunos Sparks, canjea una oferta y decide en qué deberían convertirse los programas reales.', signIn: 'Iniciar sesión', createAccount: 'Crear cuenta', backToTop: 'Volver arriba', footerBody: 'Una ciudad ficticia impulsada por flujos reales de la plataforma de recompensas.', footerNavigationLabel: 'Navegación del pie de página', privacy: 'Privacidad', terms: 'Términos', businessesLink: 'Negocios',
+    ctaEyebrow: 'TU PRUEBA COMIENZA AQUÍ', ctaTitle: '¿Listo para probar toda la ciudad?', ctaBody: 'Inicia sesión con un rol de demostración, entrega algunos Sparks, canjea una oferta y decide en qué deberían convertirse los programas reales.', signIn: 'Iniciar sesión', createAccount: 'Crear cuenta', backToTop: 'Volver arriba', footerBody: 'Una ciudad ficticia impulsada por flujos reales de la plataforma de recompensas.', footerNavigationLabel: 'Navegación del pie de página', store: 'Tienda', membership: 'Membresía', guide: 'Guía', privacy: 'Privacidad', terms: 'Términos', businessesLink: 'Negocios',
   },
   tl: {
     homeLabel: 'Tahanan ng Wondertown Rewards',
@@ -136,7 +139,7 @@ const wondertownHomeCopy: Record<Language, WondertownHomeCopy> = {
       { number: '02', title: 'Mangolekta ng kaunting mahika', body: 'Itinatala ng negosyo ang pagbisita mo at lalabas ang mga gantimpala sa parehong tunay na daloy ng plataporma.' },
       { number: '03', title: 'Bigyan ang sarili ng gantimpala', body: 'Gamitin ang mga gantimpala sa produkto, kard na regalo, at masasayang alok mula sa mga kalahok na negosyo.' },
     ],
-    ctaEyebrow: 'DITO NAGSISIMULA ANG PAGSUBOK', ctaTitle: 'Handa ka na bang subukan ang buong bayan?', ctaBody: 'Pumasok gamit ang pansubok na tungkulin, magbigay ng ilang Sparks, gumamit ng alok, at magpasya kung ano ang dapat maging anyo ng tunay na programa.', signIn: 'Pumasok', createAccount: 'Gumawa ng kuwenta', backToTop: 'Bumalik sa itaas', footerBody: 'Kathang-isip na lungsod na pinapagana ng tunay na mga daloy ng gawain sa plataporma ng gantimpala.', footerNavigationLabel: 'Nabigasyon sa ibaba', privacy: 'Pagkapribado', terms: 'Mga tuntunin', businessesLink: 'Mga negosyo',
+    ctaEyebrow: 'DITO NAGSISIMULA ANG PAGSUBOK', ctaTitle: 'Handa ka na bang subukan ang buong bayan?', ctaBody: 'Pumasok gamit ang pansubok na tungkulin, magbigay ng ilang Sparks, gumamit ng alok, at magpasya kung ano ang dapat maging anyo ng tunay na programa.', signIn: 'Pumasok', createAccount: 'Gumawa ng kuwenta', backToTop: 'Bumalik sa itaas', footerBody: 'Kathang-isip na lungsod na pinapagana ng tunay na mga daloy ng gawain sa plataporma ng gantimpala.', footerNavigationLabel: 'Nabigasyon sa ibaba', store: 'Tindahan', membership: 'Pagiging kasapi', guide: 'Gabay', privacy: 'Pagkapribado', terms: 'Mga tuntunin', businessesLink: 'Mga negosyo',
   },
 }
 
@@ -149,7 +152,7 @@ export function WondertownHomePage() {
       <header className="wondertown-home__header">
         <div className="wondertown-home__container wondertown-home__header-inner">
           <a className="wondertown-home__brand" href="#top" aria-label={copy.homeLabel}><img src="/wondertown-rewards-logo.svg" alt="" aria-hidden="true" /><span><strong>Wondertown</strong><small>Rewards</small></span></a>
-          <nav className="wondertown-home__nav" aria-label={copy.navigationLabel}><a href="#businesses">{copy.exploreCity}</a><a href="#how-it-works">{copy.howItWorks}</a><Link to="/business">{copy.forBusinesses}</Link></nav>
+          <nav className="wondertown-home__nav" aria-label={copy.navigationLabel}><a href="#businesses">{copy.exploreCity}</a><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><Link to="/membership">{copy.membership}</Link><Link to="/business">{copy.forBusinesses}</Link><Link to="/guide">{copy.guide}</Link></nav>
           <div className="wondertown-home__header-actions"><LanguagePicker className="wondertown-home__language" compact condenseOnNarrowScreens /><Link className="wondertown-home__text-link" to="/signin">{copy.memberSignIn}</Link><Link className="wondertown-home__button wondertown-home__button--small wondertown-home__header-join" to="/join">{copy.enterWondertown}</Link></div>
         </div>
       </header>
@@ -174,7 +177,7 @@ export function WondertownHomePage() {
 
       <section className="wondertown-home__cta" aria-labelledby="wondertown-cta-title"><div className="wondertown-home__container wondertown-home__cta-card"><div className="wondertown-home__cta-orbit" aria-hidden="true" /><div><p className="wondertown-home__eyebrow">{copy.ctaEyebrow}</p><h2 id="wondertown-cta-title">{copy.ctaTitle}</h2><p>{copy.ctaBody}</p></div><div className="wondertown-home__cta-actions"><Link className="wondertown-home__button" to="/signin">{copy.signIn}</Link><Link className="wondertown-home__button wondertown-home__button--outline" to="/join">{copy.createAccount}</Link></div></div></section>
 
-      <footer className="wondertown-home__footer"><div className="wondertown-home__container wondertown-home__footer-inner"><a className="wondertown-home__brand" href="#top" aria-label={copy.backToTop}><img src="/wondertown-rewards-logo.svg" alt="" aria-hidden="true" /><span><strong>Wondertown</strong><small>Rewards</small></span></a><p><Building2 size={16} aria-hidden="true" /> {copy.footerBody}</p><nav aria-label={copy.footerNavigationLabel}><Link to="/privacy">{copy.privacy}</Link><Link to="/terms">{copy.terms}</Link><Link to="/business">{copy.businessesLink}</Link></nav></div></footer>
+      <footer className="wondertown-home__footer"><div className="wondertown-home__container wondertown-home__footer-inner"><a className="wondertown-home__brand" href="#top" aria-label={copy.backToTop}><img src="/wondertown-rewards-logo.svg" alt="" aria-hidden="true" /><span><strong>Wondertown</strong><small>Rewards</small></span></a><p><Building2 size={16} aria-hidden="true" /> {copy.footerBody}</p><nav aria-label={copy.footerNavigationLabel}><Link to="/shop">{copy.store}</Link><Link to="/membership">{copy.membership}</Link><Link to="/guide">{copy.guide}</Link><Link to="/signin">{copy.memberSignIn}</Link><Link to="/privacy">{copy.privacy}</Link><Link to="/terms">{copy.terms}</Link><Link to="/business">{copy.businessesLink}</Link></nav></div></footer>
     </main>
   )
 }

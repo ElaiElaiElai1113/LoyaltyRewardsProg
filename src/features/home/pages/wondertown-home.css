@@ -756,7 +756,9 @@
   }
 
   .wondertown-home__footer nav {
+    flex-wrap: wrap;
     justify-self: start;
+    row-gap: 12px;
   }
 }
 

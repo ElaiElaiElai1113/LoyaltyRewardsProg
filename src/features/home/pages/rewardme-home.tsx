@@ -72,6 +72,7 @@ interface RewardMeHomeCopy {
   footerNavigationLabel: string
   membership: string
   businesses: string
+  guide: string
 }
 
 const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
@@ -109,7 +110,7 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
     ],
     recommended: 'RECOMMENDED', offerTerms: 'Offer terms and eligibility apply', compareMemberships: 'Compare membership options',
     businessEyebrow: 'FOR BUSINESSES', businessTitle: 'Bring RewardMe members through your door.', businessBody: "Partners can participate through a Commission model or a Business-credit model. RewardMe's platform share is a 25% commission on Rewards spent.", businessAction: 'See how businesses join', businessImageAlt: 'A local business owner welcoming RewardMe members', bridgeTitle: 'Synergize bridge', bridgeBody: 'Business credits from the separate Synergize network may help fund RewardMe offers that create paying customer activity. Each product keeps its own audience and terms.',
-    footerMotto: 'Earn where you already spend. Save toward what matters.', footerNavigationLabel: 'Footer navigation', membership: 'Membership', businesses: 'Businesses',
+    footerMotto: 'Earn where you already spend. Save toward what matters.', footerNavigationLabel: 'Footer navigation', membership: 'Membership', businesses: 'Businesses', guide: 'Guide',
   },
   es: {
     homeLabel: 'Inicio de RewardMe',
@@ -145,7 +146,7 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
     ],
     recommended: 'RECOMENDADO', offerTerms: 'Aplican términos y requisitos de la oferta', compareMemberships: 'Comparar membresías',
     businessEyebrow: 'PARA NEGOCIOS', businessTitle: 'Recibe a miembros de RewardMe en tu negocio.', businessBody: 'Los aliados pueden participar mediante un modelo de comisión o de crédito comercial. La participación de la plataforma RewardMe es una comisión del 25% sobre las recompensas utilizadas.', businessAction: 'Cómo se unen los negocios', businessImageAlt: 'Propietaria de un negocio local dando la bienvenida a miembros de RewardMe', bridgeTitle: 'Puente con Synergize', bridgeBody: 'Los créditos comerciales de la red independiente Synergize pueden ayudar a financiar ofertas de RewardMe que generen actividad de clientes que pagan. Cada producto mantiene su propio público y términos.',
-    footerMotto: 'Gana donde ya gastas. Ahorra para lo que importa.', footerNavigationLabel: 'Navegación del pie de página', membership: 'Membresía', businesses: 'Negocios',
+    footerMotto: 'Gana donde ya gastas. Ahorra para lo que importa.', footerNavigationLabel: 'Navegación del pie de página', membership: 'Membresía', businesses: 'Negocios', guide: 'Guía',
   },
   tl: {
     homeLabel: 'Tahanan ng RewardMe',
@@ -181,7 +182,7 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
     ],
     recommended: 'INIREREKOMENDA', offerTerms: 'May nalalapat na tuntunin at pagiging karapat-dapat ang alok', compareMemberships: 'Ihambing ang pagiging kasapi',
     businessEyebrow: 'PARA SA MGA NEGOSYO', businessTitle: 'Anyayahan ang mga miyembro ng RewardMe sa iyong negosyo.', businessBody: 'Maaaring lumahok ang mga katuwang sa paraang may komisyon o kreditong pangnegosyo. Ang bahagi ng plataporma ng RewardMe ay 25% komisyon sa nagamit na gantimpala.', businessAction: 'Tingnan kung paano sumali ang negosyo', businessImageAlt: 'May-ari ng lokal na negosyong tumatanggap sa mga kasapi ng RewardMe', bridgeTitle: 'Tulay sa Synergize', bridgeBody: 'Maaaring tumulong ang mga kreditong pangnegosyo mula sa hiwalay na ugnayan ng Synergize sa pagpondo ng mga alok ng RewardMe na lumilikha ng aktibidad ng nagbabayad na kostumer. May sariling mga gumagamit at tuntunin ang bawat produkto.',
-    footerMotto: 'Kumita kung saan ka na gumagastos. Mag-ipon para sa mahalaga.', footerNavigationLabel: 'Nabigasyon sa ibaba', membership: 'Pagiging kasapi', businesses: 'Mga negosyo',
+    footerMotto: 'Kumita kung saan ka na gumagastos. Mag-ipon para sa mahalaga.', footerNavigationLabel: 'Nabigasyon sa ibaba', membership: 'Pagiging kasapi', businesses: 'Mga negosyo', guide: 'Gabay',
   },
 }
 
@@ -195,7 +196,7 @@ export function RewardMeHomePage() {
       <div className="rewardme-home__dark-intro">
         <header className="rewardme-home__header">
         <Link className="rewardme-home__brand" to="/" aria-label={copy.homeLabel}><Bookmark aria-hidden="true" /><span>RewardMe</span></Link>
-        <nav className="rewardme-home__nav" aria-label={copy.navigationLabel}><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><a href="#savings">{copy.savingsPlan}</a><Link to="/business">{copy.forBusinesses}</Link></nav>
+        <nav className="rewardme-home__nav" aria-label={copy.navigationLabel}><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><Link to="/membership">{copy.membership}</Link><a href="#savings">{copy.savingsPlan}</a><Link to="/business">{copy.forBusinesses}</Link><Link to="/guide">{copy.guide}</Link></nav>
         <div className="rewardme-home__header-actions"><LanguagePicker className="rewardme-home__language" compact condenseOnNarrowScreens /><Link className="rewardme-home__text-link" to="/signin">{copy.signIn}</Link><Link className="rewardme-home__button rewardme-home__button--small rewardme-home__header-join" to="/join">{copy.startFreeAccess}</Link></div>
         </header>
 
@@ -225,7 +226,7 @@ export function RewardMeHomePage() {
         <section className="rewardme-home__business" aria-labelledby="rewardme-business-title"><img src={localBusinessOwner} alt={copy.businessImageAlt} loading="lazy" decoding="async" /><div className="rewardme-home__business-copy"><p className="rewardme-home__eyebrow">{copy.businessEyebrow}</p><h2 id="rewardme-business-title">{copy.businessTitle}</h2><p>{copy.businessBody}</p><Link className="rewardme-home__button rewardme-home__button--outline" to="/business">{copy.businessAction} <ArrowRight aria-hidden="true" /></Link><div className="rewardme-home__bridge"><strong>{copy.bridgeTitle}</strong><p>{copy.bridgeBody}</p></div></div></section>
       </main>
 
-      <footer className="rewardme-home__footer"><div className="rewardme-home__brand"><Bookmark aria-hidden="true" /><span>RewardMe</span></div><p>{copy.footerMotto}</p><nav aria-label={copy.footerNavigationLabel}><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><Link to="/membership">{copy.membership}</Link><Link to="/business">{copy.businesses}</Link></nav></footer>
+      <footer className="rewardme-home__footer"><div className="rewardme-home__brand"><Bookmark aria-hidden="true" /><span>RewardMe</span></div><p>{copy.footerMotto}</p><nav aria-label={copy.footerNavigationLabel}><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><Link to="/membership">{copy.membership}</Link><Link to="/business">{copy.businesses}</Link><Link to="/guide">{copy.guide}</Link><Link to="/signin">{copy.signIn}</Link></nav></footer>
     </div>
   )
 }
