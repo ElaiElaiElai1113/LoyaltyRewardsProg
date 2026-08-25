@@ -80,12 +80,18 @@ test.describe('white-label tenant resolution', () => {
       await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
       await page.goto(`/admin?tenant=${tenant.slug}`)
 
-      await expect(page).toHaveTitle('Rewards Platform Admin')
       await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=admin`))
-      if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+      if (tenant.slug === 'loyality') {
+        await expect(page).toHaveTitle('Loyality')
+        await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
+        await expect(page.locator('#loyality-email')).toBeVisible()
+        await expect(page.locator('body')).not.toContainText('Rewards Platform')
+      } else if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+        await expect(page).toHaveTitle('Rewards Platform Admin')
         await expect(page.getByRole('button')).toHaveCount(3)
         await expect(page.locator('#signin-email')).toHaveCount(0)
       } else {
+        await expect(page).toHaveTitle('Rewards Platform Admin')
         await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
         await expect(page.locator('#signin-email')).toBeVisible()
         await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
@@ -102,7 +108,10 @@ test.describe('white-label tenant resolution', () => {
       await expect(page).toHaveTitle(tenant.name)
       await expect(page.getByText(tenant.name, { exact: true })).toBeVisible()
       await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=business`))
-      if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+      if (tenant.slug === 'loyality') {
+        await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
+        await expect(page.locator('#loyality-email')).toBeVisible()
+      } else if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
         await expect(page.getByRole('button')).toHaveCount(3)
         await expect(page.locator('#signin-email')).toHaveCount(0)
       } else {

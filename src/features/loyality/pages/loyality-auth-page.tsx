@@ -6,11 +6,13 @@ import {
   LoaderCircle,
   Repeat2,
 } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 
 import { useAuth } from '@/hooks/use-auth'
+import { applyProgramDocumentBrand } from '@/features/tenant/tenant-document-brand'
+import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { getHomePathForRole } from '@/lib/role-routes'
 import { authSchema, type AuthFormValues } from '@/types/forms'
@@ -26,6 +28,7 @@ export function LoyalityAuthPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { signInAutomatically } = useAuth()
+  const { program } = useTenant()
   const [showPassword, setShowPassword] = useState(false)
   const [forgotPassword, setForgotPassword] = useState(false)
   const [message, setMessage] = useState<string | null>(null)
@@ -40,6 +43,10 @@ export function LoyalityAuthPage() {
     resolver: zodResolver(authSchema),
     defaultValues,
   })
+
+  useEffect(() => {
+    applyProgramDocumentBrand(program)
+  }, [program])
 
   return (
     <main className="ly-auth">
