@@ -5704,6 +5704,7 @@ export function getDefaultLanguageForLocale(locale: string): Language {
 
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'en'
+  if (getActiveProgram().slug === 'loyality') return 'en'
   const stored = window.localStorage.getItem(tenantStorageKey('language'))
   if (stored === 'en' || stored === 'es' || stored === 'tl') return stored
   return getDefaultLanguageForLocale(getActiveProgram().locale)

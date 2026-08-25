@@ -12,7 +12,6 @@ import {
 import { QRCodeSVG } from 'qrcode.react'
 import { Link } from 'react-router'
 
-import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useTenant } from '@/hooks/use-tenant'
 
@@ -64,7 +63,6 @@ export function LoyalityHomePage() {
           <a href="#rewards">Rewards</a>
         </nav>
         <div className="loyality-site__header-actions">
-          <LanguagePicker compact condenseOnNarrowScreens />
           <ThemeToggle />
           <Link to="/signin" className="loyality-site__text-link">Sign in</Link>
           <Link to="/join" className="loyality-site__button loyality-site__button--small">Join free</Link>

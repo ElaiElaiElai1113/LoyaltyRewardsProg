@@ -24,6 +24,7 @@ test.describe('Loyality public product', () => {
 
       await expect(page).toHaveTitle('Loyality')
       await expect(page.getByRole('heading', { name: 'Turn every visit into the next one.' })).toBeVisible()
+      await expect(page.getByLabel('Language')).toHaveCount(0)
       await expect(page.getByText('No POS integration')).toBeVisible()
       await expect(page.getByRole('heading', { name: 'A specific promise—not a confusing cash balance.' })).toBeVisible()
       await expect(page.locator('body')).not.toContainText(/RewardMe|Wondertown|Medellin|Guatemala/i)
@@ -62,6 +63,7 @@ test.describe('Loyality public product', () => {
       await expect(page.getByRole('heading', { name: 'Step into your loop.' })).toBeVisible()
       await expect(page.locator('.ly-auth')).toBeVisible()
       await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
+      await expect(page.getByLabel('Language')).toHaveCount(0)
 
       await page.goto('/join?tenant=loyality')
       await expect(page.getByRole('heading', { name: 'Join the loop.' })).toBeVisible()
@@ -106,6 +108,7 @@ test.describe('Loyality signed-in visual system', () => {
         await page.goto(route)
         await expect(page.locator(account.shell)).toBeVisible()
         await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
+        await expect(page.getByLabel('Language')).toHaveCount(0)
         await page.setViewportSize({ width: 390, height: 844 })
         const layout = await page.evaluate(() => ({
           viewport: document.documentElement.clientWidth,

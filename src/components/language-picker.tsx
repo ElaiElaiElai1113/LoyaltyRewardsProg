@@ -2,6 +2,7 @@ import { ChevronDown, Globe2 } from 'lucide-react'
 
 import { languageDisplayNames, type Language, useLanguage } from '@/lib/language'
 import { cn } from '@/lib/utils'
+import { useTenant } from '@/hooks/use-tenant'
 
 interface LanguagePickerProps {
   className?: string
@@ -15,6 +16,9 @@ export function LanguagePicker({
   condenseOnNarrowScreens = false,
 }: LanguagePickerProps) {
   const { language, setLanguage, t } = useLanguage()
+  const { program } = useTenant()
+
+  if (program.slug === 'loyality') return null
 
   return (
     <div className={cn('flex min-w-0 items-center gap-2', className)}>

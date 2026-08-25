@@ -19,7 +19,6 @@ import {
 import { useState, type ComponentType } from 'react'
 import { NavLink, Outlet } from 'react-router'
 
-import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { getInitials } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
@@ -87,7 +86,6 @@ export function LoyalityCustomerShell({ profile, signOut }: ShellProps) {
           {customerLinks.map((item) => <ShellLink item={item} key={item.to} />)}
         </nav>
         <div className="ly-customer-tools">
-          <LanguagePicker compact condenseOnNarrowScreens />
           <ThemeToggle />
           <button className="ly-icon-button" onClick={() => void signOut()} type="button" aria-label="Sign out"><LogOut /></button>
         </div>
@@ -147,7 +145,6 @@ export function LoyalityWorkspaceShell({ profile, signOut, businessName, kind }:
         <div className="ly-rail__footer">
           <UserChip profile={profile} inverse />
           <div className="ly-rail__utilities">
-            <LanguagePicker compact />
             <ThemeToggle />
             <button onClick={() => void signOut()} type="button"><LogOut /> Sign out</button>
           </div>
