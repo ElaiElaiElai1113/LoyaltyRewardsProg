@@ -413,7 +413,7 @@ export function HomePage() {
   const { language, setLanguage } = useLanguage()
   const { program } = useTenant()
   if (program.slug === 'loyality') return <LoyalityHomePage />
-  if (program.slug === 'pinas') return <RewardMeHomePage />
+  if (program.slug === 'pinas' || program.slug === 'rewardme') return <RewardMeHomePage />
   if (program.slug === 'wondertown') return <RewardMeHomePage />
   const isPinasRewards = program.slug === 'pinasrewards'
   const tx = (text: string) => (

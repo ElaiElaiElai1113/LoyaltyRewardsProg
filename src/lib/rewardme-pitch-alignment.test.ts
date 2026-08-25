@@ -32,7 +32,7 @@ describe('RewardMe pitch alignment', () => {
     const home = source('src/features/home/pages/home-page.tsx')
     const rewardMeHome = source('src/features/home/pages/rewardme-home.tsx')
 
-    expect(home).toContain("if (program.slug === 'pinas') return <RewardMeHomePage />")
+    expect(home).toContain("if (program.slug === 'pinas' || program.slug === 'rewardme') return <RewardMeHomePage />")
     expect(rewardMeHome).toContain('Get rewarded')
     expect(rewardMeHome).toContain('for spending where')
     expect(rewardMeHome).toContain('you already love.')
