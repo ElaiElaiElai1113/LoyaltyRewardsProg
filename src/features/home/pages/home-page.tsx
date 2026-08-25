@@ -17,7 +17,6 @@ import realEstateRewardsSmall from '@/assets/landing/real-estate-rewards-768.web
 import salonRewards from '@/assets/landing/salon-rewards.webp'
 import salonRewardsSmall from '@/assets/landing/salon-rewards-768.webp'
 import vacationBanner from '@/assets/landing/vacation-beach-clean.webp'
-import { WondertownHomePage } from './wondertown-home'
 import { RewardMeHomePage } from './rewardme-home'
 import { LoyalityHomePage } from '@/features/loyality/pages/loyality-home-page'
 
@@ -415,7 +414,7 @@ export function HomePage() {
   const { program } = useTenant()
   if (program.slug === 'loyality') return <LoyalityHomePage />
   if (program.slug === 'pinas') return <RewardMeHomePage />
-  if (program.slug === 'wondertown') return <WondertownHomePage />
+  if (program.slug === 'wondertown') return <RewardMeHomePage />
   const isPinasRewards = program.slug === 'pinasrewards'
   const tx = (text: string) => (
     language === 'es'

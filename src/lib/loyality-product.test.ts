@@ -31,7 +31,9 @@ describe('Loyality product contract', () => {
 
   it('keeps POS and marketplace concepts out of the Loyality customer promise', () => {
     expect(home).toContain('No POS integration')
-    expect(home).toContain('one clear voucher')
+    expect(home).toContain('Visit-based rewards')
+    expect(home).toContain('Your loyalty card,')
+    expect(home).toContain('reimagined.')
     expect(home).not.toContain('partner businesses')
     expect(service).toContain("sourceKind: 'acquisition_offer' | 'referral' | 'visit_rule' | 'points_catalog' | 'manual'")
   })
