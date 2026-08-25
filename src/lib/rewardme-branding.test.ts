@@ -47,7 +47,7 @@ describe('RewardMe flagship branding', () => {
     expect(discovery).toContain("'loyalty-rewards-prog.vercel.app': 'https://loyalty-rewards-prog.vercel.app'")
     expect(discovery).toContain("'pinas-rewards.vercel.app': 'https://pinas-rewards.vercel.app'")
     expect(deployment).toContain("primaryProject: 'loyalty-rewards-prog'")
-    expect(deployment).toContain("aliases: ['pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app']")
+    expect(deployment).toContain("aliases: ['rewardme-prod.vercel.app', 'pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app']")
     expect(vercel).not.toContain('"destination": "https://loyalty-rewards-prog.vercel.app/:path*"')
   })
 

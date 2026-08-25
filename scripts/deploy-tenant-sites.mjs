@@ -8,7 +8,7 @@ export const deploymentDefaults = Object.freeze({
   scope: 'elaielaielai1113s-projects',
   primaryProject: 'loyalty-rewards-prog',
   guatemalaProject: 'guatemala-rewards',
-  aliases: ['pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app'],
+  aliases: ['rewardme-prod.vercel.app', 'pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app'],
 })
 
 export function normalizeCommitSha(value) {
@@ -170,7 +170,7 @@ export async function deployTenantSites(options, environment = process.env) {
       actions: [
         'resolve the ready primary production deployment for the exact commit',
         'deploy the exact checkout to the Guatemala production project',
-        'point the independent Pinas Rewards and Wondertown hostnames to the resolved primary deployment',
+        'point the RewardMe, independent Pinas Rewards, and Wondertown hostnames to the resolved primary deployment',
       ],
     }
   }
