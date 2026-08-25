@@ -19,7 +19,7 @@ export function ProgramAdminLayout() {
   const { signOut } = useAuth()
   const { t } = useLanguage()
   return (
-    <div className="min-h-screen bg-[var(--background)]">
+    <div className="product-program-shell min-h-screen bg-[var(--background)]">
       <header className="border-b border-[var(--border)] bg-card">
         <div className="flex w-full flex-wrap items-center gap-4 px-4 py-3 sm:px-6 lg:px-8 2xl:px-12">
           <BrandLogo markClassName="h-9" textClassName="text-base" />

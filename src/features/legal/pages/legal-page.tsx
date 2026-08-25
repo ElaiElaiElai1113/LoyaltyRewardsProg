@@ -95,7 +95,7 @@ export function LegalPage({ kind }: LegalPageProps) {
     .replaceAll('support@rewardme.ph', program.supportEmail)
 
   return (
-    <main className="min-h-screen bg-[#fffaf4] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
+    <main className="product-legal-shell min-h-screen bg-[#fffaf4] px-4 py-8 text-[#21140d] sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl space-y-8">
         <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <Link to="/" className="font-serif text-2xl font-bold text-[#21140d]">

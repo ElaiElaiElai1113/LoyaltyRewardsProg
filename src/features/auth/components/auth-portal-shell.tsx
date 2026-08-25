@@ -31,7 +31,7 @@ export function AuthPortalShell({
   const { t } = useLanguage()
 
   return (
-    <main className="auth-portal-shell relative flex min-h-screen items-start justify-center overflow-hidden bg-[var(--background)] px-4 py-8 text-[var(--foreground)] sm:px-6">
+    <main className="auth-portal-shell product-auth-shell relative flex min-h-screen items-start justify-center overflow-hidden bg-[var(--background)] px-4 py-8 text-[var(--foreground)] sm:px-6">
       <div
         className="auth-portal-backdrop pointer-events-none absolute inset-0"
         style={{
@@ -39,9 +39,9 @@ export function AuthPortalShell({
             'radial-gradient(ellipse at top, color-mix(in srgb, var(--champagne) 30%, transparent) 0%, color-mix(in srgb, var(--surface-container-highest) 58%, transparent) 34%, color-mix(in srgb, var(--surface-container-lowest) 88%, transparent) 76%), linear-gradient(135deg, var(--surface-container-lowest) 0%, var(--background) 46%, var(--surface-container-low) 100%)',
         }}
       />
-      <div className="relative z-10 flex w-full max-w-[420px] flex-col items-center">
+      <div className="product-auth-shell__frame relative z-10 flex w-full max-w-[420px] flex-col items-center">
         {showUtilityControls ? (
-          <div className="mb-4 flex w-full items-center justify-between gap-3 text-[var(--foreground)]">
+          <div className="product-auth-shell__utilities mb-4 flex w-full items-center justify-between gap-3 text-[var(--foreground)]">
             <Link
               to="/landing-page"
               className="inline-flex min-h-9 items-center gap-2 rounded-[8px] border border-[#d1ad4a]/35 bg-[color-mix(in_srgb,var(--surface-container-lowest)_82%,transparent)] px-3 text-[12px] font-semibold text-[#d1ad4a] transition hover:bg-[#d1ad4a] hover:text-[#060606]"
@@ -57,7 +57,7 @@ export function AuthPortalShell({
         ) : null}
 
         {showTabs ? (
-          <nav className="grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] p-0">
+          <nav className="product-auth-shell__tabs grid h-[42px] w-full grid-cols-2 rounded-[10px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] p-0">
             <Link to="/signin" className={tabClass(activeTab === 'signin')}>
               {t('Sign in')}
             </Link>
@@ -67,7 +67,7 @@ export function AuthPortalShell({
           </nav>
         ) : null}
 
-        <section className={`${showTabs ? 'mt-8' : 'mt-4'} w-full rounded-[12px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] px-8 pb-9 pt-9 text-[var(--foreground)] shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:px-8`}>
+        <section className={`product-auth-shell__card ${showTabs ? 'mt-8' : 'mt-4'} w-full rounded-[12px] border border-[#d1ad4a] bg-[color-mix(in_srgb,var(--surface-container-lowest)_94%,var(--espresso))] px-8 pb-9 pt-9 text-[var(--foreground)] shadow-[0_18px_60px_rgba(0,0,0,0.25)] sm:px-8`}>
           {children}
         </section>
       </div>

@@ -105,7 +105,7 @@ export function RequiredAgreementsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-surface px-6 py-10">
+    <div className="product-agreement-shell min-h-screen bg-surface px-6 py-10">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[minmax(0,1fr)_420px]">
         <section className="min-w-0 space-y-8">
           <div className="space-y-4 border-b border-outline-variant/10 pb-8">

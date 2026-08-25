@@ -121,8 +121,8 @@ export function BusinessOwnerLayout() {
   }
 
   return (
-    <div className="soft-luxe-shell flex min-h-screen">
-      <header className="fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 border-b border-primary/15 bg-card px-4 shadow-soft xl:hidden">
+    <div className="soft-luxe-shell product-workspace-shell product-workspace-shell--business flex min-h-screen">
+      <header className="product-workspace-shell__mobile-header fixed inset-x-0 top-0 z-30 flex h-16 items-center gap-3 border-b border-primary/15 bg-card px-4 shadow-soft xl:hidden">
         <Button
           variant="ghost"
           size="icon"
@@ -146,7 +146,7 @@ export function BusinessOwnerLayout() {
 
       <aside
         className={cn(
-          'fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-2rem))] flex-col overflow-hidden border-r border-primary/15 bg-card/95 px-4 py-4 shadow-soft backdrop-blur-xl transition-transform duration-200 xl:w-72 xl:translate-x-0',
+          'product-workspace-shell__sidebar fixed inset-y-0 left-0 z-50 flex w-[min(18rem,calc(100vw-2rem))] flex-col overflow-hidden border-r border-primary/15 bg-card/95 px-4 py-4 shadow-soft backdrop-blur-xl transition-transform duration-200 xl:w-72 xl:translate-x-0',
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full',
         )}
       >
@@ -240,7 +240,7 @@ export function BusinessOwnerLayout() {
       </aside>
 
       {/* Main Content */}
-      <main className="min-h-screen min-w-0 flex-1 xl:ml-72">
+      <main className="product-workspace-shell__main min-h-screen min-w-0 flex-1 xl:ml-72">
         <div className="w-full min-w-0 px-4 pb-8 pt-20 sm:px-6 lg:px-8 xl:px-10 xl:py-12 2xl:px-12">
           <ProgramInvitations />
           <Outlet />

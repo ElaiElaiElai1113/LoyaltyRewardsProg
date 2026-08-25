@@ -630,3 +630,430 @@
   .wondertown-home__hero-shade { background: linear-gradient(0deg, rgb(10 10 10 / 97%) 0%, rgb(10 10 10 / 76%) 60%, rgb(10 10 10 / 24%) 100%); }
   .loyality-site__hero h1 { font-size: clamp(2.8rem, 13vw, 4rem); }
 }
+
+/* -------------------------------------------------------------------------- */
+/* Complete RewardMe / Wondertown application shell                            */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * The marketing page is only one part of the product. These selectors replace
+ * the previous cream-and-bronze portal skin at the shared shell boundary so
+ * every preserved route inherits the approved RewardMe visual language.
+ */
+:root[data-program="pinas"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell),
+:root[data-program="wondertown"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell) {
+  background: var(--rm-black) !important;
+  color: var(--rm-cream) !important;
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+:root[data-program="pinas"] .product-auth-shell,
+:root[data-program="wondertown"] .product-auth-shell {
+  align-items: center;
+  padding-block: clamp(28px, 6vh, 72px);
+}
+
+:root[data-program="pinas"] .product-auth-shell .auth-portal-backdrop,
+:root[data-program="wondertown"] .product-auth-shell .auth-portal-backdrop {
+  background:
+    linear-gradient(90deg, transparent 49.92%, rgb(212 175 55 / 7%) 50%, transparent 50.08%),
+    linear-gradient(0deg, transparent 49.92%, rgb(212 175 55 / 6%) 50%, transparent 50.08%),
+    radial-gradient(circle at 75% 8%, rgb(210 96 26 / 18%), transparent 30%),
+    radial-gradient(circle at 20% 92%, rgb(212 175 55 / 14%), transparent 30%),
+    var(--rm-black) !important;
+  background-size: 72px 72px, 72px 72px, auto, auto, auto !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__frame,
+:root[data-program="wondertown"] .product-auth-shell__frame {
+  max-width: 470px;
+}
+
+:root[data-program="pinas"] .product-auth-shell__utilities > a,
+:root[data-program="pinas"] .product-auth-shell__utilities button,
+:root[data-program="wondertown"] .product-auth-shell__utilities > a,
+:root[data-program="wondertown"] .product-auth-shell__utilities button {
+  border-color: #35332d !important;
+  border-radius: 999px !important;
+  background: var(--rm-black-soft) !important;
+  color: var(--rm-cream) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__utilities > a:hover,
+:root[data-program="pinas"] .product-auth-shell__utilities button:hover,
+:root[data-program="wondertown"] .product-auth-shell__utilities > a:hover,
+:root[data-program="wondertown"] .product-auth-shell__utilities button:hover {
+  border-color: var(--rm-gold) !important;
+  color: var(--rm-gold) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__tabs,
+:root[data-program="wondertown"] .product-auth-shell__tabs {
+  height: 48px;
+  border-color: #35332d !important;
+  border-radius: 999px !important;
+  background: var(--rm-black-soft) !important;
+  padding: 4px;
+}
+
+:root[data-program="pinas"] .product-auth-shell__tabs a,
+:root[data-program="wondertown"] .product-auth-shell__tabs a {
+  height: 38px;
+  border-radius: 999px !important;
+  color: var(--rm-slate) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"] {
+  background: var(--rm-gold) !important;
+  color: var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card,
+:root[data-program="wondertown"] .product-auth-shell__card {
+  position: relative;
+  overflow: hidden;
+  border-color: #35332d !important;
+  border-radius: 16px !important;
+  background: var(--rm-black-soft) !important;
+  box-shadow: 0 28px 80px rgb(0 0 0 / 52%) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card::before,
+:root[data-program="wondertown"] .product-auth-shell__card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: linear-gradient(90deg, var(--rm-gold), var(--rm-ember));
+  content: "";
+}
+
+:root[data-program="pinas"] .product-auth-shell__card :is(h1, h2, .font-serif),
+:root[data-program="wondertown"] .product-auth-shell__card :is(h1, h2, .font-serif) {
+  color: var(--rm-cream) !important;
+  font-family: Anton, Impact, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .02em !important;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card :is(label, p, span)[class*="text-[#8f8f8f]"],
+:root[data-program="wondertown"] .product-auth-shell__card :is(label, p, span)[class*="text-[#8f8f8f]"] {
+  color: var(--rm-slate) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card :is(input, select, textarea),
+:root[data-program="wondertown"] .product-auth-shell__card :is(input, select, textarea) {
+  min-height: 48px;
+  border: 1px solid #4b4942 !important;
+  border-radius: 8px !important;
+  background: #0f0f0e !important;
+  color: var(--rm-cream) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card :is(input, select, textarea)::placeholder,
+:root[data-program="wondertown"] .product-auth-shell__card :is(input, select, textarea)::placeholder {
+  color: #777268 !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card button[class*="bg-[#d1ad4a]"],
+:root[data-program="pinas"] .product-auth-shell__card a[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .product-auth-shell__card button[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .product-auth-shell__card a[class*="bg-[#d1ad4a]"] {
+  min-height: 48px;
+  border-radius: 999px !important;
+  background: var(--rm-gold) !important;
+  color: var(--rm-black) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card button[class*="border-[#d1ad4a]"],
+:root[data-program="wondertown"] .product-auth-shell__card button[class*="border-[#d1ad4a]"] {
+  border-color: #4b4942 !important;
+  border-radius: 12px !important;
+  background: #0f0f0e !important;
+  color: var(--rm-cream) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card button[aria-pressed="true"],
+:root[data-program="wondertown"] .product-auth-shell__card button[aria-pressed="true"] {
+  border-color: var(--rm-gold) !important;
+  background: var(--rm-gold) !important;
+  color: var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card [data-testid$="test-credentials"],
+:root[data-program="wondertown"] .product-auth-shell__card [data-testid$="test-credentials"] {
+  border-color: #35332d !important;
+  border-radius: 12px !important;
+  background: #0f0f0e !important;
+}
+
+/* Signed-in customer shell */
+:root[data-program="pinas"] .product-customer-shell__header,
+:root[data-program="wondertown"] .product-customer-shell__header {
+  border-color: #201f1b !important;
+  background: rgb(10 10 10 / 94%) !important;
+  box-shadow: 0 12px 34px rgb(0 0 0 / 32%);
+}
+
+:root[data-program="pinas"] .product-customer-shell__header nav a,
+:root[data-program="wondertown"] .product-customer-shell__header nav a {
+  border-radius: 999px !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell__main,
+:root[data-program="wondertown"] .product-customer-shell__main {
+  background:
+    radial-gradient(circle at 92% 5%, rgb(210 96 26 / 8%), transparent 24rem),
+    var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell__main :is(section, article, a)[class~="bg-white"],
+:root[data-program="wondertown"] .product-customer-shell__main :is(section, article, a)[class~="bg-white"],
+:root[data-program="pinas"] .product-customer-shell__main div[class~="bg-white"][class*="overflow-hidden"],
+:root[data-program="wondertown"] .product-customer-shell__main div[class~="bg-white"][class*="overflow-hidden"] {
+  border-color: #35332d !important;
+  background: var(--rm-black-soft) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell__main :is(section, article, a)[class*="rounded-"],
+:root[data-program="wondertown"] .product-customer-shell__main :is(section, article, a)[class*="rounded-"] {
+  border-radius: 16px !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell__main [class*="bg-[var(--muted)]"],
+:root[data-program="wondertown"] .product-customer-shell__main [class*="bg-[var(--muted)]"] {
+  border-color: #35332d !important;
+  background: #1c1b18 !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell__main :is(h1, h2),
+:root[data-program="wondertown"] .product-customer-shell__main :is(h1, h2) {
+  color: var(--rm-cream) !important;
+  font-family: Anton, Impact, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .01em !important;
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .product-customer-shell__main button[class*="bg-primary"],
+:root[data-program="pinas"] .product-customer-shell__main a[class*="bg-primary"],
+:root[data-program="wondertown"] .product-customer-shell__main button[class*="bg-primary"],
+:root[data-program="wondertown"] .product-customer-shell__main a[class*="bg-primary"] {
+  border-radius: 999px !important;
+  background: var(--rm-gold) !important;
+  color: var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell__footer,
+:root[data-program="wondertown"] .product-customer-shell__footer {
+  border-color: #201f1b !important;
+  background: var(--rm-black-soft) !important;
+}
+
+:root[data-program="pinas"] .product-customer-shell > nav,
+:root[data-program="wondertown"] .product-customer-shell > nav {
+  border-color: #35332d !important;
+  background: rgb(10 10 10 / 96%) !important;
+  box-shadow: 0 -18px 42px rgb(0 0 0 / 44%) !important;
+}
+
+/* Business and admin workspaces */
+:root[data-program="pinas"] .product-workspace-shell__mobile-header,
+:root[data-program="wondertown"] .product-workspace-shell__mobile-header {
+  border-color: #35332d !important;
+  background: rgb(10 10 10 / 96%) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar {
+  border-color: #35332d !important;
+  background: #0f0f0e !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar nav a,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar nav a {
+  border-radius: 8px !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar nav a:hover,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar nav a:hover {
+  color: var(--rm-gold) !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__main,
+:root[data-program="wondertown"] .product-workspace-shell__main {
+  background:
+    linear-gradient(90deg, transparent 49.94%, rgb(212 175 55 / 4%) 50%, transparent 50.06%),
+    var(--rm-black) !important;
+  background-size: 80px 80px !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__main :is(h1, h2),
+:root[data-program="wondertown"] .product-workspace-shell__main :is(h1, h2) {
+  color: var(--rm-cream) !important;
+  font-family: Anton, Impact, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .01em !important;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__main :is(section, article, div)[class~="bg-white"],
+:root[data-program="wondertown"] .product-workspace-shell__main :is(section, article, div)[class~="bg-white"] {
+  border-color: #35332d !important;
+  background: var(--rm-black-soft) !important;
+  color: var(--rm-cream) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__main :is(.ornate-page, .gold-wash),
+:root[data-program="wondertown"] .product-workspace-shell__main :is(.ornate-page, .gold-wash) {
+  background: transparent !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__main .ornate-page::before,
+:root[data-program="pinas"] .product-workspace-shell__main .ornate-page::after,
+:root[data-program="wondertown"] .product-workspace-shell__main .ornate-page::before,
+:root[data-program="wondertown"] .product-workspace-shell__main .ornate-page::after {
+  display: none !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__main :is(button, a)[class*="bg-primary"],
+:root[data-program="wondertown"] .product-workspace-shell__main :is(button, a)[class*="bg-primary"] {
+  border-radius: 999px !important;
+  background: var(--rm-gold) !important;
+  color: var(--rm-black) !important;
+}
+
+@media (max-width: 640px) {
+  :root[data-program="pinas"] .product-auth-shell,
+  :root[data-program="wondertown"] .product-auth-shell {
+    align-items: flex-start;
+    padding: 16px 14px 32px;
+  }
+
+  :root[data-program="pinas"] .product-auth-shell__card,
+  :root[data-program="wondertown"] .product-auth-shell__card {
+    padding: 30px 20px !important;
+  }
+
+  :root[data-program="pinas"] .product-customer-shell__main,
+  :root[data-program="wondertown"] .product-customer-shell__main {
+    padding-inline: 16px !important;
+  }
+}
+
+/* Public utilities, legal copy, mandatory agreements, and program settings. */
+:root[data-program="pinas"] :is(.product-public-shell, .product-legal-shell, .product-agreement-shell, .product-program-shell),
+:root[data-program="wondertown"] :is(.product-public-shell, .product-legal-shell, .product-agreement-shell, .product-program-shell) {
+  background: var(--rm-black) !important;
+  color: var(--rm-cream) !important;
+}
+
+:root[data-program="pinas"] .product-public-shell > :is(header, footer),
+:root[data-program="wondertown"] .product-public-shell > :is(header, footer),
+:root[data-program="pinas"] .product-program-shell > header,
+:root[data-program="wondertown"] .product-program-shell > header {
+  border-color: #35332d !important;
+  background: rgb(10 10 10 / 95%) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-public-shell > main,
+:root[data-program="wondertown"] .product-public-shell > main {
+  background: var(--rm-black) !important;
+}
+
+:root[data-program="pinas"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif),
+:root[data-program="wondertown"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif) {
+  color: var(--rm-cream) !important;
+  font-family: Anton, Impact, sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .01em !important;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .product-legal-shell > div > :is(section),
+:root[data-program="pinas"] .product-legal-shell article,
+:root[data-program="wondertown"] .product-legal-shell > div > :is(section),
+:root[data-program="wondertown"] .product-legal-shell article,
+:root[data-program="pinas"] .product-agreement-shell [class*="bg-white"],
+:root[data-program="wondertown"] .product-agreement-shell [class*="bg-white"] {
+  border-color: #35332d !important;
+  border-radius: 16px !important;
+  background: var(--rm-black-soft) !important;
+  color: var(--rm-cream) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-legal-shell :is(p, a)[class*="text-[#"],
+:root[data-program="wondertown"] .product-legal-shell :is(p, a)[class*="text-[#"] {
+  color: var(--rm-slate) !important;
+}
+
+:root[data-program="pinas"] .product-legal-shell [class*="bg-[#f8f0df]"],
+:root[data-program="wondertown"] .product-legal-shell [class*="bg-[#f8f0df]"] {
+  border-color: #4b4942 !important;
+  background: #1c1b18 !important;
+}
+
+:root[data-program="pinas"] .product-legal-shell :is(button, a)[class*="rounded-full"],
+:root[data-program="wondertown"] .product-legal-shell :is(button, a)[class*="rounded-full"],
+:root[data-program="pinas"] .product-agreement-shell button[class*="bg-primary"],
+:root[data-program="wondertown"] .product-agreement-shell button[class*="bg-primary"] {
+  border-color: var(--rm-gold) !important;
+  border-radius: 999px !important;
+  background: var(--rm-gold) !important;
+  color: var(--rm-black) !important;
+}
+
+/* Loyality uses the same complete-route coverage with its quieter editorial UI. */
+:root[data-program="loyality"] :is(.product-public-shell, .product-legal-shell, .product-agreement-shell, .product-program-shell) {
+  background: var(--ly-offwhite) !important;
+  color: var(--ly-navy-deep) !important;
+}
+
+:root[data-program="loyality"] :is(.product-public-shell, .product-program-shell) > :is(header, footer) {
+  border-color: var(--ly-line) !important;
+  background: rgb(255 255 255 / 95%) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif) {
+  color: var(--ly-navy-deep) !important;
+  font-family: "Source Serif 4", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.01em !important;
+}
+
+:root[data-program="loyality"] .product-legal-shell > div > section,
+:root[data-program="loyality"] .product-legal-shell article,
+:root[data-program="loyality"] .product-agreement-shell [class*="bg-white"] {
+  border-color: var(--ly-line) !important;
+  border-radius: 8px !important;
+  background: var(--ly-white) !important;
+  color: var(--ly-navy-deep) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] .product-legal-shell :is(p, a)[class*="text-[#"] {
+  color: #626870 !important;
+}
+
+:root[data-program="loyality"] .product-legal-shell [class*="bg-[#f8f0df]"] {
+  border-color: var(--ly-line) !important;
+  border-radius: 3px !important;
+  background: var(--ly-offwhite) !important;
+}
+
+:root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) button[class*="bg-primary"] {
+  border-radius: 3px !important;
+  background: var(--ly-teal) !important;
+  color: #fff !important;
+}

@@ -106,7 +106,7 @@ export function PublicBrowseLayout() {
   }
 
   return (
-    <div className="soft-luxe-shell flex min-h-screen flex-col">
+    <div className="soft-luxe-shell product-public-shell flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 border-b border-primary/15 bg-card/88 shadow-soft backdrop-blur-xl">
         <div className="mx-auto flex min-h-16 w-full flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:flex-nowrap lg:px-8 2xl:px-12">
           <div className="flex min-w-0 flex-1 items-center gap-5 xl:gap-10">

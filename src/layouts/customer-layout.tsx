@@ -62,8 +62,8 @@ export function CustomerLayout() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-transparent">
-      <header className="fixed inset-x-0 top-0 z-50 shrink-0 border-b border-[var(--border)] bg-card/95 backdrop-blur">
+    <div className="product-customer-shell flex min-h-screen flex-col bg-transparent">
+      <header className="product-customer-shell__header fixed inset-x-0 top-0 z-50 shrink-0 border-b border-[var(--border)] bg-card/95 backdrop-blur">
         <div className="mx-auto flex min-h-16 w-full items-center justify-between gap-1 px-4 py-2 sm:gap-3 sm:px-5 md:px-6 2xl:px-10">
           <div className="flex min-w-0 flex-1 items-center gap-2 xl:gap-10">
             <NavLink to="/dashboard" className="flex min-w-0 items-center gap-3">
@@ -155,7 +155,7 @@ export function CustomerLayout() {
         </div>
       </header>
 
-      <main className="w-full flex-1 px-5 pb-32 pt-24 md:px-8 lg:px-10 xl:pb-8 2xl:px-12">
+      <main className="product-customer-shell__main w-full flex-1 px-5 pb-32 pt-24 md:px-8 lg:px-10 xl:pb-8 2xl:px-12">
         <div className="mx-auto w-full">
         <ProgramInvitations />
         <Outlet />
@@ -164,7 +164,7 @@ export function CustomerLayout() {
 
       <CustomerBottomNav verificationStatus={profile?.verificationStatus} />
 
-      <footer className="border-t border-[var(--border)] bg-card py-12">
+      <footer className="product-customer-shell__footer border-t border-[var(--border)] bg-card py-12">
         <div className="mx-auto w-full px-6 2xl:px-10">
           <div className="flex flex-col justify-between gap-10 md:flex-row">
             <div className="max-w-xs">
