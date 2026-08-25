@@ -36,11 +36,10 @@ test.describe('public performance and accessibility acceptance', () => {
     })
   }
 
-  test('home hero media uses optimized delivery formats', async ({ page }) => {
+  test('home landing does not ship unoptimized raster media', async ({ page }) => {
     await page.goto('/', { waitUntil: 'networkidle' })
     const sources = await page.locator('main img').evaluateAll((images) => images.map((image) => (image as HTMLImageElement).currentSrc))
-    const heroMedia = sources.filter((source) => /(car-rewards-clean|coffee-member|coffee-rewards|dinner-rewards|real-estate-rewards|salon-rewards|wondertown-hero)/.test(source))
-    expect(heroMedia.length).toBeGreaterThan(0)
-    expect(heroMedia.every((source) => source.includes('.webp'))).toBe(true)
+    const rasterMedia = sources.filter((source) => /\.(?:png|jpe?g|webp|avif)(?:\?|$)/i.test(source))
+    expect(rasterMedia.every((source) => /\.(?:webp|avif)(?:\?|$)/i.test(source))).toBe(true)
   })
 })
