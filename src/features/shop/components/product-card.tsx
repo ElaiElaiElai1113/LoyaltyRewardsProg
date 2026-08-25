@@ -31,7 +31,7 @@ export function ProductCard({ product, onAddToCart, isAdding }: ProductCardProps
               {t(displayCategory)}
           </Badge>
           {product.featured && (
-            <span className="featured-shimmer flex items-center gap-1.5 rounded-full border border-primary/15 bg-[linear-gradient(90deg,var(--tenant-accent-soft),var(--blush),var(--tenant-accent-soft))] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[var(--foreground)]">
+            <span className="flex items-center gap-1.5 rounded-full border border-primary/20 bg-[var(--tenant-accent-soft)] px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-[var(--foreground)]">
               <Sparkles className="size-3" />
               {t('Bonus Drop')}
             </span>

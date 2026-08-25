@@ -9,8 +9,8 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default: 'border border-primary/15 bg-[var(--muted)] text-[var(--muted-foreground)]',
-        tenant: 'featured-shimmer border border-primary/15 bg-[linear-gradient(90deg,var(--tenant-accent-soft),var(--blush),var(--tenant-accent-soft))] text-[var(--foreground)]',
-        accent: 'featured-shimmer border border-primary/15 bg-[linear-gradient(90deg,var(--tenant-accent-soft),var(--blush),var(--tenant-accent-soft))] text-[var(--foreground)]',
+        tenant: 'border border-primary/20 bg-[var(--tenant-accent-soft)] text-[var(--foreground)]',
+        accent: 'border border-primary/20 bg-[var(--muted)] text-[var(--foreground)]',
         success: 'border border-success/25 bg-success/12 text-success',
         outline: 'border border-[var(--border)] bg-[var(--card)] text-[var(--muted-foreground)]',
         secondary: 'border border-primary/10 bg-[var(--muted)] text-[var(--foreground)]',
