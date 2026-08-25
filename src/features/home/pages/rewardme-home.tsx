@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import coffeeMember from '@/assets/landing/coffee-member-wide.webp'
 import coffeeMemberSmall from '@/assets/landing/coffee-member-wide-768.webp'
 import dinnerRewards from '@/assets/landing/dinner-rewards.webp'
+import localBusinessOwner from '@/assets/business/local-business-owner-wide.webp'
 import { LanguagePicker } from '@/components/language-picker'
 import { type Language, useLanguage } from '@/lib/language'
 
@@ -64,6 +65,7 @@ interface RewardMeHomeCopy {
   businessTitle: string
   businessBody: string
   businessAction: string
+  businessImageAlt: string
   bridgeTitle: string
   bridgeBody: string
   footerMotto: string
@@ -106,7 +108,7 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
       { name: 'Gold', price: '$100/year', description: 'Full access plus the Gold referral schedule: three monthly rewards for Regular referrals or a $100 reward for Gold referrals.', featured: false },
     ],
     recommended: 'RECOMMENDED', offerTerms: 'Offer terms and eligibility apply', compareMemberships: 'Compare membership options',
-    businessEyebrow: 'FOR BUSINESSES', businessTitle: 'Bring RewardMe members through your door.', businessBody: "Partners can participate through a Commission model or a Business-credit model. RewardMe's platform share is a 25% commission on Rewards spent.", businessAction: 'See how businesses join', bridgeTitle: 'Synergize bridge', bridgeBody: 'Business credits from the separate Synergize network may help fund RewardMe offers that create paying customer activity. Each product keeps its own audience and terms.',
+    businessEyebrow: 'FOR BUSINESSES', businessTitle: 'Bring RewardMe members through your door.', businessBody: "Partners can participate through a Commission model or a Business-credit model. RewardMe's platform share is a 25% commission on Rewards spent.", businessAction: 'See how businesses join', businessImageAlt: 'A local business owner welcoming RewardMe members', bridgeTitle: 'Synergize bridge', bridgeBody: 'Business credits from the separate Synergize network may help fund RewardMe offers that create paying customer activity. Each product keeps its own audience and terms.',
     footerMotto: 'Earn where you already spend. Save toward what matters.', footerNavigationLabel: 'Footer navigation', membership: 'Membership', businesses: 'Businesses',
   },
   es: {
@@ -142,7 +144,7 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
       { name: 'Gold', price: '$100/año', description: 'Acceso completo y calendario Gold de referidos: tres recompensas mensuales por referidos Regular o una recompensa de $100 por referidos Gold.', featured: false },
     ],
     recommended: 'RECOMENDADO', offerTerms: 'Aplican términos y requisitos de la oferta', compareMemberships: 'Comparar membresías',
-    businessEyebrow: 'PARA NEGOCIOS', businessTitle: 'Recibe a miembros de RewardMe en tu negocio.', businessBody: 'Los aliados pueden participar mediante un modelo de comisión o de crédito comercial. La participación de la plataforma RewardMe es una comisión del 25% sobre las recompensas utilizadas.', businessAction: 'Cómo se unen los negocios', bridgeTitle: 'Puente con Synergize', bridgeBody: 'Los créditos comerciales de la red independiente Synergize pueden ayudar a financiar ofertas de RewardMe que generen actividad de clientes que pagan. Cada producto mantiene su propio público y términos.',
+    businessEyebrow: 'PARA NEGOCIOS', businessTitle: 'Recibe a miembros de RewardMe en tu negocio.', businessBody: 'Los aliados pueden participar mediante un modelo de comisión o de crédito comercial. La participación de la plataforma RewardMe es una comisión del 25% sobre las recompensas utilizadas.', businessAction: 'Cómo se unen los negocios', businessImageAlt: 'Propietaria de un negocio local dando la bienvenida a miembros de RewardMe', bridgeTitle: 'Puente con Synergize', bridgeBody: 'Los créditos comerciales de la red independiente Synergize pueden ayudar a financiar ofertas de RewardMe que generen actividad de clientes que pagan. Cada producto mantiene su propio público y términos.',
     footerMotto: 'Gana donde ya gastas. Ahorra para lo que importa.', footerNavigationLabel: 'Navegación del pie de página', membership: 'Membresía', businesses: 'Negocios',
   },
   tl: {
@@ -178,7 +180,7 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
       { name: 'Gold', price: '$100/taon', description: 'Buong pagpasok at talaan ng pagsangguni sa Gold: tatlong buwanang gantimpala para sa pagsangguni sa Regular o $100 gantimpala para sa pagsangguni sa Gold.', featured: false },
     ],
     recommended: 'INIREREKOMENDA', offerTerms: 'May nalalapat na tuntunin at pagiging karapat-dapat ang alok', compareMemberships: 'Ihambing ang pagiging kasapi',
-    businessEyebrow: 'PARA SA MGA NEGOSYO', businessTitle: 'Anyayahan ang mga miyembro ng RewardMe sa iyong negosyo.', businessBody: 'Maaaring lumahok ang mga katuwang sa paraang may komisyon o kreditong pangnegosyo. Ang bahagi ng plataporma ng RewardMe ay 25% komisyon sa nagamit na gantimpala.', businessAction: 'Tingnan kung paano sumali ang negosyo', bridgeTitle: 'Tulay sa Synergize', bridgeBody: 'Maaaring tumulong ang mga kreditong pangnegosyo mula sa hiwalay na ugnayan ng Synergize sa pagpondo ng mga alok ng RewardMe na lumilikha ng aktibidad ng nagbabayad na kostumer. May sariling mga gumagamit at tuntunin ang bawat produkto.',
+    businessEyebrow: 'PARA SA MGA NEGOSYO', businessTitle: 'Anyayahan ang mga miyembro ng RewardMe sa iyong negosyo.', businessBody: 'Maaaring lumahok ang mga katuwang sa paraang may komisyon o kreditong pangnegosyo. Ang bahagi ng plataporma ng RewardMe ay 25% komisyon sa nagamit na gantimpala.', businessAction: 'Tingnan kung paano sumali ang negosyo', businessImageAlt: 'May-ari ng lokal na negosyong tumatanggap sa mga kasapi ng RewardMe', bridgeTitle: 'Tulay sa Synergize', bridgeBody: 'Maaaring tumulong ang mga kreditong pangnegosyo mula sa hiwalay na ugnayan ng Synergize sa pagpondo ng mga alok ng RewardMe na lumilikha ng aktibidad ng nagbabayad na kostumer. May sariling mga gumagamit at tuntunin ang bawat produkto.',
     footerMotto: 'Kumita kung saan ka na gumagastos. Mag-ipon para sa mahalaga.', footerNavigationLabel: 'Nabigasyon sa ibaba', membership: 'Pagiging kasapi', businesses: 'Mga negosyo',
   },
 }
@@ -186,23 +188,30 @@ const rewardMeHomeCopy: Record<Language, RewardMeHomeCopy> = {
 export function RewardMeHomePage() {
   const { language } = useLanguage()
   const copy = rewardMeHomeCopy[language]
+  const heroVideoUrl = import.meta.env.VITE_REWARDME_HERO_VIDEO_URL?.trim()
 
   return (
     <div className="rewardme-home">
-      <header className="rewardme-home__header">
+      <div className="rewardme-home__dark-intro">
+        <header className="rewardme-home__header">
         <Link className="rewardme-home__brand" to="/" aria-label={copy.homeLabel}><Bookmark aria-hidden="true" /><span>RewardMe</span></Link>
         <nav className="rewardme-home__nav" aria-label={copy.navigationLabel}><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><a href="#savings">{copy.savingsPlan}</a><Link to="/business">{copy.forBusinesses}</Link></nav>
         <div className="rewardme-home__header-actions"><LanguagePicker className="rewardme-home__language" compact condenseOnNarrowScreens /><Link className="rewardme-home__text-link" to="/signin">{copy.signIn}</Link><Link className="rewardme-home__button rewardme-home__button--small rewardme-home__header-join" to="/join">{copy.startFreeAccess}</Link></div>
-      </header>
+        </header>
 
-      <main>
         <section className="rewardme-home__hero" aria-labelledby="rewardme-hero-title">
           <div className="rewardme-home__hero-copy"><p className="rewardme-home__eyebrow">{copy.heroEyebrow}</p><h1 id="rewardme-hero-title">{copy.heroTitle}</h1><p className="rewardme-home__lead">{copy.heroLead}</p><div className="rewardme-home__actions"><Link className="rewardme-home__button" to="/join">{copy.heroAction}</Link><a className="rewardme-home__button rewardme-home__button--outline" href="#how-it-works">{copy.seeHowItWorks}</a></div><p className="rewardme-home__fine-print">{copy.finePrint}</p></div>
-          <aside className="rewardme-home__ledger" aria-label={copy.ledgerLabel}><div className="rewardme-home__ledger-head"><strong>{copy.accountTitle}</strong><span>{copy.illustration}</span></div>{copy.ledgerRows.map((row) => <div className="rewardme-home__ledger-row" key={row.label}><span>{row.label}</span><strong>{row.value}</strong></div>)}<div className="rewardme-home__ledger-row"><span>{copy.savingsRow}</span><strong><LockKeyhole aria-hidden="true" /> {copy.planned}</strong></div><div className="rewardme-home__ledger-total"><span>{copy.availableToRedeem}</span><strong>$109</strong></div><p>{copy.ledgerNote}</p></aside>
+          <div className="rewardme-home__hero-visual">
+            <figure className="rewardme-home__hero-media">
+              {heroVideoUrl ? <video autoPlay loop muted playsInline poster={coffeeMember}><source src={heroVideoUrl} type="video/mp4" /></video> : <picture><source media="(max-width: 720px)" srcSet={coffeeMemberSmall} /><img src={coffeeMember} alt={copy.featureAlt} decoding="async" fetchPriority="high" /></picture>}
+              <figcaption>{copy.featureCaption}</figcaption>
+            </figure>
+            <aside className="rewardme-home__ledger" aria-label={copy.ledgerLabel}><div className="rewardme-home__ledger-head"><strong>{copy.accountTitle}</strong><span>{copy.illustration}</span></div>{copy.ledgerRows.map((row) => <div className="rewardme-home__ledger-row" key={row.label}><span>{row.label}</span><strong>{row.value}</strong></div>)}<div className="rewardme-home__ledger-row"><span>{copy.savingsRow}</span><strong><LockKeyhole aria-hidden="true" /> {copy.planned}</strong></div><div className="rewardme-home__ledger-total"><span>{copy.availableToRedeem}</span><strong>$109</strong></div><p>{copy.ledgerNote}</p></aside>
+          </div>
         </section>
+      </div>
 
-        <figure className="rewardme-home__feature-image"><picture><source media="(max-width: 720px)" srcSet={coffeeMemberSmall} /><img src={coffeeMember} alt={copy.featureAlt} decoding="async" fetchPriority="high" /></picture><figcaption>{copy.featureCaption}</figcaption></figure>
-
+      <main>
         <section className="rewardme-home__section" id="how-it-works" aria-labelledby="rewardme-how-title"><p className="rewardme-home__eyebrow">{copy.howEyebrow}</p><div className="rewardme-home__section-heading"><h2 id="rewardme-how-title">{copy.howTitle}</h2><p>{copy.howIntro}</p></div><ol className="rewardme-home__steps">{copy.steps.map((step) => <li key={step.number}><span>{step.number}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></li>)}</ol></section>
 
         <section className="rewardme-home__section rewardme-home__store" aria-labelledby="rewardme-store-title"><div><p className="rewardme-home__eyebrow">{copy.storeEyebrow}</p><h2 id="rewardme-store-title">{copy.storeTitle}</h2><p>{copy.storeBody}</p><div className="rewardme-home__actions"><Link className="rewardme-home__button" to="/shop"><Store aria-hidden="true" /> {copy.browseStore}</Link><Link className="rewardme-home__button rewardme-home__button--outline" to="/signin">{copy.signIn}</Link></div></div><img src={dinnerRewards} alt={copy.storeImageAlt} loading="lazy" decoding="async" /></section>
@@ -213,7 +222,7 @@ export function RewardMeHomePage() {
 
         <section className="rewardme-home__section" id="membership" aria-labelledby="rewardme-membership-title"><p className="rewardme-home__eyebrow">{copy.membershipEyebrow}</p><div className="rewardme-home__section-heading"><h2 id="rewardme-membership-title">{copy.membershipTitle}</h2><p>{copy.membershipIntro}</p></div><div className="rewardme-home__plans">{copy.plans.map((plan) => <article className={plan.featured ? 'rewardme-home__plan--featured' : undefined} key={plan.name}>{plan.featured ? <span className="rewardme-home__plan-label">{copy.recommended}</span> : null}<h3>{plan.name}</h3><strong>{plan.price}</strong><p>{plan.description}</p><p className="rewardme-home__plan-check"><Check aria-hidden="true" /> {copy.offerTerms}</p></article>)}</div><div className="rewardme-home__center-action"><Link className="rewardme-home__button" to="/membership">{copy.compareMemberships} <ArrowRight aria-hidden="true" /></Link></div></section>
 
-        <section className="rewardme-home__business" aria-labelledby="rewardme-business-title"><div><p className="rewardme-home__eyebrow">{copy.businessEyebrow}</p><h2 id="rewardme-business-title">{copy.businessTitle}</h2><p>{copy.businessBody}</p><Link className="rewardme-home__button rewardme-home__button--outline" to="/business">{copy.businessAction} <ArrowRight aria-hidden="true" /></Link></div><div className="rewardme-home__bridge"><strong>{copy.bridgeTitle}</strong><p>{copy.bridgeBody}</p></div></section>
+        <section className="rewardme-home__business" aria-labelledby="rewardme-business-title"><img src={localBusinessOwner} alt={copy.businessImageAlt} loading="lazy" decoding="async" /><div className="rewardme-home__business-copy"><p className="rewardme-home__eyebrow">{copy.businessEyebrow}</p><h2 id="rewardme-business-title">{copy.businessTitle}</h2><p>{copy.businessBody}</p><Link className="rewardme-home__button rewardme-home__button--outline" to="/business">{copy.businessAction} <ArrowRight aria-hidden="true" /></Link><div className="rewardme-home__bridge"><strong>{copy.bridgeTitle}</strong><p>{copy.bridgeBody}</p></div></div></section>
       </main>
 
       <footer className="rewardme-home__footer"><div className="rewardme-home__brand"><Bookmark aria-hidden="true" /><span>RewardMe</span></div><p>{copy.footerMotto}</p><nav aria-label={copy.footerNavigationLabel}><a href="#how-it-works">{copy.howItWorks}</a><Link to="/shop">{copy.store}</Link><Link to="/membership">{copy.membership}</Link><Link to="/business">{copy.businesses}</Link></nav></footer>

@@ -12,6 +12,8 @@ import {
 import { QRCodeSVG } from 'qrcode.react'
 import { Link } from 'react-router'
 
+import localBusinessOwner from '@/assets/business/local-business-owner-wide.webp'
+import returningCustomer from '@/assets/landing/coffee-rewards.webp'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { useTenant } from '@/hooks/use-tenant'
 
@@ -47,6 +49,7 @@ const workflow = [
 
 export function LoyalityHomePage() {
   const { program } = useTenant()
+  const heroVideoUrl = import.meta.env.VITE_LOYALITY_HERO_VIDEO_URL?.trim()
   const offerUrl = typeof window === 'undefined'
     ? '/offer/loyality-welcome'
     : `${window.location.origin}/offer/loyality-welcome?source=homepage`
@@ -87,23 +90,49 @@ export function LoyalityHomePage() {
           </ul>
         </div>
 
-        <div className="loyality-site__hero-visual" aria-label="Example Loyality offer and referral loop">
+        <div className="loyality-site__hero-visual" aria-label="A local business using Loyality">
+          <figure className="loyality-site__hero-photo">
+            {heroVideoUrl ? (
+              <video autoPlay loop muted playsInline poster={localBusinessOwner}>
+                <source src={heroVideoUrl} type="video/mp4" />
+              </video>
+            ) : (
+              <img src={localBusinessOwner} alt="A local business owner welcoming loyal customers" fetchPriority="high" />
+            )}
+            <figcaption>Built around the business your customers already know.</figcaption>
+          </figure>
           <div className="loyality-site__scan-card">
             <div className="loyality-site__scan-top"><span>TRACKABLE OFFER</span><ScanLine size={22} /></div>
             <div className="loyality-site__qr-wrap">
-              <QRCodeSVG value={offerUrl} size={196} bgColor="transparent" fgColor="#173b3f" level="H" />
+              <QRCodeSVG value={offerUrl} size={132} bgColor="transparent" fgColor="#173b3f" level="H" />
               <span className="loyality-site__scan-line" />
             </div>
             <div><strong>Welcome treat</strong><small>Scan to claim your first-visit offer</small></div>
           </div>
           <div className="loyality-site__loop-card loyality-site__loop-card--one"><UsersRound /><span>New customer</span></div>
           <div className="loyality-site__loop-card loyality-site__loop-card--two"><Gift /><span>Referrer rewarded</span></div>
-          <div className="loyality-site__orbit" aria-hidden="true" />
         </div>
       </section>
 
       <section className="loyality-site__signal" aria-label="Loyality system summary">
         <span>ACQUIRE</span><i /><span>RETAIN</span><i /><span>REWARD</span><i /><span>REPEAT</span>
+      </section>
+
+      <section className="loyality-site__photo-story" aria-labelledby="loyality-story-title">
+        <figure>
+          <img src={returningCustomer} alt="A returning customer enjoying a visit at a local café" loading="lazy" decoding="async" />
+          <figcaption>Recognition that feels personal, without slowing down service.</figcaption>
+        </figure>
+        <div>
+          <p className="loyality-site__eyebrow">Made for real visits</p>
+          <h2 id="loyality-story-title">A familiar experience for customers. One clear action for staff.</h2>
+          <p>Customers keep one personal QR and see what they have earned. Staff scan, confirm, and return to serving—no special checkout system required.</p>
+          <ul>
+            <li><BadgeCheck /> Branded for the business</li>
+            <li><BadgeCheck /> Easy on any phone</li>
+            <li><BadgeCheck /> Every visit stays recorded</li>
+          </ul>
+        </div>
       </section>
 
       <section className="loyality-site__features" id="how-it-works" aria-labelledby="loyality-features-title">

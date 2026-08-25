@@ -26,6 +26,8 @@ test.describe('Loyality public product', () => {
       await expect(page.getByRole('heading', { name: 'Turn every visit into the next one.' })).toBeVisible()
       await expect(page.getByLabel('Language')).toHaveCount(0)
       await expect(page.getByText('No POS integration')).toBeVisible()
+      await expect(page.getByRole('img', { name: 'A local business owner welcoming loyal customers' })).toBeVisible()
+      await expect(page.getByRole('img', { name: 'A returning customer enjoying a visit at a local café' })).toHaveCount(1)
       await expect(page.getByRole('heading', { name: 'A specific promise—not a confusing cash balance.' })).toBeVisible()
       await expect(page.locator('body')).not.toContainText(/RewardMe|Wondertown|Medellin|Guatemala/i)
 

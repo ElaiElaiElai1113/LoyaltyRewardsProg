@@ -15,6 +15,7 @@
 
 .loyality-site * { box-sizing: border-box; }
 .loyality-site h1,.loyality-site h2,.loyality-site h3,.loyality-site p { margin: 0; }
+.loyality-site h1,.loyality-site h2,.loyality-site h3 { font-family: Georgia, 'Times New Roman', serif; font-weight: 600; }
 .loyality-site a { color: inherit; text-decoration: none; }
 
 .loyality-site__header {
@@ -67,7 +68,7 @@
 .loyality-site__hero::after { content:""; position:absolute; right:-140px; bottom:-180px; width:480px; height:480px; border:80px solid rgba(255,107,74,.12); border-radius:50%; }
 .loyality-site__hero-copy { position: relative; z-index: 2; max-width: 760px; }
 .loyality-site__eyebrow { display: flex; align-items: center; gap: 8px; color: var(--ly-coral); font-size: 12px; font-weight: 900; letter-spacing: .16em; text-transform: uppercase; }
-.loyality-site__hero h1 { margin-top: 22px; font-size: clamp(3.6rem, 7.5vw, 7.2rem); font-weight: 820; letter-spacing: -.07em; line-height: .9; }
+.loyality-site__hero h1 { margin-top: 22px; font-size: clamp(3.6rem, 7.5vw, 7.2rem); font-weight: 600; letter-spacing: -.065em; line-height: .9; }
 .loyality-site__hero h1 em { color: var(--ly-coral); font-family: Georgia, serif; font-weight: 500; }
 .loyality-site__lede { max-width: 670px; margin-top: 28px !important; font-size: clamp(1.05rem,1.6vw,1.3rem); line-height: 1.7; }
 .loyality-site__hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 34px; }
@@ -75,22 +76,33 @@
 .loyality-site__proof li { display:flex; align-items:center; gap:7px; }
 .loyality-site__proof svg { color: var(--ly-coral); }
 
-.loyality-site__hero-visual { position: relative; z-index: 2; min-height: 540px; display: grid; place-items: center; }
-.loyality-site__orbit { position:absolute; width:min(520px,95%); aspect-ratio:1; border:1px dashed rgba(23,59,63,.3); border-radius:50%; animation: loyality-spin 24s linear infinite; }
-.loyality-site__orbit::before,.loyality-site__orbit::after { content:""; position:absolute; width:18px; height:18px; border-radius:50%; background:var(--ly-coral); }
-.loyality-site__orbit::before { top:13%; left:11%; }.loyality-site__orbit::after { right:8%; bottom:18%; background:var(--ly-lime); }
-@keyframes loyality-spin { to { transform:rotate(360deg); } }
-.loyality-site__scan-card { position:relative; z-index:3; width:min(340px,80vw); border:1px solid var(--ly-line); border-radius:34px; background:var(--ly-paper); padding:22px; box-shadow:0 28px 70px rgba(15,41,45,.18); transform:rotate(-2deg); }
+.loyality-site__hero-visual { position: relative; z-index: 2; min-height: 570px; }
+.loyality-site__hero-photo { position:absolute; inset:0 0 34px 38px; margin:0; overflow:hidden; border-radius:42% 42% 28px 28px; background:var(--ly-deep); box-shadow:0 32px 70px rgba(15,41,45,.22); }
+.loyality-site__hero-photo img,.loyality-site__hero-photo video { display:block; width:100%; height:100%; object-fit:cover; object-position:center; }
+.loyality-site__hero-photo::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 54%,rgba(15,41,45,.78)); pointer-events:none; }
+.loyality-site__hero-photo figcaption { position:absolute; z-index:1; right:24px; bottom:22px; left:24px; color:white; font-family:Georgia,'Times New Roman',serif; font-size:18px; line-height:1.35; }
+.loyality-site__scan-card { position:absolute; z-index:3; left:0; bottom:0; width:min(250px,70vw); border:1px solid var(--ly-line); border-radius:26px; background:var(--ly-paper); padding:17px; box-shadow:0 22px 50px rgba(15,41,45,.22); transform:rotate(-2deg); }
 .loyality-site__scan-top { display:flex; justify-content:space-between; align-items:center; font-size:11px; font-weight:900; letter-spacing:.14em; }
-.loyality-site__qr-wrap { position:relative; display:grid; place-items:center; margin:22px 0; border-radius:24px; background:linear-gradient(135deg,rgba(185,231,105,.45),rgba(255,107,74,.16)); padding:24px; overflow:hidden; }
+.loyality-site__qr-wrap { position:relative; display:grid; place-items:center; margin:14px 0; border-radius:20px; background:linear-gradient(135deg,rgba(185,231,105,.45),rgba(255,107,74,.16)); padding:16px; overflow:hidden; }
 .loyality-site__scan-line { position:absolute; left:20px; right:20px; top:50%; height:3px; background:var(--ly-coral); box-shadow:0 0 14px var(--ly-coral); }
-.loyality-site__scan-card strong,.loyality-site__scan-card small { display:block; }.loyality-site__scan-card strong { font-size:22px; }.loyality-site__scan-card small { margin-top:5px; color:rgba(23,59,63,.65); }
+.loyality-site__scan-card strong,.loyality-site__scan-card small { display:block; }.loyality-site__scan-card strong { font-size:19px; }.loyality-site__scan-card small { margin-top:5px; color:rgba(23,59,63,.65); }
 .loyality-site__loop-card { position:absolute; z-index:4; display:flex; align-items:center; gap:9px; border:1px solid var(--ly-line); border-radius:999px; background:white; padding:12px 16px; box-shadow:0 12px 30px rgba(15,41,45,.14); font-size:12px; font-weight:800; }
-.loyality-site__loop-card--one { left:0; top:18%; }.loyality-site__loop-card--two { right:-2%; bottom:19%; }
+.loyality-site__loop-card--one { right:-2%; top:9%; }.loyality-site__loop-card--two { right:-3%; bottom:24%; }
 .loyality-site__loop-card svg { color:var(--ly-coral); }
 
 .loyality-site__signal { display:flex; justify-content:center; align-items:center; gap:24px; min-height:82px; padding:18px 24px; background:var(--ly-deep); color:white; font-size:12px; font-weight:900; letter-spacing:.18em; }
 .loyality-site__signal i { width:6px; height:6px; border-radius:50%; background:var(--ly-lime); }
+
+.loyality-site__photo-story { display:grid; grid-template-columns:minmax(340px,.9fr) minmax(0,1.1fr); align-items:center; gap:clamp(48px,8vw,120px); padding:110px clamp(20px,8vw,132px); background:var(--ly-paper); }
+.loyality-site__photo-story figure { position:relative; min-height:520px; margin:0; overflow:hidden; border-radius:32px 32px 46% 46%; background:var(--ly-deep); }
+.loyality-site__photo-story figure::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 65%,rgba(15,41,45,.76)); pointer-events:none; }
+.loyality-site__photo-story img { display:block; width:100%; height:100%; min-height:520px; object-fit:cover; object-position:center; }
+.loyality-site__photo-story figcaption { position:absolute; z-index:1; right:24px; bottom:24px; left:24px; color:white; font-size:13px; font-weight:750; }
+.loyality-site__photo-story h2 { margin-top:16px; font-size:clamp(2.6rem,5vw,5.2rem); letter-spacing:-.055em; line-height:.98; }
+.loyality-site__photo-story > div > p:not(.loyality-site__eyebrow) { margin-top:24px; color:rgba(23,59,63,.72); font-size:17px; line-height:1.75; }
+.loyality-site__photo-story ul { display:grid; gap:12px; margin:28px 0 0; padding:0; list-style:none; }
+.loyality-site__photo-story li { display:flex; align-items:center; gap:10px; font-weight:800; }
+.loyality-site__photo-story li svg { color:var(--ly-coral); }
 
 .loyality-site__features { padding:110px clamp(20px,7vw,116px); }
 .loyality-site__section-heading { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(300px,.8fr); align-items:end; gap:50px; }
@@ -124,19 +136,20 @@
   .loyality-site__hero { grid-template-columns:1fr; padding-top:60px; }
   .loyality-site__hero-copy { max-width:820px; }
   .loyality-site__hero-visual { min-height:500px; }
+  .loyality-site__photo-story { grid-template-columns:1fr; }
+  .loyality-site__photo-story figure { width:min(680px,100%); }
   .loyality-site__feature-grid { grid-template-columns:1fr; }.loyality-site__feature-grid article { min-height:250px; }
   .loyality-site__workflow { grid-template-columns:1fr; }.loyality-site__voucher { grid-template-columns:1fr; }.loyality-site__voucher-card { max-width:460px; }
 }
 @media (max-width: 700px) {
   .loyality-site__header { min-height:68px; gap:8px; padding:10px 14px; }.loyality-site__brand img { width:134px; }.loyality-site__header-actions > :first-child,.loyality-site__header-actions > :nth-child(2),.loyality-site__header-actions .loyality-site__text-link { display:none; }.loyality-site__button--small { min-height:40px; padding:0 14px; }
   .loyality-site__hero { min-height:auto; grid-template-columns:minmax(0,1fr); padding:48px 18px 64px; }.loyality-site__hero h1 { font-size:clamp(3.3rem,17vw,5.2rem); }.loyality-site__lede { font-size:1rem; }.loyality-site__hero-actions .loyality-site__button { width:100%; }.loyality-site__proof { display:grid; gap:10px; }
-  .loyality-site__hero-visual { min-height:440px; }.loyality-site__loop-card--one { left:-4px; top:12%; }.loyality-site__loop-card--two { right:-5px; bottom:10%; }.loyality-site__orbit { width:410px; }
+  .loyality-site__hero-visual { min-height:480px; }.loyality-site__hero-photo { inset:0 0 54px 12px; border-radius:42% 42% 24px 24px; }.loyality-site__hero-photo figcaption { font-size:15px; }.loyality-site__scan-card { left:0; width:min(210px,64vw); padding:13px; }.loyality-site__qr-wrap { padding:10px; }.loyality-site__qr-wrap svg { width:104px; height:104px; }.loyality-site__loop-card--one { right:-3px; top:12%; }.loyality-site__loop-card--two { right:-4px; bottom:19%; }
   .loyality-site__signal { gap:10px; overflow:hidden; font-size:9px; }.loyality-site__signal i { width:4px; height:4px; }
-  .loyality-site__features,.loyality-site__workflow,.loyality-site__voucher { padding:72px 18px; }.loyality-site__section-heading { grid-template-columns:1fr; gap:24px; }.loyality-site__feature-grid { margin-top:34px; }
+  .loyality-site__photo-story,.loyality-site__features,.loyality-site__workflow,.loyality-site__voucher { padding:72px 18px; }.loyality-site__photo-story { gap:42px; }.loyality-site__photo-story figure,.loyality-site__photo-story img { min-height:420px; }.loyality-site__section-heading { grid-template-columns:1fr; gap:24px; }.loyality-site__feature-grid { margin-top:34px; }
   .loyality-site__workflow { gap:40px; }.loyality-site__voucher-card { min-height:360px; margin:0 10px 16px 0; }.loyality-site__secondary { grid-template-columns:1fr; margin:0 18px 72px; padding:28px; }.loyality-site__cta { align-items:flex-start; flex-direction:column; padding:64px 18px; }.loyality-site__cta .loyality-site__button { width:100%; }.loyality-site__footer { align-items:flex-start; flex-direction:column; gap:14px; }.loyality-site__footer nav { margin-left:0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .loyality-site__orbit { animation:none; }
   .loyality-site__button { transition:none; }
 }
