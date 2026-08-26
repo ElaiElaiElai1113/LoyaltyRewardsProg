@@ -23,12 +23,13 @@ test.describe('Loyality public product', () => {
       await page.goto('/?tenant=loyality')
 
       await expect(page).toHaveTitle('Loyality')
-      await expect(page.getByRole('heading', { name: 'Turn every visit into the next one.' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: /Your loyalty card,\s*reimagined\./ })).toBeVisible()
       await expect(page.getByLabel('Language')).toHaveCount(0)
-      await expect(page.getByText('No POS integration')).toBeVisible()
-      await expect(page.getByRole('img', { name: 'A local business owner welcoming loyal customers' })).toBeVisible()
-      await expect(page.getByRole('img', { name: 'A returning customer enjoying a visit at a local café' })).toHaveCount(1)
-      await expect(page.getByRole('heading', { name: 'A specific promise—not a confusing cash balance.' })).toBeVisible()
+      await expect(page.getByText('No POS integration needed')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Built to bring customers in, and keep them coming back.' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: "White-label means it's yours, not ours." })).toBeVisible()
+      await expect(page.locator('.reference-loyality')).toBeVisible()
+      await expect(page.locator('.reference-loyality__nav')).toHaveCSS('position', 'sticky')
       await expect(page.locator('body')).not.toContainText(/RewardMe|Wondertown|Medellin|Guatemala/i)
 
       const layout = await page.evaluate(() => ({
@@ -44,13 +45,12 @@ test.describe('Loyality public product', () => {
 
   test('business and customer calls to action have real destinations', async ({ page }) => {
     await page.goto('/?tenant=loyality')
-    const header = page.locator('.loyality-site__header')
-    await expect(header.getByRole('link', { name: 'Business page' })).toHaveAttribute('href', '/business')
+    const header = page.locator('.reference-loyality__nav')
     await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
-    await expect(header.getByRole('link', { name: 'Join free' })).toHaveAttribute('href', '/join')
-    await expect(page.getByRole('link', { name: 'Join as a customer' })).toHaveAttribute('href', '/join')
-    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/signin')
-    await page.getByRole('link', { name: 'Business sign in' }).click()
+    await expect(header.getByRole('link', { name: 'See a Demo' })).toHaveAttribute('href', '/business')
+    await expect(page.getByRole('link', { name: 'Request a Demo' })).toHaveAttribute('href', /^mailto:/)
+    await expect(page.getByRole('link', { name: 'Sign In' }).last()).toHaveAttribute('href', '/signin')
+    await page.getByRole('link', { name: 'Sign In' }).last().click()
     await expect(page).toHaveURL(/\/signin$/)
     await expect(page.getByRole('group', { name: 'Choose sign-in account type' })).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
