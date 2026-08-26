@@ -164,7 +164,7 @@ test.describe('Loyality production customer and business workflows', () => {
     const errors = runtimeErrors(page)
     await signIn(page, 'customer@loyality.test', /\/dashboard/)
     await page.goto(`/offer/${fixture.offerToken}?source=qa-full-workflow`)
-    await expect(page.getByRole('heading', { name: `${label} Offer` })).toBeVisible()
+    await expect(page.getByRole('heading', { name: `${label} Offer`, exact: true })).toBeVisible()
     await page.getByRole('button', { name: 'Claim this offer' }).click()
     await expect(page.getByRole('heading', { name: 'Voucher added' })).toBeVisible()
 
