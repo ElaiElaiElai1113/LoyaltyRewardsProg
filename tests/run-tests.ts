@@ -3059,6 +3059,7 @@ runTest('active tenant operations use RewardMe and always verify canonical produ
   assert.match(domainReadiness, /manifest\.icons\.length < 2/)
   assert.match(domainReadiness, /installIcons/)
   assert.match(domainReadiness, /\/install-icons\/\$\{slug\}-/)
+  assert.match(domainReadiness, /'Loyality': 'loyality'/)
   assert.match(domainReadiness, /--expected-version/)
   assert.match(domainReadiness, /DOMAIN_VERSION_RETRY_ATTEMPTS/)
   assert.match(domainReadiness, /DOMAIN_VERSION_RETRY_DELAY_MS/)
