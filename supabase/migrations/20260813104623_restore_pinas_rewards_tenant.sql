@@ -1,6 +1,11 @@
 -- Restore Pinas Rewards as an independent tenant after RewardMe became a
 -- separate flagship brand. RewardMe keeps its stable program UUID and data;
 -- Pinas Rewards receives a new UUID so tenant-scoped records cannot mix.
+-- Migration-owned tenant/domain seed writes run without an end-user JWT. Mark
+-- this transaction as service_role so the existing entitlement trigger treats
+-- the insert as trusted infrastructure rather than a customer domain request.
+select set_config('request.jwt.claim.role', 'service_role', true);
+
 insert into public.programs (
   id,
   name,

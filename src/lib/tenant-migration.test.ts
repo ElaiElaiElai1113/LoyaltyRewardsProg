@@ -93,6 +93,15 @@ describe('tenant database migrations', () => {
     expect(guards).toContain('create table public.stripe_webhook_events')
   })
 
+  it('restores the Pinas tenant through the migration-only service role path', () => {
+    const pinasRestore = readFileSync(
+      'supabase/migrations/20260813104623_restore_pinas_rewards_tenant.sql',
+      'utf8',
+    )
+    expect(pinasRestore).toContain("set_config('request.jwt.claim.role', 'service_role', true)")
+    expect(pinasRestore).toContain("'pinas-rewards.vercel.app'")
+  })
+
   it('prepares approval-gated plan limits and tenant-isolated storage policies', () => {
     expect(limitsAndStorage).toContain("enforce_program_resource_limit('customDomains')")
     expect(limitsAndStorage).toContain("enforce_program_resource_limit('businesses')")
