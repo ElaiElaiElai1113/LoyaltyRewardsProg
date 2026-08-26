@@ -185,8 +185,9 @@ test.describe('RewardMe mobile and tablet integrity', () => {
     for (const width of [320, 390, 768, 1440]) {
       await page.setViewportSize({ width, height: 900 })
       await page.goto('/?tenant=rewardme')
-      await page.setContent(`
-        <link rel="stylesheet" href="/src/index.css" />
+      await page.evaluate((markup) => {
+        document.body.innerHTML = markup
+      }, `
         <main class="min-w-0 p-4">
           <div class="grid gap-3" role="list">
             <article
@@ -219,7 +220,6 @@ test.describe('RewardMe mobile and tablet integrity', () => {
           </div>
         </main>
       `)
-      await page.waitForLoadState('networkidle')
 
       const record = page.getByTestId('transaction-history-record')
       await expect(record).toBeVisible()
