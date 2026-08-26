@@ -225,7 +225,7 @@ test.describe('Loyality production customer and business workflows', () => {
     const title = `${label} Catalog Voucher`
     const heading = page.getByRole('heading', { name: title })
     await expect(heading).toBeVisible()
-    await heading.locator('..').getByRole('button', { name: 'Choose' }).click()
+    await heading.locator('..').locator('..').getByRole('button', { name: 'Choose' }).click()
     await expect(page.getByText('Voucher added to your wallet.')).toBeVisible()
 
     const voucher = await requiredSingle(
