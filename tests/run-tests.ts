@@ -1508,7 +1508,8 @@ runTest('customer profile exposes the scannable member QR during launch', () => 
 
   assert.match(profilePage, /const isMemberVerified = Boolean\(profile\.data\?\.memberQrToken\)/)
   assert.match(qrSection, /isMemberVerified && memberQrUrl/)
-  assert.match(qrSection, /<QRCodeSVG value=\{memberQrUrl\}/)
+  assert.match(qrSection, /<QRCodeSVG[\s\S]+data-testid="member-qr-code"[\s\S]+value=\{memberQrUrl\}/)
+  assert.match(qrSection, /marginSize=\{2\}/)
   assert.match(profilePage, /Your member QR is active now\./)
   assert.match(profilePage, /ID verification is optional during launch/)
   assert.doesNotMatch(profilePage, /Verify your ID to activate your member QR\./)
@@ -2202,7 +2203,7 @@ runTest('gift card catalog exposes claimable filtering and summary feedback', ()
 
   assert.match(giftCardsPage, /showClaimableOnly/)
   assert.match(giftCardsPage, /setShowClaimableOnly/)
-  assert.match(giftCardsPage, /const catalogItems = catalog\.data \?\? \[\]/)
+  assert.match(giftCardsPage, /const catalogItems = distinctCustomerGiftCardOffers\(catalog\.data \?\? \[\]\)/)
   assert.match(giftCardsPage, /const claimableGiftCards = catalogItems\.filter/)
   assert.match(giftCardsPage, /balancePoints >= item\.pointsCost/)
   assert.match(giftCardsPage, /!rewardActionsLocked/)

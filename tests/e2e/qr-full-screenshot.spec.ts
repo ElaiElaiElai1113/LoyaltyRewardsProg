@@ -78,7 +78,7 @@ test('shared decoder finds an off-center QR in a phone-screen image when the nat
     await signInWithPublishedRole(page, 'Customer', /\/dashboard(?:[/?#]|$)/)
     await page.goto('/profile', { waitUntil: 'domcontentloaded' })
 
-    const memberQr = page.locator('svg[width="184"][height="184"]')
+    const memberQr = page.getByTestId('member-qr-code')
     await expect(memberQr).toBeVisible()
     await memberQr.evaluate(async (element) => {
       const serializedQr = new XMLSerializer().serializeToString(element)
@@ -298,7 +298,7 @@ test('authenticated business upload decodes a full member phone screenshot', asy
   await signInWithPublishedRole(page, 'Customer', /\/dashboard(?:[/?#]|$)/)
 
   await page.goto('/profile', { waitUntil: 'domcontentloaded' })
-  const memberQr = page.locator('svg[width="184"][height="184"]')
+  const memberQr = page.getByTestId('member-qr-code')
   await expect(memberQr).toBeVisible()
   await memberQr.evaluate((element) => {
     element.scrollIntoView({ block: 'center', inline: 'center' })

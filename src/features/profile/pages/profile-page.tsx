@@ -117,10 +117,16 @@ function RewardsProfilePage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-white p-4">
-            <div className="mx-auto flex size-56 items-center justify-center rounded-xl bg-surface-lowest p-4">
+          <div className="min-w-0 rounded-2xl bg-white p-4">
+            <div className="mx-auto flex size-64 max-w-full items-center justify-center rounded-xl bg-surface-lowest p-4">
               {isMemberVerified && memberQrUrl ? (
-                <QRCodeSVG value={memberQrUrl} size={184} />
+                <QRCodeSVG
+                  data-testid="member-qr-code"
+                  value={memberQrUrl}
+                  size={216}
+                  marginSize={2}
+                  className="size-[13.5rem] max-h-full max-w-full"
+                />
               ) : (
                 <div className="flex size-full flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-outline-variant/40 bg-[var(--muted)] text-center">
                   <QrCode className="size-16 text-on-surface-variant/30" />
