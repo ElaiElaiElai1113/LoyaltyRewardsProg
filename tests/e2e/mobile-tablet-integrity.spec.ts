@@ -181,6 +181,60 @@ test.describe('RewardMe mobile and tablet integrity', () => {
     }
   })
 
+  test('transaction history keeps every purchase in one compact responsive record', async ({ page }) => {
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto('/?tenant=rewardme')
+      await page.setContent(`
+        <link rel="stylesheet" href="/src/index.css" />
+        <main class="min-w-0 p-4">
+          <div class="grid gap-3" role="list">
+            <article
+              class="min-w-0 rounded-[1.5rem] border border-outline-variant/15 bg-card p-4 shadow-sm sm:p-5"
+              data-testid="transaction-history-record"
+              role="listitem"
+            >
+              <div class="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div class="min-w-0">
+                  <div class="flex flex-wrap items-center gap-2">
+                    <span class="rounded-full border px-3 py-1 text-xs font-semibold">Gift card used</span>
+                    <span class="text-xs font-semibold text-on-surface-variant">Aug 26, 2026 at 4:50 PM</span>
+                  </div>
+                  <p class="mt-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Receipt</p>
+                  <p class="mt-1 break-words font-serif text-xl text-primary-container">GC-PARTIAL-REWARDME-1787734209021</p>
+                </div>
+                <div class="min-w-0 sm:max-w-[40%] sm:text-right">
+                  <p class="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">Customer</p>
+                  <p class="mt-1 break-words font-semibold text-on-surface">RewardMe Test Member</p>
+                </div>
+              </div>
+              <dl class="mt-4 grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 border-t border-outline-variant/10 pt-4 sm:grid-cols-5">
+                <div class="min-w-0"><dt class="text-[0.62rem] font-bold uppercase">Total</dt><dd class="mt-1 font-semibold">₱2</dd></div>
+                <div class="min-w-0"><dt class="text-[0.62rem] font-bold uppercase">Credit applied</dt><dd class="mt-1 font-semibold">-₱2</dd></div>
+                <div class="min-w-0"><dt class="text-[0.62rem] font-bold uppercase">Final price</dt><dd class="mt-1 font-semibold">₱0</dd></div>
+                <div class="min-w-0"><dt class="text-[0.62rem] font-bold uppercase">Points</dt><dd class="mt-1 font-semibold">0</dd></div>
+                <div class="col-span-2 min-w-0 sm:col-span-1"><dt class="text-[0.62rem] font-bold uppercase">Gift card</dt><dd class="mt-1 break-all font-mono text-xs font-semibold">GC-260826-CD368D</dd></div>
+              </dl>
+            </article>
+          </div>
+        </main>
+      `)
+      await page.waitForLoadState('networkidle')
+
+      const record = page.getByTestId('transaction-history-record')
+      await expect(record).toBeVisible()
+      const layout = await record.evaluate((element) => ({
+        height: Math.round(element.getBoundingClientRect().height),
+        nestedCards: element.querySelectorAll('.rounded-xl').length,
+        overflow: Math.max(0, document.documentElement.scrollWidth - document.documentElement.clientWidth),
+      }))
+
+      expect(layout.overflow, `${width}px transaction record overflow`).toBeLessThanOrEqual(1)
+      expect(layout.nestedCards, `${width}px nested metric cards`).toBe(0)
+      expect(layout.height, `${width}px compact transaction height`).toBeLessThan(width < 640 ? 480 : 260)
+    }
+  })
+
   test('workspace action rows and campaign cards use solid, readable surfaces', async ({ page }) => {
     await page.goto('/?tenant=rewardme')
     await page.evaluate(() => {

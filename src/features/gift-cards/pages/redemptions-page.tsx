@@ -792,64 +792,67 @@ export function RedemptionsPage() {
             description={t('After staff redeem a gift card or scan a member QR and record a purchase, the receipt, rewardable bill, points, commission, and optional gift card code will appear here.')}
           />
         ) : (
-          <Card>
-            <CardContent className="divide-y divide-outline-variant/10 p-0">
-              {transactionPagination.pageItems.map((transaction) => (
-                <div
-                  key={transaction.id}
-                  className="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,2fr)_minmax(0,1.25fr)] lg:items-start"
-                  data-transaction-receipt={transaction.receiptNumber ?? undefined}
-                >
+          <div className="grid gap-3" role="list">
+            {transactionPagination.pageItems.map((transaction) => (
+              <article
+                key={transaction.id}
+                className="min-w-0 rounded-[1.5rem] border border-outline-variant/15 bg-card p-4 shadow-sm sm:p-5"
+                data-testid="transaction-history-record"
+                data-transaction-receipt={transaction.receiptNumber ?? undefined}
+                role="listitem"
+              >
+                <div className="flex min-w-0 flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
                       <Badge variant={transaction.giftCardCode ? 'secondary' : 'outline'} className="w-fit">
                         {t(transaction.statusLabel)}
                       </Badge>
+                      <span className="text-xs font-semibold text-on-surface-variant">
+                        {formatDateTime(transaction.createdAt, selectedLocale, t('Not recorded'))}
+                      </span>
                     </div>
                     <p className="mt-3 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Receipt')}</p>
                     <p className="mt-1 break-words font-serif text-xl text-primary-container">
                       {transaction.receiptNumber ?? (transaction.kind === 'gift_card_redemption' ? t('Gift card only') : t('No receipt'))}
                     </p>
-                    <p className="mt-1 text-xs font-semibold text-on-surface-variant">{formatDateTime(transaction.createdAt, selectedLocale, t('Not recorded'))}</p>
-                    <p className="mt-4 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Customer')}</p>
-                    <p className="mt-1 font-semibold text-on-surface">{transaction.customer}</p>
                   </div>
-
-                  <div className="grid min-w-0 gap-3 sm:grid-cols-3">
-                    <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Total')}</p>
-                      <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-total">
-                        {transaction.totalAmountLabel}
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Credit Applied')}</p>
-                      <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-gift-card-discount">
-                        {transaction.discountLabel}
-                      </p>
-                    </div>
-                    <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Final Price')}</p>
-                      <p className="mt-2 font-semibold text-on-surface" data-testid="transaction-final-price">
-                        {transaction.finalPriceLabel}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid min-w-0 gap-3 sm:grid-cols-2 lg:grid-cols-1">
-                    <div className="rounded-xl border border-primary/15 bg-primary/5 p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Points')}</p>
-                      <p className="mt-2 text-lg font-semibold text-on-surface">{transaction.pointsLabel}</p>
-                    </div>
-                    <div className="rounded-xl border border-outline-variant/15 bg-surface-low p-3">
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-on-surface-variant/60">{t('Gift Card')}</p>
-                      <p className="mt-2 break-all font-mono text-xs font-semibold text-on-surface">{transaction.giftCardCode ?? t('None')}</p>
-                    </div>
+                  <div className="min-w-0 sm:max-w-[40%] sm:text-right">
+                    <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-on-surface-variant/60">{t('Customer')}</p>
+                    <p className="mt-1 break-words font-semibold text-on-surface">{transaction.customer}</p>
                   </div>
                 </div>
-              ))}
-            </CardContent>
-          </Card>
+
+                <dl className="mt-4 grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 border-t border-outline-variant/10 pt-4 sm:grid-cols-5">
+                  <div className="min-w-0">
+                    <dt className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Total')}</dt>
+                    <dd className="mt-1 font-semibold text-on-surface" data-testid="transaction-total">
+                      {transaction.totalAmountLabel}
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Credit Applied')}</dt>
+                    <dd className="mt-1 font-semibold text-on-surface" data-testid="transaction-gift-card-discount">
+                      {transaction.discountLabel}
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Final Price')}</dt>
+                    <dd className="mt-1 font-semibold text-on-surface" data-testid="transaction-final-price">
+                      {transaction.finalPriceLabel}
+                    </dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Points')}</dt>
+                    <dd className="mt-1 font-semibold text-on-surface">{transaction.pointsLabel}</dd>
+                  </div>
+                  <div className="col-span-2 min-w-0 sm:col-span-1">
+                    <dt className="text-[0.62rem] font-bold uppercase tracking-[0.14em] text-on-surface-variant/60">{t('Gift Card')}</dt>
+                    <dd className="mt-1 break-all font-mono text-xs font-semibold text-on-surface">{transaction.giftCardCode ?? t('None')}</dd>
+                  </div>
+                </dl>
+              </article>
+            ))}
+          </div>
         )}
         <PaginationControls ariaLabel={t('Transaction history pagination')} {...transactionPagination} onPageChange={transactionPagination.setPage} />
       </section>

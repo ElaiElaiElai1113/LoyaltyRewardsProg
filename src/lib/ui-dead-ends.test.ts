@@ -127,6 +127,23 @@ describe('current UI process safeguards', () => {
     expect(dashboard).not.toMatch(/<Button[^>]*>\s*\{t\(getPartnerReferralStatusLabel/)
   })
 
+  it('renders every transaction as one compact themed record instead of nested metric cards', () => {
+    const redemptions = source('src/features/gift-cards/pages/redemptions-page.tsx')
+    const transactionHistory = redemptions.slice(
+      redemptions.indexOf("<section className=\"space-y-4\">", redemptions.indexOf("t('Transaction History')") - 500),
+      redemptions.indexOf('<RedemptionConfirmationDialog'),
+    )
+
+    expect(transactionHistory).toContain('role="list"')
+    expect(transactionHistory).toContain('role="listitem"')
+    expect(transactionHistory).toContain('data-testid="transaction-history-record"')
+    expect(transactionHistory).toContain('bg-card')
+    expect(transactionHistory).toContain('<dl className="mt-4 grid')
+    expect(transactionHistory).toContain('sm:grid-cols-5')
+    expect(transactionHistory).not.toContain('rounded-xl border')
+    expect(transactionHistory).not.toContain('bg-surface-low p-3')
+  })
+
   it('registers the protected launch dashboard and keeps approvals explicit', () => {
     const router = source('src/routes/router.tsx')
     const layout = source('src/layouts/admin-layout.tsx')
