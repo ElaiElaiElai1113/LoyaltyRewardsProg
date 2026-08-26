@@ -342,7 +342,38 @@ export const loyalityService = {
 
   async setActive(table: 'loyality_offers' | 'loyality_visit_rules' | 'loyality_voucher_catalog', id: string, active: boolean) {
     const sb = requireSupabase()
-    const { error } = await sb.from(table).update({ active }).eq('id', id)
-    if (error) throw new Error(error.message)
+    const { data, error } = await sb.from(table).update({ active }).eq('id', id).select('id').single()
+    if (error || !data) throw new Error(error?.message ?? 'This item could not be updated.')
+  },
+
+  async setRaffleStatus(id: string, status: LoyalityRaffle['status']) {
+    const sb = requireSupabase()
+    const { data, error } = await sb
+      .from('loyality_raffles')
+      .update({ status })
+      .eq('id', id)
+      .select('id,status')
+      .single()
+    if (error || !data) throw new Error(error?.message ?? 'This prize draw could not be updated.')
+  },
+
+  async deleteRaffle(id: string) {
+    const sb = requireSupabase()
+    const { data: entry, error: entryError } = await sb
+      .from('loyality_raffle_entries')
+      .select('id')
+      .eq('raffle_id', id)
+      .limit(1)
+      .maybeSingle()
+    if (entryError) throw new Error(entryError.message)
+    if (entry) throw new Error('This prize draw already has entries. Cancel it instead so the history remains accurate.')
+
+    const { data, error } = await sb
+      .from('loyality_raffles')
+      .delete()
+      .eq('id', id)
+      .select('id')
+      .single()
+    if (error || !data) throw new Error(error?.message ?? 'This prize draw could not be deleted.')
   },
 }

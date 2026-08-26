@@ -65,6 +65,7 @@
     "qa:refresh-wondertown": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/provision-rewardme-production-qa.ps1 -Apply -Target Wondertown",
     "qa:reset-wondertown": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/reset-wondertown-demo.ps1",
     "qa:verify-reward-sites": "node scripts/verify-reward-sites.mjs",
+    "qa:cleanup-production": "node scripts/cleanup-production-qa.mjs",
     "test:tenant-tools": "node scripts/validate-tenant-tooling.mjs",
     "test:migration-contracts": "node scripts/validate-tenant-migration-contracts.mjs",
     "test:deployment-routing": "node scripts/validate-deployment-routing.mjs",

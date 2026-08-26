@@ -1,0 +1,49 @@
+name: Loyality full production QA
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: loyality-full-production-qa
+  cancel-in-progress: false
+
+jobs:
+  full-workflow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      E2E_BASE_URL: https://loyality-rewards.vercel.app
+      E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+      LOYALITY_E2E_AUTH_ENABLED: 'true'
+      LOYALITY_PRODUCTION_WORKFLOW_ENABLED: 'true'
+      SUPABASE_URL: https://bftuvmywtmpflizsomim.supabase.co
+      VITE_SUPABASE_URL: https://bftuvmywtmpflizsomim.supabase.co
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.NEW_VITE_SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Provision private Loyality QA accounts
+        run: node scripts/provision-loyality-qa.mjs
+      - run: npx playwright install --with-deps chromium
+      - name: Exercise customer and business production workflows
+        run: npx playwright test tests/e2e/loyality.spec.ts tests/e2e/loyality-workflows.spec.ts --config=playwright.remote.config.ts --workers=1
+      - name: Upload Playwright evidence on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: loyality-full-production-qa
+          path: |
+            playwright-report
+            test-results
+          if-no-files-found: ignore
+          retention-days: 7

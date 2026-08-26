@@ -1,0 +1,45 @@
+name: Production QA cleanup
+
+on:
+  workflow_dispatch:
+    inputs:
+      program:
+        description: Product whose clearly labelled QA definitions should be archived
+        required: true
+        default: all
+        type: choice
+        options: [all, rewardme, wondertown, loyality]
+      mode:
+        description: Preview or apply the safe archive operation
+        required: true
+        default: dry-run
+        type: choice
+        options: [dry-run, apply]
+      older_than_hours:
+        description: Ignore newer fixtures so active test runs are never disturbed
+        required: true
+        default: '6'
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SUPABASE_URL: https://bftuvmywtmpflizsomim.supabase.co
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Archive only clearly labelled QA definitions
+        shell: bash
+        run: |
+          args=("--program=${{ inputs.program }}" "--older-than-hours=${{ inputs.older_than_hours }}")
+          if [[ "${{ inputs.mode }}" == "apply" ]]; then args+=("--apply"); fi
+          npm run qa:cleanup-production -- "${args[@]}"

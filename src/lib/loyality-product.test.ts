@@ -6,6 +6,7 @@ const root = process.cwd()
 const migration = readFileSync(resolve(root, 'supabase/migrations/20260824170041_loyality_single_business_platform.sql'), 'utf8')
 const home = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-home-page.tsx'), 'utf8')
 const service = readFileSync(resolve(root, 'src/features/loyality/loyality-service.ts'), 'utf8')
+const businessGrowth = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-business-growth-page.tsx'), 'utf8')
 
 describe('Loyality product contract', () => {
   it('is a separate, single-business tenant on Loyalty Platforms', () => {
@@ -36,5 +37,16 @@ describe('Loyality product contract', () => {
     expect(home).toContain('reimagined.')
     expect(home).not.toContain('partner businesses')
     expect(service).toContain("sourceKind: 'acquisition_offer' | 'referral' | 'visit_rule' | 'points_catalog' | 'manual'")
+  })
+
+  it('lets business owners pause, reactivate, cancel, and safely delete unused raffles', () => {
+    expect(service).toContain('async setRaffleStatus')
+    expect(service).toContain(".from('loyality_raffle_entries')")
+    expect(service).toContain('already has entries')
+    expect(service).toContain('async deleteRaffle')
+    expect(businessGrowth).toContain('Manage raffles')
+    expect(businessGrowth).toContain('Raffle paused.')
+    expect(businessGrowth).toContain('Raffle cancelled.')
+    expect(businessGrowth).toContain('Unused raffle deleted.')
   })
 })

@@ -1,4 +1,4 @@
-import { BarChart3, Gift, LoaderCircle, Plus, QrCode, Repeat2, TicketCheck, UsersRound } from 'lucide-react'
+import { BarChart3, Gift, LoaderCircle, Pause, Play, Plus, QrCode, Repeat2, TicketCheck, Trash2, UsersRound, XCircle } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router'
@@ -93,7 +93,7 @@ export function LoyalityBusinessGrowthPage() {
         </div>
       </section>
 
-      <section className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
+      <section id="loyality-raffle-builder" className="scroll-mt-24 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><div><p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Simple builders</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Choose what you want to create</h2><p className="mt-2 text-sm text-[var(--muted-foreground)]">Each rule belongs only to this business.</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{([['offer','Offer'],['visit','Visit reward'],['voucher','Voucher'],['raffle','Raffle']] as const).map(([id,label]) => <Button key={id} variant={builder === id ? 'default' : 'outline'} className="rounded-full" onClick={() => setBuilder(id)}><Plus />{label}</Button>)}</div></div>
         {builder === 'offer' ? <OfferForm businessId={business.id} busy={busy} submit={submit} /> : null}
         {builder === 'visit' ? <VisitRuleForm businessId={business.id} busy={busy} submit={submit} /> : null}
@@ -106,6 +106,8 @@ export function LoyalityBusinessGrowthPage() {
         <RuleList title="Visit rewards" empty="No visit rules yet." rows={snapshot.visitRules.map((item) => ({ id: item.id, title: item.name, detail: `Visit ${item.triggerVisitCount}: ${item.rewardTitle}`, active: item.active, table: 'loyality_visit_rules' as const }))} reload={load} />
         <RuleList title="Voucher menu" empty="No voucher options yet." rows={snapshot.catalog.map((item) => ({ id: item.id, title: item.title, detail: `${item.pointsCost} points`, active: item.active, table: 'loyality_voucher_catalog' as const }))} reload={load} />
       </section>
+
+      <RaffleList rows={snapshot.raffles} reload={load} />
     </div>
   )
 }
@@ -141,4 +143,70 @@ function WideField({ label, ...props }: React.ComponentProps<typeof Textarea> & 
 
 function RuleList({ title, empty, rows, reload }: { title: string; empty: string; rows: Array<{ id: string; title: string; detail: string; active: boolean; table: 'loyality_offers' | 'loyality_visit_rules' | 'loyality_voucher_catalog' }>; reload: () => Promise<void> }) {
   return <div className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm"><h2 className="text-xl font-black">{title}</h2><div className="mt-4 space-y-3">{rows.length ? rows.map((row) => <div key={row.id} className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--border)] p-4"><div className="min-w-0"><strong className="block truncate">{row.title}</strong><span className="mt-1 block text-xs text-[var(--muted-foreground)]">{row.detail}</span></div><Button size="sm" variant={row.active ? 'outline' : 'default'} className="shrink-0 rounded-full" onClick={async () => { await loyalityService.setActive(row.table, row.id, !row.active); await reload() }}>{row.active ? 'Pause' : 'Activate'}</Button></div>) : <p className="text-sm text-[var(--muted-foreground)]">{empty}</p>}</div></div>
+}
+
+function RaffleList({ rows, reload }: { rows: LoyalityBusinessSnapshot['raffles']; reload: () => Promise<void> }) {
+  const [busyId, setBusyId] = useState<string | null>(null)
+
+  async function update(id: string, action: () => Promise<void>, success: string) {
+    setBusyId(id)
+    try {
+      await action()
+      toast.success(success)
+      await reload()
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'This prize draw could not be updated.')
+    } finally {
+      setBusyId(null)
+    }
+  }
+
+  return (
+    <section className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
+      <p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Prize draws</p>
+      <div className="mt-2 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
+        <div>
+          <h2 className="text-2xl font-black tracking-[-.03em]">Manage raffles</h2>
+          <p className="mt-1 text-sm text-[var(--muted-foreground)]">Pause, reactivate, cancel, or remove an unused raffle.</p>
+        </div>
+        <Button className="w-full rounded-full sm:w-auto" variant="outline" onClick={() => document.getElementById('loyality-raffle-builder')?.scrollIntoView({ behavior: 'smooth' })}>
+          <Plus /> Create raffle
+        </Button>
+      </div>
+      <div className="mt-5 space-y-3">
+        {rows.length ? rows.map((row) => {
+          const isBusy = busyId === row.id
+          const canDelete = row.status !== 'active'
+          return (
+            <article key={row.id} className="grid gap-4 rounded-2xl border border-[var(--border)] p-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+              <div className="min-w-0">
+                <div className="flex flex-wrap items-center gap-2">
+                  <strong className="text-base">{row.title}</strong>
+                  <span className="rounded-full border border-[var(--border)] px-2.5 py-1 text-[10px] font-black uppercase tracking-wider">{row.status}</span>
+                </div>
+                <p className="mt-1 text-sm text-[var(--muted-foreground)]">{row.prizeDescription}</p>
+                <p className="mt-2 text-xs text-[var(--muted-foreground)]">Closes {new Date(row.endsAt).toLocaleString()} · {row.entriesPerPurchase} {row.entriesPerPurchase === 1 ? 'entry' : 'entries'} per qualifying purchase</p>
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:justify-end">
+                {row.status === 'active' ? (
+                  <Button size="sm" variant="outline" className="rounded-full" disabled={isBusy} onClick={() => void update(row.id, () => loyalityService.setRaffleStatus(row.id, 'draft'), 'Raffle paused.')}><Pause /> Pause</Button>
+                ) : row.status === 'draft' ? (
+                  <Button size="sm" className="rounded-full" disabled={isBusy} onClick={() => void update(row.id, () => loyalityService.setRaffleStatus(row.id, 'active'), 'Raffle active.')}><Play /> Activate</Button>
+                ) : null}
+                {(row.status === 'active' || row.status === 'draft') ? (
+                  <Button size="sm" variant="outline" className="rounded-full" disabled={isBusy} onClick={() => void update(row.id, () => loyalityService.setRaffleStatus(row.id, 'cancelled'), 'Raffle cancelled.')}><XCircle /> Cancel</Button>
+                ) : null}
+                {canDelete ? (
+                  <Button size="sm" variant="outline" className="rounded-full" disabled={isBusy} onClick={() => {
+                    if (!window.confirm(`Delete “${row.title}”? This is only allowed when no entries exist.`)) return
+                    void update(row.id, () => loyalityService.deleteRaffle(row.id), 'Unused raffle deleted.')
+                  }}><Trash2 /> Delete</Button>
+                ) : null}
+              </div>
+            </article>
+          )
+        }) : <p className="text-sm text-[var(--muted-foreground)]">No raffles yet.</p>}
+      </div>
+    </section>
+  )
 }
