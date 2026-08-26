@@ -624,19 +624,23 @@ function ScreenshotMockup({ items }: { items: string[] }) {
 }
 
 function GuideMediaPreview({
+  brandName,
   caption,
   imageSrc,
   language,
   route,
   title,
+  useScreenshot,
 }: {
+  brandName: string
   caption: string
   imageSrc: string
   language: Language
   route: string
   title: string
+  useScreenshot: boolean
 }) {
-  if (language === 'en') {
+  if (language === 'en' && useScreenshot) {
     return (
       <img
         src={imageSrc}
@@ -652,12 +656,15 @@ function GuideMediaPreview({
   return (
     <div
       aria-label={title}
-      className="flex h-full w-full flex-col items-center justify-center gap-4 bg-[radial-gradient(circle_at_25%_20%,rgba(255,255,255,0.55),transparent_32%),linear-gradient(145deg,var(--surface-low),var(--card))] p-8 text-center"
+      className="flex h-full w-full flex-col items-center justify-center gap-4 bg-surface-low p-8 text-center"
       data-testid="localized-guide-preview"
       role="img"
     >
       <span className="flex size-16 items-center justify-center rounded-3xl border border-primary-container/20 bg-[var(--card)] text-primary shadow-soft">
         <PreviewIcon className="size-8" aria-hidden="true" />
+      </span>
+      <span className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70">
+        {brandName}
       </span>
       <p className="font-serif text-2xl text-primary">{title}</p>
       <p className="max-w-sm text-sm leading-6 text-on-surface-variant/80">{caption}</p>
@@ -726,20 +733,22 @@ export function PlatformGuidePage() {
         nextBody: content.nextBody,
         badges: content.badges,
       }
-  const tenantScreenshotSlug = program.slug === 'wondertown'
-    ? 'wondertown'
-    : program.slug === 'pinas'
-      ? 'rewardme'
-      : null
-  const tenantScreenshotDirectory = tenantScreenshotSlug
-    ? `/walkthrough-screenshots/${tenantScreenshotSlug}`
-    : '/walkthrough-screenshots'
+  const tenantScreenshotDirectory = program.slug === 'medellin'
+    ? '/walkthrough-screenshots'
+    : program.slug === 'wondertown'
+      ? '/walkthrough-screenshots/wondertown'
+      : program.slug === 'pinas'
+        ? '/walkthrough-screenshots/rewardme'
+        : null
+  const useTenantScreenshots = tenantScreenshotDirectory !== null
   const tenantScreenshotGallery = tenantize(screenshotGalleryByLanguage[language])
   const screenshotGallery = {
     ...tenantScreenshotGallery,
     items: tenantScreenshotGallery.items.map((item) => ({
       ...item,
-      imageSrc: `${tenantScreenshotDirectory}/${item.imageSrc.split('/').at(-1)}`,
+      imageSrc: tenantScreenshotDirectory
+        ? `${tenantScreenshotDirectory}/${item.imageSrc.split('/').at(-1)}`
+        : '',
     })),
   }
   const roleScreenshotRoutes = getRoleScopedScreenshotRoutes(guideAudience)
@@ -822,11 +831,13 @@ export function PlatformGuidePage() {
             data-testid="customer-guide-resource-media"
           >
             <GuideMediaPreview
+              brandName={program.name}
               caption={customerResourceScreen.caption}
               imageSrc={customerResourceScreen.imageSrc}
               language={language}
               route={customerResourceScreen.route}
               title={customerResourceScreen.title}
+              useScreenshot={useTenantScreenshots}
             />
           </div>
 
@@ -894,14 +905,16 @@ export function PlatformGuidePage() {
 
           <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
             {visibleScreenshotItems.map((screen) => (
-              <article key={screen.imageSrc} className="overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-sm">
+              <article key={`${screen.route}-${screen.title}`} className="overflow-hidden rounded-[2rem] border border-primary-container/18 bg-[var(--card)] shadow-sm">
                 <div className="aspect-[4/3] overflow-hidden bg-surface-low">
                   <GuideMediaPreview
+                    brandName={program.name}
                     caption={screen.caption}
                     imageSrc={screen.imageSrc}
                     language={language}
                     route={screen.route}
                     title={screen.title}
+                    useScreenshot={useTenantScreenshots}
                   />
                 </div>
                 <div className="p-5">

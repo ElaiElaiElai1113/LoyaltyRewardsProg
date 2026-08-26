@@ -14,7 +14,7 @@
   --home-display-font: 'Fraunces', Georgia, serif;
   --home-body-font: 'Inter', Arial, sans-serif;
   min-width: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
   background: var(--home-white);
   color: var(--home-ink);
   font-family: var(--home-body-font);
@@ -64,8 +64,16 @@
 }
 
 .figma-home__header {
-  position: relative;
-  z-index: 10;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgb(118 93 22 / 12%);
+  background: rgb(245 244 240 / 94%);
+  backdrop-filter: blur(12px);
+}
+
+.figma-home [id] {
+  scroll-margin-top: 7.5rem;
 }
 
 .figma-home__header-inner {

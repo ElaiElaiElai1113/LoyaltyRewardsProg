@@ -13,6 +13,7 @@ import type {
   SessionUser,
   UserRole,
 } from '@/types/domain'
+import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 
 const storeKey = () => tenantStorageKey('mock-store-v3')
@@ -455,9 +456,28 @@ const orders: Order[] = []
 // ─── Store ─────────────────────────────────────────────────────
 
 export function createSeedStore(): MockStore {
+  const program = getActiveProgram()
+  const seedAddresses: Record<string, readonly [string, string]> = {
+    guatemala: ['Zona 10, Guatemala City', 'Antigua Guatemala'],
+    loyality: ['1 Main Street', '22 Market Square'],
+    medellin: [businesses[0].address, businesses[1].address],
+    pinas: ['Matina, Davao City', 'Lanang, Davao City'],
+    pinasrewards: ['Makati City', 'Quezon City'],
+    synergize: ['Downtown Business District', 'Riverside Market'],
+    wondertown: ['8 Storybook Lane, Wondertown', '22 Comet Crescent, Wondertown'],
+  }
+  const addresses = seedAddresses[program.slug] ?? ['1 Main Street', '22 Market Square']
+  const tenantBusinesses = businesses.map((business, index) => ({
+    ...business,
+    address: addresses[index] ?? addresses[0],
+  }))
+  const tenantProfiles = profiles.map((profile) => profile.role === 'platform-admin'
+    ? { ...profile, email: `admin@${program.slug}.test` }
+    : profile)
+
   return {
-    businesses,
-    profiles,
+    businesses: tenantBusinesses,
+    profiles: tenantProfiles,
     balances,
     rewards,
     products,

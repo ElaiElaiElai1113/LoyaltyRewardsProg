@@ -19,7 +19,7 @@ import localBusinessOwnerWideSmall from '@/assets/business/local-business-owner-
 import salonPartner from '@/assets/business/salon-partner.png'
 import staffQrCheckout from '@/assets/business/staff-qr-checkout.png'
 import restaurantPartner from '@/assets/landing/dinner-rewards.webp'
-import ctaPhoto from '@/assets/medellinrewards-hero.webp'
+import medellinCtaPhoto from '@/assets/medellinrewards-hero.webp'
 
 import './for-businesses-page.css'
 
@@ -193,6 +193,7 @@ export function ForBusinessesPage() {
   const partnerBenefits = getPartnerBenefits(t)
   const partnerCategories = getPartnerCategories(t)
   const processSteps = getProcessSteps(t, program.name)
+  const ctaPhoto = program.slug === 'medellin' ? medellinCtaPhoto : localBusinessOwnerWide
   return (
     <div className="business-landing">
       <section className="business-landing__hero" aria-labelledby="business-hero-title">

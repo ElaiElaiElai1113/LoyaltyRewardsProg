@@ -16,7 +16,7 @@
   color: var(--wonder-ink);
   font-family: 'Inter', Arial, sans-serif;
   min-width: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 .wondertown-home a {
@@ -51,10 +51,14 @@
   background: rgb(255 248 233 / 94%);
   border-bottom: 1px solid rgb(79 59 120 / 12%);
   backdrop-filter: blur(16px);
-  position: absolute;
+  position: sticky;
   top: 0;
   width: 100%;
-  z-index: 10;
+  z-index: 50;
+}
+
+.wondertown-home [id] {
+  scroll-margin-top: 6.5rem;
 }
 
 .wondertown-home__header-inner {

@@ -20,8 +20,22 @@ import type { Business, Product } from '@/types/domain'
 import { getBusinessMapPositions, hasExactMapPin } from '@/features/shop/business-map-layout'
 
 const DAVAO_MAP_LABELS = ['Davao City', 'Matina', 'Bajada', 'Lanang']
+const GUATEMALA_MAP_LABELS = ['Guatemala City', 'Zona 10', 'Zona 4', 'Antigua']
+const LOYALITY_MAP_LABELS = ['Main Street', 'Market Square', 'Riverside', 'Old Town']
 const MEDELLIN_MAP_LABELS = ['Laureles', 'Poblado', 'Centro', 'Provenza']
+const PINAS_MAP_LABELS = ['Makati', 'Quezon City', 'Cebu City', 'Davao City']
+const SYNERGIZE_MAP_LABELS = ['Business District', 'Market Center', 'Riverside', 'Central']
 const WONDERTOWN_MAP_LABELS = ['Storybook Lane', 'Comet Crescent', 'Lantern Walk', 'Starlight Square']
+
+const mapLabelsByProgram: Record<string, readonly string[]> = {
+  guatemala: GUATEMALA_MAP_LABELS,
+  loyality: LOYALITY_MAP_LABELS,
+  medellin: MEDELLIN_MAP_LABELS,
+  pinas: DAVAO_MAP_LABELS,
+  pinasrewards: PINAS_MAP_LABELS,
+  synergize: SYNERGIZE_MAP_LABELS,
+  wondertown: WONDERTOWN_MAP_LABELS,
+}
 
 const MAP_LOCAL_ROADS = [
   'M -30 94 C 142 74 312 92 482 76 C 654 60 822 72 1032 44',
@@ -221,11 +235,7 @@ export function ShopPage() {
   const partnerBusinesses = profile ? allBusinesses : allBusinesses.filter((business) => !isQaReleaseFixture(business))
   const partnerBusinessIds = new Set(partnerBusinesses.map((business) => business.id))
   const partnerProducts = (products.data ?? []).filter((product) => partnerBusinessIds.has(product.businessId))
-  const mapLabels = program.slug === 'pinas'
-    ? DAVAO_MAP_LABELS
-    : program.slug === 'wondertown'
-      ? WONDERTOWN_MAP_LABELS
-      : MEDELLIN_MAP_LABELS
+  const mapLabels = [...(mapLabelsByProgram[program.slug] ?? SYNERGIZE_MAP_LABELS)]
   const mapPositions = getBusinessMapPositions(partnerBusinesses)
   const previewPinnedBusinesses = partnerBusinesses.filter((business) => !hasExactMapPin(business))
   const selectedBusiness = partnerBusinesses.find((business) => business.id === selectedBusinessId) ?? null

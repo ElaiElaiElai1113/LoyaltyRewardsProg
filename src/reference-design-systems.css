@@ -579,7 +579,7 @@
   color: #121e30;
   font-family: Inter, "Segoe UI", Arial, sans-serif;
 }
-.loyality-site__header { position: sticky; top: 0; background: rgb(255 255 255 / 94%); backdrop-filter: blur(8px); }
+.loyality-site__header { position: sticky; top: 0; z-index: 50; width: 100%; background: rgb(255 255 255 / 96%); backdrop-filter: blur(8px); }
 .loyality-site__brand img { width: 150px; }
 .loyality-site__header nav { color: #54595f; font-weight: 500; }
 .loyality-site__header nav a:hover,

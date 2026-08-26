@@ -15,7 +15,8 @@
 .reference-loyality *, .reference-loyality *::before, .reference-loyality *::after { box-sizing: border-box; }
 .reference-loyality a { color: inherit; text-decoration: none; }
 .reference-loyality__wrap { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
-.reference-loyality__nav { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid #eae6dc; background: rgba(255,255,255,.94); backdrop-filter: blur(8px); }
+.reference-loyality__nav { position: sticky; top: 0; z-index: 50; width: 100%; border-bottom: 1px solid #eae6dc; background: rgba(255,255,255,.96); backdrop-filter: blur(8px); }
+.reference-loyality [id] { scroll-margin-top: 6.5rem; }
 .reference-loyality__nav-inner { display: flex; align-items: center; justify-content: space-between; gap: 24px; max-width: 1160px; margin: 0 auto; padding: 20px 32px; }
 .reference-loyality__logo, .reference-loyality__footer-logo { color: var(--navy); font-family: 'Source Serif 4', serif; font-weight: 700; }
 .reference-loyality__logo { font-size: 21px; }

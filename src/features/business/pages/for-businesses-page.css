@@ -8,8 +8,16 @@
 .business-public-shell__header {
   background: #fff;
   height: 90px;
-  position: relative;
-  z-index: 10;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 50;
+  border-bottom: 1px solid rgb(161 123 20 / 14%);
+  box-shadow: 0 8px 24px rgb(57 42 20 / 6%);
+}
+
+.business-public-shell [id] {
+  scroll-margin-top: 7rem;
 }
 
 .business-public-shell__header-inner {

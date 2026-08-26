@@ -449,7 +449,7 @@
 html {
   scroll-behavior: smooth;
   scrollbar-gutter: stable;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -461,7 +461,7 @@ body {
     radial-gradient(circle at 82% 8%, color-mix(in srgb, var(--champagne) 22%, transparent), transparent 28%),
     linear-gradient(180deg, var(--surface-container-lowest) 0%, var(--background) 30%, var(--surface-container-low) 100%);
   color: var(--foreground);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 a {
@@ -477,7 +477,7 @@ textarea {
 
 #root {
   min-height: 100vh;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 ::selection {

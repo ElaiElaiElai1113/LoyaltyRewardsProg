@@ -65,6 +65,16 @@ test.describe('white-label tenant resolution', () => {
       await expect(page.locator('body')).not.toContainText(/\bheadline\b/i)
       await expect(page.locator('html')).toHaveCSS('--tenant-accent', tenant.color)
       await expect(page.locator('body')).not.toContainText('Loading rewards program...')
+      const landingHeader = page.locator(
+        tenant.slug === 'loyality'
+          ? '.reference-loyality__nav'
+          : tenant.slug === 'pinas' || tenant.slug === 'wondertown'
+            ? '.reference-rewardme__nav'
+            : '.figma-home__header',
+      )
+      await expect(landingHeader).toHaveCSS('position', 'sticky')
+      await page.evaluate(() => window.scrollTo(0, Math.min(700, document.body.scrollHeight)))
+      await expect.poll(() => landingHeader.evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBe(0)
       expect(errors).toEqual([])
 
       await page.reload()
@@ -167,4 +177,32 @@ test.describe('white-label tenant resolution', () => {
     await expect(page.locator('main')).not.toContainText('Medellin Rewards')
     expect(errors).toEqual([])
   })
+
+  for (const tenant of tenants.filter((candidate) => candidate.slug !== 'medellin')) {
+    test(`${tenant.name} never renders Medellin text, imagery, or links`, async ({ page }) => {
+      const publicRoutes = ['/', '/guide', '/shop', '/business', '/signin']
+      await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
+
+      for (const route of publicRoutes) {
+        const response = await page.goto(`${route}?tenant=${tenant.slug}`, { waitUntil: 'domcontentloaded' })
+        expect(response?.status(), `${tenant.name} ${route}`).toBeLessThan(400)
+        await page.locator('body').waitFor()
+
+        const renderedBranding = await page.evaluate(() => {
+          const attributeValues = Array.from(document.querySelectorAll<HTMLElement>('*')).flatMap((element) =>
+            Array.from(element.attributes).map((attribute) => attribute.value),
+          )
+          return [document.title, document.body.innerText, ...attributeValues].join('\n')
+        })
+
+        expect(renderedBranding, `${tenant.name} ${route} leaked Medellin branding`).not.toMatch(/medell[ií]n|medellinrewards/i)
+      }
+
+      await page.goto(`/business?tenant=${tenant.slug}`, { waitUntil: 'domcontentloaded' })
+      const businessHeader = page.locator('.business-public-shell__header')
+      await expect(businessHeader).toHaveCSS('position', 'sticky')
+      await page.evaluate(() => window.scrollTo(0, Math.min(700, document.body.scrollHeight)))
+      await expect.poll(() => businessHeader.evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBe(0)
+    })
+  }
 })
