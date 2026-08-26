@@ -18,6 +18,7 @@ type FixtureIds = {
   catalogId: string
   raffleId: string
   originalPoints: number
+  originalPhone: string
 }
 
 const stamp = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`
@@ -72,10 +73,16 @@ test.describe('Loyality production customer and business workflows', () => {
       'Could not load the Loyality QA business',
     )
     const customer = await requiredSingle(
-      admin.from('profiles').select('id,member_qr_token').eq('email', 'customer@loyality.test').single(),
+      admin.from('profiles').select('id,member_qr_token,phone').eq('email', 'customer@loyality.test').single(),
       'Could not load the Loyality QA customer',
     )
     if (!customer.member_qr_token) throw new Error('The Loyality QA customer does not have a member QR token.')
+    if (!String(customer.phone ?? '').trim()) {
+      await requiredSingle(
+        admin.from('profiles').update({ phone: '+15550100000' }).eq('id', customer.id).select('id').single(),
+        'Could not prepare the Loyality QA customer contact number',
+      )
+    }
 
     const balance = await requiredSingle(
       admin.from('reward_balances').select('points').eq('program_id', program.id).eq('profile_id', customer.id).single(),
@@ -131,6 +138,7 @@ test.describe('Loyality production customer and business workflows', () => {
       customerToken: customer.member_qr_token, offerId: offer.id, offerToken: offer.public_token,
       visitRuleId: visitRule.id, catalogId: catalog.id, raffleId: raffle.id,
       originalPoints: Number(balance.points ?? 0),
+      originalPhone: String(customer.phone ?? ''),
     }
   })
 
@@ -152,6 +160,7 @@ test.describe('Loyality production customer and business workflows', () => {
     await remove(admin.from('activities').delete().eq('program_id', fixture.programId).ilike('description', `%${receipt}%`), 'activity')
     await remove(admin.from('admin_logs').delete().eq('program_id', fixture.programId).ilike('details', `%${receipt}%`), 'admin log')
     await remove(admin.from('reward_balances').update({ points: fixture.originalPoints }).eq('program_id', fixture.programId).eq('profile_id', fixture.customerId), 'balance restore')
+    await remove(admin.from('profiles').update({ phone: fixture.originalPhone }).eq('id', fixture.customerId), 'customer contact restore')
     await remove(admin.from('loyality_raffles').delete().eq('id', fixture.raffleId), 'raffle')
     await remove(admin.from('loyality_voucher_catalog').delete().eq('id', fixture.catalogId), 'catalog item')
     await remove(admin.from('loyality_visit_rules').delete().eq('id', fixture.visitRuleId), 'visit rule')
