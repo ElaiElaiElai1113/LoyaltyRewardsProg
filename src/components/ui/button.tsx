@@ -6,12 +6,12 @@ import { LoaderCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-50 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
+  'inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-70 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2',
   {
     variants: {
       variant: {
-        default: 'gold-sweep bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)]',
-        tenant: 'gold-sweep bg-tenant shadow-soft transition hover:-translate-y-0.5 hover:opacity-95',
+        default: 'bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)]',
+        tenant: 'bg-tenant shadow-soft transition hover:-translate-y-0.5 hover:opacity-95',
         secondary: 'border border-[var(--border)] bg-[var(--card)] text-[var(--foreground)] shadow-soft hover:-translate-y-0.5 hover:border-primary/30 hover:bg-[var(--muted)]',
         outline: 'border border-[var(--primary)]/25 bg-[var(--card)] text-[var(--foreground)] hover:-translate-y-0.5 hover:border-[var(--primary)]/50 hover:bg-[var(--muted)]',
         ghost: 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]',

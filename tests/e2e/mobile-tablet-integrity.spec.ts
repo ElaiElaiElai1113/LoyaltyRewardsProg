@@ -181,6 +181,95 @@ test.describe('RewardMe mobile and tablet integrity', () => {
     }
   })
 
+  test('workspace action rows and campaign cards use solid, readable surfaces', async ({ page }) => {
+    await page.goto('/?tenant=rewardme')
+    await page.evaluate(() => {
+      document.documentElement.dataset.program = 'pinas'
+
+      const host = document.createElement('main')
+      host.className = 'product-workspace-shell__main min-h-screen bg-background p-6 text-foreground'
+      host.innerHTML = `
+        <button class="flex w-full items-center justify-between rounded-full border border-outline-variant/20 bg-card px-4 py-3 hover:bg-primary/5" data-testid="customer-row">
+          <span class="text-on-surface-variant/70">member@rewardme.test</span>
+          <span>Choose</span>
+        </button>
+        <article class="mt-6 rounded-[2.5rem] border border-outline-variant/20 bg-card p-8" data-testid="campaign-card">
+          <span class="rounded-full border border-primary/25 bg-primary px-3 py-1 text-primary-foreground">Active</span>
+          <h2 class="mt-4 text-3xl text-primary">Twilight Treat</h2>
+          <p class="text-on-surface-variant/85">Earn double rewards during the demo.</p>
+        </article>
+      `
+      document.body.replaceChildren(host)
+    })
+
+    const customerRow = page.getByTestId('customer-row')
+    const campaignCard = page.getByTestId('campaign-card')
+    await expect(customerRow).toBeVisible()
+    await expect(campaignCard).toBeVisible()
+
+    const surfaces = await page.evaluate(() => {
+      function linearRgb(value: string) {
+        const values = value.match(/-?[\d.]+/g)?.map(Number) ?? []
+        if (value.startsWith('oklab') && values.length >= 3) {
+          const [lightness, a, b, alpha = 1] = values
+          const l = (lightness + 0.3963377774 * a + 0.2158037573 * b) ** 3
+          const m = (lightness - 0.1055613458 * a - 0.0638541728 * b) ** 3
+          const s = (lightness - 0.0894841775 * a - 1.291485548 * b) ** 3
+          return {
+            alpha,
+            channels: [
+              4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s,
+              -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s,
+              -0.0041960863 * l - 0.7034186147 * m + 1.707614701 * s,
+            ],
+          }
+        }
+
+        const channels = values.slice(0, 3).map((channel) => {
+          const normalized = channel / 255
+          return normalized <= 0.04045 ? normalized / 12.92 : ((normalized + 0.055) / 1.055) ** 2.4
+        })
+        return { alpha: values[3] ?? 1, channels: channels.length === 3 ? channels : [0, 0, 0] }
+      }
+
+      function luminance(channels: number[]) {
+        return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2]
+      }
+
+      function contrast(foreground: string, background: string) {
+        const foregroundColor = linearRgb(foreground)
+        const backgroundColor = linearRgb(background)
+        const compositedForeground = foregroundColor.channels.map((channel, index) => (
+          channel * foregroundColor.alpha + backgroundColor.channels[index] * (1 - foregroundColor.alpha)
+        ))
+        const first = luminance(compositedForeground)
+        const second = luminance(backgroundColor.channels)
+        return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05)
+      }
+
+      const row = document.querySelector<HTMLElement>('[data-testid="customer-row"]')!
+      const email = row.querySelector<HTMLElement>('span')!
+      const campaign = document.querySelector<HTMLElement>('[data-testid="campaign-card"]')!
+      const campaignCopy = campaign.querySelector<HTMLElement>('p')!
+      const rowStyle = getComputedStyle(row)
+      const campaignStyle = getComputedStyle(campaign)
+
+      return {
+        campaignBackgroundImage: campaignStyle.backgroundImage,
+        campaignCopyContrast: contrast(getComputedStyle(campaignCopy).color, campaignStyle.backgroundColor),
+        rowBackground: rowStyle.backgroundColor,
+        rowBackgroundImage: rowStyle.backgroundImage,
+        rowCopyContrast: contrast(getComputedStyle(email).color, rowStyle.backgroundColor),
+      }
+    })
+
+    expect(surfaces.rowBackgroundImage).toBe('none')
+    expect(surfaces.campaignBackgroundImage).toBe('none')
+    expect(surfaces.rowBackground).not.toBe('rgb(212, 175, 55)')
+    expect(surfaces.rowCopyContrast).toBeGreaterThanOrEqual(4.5)
+    expect(surfaces.campaignCopyContrast).toBeGreaterThanOrEqual(4.5)
+  })
+
   test('member lists and gift-card selectors stay contained from phone to desktop', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 844 })
     await page.goto('/guide?tenant=wondertown')

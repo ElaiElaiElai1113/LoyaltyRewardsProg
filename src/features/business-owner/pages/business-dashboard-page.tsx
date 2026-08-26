@@ -82,7 +82,6 @@ function DefaultBusinessDashboardPage() {
     )
   }
 
-  const businessColors = { primary: 'from-primary to-primary-container', light: 'from-primary/14 to-secondary-container/14' }
   const signupQrUrl =
     profile?.referralCode && business?.id && typeof window !== 'undefined'
       ? `${window.location.origin}/promo?ref=${profile.referralCode}&business=${business.id}`
@@ -238,40 +237,40 @@ function DefaultBusinessDashboardPage() {
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           <Link
             to="/business/promotions"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className="group rounded-3xl border border-outline-variant/20 bg-card p-6 transition-all hover:border-primary/35 hover:bg-muted"
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Promotions')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{promotions.length}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary">{t('Promotions')}</p>
+                <p className="font-serif text-3xl text-primary">{promotions.length}</p>
               </div>
-              <Sparkles className="size-8 text-primary/70 group-hover:text-white/70" />
+              <Sparkles className="size-8 text-primary" />
             </div>
           </Link>
 
           <Link
             to="/business/settings"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className="group rounded-3xl border border-outline-variant/20 bg-card p-6 transition-all hover:border-primary/35 hover:bg-muted"
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Settings')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{t('Manage')}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary">{t('Settings')}</p>
+                <p className="font-serif text-3xl text-primary">{t('Manage')}</p>
               </div>
-              <ArrowUpRight className="size-8 text-primary/70 group-hover:text-white/70" />
+              <ArrowUpRight className="size-8 text-primary" />
             </div>
           </Link>
 
           <Link
             to="/business/partners"
-            className={`group rounded-3xl bg-gradient-to-br ${businessColors.light} hover:${businessColors.primary} p-6 border border-outline-variant/10 hover:border-transparent transition-all`}
+            className="group rounded-3xl border border-outline-variant/20 bg-card p-6 transition-all hover:border-primary/35 hover:bg-muted"
           >
             <div className="flex items-center justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-semibold uppercase tracking-wider text-primary group-hover:text-white">{t('Partners')}</p>
-                <p className="font-serif text-3xl text-primary group-hover:text-white">{partnerPerformance.data?.length ?? 0}</p>
+                <p className="text-sm font-semibold uppercase tracking-wider text-primary">{t('Partners')}</p>
+                <p className="font-serif text-3xl text-primary">{partnerPerformance.data?.length ?? 0}</p>
               </div>
-              <Hotel className="size-8 text-primary/70 group-hover:text-white/70" />
+              <Hotel className="size-8 text-primary" />
             </div>
           </Link>
         </div>
@@ -287,7 +286,7 @@ function DefaultBusinessDashboardPage() {
                 {t('Display this portal at checkout or on signage. New customers scan it to create an account and earn rewards.')}
               </p>
             </div>
-            <div className={`size-12 rounded-xl bg-gradient-to-br ${businessColors.light} flex items-center justify-center text-primary`}>
+            <div className="flex size-12 items-center justify-center rounded-xl bg-muted text-primary">
               <QrCode className="size-6" />
             </div>
           </div>

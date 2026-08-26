@@ -533,7 +533,7 @@ export function PartnersPage() {
                   <div key={referrer.id} className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-6">
                     <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                       <div className="flex items-start gap-5">
-                        <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-primary to-primary-container font-serif text-2xl text-primary-foreground shadow-lg">
+                        <div className="flex size-16 items-center justify-center rounded-2xl bg-primary font-serif text-2xl text-primary-foreground shadow-lg">
                           {referrer.contactName.charAt(0)}
                         </div>
                         <div className="space-y-3">

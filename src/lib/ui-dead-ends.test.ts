@@ -7,6 +7,19 @@ function source(path: string) {
 }
 
 describe('current UI process safeguards', () => {
+  it('keeps interactive text on solid, readable surfaces', () => {
+    const buttons = source('src/components/ui/button.tsx')
+    const theme = source('src/reference-design-systems.css')
+    const promotions = source('src/features/business-owner/pages/promotions-page.tsx')
+
+    expect(buttons).not.toContain('gold-sweep')
+    expect(buttons).toContain('disabled:opacity-70')
+    expect(theme).not.toContain('[class*="bg-primary"]')
+    expect(theme).toContain('[class~="bg-primary"]')
+    expect(promotions).not.toContain('bg-gradient-to-br')
+    expect(promotions).not.toContain('bg-muted opacity-75')
+  })
+
   it('describes tenant imports as report-only without an inert execution action', () => {
     const page = source('src/features/platform/pages/tenant-import-page.tsx')
 

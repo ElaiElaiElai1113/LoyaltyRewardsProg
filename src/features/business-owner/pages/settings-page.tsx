@@ -54,11 +54,6 @@ export function SettingsPage() {
     )
   }
 
-  const businessColors =
-    business.slug === 'velvet-brew'
-      ? { primary: 'from-primary to-primary-container' }
-      : { primary: 'from-tertiary to-primary-container' }
-
   const handleSubmit = form.handleSubmit(async (values) => {
     await updateSettings.mutateAsync(values)
     setSaved(true)
@@ -89,7 +84,7 @@ export function SettingsPage() {
             <div className="rounded-3xl bg-card text-card-foreground border border-outline-variant/20 shadow-sm p-8 space-y-6">
               <div className="flex items-center gap-4">
                 <div
-                  className={`size-20 rounded-2xl flex items-center justify-center text-primary-foreground text-3xl font-bold bg-gradient-to-br ${businessColors.primary}`}
+                  className="flex size-20 items-center justify-center rounded-2xl bg-primary text-3xl font-bold text-primary-foreground"
                 >
                   {business.name.charAt(0)}
                 </div>

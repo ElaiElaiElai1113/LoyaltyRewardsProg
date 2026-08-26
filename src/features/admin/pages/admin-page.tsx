@@ -290,8 +290,8 @@ export function AdminPage() {
 
   const bizColorClass = (bizId: string) => {
     return bizId === currentBusinessId
-      ? 'bg-gradient-to-br from-primary to-primary-container'
-      : 'bg-gradient-to-br from-tertiary to-primary-container'
+      ? 'bg-primary'
+      : 'bg-tertiary'
   }
   const adminNativeSelectClass =
     'h-10 rounded-xl border border-outline-variant/20 bg-[var(--card)] px-3 text-sm font-medium text-on-surface shadow-sm outline-none transition focus:border-primary/30 focus-visible:ring-2 focus-visible:ring-primary/15'
@@ -1108,7 +1108,7 @@ export function AdminPage() {
                     className="group flex min-w-0 flex-col gap-3 overflow-hidden lg:flex-row lg:items-center lg:justify-between"
                   >
                     <div className="flex min-w-0 items-start gap-3 lg:items-center">
-                       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-container font-serif text-lg text-primary-foreground shadow-sm">
+                       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary font-serif text-lg text-primary-foreground shadow-sm">
                           {member.fullName.charAt(0)}
                        </div>
                       <div className="min-w-0 flex-1">

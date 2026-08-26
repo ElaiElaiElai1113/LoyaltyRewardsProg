@@ -16,6 +16,7 @@ import { useBusinesses, useRewardBalance } from '@/hooks/use-customer-data'
 import { usePagination } from '@/hooks/use-pagination'
 import type { GiftCardCatalogItem } from '@/types/domain'
 import { GiftCardTile } from '../components/gift-card-tile'
+import { distinctCustomerGiftCardOffers } from '../catalog-display'
 import { IssueConfirmationDialog } from '../components/issue-confirmation-dialog'
 import { useGiftCardCatalog, useIssueGiftCard } from '../hooks/use-gift-cards'
 
@@ -33,7 +34,7 @@ export function GiftCardsPage() {
   const balancePoints = balance.data?.points ?? 0
   const verificationStatus = profile?.verificationStatus ?? 'not_submitted'
   const rewardActionsLocked = !profile?.phone?.trim()
-  const catalogItems = catalog.data ?? []
+  const catalogItems = distinctCustomerGiftCardOffers(catalog.data ?? [])
   const claimableGiftCards = catalogItems.filter((item) =>
     balancePoints >= item.pointsCost
     && !rewardActionsLocked

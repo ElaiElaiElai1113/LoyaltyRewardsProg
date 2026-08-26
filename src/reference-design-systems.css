@@ -513,10 +513,10 @@
 .ly-workspace-kicker span { background: var(--ly-teal); }
 .ly-page-frame [class*="rounded-"][class*="bg-card"],
 .ly-page-frame [class*="rounded-"][class*="bg-[var(--card)]"] { border-color: #e5dfd1; border-radius: 8px !important; box-shadow: none; }
-.ly-page-frame button[class*="bg-primary"],
-.ly-page-frame a[class*="bg-primary"] { border-radius: 3px; background: var(--ly-navy); }
-.ly-page-frame button[class*="bg-primary"]:hover,
-.ly-page-frame a[class*="bg-primary"]:hover { background: var(--ly-teal); }
+.ly-page-frame button[class~="bg-primary"],
+.ly-page-frame a[class~="bg-primary"] { border-radius: 3px; background: var(--ly-navy); }
+.ly-page-frame button[class~="bg-primary"]:hover,
+.ly-page-frame a[class~="bg-primary"]:hover { background: var(--ly-teal); }
 
 .ly-auth { background: var(--ly-offwhite); color: var(--ly-navy-deep); }
 .ly-auth__story { background: var(--ly-navy-deep); }
@@ -840,10 +840,10 @@
   text-transform: uppercase;
 }
 
-:root[data-program="pinas"] .product-customer-shell__main button[class*="bg-primary"],
-:root[data-program="pinas"] .product-customer-shell__main a[class*="bg-primary"],
-:root[data-program="wondertown"] .product-customer-shell__main button[class*="bg-primary"],
-:root[data-program="wondertown"] .product-customer-shell__main a[class*="bg-primary"] {
+:root[data-program="pinas"] .product-customer-shell__main button[class~="bg-primary"],
+:root[data-program="pinas"] .product-customer-shell__main a[class~="bg-primary"],
+:root[data-program="wondertown"] .product-customer-shell__main button[class~="bg-primary"],
+:root[data-program="wondertown"] .product-customer-shell__main a[class~="bg-primary"] {
   border-radius: 999px !important;
   background: var(--rm-gold) !important;
   color: var(--rm-black) !important;
@@ -924,8 +924,8 @@
   display: none !important;
 }
 
-:root[data-program="pinas"] .product-workspace-shell__main :is(button, a)[class*="bg-primary"],
-:root[data-program="wondertown"] .product-workspace-shell__main :is(button, a)[class*="bg-primary"] {
+:root[data-program="pinas"] .product-workspace-shell__main :is(button, a)[class~="bg-primary"],
+:root[data-program="wondertown"] .product-workspace-shell__main :is(button, a)[class~="bg-primary"] {
   border-radius: 999px !important;
   background: var(--rm-gold) !important;
   color: var(--rm-black) !important;
@@ -1005,8 +1005,8 @@
 
 :root[data-program="pinas"] .product-legal-shell :is(button, a)[class*="rounded-full"],
 :root[data-program="wondertown"] .product-legal-shell :is(button, a)[class*="rounded-full"],
-:root[data-program="pinas"] .product-agreement-shell button[class*="bg-primary"],
-:root[data-program="wondertown"] .product-agreement-shell button[class*="bg-primary"] {
+:root[data-program="pinas"] .product-agreement-shell button[class~="bg-primary"],
+:root[data-program="wondertown"] .product-agreement-shell button[class~="bg-primary"] {
   border-color: var(--rm-gold) !important;
   border-radius: 999px !important;
   background: var(--rm-gold) !important;
@@ -1052,7 +1052,7 @@
   background: var(--ly-offwhite) !important;
 }
 
-:root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) button[class*="bg-primary"] {
+:root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) button[class~="bg-primary"] {
   border-radius: 3px !important;
   background: var(--ly-teal) !important;
   color: #fff !important;

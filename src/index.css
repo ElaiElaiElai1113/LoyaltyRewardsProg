@@ -191,19 +191,13 @@
   }
 
   .gold-frame {
-    background:
-      radial-gradient(circle at top left, color-mix(in srgb, var(--champagne) 24%, transparent), transparent 34%),
-      radial-gradient(circle at bottom right, color-mix(in srgb, var(--blush) 28%, transparent), transparent 32%),
-      linear-gradient(180deg, var(--card), var(--surface-container-low));
+    background: var(--card);
     border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
     box-shadow: var(--shadow-card);
   }
 
   .gold-wash {
-    background:
-      radial-gradient(circle at top left, rgb(238 205 129 / 0.22), transparent 28%),
-      radial-gradient(circle at bottom right, rgb(169 112 39 / 0.12), transparent 32%),
-      linear-gradient(180deg, var(--card), var(--surface-container-low));
+    background: var(--card);
   }
 
   .soft-luxe-shell {
@@ -217,9 +211,7 @@
     position: relative;
     overflow: hidden;
     border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
-    background:
-      radial-gradient(circle at top left, color-mix(in srgb, var(--blush) 26%, transparent), transparent 34%),
-      linear-gradient(180deg, color-mix(in srgb, var(--card) 94%, white), var(--card));
+    background: var(--card);
     box-shadow: var(--shadow-card);
   }
 
@@ -228,7 +220,7 @@
     pointer-events: none;
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, color-mix(in srgb, var(--champagne) 16%, transparent), transparent 34%);
+    background: transparent;
     opacity: 0;
     transition: opacity 220ms ease;
   }
@@ -238,10 +230,7 @@
   }
 
   .luxe-art {
-    background:
-      radial-gradient(circle at 24% 18%, color-mix(in srgb, var(--champagne) 55%, transparent), transparent 22%),
-      radial-gradient(circle at 78% 8%, color-mix(in srgb, var(--blush) 62%, transparent), transparent 28%),
-      linear-gradient(135deg, var(--espresso-soft), var(--primary-container));
+    background: var(--espresso-soft);
     color: var(--champagne);
   }
 

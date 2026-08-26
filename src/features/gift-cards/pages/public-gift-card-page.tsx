@@ -31,7 +31,7 @@ export function PublicGiftCardPage() {
     <div className="space-y-8 py-10">
       <div
         className="relative overflow-hidden rounded border p-5 text-white shadow-card sm:p-8"
-        style={{ background: `linear-gradient(135deg, ${card.businessPrimaryColor}, ${card.businessAccentColor})` }}
+        style={{ backgroundColor: card.businessPrimaryColor }}
       >
         <div className="absolute inset-0 bg-black/25" />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">

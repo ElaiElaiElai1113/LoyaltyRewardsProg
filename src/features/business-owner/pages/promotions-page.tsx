@@ -224,11 +224,11 @@ export function PromotionsPage() {
             return (
               <div
                 key={promotion.id}
-                className={`group relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br transition-all duration-300 ${
+                className={`group relative overflow-hidden rounded-[2.5rem] transition-all duration-300 ${
                   active
-                    ? 'from-white to-surface-low hover:from-surface-lowest hover:to-surface-low'
-                    : 'from-surface-lowest to-surface-low opacity-60'
-                } border border-outline-variant/5 hover:border-primary/10 shadow-sm hover:shadow-lg p-8`}
+                    ? 'bg-card'
+                    : 'bg-muted'
+                } border border-outline-variant/20 hover:border-primary/35 shadow-sm hover:shadow-lg p-8`}
               >
                 <div className="flex flex-col gap-6">
                   <div className="flex justify-between items-start">
