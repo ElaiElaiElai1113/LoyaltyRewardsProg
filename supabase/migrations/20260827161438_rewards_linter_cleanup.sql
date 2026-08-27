@@ -103,3 +103,16 @@ drop index if exists public.idx_gift_cards_token;
 drop index if exists public.idx_gift_cards_status;
 drop index if exists public.idx_promotions_business;
 drop index if exists public.idx_reward_catalog_legacy_reward;
+
+-- Trigger functions are invoked by PostgreSQL through their registered
+-- triggers. They are not public RPC endpoints and need no client EXECUTE grant.
+revoke execute on function public.assign_new_balance_to_program() from public, anon, authenticated;
+revoke execute on function public.assign_new_profile_to_program() from public, anon, authenticated;
+revoke execute on function public.enforce_business_program_match() from public, anon, authenticated;
+revoke execute on function public.enforce_program_feature() from public, anon, authenticated;
+revoke execute on function public.enforce_program_resource_limit() from public, anon, authenticated;
+revoke execute on function public.enforce_tenant_write_access() from public, anon, authenticated;
+revoke execute on function public.enforce_verified_profile_value_action() from public, anon, authenticated;
+revoke execute on function public.process_loyality_member_transaction() from public, anon, authenticated;
+revoke execute on function public.sync_business_customer_link_from_activity() from public, anon, authenticated;
+revoke execute on function public.validate_business_customer_link() from public, anon, authenticated;
