@@ -406,10 +406,10 @@ export function RewardMeJoinPage() {
           <Link className="rewardme-join__signin" to="/signin">{t('Already a member?')} {t('Sign in')}</Link>
         </div>
       </header>
-      <section className="rewardme-join__hero"><p>Membership sign-up</p><h1>Join {program.name}.</h1><span>Create your account now. No card or online payment is collected.</span></section>
+      <section className="rewardme-join__hero"><p>{t('Membership sign-up')}</p><h1>{t('Join {program}.', { program: program.name })}</h1><span>{t('Create your account now. No card or online payment is collected.')}</span></section>
 
       {complete ? (
-        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><p>Account created</p><h2>Welcome to {program.name}.</h2><span>Your account was created with Free access.{plan === 'free' ? '' : ` Your ${plan} membership interest was sent to the team for manual review.`}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">Go to sign in</Link></section>
+        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><p>{t('Account created')}</p><h2>{t('Welcome to {program}.', { program: program.name })}</h2><span>{t('Your account was created with Free access.')}{plan === 'free' ? '' : ` ${t('Your {plan} membership interest was sent to the team for manual review.', { plan: t(plan === 'regular' ? 'Regular' : 'Gold') })}`}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">{t('Go to sign in')}</Link></section>
       ) : (
         <form className="rewardme-join__form" onSubmit={form.handleSubmit(async (values) => {
           try {
@@ -422,29 +422,29 @@ export function RewardMeJoinPage() {
               try {
                 await earlyAccessService.createLead({ fullName: values.fullName, email: values.email, whatsapp: values.phone, notes: `${plan[0].toUpperCase()}${plan.slice(1)} membership interest submitted during account creation.`, marketingConsent: true }, { source: `membership-interest-${plan}` })
               } catch {
-                nextWarning = 'Your account was created, but the membership interest could not be sent. Request it from the Membership page after signing in.'
+                nextWarning = t('Your account was created, but the membership interest could not be sent. Request it from the Membership page after signing in.')
               }
             }
             setWarning(nextWarning)
             form.reset(defaultValues)
             setComplete(true)
           } catch (submissionError) {
-            setError(submissionError instanceof Error ? submissionError.message : 'Unable to create the account.')
+            setError(submissionError instanceof Error ? submissionError.message : t('Unable to create the account.'))
           }
         })}>
-          <fieldset><legend>Choose your starting membership</legend><div className="rewardme-join__plans">
-            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{item.name}<b>{item.price}</b></strong><small>{item.description}</small></span></label>)}
-          </div><p className="rewardme-join__plan-note">Regular and Gold are requests only. Pricing, activation, renewal, cancellation, tax, and payment evidence are confirmed separately by the program team.</p></fieldset>
+          <fieldset><legend>{t('Choose your starting membership')}</legend><div className="rewardme-join__plans">
+            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{item.price}</b></strong><small>{t(item.description)}</small></span></label>)}
+          </div><p className="rewardme-join__plan-note">{t('Regular and Gold are requests only. Pricing, activation, renewal, cancellation, tax, and payment evidence are confirmed separately by the program team.')}</p></fieldset>
           <div className="rewardme-join__grid">
-            <label>Full name <b>*</b><Input id="join-name" placeholder="Your full name" {...form.register('fullName')} />{form.formState.errors.fullName ? <small>{form.formState.errors.fullName.message}</small> : null}</label>
-            <label>Email <b>*</b><Input id="join-email" type="email" placeholder="you@example.com" {...form.register('email')} />{form.formState.errors.email ? <small>{form.formState.errors.email.message}</small> : null}</label>
-            <label>Phone <b>*</b><Input id="join-phone" type="tel" placeholder={phonePlaceholder} {...form.register('phone')} />{form.formState.errors.phone ? <small>{form.formState.errors.phone.message}</small> : null}</label>
-            <label>Referral code <i>optional</i><Input id="join-referral" value={referralCode} onChange={(event) => setReferralCode(event.target.value)} maxLength={120} placeholder="Enter a referral code" /></label>
-            <label className="is-full">Password <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder="At least 5 characters" {...form.register('password')} /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
+            <label>{t('Full name')} <b>*</b><Input id="join-name" placeholder={t('Your full name')} {...form.register('fullName')} />{form.formState.errors.fullName ? <small>{form.formState.errors.fullName.message}</small> : null}</label>
+            <label>{t('Email')} <b>*</b><Input id="join-email" type="email" placeholder={t('you@example.com')} {...form.register('email')} />{form.formState.errors.email ? <small>{form.formState.errors.email.message}</small> : null}</label>
+            <label>{t('Phone')} <b>*</b><Input id="join-phone" type="tel" placeholder={phonePlaceholder} {...form.register('phone')} />{form.formState.errors.phone ? <small>{form.formState.errors.phone.message}</small> : null}</label>
+            <label>{t('Referral code')} <i>{t('optional')}</i><Input id="join-referral" value={referralCode} onChange={(event) => setReferralCode(event.target.value)} maxLength={120} placeholder={t('Enter a referral code')} /></label>
+            <label className="is-full">{t('Password')} <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder={t('At least 5 characters')} {...form.register('password')} /><button type="button" aria-label={showPassword ? t('Hide password') : t('Show password')} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
           </div>
-          <label className="rewardme-join__agree"><input type="checkbox" required /><span>I agree to the <Link to="/terms">Terms of Service</Link>, <Link to="/privacy">Privacy Policy</Link>, and applicable membership terms. I understand paid memberships are manually reviewed and no card is collected here.</span></label>
+          <label className="rewardme-join__agree"><input type="checkbox" required /><span>{t('I agree to the')} <Link to="/terms">{t('Terms of Service')}</Link>, <Link to="/privacy">{t('Privacy Policy')}</Link>, {t('and applicable membership terms. I understand paid memberships are manually reviewed and no card is collected here.')}</span></label>
           {error ? <p className="rewardme-join__error" role="alert">{error}</p> : null}
-          <Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? 'Creating account…' : `Join ${program.name}`}</Button>
+          <Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? t('Creating account…') : t('Join {program}', { program: program.name })}</Button>
         </form>
       )}
     </main>
