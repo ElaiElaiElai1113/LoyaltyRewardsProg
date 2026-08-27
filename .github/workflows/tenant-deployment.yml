@@ -76,6 +76,15 @@ jobs:
           --token "$VERCEL_TOKEN"
           | node scripts/audit-vercel-environment.mjs
 
+      - name: Deploy exact validated RewardMe commit with current server variables
+        run: >-
+          vercel deploy --prod --yes --force
+          --project loyalty-rewards-prog
+          --env "REWARDS_SOURCE_COMMIT=$EXPECTED_COMMIT_SHA"
+          --meta "githubCommitSha=$EXPECTED_COMMIT_SHA"
+          --scope "$VERCEL_SCOPE"
+          --token "$VERCEL_TOKEN"
+
       - name: Synchronize tenant deployments
         run: npm run ops:deploy:tenants -- --sha "$EXPECTED_COMMIT_SHA" --output artifacts/deployment/tenant-sync.json
 
