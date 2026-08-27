@@ -56,6 +56,14 @@ jobs:
       - name: Install pinned Vercel CLI
         run: npm install --global vercel@58.7.1
 
+      - name: Confirm RewardMe production server variables
+        run: >-
+          vercel env ls production --json
+          --project loyalty-rewards-prog
+          --scope "$VERCEL_SCOPE"
+          --token "$VERCEL_TOKEN"
+          | node scripts/audit-vercel-environment.mjs
+
       - name: Synchronize tenant deployments
         run: npm run ops:deploy:tenants -- --sha "$EXPECTED_COMMIT_SHA" --output artifacts/deployment/tenant-sync.json
 
