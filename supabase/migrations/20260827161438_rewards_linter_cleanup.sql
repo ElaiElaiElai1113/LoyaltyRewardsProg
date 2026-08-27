@@ -61,8 +61,20 @@ begin
       raise exception 'Audited RLS policy %.% no longer exists', target.table_name, target.policy_name;
     end if;
 
-    optimized_using := replace(replace(current_using, 'auth.uid()', '(select auth.uid())'), 'auth.jwt()', '(select auth.jwt())');
-    optimized_check := replace(replace(current_check, 'auth.uid()', '(select auth.uid())'), 'auth.jwt()', '(select auth.jwt())');
+    optimized_using := replace(
+      replace(replace(replace(current_using,
+        'auth.uid()', '(select auth.uid())'),
+        'auth.jwt()', '(select auth.jwt())'),
+        'auth.role()', '(select auth.role())'),
+        'auth.email()', '(select auth.email())'
+    );
+    optimized_check := replace(
+      replace(replace(replace(current_check,
+        'auth.uid()', '(select auth.uid())'),
+        'auth.jwt()', '(select auth.jwt())'),
+        'auth.role()', '(select auth.role())'),
+        'auth.email()', '(select auth.email())'
+    );
 
     if optimized_using is not distinct from current_using
       and optimized_check is not distinct from current_check then
