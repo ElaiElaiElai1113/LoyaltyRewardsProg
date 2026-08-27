@@ -56,6 +56,18 @@ jobs:
       - name: Install pinned Vercel CLI
         run: npm install --global vercel@58.7.1
 
+      - name: Synchronize RewardMe production server secret
+        shell: bash
+        env:
+          REWARDME_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: |
+          test -n "$REWARDME_SUPABASE_SERVICE_ROLE_KEY"
+          printf '%s' "$REWARDME_SUPABASE_SERVICE_ROLE_KEY" |
+            vercel env add SUPABASE_SERVICE_ROLE_KEY production --sensitive --force \
+              --project loyalty-rewards-prog \
+              --scope "$VERCEL_SCOPE" \
+              --token "$VERCEL_TOKEN"
+
       - name: Confirm RewardMe production server variables
         run: >-
           vercel env ls production --json
