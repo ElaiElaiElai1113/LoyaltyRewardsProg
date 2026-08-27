@@ -30,6 +30,8 @@ const RequiredAgreementsPage = lazy(() => import('@/features/auth/pages/required
 const ResetPasswordPage = lazy(() => import('@/features/auth/pages/reset-password-page').then((module) => ({ default: module.ResetPasswordPage })))
 const CostCalculatorPage = lazy(() => import('@/features/business/pages/cost-calculator-page').then((module) => ({ default: module.CostCalculatorPage })))
 const ForBusinessesPage = lazy(() => import('@/features/business/pages/for-businesses-page').then((module) => ({ default: module.ForBusinessesPage })))
+const CommissionBusinessApplicationPage = lazy(() => import('@/features/business/pages/business-application-page').then((module) => ({ default: module.CommissionBusinessApplicationPage })))
+const CreditBusinessApplicationPage = lazy(() => import('@/features/business/pages/business-application-page').then((module) => ({ default: module.CreditBusinessApplicationPage })))
 const ActivityPage = lazy(() => import('@/features/activity/pages/activity-page').then((module) => ({ default: module.ActivityPage })))
 const DashboardPage = lazy(() => import('@/features/dashboard/pages/dashboard-page').then((module) => ({ default: module.DashboardPage })))
 const EarlyAccessPage = lazy(() => import('@/features/early-access/pages/early-access-page').then((module) => ({ default: module.EarlyAccessPage })))
@@ -412,6 +414,14 @@ const router = createBrowserRouter([
       {
         path: '/join',
         element: <JoinRewardsPage />,
+      },
+      {
+        path: '/business/apply/commission',
+        element: <CommissionBusinessApplicationPage />,
+      },
+      {
+        path: '/business/apply/credit',
+        element: <CreditBusinessApplicationPage />,
       },
       {
         path: '/invitation',

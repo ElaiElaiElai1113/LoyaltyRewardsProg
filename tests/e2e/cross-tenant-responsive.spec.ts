@@ -86,7 +86,7 @@ test.describe('cross-tenant public responsive layouts', () => {
           }
 
           if (route === '/' && (tenant === 'pinas' || tenant === 'wondertown')) {
-            expect(layout.referenceRewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('block')
+            expect(layout.referenceRewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('flex')
           }
 
           if (route === '/business' && width <= 820) {

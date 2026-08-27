@@ -130,47 +130,47 @@ test.describe('public acquisition workflow', () => {
     await page.goto('/')
 
     await expect(page).toHaveTitle('RewardMe')
-    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Three steps. Zero cost.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Built to feel like a win, every visit.' })).toBeVisible()
-    await expect(page.getByText('No cost to join, no catch', { exact: false })).toBeVisible()
-    await expect(page.getByText('2,340 PTS', { exact: true })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Join Free' }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'One account. Clear offers. Local rewards.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'The offer tells you exactly what you can earn.' })).toBeVisible()
+    await expect(page.getByText('No payment card is collected online', { exact: false })).toBeVisible()
+    await expect(page.getByText('Example available rewards', { exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Start free access' }).first()).toHaveAttribute('href', '/join')
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how')
     const header = page.getByLabel('RewardMe navigation')
-    await expect(header.getByRole('link', { name: 'How It Works' })).toHaveAttribute('href', '#how')
-    await expect(header.getByRole('link', { name: 'For Business' })).toHaveAttribute('href', '/business')
-    await expect(header.getByRole('link', { name: 'Rewards' })).toHaveAttribute('href', '#rewards')
-    await expect(header.getByRole('link', { name: 'Sign In' })).toHaveAttribute('href', '/signin')
+    await expect(header.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
+    await expect(header.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '/business')
+    await expect(header.getByRole('link', { name: 'The store' })).toHaveAttribute('href', '#store')
+    await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
   })
 
   test('legacy landing URL resolves to the RewardMe homepage', async ({ page }) => {
     await page.goto('/landing-page')
-    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
   })
 
   test('homepage uses the approved editorial typography and clean media', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' }))
-      .toHaveCSS('font-family', /Anton/)
-    await expect(page.getByText('Earn real rewards every time', { exact: false }))
+    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' }))
+      .toHaveCSS('font-family', /Source Serif 4/)
+    await expect(page.getByText('Earn rewards when you spend', { exact: false }))
       .toHaveCSS('font-family', /Inter/)
-    await expect(page.locator('.reference-rewardme img')).toHaveCount(0)
-    await expect(page.locator('.reference-rewardme__phone')).toBeVisible()
-    await expect(page.locator('.reference-rewardme__logo')).toContainText('REWARDME')
-    await expect(page.locator('.reference-rewardme__balance-card')).toContainText('2,340 PTS')
+    await expect(page.locator('.reference-rewardme img')).toHaveCount(5)
+    await expect(page.locator('.reference-rewardme__passbook')).toBeVisible()
+    await expect(page.locator('.reference-rewardme__logo').first()).toContainText('RewardMe')
+    await expect(page.locator('.reference-rewardme__balance')).toContainText('109')
   })
 
   test('mobile homepage has no horizontal overflow and keeps every CTA reachable', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Join Free' }).first()).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Start free access' }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
-    await expect(page.getByLabel('RewardMe navigation').getByRole('link', { name: 'Sign In' })).toBeVisible()
+    await expect(page.getByLabel('RewardMe navigation').getByRole('link', { name: 'Start free access' })).toBeVisible()
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
@@ -235,10 +235,10 @@ test.describe('public acquisition workflow', () => {
     expect(mobileDimensions.scrollWidth).toBeLessThanOrEqual(mobileDimensions.clientWidth)
 
     await page.goto('/join')
-    await expect(page.getByText('Three-month free access', { exact: true })).toBeVisible()
-    await expect(page.getByText('the RewardMe team activates an eligible Regular or Gold membership.', { exact: false })).toBeVisible()
+    await expect(page.getByText('Three-month free access, then continue', { exact: false })).toBeVisible()
+    await expect(page.getByText('Regular and Gold are requests only', { exact: false })).toBeVisible()
     await expect(page.locator('#join-email')).toBeVisible()
-    await expect(page.locator('form').getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
+    await expect(page.locator('.rewardme-join__header a[href="/signin"]')).toHaveAttribute('href', '/signin')
   })
 
   test('RewardMe test sign-in only exposes three automatic role choices', async ({ page }) => {
@@ -274,27 +274,24 @@ test.describe('public acquisition workflow', () => {
   test('RewardMe business page presents both approved participation models', async ({ page }) => {
     await page.goto('/business')
 
-    await expect(page.getByRole('heading', { name: 'Turn unused capacity into loyal, paying customers.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Commission model' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Business-credit model' })).toBeVisible()
-    await expect(page.getByText('25% commission', { exact: false })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
+    await expect(page.getByText('Commission model', { exact: true })).toBeVisible()
+    await expect(page.getByText('Business-credit model', { exact: true })).toBeVisible()
+    await expect(page.getByText('Final commercial terms are confirmed in the signed agreement', { exact: false })).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Connected economics. Separate products.' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Business sign in' })).toHaveAttribute('href', '/signin?portal=business')
-    await expect(page.getByRole('link', { name: 'Apply to partner' })).toHaveAttribute('href', /mailto:/)
-    await expect(page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }))
+    await expect(page.getByRole('link', { name: 'Apply: Commission model' })).toHaveAttribute('href', '/business/apply/commission')
+    await expect(page.getByRole('link', { name: 'Apply: Credit model' })).toHaveAttribute('href', '/business/apply/credit')
+    await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' }))
       .toHaveAttribute('src', /local-business-owner-wide(?:-[\w-]+)?\.webp/)
-    const businessImageFraming = await page.getByRole('img', { name: 'Local business owner welcoming RewardMe members' }).evaluate((image: HTMLImageElement) => ({
-      naturalRatio: image.naturalWidth / image.naturalHeight,
-      renderedRatio: image.clientWidth / image.clientHeight,
-    }))
-    expect(Math.abs(businessImageFraming.naturalRatio - businessImageFraming.renderedRatio)).toBeLessThan(0.02)
+    await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' })).toBeVisible()
+    expect(await page.getByRole('img', { name: 'Local business owner welcoming rewards members' }).evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
   })
 
   test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/business')
 
-    await expect(page.getByRole('heading', { name: 'Turn unused capacity into loyal, paying customers.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

@@ -21,7 +21,7 @@ const tenants: TenantCase[] = [
     query: 'wondertown',
     storageSlug: 'wondertown',
     programName: 'Wondertown Rewards',
-    rewardMe: false,
+    rewardMe: true,
   },
 ]
 
@@ -39,20 +39,19 @@ const commonEnglishLabels = [
 ]
 
 const rewardMeEnglishLabels = [
-  'REWARDME FOR BUSINESSES',
-  'Turn unused capacity into loyal, paying customers.',
-  'Apply to partner',
-  'Business sign in',
-  'TWO PARTICIPATION MODELS',
-  'Choose the model that matches your business.',
+  'FOR BUSINESSES',
+  'Get new customers while rewarding our members.',
+  'Apply: Commission model',
+  'Apply: Credit model',
+  'PARTICIPATION MODELS',
+  'Choose the model that fits your business.',
   'Commission model',
   'Business-credit model',
   'HOW IT WORKS',
-  'A clear path from offer to repeat visit.',
-  'SYNERGIZE BRIDGE',
+  'Three steps. You pay for results, not access.',
+  'IF YOU ALREADY USE SYNERGIZE',
   'Connected economics. Separate products.',
-  'Ready to discuss a RewardMe offer?',
-  'Talk to the team',
+  'Choose the application that matches your proposed model.',
 ]
 
 const wondertownEnglishLabels = [
@@ -118,18 +117,12 @@ test.describe('business onboarding language isolation', () => {
       await expect(footer).toContainText('Todos los derechos reservados.')
       await expect(footer.getByRole('link', { name: 'Política de privacidad' })).toBeVisible()
 
-      if (tenant.rewardMe) {
-        await expect(page.getByRole('heading', {
-          name: 'Convierte la capacidad disponible en clientes fieles que pagan.',
-        })).toBeVisible()
-        await expect(page.getByRole('link', { name: 'Solicitar ser socio' })).toBeVisible()
-        await expect(page.locator('img[alt="Propietario de un negocio local dando la bienvenida a miembros de RewardMe"]')).toBeVisible()
-      } else {
-        await expect(page.getByRole('heading', { level: 1 })).toContainText('Ayudamos a los')
-        await expect(page.getByRole('link', { name: 'Asóciate con nosotros' })).toBeVisible()
-        await expect(page.getByRole('heading', { name: 'Tres pasos. Eso es todo.' })).toBeVisible()
-        await expect(page.locator(`img[alt="Propietario de un negocio local listo para recibir a miembros de ${tenant.programName}"]`)).toBeVisible()
-      }
+      await expect(page.getByRole('heading', {
+        name: 'Consigue nuevos clientes mientras recompensas a nuestros miembros.',
+      })).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Solicitar: modelo de comisión' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Tres pasos. Pagas por resultados, no por acceso.' })).toBeVisible()
+      await expect(page.locator('img[alt="Propietario de un negocio local recibiendo a miembros de recompensas"]')).toBeVisible()
 
       await expectNoEnglishBusinessLabels(page, tenant)
     })
@@ -150,18 +143,12 @@ test.describe('business onboarding language isolation', () => {
       await expect(footer).toContainText('Nakalaan ang lahat ng karapatan.')
       await expect(footer.getByRole('link', { name: 'Patakaran sa Pagkapribado' })).toBeVisible()
 
-      if (tenant.rewardMe) {
-        await expect(page.getByRole('heading', {
-          name: 'Gawing tapat at nagbabayad na mga kostumer ang hindi nagagamit na kapasidad.',
-        })).toBeVisible()
-        await expect(page.getByRole('link', { name: 'Maghain upang maging katuwang' })).toBeVisible()
-        await expect(page.locator('img[alt="May-ari ng lokal na negosyong tumatanggap sa mga kasapi ng RewardMe"]')).toBeVisible()
-      } else {
-        await expect(page.getByRole('heading', { level: 1 })).toContainText('Tumutulong sa mga')
-        await expect(page.getByRole('link', { name: 'Maging Katuwang Namin' })).toBeVisible()
-        await expect(page.getByRole('heading', { name: 'Tatlong hakbang. Iyon lang.' })).toBeVisible()
-        await expect(page.locator(`img[alt="May-ari ng lokal na negosyong handang tumanggap sa mga kasapi ng ${tenant.programName}"]`)).toBeVisible()
-      }
+      await expect(page.getByRole('heading', {
+        name: 'Makakuha ng bagong customer habang ginagantimpalaan ang aming mga miyembro.',
+      })).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Mag-apply: modelong komisyon' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Tatlong hakbang. Resulta ang binabayaran mo, hindi access.' })).toBeVisible()
+      await expect(page.locator('img[alt="May-ari ng lokal na negosyo na tumatanggap sa mga rewards member"]')).toBeVisible()
 
       await expectNoEnglishBusinessLabels(page, tenant)
     })

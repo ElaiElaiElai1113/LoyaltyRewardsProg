@@ -7,8 +7,8 @@ const tenants = [
   {
     slug: 'pinas',
     name: 'RewardMe',
-    color: '#d4af37',
-    heading: 'Get rewarded for spending where you already love.',
+    color: '#b8862e',
+    heading: 'Earn amazing rewards while supporting local businesses.',
   },
   {
     slug: 'pinasrewards',
@@ -19,8 +19,8 @@ const tenants = [
   {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
-    color: '#d4af37',
-    heading: 'Get rewarded for spending where you already love.',
+    color: '#b8862e',
+    heading: 'Earn amazing rewards while supporting local businesses.',
   },
   {
     slug: 'loyality',
@@ -51,9 +51,9 @@ test.describe('white-label tenant resolution', () => {
       if (tenant.slug === 'loyality') {
         await expect(page.locator('.reference-loyality__logo')).toHaveText('Loyality')
       } else if (tenant.slug === 'wondertown') {
-        await expect(page.locator('.reference-rewardme__logo')).toHaveText('WONDERTOWN REWARDS')
+        await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('Wondertown Rewards')
       } else if (tenant.slug === 'pinas') {
-        await expect(page.locator('.reference-rewardme__logo')).toHaveText('REWARDME')
+        await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('RewardMe')
       } else {
         await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
       }
@@ -69,7 +69,7 @@ test.describe('white-label tenant resolution', () => {
         tenant.slug === 'loyality'
           ? '.reference-loyality__nav'
           : tenant.slug === 'pinas' || tenant.slug === 'wondertown'
-            ? '.reference-rewardme__nav'
+            ? '.reference-rewardme__header'
             : '.figma-home__header',
       )
       await expect(landingHeader).toHaveCSS('position', 'sticky')

@@ -1057,3 +1057,153 @@
   background: var(--ly-teal) !important;
   color: #fff !important;
 }
+/* -------------------------------------------------------------------------- */
+/* RewardMe / Wondertown approved warm editorial theme                         */
+/* -------------------------------------------------------------------------- */
+
+:root[data-program="pinas"],
+:root[data-program="wondertown"],
+:root[data-program="pinas"][data-theme="dark"],
+:root[data-program="wondertown"][data-theme="dark"] {
+  --rm-black: #1f3a2e;
+  --rm-black-soft: #efe8d6;
+  --rm-gold: #b8862e;
+  --rm-ember: #a84935;
+  --rm-cream: #f6f1e4;
+  --rm-slate: #6c726a;
+  --background: #f6f1e4 !important;
+  --foreground: #1f3a2e !important;
+  --card: #fffdf7 !important;
+  --card-foreground: #1f3a2e !important;
+  --muted: #efe8d6 !important;
+  --muted-foreground: #6c726a !important;
+  --border: #d9cfaf !important;
+  --input: #fffdf7 !important;
+  --primary: #1f3a2e !important;
+  --primary-foreground: #f6f1e4 !important;
+  --secondary: #b8862e !important;
+  --secondary-foreground: #ffffff !important;
+  --accent: #efe8d6 !important;
+  --accent-foreground: #1f3a2e !important;
+  --ring: #b8862e !important;
+  --surface: #f6f1e4 !important;
+  --surface-container-low: #efe8d6 !important;
+  --surface-container-lowest: #fffdf7 !important;
+  --surface-container-highest: #d9cfaf !important;
+  --primary-container: #1f3a2e !important;
+  --primary-fixed: #365848 !important;
+  --on-primary: #f6f1e4 !important;
+  --secondary-container: #b8862e !important;
+  --secondary-fixed: #d8b765 !important;
+  --tertiary: #a84935 !important;
+  --on-surface: #1f3a2e !important;
+  --on-surface-variant: #1f3a2e !important;
+  --outline-variant: #d9cfaf !important;
+  --error: #a43e31 !important;
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+  --font-serif: "Source Serif 4", Georgia, serif;
+  color-scheme: light;
+}
+
+:root[data-program="pinas"] body,
+:root[data-program="wondertown"] body {
+  background: #f6f1e4 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] :is(h1, h2, h3, .font-serif),
+:root[data-program="wondertown"] :is(h1, h2, h3, .font-serif) {
+  font-family: "Source Serif 4", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.015em !important;
+  text-transform: none;
+}
+
+:root[data-program="pinas"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell),
+:root[data-program="wondertown"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell) {
+  background: #f6f1e4 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell .auth-portal-backdrop,
+:root[data-program="wondertown"] .product-auth-shell .auth-portal-backdrop {
+  background:
+    linear-gradient(90deg, transparent 49.9%, rgb(184 134 46 / 8%) 50%, transparent 50.1%),
+    linear-gradient(0deg, transparent 49.9%, rgb(184 134 46 / 7%) 50%, transparent 50.1%),
+    radial-gradient(circle at 82% 8%, rgb(184 134 46 / 14%), transparent 30%),
+    #f6f1e4 !important;
+  background-size: 72px 72px, 72px 72px, auto, auto !important;
+}
+
+:root[data-program="pinas"] :is(.product-auth-shell__card, .product-auth-shell__tabs),
+:root[data-program="wondertown"] :is(.product-auth-shell__card, .product-auth-shell__tabs) {
+  border-color: #d9cfaf !important;
+  border-radius: 6px !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+  box-shadow: 0 24px 60px rgb(31 58 46 / 12%) !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__card::before,
+:root[data-program="wondertown"] .product-auth-shell__card::before { background: #b8862e !important; }
+:root[data-program="pinas"] .product-auth-shell__card :is(h1, h2, .font-serif),
+:root[data-program="wondertown"] .product-auth-shell__card :is(h1, h2, .font-serif) { color: #1f3a2e !important; font-family: "Source Serif 4", Georgia, serif !important; text-transform: none; }
+
+:root[data-program="pinas"] :is(input, select, textarea),
+:root[data-program="wondertown"] :is(input, select, textarea),
+:root[data-program="pinas"] .product-auth-shell__card :is(input, select, textarea),
+:root[data-program="wondertown"] .product-auth-shell__card :is(input, select, textarea) {
+  border-color: #c8bea4 !important;
+  border-radius: 3px !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] :is(input, select, textarea)::placeholder,
+:root[data-program="wondertown"] :is(input, select, textarea)::placeholder { color: #8a8d86 !important; }
+
+:root[data-program="pinas"] :is(.product-customer-shell__header, .product-workspace-shell__mobile-header),
+:root[data-program="wondertown"] :is(.product-customer-shell__header, .product-workspace-shell__mobile-header) {
+  border-color: #d9cfaf !important;
+  background: rgb(246 241 228 / 95%) !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__footer, .product-workspace-shell__footer),
+:root[data-program="wondertown"] :is(.product-customer-shell__footer, .product-workspace-shell__footer) {
+  border-color: #d9cfaf !important;
+  background: #efe8d6 !important;
+  color: #365848 !important;
+}
+
+:root[data-program="pinas"] :is(.product-workspace-shell__rail, aside),
+:root[data-program="wondertown"] :is(.product-workspace-shell__rail, aside) {
+  border-color: #d9cfaf !important;
+  background: #1f3a2e !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] :is(.product-workspace-shell__main, .product-customer-shell__main),
+:root[data-program="wondertown"] :is(.product-workspace-shell__main, .product-customer-shell__main) { background: #f6f1e4 !important; }
+
+:root[data-program="pinas"] [class~="bg-card"],
+:root[data-program="wondertown"] [class~="bg-card"] {
+  border-color: #d9cfaf !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] :is([class~="text-on-surface-variant/70"], [class~="text-on-surface-variant/85"]),
+:root[data-program="wondertown"] :is([class~="text-on-surface-variant/70"], [class~="text-on-surface-variant/85"]) {
+  color: #365848 !important;
+}
+
+:root[data-program="pinas"] [class~="bg-primary"],
+:root[data-program="wondertown"] [class~="bg-primary"] { background: #1f3a2e !important; color: #f6f1e4 !important; }
+:root[data-program="pinas"] :is(button, a)[class*="rounded-full"],
+:root[data-program="wondertown"] :is(button, a)[class*="rounded-full"] { border-radius: 3px !important; }
+:root[data-program="pinas"] [class*="rounded-3xl"],
+:root[data-program="wondertown"] [class*="rounded-3xl"],
+:root[data-program="pinas"] [class*="rounded-2xl"],
+:root[data-program="wondertown"] [class*="rounded-2xl"] { border-radius: 7px !important; }

@@ -1,0 +1,70 @@
+name: Rewards database maintenance
+
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Select a read-only audit or one reviewed migration
+        required: true
+        type: choice
+        options:
+          - audit
+          - apply-business-applications
+          - apply-linter-cleanup
+      confirmation:
+        description: Type AUDIT or APPLY REVIEWED MIGRATION to confirm the selected operation
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rewards-database-maintenance
+  cancel-in-progress: false
+
+jobs:
+  maintain:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROJECT_REF: bftuvmywtmpflizsomim
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - name: Validate explicit confirmation
+        env:
+          OPERATION: ${{ inputs.operation }}
+          CONFIRMATION: ${{ inputs.confirmation }}
+        run: |
+          if [ "$OPERATION" = "audit" ]; then
+            test "$CONFIRMATION" = "AUDIT"
+          else
+            test "$CONFIRMATION" = "APPLY REVIEWED MIGRATION"
+          fi
+          test -n "$SUPABASE_ACCESS_TOKEN"
+          test -n "$SUPABASE_DB_PASSWORD"
+      - name: Link the dedicated rewards database
+        run: npx supabase link --project-ref "$PROJECT_REF" --password "$SUPABASE_DB_PASSWORD"
+      - name: Read-only linter audit
+        if: inputs.operation == 'audit'
+        run: |
+          npx supabase db advisors --linked --type all --level info --fail-on none
+          npx supabase db query --linked --file supabase/preflight/rewards-linter-audit.sql
+      - name: Apply the business application schema
+        if: inputs.operation == 'apply-business-applications'
+        run: |
+          npx supabase db query --linked --file supabase/migrations/20260827161436_rewardme_business_applications.sql
+          npx supabase migration repair --linked --status applied 20260827161436 --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Apply the reviewed linter cleanup
+        if: inputs.operation == 'apply-linter-cleanup'
+        run: |
+          grep -Eiq '^[[:space:]]*(alter|drop|create|revoke|grant|do|begin)[[:space:]]' supabase/migrations/20260827161438_rewards_linter_cleanup.sql
+          npx supabase db query --linked --file supabase/migrations/20260827161438_rewards_linter_cleanup.sql
+          npx supabase migration repair --linked --status applied 20260827161438 --password "$SUPABASE_DB_PASSWORD" --yes

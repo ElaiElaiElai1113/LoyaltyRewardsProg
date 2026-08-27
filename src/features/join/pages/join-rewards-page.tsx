@@ -14,7 +14,10 @@ import { useAuth } from '@/hooks/use-auth'
 import { LoyalityJoinPage } from '@/features/loyality/pages/loyality-join-page'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
+import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
+
+import './rewardme-join-page.css'
 
 const defaultValues: MemberSignUpFormValues = {
   fullName: '',
@@ -370,6 +373,84 @@ export function CompactJoinRewardsPage() {
   )
 }
 
+type RewardMePlan = 'free' | 'regular' | 'gold'
+
+const rewardMePlans: Array<{ value: RewardMePlan; name: string; price: string; description: string; featured?: boolean }> = [
+  { value: 'free', name: 'Free', price: '$0', description: 'Three-month free access, then continue with the currently approved Free terms.' },
+  { value: 'regular', name: 'Regular', price: '$25/month', description: 'Reference price. Request manual activation after account creation.' },
+  { value: 'gold', name: 'Gold', price: '$100/year', description: 'Reference price. Request full access after account creation.', featured: true },
+]
+
+export function RewardMeJoinPage() {
+  const { profile, signUp } = useAuth()
+  const { program } = useTenant()
+  const { t } = useLanguage()
+  const [plan, setPlan] = useState<RewardMePlan>('free')
+  const [referralCode, setReferralCode] = useState('')
+  const [complete, setComplete] = useState(false)
+  const [warning, setWarning] = useState<string | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [showPassword, setShowPassword] = useState(false)
+  const phonePlaceholder = program.countryCode === 'PH' ? '+63 900 000 0000' : '+1 555 000 0000'
+  const form = useForm<MemberSignUpFormValues>({ resolver: zodResolver(memberSignUpSchema), defaultValues })
+
+  if (profile && !complete) return <Navigate replace to={homePathForRole(profile.role)} />
+
+  return (
+    <main className="rewardme-join" data-rewardme-editorial-join>
+      <header className="rewardme-join__header">
+        <Link to="/" className="rewardme-join__logo"><span aria-hidden="true">✦</span>{program.name}</Link>
+        <div className="rewardme-join__controls">
+          <ThemeToggle className="rewardme-join__theme" />
+          <LanguagePicker compact condenseOnNarrowScreens />
+          <Link className="rewardme-join__signin" to="/signin">{t('Already a member?')} {t('Sign in')}</Link>
+        </div>
+      </header>
+      <section className="rewardme-join__hero"><p>Membership sign-up</p><h1>Join {program.name}.</h1><span>Create your account now. No card or online payment is collected.</span></section>
+
+      {complete ? (
+        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><p>Account created</p><h2>Welcome to {program.name}.</h2><span>Your account was created with Free access.{plan === 'free' ? '' : ` Your ${plan} membership interest was sent to the team for manual review.`}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">Go to sign in</Link></section>
+      ) : (
+        <form className="rewardme-join__form" onSubmit={form.handleSubmit(async (values) => {
+          try {
+            setError(null)
+            const code = referralCode.trim()
+            if (code) sessionStorage.setItem('referralCode', code)
+            const result = await signUp({ ...values, role: 'customer' })
+            let nextWarning = result.warning ?? null
+            if (plan !== 'free') {
+              try {
+                await earlyAccessService.createLead({ fullName: values.fullName, email: values.email, whatsapp: values.phone, notes: `${plan[0].toUpperCase()}${plan.slice(1)} membership interest submitted during account creation.`, marketingConsent: true }, { source: `membership-interest-${plan}` })
+              } catch {
+                nextWarning = 'Your account was created, but the membership interest could not be sent. Request it from the Membership page after signing in.'
+              }
+            }
+            setWarning(nextWarning)
+            form.reset(defaultValues)
+            setComplete(true)
+          } catch (submissionError) {
+            setError(submissionError instanceof Error ? submissionError.message : 'Unable to create the account.')
+          }
+        })}>
+          <fieldset><legend>Choose your starting membership</legend><div className="rewardme-join__plans">
+            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{item.name}<b>{item.price}</b></strong><small>{item.description}</small></span></label>)}
+          </div><p className="rewardme-join__plan-note">Regular and Gold are requests only. Pricing, activation, renewal, cancellation, tax, and payment evidence are confirmed separately by the program team.</p></fieldset>
+          <div className="rewardme-join__grid">
+            <label>Full name <b>*</b><Input id="join-name" placeholder="Your full name" {...form.register('fullName')} />{form.formState.errors.fullName ? <small>{form.formState.errors.fullName.message}</small> : null}</label>
+            <label>Email <b>*</b><Input id="join-email" type="email" placeholder="you@example.com" {...form.register('email')} />{form.formState.errors.email ? <small>{form.formState.errors.email.message}</small> : null}</label>
+            <label>Phone <b>*</b><Input id="join-phone" type="tel" placeholder={phonePlaceholder} {...form.register('phone')} />{form.formState.errors.phone ? <small>{form.formState.errors.phone.message}</small> : null}</label>
+            <label>Referral code <i>optional</i><Input id="join-referral" value={referralCode} onChange={(event) => setReferralCode(event.target.value)} maxLength={120} placeholder="Enter a referral code" /></label>
+            <label className="is-full">Password <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder="At least 5 characters" {...form.register('password')} /><button type="button" aria-label={showPassword ? 'Hide password' : 'Show password'} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
+          </div>
+          <label className="rewardme-join__agree"><input type="checkbox" required /><span>I agree to the <Link to="/terms">Terms of Service</Link>, <Link to="/privacy">Privacy Policy</Link>, and applicable membership terms. I understand paid memberships are manually reviewed and no card is collected here.</span></label>
+          {error ? <p className="rewardme-join__error" role="alert">{error}</p> : null}
+          <Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? 'Creating account…' : `Join ${program.name}`}</Button>
+        </form>
+      )}
+    </main>
+  )
+}
+
 export function SplitJoinRewardsPage() {
   const { profile, signUp } = useAuth()
   const { t } = useLanguage()
@@ -581,5 +662,6 @@ export function SplitJoinRewardsPage() {
 export function JoinRewardsPage() {
   const { program } = useTenant()
   if (program.slug === 'loyality') return <LoyalityJoinPage />
+  if (program.slug === 'pinas' || program.slug === 'rewardme' || program.slug === 'wondertown') return <RewardMeJoinPage />
   return <CompactJoinRewardsPage />
 }
