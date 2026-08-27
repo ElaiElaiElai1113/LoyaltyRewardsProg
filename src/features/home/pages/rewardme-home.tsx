@@ -1,7 +1,7 @@
 import { Link } from 'react-router'
 
 import businessOwner from '@/assets/business/local-business-owner-wide.webp'
-import hotelReward from '@/assets/business/hotel-partner.png'
+import hotelReward from '@/assets/business/hotel-partner.webp'
 import checkoutMoment from '@/assets/landing/coffee-member-wide.webp'
 import dinnerReward from '@/assets/landing/dinner-rewards.webp'
 import salonReward from '@/assets/landing/salon-rewards.webp'
