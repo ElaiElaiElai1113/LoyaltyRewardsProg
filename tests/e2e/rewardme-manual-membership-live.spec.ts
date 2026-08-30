@@ -22,7 +22,7 @@ async function newMobilePage(browser: Browser) {
 }
 
 test.describe('live RewardMe manual membership operations', () => {
-  test.skip(!enabled, 'Enable only for the deliberately published RewardMe QA member and administrator.')
+  test.skip(!enabled, 'Enable only with the private RewardMe QA member and administrator credentials.')
 
   test('member request, admin approval, and persisted active membership work', async ({ browser }) => {
     test.setTimeout(90_000)

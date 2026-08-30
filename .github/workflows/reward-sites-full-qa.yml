@@ -66,9 +66,13 @@ jobs:
           SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run qa:verify-reward-sites
-      - name: Verify WhatsApp-style one-tap member login on both sites
+      - name: Verify WhatsApp-style private member sign-in on both sites
         id: in_app_login
         continue-on-error: true
+        env:
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_REWARDME_MEMBER_EMAIL: member@rewardme.test
+          E2E_WONDERTOWN_CUSTOMER_EMAIL: member@wondertown.test
         run: npm run test:e2e:in-app-browser
 
       - name: Critical public, sign-in, and full-screen QR upload — RewardMe
@@ -77,6 +81,9 @@ jobs:
         env:
           E2E_BASE_URL: https://rewardme-prod.vercel.app
           E2E_QR_LIVE_UPLOAD_CHECK: 'true'
+          E2E_CUSTOMER_EMAIL: member@rewardme.test
+          E2E_BUSINESS_OWNER_EMAIL: owner@rewardme.test
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: >-
           npx playwright test
           tests/e2e/qr-full-screenshot.spec.ts
@@ -89,6 +96,9 @@ jobs:
         env:
           E2E_BASE_URL: https://wondertown-rewards.vercel.app
           E2E_QR_LIVE_UPLOAD_CHECK: 'true'
+          E2E_CUSTOMER_EMAIL: member@wondertown.test
+          E2E_BUSINESS_OWNER_EMAIL: owner@wondertown.test
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: >-
           npx playwright test
           tests/e2e/qr-full-screenshot.spec.ts

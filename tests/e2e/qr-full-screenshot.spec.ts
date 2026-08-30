@@ -3,7 +3,7 @@ import { existsSync, rmSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 
 import { e2eAccounts } from './helpers/env.js'
-import { signInBusinessPortal } from './helpers/auth.js'
+import { signInBusinessPortal, signInCustomer } from './helpers/auth.js'
 
 const screenshotPath = process.env.E2E_QR_SCREENSHOT_PATH ?? ''
 const liveUploadCheckEnabled = process.env.E2E_QR_LIVE_UPLOAD_CHECK === 'true'
@@ -14,12 +14,6 @@ async function clearBrowserSession(page: Page) {
     window.localStorage.clear()
     window.sessionStorage.clear()
   })
-}
-
-async function signInWithPublishedRole(page: Page, role: 'Business' | 'Customer', destination: RegExp) {
-  await page.goto('/signin', { waitUntil: 'domcontentloaded' })
-  await page.getByRole('button', { name: `Sign in as ${role}`, exact: true }).click()
-  await expect(page).toHaveURL(destination, { timeout: 15_000 })
 }
 
 async function forceSharedQrFallback(page: Page) {
@@ -38,7 +32,7 @@ async function forceSharedQrFallback(page: Page) {
 async function uploadPhoneScreenshotAndExpectMember(page: Page, phoneScreenshot: string) {
   await clearBrowserSession(page)
   await forceSharedQrFallback(page)
-  await signInWithPublishedRole(page, 'Business', /\/business\/dashboard(?:[/?#]|$)/)
+  await signInBusinessPortal(page, e2eAccounts.businessOwner)
   await page.goto('/business/redemptions', { waitUntil: 'domcontentloaded' })
 
   const transactionPanel = page.locator('[data-customer-picker]').locator('..')
@@ -75,7 +69,7 @@ test('critical public and sign-in shell works without visual dead ends', async (
 test('shared decoder finds an off-center QR in a phone-screen image when the native detector fails', async ({ page }, testInfo) => {
   if (liveUploadCheckEnabled) {
     await page.setViewportSize({ width: 390, height: 844 })
-    await signInWithPublishedRole(page, 'Customer', /\/dashboard(?:[/?#]|$)/)
+    await signInCustomer(page, e2eAccounts.customer)
     await page.goto('/profile', { waitUntil: 'domcontentloaded' })
 
     const memberQr = page.getByTestId('member-qr-code')
@@ -292,10 +286,10 @@ test('business scanner finds a QR inside an uncropped phone screenshot', async (
 })
 
 test('authenticated business upload decodes a full member phone screenshot', async ({ page }, testInfo) => {
-  test.skip(!liveUploadCheckEnabled, 'Set E2E_QR_LIVE_UPLOAD_CHECK=true for the published QA accounts.')
+  test.skip(!liveUploadCheckEnabled, 'Set E2E_QR_LIVE_UPLOAD_CHECK=true with private QA credentials.')
 
   await page.setViewportSize({ width: 390, height: 844 })
-  await signInWithPublishedRole(page, 'Customer', /\/dashboard(?:[/?#]|$)/)
+  await signInCustomer(page, e2eAccounts.customer)
 
   await page.goto('/profile', { waitUntil: 'domcontentloaded' })
   const memberQr = page.getByTestId('member-qr-code')

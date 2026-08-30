@@ -1,19 +1,26 @@
 import { expect, test, type Page } from '@playwright/test'
 
 const accountCheckEnabled = process.env.E2E_IN_APP_BROWSER_ACCOUNT_CHECK === 'true'
+const password = process.env.E2E_PASSWORD ?? ''
 
 const sites = [
   {
     name: 'Wondertown',
     origin: process.env.E2E_WONDERTOWN_URL ?? 'https://wondertown-rewards.vercel.app',
-    customerButton: 'Sign in as Customer',
+    customerEmail: process.env.E2E_WONDERTOWN_CUSTOMER_EMAIL ?? '',
   },
   {
     name: 'RewardMe',
     origin: process.env.E2E_REWARDME_URL ?? 'https://rewardme-prod.vercel.app',
-    customerButton: 'Sign in as Customer',
+    customerEmail: process.env.E2E_REWARDME_MEMBER_EMAIL ?? '',
   },
 ] as const
+
+function requirePrivateAccount(siteName: string, customerEmail: string) {
+  if (!customerEmail || !password) {
+    throw new Error(`${siteName} in-app browser QA requires a private member email and E2E_PASSWORD.`)
+  }
+}
 
 function collectRuntimeErrors(page: Page) {
   const errors: string[] = []
@@ -31,17 +38,18 @@ test.use({
   viewport: { width: 390, height: 844 },
 })
 
-test.describe('WhatsApp-style in-app browser login', () => {
+test.describe('WhatsApp-style in-app browser sign-in', () => {
   test.skip(
     !accountCheckEnabled,
-    'Set E2E_IN_APP_BROWSER_ACCOUNT_CHECK=true to verify the deliberately published QA logins.',
+    'Set E2E_IN_APP_BROWSER_ACCOUNT_CHECK=true to verify private QA account sign-in.',
   )
 
   for (const site of sites) {
-    test(`${site.name} member signs in with one tap`, async ({ page }) => {
+    test(`${site.name} member signs in with private credentials`, async ({ page }) => {
+      requirePrivateAccount(site.name, site.customerEmail)
       const runtimeErrors = collectRuntimeErrors(page)
       const response = await page.goto(
-        `${site.origin}/signin?utm_source=whatsapp&utm_medium=chat`,
+        `${site.origin}/signin?portal=customer&utm_source=whatsapp&utm_medium=chat`,
         { waitUntil: 'domcontentloaded' },
       )
 
@@ -49,8 +57,10 @@ test.describe('WhatsApp-style in-app browser login', () => {
       await expect(page.locator('main')).toBeVisible()
       await expect(page.locator('body')).not.toContainText(/rewards program not found/i)
 
-      await expect(page.getByRole('button')).toHaveCount(3)
-      await page.getByRole('button', { name: site.customerButton, exact: true }).click()
+      await page.locator('#signin-email').fill(site.customerEmail)
+      await page.locator('#signin-password').fill(password)
+      await page.locator('form').filter({ has: page.locator('#signin-email') })
+        .locator('button[type="submit"]').click()
 
       const loginError = page.getByText(/invalid login credentials|unable to sign in/i).first()
       await Promise.race([

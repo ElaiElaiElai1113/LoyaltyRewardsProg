@@ -1,4 +1,4 @@
-import { expect, test, type Page, type Route } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 import {
   getLatestMemberTransactionByNote,
@@ -31,12 +31,6 @@ const secondaryCustomerEmail = neighborEmail || (
     ? 'neighbor@wondertown.test'
     : customerEmail
 )
-
-type QuickSignInRole = {
-  buttonName: 'Sign in as Business' | 'Sign in as Customer'
-  defaultEmail: string
-  expectedUrl: RegExp
-}
 
 function requireQaConfiguration(name: string, value: string) {
   if (!value.trim()) {
@@ -123,68 +117,8 @@ async function expectTextInPaginatedList(page: Page, text: string) {
   await expect(target, `Expected to find "${text}" in the paginated list`).toBeVisible()
 }
 
-async function signInWithQuickRoleButton(
-  page: Page,
-  email: string,
-  { buttonName, defaultEmail, expectedUrl }: QuickSignInRole,
-) {
-  const button = page.getByRole('button', { name: buttonName, exact: true })
-
-  if (email === defaultEmail) {
-    await button.click()
-    await expect(page).toHaveURL(expectedUrl)
-    return
-  }
-
-  let passwordRequestWasReplaced = false
-  const passwordTokenRoute = /\/auth\/v1\/token(?:\?.*)?$/
-  const replaceQuickAccount = async (route: Route) => {
-    const requestUrl = new URL(route.request().url())
-    if (requestUrl.searchParams.get('grant_type') !== 'password') {
-      await route.continue()
-      return
-    }
-
-    let requestBody: Record<string, unknown>
-    try {
-      requestBody = route.request().postDataJSON() as Record<string, unknown>
-    } catch {
-      throw new Error(`Could not read the ${buttonName} password request for ${email}.`)
-    }
-
-    passwordRequestWasReplaced = true
-    await route.continue({
-      postData: JSON.stringify({
-        ...requestBody,
-        email,
-        password,
-      }),
-    })
-  }
-
-  await page.route(passwordTokenRoute, replaceQuickAccount)
-  try {
-    await button.click()
-    await expect(page).toHaveURL(expectedUrl)
-    expect(
-      passwordRequestWasReplaced,
-      `${buttonName} did not submit a password request that could authenticate ${email}.`,
-    ).toBe(true)
-  } finally {
-    await page.unroute(passwordTokenRoute, replaceQuickAccount)
-  }
-}
-
 async function signInCustomer(page: Page, email = customerEmail) {
   await page.goto('/signin')
-  if (await page.locator('#signin-email').count() === 0) {
-    await signInWithQuickRoleButton(page, email, {
-      buttonName: 'Sign in as Customer',
-      defaultEmail: customerEmail,
-      expectedUrl: /\/dashboard$/,
-    })
-    return
-  }
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#signin-email') })
@@ -194,14 +128,6 @@ async function signInCustomer(page: Page, email = customerEmail) {
 
 async function signInBusiness(page: Page, email = businessOwnerEmail) {
   await page.goto('/signin?portal=business')
-  if (await page.locator('#signin-email').count() === 0) {
-    await signInWithQuickRoleButton(page, email, {
-      buttonName: 'Sign in as Business',
-      defaultEmail: businessOwnerEmail,
-      expectedUrl: /\/business\/dashboard$/,
-    })
-    return
-  }
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
   await page.locator('form').filter({ has: page.locator('#signin-email') })

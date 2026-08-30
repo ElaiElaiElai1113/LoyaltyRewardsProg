@@ -26,7 +26,7 @@ async function expectRejectedRole(
 }
 
 test.describe.serial('unified sign-in role isolation', () => {
-  test.skip(!roleIsolationEnabled, 'Enable only against the published QA accounts.')
+  test.skip(!roleIsolationEnabled, 'Enable only with the private QA account credentials.')
 
   test('customer accounts cannot enter the business choice', async ({ page }) => {
     await expectRejectedRole(
