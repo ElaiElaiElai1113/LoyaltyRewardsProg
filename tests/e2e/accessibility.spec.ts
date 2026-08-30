@@ -12,7 +12,7 @@ test.describe('public keyboard accessibility', () => {
     await expect(page).toHaveURL(/\/join$/)
   })
 
-  test('temporary test sign-in choices have accessible names', async ({ page }) => {
+  test('sign-in role choices have accessible names', async ({ page }) => {
     await page.goto('/signin?tenant=pinas')
     for (const role of ['Admin', 'Business', 'Customer']) {
       await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()

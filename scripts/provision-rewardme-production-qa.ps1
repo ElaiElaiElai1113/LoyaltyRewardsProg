@@ -6,7 +6,8 @@ param(
   [ValidateSet('RewardMe', 'Wondertown')]
   [string]$Target = 'RewardMe',
   [switch]$Reset,
-  [switch]$ConfigureGitHubActions
+  [switch]$ConfigureGitHubActions,
+  [string]$QaPassword = $env:E2E_PASSWORD
 )
 
 $ErrorActionPreference = 'Stop'
@@ -15,6 +16,10 @@ $repoRoot = Resolve-Path (Join-Path $PSScriptRoot '..')
 
 if ($Reset -and $Target -ne 'Wondertown') {
   throw '-Reset is available only for the dedicated Wondertown demo tenant.'
+}
+
+if (($Apply -or $ConfigureGitHubActions) -and $QaPassword.Length -lt 12) {
+  throw 'Provide a private QA password of at least 12 characters with -QaPassword or E2E_PASSWORD.'
 }
 
 if (-not ('RewardMeCredentialReader' -as [type])) {
@@ -180,7 +185,7 @@ if ($ConfigureGitHubActions -and $PSCmdlet.ShouldProcess('GitHub repository', 'C
   Set-RepositorySecret -Name 'VITE_SUPABASE_URL' -Value "https://$projectRef.supabase.co"
   Set-RepositorySecret -Name 'VITE_SUPABASE_ANON_KEY' -Value $clientKey
   Set-RepositorySecret -Name 'SUPABASE_SERVICE_ROLE_KEY' -Value $serverKey
-  Set-RepositorySecret -Name 'E2E_PASSWORD' -Value 'Rewards 123!'
+  Set-RepositorySecret -Name 'E2E_PASSWORD' -Value $QaPassword
   Write-Output 'Configured four encrypted GitHub Actions secrets for reward-site operations.'
 }
 if (-not $Apply) {
@@ -217,7 +222,7 @@ try {
   $env:VITE_SUPABASE_URL = $projectUrl
   $env:VITE_SUPABASE_ANON_KEY = $clientKey
   $env:SUPABASE_SERVICE_ROLE_KEY = $serverKey
-  $env:E2E_PASSWORD = 'Rewards 123!'
+  $env:E2E_PASSWORD = $QaPassword
   $env:QA_PROGRAM_SLUG = 'pinas'
 
   Push-Location $repoRoot
@@ -242,11 +247,6 @@ try {
           throw "Wondertown authenticated Playwright checks failed with exit code $LASTEXITCODE."
         }
       } else {
-        & npm.cmd run test:e2e:rewardme-accounts
-        if ($LASTEXITCODE -ne 0) {
-          throw "Published-account Playwright checks failed with exit code $LASTEXITCODE."
-        }
-
         & npm.cmd run test:e2e:rewardme-safe
         if ($LASTEXITCODE -ne 0) {
           throw "Hosted-safe RewardMe Playwright checks failed with exit code $LASTEXITCODE."

@@ -27,12 +27,35 @@ const serviceWorker = await readFile(resolve(root, 'sw.js'), 'utf8')
 const precachedMedia = [...serviceWorker.matchAll(/url:"([^"]+\.(?:png|jpe?g|webp))"/gi)]
   .map((match) => match[1])
   .filter((path) => !/(?:icon-192|icon-512|apple-touch-icon)\.png/i.test(path))
-const passed = violations.length === 0 && totalBytes <= 12 * 1024 * 1024 && precachedMedia.length === 0
+const forbiddenCredentialLiterals = [
+  { id: 'shared-qa-password', value: 'Rewards 123!' },
+  { id: 'rewardme-member-email', value: 'member@rewardme.test' },
+  { id: 'rewardme-owner-email', value: 'owner@rewardme.test' },
+  { id: 'rewardme-staff-email', value: 'staff@rewardme.test' },
+  { id: 'platform-admin-email', value: 'admin@rewardsplatform.test' },
+  { id: 'wondertown-member-email', value: 'member@wondertown.test' },
+  { id: 'wondertown-owner-email', value: 'owner@wondertown.test' },
+]
+const textAssets = files.filter((file) => ['.html', '.js', '.css'].includes(extname(file.path)))
+const credentialExposures = []
+for (const file of textAssets) {
+  const contents = await readFile(join(root, file.path), 'utf8')
+  for (const forbidden of forbiddenCredentialLiterals) {
+    if (contents.includes(forbidden.value)) {
+      credentialExposures.push({ path: file.path, id: forbidden.id })
+    }
+  }
+}
+const passed = violations.length === 0
+  && totalBytes <= 12 * 1024 * 1024
+  && precachedMedia.length === 0
+  && credentialExposures.length === 0
 console.log(JSON.stringify({
   passed,
   totalBytes,
   totalLimit: 12 * 1024 * 1024,
   violations,
   precachedMedia,
+  credentialExposures,
 }, null, 2))
 process.exit(passed ? 0 : 1)

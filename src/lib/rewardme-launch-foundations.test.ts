@@ -67,7 +67,7 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(provisioner).toContain('/api-keys?reveal=true')
     expect(provisioner).toContain("$env:QA_PROGRAM_SLUG = 'pinas'")
     expect(provisioner).toContain('scripts/provision-tenant-qa-fixtures.mjs')
-    expect(provisioner).toContain('test:e2e:rewardme-accounts')
+    expect(provisioner).not.toContain('test:e2e:rewardme-accounts')
     expect(provisioner).toContain('test:e2e:rewardme-safe')
     expect(provisioner).toContain('Remove-Item "Env:$name"')
     expect(provisioner).not.toContain('WriteAllText')

@@ -5,6 +5,10 @@ const publishedCredentials = [
   'owner@rewardme.test',
   'staff@rewardme.test',
   'admin@rewardsplatform.test',
+  'member@wondertown.test',
+  'neighbor@wondertown.test',
+  'owner@wondertown.test',
+  'staff@wondertown.test',
   'Rewards 123!',
 ] as const
 
@@ -15,6 +19,7 @@ test('RewardMe release mode removes every public QA credential from sign-in port
     await page.locator('main').waitFor()
 
     await expect(page.getByTestId('rewardme-test-credentials')).toHaveCount(0)
+    await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
     await expect(page.locator('#signin-email')).toBeVisible()
     await expect(page.locator('#signin-password')).toBeVisible()
     for (const credential of publishedCredentials) {

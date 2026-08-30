@@ -90,10 +90,10 @@ remaining approval, test-account, manual-enrollment, database, and release steps
 
 ## Current live QA status
 
-The four published accounts and isolated QA fixtures are provisioned in the
+The four private accounts and isolated QA fixtures are provisioned in the
 Supabase project used by the RewardMe Vercel deployment. Password login is
 verified for the member, business owner, business staff and platform
-administrator accounts. The live published-account gate passes for all four
+administrator accounts. The private authenticated gate passes for all four
 roles, and the hosted-safe RewardMe suite verifies tenant isolation plus mobile
 authentication without a dead end.
 
@@ -104,10 +104,6 @@ project keys:
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/provision-rewardme-production-qa.ps1 -Apply -RunAuthenticatedChecks
 ```
 
-Public credentials remain temporary testing infrastructure. Before a true
-public launch, set `VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, redeploy, run the
-release-mode check, and rotate or disable all four QA accounts.
-
-While boss/user testing is active, the credential panels intentionally remain
-visible and the QA accounts remain enabled. This is a testing-state exception,
-not the public-launch configuration.
+QA credentials remain private testing infrastructure. Keep
+`VITE_SHOW_PUBLIC_QA_CREDENTIALS=false`, run the release-mode and bundle checks,
+and rotate the four isolated accounts after any suspected disclosure.

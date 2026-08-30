@@ -8,7 +8,7 @@ Guatemala, or RewardMe.
 
 `https://wondertown-rewards.vercel.app`
 
-## Permanent test roles
+## Private test roles
 
 | Role | Email | Purpose |
 | --- | --- | --- |
@@ -16,9 +16,11 @@ Guatemala, or RewardMe.
 | Neighbor | `neighbor@wondertown.test` | A second fictional customer visible in the Moonbeam Café customer list. |
 | Business owner | `owner@wondertown.test` | Full Moonbeam Café management and transaction flow. |
 | Business staff | `staff@wondertown.test` | Staff-level sale, redemption, and customer operations. |
-| Platform admin | `admin@rewardsplatform.test` | Platform administration and Wondertown tenant oversight. |
+| Platform admin | Private release credential | Platform administration and Wondertown tenant oversight. |
 
-Password for every test account: `Rewards 123!`
+Credentials are stored only in encrypted release secrets. They are not shown on
+the website, committed to the browser bundle, or included in shareable demo
+messages.
 
 ## Boss-ready login message
 
@@ -29,10 +31,8 @@ Password for every test account: `Rewards 123!`
 >
 > Open: https://wondertown-rewards.vercel.app
 >
-> To test as a member, use `member@wondertown.test`. To test as a business
-> owner, use `owner@wondertown.test`. A staff account is available at
-> `staff@wondertown.test`. The password for every test account is
-> `Rewards 123!`.
+> Ask an authorized operator for a temporary private member, business-owner, or
+> staff credential. Do not share the platform-administrator credential.
 >
 > Suggested test: sign in as the member and open the QR code. In a private or
 > second browser window, sign in as the business owner or staff member, find
@@ -48,10 +48,9 @@ Password for every test account: `Rewards 123!`
 >
 > Abrir: https://wondertown-rewards.vercel.app
 >
-> Para probar como miembro, usa `member@wondertown.test`. Para probar como dueño
-> de negocio, usa `owner@wondertown.test`. También hay una cuenta de empleado:
-> `staff@wondertown.test`. La contraseña para todas las cuentas de prueba es
-> `Rewards 123!`.
+> Solicita a un operador autorizado una credencial privada y temporal de
+> miembro, dueño o empleado. No compartas la credencial de administrador de la
+> plataforma.
 >
 > Prueba sugerida: inicia sesión como miembro y abre el código QR. En una ventana
 > privada o en un segundo navegador, inicia sesión como dueño o empleado, busca
@@ -92,7 +91,7 @@ complete real workflow immediately.
 3. `npm run test:e2e:wondertown-gift-cards-live`
 4. `npm run qa:verify-reward-sites`
 
-The provisioner is idempotent. A normal refresh repairs the demo password,
+The provisioner is idempotent. A normal refresh repairs the private demo password,
 accounts, memberships, missing balances, catalogs, baseline transaction, and
 baseline gift card without creating duplicates or erasing later test activity.
 
@@ -118,7 +117,7 @@ checks, run:
 The `Production operations` GitHub workflow can run this every six hours. Once
 `ENABLE_REWARD_SITES_DEEP_MONITORING=true` is configured, it performs a
 non-destructive Wondertown refresh and then checks RewardMe and Wondertown site
-health, published logins, tenant roles, map coordinates, catalogs, balances,
+health, private logins, tenant roles, map coordinates, catalogs, balances,
 customer links, transactions, and gift cards. Its manual `reset_wondertown`
 input provides the same Wondertown-only reset for authorized operators. The job
 is fail-closed and remains disabled until its encrypted secrets are configured.

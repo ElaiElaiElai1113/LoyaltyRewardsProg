@@ -248,19 +248,10 @@ test.describe('public acquisition workflow', () => {
   test('RewardMe sign-in keeps release mode credential-safe', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/signin')
-    await expect(page.locator('#signin-email, [data-testid^="quick-sign-in-"]').first()).toBeVisible()
-
-    if (await page.locator('#signin-email').count()) {
-      await expect(page.locator('#signin-email')).toBeVisible()
-      await expect(page.locator('#signin-password')).toBeVisible()
-      await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
-      await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(3)
-    } else {
-      for (const role of ['Admin', 'Business', 'Customer']) {
-        await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
-      }
-      await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(3)
-    }
+    await expect(page.locator('#signin-email')).toBeVisible()
+    await expect(page.locator('#signin-password')).toBeVisible()
+    await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
+    await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(3)
     await expect(page.getByTestId('rewardme-test-credentials')).toHaveCount(0)
     await expect(page.locator('body')).not.toContainText('Rewards 123!')
     await expect(page.locator('body')).not.toContainText('@rewardme.test')

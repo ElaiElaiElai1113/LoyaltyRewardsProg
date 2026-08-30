@@ -2,7 +2,7 @@ import { existsSync, readFileSync } from 'node:fs'
 
 export const e2eBaseUrl = process.env.E2E_BASE_URL ?? 'http://127.0.0.1:5275'
 
-export const e2ePassword = process.env.E2E_PASSWORD ?? readDotEnvValue('E2E_PASSWORD') ?? 'Rewards 123!'
+export const e2ePassword = process.env.E2E_PASSWORD ?? readDotEnvValue('E2E_PASSWORD') ?? ''
 
 function readDotEnvValue(name: string) {
   if (!existsSync('.env')) return undefined

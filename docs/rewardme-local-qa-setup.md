@@ -25,7 +25,7 @@ The sign-in pages currently show four temporary QA accounts. To verify that each
 credential reaches the correct live portal without changing fixture data, run:
 
 ```powershell
-npm run test:e2e:rewardme-accounts
+npm run test:e2e:rewardme-release-mode
 ```
 
 This check covers the member, business owner, business staff, and platform

@@ -231,7 +231,7 @@ await ensureProgramMembership(owner.id, 'business-owner', business.id)
 if (staff) await ensureProgramMembership(staff.id, 'business-staff', business.id)
 
 // New auth identities can briefly receive a member row before the final QA role
-// is applied. Remove that transitional access so every published account has one
+// is applied. Remove that transitional access so every QA account has one
 // intentional tenant role and the global platform admin has no tenant membership.
 const nonMemberProfiles = [owner.id, staff?.id, admin?.id].filter(Boolean)
 if (nonMemberProfiles.length) {

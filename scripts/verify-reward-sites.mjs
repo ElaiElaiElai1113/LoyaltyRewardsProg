@@ -154,7 +154,7 @@ for (const site of sites) {
     return { slug: program.slug, status: program.status, savingsPlans: program.feature_flags?.savingsPlans ?? null }
   })
 
-  await check(site.name, 'published accounts authenticate and have isolated roles', async () => {
+  await check(site.name, 'private QA accounts authenticate and have isolated roles', async () => {
     requireCondition(program?.id, 'program configuration check did not load an ID')
     for (const account of site.accounts) {
       const authClient = createClient(supabaseUrl, anonKey, {

@@ -25,7 +25,7 @@ const tenants = [
   {
     slug: 'loyality',
     name: 'Loyality',
-    color: '#173b3f',
+    color: '#3e8e8a',
     heading: 'Your loyalty card, reimagined.',
   },
 ] as const
@@ -99,8 +99,8 @@ test.describe('white-label tenant resolution', () => {
         await expect(page.locator('body')).not.toContainText('Rewards Platform')
       } else if (tenant.slug === 'wondertown') {
         await expect(page).toHaveTitle('Rewards Platform Admin')
-        await expect(page.getByRole('button')).toHaveCount(3)
-        await expect(page.locator('#signin-email')).toHaveCount(0)
+        await expect(page.locator('#signin-email')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
       } else if (tenant.slug === 'pinas') {
         await expect(page).toHaveTitle('Rewards Platform Admin')
         await expect(page.locator('#signin-email')).toBeVisible()
@@ -127,8 +127,8 @@ test.describe('white-label tenant resolution', () => {
         await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
         await expect(page.locator('#loyality-email')).toBeVisible()
       } else if (tenant.slug === 'wondertown') {
-        await expect(page.getByRole('button')).toHaveCount(3)
-        await expect(page.locator('#signin-email')).toHaveCount(0)
+        await expect(page.locator('#signin-email')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
       } else if (tenant.slug === 'pinas') {
         await expect(page.locator('#signin-email')).toBeVisible()
         await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
