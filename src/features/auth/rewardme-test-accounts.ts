@@ -8,6 +8,18 @@ export function shouldShowRewardMeTestCredentials(
   return configuredValue === 'true'
 }
 
+export function shouldShowQuickTestCredentials(
+  programSlug: string,
+  demoTenant: boolean | undefined,
+  configuredValue = import.meta.env.VITE_SHOW_PUBLIC_QA_CREDENTIALS,
+) {
+  if (programSlug === 'wondertown') return demoTenant === true
+  if (programSlug === 'pinas' || programSlug === 'rewardme') {
+    return shouldShowRewardMeTestCredentials(configuredValue)
+  }
+  return false
+}
+
 export type RewardMeTestPortal = 'member' | 'business' | 'admin'
 
 export type RewardMeTestAccount = {

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest'
 import {
   REWARDME_TEST_ACCOUNTS,
   REWARDME_TEST_PASSWORD,
+  shouldShowQuickTestCredentials,
   shouldShowRewardMeTestCredentials,
 } from '@/features/auth/rewardme-test-accounts'
 
@@ -24,5 +25,14 @@ describe('RewardMe temporary test accounts', () => {
     expect(shouldShowRewardMeTestCredentials('TRUE')).toBe(false)
     expect(shouldShowRewardMeTestCredentials('1')).toBe(false)
     expect(shouldShowRewardMeTestCredentials('')).toBe(false)
+  })
+
+  it('never treats RewardMe as a public demo tenant', () => {
+    expect(shouldShowQuickTestCredentials('pinas', true, 'false')).toBe(false)
+    expect(shouldShowQuickTestCredentials('pinas', true, undefined)).toBe(false)
+    expect(shouldShowQuickTestCredentials('pinas', true, 'true')).toBe(true)
+    expect(shouldShowQuickTestCredentials('wondertown', true, 'false')).toBe(true)
+    expect(shouldShowQuickTestCredentials('wondertown', false, 'true')).toBe(false)
+    expect(shouldShowQuickTestCredentials('loyality', true, 'true')).toBe(false)
   })
 })

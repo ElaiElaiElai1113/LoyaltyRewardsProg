@@ -27,7 +27,7 @@ import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import {
   REWARDME_TEST_ACCOUNTS,
   REWARDME_TEST_PASSWORD,
-  shouldShowRewardMeTestCredentials,
+  shouldShowQuickTestCredentials,
   type RewardMeTestAccount,
 } from '@/features/auth/rewardme-test-accounts'
 import {
@@ -1001,7 +1001,10 @@ export function CompactAuthPage() {
     : REWARDME_TEST_PASSWORD
   const showQuickTestSignIn = Boolean(
     quickTestAccounts
-      && (program.featureFlags.demoTenant === true || shouldShowRewardMeTestCredentials()),
+      && shouldShowQuickTestCredentials(
+        program.slug,
+        program.featureFlags.demoTenant,
+      ),
   )
   usePlatformDocumentBrand(selectedPortal === 'admin')
 
