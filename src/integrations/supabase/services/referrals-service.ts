@@ -225,8 +225,24 @@ export const referralsService = {
         .map(mapStaffReferral)
   },
 
-  async getAllReferrals(): Promise<ReferralWithProfiles[]> {
+  async getAllReferrals(programId?: string): Promise<ReferralWithProfiles[]> {
     const sb = requireSupabase()
+
+    if (programId) {
+      const { data, error } = await sb
+        .from('referrals')
+        .select(`
+          *,
+          referrer:profiles!referrals_referrer_id_fkey(full_name,email),
+          referee:profiles!referrals_referee_id_fkey(full_name,email)
+        `)
+        .eq('program_id', programId)
+        .order('created_at', { ascending: false })
+
+      if (error) throw new Error('Failed to load referrals.')
+      return ((data ?? []) as ReferralRow[]).map(mapReferral)
+    }
+
     const { data: rpcData, error: rpcError } = await sb.rpc('get_staff_referrals', {
       target_business_id: null,
     })

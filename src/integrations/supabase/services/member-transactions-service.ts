@@ -97,10 +97,10 @@ export const memberTransactionsService = {
     return mapMemberTransaction(row)
   },
 
-  async getBusinessTransactions(businessId?: string): Promise<MemberTransaction[]> {
+  async getBusinessTransactions(businessId?: string, programId?: string): Promise<MemberTransaction[]> {
     const sb = requireSupabase()
 
-    if (businessId) {
+    if (businessId && !programId) {
       const { data, error } = await sb.rpc('get_business_member_transactions', {
         p_business_id: businessId,
       })
@@ -117,6 +117,9 @@ export const memberTransactionsService = {
 
     if (businessId) {
       query = query.eq('business_id', businessId)
+    }
+    if (programId) {
+      query = query.eq('program_id', programId)
     }
 
     const { data, error } = await query

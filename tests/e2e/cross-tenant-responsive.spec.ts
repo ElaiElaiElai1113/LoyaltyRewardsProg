@@ -65,6 +65,7 @@ test.describe('cross-tenant public responsive layouts', () => {
 
             const homeNav = document.querySelector<HTMLElement>('.figma-home__nav')
             const referenceRewardMeNav = document.querySelector<HTMLElement>('.reference-rewardme__nav')
+            const wondertownNav = document.querySelector<HTMLElement>('.wondertown-home__nav')
             const businessNav = document.querySelector<HTMLElement>('.business-public-shell__nav')
 
             return {
@@ -73,6 +74,7 @@ test.describe('cross-tenant public responsive layouts', () => {
               membershipCardsShareRow,
               homeNavPosition: homeNav ? getComputedStyle(homeNav).position : null,
               referenceRewardMeNavDisplay: referenceRewardMeNav ? getComputedStyle(referenceRewardMeNav).display : null,
+              wondertownNavDisplay: wondertownNav ? getComputedStyle(wondertownNav).display : null,
               businessNavPosition: businessNav ? getComputedStyle(businessNav).position : null,
             }
           })
@@ -85,8 +87,13 @@ test.describe('cross-tenant public responsive layouts', () => {
             expect(layout.homeNavPosition, `${tenant} home navigation at ${width}px`).toBe('fixed')
           }
 
-          if (route === '/' && (tenant === 'pinas' || tenant === 'wondertown')) {
+          if (route === '/' && tenant === 'pinas') {
             expect(layout.referenceRewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('flex')
+          }
+
+          if (route === '/' && tenant === 'wondertown') {
+            expect(layout.wondertownNavDisplay, `${tenant} home navigation at ${width}px`)
+              .toBe(width <= 1080 ? 'none' : 'flex')
           }
 
           if (route === '/business' && width <= 820) {

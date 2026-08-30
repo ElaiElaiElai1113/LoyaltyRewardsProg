@@ -17,10 +17,10 @@ import { RewardMeMembershipPage } from './rewardme-membership-page'
 export function MembershipPage() {
   const { program } = useTenant()
   if (program.slug === 'pinas') return <RewardMeMembershipPage />
-  return <StandardMembershipPage />
+  return <StandardMembershipPage isWondertown={program.slug === 'wondertown'} />
 }
 
-function StandardMembershipPage() {
+function StandardMembershipPage({ isWondertown }: { isWondertown: boolean }) {
   const { language, t } = useLanguage()
   const { profile } = useAuth()
   const { membership, isActive, isLoading, subscribe, renew, cancel } = useMembership()
@@ -33,10 +33,12 @@ function StandardMembershipPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-10 pb-20">
       <div className="space-y-4 border-b border-[var(--border)] pb-8">
-        <Badge>{t('Mock Membership')}</Badge>
-        <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t('Monthly Membership')}</h1>
+        <Badge>{t(isWondertown ? 'Wondertown demo membership' : 'Mock Membership')}</Badge>
+        <h1 className="text-3xl font-semibold text-[var(--foreground)]">{t(isWondertown ? 'Try the membership flow' : 'Monthly Membership')}</h1>
         <p className="max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">
-          {t('Portfolio demo billing: buttons call Supabase RPCs directly and never process a real payment.')}
+          {t(isWondertown
+            ? 'This fictional account uses test-only billing records. Actions never charge a real card.'
+            : 'Portfolio demo billing: buttons call Supabase RPCs directly and never process a real payment.')}
         </p>
       </div>
 
@@ -110,24 +112,24 @@ function StandardMembershipPage() {
             <div className="mt-6 grid gap-3">
               {isActive ? (
                 <>
-                  <Button type="button" disabled={renew.isPending || isLoading || rewardActionsLocked} onClick={() => renew.mutate()}>
+                  <Button className="h-auto min-h-10 whitespace-normal text-center leading-5" type="button" disabled={renew.isPending || isLoading || rewardActionsLocked} onClick={() => renew.mutate()}>
                     <RefreshCw className="size-4" />
-                    {rewardActionsLocked ? t('Add contact details to renew') : renew.isPending ? t('Renewing...') : t('Renew now - Demo')}
+                    {rewardActionsLocked ? t('Add contact details to renew') : renew.isPending ? t('Renewing...') : t(isWondertown ? 'Renew demo membership' : 'Renew now - Demo')}
                   </Button>
                   <Button type="button" variant="outline" disabled={cancel.isPending} onClick={() => cancel.mutate()}>
                     {cancel.isPending ? t('Canceling...') : t('Cancel')}
                   </Button>
                 </>
               ) : (
-                <Button type="button" disabled={subscribe.isPending || isLoading || rewardActionsLocked} onClick={() => subscribe.mutate()}>
+                <Button className="h-auto min-h-10 whitespace-normal text-center leading-5" type="button" disabled={subscribe.isPending || isLoading || rewardActionsLocked} onClick={() => subscribe.mutate()}>
                   <CreditCard className="size-4" />
                   {rewardActionsLocked
                     ? t('Add contact details to subscribe')
                     : subscribe.isPending
                       ? t('Subscribing...')
                       : isFrozen
-                        ? t('Resubscribe - Demo')
-                        : t('Subscribe - Demo')}
+                        ? t(isWondertown ? 'Reactivate demo membership' : 'Resubscribe - Demo')
+                        : t(isWondertown ? 'Activate demo membership' : 'Subscribe - Demo')}
                 </Button>
               )}
             </div>

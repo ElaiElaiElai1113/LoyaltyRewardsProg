@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { ArrowLeft, CheckCircle2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useSearchParams } from 'react-router'
+import { Link, useSearchParams } from 'react-router'
 import { z } from 'zod'
 
+import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
@@ -42,6 +44,27 @@ export function EarlyAccessPage() {
   const { program } = useTenant()
   const [searchParams] = useSearchParams()
   const isMembershipRequest = program.slug === 'pinas' && searchParams.get('interest') === 'membership'
+  const isRewardMeInvitation = program.slug === 'pinas'
+  const isWondertownInvitation = program.slug === 'wondertown'
+  const usesAssignedInvitation = isRewardMeInvitation || isWondertownInvitation
+  const invitationTitle = isMembershipRequest
+    ? 'Request Regular or Gold access'
+    : isWondertownInvitation
+      ? 'Ask the Wondertown demo team for help'
+      : 'Request RewardMe program information'
+  const invitationBody = isMembershipRequest
+    ? 'RewardMe does not collect membership payments online. Leave your details and the team will contact you about eligibility, reference prices, terms, and manual activation.'
+    : isWondertownInvitation
+      ? 'Wondertown is a fictional test city. Use this form if you need help choosing a demo role or completing an end-to-end test.'
+      : 'Leave your details if you would like help choosing the current RewardMe membership or business path.'
+  const invitationPoints = isWondertownInvitation
+    ? ['No real payment or customer data', 'Permanent fictional demo roles', 'Guided member and business workflows']
+    : ['No payment card is collected here', 'Terms and eligibility are confirmed before activation', 'Your request is reviewed by the RewardMe team']
+  const invitationSubmitLabel = isMembershipRequest
+    ? 'Send membership request'
+    : isWondertownInvitation
+      ? 'Request demo help'
+      : 'Send information request'
   const tenantText = (text: string) => t(text).replaceAll('Medellin Rewards', program.name)
   const [leadModalOpen, setLeadModalOpen] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
@@ -58,58 +81,91 @@ export function EarlyAccessPage() {
   }
 
   return (
-    <main className="early-access-neutral min-h-screen overflow-x-hidden bg-white font-sans text-neutral-950">
-      <div className="mx-auto flex min-h-screen max-w-5xl items-center px-5 py-10 sm:px-8 lg:px-12">
+    <main className={usesAssignedInvitation
+      ? 'product-public-shell min-h-screen overflow-x-hidden bg-[var(--background)] font-sans text-[var(--foreground)]'
+      : 'early-access-neutral min-h-screen overflow-x-hidden bg-white font-sans text-neutral-950'}>
+      <div className={usesAssignedInvitation
+        ? 'mx-auto flex min-h-screen max-w-6xl flex-col px-5 py-6 sm:px-8 lg:px-12'
+        : 'mx-auto flex min-h-screen max-w-5xl items-center px-5 py-10 sm:px-8 lg:px-12'}>
         <section className="w-full space-y-7">
-          <div className="flex justify-end">
-            <LanguagePicker className="text-neutral-700" compact />
-          </div>
-
-          <div className="space-y-5">
-            {isMembershipRequest ? (
-              <div className="max-w-3xl border-l-2 border-black pl-4">
-                <h1 className="text-[1.5rem] font-bold leading-tight text-black">{t('Request Regular or Gold access')}</h1>
-                <p className="mt-2 text-base font-medium leading-7 text-neutral-700">
-                  {t('RewardMe does not collect payments online. Leave your details and the team will contact you about eligibility, reference prices, terms, and manual activation.')}
-                </p>
+          {usesAssignedInvitation ? (
+            <header className="flex min-h-16 items-center justify-between gap-4 border-b border-[var(--border)] pb-5">
+              <Link to="/" aria-label={t('Back to home')}><BrandLogo markClassName="h-11 max-w-48" /></Link>
+              <div className="flex items-center gap-3">
+                <LanguagePicker className="text-[var(--muted-foreground)]" compact />
+                <Link className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[var(--border)] px-4 text-sm font-bold" to="/"><ArrowLeft className="size-4" aria-hidden="true" /> {t('Home')}</Link>
               </div>
-            ) : null}
-            {earlyAccessMessageLines.slice(0, 6).map((line) => (
-              <p key={line} className={earlyAccessParagraphClass}>
-                {tenantText(line)}
-              </p>
-            ))}
+            </header>
+          ) : (
+            <div className="flex justify-end">
+              <LanguagePicker className="text-neutral-700" compact />
+            </div>
+          )}
 
-            {isSubmitted ? (
-              <div className="max-w-xl space-y-3 border-l-2 border-black pl-4">
-                <h2 className="text-xl font-semibold leading-tight text-black">{isMembershipRequest ? t('Your membership request was received.') : t("You're on the early list.")}</h2>
-                <p className="text-base font-medium leading-7 text-neutral-700">
-                  {isMembershipRequest ? t('The RewardMe team will contact you about the next manual enrollment steps.') : tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}
-                </p>
+          {usesAssignedInvitation ? (
+            <div className="grid flex-1 items-center gap-8 py-10 lg:grid-cols-[1.25fr_.75fr] lg:py-20">
+              <div className="space-y-6">
+                <p className="text-xs font-black uppercase tracking-[.2em] text-[var(--tenant-accent)]">{t(isWondertownInvitation ? 'Demo support' : 'Program access')}</p>
+                <h1 className="max-w-3xl font-serif text-4xl font-semibold leading-[1.02] sm:text-6xl">{t(invitationTitle)}</h1>
+                <p className="max-w-2xl text-base font-medium leading-7 text-[var(--muted-foreground)] sm:text-lg">{t(invitationBody)}</p>
+                <ul className="grid gap-3" aria-label={t('What happens next')}>
+                  {invitationPoints.map((point) => <li className="flex items-start gap-3 text-sm font-semibold" key={point}><CheckCircle2 className="mt-0.5 size-5 shrink-0 text-[var(--tenant-accent)]" aria-hidden="true" />{t(point)}</li>)}
+                </ul>
               </div>
-            ) : (
-              <button
-                type="button"
-                className="h-12 rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d]"
-                onClick={openLeadModal}
-              >
-                {isMembershipRequest ? t('Send membership request') : t(earlyAccessSubscribeButtonLabel)}
-              </button>
-            )}
-          </div>
 
-          <div className="space-y-1">
-            {earlyAccessMessageLines.slice(6, 8).map((line) => (
-              <p key={line} className={earlyAccessParagraphClass}>
-                {tenantText(line)}
-              </p>
-            ))}
-          </div>
+              <div className="rounded-3xl border border-[var(--border)] bg-card p-6 text-card-foreground shadow-soft sm:p-8">
+                {isSubmitted ? (
+                  <div className="space-y-3" role="status">
+                    <CheckCircle2 className="size-10 text-[var(--tenant-accent)]" aria-hidden="true" />
+                    <h2 className="font-serif text-2xl font-semibold">{t(isMembershipRequest ? 'Your membership request was received.' : 'Your request was received.')}</h2>
+                    <p className="text-sm font-medium leading-6 text-[var(--muted-foreground)]">{t(isWondertownInvitation ? 'The Wondertown demo team will follow up with the next testing step.' : 'The RewardMe team will contact you about the appropriate next step.')}</p>
+                    <Link className="inline-flex min-h-11 items-center justify-center rounded-full bg-primary px-5 text-sm font-bold text-primary-foreground" to={isWondertownInvitation ? '/guide' : '/membership'}>{t(isWondertownInvitation ? 'Open the demo guide' : 'Review membership options')}</Link>
+                  </div>
+                ) : (
+                  <div className="space-y-5">
+                    <div><p className="text-xs font-black uppercase tracking-[.18em] text-[var(--tenant-accent)]">{t('Next step')}</p><h2 className="mt-2 font-serif text-2xl font-semibold">{t('Send your contact details')}</h2></div>
+                    <p className="text-sm font-medium leading-6 text-[var(--muted-foreground)]">{t('The form asks for contact details only. It does not collect a card or process a charge.')}</p>
+                    <button type="button" className="min-h-12 w-full rounded-full bg-primary px-6 text-sm font-bold text-primary-foreground transition hover:opacity-90" onClick={openLeadModal}>{t(invitationSubmitLabel)}</button>
+                    <Link className="flex min-h-11 items-center justify-center rounded-full border border-[var(--border)] px-5 text-center text-sm font-bold" to={isWondertownInvitation ? '/join' : '/membership'}>{t(isWondertownInvitation ? 'Create a demo member account' : 'Back to membership')}</Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          ) : (
+            <>
+              <div className="space-y-5">
+                {earlyAccessMessageLines.slice(0, 6).map((line) => (
+                  <p key={line} className={earlyAccessParagraphClass}>
+                    {tenantText(line)}
+                  </p>
+                ))}
+
+                {isSubmitted ? (
+                  <div className="max-w-xl space-y-3 border-l-2 border-black pl-4">
+                    <h2 className="text-xl font-semibold leading-tight text-black">{t("You're on the early list.")}</h2>
+                    <p className="text-base font-medium leading-7 text-neutral-700">{tenantText('We saved your details. We will reach out when Medellin Rewards is ready for early adopters.')}</p>
+                  </div>
+                ) : (
+                  <button type="button" className="h-12 rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d]" onClick={openLeadModal}>{t(earlyAccessSubscribeButtonLabel)}</button>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                {earlyAccessMessageLines.slice(6, 8).map((line) => (
+                  <p key={line} className={earlyAccessParagraphClass}>
+                    {tenantText(line)}
+                  </p>
+                ))}
+              </div>
+            </>
+          )}
         </section>
       </div>
 
       <Dialog open={leadModalOpen} onOpenChange={setLeadModalOpen}>
-        <DialogContent className="early-access-neutral max-w-lg rounded-3xl border border-neutral-200 bg-white p-6 text-black shadow-xl sm:p-8">
+        <DialogContent className={usesAssignedInvitation
+          ? 'max-w-lg rounded-3xl border border-[var(--border)] bg-card p-6 text-card-foreground shadow-xl sm:p-8'
+          : 'early-access-neutral max-w-lg rounded-3xl border border-neutral-200 bg-white p-6 text-black shadow-xl sm:p-8'}>
           <form
             className="space-y-5"
             onSubmit={leadForm.handleSubmit(async (values) => {
@@ -145,9 +201,9 @@ export function EarlyAccessPage() {
             })}
           >
             <DialogHeader>
-              <DialogTitle className="text-xl font-bold text-black">{isMembershipRequest ? t('Request membership access') : t('Join early access')}</DialogTitle>
-              <DialogDescription className="text-sm font-semibold leading-6 text-neutral-700">
-                {isMembershipRequest ? t('No payment details are required. The RewardMe team will contact you about manual enrollment.') : tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
+              <DialogTitle className={usesAssignedInvitation ? 'text-xl font-bold text-[var(--foreground)]' : 'text-xl font-bold text-black'}>{usesAssignedInvitation ? t(invitationTitle) : t('Join early access')}</DialogTitle>
+              <DialogDescription className={usesAssignedInvitation ? 'text-sm font-semibold leading-6 text-[var(--muted-foreground)]' : 'text-sm font-semibold leading-6 text-neutral-700'}>
+                {usesAssignedInvitation ? t('No payment details are required. The team will contact you about the next step.') : tenantText('Leave your details and we will contact you when Medellin Rewards opens.')}
               </DialogDescription>
             </DialogHeader>
 
@@ -186,7 +242,7 @@ export function EarlyAccessPage() {
               className="h-12 w-full rounded-md bg-[#16a34a] px-8 text-base font-bold text-white transition hover:bg-[#15803d] disabled:opacity-60"
               disabled={leadForm.formState.isSubmitting}
             >
-              {leadForm.formState.isSubmitting ? t('Submitting...') : isMembershipRequest ? t('Send membership request') : t(earlyAccessSubscribeButtonLabel)}
+              {leadForm.formState.isSubmitting ? t('Submitting...') : usesAssignedInvitation ? t(invitationSubmitLabel) : t(earlyAccessSubscribeButtonLabel)}
             </button>
           </form>
         </DialogContent>

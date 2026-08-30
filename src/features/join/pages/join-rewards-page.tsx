@@ -16,6 +16,7 @@ import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
 import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
+import { PASSWORD_MIN_LENGTH } from '@/lib/password-setup'
 
 import './rewardme-join-page.css'
 
@@ -440,7 +441,7 @@ export function RewardMeJoinPage() {
             <label>{t('Email')} <b>*</b><Input id="join-email" type="email" placeholder={t('you@example.com')} {...form.register('email')} />{form.formState.errors.email ? <small>{form.formState.errors.email.message}</small> : null}</label>
             <label>{t('Phone')} <b>*</b><Input id="join-phone" type="tel" placeholder={phonePlaceholder} {...form.register('phone')} />{form.formState.errors.phone ? <small>{form.formState.errors.phone.message}</small> : null}</label>
             <label>{t('Referral code')} <i>{t('optional')}</i><Input id="join-referral" value={referralCode} onChange={(event) => setReferralCode(event.target.value)} maxLength={120} placeholder={t('Enter a referral code')} /></label>
-            <label className="is-full">{t('Password')} <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder={t('At least 5 characters')} {...form.register('password')} /><button type="button" aria-label={showPassword ? t('Hide password') : t('Show password')} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
+            <label className="is-full">{t('Password')} <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder={t('Use at least {count} characters for your new password.', { count: PASSWORD_MIN_LENGTH })} {...form.register('password')} /><button type="button" aria-label={showPassword ? t('Hide password') : t('Show password')} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
           </div>
           <label className="rewardme-join__agree"><input type="checkbox" required /><span>{t('I agree to the')} <Link to="/terms">{t('Terms of Service')}</Link>, <Link to="/privacy">{t('Privacy Policy')}</Link>, {t('and applicable membership terms. I understand paid memberships are manually reviewed and no card is collected here.')}</span></label>
           {error ? <p className="rewardme-join__error" role="alert">{error}</p> : null}

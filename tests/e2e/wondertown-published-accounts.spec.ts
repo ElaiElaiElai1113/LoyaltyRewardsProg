@@ -53,6 +53,13 @@ test.describe('published Wondertown test accounts', () => {
       ])
 
       await expect(page.locator('main')).toBeVisible()
+      if (account.label === 'platform administrator') {
+        await expect(page.locator('[data-admin-data-state]')).toHaveAttribute(
+          'data-admin-data-state',
+          'loaded',
+          { timeout: 30_000 },
+        )
+      }
       await expect(page.locator('body')).not.toContainText(/invalid login credentials|medell[ií]n/i)
       const pageIntegrity = await page.evaluate(() => ({
         emptyLinks: [...document.querySelectorAll('a')].filter((link) => {
@@ -63,6 +70,19 @@ test.describe('published Wondertown test accounts', () => {
         visibleRuntimeError: /application error|unexpected error|something went wrong/i.test(document.body.innerText),
       }))
       expect(pageIntegrity).toEqual({ emptyLinks: 0, overflow: false, visibleRuntimeError: false })
+
+      if (account.label === 'platform administrator') {
+        await page.goto('/admin/programs', { waitUntil: 'domcontentloaded' })
+        await expect(page.locator('[data-program-list-state]')).toHaveAttribute(
+          'data-program-list-state',
+          'loaded',
+          { timeout: 30_000 },
+        )
+        const programRows = page.locator('tr[data-program-slug]')
+        await expect(programRows).toHaveCount(1)
+        await expect(programRows.first()).toHaveAttribute('data-program-slug', 'wondertown')
+        await expect(page.locator('body')).not.toContainText(/medell[ií]n|medellinrewards/i)
+      }
 
       if (account.label === 'business owner') {
         for (const width of [305, 320]) {

@@ -21,7 +21,7 @@ const tenants: TenantCase[] = [
     query: 'wondertown',
     storageSlug: 'wondertown',
     programName: 'Wondertown Rewards',
-    rewardMe: true,
+    rewardMe: false,
   },
 ]
 
@@ -117,12 +117,17 @@ test.describe('business onboarding language isolation', () => {
       await expect(footer).toContainText('Todos los derechos reservados.')
       await expect(footer.getByRole('link', { name: 'Política de privacidad' })).toBeVisible()
 
-      await expect(page.getByRole('heading', {
-        name: 'Consigue nuevos clientes mientras recompensas a nuestros miembros.',
-      })).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Solicitar: modelo de comisión' })).toBeVisible()
-      await expect(page.getByRole('heading', { name: 'Tres pasos. Pagas por resultados, no por acceso.' })).toBeVisible()
-      await expect(page.locator('img[alt="Propietario de un negocio local recibiendo a miembros de recompensas"]')).toBeVisible()
+      if (tenant.rewardMe) {
+        await expect(page.getByRole('heading', { name: 'Consigue nuevos clientes mientras recompensas a nuestros miembros.' })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'Solicitar: modelo de comisión' })).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Tres pasos. Pagas por resultados, no por acceso.' })).toBeVisible()
+        await expect(page.locator('img[alt="Propietario de un negocio local recibiendo a miembros de recompensas"]')).toBeVisible()
+      } else {
+        await expect(page.getByRole('heading', { name: 'Dirige el mostrador de Wondertown.' })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'Probar como negocio' }).first()).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Del inicio de sesión a la actividad de recompensas verificada.' })).toBeVisible()
+        await expect(page.locator('img[alt="Una vista ilustrada y colorida del distrito comercial ficticio de Wondertown"]')).toBeVisible()
+      }
 
       await expectNoEnglishBusinessLabels(page, tenant)
     })
@@ -143,12 +148,17 @@ test.describe('business onboarding language isolation', () => {
       await expect(footer).toContainText('Nakalaan ang lahat ng karapatan.')
       await expect(footer.getByRole('link', { name: 'Patakaran sa Pagkapribado' })).toBeVisible()
 
-      await expect(page.getByRole('heading', {
-        name: 'Makakuha ng bagong customer habang ginagantimpalaan ang aming mga miyembro.',
-      })).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Mag-apply: modelong komisyon' })).toBeVisible()
-      await expect(page.getByRole('heading', { name: 'Tatlong hakbang. Resulta ang binabayaran mo, hindi access.' })).toBeVisible()
-      await expect(page.locator('img[alt="May-ari ng lokal na negosyo na tumatanggap sa mga rewards member"]')).toBeVisible()
+      if (tenant.rewardMe) {
+        await expect(page.getByRole('heading', { name: 'Makakuha ng bagong customer habang ginagantimpalaan ang aming mga miyembro.' })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'Mag-apply: modelong komisyon' })).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Tatlong hakbang. Resulta ang binabayaran mo, hindi access.' })).toBeVisible()
+        await expect(page.locator('img[alt="May-ari ng lokal na negosyo na tumatanggap sa mga rewards member"]')).toBeVisible()
+      } else {
+        await expect(page.getByRole('heading', { name: 'Patakbuhin ang tindahan sa Wondertown.' })).toBeVisible()
+        await expect(page.getByRole('link', { name: 'Subukan bilang negosyo' }).first()).toBeVisible()
+        await expect(page.getByRole('heading', { name: 'Mula pagpasok hanggang beripikadong reward activity.' })).toBeVisible()
+        await expect(page.locator('img[alt="Makulay na guhit ng kathang-isip na distrito ng negosyo sa Wondertown"]')).toBeVisible()
+      }
 
       await expectNoEnglishBusinessLabels(page, tenant)
     })

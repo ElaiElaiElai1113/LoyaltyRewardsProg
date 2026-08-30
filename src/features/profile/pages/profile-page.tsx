@@ -181,7 +181,7 @@ function RewardsProfilePage() {
                 <IdCard className="size-5" />
               </div>
               <div className="space-y-2">
-                <h2 className="font-serif text-2xl text-primary">{t('Future ID verification')}</h2>
+                <h2 className="font-serif text-2xl text-primary">{t('Optional account verification')}</h2>
                 <Badge
                   variant="accent"
                   className={
@@ -206,7 +206,7 @@ function RewardsProfilePage() {
                   </p>
                 ) : (
                   <p className="text-sm font-medium leading-6 text-on-surface-variant/80">
-                    {t('ID is not required during launch. We may ask for it later as an extra security step to protect member rewards.')}
+                    {t('You can submit an ID as an optional security step to help protect your account and member rewards.')}
                   </p>
                 )}
               </div>

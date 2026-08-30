@@ -524,9 +524,9 @@ runTest('profile verification remains an optional future ID upload path after si
 
   assert.match(forms, /export const memberVerificationSchema/)
   assert.match(forms, /export type MemberVerificationSubmission = MemberVerificationFormValues & \{\s*verificationDocument: File\s*\}/)
-  assert.match(profilePage, /Future ID verification/)
+  assert.match(profilePage, /Optional account verification/)
   assert.match(profilePage, /Submit optional ID/)
-  assert.match(profilePage, /ID is not required during launch/)
+  assert.match(profilePage, /optional security step/)
   assert.match(profilePage, /verificationForm\.register\('verificationIdNumber'\)/)
   assert.match(profileService, /validateVerificationDocument\(values\.verificationDocument\)/)
   assert.match(profileService, /submit_member_verification/)
@@ -677,7 +677,8 @@ runTest('public invitation route renders the early access page', () => {
   const invitationRoute = router.slice(invitationRouteStart, earlyAccessRouteStart)
 
   assert.ok(invitationRouteStart > -1)
-  assert.match(invitationRoute, /element: <EarlyAccessPage \/>/)
+  assert.match(invitationRoute, /LoyalityLegacySurfaceRoute guestFallback="\/join"/)
+  assert.match(invitationRoute, /<EarlyAccessPage \/>/)
 })
 
 runTest('legacy early access route redirects to invitation', () => {
@@ -768,7 +769,7 @@ runTest('Figma homepage uses the approved typography and clean photography asset
   assert.match(homeStyles, /figma-home__membership-referral/)
 })
 
-runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
+runTest('platform guide is role-scoped and hidden from Loyality', () => {
   const router = readFileSync('src/routes/router.tsx', 'utf8')
   const guidePage = readFileSync('src/features/platform-guide/pages/platform-guide-page.tsx', 'utf8')
   const guideScope = readFileSync('src/features/platform-guide/guide-role-scope.ts', 'utf8')
@@ -788,9 +789,9 @@ runTest('platform guide is role-scoped for RewardMe and Wondertown', () => {
   const guideSpec = readFileSync('tests/e2e/platform-guide.spec.ts', 'utf8')
   const guideAuthSpec = readFileSync('tests/e2e/platform-guide-auth.spec.ts', 'utf8')
 
-  assert.match(router, /path: '\/guide', element: <PlatformGuidePage \/>/)
-  assert.match(router, /path: '\/admin\/guide', element: <PlatformGuidePage \/>/)
-  assert.match(router, /path: '\/business\/guide', element: <PlatformGuidePage \/>/)
+  assert.match(router, /path: '\/guide', element: <LoyalityLegacySurfaceRoute><PlatformGuidePage \/><\/LoyalityLegacySurfaceRoute>/)
+  assert.match(router, /path: '\/admin\/guide', element: <LoyalityLegacySurfaceRoute><PlatformGuidePage \/><\/LoyalityLegacySurfaceRoute>/)
+  assert.match(router, /path: '\/business\/guide', element: <LoyalityLegacySurfaceRoute><PlatformGuidePage \/><\/LoyalityLegacySurfaceRoute>/)
 
   assert.match(guidePage, /Guia de la plataforma/)
   assert.match(guidePage, /Gabay sa plataporma/)
@@ -1109,17 +1110,14 @@ runTest('member signup page follows the compact member portal layout', () => {
 
 runTest('early access typography keeps the launch copy readable', () => {
   const earlyAccessPage = readFileSync('src/features/early-access/pages/early-access-page.tsx', 'utf8')
+  const paragraphClass = earlyAccessPage.match(/const earlyAccessParagraphClass = '([^']+)'/)?.[1] ?? ''
 
   assert.match(earlyAccessPage, /font-sans/)
   assert.match(earlyAccessPage, /earlyAccessParagraphClass/)
   assert.match(earlyAccessPage, /earlyAccessMessageLines\.slice\(0, 6\)\.map/)
   assert.match(earlyAccessPage, /earlyAccessMessageLines\.slice\(6, 8\)\.map/)
-  assert.doesNotMatch(earlyAccessPage, /text-\[clamp\(/)
-  assert.doesNotMatch(earlyAccessPage, /text-3xl/)
-  assert.doesNotMatch(earlyAccessPage, /text-2xl/)
-  assert.doesNotMatch(earlyAccessPage, /text-8xl/)
-  assert.doesNotMatch(earlyAccessPage, /text-7xl/)
-  assert.doesNotMatch(earlyAccessPage, /text-6xl/)
+  assert.match(paragraphClass, /text-\[1\.125rem\]/)
+  assert.doesNotMatch(paragraphClass, /text-\[clamp\(|text-[23678]xl/)
 })
 
 runTest('early access page uses tenant-scoped language preferences and exposes all supported languages', () => {
@@ -2576,7 +2574,7 @@ runTest('public business page follows the supplied local-partner reference', () 
   assert.match(layout, /t\('Get Started'\)/)
   assert.match(layout, /t\('Business Login'\)/)
   assert.match(layout, /t\('FOR BUSINESSES'\)/)
-  assert.match(layout, /program\.slug === 'pinas' \? null/)
+  assert.match(layout, /program\.slug === 'pinas' \|\| program\.slug === 'wondertown' \|\| program\.slug === 'loyality'/)
   assert.match(layout, /t\('Privacy policy'\)/)
   assert.match(layout, /t\('Member site'\)/)
   assert.match(layout, /<Outlet \/>/)

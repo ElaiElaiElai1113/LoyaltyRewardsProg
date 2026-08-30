@@ -17,9 +17,12 @@ describe('RewardMe temporary test accounts', () => {
     ])
   })
 
-  it('provides a one-setting launch shutoff for the public credential panel', () => {
-    expect(shouldShowRewardMeTestCredentials(undefined)).toBe(true)
+  it('shows public credentials only when the launch setting explicitly opts in', () => {
+    expect(shouldShowRewardMeTestCredentials(undefined)).toBe(false)
     expect(shouldShowRewardMeTestCredentials('true')).toBe(true)
     expect(shouldShowRewardMeTestCredentials('false')).toBe(false)
+    expect(shouldShowRewardMeTestCredentials('TRUE')).toBe(false)
+    expect(shouldShowRewardMeTestCredentials('1')).toBe(false)
+    expect(shouldShowRewardMeTestCredentials('')).toBe(false)
   })
 })

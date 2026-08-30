@@ -3,16 +3,16 @@ import { describe, expect, it } from 'vitest'
 
 function source(path: string) { return readFileSync(path, 'utf8') }
 
-describe('RewardMe and Wondertown design synchronization', () => {
-  it('routes both tenants through the same assigned page implementations', () => {
+describe('RewardMe and Wondertown design isolation', () => {
+  it('routes each tenant through its assigned page implementation', () => {
     const home = source('src/features/home/pages/home-page.tsx')
     const business = source('src/features/business/pages/for-businesses-page.tsx')
     const join = source('src/features/join/pages/join-rewards-page.tsx')
     const router = source('src/routes/router.tsx')
 
-    expect(home).toContain("if (program.slug === 'wondertown') return <RewardMeHomePage />")
-    expect(business).toContain("program.slug === 'wondertown'")
-    expect(business).toContain('<RewardMeBusinessPage brand={program.name}')
+    expect(home).toContain("if (program.slug === 'wondertown') return <WondertownHomePage />")
+    expect(business).toContain("if (program.slug === 'wondertown') return <WondertownBusinessPage />")
+    expect(business).not.toContain("program.slug === 'pinas' || program.slug === 'rewardme' || program.slug === 'wondertown'")
     expect(join).toContain("program.slug === 'pinas' || program.slug === 'rewardme' || program.slug === 'wondertown'")
     expect(router).toContain("path: '/business/apply/commission'")
     expect(router).toContain("path: '/business/apply/credit'")

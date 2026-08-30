@@ -197,18 +197,49 @@ async function sha256Hex(value: string) {
     .join('')
 }
 
+const emptyProfileId = '00000000-0000-0000-0000-000000000000'
+
+async function getProgramProfileIds(programId: string) {
+  const sb = requireSupabase()
+  const { data, error } = await sb
+    .from('program_memberships')
+    .select('profile_id')
+    .eq('program_id', programId)
+
+  if (error) throw new Error('Failed to load program members.')
+
+  return [...new Set((data ?? []).map((row) => row.profile_id as string))]
+}
+
 export const adminService = {
-  async getBusinessesWithMetrics(): Promise<BusinessWithMetrics[]> {
+  async getBusinessesWithMetrics(programId?: string): Promise<BusinessWithMetrics[]> {
     const sb = requireSupabase()
+
+    const programProfileIds = programId ? await getProgramProfileIds(programId) : null
+    let businessesQuery = sb.from('businesses').select('*').order('name')
+    let ordersQuery = sb.from('orders').select('business_id, profile_id, total')
+    let activitiesQuery = sb.from('activities').select('business_id, points').eq('type', 'earned')
+    let profilesQuery = sb.from('profiles').select('id, business_id, role, full_name, email')
+    let balancesQuery = sb.from('reward_balances').select('profile_id, available_credits')
+    let memberTransactionsQuery = sb.from('member_transactions').select('business_id, profile_id, commission_amount, commission_status')
+
+    if (programId) {
+      businessesQuery = businessesQuery.eq('program_id', programId)
+      ordersQuery = ordersQuery.eq('program_id', programId)
+      activitiesQuery = activitiesQuery.eq('program_id', programId)
+      profilesQuery = profilesQuery.in('id', programProfileIds?.length ? programProfileIds : [emptyProfileId])
+      balancesQuery = balancesQuery.eq('program_id', programId)
+      memberTransactionsQuery = memberTransactionsQuery.eq('program_id', programId)
+    }
 
     const [businessesResult, ordersResult, activitiesResult, profilesResult, balancesResult, memberTransactionsResult] =
       await Promise.all([
-        sb.from('businesses').select('*').order('name'),
-        sb.from('orders').select('business_id, profile_id, total'),
-        sb.from('activities').select('business_id, points').eq('type', 'earned'),
-        sb.from('profiles').select('id, business_id, role, full_name, email'),
-        sb.from('reward_balances').select('profile_id, available_credits'),
-        sb.from('member_transactions').select('business_id, profile_id, commission_amount, commission_status'),
+        businessesQuery,
+        ordersQuery,
+        activitiesQuery,
+        profilesQuery,
+        balancesQuery,
+        memberTransactionsQuery,
       ])
 
     if (businessesResult.error) throw new Error('Failed to load businesses.')
@@ -358,18 +389,29 @@ export const adminService = {
     })
   },
 
-  async getUsers() {
+  async getUsers(programId?: string) {
     const sb = requireSupabase()
 
-    const { data: profileRows, error: profError } = await sb
+    const programProfileIds = programId ? await getProgramProfileIds(programId) : null
+    let profilesQuery = sb
       .from('profiles')
       .select('*')
+    let balancesQuery = sb
+      .from('reward_balances')
+      .select('*')
+
+    if (programId) {
+      profilesQuery = profilesQuery.in('id', programProfileIds?.length ? programProfileIds : [emptyProfileId])
+      balancesQuery = balancesQuery
+        .eq('program_id', programId)
+        .in('profile_id', programProfileIds?.length ? programProfileIds : [emptyProfileId])
+    }
+
+    const { data: profileRows, error: profError } = await profilesQuery
 
     if (profError) throw new Error('Failed to load users.')
 
-    const { data: balanceRows, error: balError } = await sb
-      .from('reward_balances')
-      .select('*')
+    const { data: balanceRows, error: balError } = await balancesQuery
 
     if (balError) throw new Error('Failed to load balances.')
 
@@ -438,27 +480,38 @@ export const adminService = {
     }
   },
 
-  async getAgreementStatuses(): Promise<AgreementStatusRecord[]> {
+  async getAgreementStatuses(programId?: string): Promise<AgreementStatusRecord[]> {
     const sb = requireSupabase()
 
+    const programProfileIds = programId ? await getProgramProfileIds(programId) : null
+    let profilesQuery = sb
+      .from('profiles')
+      .select('id, full_name, email, role, business_id')
+      .neq('role', 'platform-admin')
+      .order('full_name')
+    let agreementsQuery = sb
+      .from('agreement_versions')
+      .select('id, kind, required_role, business_id, version, title, content_hash, is_active')
+      .eq('is_active', true)
+      .not('required_role', 'is', null)
+      .order('kind', { ascending: true })
+      .order('version', { ascending: false })
+    let acceptancesQuery = sb
+      .from('agreement_acceptances')
+      .select(
+        'profile_id, agreement_version_id, agreement_kind, agreement_version, content_hash, typed_signature, signature_svg, accepted_electronic_records, accepted_terms, signed_at',
+      )
+
+    if (programId) {
+      profilesQuery = profilesQuery.in('id', programProfileIds?.length ? programProfileIds : [emptyProfileId])
+      agreementsQuery = agreementsQuery.eq('program_id', programId)
+      acceptancesQuery = acceptancesQuery.eq('program_id', programId)
+    }
+
     const [profilesResult, agreementsResult, acceptancesResult] = await Promise.all([
-      sb
-        .from('profiles')
-        .select('id, full_name, email, role, business_id')
-        .neq('role', 'platform-admin')
-        .order('full_name'),
-      sb
-        .from('agreement_versions')
-        .select('id, kind, required_role, business_id, version, title, content_hash, is_active')
-        .eq('is_active', true)
-        .not('required_role', 'is', null)
-        .order('kind', { ascending: true })
-        .order('version', { ascending: false }),
-      sb
-        .from('agreement_acceptances')
-        .select(
-          'profile_id, agreement_version_id, agreement_kind, agreement_version, content_hash, typed_signature, signature_svg, accepted_electronic_records, accepted_terms, signed_at',
-        ),
+      profilesQuery,
+      agreementsQuery,
+      acceptancesQuery,
     ])
 
     if (profilesResult.error) throw new Error('Failed to load agreement users.')
@@ -526,13 +579,23 @@ export const adminService = {
     })
   },
 
-  async getOverview() {
+  async getOverview(programId?: string) {
     const sb = requireSupabase()
 
+    let redemptionsQuery = sb.from('redemptions').select('*').order('redeemed_at', { ascending: false })
+    let logsQuery = sb.from('admin_logs').select('*').order('created_at', { ascending: false })
+    let activitiesQuery = sb.from('activities').select('*').order('created_at', { ascending: false })
+
+    if (programId) {
+      redemptionsQuery = redemptionsQuery.eq('program_id', programId)
+      logsQuery = logsQuery.eq('program_id', programId)
+      activitiesQuery = activitiesQuery.eq('program_id', programId)
+    }
+
     const [redemptionsResult, logsResult, activitiesResult] = await Promise.all([
-      sb.from('redemptions').select('*').order('redeemed_at', { ascending: false }),
-      sb.from('admin_logs').select('*').order('created_at', { ascending: false }),
-      sb.from('activities').select('*').order('created_at', { ascending: false }),
+      redemptionsQuery,
+      logsQuery,
+      activitiesQuery,
     ])
 
     const redemptions = (redemptionsResult.data ?? []).map((r) => {
@@ -833,7 +896,7 @@ export const adminService = {
     return user
   },
 
-  async getOrdersForVerification(businessId?: string): Promise<OrderForVerification[]> {
+  async getOrdersForVerification(businessId?: string, programId?: string): Promise<OrderForVerification[]> {
     const sb = requireSupabase()
 
     let query = sb
@@ -844,6 +907,9 @@ export const adminService = {
 
     if (businessId) {
       query = query.eq('business_id', businessId)
+    }
+    if (programId) {
+      query = query.eq('program_id', programId)
     }
 
     const { data, error } = await query

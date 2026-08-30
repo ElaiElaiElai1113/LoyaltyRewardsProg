@@ -97,12 +97,18 @@ export const earlyAccessService = {
     return mapEarlyAccessLead(payload.lead)
   },
 
-  async getLeads(): Promise<EarlyAccessLead[]> {
+  async getLeads(programId?: string): Promise<EarlyAccessLead[]> {
     const sb = requireSupabase()
-    const { data, error } = await sb
+    let query = sb
       .from('early_access_leads')
       .select('*')
       .order('created_at', { ascending: false })
+
+    if (programId) {
+      query = query.eq('program_id', programId)
+    }
+
+    const { data, error } = await query
 
     if (error) {
       throw new Error('Failed to load early access leads.')

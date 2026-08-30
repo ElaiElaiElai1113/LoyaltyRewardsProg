@@ -28,8 +28,8 @@ const fallbackEntitlements: PlanEntitlements = {
   features: { giftCards: true, referrals: true },
 }
 
-function fallbackRows(): PlatformProgram[] {
-  return seededPrograms.map((program) => ({
+function fallbackRows(programId?: string): PlatformProgram[] {
+  return seededPrograms.filter((program) => !programId || program.id === programId).map((program) => ({
     ...program,
     primaryDomain: program.slug === 'medellin' ? 'medellinrewards.com' : `${program.slug}.rewardsplatform.app`,
     domainStatus: program.slug === 'medellin' ? 'verified' : 'pending',
@@ -48,14 +48,20 @@ export const platformService = {
     return (data?.length ?? 0) === 0
   },
 
-  async listPrograms(): Promise<PlatformProgram[]> {
-    if (!supabase) return fallbackRows()
+  async listPrograms(programId?: string): Promise<PlatformProgram[]> {
+    if (!supabase) return fallbackRows(programId)
     const sb = supabase
-    const { data, error } = await sb
+    let query = sb
       .from('programs')
       .select('*, program_domains(hostname,is_primary,verification_status), program_subscriptions(status,subscription_plans(name,entitlements))')
       .order('created_at')
-    if (error || !data) return fallbackRows()
+
+    if (programId) {
+      query = query.eq('id', programId)
+    }
+
+    const { data, error } = await query
+    if (error || !data) return fallbackRows(programId)
     return Promise.all(data.map(async (row) => {
       const domains = (row.program_domains ?? []) as Array<Record<string, unknown>>
       const domain = domains.find((item) => item.is_primary) ?? domains[0]

@@ -441,6 +441,9 @@
   --accent: #e1efed !important;
   --accent-foreground: var(--ly-navy-deep) !important;
   --ring: var(--ly-teal) !important;
+  --tenant-accent: var(--ly-teal) !important;
+  --tenant-accent-foreground: #ffffff !important;
+  --tenant-accent-soft: #e1efed !important;
   --success: #4f8077 !important;
   --warning: #b7832f !important;
   --destructive: #a84f4f !important;
@@ -1207,3 +1210,269 @@
 :root[data-program="wondertown"] [class*="rounded-3xl"],
 :root[data-program="pinas"] [class*="rounded-2xl"],
 :root[data-program="wondertown"] [class*="rounded-2xl"] { border-radius: 7px !important; }
+
+/* -------------------------------------------------------------------------- */
+/* Wondertown assigned storybook theme                                         */
+/* -------------------------------------------------------------------------- */
+
+:root[data-program="wondertown"] {
+  --wt-ink: #251b3f;
+  --wt-indigo: #4f3b78;
+  --wt-plum: #7b416f;
+  --wt-coral: #e57267;
+  --wt-aqua: #64c7bf;
+  --wt-gold: #f4b860;
+  --wt-cream: #fff8e9;
+  --wt-paper: #f9f3e7;
+  --rm-black: var(--wt-cream);
+  --rm-black-soft: var(--wt-paper);
+  --rm-gold: var(--wt-coral);
+  --rm-ember: var(--wt-aqua);
+  --rm-cream: var(--wt-ink);
+  --rm-slate: #6d6477;
+  --background: var(--wt-cream) !important;
+  --foreground: var(--wt-ink) !important;
+  --card: #ffffff !important;
+  --card-foreground: var(--wt-ink) !important;
+  --muted: var(--wt-paper) !important;
+  --muted-foreground: #6d6477 !important;
+  --border: #dcd2e2 !important;
+  --input: #ffffff !important;
+  --primary: var(--wt-indigo) !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: var(--wt-coral) !important;
+  --secondary-foreground: #ffffff !important;
+  --accent: #e5f6f3 !important;
+  --accent-foreground: var(--wt-ink) !important;
+  --ring: var(--wt-aqua) !important;
+  --tenant-accent: var(--wt-coral) !important;
+  --tenant-accent-foreground: #ffffff !important;
+  --tenant-accent-soft: #fde4df !important;
+  --surface: var(--wt-cream) !important;
+  --surface-container-low: var(--wt-paper) !important;
+  --surface-container-lowest: #ffffff !important;
+  --surface-container-highest: #e5dbe8 !important;
+  --primary-container: var(--wt-indigo) !important;
+  --primary-fixed: #725d9a !important;
+  --on-primary: #ffffff !important;
+  --secondary-container: var(--wt-coral) !important;
+  --secondary-fixed: #f2a096 !important;
+  --tertiary: var(--wt-aqua) !important;
+  --on-surface: var(--wt-ink) !important;
+  --on-surface-variant: #5e5668 !important;
+  --outline-variant: #dcd2e2 !important;
+  --error: #b54042 !important;
+  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
+  --font-serif: Fraunces, "Source Serif 4", Georgia, serif;
+  color-scheme: light;
+}
+
+:root[data-program="wondertown"][data-theme="dark"] {
+  --rm-black: #181227;
+  --rm-black-soft: #251b3f;
+  --rm-cream: #fff8e9;
+  --rm-slate: #c6bcd0;
+  --background: #181227 !important;
+  --foreground: #fff8e9 !important;
+  --card: #251b3f !important;
+  --card-foreground: #fff8e9 !important;
+  --muted: #33274d !important;
+  --muted-foreground: #c6bcd0 !important;
+  --border: #4c3b6c !important;
+  --input: #251b3f !important;
+  --primary: #e57267 !important;
+  --primary-foreground: #ffffff !important;
+  --secondary: #64c7bf !important;
+  --secondary-foreground: #181227 !important;
+  --accent: #33274d !important;
+  --accent-foreground: #fff8e9 !important;
+  --surface: #181227 !important;
+  --surface-container-low: #211832 !important;
+  --surface-container-lowest: #100b1b !important;
+  --surface-container-highest: #3b2d58 !important;
+  --on-surface: #fff8e9 !important;
+  --on-surface-variant: #d3cadb !important;
+  --outline-variant: #4c3b6c !important;
+  color-scheme: dark;
+}
+
+:root[data-program="wondertown"] body,
+:root[data-program="wondertown"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell),
+:root[data-program="wondertown"] :is(.product-workspace-shell__main, .product-customer-shell__main),
+:root[data-program="wondertown"] :is(.product-public-shell, .product-legal-shell, .product-agreement-shell, .product-program-shell),
+:root[data-program="wondertown"] .product-public-shell > main,
+:root[data-program="wondertown"] :is(.soft-luxe-shell, .gold-wash) {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+:root[data-program="wondertown"] :is(h1, h2, h3, .font-serif),
+:root[data-program="wondertown"] .product-customer-shell__main :is(h1, h2),
+:root[data-program="wondertown"] .product-workspace-shell__main :is(h1, h2),
+:root[data-program="wondertown"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif) {
+  color: var(--foreground) !important;
+  font-family: Fraunces, "Source Serif 4", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.02em !important;
+  text-transform: none;
+}
+
+:root[data-program="wondertown"] :is(input, select, textarea),
+:root[data-program="wondertown"] .product-auth-shell__card :is(input, select, textarea) {
+  border-color: var(--border) !important;
+  border-radius: 12px !important;
+  background: var(--input) !important;
+  color: var(--foreground) !important;
+}
+
+:root[data-program="wondertown"] :is(input, select, textarea):focus {
+  border-color: var(--wt-aqua) !important;
+  box-shadow: 0 0 0 3px rgb(100 199 191 / 20%) !important;
+}
+
+:root[data-program="wondertown"] :is(.product-auth-shell__card, .product-auth-shell__tabs),
+:root[data-program="wondertown"] :is(.gold-frame, .luxe-card),
+:root[data-program="wondertown"] [class~="bg-card"],
+:root[data-program="wondertown"] .product-customer-shell__main :is(section, article, a)[class~="bg-white"],
+:root[data-program="wondertown"] .product-customer-shell__main div[class~="bg-white"][class*="overflow-hidden"],
+:root[data-program="wondertown"] .product-workspace-shell__main :is(section, article, div)[class~="bg-white"],
+:root[data-program="wondertown"] .product-legal-shell > div > section,
+:root[data-program="wondertown"] .product-legal-shell article,
+:root[data-program="wondertown"] .product-agreement-shell [class*="bg-white"] {
+  border-color: var(--border) !important;
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+  box-shadow: 0 22px 52px -40px rgb(37 27 63 / 42%) !important;
+}
+
+:root[data-program="wondertown"] .product-auth-shell .auth-portal-backdrop {
+  background:
+    radial-gradient(circle at 82% 8%, rgb(229 114 103 / 18%), transparent 30%),
+    radial-gradient(circle at 8% 92%, rgb(100 199 191 / 17%), transparent 28%),
+    var(--background) !important;
+  background-size: auto !important;
+}
+
+:root[data-program="wondertown"] :is(.product-customer-shell__header, .product-workspace-shell__mobile-header),
+:root[data-program="wondertown"] :is(.product-public-shell, .product-program-shell) > :is(header, footer) {
+  border-color: var(--border) !important;
+  background: color-mix(in srgb, var(--background) 94%, transparent) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="wondertown"] :is(.product-workspace-shell__rail, .product-workspace-shell__sidebar, aside) {
+  border-color: #5e497e !important;
+  background: var(--wt-indigo) !important;
+  color: #fff8e9 !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="wondertown"] :is(.product-workspace-shell__rail, .product-workspace-shell__sidebar, aside) nav a:hover {
+  color: var(--wt-gold) !important;
+}
+
+:root[data-program="wondertown"] :is(.product-customer-shell__footer, .product-workspace-shell__footer),
+:root[data-program="wondertown"] .product-customer-shell > nav {
+  border-color: var(--border) !important;
+  background: var(--muted) !important;
+  color: var(--foreground) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="wondertown"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell, .product-public-shell, .product-legal-shell, .product-agreement-shell, .product-program-shell) :is(button, a)[class~="bg-primary"],
+:root[data-program="wondertown"] [class~="bg-primary"] {
+  border-color: var(--primary) !important;
+  border-radius: 999px !important;
+  background: var(--primary) !important;
+  color: var(--primary-foreground) !important;
+}
+
+:root[data-program="wondertown"] :is([class*="rounded-3xl"], [class*="rounded-2xl"], [class*="rounded-[2rem]"], [class*="rounded-[2.25rem]"]) {
+  border-radius: 24px !important;
+}
+
+/* Restore the purpose-built public page after older shared RewardMe overrides. */
+:root[data-program="wondertown"] .wondertown-home {
+  --wonder-ink: #251b3f;
+  --wonder-indigo: #4f3b78;
+  --wonder-plum: #7b416f;
+  --wonder-coral: #e57267;
+  --wonder-aqua: #64c7bf;
+  --wonder-gold: #f4b860;
+  --wonder-cream: #fff8e9;
+  --wonder-paper: #f9f3e7;
+  background: var(--wonder-cream) !important;
+  color: var(--wonder-ink) !important;
+  font-family: Inter, Arial, sans-serif;
+}
+
+:root[data-program="wondertown"] .wondertown-home :is(h1, h2, h3),
+:root[data-program="wondertown"] .wondertown-home__brand strong {
+  color: inherit;
+  font-family: Fraunces, "Source Serif 4", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.04em !important;
+  text-transform: none;
+}
+
+:root[data-program="wondertown"] .wondertown-home__header { border-color: rgb(79 59 120 / 12%); background: rgb(255 248 233 / 94%); color: var(--wonder-ink); }
+:root[data-program="wondertown"] .wondertown-home__nav,
+:root[data-program="wondertown"] .wondertown-home__text-link,
+:root[data-program="wondertown"] .wondertown-home__language { color: var(--wonder-ink); }
+:root[data-program="wondertown"] .wondertown-home__brand small,
+:root[data-program="wondertown"] .wondertown-home__eyebrow { color: var(--wonder-coral); }
+:root[data-program="wondertown"] .wondertown-home__language select { border-color: rgb(79 59 120 / 24%) !important; background: var(--wonder-paper) !important; color: var(--wonder-ink) !important; }
+:root[data-program="wondertown"] .wondertown-home__button { border-color: var(--wonder-coral); border-radius: 999px !important; background: var(--wonder-coral); box-shadow: 0 14px 34px rgb(68 35 75 / 18%); color: #fff !important; }
+:root[data-program="wondertown"] .wondertown-home__button:hover { background: #ce5d54; box-shadow: 0 17px 38px rgb(68 35 75 / 24%); }
+:root[data-program="wondertown"] .wondertown-home__button--glass,
+:root[data-program="wondertown"] .wondertown-home__button--outline { border-color: rgb(255 255 255 / 58%); background: rgb(255 255 255 / 9%); color: #fff !important; }
+:root[data-program="wondertown"] .wondertown-home__hero-shade { background: linear-gradient(90deg, rgb(37 27 63 / 91%) 0%, rgb(37 27 63 / 74%) 42%, rgb(37 27 63 / 12%) 72%), linear-gradient(0deg, rgb(37 27 63 / 44%) 0%, transparent 45%); }
+:root[data-program="wondertown"] .wondertown-home__demo-label { border-color: rgb(255 255 255 / 34%); border-radius: 999px; background: rgb(255 248 233 / 14%); }
+:root[data-program="wondertown"] .wondertown-home__hero h1 { color: #fff !important; }
+:root[data-program="wondertown"] .wondertown-home__hero h1 em { color: var(--wonder-gold); }
+:root[data-program="wondertown"] .wondertown-home__hero-notes li::before { background: var(--wonder-aqua); }
+:root[data-program="wondertown"] .wondertown-home__intro { background: var(--wonder-indigo); color: #fff; }
+:root[data-program="wondertown"] .wondertown-home__intro-copy { border-color: rgb(255 255 255 / 22%); }
+:root[data-program="wondertown"] .wondertown-home__intro-copy p { color: rgb(255 255 255 / 78%); }
+:root[data-program="wondertown"] .wondertown-home__intro-copy a { color: var(--wonder-gold); }
+:root[data-program="wondertown"] .wondertown-home__businesses,
+:root[data-program="wondertown"] .wondertown-home__cta { background: var(--wonder-paper); color: var(--wonder-ink); }
+:root[data-program="wondertown"] .wondertown-home__steps { background: #fff; color: var(--wonder-ink); }
+:root[data-program="wondertown"] .wondertown-home__section-heading > p,
+:root[data-program="wondertown"] .wondertown-home__steps-heading > p,
+:root[data-program="wondertown"] .wondertown-home__business-card > span,
+:root[data-program="wondertown"] .wondertown-home__steps-grid p { color: #716a77; }
+:root[data-program="wondertown"] .wondertown-home__business-card,
+:root[data-program="wondertown"] .wondertown-home__business-card:nth-child(4),
+:root[data-program="wondertown"] .wondertown-home__business-card:nth-child(5) { border-color: rgb(79 59 120 / 10%); border-radius: 28px !important; background: #fff; box-shadow: 0 22px 55px rgb(67 49 76 / 8%); }
+:root[data-program="wondertown"] .wondertown-home__business-card::after,
+:root[data-program="wondertown"] .wondertown-home__cta-orbit { display: block; }
+:root[data-program="wondertown"] .wondertown-home__business-icon { border-radius: 18px; background: currentColor; color: #fff; }
+:root[data-program="wondertown"] .wondertown-home__business-card h3 { color: var(--wonder-ink); }
+:root[data-program="wondertown"] .wondertown-home__steps-grid article,
+:root[data-program="wondertown"] .wondertown-home__steps-grid article:last-child { border-color: #ded9e4; }
+:root[data-program="wondertown"] .wondertown-home__step-top { color: var(--wonder-coral); }
+:root[data-program="wondertown"] .wondertown-home__cta-card { border: 0; border-radius: 40px; background: var(--wonder-indigo); color: #fff; }
+:root[data-program="wondertown"] .wondertown-home__footer { border-top: 0; background: #211834; color: #fff; }
+
+:root[data-program="wondertown"] .business-public-shell { background: var(--wt-cream) !important; color: var(--wt-ink) !important; }
+:root[data-program="wondertown"] .business-public-shell__header { border-color: rgb(79 59 120 / 14%) !important; background: rgb(255 248 233 / 95%) !important; color: var(--wt-ink) !important; }
+:root[data-program="wondertown"] .business-public-shell__brand,
+:root[data-program="wondertown"] .business-public-shell__nav a { color: var(--wt-ink) !important; }
+:root[data-program="wondertown"] .business-public-shell__footer { border-color: #5e497e !important; background: var(--wt-indigo) !important; color: #fff !important; }
+:root[data-program="wondertown"] .business-public-shell__footer a { color: #fff !important; }
+
+:root[data-program="loyality"] .business-public-shell { background: #fff !important; color: var(--ly-navy-deep) !important; }
+:root[data-program="loyality"] .business-public-shell__header { border-color: var(--ly-line) !important; background: rgb(255 255 255 / 96%) !important; box-shadow: none !important; color: var(--ly-navy-deep) !important; }
+:root[data-program="loyality"] .business-public-shell__brand { color: var(--ly-navy) !important; font-family: "Source Serif 4", Georgia, serif; letter-spacing: 0; }
+:root[data-program="loyality"] .business-public-shell__brand small { color: var(--ly-teal) !important; font-family: Inter, sans-serif; }
+:root[data-program="loyality"] .business-public-shell__nav a { color: #555b62 !important; }
+:root[data-program="loyality"] .business-public-shell__nav a:hover { color: var(--ly-teal) !important; }
+:root[data-program="loyality"] .business-public-shell__language-picker { color: #555b62 !important; }
+:root[data-program="loyality"] .business-public-shell__language-picker select { border-color: var(--ly-line) !important; border-radius: 3px !important; background: #fff !important; color: var(--ly-navy-deep) !important; }
+:root[data-program="loyality"] .business-public-shell__login { border: 1px solid var(--ly-navy); border-radius: 3px; background: var(--ly-navy); color: #fff !important; }
+:root[data-program="loyality"] .business-public-shell__footer { border-top: 1px solid rgb(255 255 255 / 8%) !important; background: var(--ly-navy-deep) !important; color: #aeb4bd !important; }
+:root[data-program="loyality"] .business-public-shell__footer :is(.business-public-shell__brand, .business-public-shell__brand-copy) { color: var(--ly-offwhite) !important; }
+:root[data-program="loyality"] .business-public-shell__footer :is(p, a, span) { color: #aeb4bd !important; }
+:root[data-program="loyality"] .business-public-shell__footer-bottom { border-color: rgb(255 255 255 / 10%) !important; }

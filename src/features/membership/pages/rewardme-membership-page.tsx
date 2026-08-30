@@ -112,7 +112,7 @@ export function RewardMeMembershipPage() {
       {!profile ? (
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#173f32] px-5 py-3 text-sm font-bold text-[#faf7ec]" to="/join">{t('Start free access')} <ArrowRight className="size-4" /></Link>
-          <Link className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#173f32] px-5 py-3 text-sm font-bold text-[#173f32]" to="/invitation?interest=membership">{t('Request Regular or Gold access')}</Link>
+          <Link className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#d7ccb2] bg-[#fffdf7] px-5 py-3 text-sm font-bold text-[#173f32]" to="/invitation?interest=membership">{t('Request Regular or Gold access')}</Link>
         </div>
       ) : (
         <section className="rounded-3xl border border-[#d7ccb2] bg-card p-5 shadow-soft sm:p-8" aria-labelledby="membership-account-title" data-membership-request-panel>

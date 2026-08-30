@@ -1,5 +1,5 @@
 import { Building2, CheckCircle2, Globe2, Plus, Search, Users } from 'lucide-react'
-import { type FormEvent, useEffect, useState } from 'react'
+import { type FormEvent, useCallback, useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 
@@ -10,6 +10,8 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { platformService, type PlatformProgram } from '@/features/platform/platform-service'
 import { platformBrand } from '@/features/platform/platform-brand'
+import { useTenant } from '@/hooks/use-tenant'
+import { getBrandedAdminProgramId } from '@/lib/admin-program-scope'
 import { useLanguage } from '@/lib/language'
 
 const defaults = {
@@ -51,6 +53,8 @@ function subscriptionStatusLabel(status: string, t: Translator) {
 
 export function PlatformProgramsPage() {
   const { t } = useLanguage()
+  const { program } = useTenant()
+  const scopedProgramId = getBrandedAdminProgramId(program)
   const [searchParams, setSearchParams] = useSearchParams()
   const [programs, setPrograms] = useState<PlatformProgram[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -63,15 +67,19 @@ export function PlatformProgramsPage() {
   const [selected, setSelected] = useState<PlatformProgram | null>(null)
   const [form, setForm] = useState(defaults)
 
-  async function loadPrograms() {
+  const loadPrograms = useCallback(async () => {
     setIsLoading(true)
-    setPrograms(await platformService.listPrograms())
-    setIsLoading(false)
-  }
+    setSelected(null)
+    try {
+      setPrograms(await platformService.listPrograms(scopedProgramId))
+    } finally {
+      setIsLoading(false)
+    }
+  }, [scopedProgramId])
 
   useEffect(() => {
     void loadPrograms()
-  }, [])
+  }, [loadPrograms])
   useEffect(() => {
     const next = new URLSearchParams()
     if (query) next.set('q', query)
@@ -130,7 +138,7 @@ export function PlatformProgramsPage() {
   const visiblePrograms = filteredPrograms.slice((Math.min(page, totalPages) - 1) * pageSize, Math.min(page, totalPages) * pageSize)
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8" data-program-list-state={isLoading ? 'loading' : 'loaded'}>
       <header className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold uppercase text-[var(--muted-foreground)]">{platformBrand.name}</p>
@@ -139,10 +147,12 @@ export function PlatformProgramsPage() {
             {t('Manage tenant lifecycle, domains, plans, and operational access.')}
           </p>
         </div>
-        <Button onClick={() => setShowForm((value) => !value)}>
-          <Plus className="size-4" />
-          {t('New program')}
-        </Button>
+        {!scopedProgramId ? (
+          <Button onClick={() => setShowForm((value) => !value)}>
+            <Plus className="size-4" />
+            {t('New program')}
+          </Button>
+        ) : null}
       </header>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -152,7 +162,7 @@ export function PlatformProgramsPage() {
         <Metric label={t('Configured plans')} value={programs.filter((item) => item.planName !== 'No plan').length} icon={Users} />
       </div>
 
-      {showForm ? (
+      {showForm && !scopedProgramId ? (
         <Card className="rounded-lg">
           <CardHeader>
             <CardTitle>{t('Provision a rewards program')}</CardTitle>
@@ -205,7 +215,7 @@ export function PlatformProgramsPage() {
               </thead>
               <tbody>
                 {visiblePrograms.map((program) => (
-                  <tr key={program.id} className="border-b border-[var(--border)] last:border-0">
+                  <tr key={program.id} data-program-slug={program.slug} className="border-b border-[var(--border)] last:border-0">
                     <td className="px-5 py-4"><div className="flex items-center gap-3"><span className="size-3 rounded-full" style={{ backgroundColor: program.primaryColor }} /><div><p className="font-semibold">{program.name}{program.slug === 'pinas' ? <Badge className="ml-2 align-middle" variant="tenant">{t('Flagship')}</Badge> : null}</p><p className="text-xs text-[var(--muted-foreground)]">{program.slug}</p></div></div></td>
                     <td className="px-5 py-4">{program.countryCode} · {program.currency}</td>
                     <td className="px-5 py-4"><p>{program.primaryDomain ?? t('Not assigned')}</p><p className="text-xs text-[var(--muted-foreground)]">{domainStatusLabel(program.domainStatus, t)}</p></td>

@@ -1,5 +1,7 @@
 import { z } from 'zod'
 
+import { PASSWORD_MIN_LENGTH } from '@/lib/password-setup'
+
 function optionalCoordinate(label: string, min: number, max: number) {
   return z.number().min(min, `${label} must be ${min} or greater`).max(max, `${label} must be ${max} or less`).nullable()
 }
@@ -16,6 +18,7 @@ export type AuthFormValues = z.infer<typeof authSchema>
 export const memberSignUpSchema = authSchema.extend({
   fullName: z.string().trim().min(2, 'Enter your full name'),
   phone: z.string().trim().min(8, 'Enter your WhatsApp or phone number'),
+  password: z.string().min(PASSWORD_MIN_LENGTH, `Use at least ${PASSWORD_MIN_LENGTH} characters`),
   role: z.literal('customer'),
 })
 

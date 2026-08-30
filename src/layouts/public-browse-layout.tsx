@@ -25,6 +25,9 @@ export function PublicBrowseLayout() {
   const { t } = useLanguage()
   const location = useLocation()
   const isBusinessOnboarding = location.pathname === '/business'
+  const visibleNavigation = program.featureFlags.loyalitySingleBusiness
+    ? navigation.filter((item) => item.to !== '/guide')
+    : navigation
 
   if (isBusinessOnboarding) {
     return (
@@ -46,7 +49,9 @@ export function PublicBrowseLayout() {
             <nav className="business-public-shell__nav" aria-label={t('Business page navigation')}>
               <a href="#benefits">{t('Benefits')}</a>
               <a href="#how-it-works">{t('How It Works')}</a>
-              {program.slug === 'pinas' ? null : <NavLink to="/cost-calculator">{t('Cost Calculator')}</NavLink>}
+              {program.slug === 'pinas' || program.slug === 'wondertown' || program.slug === 'loyality'
+                ? null
+                : <NavLink to="/cost-calculator">{t('Cost Calculator')}</NavLink>}
               <a href="#get-started">{t('Get Started')}</a>
             </nav>
 
@@ -79,7 +84,11 @@ export function PublicBrowseLayout() {
                   <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
                   <span className="business-public-shell__brand-copy">{program.name.toUpperCase()}</span>
                 </NavLink>
-                <p>{t('Helping local businesses grow while giving amazing Rewards to our members.')}</p>
+                <p>{program.featureFlags.demoTenant
+                  ? t('A fictional business workspace for testing complete rewards workflows.')
+                  : program.featureFlags.loyalitySingleBusiness
+                    ? t('A private, white-label loyalty workspace for one business and its own customers.')
+                    : t('Helping local businesses grow while giving amazing Rewards to our members.')}</p>
               </div>
               <nav aria-label={t('Business footer navigation')}>
                 <NavLink to="/privacy">{t('Privacy policy')}</NavLink>
@@ -114,12 +123,12 @@ export function PublicBrowseLayout() {
               <BrandLogo markClassName="h-9" textClassName="text-xl text-primary-container sm:text-2xl" />
               <span className="hidden h-6 w-px bg-[var(--border)] xl:block" />
               <span className="hidden text-xs font-semibold uppercase tracking-[0.22em] text-[var(--primary-container)] xl:block">
-                {t('Golden Circle')}
+                {program.featureFlags.loyalitySingleBusiness ? t('Private offers') : t('Golden Circle')}
               </span>
             </NavLink>
 
             <nav className="hidden min-w-0 flex-wrap items-center gap-2 lg:flex xl:gap-5">
-              {navigation.map((item) => (
+              {visibleNavigation.map((item) => (
                 <NavLink
                   key={item.to}
                   to={item.to}

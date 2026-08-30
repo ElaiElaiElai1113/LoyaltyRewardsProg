@@ -119,12 +119,15 @@ function summarizePartnerPerformance(
 }
 
 export const partnerService = {
-  async getPartnerReferrers(businessId?: string): Promise<PartnerReferrer[]> {
+  async getPartnerReferrers(businessId?: string, programId?: string): Promise<PartnerReferrer[]> {
     const sb = requireSupabase()
     let query = sb.from('partner_referrers').select('*').order('created_at', { ascending: false })
 
     if (businessId) {
       query = query.eq('business_id', businessId)
+    }
+    if (programId) {
+      query = query.eq('program_id', programId)
     }
 
     const { data, error } = await query
@@ -136,7 +139,7 @@ export const partnerService = {
     return ((data ?? []) as Record<string, unknown>[]).map(mapPartnerReferrer)
   },
 
-  async getPartnerReferrals(businessId?: string): Promise<PartnerReferral[]> {
+  async getPartnerReferrals(businessId?: string, programId?: string): Promise<PartnerReferral[]> {
     const sb = requireSupabase()
     let query = sb
       .from('partner_referrals')
@@ -151,6 +154,9 @@ export const partnerService = {
     if (businessId) {
       query = query.eq('source_business_id', businessId)
     }
+    if (programId) {
+      query = query.eq('program_id', programId)
+    }
 
     const { data, error } = await query
 
@@ -161,7 +167,7 @@ export const partnerService = {
     return ((data ?? []) as PartnerReferralRow[]).map(mapPartnerReferral)
   },
 
-  async getPartnerCreditLedger(businessId?: string): Promise<PartnerCreditLedgerEntry[]> {
+  async getPartnerCreditLedger(businessId?: string, programId?: string): Promise<PartnerCreditLedgerEntry[]> {
     const sb = requireSupabase()
     let query = sb
       .from('partner_credit_ledger')
@@ -174,6 +180,9 @@ export const partnerService = {
     if (businessId) {
       query = query.eq('partner_referrers.business_id', businessId)
     }
+    if (programId) {
+      query = query.eq('program_id', programId)
+    }
 
     const { data, error } = await query
 
@@ -184,11 +193,11 @@ export const partnerService = {
     return ((data ?? []) as Record<string, unknown>[]).map(mapPartnerCreditLedgerEntry)
   },
 
-  async getPartnerPerformance(businessId?: string): Promise<PartnerPerformanceSummary[]> {
+  async getPartnerPerformance(businessId?: string, programId?: string): Promise<PartnerPerformanceSummary[]> {
     const [referrers, referrals, ledger] = await Promise.all([
-      this.getPartnerReferrers(businessId),
-      this.getPartnerReferrals(businessId),
-      this.getPartnerCreditLedger(businessId),
+      this.getPartnerReferrers(businessId, programId),
+      this.getPartnerReferrals(businessId, programId),
+      this.getPartnerCreditLedger(businessId, programId),
     ])
 
     return summarizePartnerPerformance(referrers, referrals, ledger)

@@ -49,12 +49,15 @@ export const ambassadorService = {
     return mapAmbassadorLead(data as Record<string, unknown>)
   },
 
-  async getLeads(businessId?: string): Promise<AmbassadorLead[]> {
+  async getLeads(businessId?: string, programId?: string): Promise<AmbassadorLead[]> {
     const sb = requireSupabase()
     let query = sb.from('ambassador_leads').select('*').order('created_at', { ascending: false })
 
     if (businessId) {
       query = query.eq('business_id', businessId)
+    }
+    if (programId) {
+      query = query.eq('program_id', programId)
     }
 
     const { data, error } = await query

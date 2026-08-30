@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { useTenant } from '@/hooks/use-tenant'
 import { adminService } from '@/integrations/supabase/services/admin-service'
 import { ambassadorService } from '@/integrations/supabase/services/ambassador-service'
 import { businessService } from '@/integrations/supabase/services/business-service'
@@ -11,6 +12,7 @@ import { productsService } from '@/integrations/supabase/services/products-servi
 import { promotionsService } from '@/integrations/supabase/services/promotions-service'
 import { referralsService } from '@/integrations/supabase/services/referrals-service'
 import { rewardsService } from '@/integrations/supabase/services/rewards-service'
+import { getBrandedAdminProgramId } from '@/lib/admin-program-scope'
 import type {
   AssignBusinessOwnerFormValues,
   BusinessSettingsFormValues,
@@ -30,6 +32,11 @@ const adminKeys = {
   agreementStatuses: ['admin-agreement-statuses'] as const,
 }
 
+function useAdminProgramScope() {
+  const { program } = useTenant()
+  return getBrandedAdminProgramId(program)
+}
+
 export class OwnerNotFoundError extends Error {
   constructor(email: string) {
     super(`No account found for ${email}.`)
@@ -45,9 +52,10 @@ export class StaffNotFoundError extends Error {
 }
 
 export function useAdminUsers() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: adminKeys.users,
-    queryFn: () => adminService.getUsers(),
+    queryKey: [...adminKeys.users, programId ?? 'global'],
+    queryFn: () => adminService.getUsers(programId),
   })
 }
 
@@ -70,16 +78,18 @@ export function useDeleteCustomer() {
 }
 
 export function useAdminOverview() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: adminKeys.overview,
-    queryFn: () => adminService.getOverview(),
+    queryKey: [...adminKeys.overview, programId ?? 'global'],
+    queryFn: () => adminService.getOverview(programId),
   })
 }
 
 export function useAdminAgreementStatuses() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: adminKeys.agreementStatuses,
-    queryFn: () => adminService.getAgreementStatuses(),
+    queryKey: [...adminKeys.agreementStatuses, programId ?? 'global'],
+    queryFn: () => adminService.getAgreementStatuses(programId),
   })
 }
 
@@ -98,16 +108,18 @@ export function useAdminBusinesses() {
 }
 
 export function useAdminAllBusinesses() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'businesses'],
-    queryFn: () => adminService.getBusinessesWithMetrics(),
+    queryKey: ['admin', 'businesses', programId ?? 'global'],
+    queryFn: () => adminService.getBusinessesWithMetrics(programId),
   })
 }
 
 export function useAllReferrals() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['referrals', 'all'],
-    queryFn: () => referralsService.getAllReferrals(),
+    queryKey: ['referrals', 'all', programId ?? 'global'],
+    queryFn: () => referralsService.getAllReferrals(programId),
   })
 }
 
@@ -279,51 +291,58 @@ export function useAssignBusinessStaff() {
 }
 
 export function useOrdersForVerification(businessId?: string) {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'verification', businessId],
-    queryFn: () => adminService.getOrdersForVerification(businessId),
+    queryKey: ['admin', 'verification', programId ?? 'global', businessId],
+    queryFn: () => adminService.getOrdersForVerification(businessId, programId),
   })
 }
 
 export function useAdminPartnerReferrers() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'partner-referrers'],
-    queryFn: () => partnerService.getPartnerReferrers(),
+    queryKey: ['admin', 'partner-referrers', programId ?? 'global'],
+    queryFn: () => partnerService.getPartnerReferrers(undefined, programId),
   })
 }
 
 export function useAdminPartnerReferrals() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'partner-referrals'],
-    queryFn: () => partnerService.getPartnerReferrals(),
+    queryKey: ['admin', 'partner-referrals', programId ?? 'global'],
+    queryFn: () => partnerService.getPartnerReferrals(undefined, programId),
   })
 }
 
 export function useAdminPartnerPerformance() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'partner-performance'],
-    queryFn: () => partnerService.getPartnerPerformance(),
+    queryKey: ['admin', 'partner-performance', programId ?? 'global'],
+    queryFn: () => partnerService.getPartnerPerformance(undefined, programId),
   })
 }
 
 export function useAdminAmbassadorLeads() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'ambassador-leads'],
-    queryFn: () => ambassadorService.getLeads(),
+    queryKey: ['admin', 'ambassador-leads', programId ?? 'global'],
+    queryFn: () => ambassadorService.getLeads(undefined, programId),
   })
 }
 
 export function useAdminEarlyAccessLeads() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'early-access-leads'],
-    queryFn: () => earlyAccessService.getLeads(),
+    queryKey: ['admin', 'early-access-leads', programId ?? 'global'],
+    queryFn: () => earlyAccessService.getLeads(programId),
   })
 }
 
 export function useAdminMemberTransactions() {
+  const programId = useAdminProgramScope()
   return useQuery({
-    queryKey: ['admin', 'member-transactions'],
-    queryFn: () => memberTransactionsService.getBusinessTransactions(),
+    queryKey: ['admin', 'member-transactions', programId ?? 'global'],
+    queryFn: () => memberTransactionsService.getBusinessTransactions(undefined, programId),
   })
 }
 

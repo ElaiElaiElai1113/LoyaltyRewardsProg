@@ -41,7 +41,7 @@ import { LoyalityBusinessGrowthPage } from '@/features/loyality/pages/loyality-b
 
 export function BusinessDashboardPage() {
   const { program } = useTenant()
-  if (program.slug === 'loyality') return <LoyalityBusinessGrowthPage />
+  if (program.slug === 'loyality') return <LoyalityBusinessGrowthPage mode="overview" />
   return <DefaultBusinessDashboardPage />
 }
 
@@ -293,6 +293,7 @@ function DefaultBusinessDashboardPage() {
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <Input
+              aria-label={t('Signup portal URL')}
               readOnly
               value={signupQrUrl}
               placeholder={t('Signup QR link unavailable')}
@@ -323,7 +324,7 @@ function DefaultBusinessDashboardPage() {
           </div>
           <p className="mt-5 text-center text-sm font-semibold text-primary">{business?.name} {t('signup portal')}</p>
           <p className="mt-2 text-center text-xs leading-relaxed text-on-surface-variant/70">
-            {t('Customer invite credits remain available for the legacy referral flow.')}
+            {t('Customers who use this link join this business through the current signup flow.')}
           </p>
           <Button
             type="button"

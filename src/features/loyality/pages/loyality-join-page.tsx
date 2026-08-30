@@ -2,10 +2,12 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { ArrowLeft, BadgeCheck, Eye, EyeOff, LoaderCircle, Repeat2 } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, Navigate } from 'react-router'
+import { Link, Navigate, useSearchParams } from 'react-router'
 
 import { useAuth } from '@/hooks/use-auth'
 import { getHomePathForRole } from '@/lib/role-routes'
+import { PASSWORD_MIN_LENGTH } from '@/lib/password-setup'
+import { resolveSafeInternalRedirect } from '@/lib/safe-internal-redirect'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 import '@/features/loyality/loyality-app.css'
 import { LoyalityAuthStory } from './loyality-auth-page'
@@ -16,11 +18,14 @@ const defaultValues: MemberSignUpFormValues = {
 
 export function LoyalityJoinPage() {
   const { profile, signUp } = useAuth()
+  const [searchParams] = useSearchParams()
   const [complete, setComplete] = useState(false)
   const [warning, setWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
   const form = useForm<MemberSignUpFormValues>({ resolver: zodResolver(memberSignUpSchema), defaultValues })
+  const redirect = resolveSafeInternalRedirect(searchParams.get('redirect'), '')
+  const signInPath = redirect ? `/signin?redirect=${encodeURIComponent(redirect)}` : '/signin'
 
   if (profile && !complete) return <Navigate replace to={getHomePathForRole(profile.role)} />
 
@@ -37,7 +42,7 @@ export function LoyalityJoinPage() {
               <h2>Account created.</h2>
               <span>Your customer account is ready. Sign in to open your personal QR and begin recording visits.</span>
               {warning ? <p className="ly-auth__message mt-5">{warning}</p> : null}
-              <Link className="ly-auth-submit mt-6" to="/signin"><Repeat2 /> Go to sign in</Link>
+              <Link className="ly-auth-submit mt-6" to={signInPath}><Repeat2 /> Go to sign in</Link>
             </div>
           ) : (
             <>
@@ -79,7 +84,7 @@ export function LoyalityJoinPage() {
                 <div className="ly-field">
                   <label htmlFor="loyality-join-password">Create password</label>
                   <div className="ly-password-wrap">
-                    <input id="loyality-join-password" type={showPassword ? 'text' : 'password'} autoComplete="new-password" placeholder="At least 5 characters" {...form.register('password')} />
+                    <input id="loyality-join-password" type={showPassword ? 'text' : 'password'} autoComplete="new-password" placeholder={`At least ${PASSWORD_MIN_LENGTH} characters`} {...form.register('password')} />
                     <button onClick={() => setShowPassword((value) => !value)} type="button" aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff /> : <Eye />}</button>
                   </div>
                 </div>
@@ -89,7 +94,7 @@ export function LoyalityJoinPage() {
                   {form.formState.isSubmitting ? <LoaderCircle className="animate-spin" /> : <Repeat2 />}
                   {form.formState.isSubmitting ? 'Creating your account…' : 'Create customer account'}
                 </button>
-                <div className="ly-auth__helper"><span>Already a member?</span><Link to="/signin">Sign in</Link></div>
+                <div className="ly-auth__helper"><span>Already a member?</span><Link to={signInPath}>Sign in</Link></div>
               </form>
             </>
           )}

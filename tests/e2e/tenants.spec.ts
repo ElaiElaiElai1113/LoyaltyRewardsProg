@@ -19,8 +19,8 @@ const tenants = [
   {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
-    color: '#b8862e',
-    heading: 'Earn amazing rewards while supporting local businesses.',
+    color: '#e57267',
+    heading: 'Every little thing feels rewarding.',
   },
   {
     slug: 'loyality',
@@ -51,7 +51,7 @@ test.describe('white-label tenant resolution', () => {
       if (tenant.slug === 'loyality') {
         await expect(page.locator('.reference-loyality__logo')).toHaveText('Loyality')
       } else if (tenant.slug === 'wondertown') {
-        await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('Wondertown Rewards')
+        await expect(page.locator('.wondertown-home__brand').first()).toContainText('WondertownRewards')
       } else if (tenant.slug === 'pinas') {
         await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('RewardMe')
       } else {
@@ -68,7 +68,9 @@ test.describe('white-label tenant resolution', () => {
       const landingHeader = page.locator(
         tenant.slug === 'loyality'
           ? '.reference-loyality__nav'
-          : tenant.slug === 'pinas' || tenant.slug === 'wondertown'
+          : tenant.slug === 'wondertown'
+            ? '.wondertown-home__header'
+            : tenant.slug === 'pinas'
             ? '.reference-rewardme__header'
             : '.figma-home__header',
       )
@@ -95,10 +97,14 @@ test.describe('white-label tenant resolution', () => {
         await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
         await expect(page.locator('#loyality-email')).toBeVisible()
         await expect(page.locator('body')).not.toContainText('Rewards Platform')
-      } else if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+      } else if (tenant.slug === 'wondertown') {
         await expect(page).toHaveTitle('Rewards Platform Admin')
         await expect(page.getByRole('button')).toHaveCount(3)
         await expect(page.locator('#signin-email')).toHaveCount(0)
+      } else if (tenant.slug === 'pinas') {
+        await expect(page).toHaveTitle('Rewards Platform Admin')
+        await expect(page.locator('#signin-email')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
       } else {
         await expect(page).toHaveTitle('Rewards Platform Admin')
         await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
@@ -120,9 +126,12 @@ test.describe('white-label tenant resolution', () => {
       if (tenant.slug === 'loyality') {
         await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
         await expect(page.locator('#loyality-email')).toBeVisible()
-      } else if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+      } else if (tenant.slug === 'wondertown') {
         await expect(page.getByRole('button')).toHaveCount(3)
         await expect(page.locator('#signin-email')).toHaveCount(0)
+      } else if (tenant.slug === 'pinas') {
+        await expect(page.locator('#signin-email')).toBeVisible()
+        await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
       } else {
         await expect(page.locator('#signin-email')).toBeVisible()
         await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
@@ -145,8 +154,8 @@ test.describe('white-label tenant resolution', () => {
     const errors = collectRuntimeErrors(page)
     await page.goto('/admin/programs')
     await expect(page).toHaveURL(/\/signin\?portal=admin&redirect=%2Fadmin%2Fprograms$/)
-    await expect(page.getByRole('button')).toHaveCount(3)
-    await expect(page.locator('#signin-email')).toHaveCount(0)
+    await expect(page.locator('#signin-email')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
     expect(errors).toEqual([])
   })
 
@@ -163,8 +172,7 @@ test.describe('white-label tenant resolution', () => {
     const errors = collectRuntimeErrors(page)
     await page.goto('/onboarding/program?tenant=pinas')
     await expect(page).toHaveURL(/\/signin\?redirect=%2Fonboarding%2Fprogram&tenant=pinas/)
-    await expect(page.getByRole('button')).toHaveCount(3)
-    await expect(page.locator('#signin-email')).toHaveCount(0)
+    await expect(page.locator('#signin-email')).toBeVisible()
     await expect(page).toHaveTitle('RewardMe')
     expect(errors).toEqual([])
   })
@@ -180,7 +188,7 @@ test.describe('white-label tenant resolution', () => {
 
   for (const tenant of tenants.filter((candidate) => candidate.slug !== 'medellin')) {
     test(`${tenant.name} never renders Medellin text, imagery, or links`, async ({ page }) => {
-      const publicRoutes = ['/', '/guide', '/shop', '/business', '/signin']
+      const publicRoutes = ['/', '/guide', '/shop', '/business', '/signin', '/promo/register']
       await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
 
       for (const route of publicRoutes) {
@@ -196,6 +204,19 @@ test.describe('white-label tenant resolution', () => {
         })
 
         expect(renderedBranding, `${tenant.name} ${route} leaked Medellin branding`).not.toMatch(/medell[ií]n|medellinrewards/i)
+
+        if (route === '/promo/register') {
+          const phone = page.locator('#referral-signup-phone')
+          if (await phone.count()) {
+            const expectedPlaceholder = tenant.slug === 'pinas' || tenant.slug === 'pinasrewards'
+              ? '+63 900 000 0000'
+              : tenant.slug === 'guatemala'
+                ? '+502 5000 0000'
+                : '+1 555 000 0000'
+            await expect(phone).toHaveAttribute('placeholder', expectedPlaceholder)
+            await expect(phone).not.toHaveAttribute('placeholder', /\+57/)
+          }
+        }
       }
 
       await page.goto(`/business?tenant=${tenant.slug}`, { waitUntil: 'domcontentloaded' })

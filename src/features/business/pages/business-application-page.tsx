@@ -20,7 +20,7 @@ function BusinessApplicationPage({ model }: { model: ApplicationModel }) {
   const [error, setError] = useState('')
   const [reference, setReference] = useState('')
   const [summary, setSummary] = useState({ business: '', representative: '', email: '' })
-  const isRewardsFamily = program.slug === 'pinas' || program.slug === 'rewardme' || program.slug === 'wondertown'
+  const isRewardsFamily = program.slug === 'pinas' || program.slug === 'rewardme'
   const modelName = model === 'commission' ? 'Commission Model' : 'Business-credit Model'
 
   if (!isRewardsFamily) return <Navigate replace to="/business" />

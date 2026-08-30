@@ -238,20 +238,29 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByText('Three-month free access, then continue', { exact: false })).toBeVisible()
     await expect(page.getByText('Regular and Gold are requests only', { exact: false })).toBeVisible()
     await expect(page.locator('#join-email')).toBeVisible()
+    await expect(page.locator('#join-password')).toHaveAttribute(
+      'placeholder',
+      'Use at least 12 characters for your new password.',
+    )
     await expect(page.locator('.rewardme-join__header a[href="/signin"]')).toHaveAttribute('href', '/signin')
   })
 
-  test('RewardMe test sign-in only exposes three automatic role choices', async ({ page }) => {
+  test('RewardMe sign-in keeps release mode credential-safe', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/signin')
+    await expect(page.locator('#signin-email, [data-testid^="quick-sign-in-"]').first()).toBeVisible()
 
-    for (const role of ['Admin', 'Business', 'Customer']) {
-      await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
+    if (await page.locator('#signin-email').count()) {
+      await expect(page.locator('#signin-email')).toBeVisible()
+      await expect(page.locator('#signin-password')).toBeVisible()
+      await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
+      await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(3)
+    } else {
+      for (const role of ['Admin', 'Business', 'Customer']) {
+        await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
+      }
+      await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(3)
     }
-    await expect(page.getByRole('button')).toHaveCount(3)
-    await expect(page.locator('#signin-email')).toHaveCount(0)
-    await expect(page.locator('#signin-password')).toHaveCount(0)
-    await expect(page.getByRole('link')).toHaveCount(0)
     await expect(page.getByTestId('rewardme-test-credentials')).toHaveCount(0)
     await expect(page.locator('body')).not.toContainText('Rewards 123!')
     await expect(page.locator('body')).not.toContainText('@rewardme.test')
@@ -303,6 +312,6 @@ test.describe('public acquisition workflow', () => {
     await page.goto('/invitation')
     await expect(page.locator('body')).toContainText('RewardMe')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
-    await expect(page.locator('body')).toContainText(/Suscribirse|Subscribe/i)
+    await expect(page.getByRole('button', { name: 'Send information request' })).toBeVisible()
   })
 })

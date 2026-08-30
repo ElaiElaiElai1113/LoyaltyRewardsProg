@@ -1,6 +1,5 @@
 import {
   BadgePercent,
-  BookOpen,
   ChartNoAxesCombined,
   CircleUserRound,
   History,
@@ -12,7 +11,6 @@ import {
   Repeat2,
   Settings,
   ShieldCheck,
-  Sparkles,
   UsersRound,
   X,
 } from 'lucide-react'
@@ -21,6 +19,7 @@ import { NavLink, Outlet } from 'react-router'
 
 import { ThemeToggle } from '@/components/theme-toggle'
 import '@/features/loyality/loyality-app.css'
+import { canAccessBusinessPath } from '@/lib/business-role-policy'
 import { getInitials } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
 
@@ -43,8 +42,7 @@ const customerLinks: RailItem[] = [
 ]
 
 const businessLinks: RailItem[] = [
-  { to: '/business/guide', label: 'Start here', icon: BookOpen },
-  { to: '/business/dashboard', label: 'Growth desk', icon: ChartNoAxesCombined },
+  { to: '/business/dashboard', label: 'Overview', icon: ChartNoAxesCombined },
   { to: '/business/members', label: 'Customers', icon: UsersRound },
   { to: '/business/growth', label: 'Offers & rewards', icon: Repeat2 },
   { to: '/business/redemptions', label: 'Redemptions', icon: ReceiptText },
@@ -52,12 +50,8 @@ const businessLinks: RailItem[] = [
 ]
 
 const adminLinks: RailItem[] = [
-  { to: '/admin/guide', label: 'Start here', icon: BookOpen },
   { to: '/admin/portal', label: 'Operations', icon: ShieldCheck },
   { to: '/admin/programs', label: 'Programs', icon: LayoutDashboard },
-  { to: '/admin/memberships', label: 'People', icon: UsersRound },
-  { to: '/admin/readiness', label: 'Readiness', icon: Sparkles },
-  { to: '/admin/gift-cards', label: 'Voucher control', icon: QrCode },
 ]
 
 function LoyalityWordmark({ inverse = false }: { inverse?: boolean }) {
@@ -117,7 +111,9 @@ type WorkspaceShellProps = ShellProps & {
 export function LoyalityWorkspaceShell({ profile, signOut, businessName, kind }: WorkspaceShellProps) {
   const [open, setOpen] = useState(false)
   const isAdmin = kind === 'admin'
-  const links = isAdmin ? adminLinks : businessLinks
+  const links = isAdmin
+    ? adminLinks
+    : businessLinks.filter((item) => canAccessBusinessPath(profile?.role, item.to))
   const workspaceName = isAdmin ? 'Loyality control room' : (businessName ?? 'Business workspace')
 
   return (

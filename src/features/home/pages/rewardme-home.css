@@ -78,10 +78,10 @@
 .reference-rewardme__savings { display: grid; grid-template-columns: 1fr .75fr; align-items: center; gap: 50px; border-radius: 7px; padding: 58px; background: var(--ink); color: var(--paper); }
 .reference-rewardme__savings h2 { color: var(--paper); }
 .reference-rewardme__savings > div > p:not(.reference-rewardme__eyebrow) { margin-top: 14px; color: rgb(246 241 228 / 74%); }
-.reference-rewardme__planned { border: 1px solid rgb(246 241 228 / 22%); border-radius: 5px; padding: 28px; text-align: center; }
-.reference-rewardme__planned span { display: inline-block; border-radius: 2px; padding: 6px 10px; background: #a84935; font-family: ui-monospace, monospace; font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; transform: rotate(-2deg); }
-.reference-rewardme__planned strong { display: block; margin-top: 18px; color: var(--gold-soft); font-family: "Source Serif 4", Georgia, serif; font-size: 1.7rem; }
-.reference-rewardme__planned p { margin-top: 8px; color: rgb(246 241 228 / 65%); font-size: .82rem; }
+.reference-rewardme__balance-card { border: 1px solid rgb(246 241 228 / 22%); border-radius: 5px; padding: 28px; text-align: center; }
+.reference-rewardme__balance-card span { display: inline-block; border-radius: 2px; padding: 6px 10px; background: #a84935; font-family: ui-monospace, monospace; font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; }
+.reference-rewardme__balance-card strong { display: block; margin-top: 18px; color: var(--gold-soft); font-family: "Source Serif 4", Georgia, serif; font-size: 1.7rem; }
+.reference-rewardme__balance-card p { margin-top: 8px; color: rgb(246 241 228 / 65%); font-size: .82rem; }
 .reference-rewardme__tiers { margin-bottom: 28px; }
 .reference-rewardme__tiers article { min-height: 238px; }
 .reference-rewardme__tiers article.is-featured { background: var(--ink); color: var(--paper); }

@@ -1,5 +1,6 @@
 import {
   CreditCard,
+  Gift,
   Hotel,
   Landmark,
   LayoutDashboard,
@@ -36,6 +37,8 @@ const businessNavigationItems = [
   { to: '/business/guide', label: 'Guide', icon: MonitorPlay },
   { to: '/business/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/business/accounting', label: 'Accounting', icon: Landmark },
+  { to: '/business/products', label: 'Products', icon: Package },
+  { to: '/business/rewards', label: 'Rewards', icon: Gift },
   { to: '/business/gift-cards', label: 'Gift Cards', icon: CreditCard },
   { to: '/business/redemptions', label: 'Transactions', icon: CreditCard },
   { to: '/business/promotions', label: 'Promotions', icon: Sparkles },

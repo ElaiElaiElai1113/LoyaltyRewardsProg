@@ -139,7 +139,7 @@ export function MembersPage() {
       : null
 
   return (
-    <div className="space-y-16">
+    <div className="min-w-0 space-y-16 overflow-hidden">
       <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div className="space-y-4">
           <h1 className="font-serif text-5xl tracking-tight text-primary">{t('Customers')}</h1>
@@ -152,8 +152,8 @@ export function MembersPage() {
         </Badge>
       </div>
 
-      <div className="grid gap-10 xl:grid-cols-[420px_1fr]">
-        <div className="space-y-8">
+      <div className="grid min-w-0 gap-10 xl:grid-cols-[420px_minmax(0,1fr)]">
+        <div className="min-w-0 space-y-8">
           <div className="space-y-2 pb-4 border-b border-outline-variant/10">
             <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
               {t('Quick Action')}
@@ -161,9 +161,9 @@ export function MembersPage() {
             <h2 className="font-serif text-3xl text-primary">{t('Award Points')}</h2>
           </div>
 
-          <div className="rounded-xl border border-[var(--border)] bg-white shadow-sm rounded-[2rem] p-8">
+          <div className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-white p-5 shadow-sm sm:p-8">
             <form
-              className="space-y-6"
+              className="min-w-0 space-y-6"
               onSubmit={form.handleSubmit(async (values) => {
                 try {
                   setActionError(null)
@@ -221,7 +221,7 @@ export function MembersPage() {
 
               <div className="rounded-3xl border border-primary-container/15 bg-[var(--muted)] p-5 shadow-sm">
                 {selectedMember ? (
-                  <div className="flex items-center gap-4">
+                  <div className="flex min-w-0 flex-col items-start gap-4 sm:flex-row sm:items-center">
                     <div className="flex size-14 items-center justify-center rounded-2xl bg-primary font-serif text-lg text-primary-foreground shadow-lg">
                       {getInitials(selectedMember.fullName)}
                     </div>
@@ -231,7 +231,7 @@ export function MembersPage() {
                     </div>
                     <Badge
                       variant="accent"
-                      className="rounded-full border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
+                      className="max-w-full rounded-full border-primary-container/25 bg-primary-container/12 px-4 py-2 text-primary"
                     >
                       {formatPoints(selectedMember.points)} {t('points')}
                     </Badge>
@@ -335,9 +335,9 @@ export function MembersPage() {
             <h2 className="font-serif text-3xl text-primary">{t('Register New Customer')}</h2>
           </div>
 
-          <div className="rounded-3xl border border-outline-variant/5 bg-white p-8 shadow-sm">
+          <div className="min-w-0 rounded-3xl border border-outline-variant/5 bg-white p-5 shadow-sm sm:p-8">
             <form
-              className="space-y-6"
+              className="min-w-0 space-y-6"
               onSubmit={registerForm.handleSubmit(async (values) => {
                 try {
                   setRegisterActionError(null)
@@ -439,7 +439,7 @@ export function MembersPage() {
           </div>
         </div>
 
-        <div className="space-y-8">
+        <div className="min-w-0 space-y-8">
           <div className="flex flex-col gap-4 border-b border-outline-variant/10 pb-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="space-y-2">
               <span className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-on-surface-variant/80">
@@ -453,14 +453,14 @@ export function MembersPage() {
                 onChange={(event) => setMemberSearch(event.target.value)}
                 placeholder={t('Search customers')}
                 aria-label={t('Search customers')}
-                wrapperClassName="w-full sm:w-64"
+                wrapperClassName="min-w-0 max-w-full"
               />
               <CompactFilter
                 value={customerStatusFilter}
                 onChange={(event) => setCustomerStatusFilter(event.target.value as CustomerStatusFilter)}
                 options={customerStatusFilterOptions}
+                wrapperClassName="min-w-0 max-w-full w-full sm:w-52"
                 aria-label={t('Filter customers by verification status')}
-                wrapperClassName="w-full sm:w-52"
               />
             </div>
           </div>

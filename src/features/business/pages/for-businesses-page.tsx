@@ -22,6 +22,8 @@ import restaurantPartner from '@/assets/landing/dinner-rewards.webp'
 import medellinCtaPhoto from '@/assets/medellinrewards-hero.webp'
 
 import './for-businesses-page.css'
+import { LoyalityBusinessPage } from './loyality-business-page'
+import { WondertownBusinessPage } from './wondertown-business-page'
 
 type Translate = ReturnType<typeof useLanguage>['t']
 
@@ -162,7 +164,9 @@ function RewardMeBusinessPage({ brand, supportEmail }: { brand: string; supportE
 export function ForBusinessesPage() {
   const { program } = useTenant()
   const { t } = useLanguage()
-  if (program.slug === 'pinas' || program.slug === 'rewardme' || program.slug === 'wondertown') {
+  if (program.slug === 'loyality') return <LoyalityBusinessPage />
+  if (program.slug === 'wondertown') return <WondertownBusinessPage />
+  if (program.slug === 'pinas' || program.slug === 'rewardme') {
     return <RewardMeBusinessPage brand={program.name} supportEmail={program.supportEmail} />
   }
   const isDemoTenant = program.featureFlags.demoTenant === true

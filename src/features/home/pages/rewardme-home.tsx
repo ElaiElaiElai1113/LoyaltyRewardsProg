@@ -12,7 +12,7 @@ import './rewardme-home.css'
 const memberSteps = [
   ['01', 'Join with no card required', 'Create your account with your name, email, and phone. Your first three months are free access while you explore the program.'],
   ['02', 'Spend with participating businesses', 'Show your member QR when you visit. Each active offer states its reward rate, availability, and restrictions before you spend.'],
-  ['03', 'Use rewards or plan ahead', 'Redeem available rewards in the store, or keep building toward something larger when an approved savings option is available.'],
+  ['03', 'Use rewards when you are ready', 'Redeem available rewards in the store under the published offer terms, and follow every earned or redeemed entry in your account.'],
 ] as const
 
 const rates = [
@@ -131,10 +131,10 @@ export function RewardMeHomePage() {
         </div>
       </section>
 
-      <section className="reference-rewardme__section reference-rewardme__wrap" id="savings">
+      <section className="reference-rewardme__section reference-rewardme__wrap" id="account-balance">
         <div className="reference-rewardme__savings">
-          <div><p className="reference-rewardme__eyebrow">Planned savings options</p><h2>Build toward something bigger.</h2><p>The savings concept remains gated until payout, custody, tax, and legal rules are approved. Current rewards stay subject to their published program terms.</p></div>
-          <div className="reference-rewardme__planned"><span>Approval required</span><strong>Rewards → future goal</strong><p>No savings or double-payout promise is active today.</p></div>
+          <div><p className="reference-rewardme__eyebrow">Your reward balance</p><h2>Know what you earned and where you can use it.</h2><p>Your account keeps earned and redeemed entries together. Available rewards can be used only on eligible published offers and remain subject to the applicable membership and offer terms.</p></div>
+          <div className="reference-rewardme__balance-card"><span>Available now</span><strong>Rewards → eligible offer</strong><p>Rewards are program value, not cash. Sign in to review your current balance and activity before choosing an offer.</p></div>
         </div>
       </section>
 

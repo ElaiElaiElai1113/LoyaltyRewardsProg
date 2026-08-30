@@ -75,7 +75,7 @@ export function LoyalityHomePage() {
             <h2>White-label means it&apos;s yours, not ours.</h2>
           </div>
           <div className="reference-loyality__grid2">
-            <article className="reference-loyality__dark-card"><div className="reference-loyality__dark-num">For Your Customers</div><h3>Feels like your program</h3><p>Your branding, your name, your look — customers never see &quot;Loyality,&quot; they see a loyalty program built by you, for them.</p></article>
+            <article className="reference-loyality__dark-card"><div className="reference-loyality__dark-num">For Your Customers</div><h3>Feels like your program</h3><p>Your branding, your name, your look stay front and center. Loyality appears only where account, security, or support context requires it.</p></article>
             <article className="reference-loyality__dark-card"><div className="reference-loyality__dark-num">For Your Business</div><h3>Runs itself in the background</h3><p>Once it&apos;s set up, the acquisition and retention mechanics run automatically. You focus on the business, not the software.</p></article>
           </div>
         </div>

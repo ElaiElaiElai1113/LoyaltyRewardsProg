@@ -15,6 +15,7 @@ import { applyProgramDocumentBrand } from '@/features/tenant/tenant-document-bra
 import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { getHomePathForRole } from '@/lib/role-routes'
+import { resolveSafeInternalRedirect } from '@/lib/safe-internal-redirect'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 import '@/features/loyality/loyality-app.css'
 
@@ -104,7 +105,7 @@ export function LoyalityAuthPage() {
                     email: values.email,
                     password: values.password,
                   })
-                  navigate(searchParams.get('redirect') || getHomePathForRole(profile.role))
+                  navigate(resolveSafeInternalRedirect(searchParams.get('redirect'), getHomePathForRole(profile.role)))
                 } catch (signInError) {
                   setError(signInError instanceof Error ? signInError.message : 'Unable to sign in.')
                 }

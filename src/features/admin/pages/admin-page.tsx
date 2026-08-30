@@ -278,6 +278,18 @@ export function AdminPage() {
   const verificationOrders = useOrdersForVerification(
     verificationBusinessId === 'all' ? undefined : verificationBusinessId,
   )
+  const adminDataLoaded = [
+    users,
+    overview,
+    allBusinesses,
+    allReferrals,
+    partnerReferrals,
+    ambassadorLeads,
+    earlyAccessLeads,
+    memberTransactions,
+    agreementStatuses,
+    verificationOrders,
+  ].every((query) => !query.isLoading && !query.isFetching)
 
   const currentBusiness = businesses.data?.[0] ?? null
   const currentBusinessId = currentBusiness?.id ?? ''
@@ -716,7 +728,10 @@ export function AdminPage() {
   }
 
   return (
-    <div className="min-w-0 space-y-10 pb-20 xl:space-y-16">
+    <div
+      className="min-w-0 space-y-10 pb-20 xl:space-y-16"
+      data-admin-data-state={adminDataLoaded ? 'loaded' : 'loading'}
+    >
       <div className="warm-hero-muted relative min-w-0 overflow-hidden rounded-[2rem] px-5 py-8 shadow-card sm:px-6 xl:px-8 xl:py-12">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,color-mix(in_srgb,var(--champagne)_22%,transparent),transparent_34%),radial-gradient(circle_at_bottom_right,color-mix(in_srgb,var(--rose-brown)_24%,transparent),transparent_32%)]"></div>
         <div className="relative">

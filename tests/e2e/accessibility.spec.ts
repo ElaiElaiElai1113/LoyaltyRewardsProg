@@ -17,6 +17,6 @@ test.describe('public keyboard accessibility', () => {
     for (const role of ['Admin', 'Business', 'Customer']) {
       await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
     }
-    await expect(page.getByRole('button')).toHaveCount(3)
+    await expect(page.getByRole('button', { name: /^Sign in as (Admin|Business|Customer)$/ })).toHaveCount(3)
   })
 })

@@ -5,6 +5,7 @@ import { RouterProvider } from 'react-router/dom'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { useAuth } from '@/hooks/use-auth'
+import { useTenant } from '@/hooks/use-tenant'
 import { AdminLayout } from '@/layouts/admin-layout'
 import { BusinessOwnerLayout } from '@/layouts/business-owner-layout'
 import { CustomerLayout } from '@/layouts/customer-layout'
@@ -263,6 +264,42 @@ function HiddenCustomerCommerceRoute() {
   return <Navigate replace to="/signin" />
 }
 
+function LoyalityLegacySurfaceRoute({
+  children,
+  guestFallback = '/',
+}: {
+  children: ReactNode
+  guestFallback?: string
+}) {
+  const { program } = useTenant()
+  const { profile, isLoading } = useAuth()
+
+  if (!program.featureFlags.loyalitySingleBusiness) {
+    return <>{children}</>
+  }
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  return <Navigate replace to={profile ? getHomePathForRole(profile.role) : guestFallback} />
+}
+
+function CustomerCommerceRoute({ children }: { children: ReactNode }) {
+  const { program } = useTenant()
+  const { profile, isLoading } = useAuth()
+
+  if (program.featureFlags.customerCommerce !== false) {
+    return <>{children}</>
+  }
+
+  if (isLoading) {
+    return <RouteLoading />
+  }
+
+  return <Navigate replace to={profile ? getHomePathForRole(profile.role) : '/'} />
+}
+
 function ProtectedAdminRoute() {
   const { profile, isLoading } = useAuth()
   const location = useLocation()
@@ -401,11 +438,11 @@ const router = createBrowserRouter([
       },
       {
         path: '/promo',
-        element: <PromoPage />,
+        element: <LoyalityLegacySurfaceRoute><PromoPage /></LoyalityLegacySurfaceRoute>,
       },
       {
         path: '/promo/register',
-        element: <ReferralRegisterPage />,
+        element: <LoyalityLegacySurfaceRoute><ReferralRegisterPage /></LoyalityLegacySurfaceRoute>,
       },
       {
         path: '/ambassadors',
@@ -425,7 +462,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/invitation',
-        element: <EarlyAccessPage />,
+        element: <LoyalityLegacySurfaceRoute guestFallback="/join"><EarlyAccessPage /></LoyalityLegacySurfaceRoute>,
       },
       {
         path: '/early-access',
@@ -462,20 +499,20 @@ const router = createBrowserRouter([
       {
         element: <PublicBrowseLayout />,
         children: [
-          { path: '/g/:publicToken', element: <PublicGiftCardPage /> },
+          { path: '/g/:publicToken', element: <CustomerCommerceRoute><PublicGiftCardPage /></CustomerCommerceRoute> },
           { path: '/offer/:publicToken', element: <LoyalityOfferPage /> },
-          { path: '/cost-calculator', element: <CostCalculatorPage /> },
+          { path: '/cost-calculator', element: <LoyalityLegacySurfaceRoute guestFallback="/business"><CostCalculatorPage /></LoyalityLegacySurfaceRoute> },
           { path: '/business/cost-calculator', element: <Navigate replace to="/cost-calculator" /> },
         ],
       },
       {
         element: <PublicOrCustomerRoute />,
         children: [
-          { path: '/guide', element: <PlatformGuidePage /> },
-          { path: '/shop', element: <ShopPage /> },
+          { path: '/guide', element: <LoyalityLegacySurfaceRoute><PlatformGuidePage /></LoyalityLegacySurfaceRoute> },
+          { path: '/shop', element: <CustomerCommerceRoute><ShopPage /></CustomerCommerceRoute> },
           { path: '/rewards', element: <HiddenCustomerCommerceRoute /> },
           { path: '/promotions', element: <PromotionsPage /> },
-          { path: '/membership', element: <MembershipPage /> },
+          { path: '/membership', element: <LoyalityLegacySurfaceRoute guestFallback="/join"><MembershipPage /></LoyalityLegacySurfaceRoute> },
           { path: '/business', element: <ForBusinessesPage /> },
           { path: '/for-businesses', element: <Navigate replace to="/business" /> },
         ],
@@ -484,13 +521,13 @@ const router = createBrowserRouter([
         element: <ProtectedCustomerRoute />,
         children: [
           { path: '/dashboard', element: <DashboardPage /> },
-          { path: '/gift-cards', element: <GiftCardsPage /> },
-          { path: '/wallet/gift-cards', element: <WalletGiftCardsPage /> },
-          { path: '/wallet/gift-cards/:id', element: <GiftCardDetailPage /> },
-          { path: '/cart', element: <CartPage /> },
-          { path: '/checkout', element: <CheckoutPage /> },
-          { path: '/order-confirmation', element: <OrderConfirmationPage /> },
-          { path: '/orders', element: <OrdersPage /> },
+          { path: '/gift-cards', element: <CustomerCommerceRoute><GiftCardsPage /></CustomerCommerceRoute> },
+          { path: '/wallet/gift-cards', element: <CustomerCommerceRoute><WalletGiftCardsPage /></CustomerCommerceRoute> },
+          { path: '/wallet/gift-cards/:id', element: <CustomerCommerceRoute><GiftCardDetailPage /></CustomerCommerceRoute> },
+          { path: '/cart', element: <CustomerCommerceRoute><CartPage /></CustomerCommerceRoute> },
+          { path: '/checkout', element: <CustomerCommerceRoute><CheckoutPage /></CustomerCommerceRoute> },
+          { path: '/order-confirmation', element: <CustomerCommerceRoute><OrderConfirmationPage /></CustomerCommerceRoute> },
+          { path: '/orders', element: <CustomerCommerceRoute><OrdersPage /></CustomerCommerceRoute> },
           { path: '/redeem/:rewardId', element: <HiddenCustomerCommerceRoute /> },
           { path: '/activity', element: <ActivityPage /> },
           { path: '/profile', element: <ProfilePage /> },
@@ -507,11 +544,11 @@ const router = createBrowserRouter([
         children: [
           { path: '/admin/portal', element: <AdminPage /> },
           { path: '/admin/programs', element: <PlatformProgramsPage /> },
-          { path: '/admin/readiness', element: <LaunchReadinessPage /> },
-          { path: '/admin/memberships', element: <MembershipOperationsPage /> },
-          { path: '/admin/import', element: <TenantImportPage /> },
-          { path: '/admin/gift-cards', element: <AdminGiftCardsPage /> },
-          { path: '/admin/guide', element: <PlatformGuidePage /> },
+          { path: '/admin/readiness', element: <LoyalityLegacySurfaceRoute><LaunchReadinessPage /></LoyalityLegacySurfaceRoute> },
+          { path: '/admin/memberships', element: <LoyalityLegacySurfaceRoute><MembershipOperationsPage /></LoyalityLegacySurfaceRoute> },
+          { path: '/admin/import', element: <LoyalityLegacySurfaceRoute><TenantImportPage /></LoyalityLegacySurfaceRoute> },
+          { path: '/admin/gift-cards', element: <LoyalityLegacySurfaceRoute><AdminGiftCardsPage /></LoyalityLegacySurfaceRoute> },
+          { path: '/admin/guide', element: <LoyalityLegacySurfaceRoute><PlatformGuidePage /></LoyalityLegacySurfaceRoute> },
         ],
       },
       {
@@ -530,16 +567,16 @@ const router = createBrowserRouter([
           { path: '/business/dashboard', element: <BusinessDashboardPage /> },
           { path: '/business/growth', element: <OwnerOnlyBusinessRoute><LoyalityBusinessGrowthPage /></OwnerOnlyBusinessRoute> },
           { path: '/business/voucher/:publicToken', element: <LoyalityVoucherRedeemPage /> },
-          { path: '/business/accounting', element: <OwnerOnlyBusinessRoute><AccountingReportPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/accounting', element: <LoyalityLegacySurfaceRoute><OwnerOnlyBusinessRoute><AccountingReportPage /></OwnerOnlyBusinessRoute></LoyalityLegacySurfaceRoute> },
           { path: '/business/member-sale/:token', element: <MemberSalePage /> },
-          { path: '/business/products', element: <OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute> },
-          { path: '/business/rewards', element: <OwnerOnlyBusinessRoute><BusinessRewardsPage /></OwnerOnlyBusinessRoute> },
-          { path: '/business/gift-cards', element: <OwnerOnlyBusinessRoute><BusinessGiftCardsPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/products', element: <LoyalityLegacySurfaceRoute><OwnerOnlyBusinessRoute><ProductsPage /></OwnerOnlyBusinessRoute></LoyalityLegacySurfaceRoute> },
+          { path: '/business/rewards', element: <LoyalityLegacySurfaceRoute><OwnerOnlyBusinessRoute><BusinessRewardsPage /></OwnerOnlyBusinessRoute></LoyalityLegacySurfaceRoute> },
+          { path: '/business/gift-cards', element: <LoyalityLegacySurfaceRoute><OwnerOnlyBusinessRoute><BusinessGiftCardsPage /></OwnerOnlyBusinessRoute></LoyalityLegacySurfaceRoute> },
           { path: '/business/redemptions', element: <RedemptionsPage /> },
-          { path: '/business/promotions', element: <OwnerOnlyBusinessRoute><BusinessPromotionsPage /></OwnerOnlyBusinessRoute> },
+          { path: '/business/promotions', element: <LoyalityLegacySurfaceRoute><OwnerOnlyBusinessRoute><BusinessPromotionsPage /></OwnerOnlyBusinessRoute></LoyalityLegacySurfaceRoute> },
           { path: '/business/members', element: <MembersPage /> },
-          { path: '/business/partners', element: <PartnersPage /> },
-          { path: '/business/guide', element: <PlatformGuidePage /> },
+          { path: '/business/partners', element: <LoyalityLegacySurfaceRoute><PartnersPage /></LoyalityLegacySurfaceRoute> },
+          { path: '/business/guide', element: <LoyalityLegacySurfaceRoute><PlatformGuidePage /></LoyalityLegacySurfaceRoute> },
           { path: '/business/settings', element: <OwnerOnlyBusinessRoute><SettingsPage /></OwnerOnlyBusinessRoute> },
         ],
       },

@@ -5,7 +5,7 @@ export const REWARDME_TEST_PASSWORD = 'Rewards 123!'
 export function shouldShowRewardMeTestCredentials(
   configuredValue = import.meta.env.VITE_SHOW_PUBLIC_QA_CREDENTIALS,
 ) {
-  return configuredValue !== 'false'
+  return configuredValue === 'true'
 }
 
 export type RewardMeTestPortal = 'member' | 'business' | 'admin'

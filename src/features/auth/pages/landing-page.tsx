@@ -1000,7 +1000,8 @@ export function CompactAuthPage() {
     ? WONDERTOWN_TEST_PASSWORD
     : REWARDME_TEST_PASSWORD
   const showQuickTestSignIn = Boolean(
-    quickTestAccounts && shouldShowRewardMeTestCredentials(),
+    quickTestAccounts
+      && (program.featureFlags.demoTenant === true || shouldShowRewardMeTestCredentials()),
   )
   usePlatformDocumentBrand(selectedPortal === 'admin')
 

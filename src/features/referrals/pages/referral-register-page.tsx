@@ -10,7 +10,9 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { useAuth } from '@/hooks/use-auth'
 import { useBusinesses } from '@/hooks/use-customer-data'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { PASSWORD_MIN_LENGTH } from '@/lib/password-setup'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 
 const defaultValues: MemberSignUpFormValues = {
@@ -38,6 +40,7 @@ export function ReferralRegisterPage() {
   const [searchParams] = useSearchParams()
   const { signUp } = useAuth()
   const { t } = useLanguage()
+  const { program } = useTenant()
   const businesses = useBusinesses()
   const [error, setError] = useState<string | null>(null)
   const [signUpComplete, setSignUpComplete] = useState(false)
@@ -45,6 +48,12 @@ export function ReferralRegisterPage() {
   const referrerId = searchParams.get('ref')
   const partnerCode = searchParams.get('partner')
   const businessId = searchParams.get('business')
+  const phonePlaceholder = ({
+    CO: '+57 300 000 0000',
+    GT: '+502 5000 0000',
+    PH: '+63 900 000 0000',
+    US: '+1 555 000 0000',
+  } as Record<string, string>)[program.countryCode] ?? '+00 000 000 0000'
 
   const form = useForm<MemberSignUpFormValues>({
     resolver: zodResolver(memberSignUpSchema),
@@ -195,7 +204,7 @@ export function ReferralRegisterPage() {
                   <Input
                     id="referral-signup-phone"
                     type="tel"
-                    placeholder="+57 300 000 0000"
+                    placeholder={phonePlaceholder}
                     {...form.register('phone')}
                   />
                 </div>
@@ -205,7 +214,7 @@ export function ReferralRegisterPage() {
                   <Input
                     id="referral-signup-password"
                     type="password"
-                    placeholder="••••••••"
+                    placeholder={t('Use at least {count} characters for your new password.', { count: PASSWORD_MIN_LENGTH })}
                     {...form.register('password')}
                   />
                 </div>

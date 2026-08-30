@@ -45,7 +45,7 @@ export function LoyalityOfferPage() {
   if (!offer) return <EmptyState title="Offer unavailable" description="This QR may be inactive or expired. Ask the business for its current offer." action={<Link to="/"><Button>Go to Loyality</Button></Link>} />
 
   return (
-    <main className="min-h-screen bg-[#fff8ee] px-4 py-8 text-[#173b3f] sm:py-14">
+    <div className="min-h-screen bg-[#fff8ee] px-4 py-8 text-[#173b3f] sm:py-14">
       <div className="mx-auto max-w-3xl">
         <BrandLogo markClassName="h-11" textClassName="text-xl" />
         <section className="mt-8 overflow-hidden rounded-[2.25rem] border border-[#173b3f]/12 bg-white shadow-2xl">
@@ -65,6 +65,6 @@ export function LoyalityOfferPage() {
           </div>
         </section>
       </div>
-    </main>
+    </div>
   )
 }

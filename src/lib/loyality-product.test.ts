@@ -7,6 +7,8 @@ const migration = readFileSync(resolve(root, 'supabase/migrations/20260824170041
 const home = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-home-page.tsx'), 'utf8')
 const service = readFileSync(resolve(root, 'src/features/loyality/loyality-service.ts'), 'utf8')
 const businessGrowth = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-business-growth-page.tsx'), 'utf8')
+const businessDashboard = readFileSync(resolve(root, 'src/features/business-owner/pages/business-dashboard-page.tsx'), 'utf8')
+const appShell = readFileSync(resolve(root, 'src/features/loyality/components/loyality-app-shell.tsx'), 'utf8')
 
 describe('Loyality product contract', () => {
   it('is a separate, single-business tenant on Loyalty Platforms', () => {
@@ -48,5 +50,12 @@ describe('Loyality product contract', () => {
     expect(businessGrowth).toContain('Raffle paused.')
     expect(businessGrowth).toContain('Raffle cancelled.')
     expect(businessGrowth).toContain('Unused raffle deleted.')
+  })
+
+  it('keeps staff on a read-only overview and hides owner-only navigation', () => {
+    expect(businessDashboard).toContain('<LoyalityBusinessGrowthPage mode="overview" />')
+    expect(businessGrowth).toContain("mode = 'manage'")
+    expect(businessGrowth).toContain("mode === 'manage'")
+    expect(appShell).toContain('businessLinks.filter((item) => canAccessBusinessPath(profile?.role, item.to))')
   })
 })

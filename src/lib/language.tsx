@@ -38,6 +38,15 @@ const languageDisplayNames: Record<Language, Record<Language, string>> = {
 }
 
 const spanishTranslations: Record<string, string> = {
+  'A fictional business workspace for testing complete rewards workflows.': 'Un espacio de trabajo empresarial ficticio para probar flujos completos de recompensas.',
+  'A private, white-label loyalty workspace for one business and its own customers.': 'Un espacio privado de fidelización de marca blanca para un negocio y sus propios clientes.',
+  'Home': 'Inicio',
+  'Next step': 'Siguiente paso',
+  'No payment details are required. The team will contact you about the next step.': 'No se requieren datos de pago. El equipo se comunicará contigo para indicarte el siguiente paso.',
+  'Private offers': 'Ofertas privadas',
+  'Send your contact details': 'Envía tus datos de contacto',
+  'The form asks for contact details only. It does not collect a card or process a charge.': 'El formulario solo solicita datos de contacto. No recopila una tarjeta ni procesa ningún cargo.',
+  'What happens next': 'Qué sucede después',
   'Membership sign-up': 'Registro de membresía',
   'Join {program}.': 'Únete a {program}.',
   'Create your account now. No card or online payment is collected.': 'Crea tu cuenta ahora. No se recopila ninguna tarjeta ni pago en línea.',
@@ -1311,6 +1320,7 @@ const spanishTranslations: Record<string, string> = {
     'Muestra este portal en caja o en letreros. Los nuevos clientes lo escanean, crean una cuenta y aparecen abajo como invitaciones pendientes antes de agregar su crédito de recompensa.',
   'Signup QR link unavailable': 'Enlace QR de registro no disponible',
   'Signup QR link copied': 'Enlace QR de registro copiado',
+  'Signup portal URL': 'URL del portal de registro',
   Copied: 'Copiado',
   'Copy Portal Link': 'Copiar enlace del portal',
   'signup portal': 'portal de registro',
@@ -1732,6 +1742,13 @@ const spanishTranslations: Record<string, string> = {
     'Las membresias estan vinculadas a tu saldo de recompensas, por eso los invitados deben iniciar sesion o registrarse antes de suscribirse.',
   Mock: 'Demo',
   'Mock Membership': 'Membresia demo',
+  'Wondertown demo membership': 'Membresía de demostración de Wondertown',
+  'Try the membership flow': 'Prueba el flujo de membresía',
+  'This fictional account uses test-only billing records. Actions never charge a real card.':
+    'Esta cuenta ficticia usa registros de facturación solo para pruebas. Las acciones nunca cobran una tarjeta real.',
+  'Renew demo membership': 'Renovar la membresía de demostración',
+  'Reactivate demo membership': 'Reactivar la membresía de demostración',
+  'Activate demo membership': 'Activar la membresía de demostración',
   Monthly: 'Mensual',
   'Monthly Membership': 'Membresia mensual',
   'My Gift Cards': 'Mis tarjetas de regalo',
@@ -2100,6 +2117,90 @@ const spanishTranslations: Record<string, string> = {
     'Este resumen de privacidad explica la información que RewardMe usa para gestionar cuentas, recompensas, soporte y verificación.',
   'For privacy questions, members can contact support@rewardme.ph.':
     'Para preguntas de privacidad, los miembros pueden escribir a support@rewardme.ph.',
+  'Create customer account': 'Crear cuenta de cliente',
+  'These terms explain how your customer account works with the business loyalty program powered by Loyality.':
+    'Estos términos explican cómo funciona tu cuenta de cliente con el programa de fidelidad del negocio, impulsado por Loyality.',
+  'Customer accounts': 'Cuentas de cliente',
+  'Keep your account details accurate and secure. One customer account should represent one real person.':
+    'Mantén correctos y seguros los datos de tu cuenta. Cada cuenta de cliente debe representar a una persona real.',
+  'Business-specific rewards': 'Recompensas específicas de este negocio',
+  'Offers, visit rewards, vouchers, and eligibility rules are set for this business. Rewards are not cash and may change or end under the terms shown with each offer.':
+    'Las ofertas, las recompensas por visitas, los vales y las reglas de elegibilidad se establecen para este negocio. Las recompensas no son dinero en efectivo y pueden cambiar o finalizar según los términos mostrados en cada oferta.',
+  'Account access': 'Acceso a la cuenta',
+  'Creating a standard customer account is free. Sign-in may be required to claim or use an offer, but no paid membership or government ID is required to create that account.':
+    'Crear una cuenta de cliente estándar es gratis. Es posible que debas iniciar sesión para reclamar o usar una oferta, pero no se requiere una membresía pagada ni un documento de identidad oficial para crear esa cuenta.',
+  'This privacy summary explains the information used to run your customer account and rewards with this business.':
+    'Este resumen de privacidad explica qué información se utiliza para gestionar tu cuenta de cliente y tus recompensas con este negocio.',
+  'The service may collect the account and contact details you provide, plus visits, offer claims, voucher activity, and reward history associated with this business.':
+    'El servicio puede recopilar los datos de cuenta y contacto que proporciones, además de visitas, reclamaciones de ofertas, actividad de vales e historial de recompensas asociados con este negocio.',
+  'Information is used to connect your account to this business, show reward progress, process claims and redemptions, prevent misuse, and provide support.':
+    'La información se usa para vincular tu cuenta con este negocio, mostrar el progreso de las recompensas, procesar reclamaciones y canjes, prevenir usos indebidos y proporcionar soporte.',
+  'For privacy questions, customers can contact support@rewardme.ph.':
+    'Para preguntas sobre privacidad, los clientes pueden escribir a support@rewardme.ph.',
+  'These terms explain how offers, visit rewards, vouchers, and redemptions work for this business.':
+    'Estos términos explican cómo funcionan las ofertas, las recompensas por visitas, los vales y los canjes para este negocio.',
+  'Rewards are business offers, perks, or vouchers. They are not cash and cannot be exchanged for a cash payment.':
+    'Las recompensas son ofertas, beneficios o vales del negocio. No son dinero en efectivo ni pueden canjearse por un pago en efectivo.',
+  'The business sets each reward’s eligibility, timing, limits, and redemption instructions. The terms shown with the specific offer or voucher apply.':
+    'El negocio establece la elegibilidad, vigencia, límites e instrucciones de canje de cada recompensa. Se aplican los términos mostrados con la oferta o el vale específico.',
+  'Business staff may confirm a visit, voucher, or claim before completing a redemption. Duplicate, expired, or ineligible claims may be declined.':
+    'El personal del negocio puede confirmar una visita, un vale o una reclamación antes de completar un canje. Las reclamaciones duplicadas, vencidas o no elegibles pueden rechazarse.',
+  'This policy explains how account and reward activity may be checked to keep this business’s loyalty program accurate and secure.':
+    'Esta política explica cómo puede comprobarse la actividad de la cuenta y las recompensas para mantener preciso y seguro el programa de fidelidad de este negocio.',
+  'No paid membership or ID requirement': 'Sin requisito de membresía pagada ni documento de identidad',
+  'A standard Loyality customer account does not require a paid membership or government ID. The business may ask you to confirm account or transaction details when resolving a specific issue.':
+    'Una cuenta de cliente estándar de Loyality no requiere una membresía pagada ni un documento de identidad oficial. El negocio puede pedirte que confirmes datos de la cuenta o de una transacción al resolver un problema específico.',
+  'How checks work': 'Cómo funcionan las comprobaciones',
+  'Business staff may review the relevant visit, offer claim, voucher, or redemption record and contact you if details are missing or inconsistent.':
+    'El personal del negocio puede revisar la visita, reclamación de oferta, vale o registro de canje correspondiente y contactarte si faltan datos o son inconsistentes.',
+  'Data minimization': 'Minimización de datos',
+  'Only account and program activity needed to resolve the issue should be used. For questions, customers can contact support@rewardme.ph.':
+    'Solo debe usarse la actividad de la cuenta y del programa necesaria para resolver el problema. Para preguntas, los clientes pueden escribir a support@rewardme.ph.',
+  'Wondertown Rewards is a fictional demo environment. It does not charge real membership fees or request real identity documents.':
+    'Wondertown Rewards es un entorno de demostración ficticio. No cobra cuotas reales de membresía ni solicita documentos de identidad reales.',
+  'These demo terms explain the fictional Wondertown Rewards member experience and responsible use of the test environment.':
+    'Estos términos de demostración explican la experiencia ficticia de los miembros de Wondertown Rewards y el uso responsable del entorno de prueba.',
+  'Demo accounts': 'Cuentas de demostración',
+  'Use only fictional or test details in a Wondertown account. Demo accounts and their activity may be reset without notice.':
+    'Usa solo datos ficticios o de prueba en una cuenta de Wondertown. Las cuentas de demostración y su actividad pueden restablecerse sin previo aviso.',
+  'Demo rewards': 'Recompensas de demostración',
+  'Points, credits, offers, and vouchers in Wondertown are demonstrations only and have no cash value.':
+    'Los puntos, créditos, ofertas y vales de Wondertown son solo demostraciones y no tienen valor en efectivo.',
+  'No real charges': 'Sin cargos reales',
+  'The demo does not sell a paid membership, process real purchases, or issue real gift cards.':
+    'La demostración no vende membresías pagadas, procesa compras reales ni emite tarjetas de regalo reales.',
+  'This privacy summary explains how test data is used inside the fictional Wondertown Rewards demo.':
+    'Este resumen de privacidad explica cómo se usan los datos de prueba dentro de la demostración ficticia de Wondertown Rewards.',
+  'Test data only': 'Solo datos de prueba',
+  'Do not submit real identity documents, payment details, or other sensitive personal information in this demo.':
+    'No envíes documentos de identidad reales, datos de pago ni otra información personal sensible en esta demostración.',
+  'How test data is used': 'Cómo se usan los datos de prueba',
+  'Test data is used only to demonstrate account, reward, and redemption workflows.':
+    'Los datos de prueba se usan únicamente para demostrar los flujos de cuentas, recompensas y canjes.',
+  'For demo support, contact support@rewardme.ph.':
+    'Para recibir soporte sobre la demostración, escribe a support@rewardme.ph.',
+  'These demo reward terms apply only to fictional Wondertown offers, points, gift cards, and redemptions.':
+    'Estos términos de recompensas de demostración se aplican solo a ofertas, puntos, tarjetas de regalo y canjes ficticios de Wondertown.',
+  'No real-world value': 'Sin valor en el mundo real',
+  'Demo rewards, balances, and gift cards have no monetary value and cannot be exchanged for cash, goods, or services.':
+    'Las recompensas, los saldos y las tarjetas de regalo de demostración no tienen valor monetario y no pueden canjearse por dinero, bienes ni servicios.',
+  'Demo availability': 'Disponibilidad de la demostración',
+  'Demo content may change, expire, or reset at any time as test scenarios are updated.':
+    'El contenido de demostración puede cambiar, vencer o restablecerse en cualquier momento cuando se actualicen los escenarios de prueba.',
+  'Redemption simulation': 'Simulación de canje',
+  'Staff and administrator actions simulate reward review and redemption; they do not complete a real transaction.':
+    'Las acciones del personal y los administradores simulan la revisión y el canje de recompensas; no completan una transacción real.',
+  'Wondertown does not perform real identity verification in this demo environment.':
+    'Wondertown no realiza una verificación de identidad real en este entorno de demostración.',
+  'Do not submit real ID': 'No envíes una identificación real',
+  'Use fictional test details only. Never upload or enter a real identity document in Wondertown.':
+    'Usa únicamente datos de prueba ficticios. Nunca cargues ni introduzcas un documento de identidad real en Wondertown.',
+  'Simulated review': 'Revisión simulada',
+  'Any pending, approved, or rejected status exists only to demonstrate an administrator workflow.':
+    'Cualquier estado pendiente, aprobado o rechazado existe únicamente para demostrar un flujo de trabajo administrativo.',
+  'Demo data cleanup': 'Limpieza de datos de demostración',
+  'Test accounts and simulated verification records may be reset or removed without notice.':
+    'Las cuentas de prueba y los registros de verificación simulados pueden restablecerse o eliminarse sin previo aviso.',
   'These reward terms explain how RewardMe offers, point costs, eligibility, and redemptions work for members.':
     'Estos términos explican cómo funcionan para los miembros las ofertas de RewardMe, los costos en puntos, la elegibilidad y los canjes.',
   'Rewards represent offers, perks, credits, or experiences available through RewardMe. They are not a promise of cash payment.':
@@ -2252,6 +2353,7 @@ const spanishTranslations: Record<string, string> = {
   'Demo renewal complete.': 'Renovación de demostración completada.',
   'Featured gift cards': 'Tarjetas de regalo destacadas',
   'Future ID verification': 'Verificación de identidad futura',
+  'Optional account verification': 'Verificación opcional de la cuenta',
   'Gift Card Shop': 'Tienda de tarjetas de regalo',
   'Gift card': 'Tarjeta de regalo',
   'Gift card link copied': 'Enlace de la tarjeta de regalo copiado',
@@ -2259,6 +2361,8 @@ const spanishTranslations: Record<string, string> = {
   'Giftable moments': 'Momentos para regalar',
   'ID is not required during launch. We may ask for it later as an extra security step to protect member rewards.':
     'No se exige identificación durante el lanzamiento. Podríamos solicitarla después como medida adicional para proteger las recompensas del miembro.',
+  'You can submit an ID as an optional security step to help protect your account and member rewards.':
+    'Puedes enviar una identificación como medida de seguridad opcional para ayudar a proteger tu cuenta y las recompensas de miembro.',
   'Increase quantity for {product}': 'Aumentar la cantidad de {product}',
   'Issue gift card': 'Emitir tarjeta de regalo',
   'Issuing...': 'Emitiendo...',
@@ -2416,6 +2520,8 @@ const spanishTranslations: Record<string, string> = {
   'Customer earns': 'El cliente obtiene',
   'Customer invite credits remain available for the legacy referral flow.':
     'Los créditos por invitación de clientes siguen disponibles para el flujo de referidos anterior.',
+  'Customers who use this link join this business through the current signup flow.':
+    'Los clientes que usan este enlace se unen a este negocio mediante el flujo de registro actual.',
   'Customer list could not be loaded. Scan their QR instead.':
     'No se pudo cargar la lista de clientes. Escanea su QR en su lugar.',
   'Customer not found. Ask them to open their current member QR and scan again.':
@@ -3353,6 +3459,14 @@ const spanishTranslations: Record<string, string> = {
 }
 
 const tagalogTranslations: Record<string, string> = {
+  'A fictional business workspace for testing complete rewards workflows.': 'Isang kathang-isip na workspace ng negosyo para subukan ang kumpletong rewards workflow.',
+  'A private, white-label loyalty workspace for one business and its own customers.': 'Isang pribado at white-label na loyalty workspace para sa isang negosyo at sarili nitong mga customer.',
+  'Next step': 'Susunod na hakbang',
+  'No payment details are required. The team will contact you about the next step.': 'Walang kailangang detalye ng bayad. Makikipag-ugnayan ang team tungkol sa susunod na hakbang.',
+  'Private offers': 'Mga pribadong alok',
+  'Send your contact details': 'Ipadala ang iyong contact details',
+  'The form asks for contact details only. It does not collect a card or process a charge.': 'Contact details lamang ang hinihingi ng form. Hindi ito kumukuha ng card o nagpoproseso ng singil.',
+  'What happens next': 'Ano ang susunod na mangyayari',
   'Membership sign-up': 'Pagpaparehistro ng membership',
   'Join {program}.': 'Sumali sa {program}.',
   'Create your account now. No card or online payment is collected.': 'Gawin ang account mo ngayon. Walang card o online payment na kinokolekta.',
@@ -3976,6 +4090,13 @@ const tagalogTranslations: Record<string, string> = {
   Menu: 'Talaan ng mga Pagpipilian',
   Mock: 'Pagsubok',
   'Mock Membership': 'Pagsubok na Kasapian',
+  'Wondertown demo membership': 'Demo membership ng Wondertown',
+  'Try the membership flow': 'Subukan ang daloy ng membership',
+  'This fictional account uses test-only billing records. Actions never charge a real card.':
+    'Gumagamit ang kathang-isip na account na ito ng mga tala ng pagsingil para lamang sa pagsubok. Hindi kailanman sisingilin ang tunay na card.',
+  'Renew demo membership': 'I-renew ang demo membership',
+  'Reactivate demo membership': 'I-activate muli ang demo membership',
+  'Activate demo membership': 'I-activate ang demo membership',
   Monthly: 'Buwanan',
   'Monthly Membership': 'Buwanang Kasapian',
   'Monthly price': 'Buwanang presyo',
@@ -4147,6 +4268,7 @@ const tagalogTranslations: Record<string, string> = {
   'Signup Portal': 'Pahina ng Pagpapatala',
   'Signup QR link copied': 'Nakopya ang kawing ng QR para sa pagpapatala',
   'Signup QR link unavailable': 'Hindi magagamit ang kawing ng QR para sa pagpapatala',
+  'Signup portal URL': 'URL ng portal sa pagpapatala',
   'Simulated Payment Method': 'Kunwaring Paraan ng Pagbabayad',
   'Something went wrong': 'May nangyaring kamalian',
   Specialty: 'Natatangi',
@@ -4520,6 +4642,90 @@ const tagalogTranslations: Record<string, string> = {
     'Ginagamit ang impormasyon upang pamahalaan ang mga kuwenta, suriin ang pagpapatunay, protektahan ang halaga ng gantimpala, suportahan ang paggamit nito, at pagandahin ang karanasan ng miyembro.',
   'For privacy questions, members can contact support@rewardme.ph.':
     'Para sa mga tanong tungkol sa pagkapribado, maaaring sumulat ang mga miyembro sa support@rewardme.ph.',
+  'Create customer account': 'Gumawa ng account ng customer',
+  'These terms explain how your customer account works with the business loyalty program powered by Loyality.':
+    'Ipinapaliwanag ng mga tuntuning ito kung paano gumagana ang iyong account ng customer sa loyalty program ng negosyo na pinapagana ng Loyality.',
+  'Customer accounts': 'Mga account ng customer',
+  'Keep your account details accurate and secure. One customer account should represent one real person.':
+    'Panatilihing tama at ligtas ang mga detalye ng iyong account. Ang bawat account ng customer ay dapat kumatawan sa isang tunay na tao.',
+  'Business-specific rewards': 'Mga reward na partikular sa negosyong ito',
+  'Offers, visit rewards, vouchers, and eligibility rules are set for this business. Rewards are not cash and may change or end under the terms shown with each offer.':
+    'Ang mga alok, reward sa pagbisita, voucher, at tuntunin sa pagiging kuwalipikado ay itinatalaga para sa negosyong ito. Hindi cash ang mga reward at maaari itong baguhin o ihinto alinsunod sa mga tuntuning ipinapakita sa bawat alok.',
+  'Account access': 'Pag-access sa account',
+  'Creating a standard customer account is free. Sign-in may be required to claim or use an offer, but no paid membership or government ID is required to create that account.':
+    'Libre ang paggawa ng karaniwang account ng customer. Maaaring kailanganing mag-sign in upang kunin o gamitin ang isang alok, ngunit hindi kailangan ang may-bayad na membership o government ID upang gawin ang account na iyon.',
+  'This privacy summary explains the information used to run your customer account and rewards with this business.':
+    'Ipinapaliwanag ng buod na ito sa pagkapribado ang impormasyong ginagamit upang patakbuhin ang iyong account ng customer at mga reward sa negosyong ito.',
+  'The service may collect the account and contact details you provide, plus visits, offer claims, voucher activity, and reward history associated with this business.':
+    'Maaaring kolektahin ng serbisyo ang ibinigay mong mga detalye ng account at pakikipag-ugnayan, pati mga pagbisita, claim sa alok, aktibidad ng voucher, at kasaysayan ng reward na nauugnay sa negosyong ito.',
+  'Information is used to connect your account to this business, show reward progress, process claims and redemptions, prevent misuse, and provide support.':
+    'Ginagamit ang impormasyon upang iugnay ang iyong account sa negosyong ito, ipakita ang progreso ng reward, iproseso ang mga claim at redemption, pigilan ang maling paggamit, at magbigay ng suporta.',
+  'For privacy questions, customers can contact support@rewardme.ph.':
+    'Para sa mga tanong tungkol sa pagkapribado, maaaring sumulat ang mga customer sa support@rewardme.ph.',
+  'These terms explain how offers, visit rewards, vouchers, and redemptions work for this business.':
+    'Ipinapaliwanag ng mga tuntuning ito kung paano gumagana ang mga alok, reward sa pagbisita, voucher, at redemption para sa negosyong ito.',
+  'Rewards are business offers, perks, or vouchers. They are not cash and cannot be exchanged for a cash payment.':
+    'Ang mga reward ay mga alok, benepisyo, o voucher ng negosyo. Hindi cash ang mga ito at hindi maaaring ipagpalit sa bayad na cash.',
+  'The business sets each reward’s eligibility, timing, limits, and redemption instructions. The terms shown with the specific offer or voucher apply.':
+    'Ang negosyo ang nagtatakda ng pagiging kuwalipikado, panahon, limitasyon, at tagubilin sa pag-redeem ng bawat reward. Nalalapat ang mga tuntuning nakasaad sa partikular na alok o voucher.',
+  'Business staff may confirm a visit, voucher, or claim before completing a redemption. Duplicate, expired, or ineligible claims may be declined.':
+    'Maaaring kumpirmahin ng staff ng negosyo ang isang pagbisita, voucher, o claim bago kumpletuhin ang redemption. Maaaring tanggihan ang duplicate, expired, o hindi kuwalipikadong claim.',
+  'This policy explains how account and reward activity may be checked to keep this business’s loyalty program accurate and secure.':
+    'Ipinapaliwanag ng patakarang ito kung paano maaaring suriin ang aktibidad ng account at reward upang mapanatiling tama at ligtas ang loyalty program ng negosyong ito.',
+  'No paid membership or ID requirement': 'Walang kailangang may-bayad na membership o ID',
+  'A standard Loyality customer account does not require a paid membership or government ID. The business may ask you to confirm account or transaction details when resolving a specific issue.':
+    'Ang karaniwang account ng customer sa Loyality ay hindi nangangailangan ng may-bayad na membership o government ID. Maaaring hilingin ng negosyo na kumpirmahin mo ang mga detalye ng account o transaksyon kapag nilulutas ang isang partikular na problema.',
+  'How checks work': 'Paano isinasagawa ang mga pagsusuri',
+  'Business staff may review the relevant visit, offer claim, voucher, or redemption record and contact you if details are missing or inconsistent.':
+    'Maaaring suriin ng staff ng negosyo ang kaugnay na pagbisita, claim sa alok, voucher, o tala ng redemption at makipag-ugnayan sa iyo kung may kulang o hindi tugmang detalye.',
+  'Data minimization': 'Paglilimita ng datos',
+  'Only account and program activity needed to resolve the issue should be used. For questions, customers can contact support@rewardme.ph.':
+    'Tanging aktibidad ng account at programa na kailangan upang lutasin ang problema ang dapat gamitin. Para sa mga tanong, maaaring sumulat ang mga customer sa support@rewardme.ph.',
+  'Wondertown Rewards is a fictional demo environment. It does not charge real membership fees or request real identity documents.':
+    'Ang Wondertown Rewards ay isang kathang-isip na demo environment. Hindi ito naniningil ng tunay na membership fee o humihingi ng tunay na identity document.',
+  'These demo terms explain the fictional Wondertown Rewards member experience and responsible use of the test environment.':
+    'Ipinapaliwanag ng mga tuntuning ito sa demo ang kathang-isip na karanasan ng miyembro sa Wondertown Rewards at ang responsableng paggamit ng test environment.',
+  'Demo accounts': 'Mga demo account',
+  'Use only fictional or test details in a Wondertown account. Demo accounts and their activity may be reset without notice.':
+    'Gumamit lamang ng kathang-isip o test na detalye sa isang Wondertown account. Maaaring i-reset nang walang abiso ang mga demo account at kanilang aktibidad.',
+  'Demo rewards': 'Mga demo reward',
+  'Points, credits, offers, and vouchers in Wondertown are demonstrations only and have no cash value.':
+    'Ang mga puntos, credit, alok, at voucher sa Wondertown ay para lamang sa demonstrasyon at walang katumbas na halaga sa cash.',
+  'No real charges': 'Walang tunay na singil',
+  'The demo does not sell a paid membership, process real purchases, or issue real gift cards.':
+    'Ang demo ay hindi nagbebenta ng may-bayad na membership, nagpoproseso ng tunay na pagbili, o naglalabas ng tunay na gift card.',
+  'This privacy summary explains how test data is used inside the fictional Wondertown Rewards demo.':
+    'Ipinapaliwanag ng buod na ito sa pagkapribado kung paano ginagamit ang test data sa kathang-isip na demo ng Wondertown Rewards.',
+  'Test data only': 'Test data lamang',
+  'Do not submit real identity documents, payment details, or other sensitive personal information in this demo.':
+    'Huwag magsumite ng tunay na identity document, detalye ng pagbabayad, o iba pang sensitibong personal na impormasyon sa demo na ito.',
+  'How test data is used': 'Paano ginagamit ang test data',
+  'Test data is used only to demonstrate account, reward, and redemption workflows.':
+    'Ginagamit lamang ang test data upang ipakita ang mga workflow ng account, reward, at redemption.',
+  'For demo support, contact support@rewardme.ph.':
+    'Para sa suporta sa demo, makipag-ugnayan sa support@rewardme.ph.',
+  'These demo reward terms apply only to fictional Wondertown offers, points, gift cards, and redemptions.':
+    'Nalalapat lamang ang mga tuntuning ito ng demo reward sa mga kathang-isip na alok, puntos, gift card, at redemption sa Wondertown.',
+  'No real-world value': 'Walang halaga sa tunay na mundo',
+  'Demo rewards, balances, and gift cards have no monetary value and cannot be exchanged for cash, goods, or services.':
+    'Walang halagang salapi ang mga demo reward, balanse, at gift card at hindi maaaring ipagpalit sa cash, produkto, o serbisyo.',
+  'Demo availability': 'Pagiging available ng demo',
+  'Demo content may change, expire, or reset at any time as test scenarios are updated.':
+    'Maaaring baguhin, mawalan ng bisa, o i-reset anumang oras ang nilalaman ng demo habang ina-update ang mga test scenario.',
+  'Redemption simulation': 'Simulation ng redemption',
+  'Staff and administrator actions simulate reward review and redemption; they do not complete a real transaction.':
+    'Ginagaya ng mga aksyon ng staff at administrator ang pagsusuri at redemption ng reward; hindi sila kumukumpleto ng tunay na transaksyon.',
+  'Wondertown does not perform real identity verification in this demo environment.':
+    'Hindi nagsasagawa ang Wondertown ng tunay na identity verification sa demo environment na ito.',
+  'Do not submit real ID': 'Huwag magsumite ng tunay na ID',
+  'Use fictional test details only. Never upload or enter a real identity document in Wondertown.':
+    'Gumamit lamang ng kathang-isip na test detail. Huwag kailanman mag-upload o maglagay ng tunay na identity document sa Wondertown.',
+  'Simulated review': 'Ginayang pagsusuri',
+  'Any pending, approved, or rejected status exists only to demonstrate an administrator workflow.':
+    'Ang anumang pending, approved, o rejected na status ay umiiral lamang upang ipakita ang workflow ng administrator.',
+  'Demo data cleanup': 'Paglilinis ng demo data',
+  'Test accounts and simulated verification records may be reset or removed without notice.':
+    'Maaaring i-reset o alisin nang walang abiso ang mga test account at ginayang verification record.',
   'These reward terms explain how RewardMe offers, point costs, eligibility, and redemptions work for members.':
     'Ipinapaliwanag ng mga tuntuning ito kung paano gumagana para sa mga miyembro ang mga alok ng RewardMe, halaga sa puntos, pagiging kuwalipikado, at paggamit ng gantimpala.',
   'No cash payout promise': 'Walang pangakong bayad na salapi',
@@ -4683,6 +4889,7 @@ const tagalogTranslations: Record<string, string> = {
   'Demo renewal complete.': 'Tapos na ang pagsubok na pagpapanibago.',
   'Featured gift cards': 'Mga Tampok na Kard na Regalo',
   'Future ID verification': 'Pagsusuri ng ID sa Hinaharap',
+  'Optional account verification': 'Opsyonal na beripikasyon ng account',
   'Gift Card Shop': 'Tindahan ng mga Kard na Regalo',
   'Gift card': 'Kard na regalo',
   'Gift card link copied': 'Nakopya ang kawing ng kard na regalo',
@@ -4690,6 +4897,8 @@ const tagalogTranslations: Record<string, string> = {
   'Giftable moments': 'Mga sandaling maaaring regaluhan',
   'ID is not required during launch. We may ask for it later as an extra security step to protect member rewards.':
     'Hindi kailangan ang ID habang inilulunsad ang programa. Maaari namin itong hingin sa hinaharap bilang dagdag na proteksiyon sa mga gantimpala ng miyembro.',
+  'You can submit an ID as an optional security step to help protect your account and member rewards.':
+    'Maaari kang magsumite ng ID bilang opsyonal na hakbang sa seguridad upang makatulong na protektahan ang iyong account at mga reward ng miyembro.',
   'ID number': 'Numero ng ID',
   'Increase quantity for {product}': 'Dagdagan ang dami ng {product}',
   'Issue gift card': 'Magbigay ng kard na regalo',
@@ -4875,6 +5084,8 @@ const tagalogTranslations: Record<string, string> = {
   'Customer earns': 'Kikitain ng kostumer',
   'Customer invite credits remain available for the legacy referral flow.':
     'Magagamit pa rin ang mga kredito sa pag-imbita ng kostumer para sa dating paraan ng pagsangguni.',
+  'Customers who use this link join this business through the current signup flow.':
+    'Ang mga customer na gumagamit ng kawing na ito ay sumasali sa negosyong ito sa pamamagitan ng kasalukuyang daloy ng pagpapatala.',
   'Customer list could not be loaded. Scan their QR instead.':
     'Hindi maikarga ang talaan ng mga kostumer. I-scan na lamang ang kanilang QR.',
   'Customer not found. Ask them to open their current member QR and scan again.':

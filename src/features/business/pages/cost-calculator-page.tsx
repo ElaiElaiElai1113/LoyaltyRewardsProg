@@ -1,10 +1,14 @@
-import { Link } from 'react-router'
+import { Link, Navigate } from 'react-router'
 
 import { CostCalculator } from '@/features/business/components/cost-calculator'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { useTenant } from '@/hooks/use-tenant'
 
 export function CostCalculatorPage() {
+  const { program } = useTenant()
+  if (program.slug === 'wondertown' || program.slug === 'loyality') return <Navigate replace to="/business" />
+
   return (
     <div className="ornate-page relative isolate w-full overflow-hidden rounded-[2rem] px-4 py-8 pb-20 sm:px-6 lg:px-8">
       <div className="space-y-10">

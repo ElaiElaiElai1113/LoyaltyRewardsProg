@@ -39,7 +39,7 @@ function Metric({ value, label, icon: Icon }: { value: number; label: string; ic
   return <div className="rounded-3xl border border-white/15 bg-white/8 p-4"><Icon className="size-5 text-[#ff6b4a]" /><strong className="mt-3 block text-3xl">{value}</strong><span className="text-xs font-bold uppercase tracking-wider text-white/60">{label}</span></div>
 }
 
-export function LoyalityBusinessGrowthPage() {
+export function LoyalityBusinessGrowthPage({ mode = 'manage' }: { mode?: 'overview' | 'manage' }) {
   const { business, isBusinessLoading } = useBusinessOwnerData()
   const [snapshot, setSnapshot] = useState<LoyalityBusinessSnapshot | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -85,7 +85,7 @@ export function LoyalityBusinessGrowthPage() {
         <div className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
           <p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Start here</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Record a customer visit</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">Ask the customer to open their member QR. Scan it with your phone camera, enter the sale amount, and confirm. The visit count, rewards, and raffle entries update automatically.</p>
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row"><Link to="/business/members"><Button className="w-full rounded-full sm:w-auto"><QrCode />Find customer or use QR</Button></Link><Button variant="outline" className="w-full rounded-full sm:w-auto" onClick={() => setBuilder('voucher')}><Gift />Create voucher option</Button></div>
+          <div className="mt-5 flex flex-col gap-3 sm:flex-row"><Link to="/business/members"><Button className="w-full rounded-full sm:w-auto"><QrCode />Find customer or use QR</Button></Link>{mode === 'manage' ? <Button variant="outline" className="w-full rounded-full sm:w-auto" onClick={() => setBuilder('voucher')}><Gift />Create voucher option</Button> : null}</div>
         </div>
         <div className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
           <p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Acquisition QR</p><h2 className="mt-2 text-2xl font-black">Share your active offer</h2>
@@ -93,6 +93,7 @@ export function LoyalityBusinessGrowthPage() {
         </div>
       </section>
 
+      {mode === 'manage' ? <>
       <section id="loyality-raffle-builder" className="scroll-mt-24 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
         <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><div><p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Simple builders</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Choose what you want to create</h2><p className="mt-2 text-sm text-[var(--muted-foreground)]">Each rule belongs only to this business.</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{([['offer','Offer'],['visit','Visit reward'],['voucher','Voucher'],['raffle','Raffle']] as const).map(([id,label]) => <Button key={id} variant={builder === id ? 'default' : 'outline'} className="rounded-full" onClick={() => setBuilder(id)}><Plus />{label}</Button>)}</div></div>
         {builder === 'offer' ? <OfferForm businessId={business.id} busy={busy} submit={submit} /> : null}
@@ -108,8 +109,20 @@ export function LoyalityBusinessGrowthPage() {
       </section>
 
       <RaffleList rows={snapshot.raffles} reload={load} />
+      </> : (
+        <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4" aria-label="Program status">
+          <StatusCard label="Published offers" value={snapshot.offers.filter((item) => item.active).length} detail="Active private acquisition links" />
+          <StatusCard label="Visit rewards" value={snapshot.visitRules.filter((item) => item.active).length} detail="Rules applied to recorded visits" />
+          <StatusCard label="Voucher options" value={snapshot.catalog.filter((item) => item.active).length} detail="Rewards customers can work toward" />
+          <StatusCard label="Prize draws" value={snapshot.raffles.filter((item) => item.status === 'active').length} detail="Currently accepting eligible entries" />
+        </section>
+      )}
     </div>
   )
+}
+
+function StatusCard({ label, value, detail }: { label: string; value: number; detail: string }) {
+  return <article className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm"><span className="text-xs font-black uppercase tracking-[.14em] text-[#ff6b4a]">{label}</span><strong className="mt-3 block text-4xl">{value}</strong><p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{detail}</p></article>
 }
 
 type SubmitProps = { businessId: string; busy: boolean; submit: (action: () => Promise<unknown>) => Promise<void> }
@@ -142,7 +155,7 @@ function Field({ label, ...props }: React.ComponentProps<typeof Input> & { label
 function WideField({ label, ...props }: React.ComponentProps<typeof Textarea> & { label: string }) { return <div className="sm:col-span-2 lg:col-span-3"><Label htmlFor={String(props.name)}>{label}</Label><Textarea id={String(props.name)} required {...props} /></div> }
 
 function RuleList({ title, empty, rows, reload }: { title: string; empty: string; rows: Array<{ id: string; title: string; detail: string; active: boolean; table: 'loyality_offers' | 'loyality_visit_rules' | 'loyality_voucher_catalog' }>; reload: () => Promise<void> }) {
-  return <div className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm"><h2 className="text-xl font-black">{title}</h2><div className="mt-4 space-y-3">{rows.length ? rows.map((row) => <div key={row.id} className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--border)] p-4"><div className="min-w-0"><strong className="block truncate">{row.title}</strong><span className="mt-1 block text-xs text-[var(--muted-foreground)]">{row.detail}</span></div><Button size="sm" variant={row.active ? 'outline' : 'default'} className="shrink-0 rounded-full" onClick={async () => { await loyalityService.setActive(row.table, row.id, !row.active); await reload() }}>{row.active ? 'Pause' : 'Activate'}</Button></div>) : <p className="text-sm text-[var(--muted-foreground)]">{empty}</p>}</div></div>
+  return <div className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm"><h2 className="text-xl font-black">{title}</h2><div className="mt-4 space-y-3">{rows.length ? rows.map((row) => <div key={row.id} className="flex min-w-0 flex-col items-stretch gap-3 rounded-2xl border border-[var(--border)] p-4 sm:flex-row sm:items-center sm:justify-between"><div className="min-w-0"><strong className="block truncate">{row.title}</strong><span className="mt-1 block break-words text-xs text-[var(--muted-foreground)]">{row.detail}</span></div><Button size="sm" variant={row.active ? 'outline' : 'default'} className="w-full rounded-full sm:w-auto sm:shrink-0" onClick={async () => { await loyalityService.setActive(row.table, row.id, !row.active); await reload() }}>{row.active ? 'Pause' : 'Activate'}</Button></div>) : <p className="text-sm text-[var(--muted-foreground)]">{empty}</p>}</div></div>
 }
 
 function RaffleList({ rows, reload }: { rows: LoyalityBusinessSnapshot['raffles']; reload: () => Promise<void> }) {
