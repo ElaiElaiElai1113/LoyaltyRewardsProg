@@ -1,9 +1,11 @@
 import { Download, Smartphone, X } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router'
 
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
+import { isInstallPromptEligiblePath } from '@/lib/install-prompt-visibility'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 
 declare global {
@@ -38,6 +40,7 @@ function isIosSafari() {
 }
 
 export function AppInstallPrompt() {
+  const location = useLocation()
   const { program } = useTenant()
   const { t } = useLanguage()
   const [installEvent, setInstallEvent] = useState<BeforeInstallPromptEvent | null>(null)
@@ -68,9 +71,7 @@ export function AppInstallPrompt() {
     }
   }, [])
 
-  const isLoyalityAuthScreen = program.slug === 'loyality'
-    && (window.location.pathname === '/signin' || window.location.pathname === '/join')
-  if (isLoyalityAuthScreen || isStandalone || isDismissed || (!installEvent && !showIosInstructions)) return null
+  if (!isInstallPromptEligiblePath(location.pathname) || isStandalone || isDismissed || (!installEvent && !showIosInstructions)) return null
 
   const dismissPrompt = () => {
     setIsDismissed(true)
@@ -87,7 +88,7 @@ export function AppInstallPrompt() {
   }
 
   return (
-    <aside className="fixed inset-x-3 bottom-4 z-[60] mx-auto max-w-md rounded-2xl border border-primary/15 bg-card p-4 text-card-foreground shadow-luxe sm:right-5 sm:left-auto sm:mx-0">
+    <aside data-app-install-prompt className="fixed inset-x-3 bottom-4 z-[60] mx-auto max-w-md rounded-2xl border border-primary/15 bg-card p-4 text-card-foreground shadow-luxe sm:right-5 sm:left-auto sm:mx-0">
       <div className="flex items-start gap-3">
         <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
           <Smartphone className="size-5" />

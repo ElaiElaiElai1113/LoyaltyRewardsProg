@@ -51,6 +51,8 @@ test('critical public and sign-in shell works without visual dead ends', async (
   await expect(page.locator('main')).toBeVisible()
 
   await page.goto('/signin', { waitUntil: 'domcontentloaded' })
+  await expect(page.locator('[data-app-install-prompt]')).toHaveCount(0)
+  await page.locator('form').filter({ has: page.locator('#signin-email') }).locator('button[type="submit"]').click({ trial: true })
   for (const role of ['Admin', 'Business', 'Customer']) {
     await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
   }

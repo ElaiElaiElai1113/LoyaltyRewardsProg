@@ -4,6 +4,7 @@ import { Navigate, Outlet, createBrowserRouter, useLocation, useNavigate } from 
 import { RouterProvider } from 'react-router/dom'
 
 import { LanguagePicker } from '@/components/language-picker'
+import { AppInstallPrompt } from '@/components/app-install-prompt'
 import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { AdminLayout } from '@/layouts/admin-layout'
@@ -149,7 +150,12 @@ function RouteEffects() {
     }
   }, [navigate])
 
-  return <Outlet />
+  return (
+    <>
+      <Outlet />
+      <AppInstallPrompt />
+    </>
+  )
 }
 
 function LandingRoute() {
