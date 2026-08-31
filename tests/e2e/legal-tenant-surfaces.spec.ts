@@ -96,14 +96,21 @@ test.describe('tenant-aware legal surfaces', () => {
         tenantAccent: resolveColor('--tenant-accent'),
         tenantAccentForeground: resolveColor('--tenant-accent-foreground'),
         tenantAccentSoft: resolveColor('--tenant-accent-soft'),
-        teal: resolveColor('--secondary'),
-        white: resolveColor('--primary-foreground'),
-        tealSoft: resolveColor('--accent'),
+        gold: resolveColor('--secondary'),
+        goldSoft: resolveColor('--accent'),
+        background: resolveColor('--background'),
+        card: resolveColor('--card'),
+        bodyFont: getComputedStyle(document.body).fontFamily,
+        headingFont: getComputedStyle(document.querySelector('h1')!).fontFamily,
       }
     })
-    expect(loyalityAccentTokens.tenantAccent).toBe(loyalityAccentTokens.teal)
-    expect(loyalityAccentTokens.tenantAccentForeground).toBe(loyalityAccentTokens.white)
-    expect(loyalityAccentTokens.tenantAccentSoft).toBe(loyalityAccentTokens.tealSoft)
+    expect(loyalityAccentTokens.tenantAccent).toBe(loyalityAccentTokens.gold)
+    expect(loyalityAccentTokens.tenantAccentForeground).toBe('rgb(255, 255, 255)')
+    expect(loyalityAccentTokens.tenantAccentSoft).toBe(loyalityAccentTokens.goldSoft)
+    expect(loyalityAccentTokens.background).toBe('rgb(246, 241, 228)')
+    expect(loyalityAccentTokens.card).toBe('rgb(239, 232, 214)')
+    expect(loyalityAccentTokens.bodyFont).toContain('IBM Plex Sans')
+    expect(loyalityAccentTokens.headingFont).toContain('Fraunces')
     await page.goto('/verification-policy?tenant=loyality')
     await expect(page.getByText('does not require a paid membership or government ID', { exact: false })).toBeVisible()
     expect(errors).toEqual([])

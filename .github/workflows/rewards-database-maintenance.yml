@@ -12,6 +12,7 @@ on:
           - apply-business-applications
           - apply-linter-cleanup
           - apply-wondertown-theme
+          - apply-loyality-theme
       confirmation:
         description: Type AUDIT or APPLY REVIEWED MIGRATION to confirm the selected operation
         required: true
@@ -77,3 +78,10 @@ jobs:
           npx supabase db query --linked --file supabase/migrations/20260831154128_align_wondertown_with_rewardme_theme.sql
           npx supabase migration repair --linked --status applied 20260831154128 --password "$SUPABASE_DB_PASSWORD" --yes
           npx supabase db query --linked --file supabase/preflight/wondertown-theme-verification.sql
+      - name: Apply the scoped Loyality Option B metadata
+        if: inputs.operation == 'apply-loyality-theme'
+        run: |
+          grep -Fq "where slug = 'loyality'" supabase/migrations/20260831175223_align_loyality_option_b_theme.sql
+          npx supabase db query --linked --file supabase/migrations/20260831175223_align_loyality_option_b_theme.sql
+          npx supabase migration repair --linked --status applied 20260831175223 --password "$SUPABASE_DB_PASSWORD" --yes
+          npx supabase db query --linked --output table "select slug, primary_color, accent_color, logo_url from public.programs where slug = 'loyality';"

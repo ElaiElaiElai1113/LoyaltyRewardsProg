@@ -256,68 +256,80 @@
 
 :root[data-program="loyality"],
 :root[data-program="loyality"][data-theme="dark"] {
-  --ly-navy: #1b2a41;
-  --ly-navy-deep: #121e30;
-  --ly-teal: #3e8e8a;
-  --ly-amber: #d9a441;
-  --ly-grey: #8a8f98;
-  --ly-offwhite: #f4efe6;
-  --ly-white: #ffffff;
+  --ly-navy: #1f3a2e;
+  --ly-navy-deep: #1f3a2e;
+  --ly-teal: #b8862e;
+  --ly-amber: #d8b36a;
+  --ly-grey: #5b5546;
+  --ly-offwhite: #f6f1e4;
+  --ly-white: #f6f1e4;
   --ly-ink: var(--ly-navy);
   --ly-deep: var(--ly-navy-deep);
   --ly-coral: var(--ly-teal);
-  --ly-coral-dark: #337572;
+  --ly-coral-dark: #8d641f;
   --ly-lime: var(--ly-amber);
   --ly-cream: var(--ly-offwhite);
-  --ly-paper: var(--ly-white);
-  --ly-mist: #ece8df;
-  --ly-line: #e5dfd1;
+  --ly-paper: #efe8d6;
+  --ly-paper-deep: #efe8d6;
+  --ly-mist: #efe8d6;
+  --ly-line: #d9cfaf;
+  --ly-stamp: #a23b2e;
+  --ly-text: #211d16;
+  --ly-text-muted: #5b5546;
   --background: var(--ly-offwhite) !important;
-  --foreground: var(--ly-navy-deep) !important;
-  --card: var(--ly-white) !important;
-  --card-foreground: var(--ly-navy-deep) !important;
-  --muted: #ede8dc !important;
-  --muted-foreground: #626870 !important;
-  --border: #e5dfd1 !important;
-  --input: #ffffff !important;
+  --foreground: var(--ly-text) !important;
+  --card: var(--ly-paper) !important;
+  --card-foreground: var(--ly-text) !important;
+  --muted: var(--ly-paper-deep) !important;
+  --muted-foreground: var(--ly-text-muted) !important;
+  --border: var(--ly-line) !important;
+  --input: var(--ly-paper) !important;
   --primary: var(--ly-navy) !important;
-  --primary-foreground: #ffffff !important;
+  --primary-foreground: var(--ly-offwhite) !important;
   --secondary: var(--ly-teal) !important;
   --secondary-foreground: #ffffff !important;
-  --accent: #e1efed !important;
-  --accent-foreground: var(--ly-navy-deep) !important;
+  --accent: #ead9b3 !important;
+  --accent-foreground: var(--ly-text) !important;
   --ring: var(--ly-teal) !important;
   --tenant-accent: var(--ly-teal) !important;
   --tenant-accent-foreground: #ffffff !important;
-  --tenant-accent-soft: #e1efed !important;
-  --success: #4f8077 !important;
-  --warning: #b7832f !important;
-  --destructive: #a84f4f !important;
+  --tenant-accent-soft: #ead9b3 !important;
+  --success: #466c55 !important;
+  --warning: var(--ly-teal) !important;
+  --destructive: var(--ly-stamp) !important;
   --surface: var(--ly-offwhite) !important;
-  --surface-container-low: #eee9df !important;
-  --surface-container-lowest: #ffffff !important;
-  --surface-container-highest: #ddd7cc !important;
+  --surface-container-low: var(--ly-paper) !important;
+  --surface-container-lowest: var(--ly-offwhite) !important;
+  --surface-container-highest: #e5dcc4 !important;
   --primary-container: var(--ly-navy-deep) !important;
   --primary-fixed: var(--ly-navy) !important;
-  --on-primary: #ffffff !important;
+  --on-primary: var(--ly-offwhite) !important;
   --secondary-container: var(--ly-teal) !important;
-  --secondary-fixed: #87b9b5 !important;
+  --secondary-fixed: var(--ly-amber) !important;
   --tertiary: var(--ly-amber) !important;
-  --on-surface: var(--ly-navy-deep) !important;
-  --on-surface-variant: #626870 !important;
-  --outline-variant: #e5dfd1 !important;
+  --on-surface: var(--ly-text) !important;
+  --on-surface-variant: var(--ly-text-muted) !important;
+  --outline-variant: var(--ly-line) !important;
+  --espresso: var(--ly-text) !important;
+  --espresso-soft: var(--ly-ink) !important;
+  --champagne: var(--ly-amber) !important;
+  --champagne-strong: var(--ly-teal) !important;
+  --cream: var(--ly-offwhite) !important;
+  --rose-brown: var(--ly-stamp) !important;
+  --font-sans: "IBM Plex Sans", "Segoe UI", sans-serif !important;
+  --font-serif: Fraunces, Georgia, serif !important;
   color-scheme: light;
 }
 
 :root[data-program="loyality"] body {
   background: var(--ly-offwhite);
-  color: var(--ly-navy-deep);
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  color: var(--ly-text);
+  font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
 }
 
 :root[data-program="loyality"] :is(h1, h2, h3, .font-serif),
 .loyality-site :is(h1, h2, h3) {
-  font-family: "Source Serif 4", Georgia, serif !important;
+  font-family: Fraunces, Georgia, serif !important;
   font-weight: 600 !important;
   letter-spacing: -0.01em !important;
 }
@@ -327,28 +339,19 @@
 :root[data-program="loyality"] [class*="rounded-[2.25rem]"],
 :root[data-program="loyality"] [class*="rounded-3xl"],
 :root[data-program="loyality"] [class*="rounded-2xl"] { border-radius: 8px !important; }
-:root[data-program="loyality"] [class*="bg-[#173b3f]"] { background: var(--ly-navy) !important; }
-:root[data-program="loyality"] [class*="bg-[#ff6b4a]"] { background: var(--ly-teal) !important; }
-:root[data-program="loyality"] [class*="bg-[#b9e769]"] { background: rgb(217 164 65 / 18%) !important; }
-:root[data-program="loyality"] [class*="text-[#ff6b4a]"] { color: var(--ly-teal) !important; }
-:root[data-program="loyality"] [class*="text-[#b9e769]"] { color: var(--ly-amber) !important; }
-:root[data-program="loyality"] [class*="text-[#4c8222]"] { color: var(--ly-teal) !important; }
-:root[data-program="loyality"] [class*="text-[#b8422b]"] { color: var(--ly-teal) !important; }
-:root[data-program="loyality"] [class*="bg-[#fff8ee]"] { background: var(--ly-offwhite) !important; }
-
-.ly-shell { background: var(--ly-offwhite); }
+.ly-shell { background: var(--ly-offwhite); background-image: none; }
 .ly-wordmark { color: var(--ly-navy); }
 .ly-wordmark__mark { border-radius: 3px; background: var(--ly-navy); color: #fff; }
 .ly-wordmark--inverse .ly-wordmark__mark { background: var(--ly-teal); color: #fff; }
-.ly-wordmark strong { font-family: "Source Serif 4", Georgia, serif; font-weight: 700; }
-.ly-customer-header { border-color: #eae6dc; background: rgb(255 255 255 / 94%); backdrop-filter: blur(8px); }
+.ly-wordmark strong { font-family: Fraunces, Georgia, serif; font-weight: 700; }
+.ly-customer-header { border-color: var(--ly-line); background: rgb(246 241 228 / 94%); backdrop-filter: blur(8px); }
 .ly-icon-button { border-radius: 3px; }
 .ly-icon-button:hover { border-color: var(--ly-teal); color: var(--ly-teal); }
 .ly-shell-link { border-radius: 3px; }
-.ly-shell-link:hover { background: #e1efed; }
+.ly-shell-link:hover { background: var(--ly-paper); }
 .ly-shell-link--active { background: var(--ly-navy); color: #fff; }
 .ly-shell-link--active .ly-shell-link__icon { color: var(--ly-amber); }
-.ly-customer-footer { border-color: #eae6dc; background: var(--ly-white); }
+.ly-customer-footer { border-color: var(--ly-line); background: var(--ly-offwhite); }
 .ly-rail { background: var(--ly-navy-deep); color: #fff; }
 .ly-rail::after { display: none; }
 .ly-rail__identity { border-color: var(--ly-teal); }
@@ -361,7 +364,7 @@
 .ly-rail__utilities > button:last-child { border-radius: 3px; }
 .ly-workspace-kicker span { background: var(--ly-teal); }
 .ly-page-frame [class*="rounded-"][class*="bg-card"],
-.ly-page-frame [class*="rounded-"][class*="bg-[var(--card)]"] { border-color: #e5dfd1; border-radius: 8px !important; box-shadow: none; }
+.ly-page-frame [class*="rounded-"][class*="bg-[var(--card)]"] { border-color: var(--ly-line); border-radius: 8px !important; box-shadow: none; }
 .ly-page-frame button[class~="bg-primary"],
 .ly-page-frame a[class~="bg-primary"] { border-radius: 3px; background: var(--ly-navy); }
 .ly-page-frame button[class~="bg-primary"]:hover,
@@ -383,11 +386,11 @@
 .ly-auth__loop span { border-radius: 3px; }
 .ly-auth__loop span:nth-child(2) { border-color: var(--ly-teal); color: #8ec4c0; }
 .ly-auth__form-side { background: var(--ly-offwhite); background-image: none; }
-.ly-auth-card { border-color: #e5dfd1; border-radius: 12px; background: #fff; box-shadow: none; }
+.ly-auth-card { border-color: var(--ly-line); border-radius: 8px; background: var(--ly-paper); box-shadow: none; }
 .ly-auth-card__header p { color: var(--ly-teal); }
 .ly-auth-card__header h2 { letter-spacing: -.02em; }
-.ly-field input { border-radius: 3px; background: #fff; }
-.ly-field input:focus { border-color: var(--ly-teal); box-shadow: 0 0 0 3px rgb(62 142 138 / 14%); }
+.ly-field input { border-radius: 3px; background: var(--ly-offwhite); }
+.ly-field input:focus { border-color: var(--ly-teal); box-shadow: 0 0 0 3px rgb(184 134 46 / 14%); }
 .ly-auth-submit { border-radius: 3px; background: var(--ly-teal); font-weight: 700; }
 .ly-auth-submit:hover { background: #337572; }
 .ly-auth__helper a,
@@ -417,18 +420,18 @@
 
 /* Loyality public site */
 .loyality-site {
-  --ly-ink: #1b2a41;
-  --ly-deep: #121e30;
-  --ly-coral: #3e8e8a;
-  --ly-lime: #d9a441;
-  --ly-cream: #f4efe6;
-  --ly-paper: #ffffff;
-  --ly-line: #e5dfd1;
-  background: #fff;
-  color: #121e30;
-  font-family: Inter, "Segoe UI", Arial, sans-serif;
+  --ly-ink: #1f3a2e;
+  --ly-deep: #1f3a2e;
+  --ly-coral: #b8862e;
+  --ly-lime: #d8b36a;
+  --ly-cream: #f6f1e4;
+  --ly-paper: #efe8d6;
+  --ly-line: #d9cfaf;
+  background: #f6f1e4;
+  color: #211d16;
+  font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
 }
-.loyality-site__header { position: sticky; top: 0; z-index: 50; width: 100%; background: rgb(255 255 255 / 96%); backdrop-filter: blur(8px); }
+.loyality-site__header { position: sticky; top: 0; z-index: 50; width: 100%; background: rgb(246 241 228 / 96%); backdrop-filter: blur(8px); }
 .loyality-site__brand img { width: 150px; }
 .loyality-site__header nav { color: #54595f; font-weight: 500; }
 .loyality-site__header nav a:hover,
@@ -863,18 +866,18 @@
 /* Loyality uses the same complete-route coverage with its quieter editorial UI. */
 :root[data-program="loyality"] :is(.product-public-shell, .product-legal-shell, .product-agreement-shell, .product-program-shell) {
   background: var(--ly-offwhite) !important;
-  color: var(--ly-navy-deep) !important;
+  color: var(--ly-text) !important;
 }
 
 :root[data-program="loyality"] :is(.product-public-shell, .product-program-shell) > :is(header, footer) {
   border-color: var(--ly-line) !important;
-  background: rgb(255 255 255 / 95%) !important;
+  background: rgb(246 241 228 / 95%) !important;
   box-shadow: none !important;
 }
 
 :root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif) {
   color: var(--ly-navy-deep) !important;
-  font-family: "Source Serif 4", Georgia, serif !important;
+  font-family: Fraunces, Georgia, serif !important;
   font-weight: 600 !important;
   letter-spacing: -.01em !important;
 }
@@ -884,13 +887,13 @@
 :root[data-program="loyality"] .product-agreement-shell [class*="bg-white"] {
   border-color: var(--ly-line) !important;
   border-radius: 8px !important;
-  background: var(--ly-white) !important;
-  color: var(--ly-navy-deep) !important;
+  background: var(--ly-paper) !important;
+  color: var(--ly-text) !important;
   box-shadow: none !important;
 }
 
 :root[data-program="loyality"] .product-legal-shell :is(p, a)[class*="text-[#"] {
-  color: #626870 !important;
+  color: var(--ly-text-muted) !important;
 }
 
 :root[data-program="loyality"] .product-legal-shell [class*="bg-[#f8f0df]"] {
@@ -901,8 +904,8 @@
 
 :root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) button[class~="bg-primary"] {
   border-radius: 3px !important;
-  background: var(--ly-teal) !important;
-  color: #fff !important;
+  background: var(--ly-navy) !important;
+  color: var(--ly-offwhite) !important;
 }
 /* -------------------------------------------------------------------------- */
 /* RewardMe / Wondertown approved warm editorial theme                         */
@@ -1055,19 +1058,260 @@
 :root[data-program="pinas"] [class*="rounded-2xl"],
 :root[data-program="wondertown"] [class*="rounded-2xl"] { border-radius: 7px !important; }
 
+/* Keep RewardMe and its Wondertown mirror on their current light editorial
+   tokens on legal routes as well as account and workspace routes. */
+:root[data-program="pinas"] .product-legal-shell,
+:root[data-program="wondertown"] .product-legal-shell {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+:root[data-program="pinas"] .product-legal-shell :is(h1, h2, h3, .font-serif),
+:root[data-program="wondertown"] .product-legal-shell :is(h1, h2, h3, .font-serif) {
+  color: var(--foreground) !important;
+  font-family: "Source Serif 4", Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.015em !important;
+  text-transform: none !important;
+}
+
+:root[data-program="pinas"] .product-legal-shell > div > section,
+:root[data-program="pinas"] .product-legal-shell article,
+:root[data-program="wondertown"] .product-legal-shell > div > section,
+:root[data-program="wondertown"] .product-legal-shell article {
+  border-color: var(--border) !important;
+  border-radius: 7px !important;
+  background: var(--card) !important;
+  color: var(--card-foreground) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .product-legal-shell :is(button, a)[class*="rounded-full"],
+:root[data-program="wondertown"] .product-legal-shell :is(button, a)[class*="rounded-full"] {
+  border-color: var(--secondary) !important;
+  border-radius: 3px !important;
+  background: var(--secondary) !important;
+  color: var(--secondary-foreground) !important;
+}
+
 /* Wondertown intentionally inherits the RewardMe system above. It remains a
    branded test tenant, but it must not maintain a second visual theme. */
 
-:root[data-program="loyality"] .business-public-shell { background: #fff !important; color: var(--ly-navy-deep) !important; }
-:root[data-program="loyality"] .business-public-shell__header { border-color: var(--ly-line) !important; background: rgb(255 255 255 / 96%) !important; box-shadow: none !important; color: var(--ly-navy-deep) !important; }
-:root[data-program="loyality"] .business-public-shell__brand { color: var(--ly-navy) !important; font-family: "Source Serif 4", Georgia, serif; letter-spacing: 0; }
-:root[data-program="loyality"] .business-public-shell__brand small { color: var(--ly-teal) !important; font-family: Inter, sans-serif; }
-:root[data-program="loyality"] .business-public-shell__nav a { color: #555b62 !important; }
+:root[data-program="loyality"] .business-public-shell { background: var(--ly-offwhite) !important; color: var(--ly-text) !important; }
+:root[data-program="loyality"] .business-public-shell__header { border-color: var(--ly-line) !important; background: rgb(246 241 228 / 96%) !important; box-shadow: none !important; color: var(--ly-text) !important; }
+:root[data-program="loyality"] .business-public-shell__brand { color: var(--ly-navy) !important; font-family: Fraunces, Georgia, serif; letter-spacing: 0; }
+:root[data-program="loyality"] .business-public-shell__brand small { color: var(--ly-teal) !important; font-family: "IBM Plex Mono", monospace; }
+:root[data-program="loyality"] .business-public-shell__nav a { color: var(--ly-text-muted) !important; }
 :root[data-program="loyality"] .business-public-shell__nav a:hover { color: var(--ly-teal) !important; }
-:root[data-program="loyality"] .business-public-shell__language-picker { color: #555b62 !important; }
-:root[data-program="loyality"] .business-public-shell__language-picker select { border-color: var(--ly-line) !important; border-radius: 3px !important; background: #fff !important; color: var(--ly-navy-deep) !important; }
+:root[data-program="loyality"] .business-public-shell__language-picker { color: var(--ly-text-muted) !important; }
+:root[data-program="loyality"] .business-public-shell__language-picker select { border-color: var(--ly-line) !important; border-radius: 3px !important; background: var(--ly-paper) !important; color: var(--ly-text) !important; }
 :root[data-program="loyality"] .business-public-shell__login { border: 1px solid var(--ly-navy); border-radius: 3px; background: var(--ly-navy); color: #fff !important; }
-:root[data-program="loyality"] .business-public-shell__footer { border-top: 1px solid rgb(255 255 255 / 8%) !important; background: var(--ly-navy-deep) !important; color: #aeb4bd !important; }
+:root[data-program="loyality"] .business-public-shell__footer { border-top: 1px solid rgb(246 241 228 / 12%) !important; background: #1f3a2e !important; color: rgb(246 241 228 / 70%) !important; }
 :root[data-program="loyality"] .business-public-shell__footer :is(.business-public-shell__brand, .business-public-shell__brand-copy) { color: var(--ly-offwhite) !important; }
-:root[data-program="loyality"] .business-public-shell__footer :is(p, a, span) { color: #aeb4bd !important; }
+:root[data-program="loyality"] .business-public-shell__footer :is(p, a, span) { color: rgb(246 241 228 / 70%) !important; }
 :root[data-program="loyality"] .business-public-shell__footer-bottom { border-color: rgb(255 255 255 / 10%) !important; }
+
+/* Loyality Option B — shared-route completion. */
+:root[data-program="loyality"] :is(.soft-luxe-shell, .product-auth-shell, .product-customer-shell, .product-workspace-shell) {
+  background: var(--ly-offwhite) !important;
+  color: var(--ly-text) !important;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif !important;
+}
+
+:root[data-program="loyality"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell) [class*="uppercase"],
+:root[data-program="loyality"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) [class*="uppercase"] {
+  font-family: "IBM Plex Mono", monospace !important;
+  font-weight: 600 !important;
+  letter-spacing: .08em !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell {
+  align-items: center;
+  padding-block: clamp(28px, 6vh, 72px);
+}
+
+:root[data-program="loyality"] .product-auth-shell .auth-portal-backdrop {
+  background: var(--ly-offwhite) !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__frame { max-width: 470px; }
+
+:root[data-program="loyality"] .product-auth-shell__utilities > a,
+:root[data-program="loyality"] .product-auth-shell__utilities button {
+  border-color: var(--ly-line) !important;
+  border-radius: 3px !important;
+  background: var(--ly-paper) !important;
+  color: var(--ly-ink) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__utilities > a:hover,
+:root[data-program="loyality"] .product-auth-shell__utilities button:hover {
+  border-color: var(--ly-teal) !important;
+  color: var(--ly-teal) !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__tabs {
+  height: 48px;
+  border-color: var(--ly-line) !important;
+  border-radius: 4px !important;
+  background: var(--ly-paper) !important;
+  padding: 4px;
+}
+
+:root[data-program="loyality"] .product-auth-shell__tabs a {
+  height: 38px;
+  border-radius: 3px !important;
+  color: var(--ly-text-muted) !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"] {
+  background: var(--ly-teal) !important;
+  color: #fff !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card {
+  overflow: hidden;
+  border-color: var(--ly-line) !important;
+  border-radius: 8px !important;
+  background: var(--ly-paper) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  background: var(--ly-teal);
+  content: "";
+}
+
+:root[data-program="loyality"] .product-auth-shell__card :is(h1, h2, .font-serif) {
+  color: var(--ly-ink) !important;
+  font-family: Fraunces, Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.01em !important;
+  text-transform: none !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card :is(label, p, span)[class*="text-[#8f8f8f]"] {
+  color: var(--ly-text-muted) !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card :is(input, select, textarea) {
+  min-height: 48px;
+  border: 1px solid var(--ly-line) !important;
+  border-radius: 3px !important;
+  background: var(--ly-offwhite) !important;
+  color: var(--ly-text) !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card button[class*="bg-[#d1ad4a]"],
+:root[data-program="loyality"] .product-auth-shell__card a[class*="bg-[#d1ad4a]"] {
+  min-height: 48px;
+  border-radius: 3px !important;
+  background: var(--ly-teal) !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card button[class*="border-[#d1ad4a]"] {
+  border-color: var(--ly-line) !important;
+  border-radius: 4px !important;
+  background: var(--ly-offwhite) !important;
+  color: var(--ly-text) !important;
+}
+
+:root[data-program="loyality"] .product-auth-shell__card button[aria-pressed="true"] {
+  border-color: var(--ly-ink) !important;
+  background: var(--ly-ink) !important;
+  color: var(--ly-offwhite) !important;
+}
+
+:root[data-program="loyality"] :is(.product-customer-shell__header, .product-workspace-shell__mobile-header) {
+  border-color: var(--ly-line) !important;
+  background: rgb(246 241 228 / 95%) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] :is(.product-customer-shell__main, .product-workspace-shell__main) {
+  background: var(--ly-offwhite) !important;
+}
+
+:root[data-program="loyality"] .product-workspace-shell__sidebar {
+  border-color: rgb(246 241 228 / 16%) !important;
+  background: #1f3a2e !important;
+  color: #f6f1e4 !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] .product-workspace-shell__sidebar nav a { border-radius: 3px !important; }
+:root[data-program="loyality"] .product-workspace-shell__sidebar nav a:hover { color: var(--ly-amber) !important; }
+
+:root[data-program="loyality"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(h1, h2, h3) {
+  font-family: Fraunces, Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.01em !important;
+  text-transform: none !important;
+}
+
+:root[data-program="loyality"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(section, article)[class~="bg-white"] {
+  border-color: var(--ly-line) !important;
+  background: var(--ly-paper) !important;
+  color: var(--ly-text) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(.ornate-page, .gold-wash) {
+  background: transparent !important;
+}
+
+:root[data-program="loyality"] :is(.product-customer-shell__main, .product-workspace-shell__main) .ornate-page::before,
+:root[data-program="loyality"] :is(.product-customer-shell__main, .product-workspace-shell__main) .ornate-page::after { display: none !important; }
+
+:root[data-program="loyality"] .warm-hero-muted {
+  background: #1f3a2e !important;
+  background-image: none !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="loyality"] .warm-hero-muted :is(h1, h2, h3) { color: #f6f1e4 !important; }
+
+:root[data-program="loyality"] [class~="bg-card"] {
+  border-color: var(--ly-line) !important;
+  background: var(--ly-paper) !important;
+  color: var(--ly-text) !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="loyality"] [class~="bg-primary"] {
+  background: var(--ly-ink) !important;
+  color: var(--ly-offwhite) !important;
+}
+
+:root[data-program="loyality"][data-theme="dark"] {
+  --ly-offwhite: #14271f;
+  --ly-white: #14271f;
+  --ly-paper: #20382d;
+  --ly-paper-deep: #20382d;
+  --ly-mist: #294538;
+  --ly-line: #536b5d;
+  --ly-text: #f6f1e4;
+  --ly-text-muted: #d8d0bd;
+  --background: #14271f !important;
+  --foreground: #f6f1e4 !important;
+  --card: #20382d !important;
+  --card-foreground: #f6f1e4 !important;
+  --muted: #294538 !important;
+  --muted-foreground: #d8d0bd !important;
+  --border: #536b5d !important;
+  --input: #20382d !important;
+  --on-surface: #f6f1e4 !important;
+  --on-surface-variant: #d8d0bd !important;
+  color-scheme: dark;
+}
+
+@media (max-width: 640px) {
+  :root[data-program="loyality"] .product-auth-shell { align-items: flex-start; padding: 16px 14px 32px; }
+  :root[data-program="loyality"] .product-auth-shell__card { padding: 30px 20px !important; }
+}

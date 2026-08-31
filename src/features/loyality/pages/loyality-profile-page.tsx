@@ -48,7 +48,7 @@ export function LoyalityProfilePage() {
           <div className="ly-qr-ticket__notch ly-qr-ticket__notch--left" /><div className="ly-qr-ticket__notch ly-qr-ticket__notch--right" />
           <p><QrCode /> Member pass</p>
           <div className="ly-qr-ticket__code">
-            {qrUrl ? <QRCodeSVG value={qrUrl} size={240} fgColor="#173b3f" level="H" /> : <QrCode className="size-28 opacity-30" />}
+            {qrUrl ? <QRCodeSVG value={qrUrl} size={240} fgColor="#1f3a2e" level="H" /> : <QrCode className="size-28 opacity-30" />}
           </div>
           <h2>{profile.data?.fullName ?? 'Your member QR'}</h2>
           <span>Show this code to the business. You never need to copy or type it.</span>

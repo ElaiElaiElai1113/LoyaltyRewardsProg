@@ -8,7 +8,6 @@ import {
   Menu,
   QrCode,
   ReceiptText,
-  Repeat2,
   Settings,
   ShieldCheck,
   UsersRound,
@@ -18,6 +17,7 @@ import { useState, type ComponentType } from 'react'
 import { NavLink, Outlet } from 'react-router'
 
 import { ThemeToggle } from '@/components/theme-toggle'
+import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import '@/features/loyality/loyality-app.css'
 import { canAccessBusinessPath } from '@/lib/business-role-policy'
 import { getInitials } from '@/lib/utils'
@@ -44,7 +44,7 @@ const customerLinks: RailItem[] = [
 const businessLinks: RailItem[] = [
   { to: '/business/dashboard', label: 'Overview', icon: ChartNoAxesCombined },
   { to: '/business/members', label: 'Customers', icon: UsersRound },
-  { to: '/business/growth', label: 'Offers & rewards', icon: Repeat2 },
+  { to: '/business/growth', label: 'Offers & rewards', icon: BadgePercent },
   { to: '/business/redemptions', label: 'Redemptions', icon: ReceiptText },
   { to: '/business/settings', label: 'Business setup', icon: Settings },
 ]
@@ -57,7 +57,7 @@ const adminLinks: RailItem[] = [
 function LoyalityWordmark({ inverse = false }: { inverse?: boolean }) {
   return (
     <NavLink className={`ly-wordmark${inverse ? ' ly-wordmark--inverse' : ''}`} to="/">
-      <span className="ly-wordmark__mark" aria-hidden="true"><Repeat2 /></span>
+      <span className="ly-wordmark__mark"><LoyalityMark /></span>
       <span><strong>Loyality</strong><small>One business. One loyalty loop.</small></span>
     </NavLink>
   )

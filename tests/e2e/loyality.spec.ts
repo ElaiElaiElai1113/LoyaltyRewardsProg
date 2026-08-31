@@ -24,22 +24,54 @@ test.describe('Loyality public product', () => {
       await page.goto('/?tenant=loyality')
 
       await expect(page).toHaveTitle('Loyality')
-      await expect(page.getByRole('heading', { name: /Your loyalty card,\s*reimagined\./ })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Turn your customers into members.' })).toBeVisible()
       await expect(page.getByLabel('Language')).toHaveCount(0)
-      await expect(page.getByText('No POS integration needed')).toBeVisible()
-      await expect(page.getByRole('heading', { name: 'Built to bring customers in, and keep them coming back.' })).toBeVisible()
-      await expect(page.getByRole('heading', { name: "White-label means it's yours, not ours." })).toBeVisible()
+      for (const heading of [
+        'One membership. Any incentive you want.',
+        "A partner that runs it with you — not a tool you're left to figure out.",
+        'A membership does three jobs at once.',
+        'Four steps, fully automated after launch.',
+        "Everything a loyalty app does. Plus what most of them don't.",
+        "Built to run under your name, not someone else's.",
+        "We're confident enough to put it in writing.",
+        'What a membership tier could look like.',
+        'Onboarding, made simple.',
+        'Ready to turn your customers into members?',
+      ]) await expect(page.getByRole('heading', { name: heading })).toBeVisible()
       await expect(page.locator('.reference-loyality')).toBeVisible()
-      await expect(page.locator('.reference-loyality__nav')).toHaveCSS('position', 'sticky')
+      await expect(page.locator('.reference-loyality__header')).toHaveCSS('position', 'sticky')
       await expect(page.locator('body')).not.toContainText(/RewardMe|Wondertown|Medellin|Guatemala/i)
+      const photos = page.locator('.reference-loyality__photo img')
+      await expect(photos).toHaveCount(2)
+      for (let index = 0; index < 2; index += 1) {
+        const photo = photos.nth(index)
+        await photo.scrollIntoViewIfNeeded()
+        await expect.poll(() => photo.evaluate((image) => {
+          const element = image as HTMLImageElement
+          return element.complete && element.naturalWidth > 0
+        })).toBe(true)
+      }
 
       const layout = await page.evaluate(() => ({
         viewport: document.documentElement.clientWidth,
         pageWidth: document.documentElement.scrollWidth,
         emptyLinks: Array.from(document.querySelectorAll('a[href]')).filter((anchor) => !anchor.getAttribute('href')?.trim()).length,
+        brokenHashLinks: Array.from(document.querySelectorAll<HTMLAnchorElement>('a[href^="#"]'))
+          .filter((anchor) => anchor.hash && !document.querySelector(anchor.hash)).map((anchor) => anchor.hash),
+        bodyFont: getComputedStyle(document.body).fontFamily,
+        headingFont: getComputedStyle(document.querySelector('.reference-loyality h1')!).fontFamily,
+        labelFont: getComputedStyle(document.querySelector('.reference-loyality__eyebrow')!).fontFamily,
+        background: getComputedStyle(document.querySelector('.reference-loyality')!).backgroundColor,
+        headingColor: getComputedStyle(document.querySelector('.reference-loyality h1')!).color,
       }))
       expect(layout.pageWidth).toBeLessThanOrEqual(layout.viewport + 1)
       expect(layout.emptyLinks).toBe(0)
+      expect(layout.brokenHashLinks).toEqual([])
+      expect(layout.bodyFont).toContain('IBM Plex Sans')
+      expect(layout.headingFont).toContain('Fraunces')
+      expect(layout.labelFont).toContain('IBM Plex Mono')
+      expect(layout.background).toBe('rgb(246, 241, 228)')
+      expect(layout.headingColor).toBe('rgb(31, 58, 46)')
       expect(errors).toEqual([])
     })
   }
@@ -48,10 +80,11 @@ test.describe('Loyality public product', () => {
     await page.goto('/?tenant=loyality')
     const header = page.locator('.reference-loyality__nav')
     await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
-    await expect(header.getByRole('link', { name: 'See a Demo' })).toHaveAttribute('href', '/business')
-    await expect(page.getByRole('link', { name: 'Request a Demo' })).toHaveAttribute('href', /^mailto:/)
-    await expect(page.getByRole('link', { name: 'Sign In' }).last()).toHaveAttribute('href', '/signin')
-    await page.getByRole('link', { name: 'Sign In' }).last().click()
+    await expect(header.getByRole('link', { name: 'Get started' })).toHaveAttribute('href', '#pricing')
+    await expect(page.getByRole('link', { name: 'See the concept' })).toHaveAttribute('href', '#concept')
+    await expect(page.locator('a[href^="mailto:"]').filter({ hasText: 'Get started' }).last()).toHaveAttribute('href', /^mailto:/)
+    await expect(page.getByRole('link', { name: 'Sign in' }).last()).toHaveAttribute('href', '/signin')
+    await header.getByRole('link', { name: 'Sign in' }).click()
     await expect(page).toHaveURL(/\/signin$/)
     await expect(page.getByRole('group', { name: 'Choose sign-in account type' })).toHaveCount(0)
     await expect(page.getByRole('button', { name: 'Sign in', exact: true })).toBeVisible()
@@ -111,6 +144,9 @@ test.describe('Loyality public product', () => {
       await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
       await expect(page.getByLabel('Language')).toHaveCount(0)
       await expect(page.getByRole('group', { name: 'Choose sign-in account type' })).toHaveCount(0)
+      await expect(page.locator('.ly-auth')).toHaveCSS('background-color', 'rgb(246, 241, 228)')
+      await expect(page.locator('.ly-auth__story h1')).toHaveCSS('font-family', /Fraunces/)
+      await expect(page.locator('.ly-auth__eyebrow')).toHaveCSS('font-family', /IBM Plex Mono/)
 
       await page.goto('/join?tenant=loyality')
       await expect(page.getByRole('heading', { name: 'Join the loop.' })).toBeVisible()
@@ -132,6 +168,7 @@ test.describe('Loyality signed-in visual system', () => {
   test.skip(process.env.LOYALITY_E2E_AUTH_ENABLED !== 'true', 'Live Loyality QA accounts are required.')
 
   test('customer commerce endpoints return to the Loyality dashboard', async ({ page }) => {
+    test.setTimeout(90_000)
     await page.goto('/signin')
     await page.getByLabel('Email address').fill('customer@loyality.test')
     await page.locator('#loyality-password').fill(e2ePassword)

@@ -4,7 +4,10 @@ import { describe, expect, it } from 'vitest'
 
 const root = process.cwd()
 const migration = readFileSync(resolve(root, 'supabase/migrations/20260824170041_loyality_single_business_platform.sql'), 'utf8')
+const themeMigration = readFileSync(resolve(root, 'supabase/migrations/20260831175223_align_loyality_option_b_theme.sql'), 'utf8')
 const home = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-home-page.tsx'), 'utf8')
+const homeCss = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-home-page.css'), 'utf8')
+const appCss = readFileSync(resolve(root, 'src/features/loyality/loyality-app.css'), 'utf8')
 const service = readFileSync(resolve(root, 'src/features/loyality/loyality-service.ts'), 'utf8')
 const businessGrowth = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-business-growth-page.tsx'), 'utf8')
 const businessDashboard = readFileSync(resolve(root, 'src/features/business-owner/pages/business-dashboard-page.tsx'), 'utf8')
@@ -32,13 +35,34 @@ describe('Loyality product contract', () => {
     expect(migration).toContain('referral_reward_issued_at')
   })
 
-  it('keeps POS and marketplace concepts out of the Loyality customer promise', () => {
-    expect(home).toContain('No POS integration')
-    expect(home).toContain('Visit-based rewards')
-    expect(home).toContain('Your loyalty card,')
-    expect(home).toContain('reimagined.')
+  it('publishes the approved Option B promise without marketplace leakage or dead ends', () => {
+    for (const copy of [
+      'Turn your customers into members.',
+      'Hardware or apps required',
+      'One membership. Any incentive you want.',
+      'A membership does three jobs at once.',
+      'Four steps, fully automated after launch.',
+      "Everything a loyalty app does. Plus what most of them don't.",
+      "We're confident enough to put it in writing.",
+      'Onboarding, made simple.',
+    ]) expect(home).toContain(copy)
     expect(home).not.toContain('partner businesses')
+    expect(home).not.toContain('href="#"')
+    expect(home).not.toMatch(/Photo 1|Photo 2|Option B/)
     expect(service).toContain("sourceKind: 'acquisition_offer' | 'referral' | 'visit_rule' | 'points_catalog' | 'manual'")
+  })
+
+  it('carries the approved fonts and palette through public and signed-in Loyality surfaces', () => {
+    for (const source of [homeCss, appCss]) {
+      expect(source).toContain('Fraunces')
+      expect(source).toContain('IBM Plex Sans')
+      expect(source).toContain('IBM Plex Mono')
+    }
+    for (const color of ['#f6f1e4', '#efe8d6', '#1f3a2e', '#b8862e', '#d8b36a', '#a23b2e', '#d9cfaf', '#211d16', '#5b5546']) {
+      expect(`${homeCss}\n${appCss}`).toContain(color)
+    }
+    expect(themeMigration).toContain("primary_color = '#1f3a2e'")
+    expect(themeMigration).toContain("accent_color = '#b8862e'")
   })
 
   it('lets business owners pause, reactivate, cancel, and safely delete unused raffles', () => {

@@ -38,7 +38,9 @@ describe('tenant legal surfaces', () => {
     expect(legalPageSource).toContain('border-[var(--secondary)]/25 bg-[var(--accent)]')
     expect(designSystemSource).toContain('--tenant-accent: var(--ly-teal) !important;')
     expect(designSystemSource).toContain('--tenant-accent-foreground: #ffffff !important;')
-    expect(designSystemSource).toContain('--tenant-accent-soft: #e1efed !important;')
+    expect(designSystemSource).toContain('--tenant-accent-soft: #ead9b3 !important;')
+    expect(designSystemSource).toContain('--font-sans: "IBM Plex Sans", "Segoe UI", sans-serif !important;')
+    expect(designSystemSource).toContain('--font-serif: Fraunces, Georgia, serif !important;')
   })
 
   it('keeps RewardMe legal launch wording unchanged for non-demo, non-Loyality tenants', () => {

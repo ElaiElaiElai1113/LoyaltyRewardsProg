@@ -1,104 +1,169 @@
 import { Link } from 'react-router'
 
+import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useTenant } from '@/hooks/use-tenant'
 
 import './loyality-home-page.css'
 
+const ledgerRows = [
+  ['LOY-204', 'New member joined — referred by an existing member', 'Referral bonus', '+1 member'],
+  ['LOY-205', 'Member hit their 10th-visit milestone — reward issued automatically', 'Milestone', 'Auto'],
+  ['LOY-206', 'Member redeemed points for a free item', 'Loyalty reward', '−40 pts'],
+  ['LOY-207', 'Member upgraded from free to paid tier', 'Upgrade', '+1 tier'],
+]
+
+const incentiveCards = [
+  ['Loyalty rewards', 'Points or free items', 'Reward every visit or purchase however you like — points toward a redemption, or a free item after so many visits.'],
+  ['Milestones', 'Celebrate the moments that matter', "A 10th visit, a one-year anniversary, a spend threshold — or something as simple as a free item on a member's birthday. Set the milestone and the reward, and the platform delivers it for you."],
+  ['Referral bonuses', 'Reward members for bringing friends', 'When a member refers a friend who joins and redeems, both sides get rewarded — automatically, from the first share to the final redemption.'],
+]
+
+const supportCards = [
+  ['Strategy', 'We help you decide what to offer', 'Not sure whether points, milestones, or referral bonuses fit your business best? We look at what you sell and who buys it, and suggest the incentives most likely to actually grow your business.'],
+  ['Management', 'We run the system, day to day', "Once it's live, you're not the one maintaining it. We handle the technical side and keep the membership running smoothly — so growing your business doesn't mean adding another job to your plate."],
+]
+
+const pillarCards = [
+  ['Attraction', 'Get new eyes on your business', 'Members share your referral offers through social media, word of mouth, or a simple invite — and every channel is trackable.'],
+  ['Acquisition', 'Turn interest into members', 'A single QR scan is the entire sign-up. No app download, no account setup — nothing stands between a passerby and becoming a member.'],
+  ['Retention', 'Give them a reason to return', 'Loyalty rewards, milestones, and referral perks keep the next visit worth coming back for — instead of leaving it to chance.'],
+]
+
+const steps = [
+  ['01 / Launch', 'Set up your branded membership', 'Your name, your look, your rules. Loyality runs underneath it — members never see anything but your brand.'],
+  ['02 / Invite', 'Customers join as members with one scan', 'A QR code on the counter, receipt, or menu is the entire sign-up. No app to install, no card to carry.'],
+  ['03 / Set incentives', 'Choose your loyalty rewards, milestones, and referral bonuses', "Run one, run all three, or design your own combination — it's your membership to shape."],
+  ['04 / Reward', 'The platform tracks and rewards automatically', "Every visit, milestone, and referral is tracked end to end. When a member earns something, it's issued automatically — no manual tally-keeping."],
+]
+
+const features = [
+  ['Membership tiers', 'Free and paid tiers, your call', "Build a free tier for everyone, and an optional paid tier on top — say, a monthly fee that includes spendable credit plus extra perks free members don't get. Fully customizable to your business."],
+  ['No hardware', 'Nothing to install, nothing to carry', 'No card, no key tag, no app to download. Everything runs on QR codes your members already know how to use.'],
+  ['Tracking', 'Every incentive, in one place', 'Loyalty rewards, milestones, and referral bonuses all show up in a single dashboard — no spreadsheets, no manual tally-keeping.'],
+  ['Redemption', "One scan and it's done", 'Free item, gift card, or voucher — redeeming is as simple as it gets. The member pulls up their QR code, your staff scans it, and the reward is applied. No codes to read out, nothing to check manually.'],
+  ['Full control', 'You decide the reward level, any time', "Give back 10%, 100%, or anything in between — it's entirely up to you, and you can change it whenever you want. Dial it up during a slow stretch to bring members in, then bring it back down once things pick up."],
+]
+
+function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
+  return <div className="reference-loyality__section-head"><div className="reference-loyality__eyebrow">{eyebrow}</div><h2>{title}</h2>{children}</div>
+}
+
+function Cards({ items }: { items: string[][] }) {
+  return <div className="reference-loyality__card-grid">{items.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{label}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+}
+
 export function LoyalityHomePage() {
   const { program } = useTenant()
-  const demoHref = `mailto:${program.supportEmail}?subject=${encodeURIComponent('Loyality demo request')}`
+  const getStartedHref = `mailto:${program.supportEmail}?subject=${encodeURIComponent('Build my Loyality membership')}`
 
   return (
-    <main className="reference-loyality" id="top">
-      <nav className="reference-loyality__nav" aria-label="Loyality navigation">
-        <div className="reference-loyality__nav-inner">
-          <a href="#top" className="reference-loyality__logo">Loyality</a>
-          <div className="reference-loyality__nav-links">
-            <a href="#how">Product</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#contact">Contact</a>
-          </div>
-          <div className="reference-loyality__nav-actions">
-            <Link className="reference-loyality__sign-in" to="/signin">Sign In</Link>
-            <Link className="reference-loyality__nav-cta" to="/business">See a Demo</Link>
-          </div>
-        </div>
-      </nav>
+    <div className="reference-loyality">
+      <header className="reference-loyality__header">
+        <nav className="reference-loyality__nav" aria-label="Loyality navigation">
+          <a className="reference-loyality__logo" href="#top"><LoyalityMark />Loyality</a>
+          <div className="reference-loyality__nav-links"><a href="#concept">The concept</a><a href="#how">How it works</a><a href="#guarantee">Guarantee</a></div>
+          <div className="reference-loyality__nav-actions"><Link className="reference-loyality__sign-in" to="/signin">Sign in</Link><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">Get started</a></div>
+        </nav>
+      </header>
 
-      <section className="reference-loyality__hero">
-        <div className="reference-loyality__wrap reference-loyality__hero-grid">
-          <div>
-            <div className="reference-loyality__eyebrow">Your Own Branded Loyalty Program</div>
-            <h1>Your loyalty card,<br /><span>reimagined.</span></h1>
-            <p>A white-label, QR-based loyalty platform that runs under your own brand. Customers scan, earn, and redeem — you focus on running your business.</p>
-            <div className="reference-loyality__btn-row">
-              <Link to="/business" className="reference-loyality__btn-primary">See a Demo</Link>
-              <a href="#how" className="reference-loyality__btn-secondary">How it works</a>
-            </div>
-          </div>
-
-          <div className="reference-loyality__card-demo">
-            <div className="reference-loyality__demo-tag">Powered by Loyality</div>
-            <div className="reference-loyality__biz-name">Harvest &amp; Vine</div>
-            <div className="reference-loyality__biz-sub">Neighborhood wine bar &amp; kitchen</div>
-            <div className="reference-loyality__qr-row">
-              <div className="reference-loyality__qr-box" aria-label="Illustrative QR code" />
-              <div className="reference-loyality__qr-copy"><p>Scan at checkout to earn points automatically — no app download required for the customer.</p></div>
-            </div>
-            <div className="reference-loyality__progress-card">
-              <div className="reference-loyality__progress-title">3 visits to next reward</div>
-              <div className="reference-loyality__progress-sub">Almost there — one more visit unlocks it</div>
-              <div className="reference-loyality__progress-bar"><div className="reference-loyality__progress-fill" /></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="reference-loyality__section" id="how">
+      <main id="top">
         <div className="reference-loyality__wrap">
-          <div className="reference-loyality__section-head">
-            <div className="reference-loyality__section-label">Two Core Pillars</div>
-            <h2>Built to bring customers in, and keep them coming back.</h2>
-          </div>
-          <div className="reference-loyality__grid3">
-            <article className="reference-loyality__pillar-card"><div className="reference-loyality__pillar-tag">Acquisition</div><h3>Trackable referrals</h3><p>Every promotion becomes trackable. Give a new customer an incentive via a QR code, and see exactly where each redemption came from — no guesswork on what&apos;s working.</p></article>
-            <article className="reference-loyality__pillar-card"><div className="reference-loyality__pillar-tag">Retention</div><h3>Visit-based rewards</h3><p>Reward customers automatically on their 2nd or 3rd visit, or run a classic punch-card model. Retention raises both spend and repeat-visit rate.</p></article>
-            <article className="reference-loyality__pillar-card"><div className="reference-loyality__pillar-tag">Simplicity</div><h3>No POS integration needed</h3><p>Staff scan a QR code and see the customer&apos;s balance. No new hardware, no complicated setup — it works alongside whatever you already use.</p></article>
+          <section className="reference-loyality__hero">
+            <div className="reference-loyality__eyebrow">White-label membership platform · Any business, any industry</div>
+            <h1>Turn your customers into members.</h1>
+            <p className="reference-loyality__lead">Loyality lets any business build a fully-branded membership program and hand out whatever incentives they want — loyalty rewards, milestone bonuses, referral perks, all of it, or just one — running on nothing but a QR code.</p>
+            <div className="reference-loyality__hero-ctas"><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">Get started</a><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept">See the concept</a></div>
+            <p className="reference-loyality__hero-note">Works for any business, in any industry, anywhere.</p>
+          </section>
+          <div className="reference-loyality__highlight" aria-label="Loyality platform highlights">
+            <div className="reference-loyality__stat"><strong>0</strong><span>Hardware or apps required</span></div>
+            <div className="reference-loyality__stat"><strong>100%</strong><span>Branded under your name</span></div>
+            <div className="reference-loyality__stat"><strong>20%</strong><span>Min. profit lift, guaranteed</span></div>
           </div>
         </div>
-      </section>
 
-      <section className="reference-loyality__section reference-loyality__section--navy" id="pricing">
-        <div className="reference-loyality__wrap">
-          <div className="reference-loyality__section-head">
-            <div className="reference-loyality__section-label">Why It Works</div>
-            <h2>White-label means it&apos;s yours, not ours.</h2>
+        <section className="reference-loyality__wrap" id="ledger">
+          <div className="reference-loyality__ledger">
+            <div className="reference-loyality__ledger-head"><span><i aria-hidden="true" />Sample membership activity — one business</span><span>Every incentive tracked automatically</span></div>
+            <div>{ledgerRows.map(([id, description, type, amount]) => <div className="reference-loyality__ledger-row" key={id}><span className="reference-loyality__ledger-id">{id}</span><span className="reference-loyality__ledger-desc">{description}</span><span className="reference-loyality__ledger-type">{type}</span><strong>{amount}</strong></div>)}</div>
+            <div className="reference-loyality__ledger-foot"><span>No manual tally-keeping — the platform runs the loop.</span><strong>100% trackable</strong></div>
           </div>
-          <div className="reference-loyality__grid2">
-            <article className="reference-loyality__dark-card"><div className="reference-loyality__dark-num">For Your Customers</div><h3>Feels like your program</h3><p>Your branding, your name, your look stay front and center. Loyality appears only where account, security, or support context requires it.</p></article>
-            <article className="reference-loyality__dark-card"><div className="reference-loyality__dark-num">For Your Business</div><h3>Runs itself in the background</h3><p>Once it&apos;s set up, the acquisition and retention mechanics run automatically. You focus on the business, not the software.</p></article>
-          </div>
-        </div>
-      </section>
+        </section>
 
-      <section className="reference-loyality__cta" id="demo">
-        <div className="reference-loyality__wrap">
-          <h2>See it running for a business like yours.</h2>
-          <p>We&apos;ll walk you through a live demo built around your business type — no commitment required.</p>
-          <div className="reference-loyality__cta-actions">
-            <a href={demoHref} className="reference-loyality__btn-primary">Request a Demo</a>
-            <Link to="/signin" className="reference-loyality__btn-primary reference-loyality__btn-primary--outline">Sign In</Link>
-          </div>
-        </div>
-      </section>
+        <section className="reference-loyality__wrap" id="concept">
+          <SectionHeading eyebrow="The concept" title="One membership. Any incentive you want."><p>Loyality isn&apos;t a single reward type — it&apos;s a membership you build for your own customers, then decide exactly what being a member is worth.</p></SectionHeading>
+          <Cards items={incentiveCards} />
+          <div className="reference-loyality__flex-note"><strong>Mix and match, or run just one.</strong> It&apos;s your membership — combine loyalty rewards, milestones, and referral bonuses however you want, and change the rules any time.</div>
+        </section>
 
-      <footer className="reference-loyality__footer" id="contact">
-        <div className="reference-loyality__wrap reference-loyality__footer-inner">
-          <div><div className="reference-loyality__footer-logo">Loyality</div><div className="reference-loyality__footer-tagline">Your loyalty card, reimagined.</div></div>
-          <div className="reference-loyality__footer-links"><a href="#how">Product</a><a href="#pricing">Why It Works</a><Link to="/signin">Sign In</Link><a href={`mailto:${program.supportEmail}`}>Contact</a></div>
+        <section className="reference-loyality__wrap" id="support">
+          <SectionHeading eyebrow="More than software" title="A partner that runs it with you — not a tool you're left to figure out."><p>Loyality isn&apos;t something you&apos;re handed and left alone with. We work with you on both ends of it.</p></SectionHeading>
+          <div className="reference-loyality__support-grid">{supportCards.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{label}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+        </section>
+
+        <figure className="reference-loyality__photo reference-loyality__wrap">
+          <img src="/loyality-member-scan.jpg" alt="A customer scanning a QR code at an independent café counter with their phone" width="2172" height="724" loading="lazy" />
+          <figcaption><span>One scan, no hardware</span><p>A customer scanning a QR code at the counter on their own phone — the moment they become a member.</p></figcaption>
+        </figure>
+
+        <section className="reference-loyality__wrap" id="pillars">
+          <SectionHeading eyebrow="Why it works" title="A membership does three jobs at once."><p>Once your customers are members, the same program pulls three different levers for your business.</p></SectionHeading>
+          <Cards items={pillarCards} />
+        </section>
+
+        <section className="reference-loyality__wrap" id="how">
+          <SectionHeading eyebrow="How it works" title="Four steps, fully automated after launch."><p>You set the rules once. The platform runs the membership every time after that.</p></SectionHeading>
+          <div className="reference-loyality__steps">{steps.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+        </section>
+
+        <section className="reference-loyality__wrap" id="features">
+          <SectionHeading eyebrow="Features" title="Everything a loyalty app does. Plus what most of them don't." />
+          <div className="reference-loyality__features">{features.map(([label, title, copy]) => <article key={label}><span>{label}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
+        </section>
+
+        <section className="reference-loyality__wrap">
+          <SectionHeading eyebrow="Why it's different" title="Built to run under your name, not someone else's." />
+          <div className="reference-loyality__compare">
+            <article className="reference-loyality__compare-card"><span>Many marketing &amp; delivery platforms</span><h3>Take a cut of every sale</h3><p>Many third-party marketing and delivery platforms charge steep commissions on every transaction — and still push discounts on top, eating further into your margin.</p></article>
+            <article className="reference-loyality__compare-card reference-loyality__compare-card--new"><span>Loyality</span><h3>A membership that&apos;s actually yours</h3><p>Build the exact membership you want — every incentive, every rule — and keep it running under your own brand and your own margin.</p></article>
+          </div>
+        </section>
+
+        <section className="reference-loyality__wrap" id="guarantee">
+          <div className="reference-loyality__guarantee">
+             <div><span className="reference-loyality__stamp">Grand slam offer</span><h2>{"We're confident enough to put it in writing."}</h2><p>Follow the plan and don&apos;t see a minimum 20% profit increase within 3 months? You get extra months free until you do — and a straightforward money-back guarantee sits underneath that, no fine print.</p></div>
+            <div className="reference-loyality__guarantee-cards"><div><span>Profit guarantee</span><strong>20% or extra months free</strong></div><div><span>Satisfaction guarantee</span><strong>Money back</strong></div></div>
+          </div>
+        </section>
+
+        <section className="reference-loyality__wrap" id="example">
+          <SectionHeading eyebrow="Your membership, your rules" title="What a membership tier could look like."><p>You design the tiers and the incentives. Here&apos;s one simple way businesses commonly structure them.</p></SectionHeading>
+          <div className="reference-loyality__plans">
+            <article className="reference-loyality__plan"><span>Free tier</span><h3>Open to everyone</h3><strong>$0</strong><small>No cost to join</small><ul><li>One-scan sign-up, no app required</li><li>Earns loyalty rewards on every visit</li><li>Eligible for milestones and referral bonuses</li></ul></article>
+            <article className="reference-loyality__plan reference-loyality__plan--featured"><span>Paid tier</span><h3>Example tier</h3><strong>$10<small>/mo</small></strong><small>Illustrative — set your own price</small><ul><li>$10 of spendable credit included — net-neutral cost</li><li>Bonus perks and faster milestone rewards</li><li>Priority access to member-only promos</li></ul></article>
+          </div>
+          <p className="reference-loyality__example-flag">Illustrative example only — every business sets its own tiers, incentives, and pricing.</p>
+        </section>
+
+        <figure className="reference-loyality__photo reference-loyality__wrap">
+          <img src="/loyality-owner-dashboard.jpg" alt="An independent business owner reviewing member activity on a phone" width="2176" height="722" loading="lazy" />
+          <figcaption><span>Everything, at a glance</span><p>A business owner checking member activity on a simple phone dashboard — no extra software to learn.</p></figcaption>
+        </figure>
+
+        <section className="reference-loyality__wrap" id="pricing">
+          <SectionHeading eyebrow="Getting started" title="Onboarding, made simple." />
+          <div className="reference-loyality__pricing-box"><div><h3>Get a membership built for your business.</h3><p>No two memberships are priced the same, because no two businesses are the same. Tell us about your business and we&apos;ll put together an onboarding plan — backed by the profit and satisfaction guarantee above.</p></div><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>Get started</a></div>
+        </section>
+
+        <section className="reference-loyality__final-cta reference-loyality__wrap"><h2>Ready to turn your customers into members?</h2><p>Tell us about your business and we&apos;ll show you what your branded membership could look like.</p><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>Get started</a></section>
+      </main>
+
+      <footer className="reference-loyality__footer">
+        <div className="reference-loyality__wrap reference-loyality__footer-wrap">
+          <div><a className="reference-loyality__logo" href="#top"><LoyalityMark size={20} />Loyality</a><p>Turn your customers into members. A white-label membership platform for any business, anywhere.</p></div>
+          <nav aria-label="Footer navigation"><a href="#concept">The concept</a><a href="#how">How it works</a><a href="#guarantee">Guarantee</a><a href="#pricing">Get started</a><Link to="/signin">Sign in</Link></nav>
         </div>
-        <div className="reference-loyality__wrap reference-loyality__footer-bottom">© Loyality. A white-label loyalty platform for independent businesses.</div>
       </footer>
-    </main>
+    </div>
   )
 }

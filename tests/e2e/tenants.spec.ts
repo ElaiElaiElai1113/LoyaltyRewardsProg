@@ -25,8 +25,8 @@ const tenants = [
   {
     slug: 'loyality',
     name: 'Loyality',
-    color: '#3e8e8a',
-    heading: 'Your loyalty card, reimagined.',
+    color: '#b8862e',
+    heading: 'Turn your customers into members.',
   },
 ] as const
 
@@ -49,7 +49,7 @@ test.describe('white-label tenant resolution', () => {
 
       await expect(page).toHaveTitle(tenant.name)
       if (tenant.slug === 'loyality') {
-        await expect(page.locator('.reference-loyality__logo')).toHaveText('Loyality')
+        await expect(page.locator('.reference-loyality__logo').first()).toHaveText('Loyality')
       } else if (tenant.slug === 'wondertown') {
         await expect(page.locator('.reference-rewardme__logo').first()).toContainText('Wondertown Rewards')
         await expect(page.locator('.reference-rewardme')).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
@@ -69,7 +69,7 @@ test.describe('white-label tenant resolution', () => {
       await expect(page.locator('body')).not.toContainText('Loading rewards program...')
       const landingHeader = page.locator(
         tenant.slug === 'loyality'
-          ? '.reference-loyality__nav'
+          ? '.reference-loyality__header'
           : tenant.slug === 'wondertown' || tenant.slug === 'pinas'
             ? '.reference-rewardme__header'
             : '.figma-home__header',

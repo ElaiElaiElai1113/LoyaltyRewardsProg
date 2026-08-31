@@ -36,7 +36,7 @@ jobs:
         run: node scripts/provision-loyality-qa.mjs
       - run: npx playwright install --with-deps chromium
       - name: Exercise customer and business production workflows
-        run: npx playwright test tests/e2e/loyality.spec.ts tests/e2e/loyality-workflows.spec.ts --config=playwright.remote.config.ts --workers=1
+        run: npx playwright test tests/e2e/loyality.spec.ts tests/e2e/loyality-workflows.spec.ts tests/e2e/legal-tenant-surfaces.spec.ts --config=playwright.remote.config.ts --workers=1
       - name: Upload Playwright evidence on failure
         if: failure()
         uses: actions/upload-artifact@v4

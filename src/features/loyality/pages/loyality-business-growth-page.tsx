@@ -36,7 +36,7 @@ function RewardKindSelect({ value, onChange }: { value: LoyalityRewardKind; onCh
 }
 
 function Metric({ value, label, icon: Icon }: { value: number; label: string; icon: typeof BarChart3 }) {
-  return <div className="rounded-3xl border border-white/15 bg-white/8 p-4"><Icon className="size-5 text-[#ff6b4a]" /><strong className="mt-3 block text-3xl">{value}</strong><span className="text-xs font-bold uppercase tracking-wider text-white/60">{label}</span></div>
+  return <div className="rounded-3xl border border-white/15 bg-white/8 p-4"><Icon className="size-5 text-[#d8b36a]" /><strong className="mt-3 block text-3xl">{value}</strong><span className="text-xs font-bold uppercase tracking-wider text-white/60">{label}</span></div>
 }
 
 export function LoyalityBusinessGrowthPage({ mode = 'manage' }: { mode?: 'overview' | 'manage' }) {
@@ -71,8 +71,8 @@ export function LoyalityBusinessGrowthPage({ mode = 'manage' }: { mode?: 'overvi
 
   return (
     <div className="mx-auto w-full max-w-[1600px] space-y-7">
-      <section className="rounded-[2rem] bg-[#173b3f] px-6 py-8 text-white shadow-xl lg:grid lg:grid-cols-[1.2fr_.8fr] lg:items-center lg:px-10">
-        <div><p className="text-xs font-black uppercase tracking-[.2em] text-[#b9e769]">Private loyalty control room</p><h1 className="mt-3 text-4xl font-black tracking-[-.05em] sm:text-6xl">Turn today’s customer into the next visit.</h1><p className="mt-4 max-w-2xl text-base leading-7 text-white/70">One business, one branded program. Create trackable offers, reward return visits, issue specific vouchers, and see what brings customers back.</p></div>
+      <section className="rounded-[2rem] bg-[#1f3a2e] px-6 py-8 text-white shadow-xl lg:grid lg:grid-cols-[1.2fr_.8fr] lg:items-center lg:px-10">
+        <div><p className="text-xs font-black uppercase tracking-[.2em] text-[#d8b36a]">Private loyalty control room</p><h1 className="mt-3 text-4xl font-black tracking-[-.05em] sm:text-6xl">Turn today’s customer into the next visit.</h1><p className="mt-4 max-w-2xl text-base leading-7 text-white/70">One business, one branded program. Create trackable offers, reward return visits, issue specific vouchers, and see what brings customers back.</p></div>
         <div className="mt-7 grid grid-cols-2 gap-3 lg:mt-0">
           <Metric value={snapshot.counts.claims} label="Offer claims" icon={UsersRound} />
           <Metric value={snapshot.counts.visits} label="Recorded visits" icon={Repeat2} />
@@ -83,19 +83,19 @@ export function LoyalityBusinessGrowthPage({ mode = 'manage' }: { mode?: 'overvi
 
       <section className="grid gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(330px,.85fr)]">
         <div className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
-          <p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Start here</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Record a customer visit</h2>
+          <p className="text-xs font-black uppercase tracking-[.18em] text-[#b8862e]">Start here</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Record a customer visit</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[var(--muted-foreground)]">Ask the customer to open their member QR. Scan it with your phone camera, enter the sale amount, and confirm. The visit count, rewards, and raffle entries update automatically.</p>
           <div className="mt-5 flex flex-col gap-3 sm:flex-row"><Link to="/business/members"><Button className="w-full rounded-full sm:w-auto"><QrCode />Find customer or use QR</Button></Link>{mode === 'manage' ? <Button variant="outline" className="w-full rounded-full sm:w-auto" onClick={() => setBuilder('voucher')}><Gift />Create voucher option</Button> : null}</div>
         </div>
         <div className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
-          <p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Acquisition QR</p><h2 className="mt-2 text-2xl font-black">Share your active offer</h2>
-          {offerUrl ? <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row"><div className="rounded-2xl bg-white p-3"><QRCodeSVG value={offerUrl} size={132} fgColor="#173b3f" level="H" /></div><div className="min-w-0"><strong>{activeOffer?.title}</strong><p className="mt-2 break-all text-xs text-[var(--muted-foreground)]">{offerUrl}</p><Button className="mt-3 rounded-full" size="sm" variant="outline" onClick={() => { void navigator.clipboard.writeText(offerUrl); toast.success('Offer link copied.') }}>Copy link</Button></div></div> : <p className="mt-4 text-sm text-[var(--muted-foreground)]">Create an offer below to receive a trackable QR.</p>}
+          <p className="text-xs font-black uppercase tracking-[.18em] text-[#b8862e]">Acquisition QR</p><h2 className="mt-2 text-2xl font-black">Share your active offer</h2>
+          {offerUrl ? <div className="mt-5 flex flex-col items-center gap-4 sm:flex-row"><div className="rounded-2xl bg-white p-3"><QRCodeSVG value={offerUrl} size={132} fgColor="#1f3a2e" level="H" /></div><div className="min-w-0"><strong>{activeOffer?.title}</strong><p className="mt-2 break-all text-xs text-[var(--muted-foreground)]">{offerUrl}</p><Button className="mt-3 rounded-full" size="sm" variant="outline" onClick={() => { void navigator.clipboard.writeText(offerUrl); toast.success('Offer link copied.') }}>Copy link</Button></div></div> : <p className="mt-4 text-sm text-[var(--muted-foreground)]">Create an offer below to receive a trackable QR.</p>}
         </div>
       </section>
 
       {mode === 'manage' ? <>
       <section id="loyality-raffle-builder" className="scroll-mt-24 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
-        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><div><p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Simple builders</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Choose what you want to create</h2><p className="mt-2 text-sm text-[var(--muted-foreground)]">Each rule belongs only to this business.</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{([['offer','Offer'],['visit','Visit reward'],['voucher','Voucher'],['raffle','Raffle']] as const).map(([id,label]) => <Button key={id} variant={builder === id ? 'default' : 'outline'} className="rounded-full" onClick={() => setBuilder(id)}><Plus />{label}</Button>)}</div></div>
+        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end"><div><p className="text-xs font-black uppercase tracking-[.18em] text-[#b8862e]">Simple builders</p><h2 className="mt-2 text-3xl font-black tracking-[-.04em]">Choose what you want to create</h2><p className="mt-2 text-sm text-[var(--muted-foreground)]">Each rule belongs only to this business.</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{([['offer','Offer'],['visit','Visit reward'],['voucher','Voucher'],['raffle','Raffle']] as const).map(([id,label]) => <Button key={id} variant={builder === id ? 'default' : 'outline'} className="rounded-full" onClick={() => setBuilder(id)}><Plus />{label}</Button>)}</div></div>
         {builder === 'offer' ? <OfferForm businessId={business.id} busy={busy} submit={submit} /> : null}
         {builder === 'visit' ? <VisitRuleForm businessId={business.id} busy={busy} submit={submit} /> : null}
         {builder === 'voucher' ? <VoucherForm businessId={business.id} busy={busy} submit={submit} /> : null}
@@ -122,7 +122,7 @@ export function LoyalityBusinessGrowthPage({ mode = 'manage' }: { mode?: 'overvi
 }
 
 function StatusCard({ label, value, detail }: { label: string; value: number; detail: string }) {
-  return <article className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm"><span className="text-xs font-black uppercase tracking-[.14em] text-[#ff6b4a]">{label}</span><strong className="mt-3 block text-4xl">{value}</strong><p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{detail}</p></article>
+  return <article className="min-w-0 rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm"><span className="text-xs font-black uppercase tracking-[.14em] text-[#b8862e]">{label}</span><strong className="mt-3 block text-4xl">{value}</strong><p className="mt-2 text-sm leading-6 text-[var(--muted-foreground)]">{detail}</p></article>
 }
 
 type SubmitProps = { businessId: string; busy: boolean; submit: (action: () => Promise<unknown>) => Promise<void> }
@@ -176,7 +176,7 @@ function RaffleList({ rows, reload }: { rows: LoyalityBusinessSnapshot['raffles'
 
   return (
     <section className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
-      <p className="text-xs font-black uppercase tracking-[.18em] text-[#ff6b4a]">Prize draws</p>
+      <p className="text-xs font-black uppercase tracking-[.18em] text-[#b8862e]">Prize draws</p>
       <div className="mt-2 flex flex-col justify-between gap-2 sm:flex-row sm:items-end">
         <div>
           <h2 className="text-2xl font-black tracking-[-.03em]">Manage raffles</h2>

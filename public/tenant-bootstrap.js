@@ -38,7 +38,7 @@
       description: 'A fictional rewards city built for safe, end-to-end platform testing.',
     },
     loyality: { name: 'Loyality',
-      color: '#1b2a41',
+      color: '#1f3a2e',
       locale: 'en',
       logo: '/loyality-logo.svg',
       description: 'A private loyalty loop for one business and its customers.',

@@ -4,6 +4,7 @@ import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
 import { isRewardMeExperience } from '@/lib/rewardme-experience'
@@ -26,6 +27,7 @@ export function PublicBrowseLayout() {
   const { t } = useLanguage()
   const location = useLocation()
   const isBusinessOnboarding = location.pathname === '/business'
+  const isLoyality = program.slug === 'loyality'
   const visibleNavigation = program.featureFlags.loyalitySingleBusiness
     ? navigation.filter((item) => item.to !== '/guide')
     : navigation
@@ -40,9 +42,13 @@ export function PublicBrowseLayout() {
               className="business-public-shell__brand"
               aria-label={t('{program} member homepage', { program: program.name })}
             >
-              <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
+              {isLoyality ? (
+                <LoyalityMark className="business-public-shell__brand-mark" size={34} />
+              ) : (
+                <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
+              )}
               <span className="business-public-shell__brand-copy">
-                {program.name.toUpperCase()}
+                {isLoyality ? program.name : program.name.toUpperCase()}
                 <small>{t('FOR BUSINESSES')}</small>
               </span>
             </NavLink>
@@ -57,11 +63,13 @@ export function PublicBrowseLayout() {
             </nav>
 
             <div className="business-public-shell__header-actions">
-              <LanguagePicker
-                className="business-public-shell__language-picker"
-                compact
-                condenseOnNarrowScreens
-              />
+              {isLoyality ? null : (
+                <LanguagePicker
+                  className="business-public-shell__language-picker"
+                  compact
+                  condenseOnNarrowScreens
+                />
+              )}
               <NavLink to="/signin?portal=business" className="business-public-shell__login">
                 {t('Business Login')}
               </NavLink>
@@ -82,8 +90,14 @@ export function PublicBrowseLayout() {
                   className="business-public-shell__brand"
                   aria-label={t('{program} member homepage', { program: program.name })}
                 >
-                  <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
-                  <span className="business-public-shell__brand-copy">{program.name.toUpperCase()}</span>
+                  {isLoyality ? (
+                    <LoyalityMark className="business-public-shell__brand-mark" size={34} />
+                  ) : (
+                    <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
+                  )}
+                  <span className="business-public-shell__brand-copy">
+                    {isLoyality ? program.name : program.name.toUpperCase()}
+                  </span>
                 </NavLink>
                 <p>{program.featureFlags.demoTenant
                   ? t('A fictional business workspace for testing complete rewards workflows.')
@@ -148,17 +162,21 @@ export function PublicBrowseLayout() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            <LanguagePicker
-              className="inline-flex text-[var(--muted-foreground)]"
-              compact
-              condenseOnNarrowScreens
-            />
+            {isLoyality ? null : (
+              <LanguagePicker
+                className="inline-flex text-[var(--muted-foreground)]"
+                compact
+                condenseOnNarrowScreens
+              />
+            )}
             <div className="hidden sm:block">
               <ThemeToggle />
             </div>
             <Button asChild variant="secondary" size="sm">
               <NavLink to="/join">
-                <span className="hidden sm:inline">{t('Join Rewards Club')}</span>
+                <span className="hidden sm:inline">
+                  {isLoyality ? t('Create account') : t('Join Rewards Club')}
+                </span>
                 <span className="sm:hidden">{t('Join')}</span>
               </NavLink>
             </Button>

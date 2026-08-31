@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 
+import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useAuth } from '@/hooks/use-auth'
 import { applyProgramDocumentBrand } from '@/features/tenant/tenant-document-brand'
 import { useTenant } from '@/hooks/use-tenant'
@@ -145,7 +146,7 @@ export function LoyalityAuthStory() {
   return (
     <section className="ly-auth__story">
       <Link className="ly-wordmark ly-wordmark--inverse" to="/">
-        <span className="ly-wordmark__mark"><Repeat2 /></span>
+        <span className="ly-wordmark__mark"><LoyalityMark /></span>
         <span><strong>Loyality</strong><small>One business. One loyalty loop.</small></span>
       </Link>
       <div className="ly-auth__story-copy">
