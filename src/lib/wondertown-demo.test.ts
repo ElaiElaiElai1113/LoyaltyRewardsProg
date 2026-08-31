@@ -8,23 +8,22 @@ describe('Wondertown demo tenant', () => {
   it('has a neutral fictional identity before and after React starts', () => {
     const tenantService = source('src/features/tenant/tenant-service.ts')
     const bootstrap = source('public/tenant-bootstrap.js')
-    const home = source('src/features/home/pages/wondertown-home.tsx')
+    const homeRouter = source('src/features/home/pages/home-page.tsx')
+    const sharedHome = source('src/features/home/pages/rewardme-home.tsx')
+    const sharedExperience = source('src/lib/rewardme-experience.ts')
 
     for (const file of [tenantService, bootstrap]) {
       expect(file).toContain('Wondertown Rewards')
       expect(file).toContain('wondertown-rewards.vercel.app')
-      expect(file).toContain('#4f3b78')
     }
-    expect(home).toContain('A fictional city built for testing')
-    expect(home).toContain('Moonbeam Café')
-    expect(home).toContain('wondertown-hero.webp')
-    expect(home).toContain('wondertown-hero-768.webp')
-    expect(home).toContain('wondertown-hero.jpg')
-    expect(home).toContain('wondertown-hero-768.jpg')
-    expect(home).toContain('data-legacy-hero-assets')
-    expect(home).not.toContain('Medellin Rewards')
-    expect(home).not.toContain('Pinas Rewards')
-    expect(home).not.toContain('Guatemala Rewards')
+    expect(homeRouter).toContain('if (isRewardMeExperience(program.slug)) return <RewardMeHomePage />')
+    expect(sharedExperience).toContain("['pinas', 'rewardme', 'wondertown']")
+    expect(sharedHome).toContain('RewardMe test environment · fictional data')
+    expect(sharedHome).toContain('data-wondertown-rewardme-mirror')
+    expect(sharedHome).toContain('Sandbox account')
+    expect(sharedHome).not.toContain('Medellin Rewards')
+    expect(sharedHome).not.toContain('Pinas Rewards')
+    expect(sharedHome).not.toContain('Guatemala Rewards')
   })
 
   it('keeps the tenant, demo fixtures, and live smoke configuration reproducible', () => {

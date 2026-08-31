@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
+import { isRewardMeExperience } from '@/lib/rewardme-experience'
 
 const navigation = [
   { to: '/guide', label: 'Guide' },
@@ -31,7 +32,7 @@ export function PublicBrowseLayout() {
 
   if (isBusinessOnboarding) {
     return (
-      <div className={`business-public-shell${program.slug === 'pinas' ? ' business-public-shell--rewardme' : ''}`}>
+      <div className={`business-public-shell${isRewardMeExperience(program.slug) ? ' business-public-shell--rewardme' : ''}`}>
         <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
             <NavLink

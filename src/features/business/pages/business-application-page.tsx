@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router'
 
 import { useTenant } from '@/hooks/use-tenant'
+import { isRewardMeExperience } from '@/lib/rewardme-experience'
 
 import './business-application-page.css'
 
@@ -20,7 +21,8 @@ function BusinessApplicationPage({ model }: { model: ApplicationModel }) {
   const [error, setError] = useState('')
   const [reference, setReference] = useState('')
   const [summary, setSummary] = useState({ business: '', representative: '', email: '' })
-  const isRewardsFamily = program.slug === 'pinas' || program.slug === 'rewardme'
+  const isRewardsFamily = isRewardMeExperience(program.slug)
+  const isWondertown = program.slug === 'wondertown'
   const modelName = model === 'commission' ? 'Commission Model' : 'Business-credit Model'
 
   if (!isRewardsFamily) return <Navigate replace to="/business" />
@@ -80,9 +82,9 @@ function BusinessApplicationPage({ model }: { model: ApplicationModel }) {
     <main className="rewardme-application" data-business-application={model}>
       <header className="rewardme-application__header"><Link to="/" className="rewardme-application__logo"><span aria-hidden="true">✦</span>{program.name}</Link><Link to="/business">Back to business overview</Link></header>
       <section className="rewardme-application__hero">
-        <p>Business application</p>
+        <p>{isWondertown ? 'Sandbox business application' : 'Business application'}</p>
         <h1>Join {program.name} — {modelName}.</h1>
-        <span>{model === 'commission' ? `${program.name} administers eligible member rewards under the signed commercial terms.` : 'Your business proposes how it will issue and honor eligible business credit.'}</span>
+        <span>{model === 'commission' ? `${program.name} administers eligible member rewards under the signed commercial terms.` : 'Your business proposes how it will issue and honor eligible business credit.'}{isWondertown ? ' Use fictional test information only; this sandbox submission creates no real offer or commercial relationship.' : ''}</span>
       </section>
 
       {state === 'complete' ? (
@@ -113,6 +115,7 @@ function BusinessApplicationPage({ model }: { model: ApplicationModel }) {
           <fieldset><legend><span>4</span> Application disclosures</legend>
             <div className="rewardme-application__disclosure" tabIndex={0}>
               <h2>Important: this is an application, not the final commercial agreement.</h2>
+              {isWondertown ? <p>Wondertown is a fictional RewardMe test environment. Submit fictional test information only; no application submitted here can activate a real offer, payment, or business relationship.</p> : null}
               <p>The information above lets {program.name} evaluate fit and prepare proposed commercial terms. Submitting does not activate a reward offer, create a payment obligation, or guarantee acceptance.</p>
               <p>The reward rate and access settings are proposals. Final rates, eligible purchases, caps, settlement timing, credit liability, reversals, disputes, termination, tax treatment, and other legal terms must be documented in a separate final agreement before launch.</p>
               <p>The representative confirms they are authorized to submit this application and that the supplied information is accurate. The program may contact the representative about evaluation and onboarding.</p>

@@ -10,6 +10,7 @@ import {
 import { Link } from 'react-router'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { isRewardMeExperience } from '@/lib/rewardme-experience'
 
 import ctaOverlay from '@/assets/business/cta-overlay.png'
 import hotelPartner from '@/assets/business/hotel-partner.png'
@@ -23,7 +24,6 @@ import medellinCtaPhoto from '@/assets/medellinrewards-hero.webp'
 
 import './for-businesses-page.css'
 import { LoyalityBusinessPage } from './loyality-business-page'
-import { WondertownBusinessPage } from './wondertown-business-page'
 
 type Translate = ReturnType<typeof useLanguage>['t']
 
@@ -95,17 +95,23 @@ function SectionEyebrow({ children }: { children: string }) {
   return <p className="business-landing__eyebrow">{children}</p>
 }
 
-function RewardMeBusinessPage({ brand, supportEmail }: { brand: string; supportEmail: string }) {
+function RewardMeBusinessPage({ brand, supportEmail, isWondertown }: { brand: string; supportEmail: string; isWondertown: boolean }) {
   const { t } = useLanguage()
 
   return (
-    <div className="rewardme-ledger-business" data-rewardme-editorial-business>
+    <div
+      className="rewardme-ledger-business"
+      data-rewardme-editorial-business
+      data-wondertown-rewardme-mirror={isWondertown || undefined}
+    >
       <section className="rewardme-ledger-business__hero">
         <div>
-          <p className="rewardme-ledger-business__eyebrow">{t('For businesses')}</p>
+          <p className="rewardme-ledger-business__eyebrow">{isWondertown ? t('For businesses · fictional test environment') : t('For businesses')}</p>
           <h1>{t('Get new customers while rewarding our members.')}</h1>
           <p className="rewardme-ledger-business__highlight">{t('{program} members choose where to go based on the reward. Join, and they can choose you.', { program: brand })}</p>
-          <p>{t('Publish a clear offer, reach members who are ready to spend, and pay only under the commercial model documented in your signed agreement.')}</p>
+          <p>{isWondertown
+            ? t('Test the same offer, purchase-verification, and business-account workflows used by RewardMe with fictional businesses and sandbox data.')
+            : t('Publish a clear offer, reach members who are ready to spend, and pay only under the commercial model documented in your signed agreement.')}</p>
           <div className="rewardme-ledger-business__actions">
             <a className="rewardme-ledger-business__button rewardme-ledger-business__button--gold" href="#how-it-works">{t('See how it works')}</a>
             <a className="rewardme-ledger-business__button" href="#get-started">{t('Get started')}</a>
@@ -140,7 +146,7 @@ function RewardMeBusinessPage({ brand, supportEmail }: { brand: string; supportE
         <div className="rewardme-ledger-business__cost">
           <div><p className="rewardme-ledger-business__eyebrow">{t('Participation models')}</p><h2>{t('Choose the model that fits your business.')}</h2><p>{t('No online fee or rate is accepted here. Final commercial terms are confirmed in the signed agreement before activation.')}</p></div>
           <div className="rewardme-ledger-business__model-list">
-            <div><strong>{t('Commission model')}</strong><span>{t('RewardMe pays the eligible member reward; commission and settlement follow the signed agreement.')}</span></div>
+            <div><strong>{t('Commission model')}</strong><span>{t('{program} pays the eligible member reward; commission and settlement follow the signed agreement.', { program: brand })}</span></div>
             <div><strong>{t('Business-credit model')}</strong><span>{t('Your business issues eligible credit; redemption, liability, and commission follow the signed agreement.')}</span></div>
             <div><strong>{t('Cost to apply')}</strong><span>{t('No charge')}</span></div>
           </div>
@@ -154,7 +160,7 @@ function RewardMeBusinessPage({ brand, supportEmail }: { brand: string; supportE
       <section className="rewardme-ledger-business__section" id="get-started">
         <div className="rewardme-ledger-business__cta">
           <div><p className="rewardme-ledger-business__eyebrow">{t('Get started')}</p><h2>{t('Choose the application that matches your proposed model.')}</h2><p>{t('Your submission is an application for review. It does not activate an offer or replace the final signed commercial agreement.')}</p></div>
-          <div className="rewardme-ledger-business__cta-actions"><Link className="rewardme-ledger-business__button rewardme-ledger-business__button--gold" to="/business/apply/commission">{t('Apply: Commission model')}</Link><Link className="rewardme-ledger-business__button" to="/business/apply/credit">{t('Apply: Credit model')}</Link><a className="rewardme-ledger-business__contact" href={`mailto:${supportEmail}`}>{t('Questions? Email the program team')}</a></div>
+          <div className="rewardme-ledger-business__cta-actions"><Link className="rewardme-ledger-business__button rewardme-ledger-business__button--gold" to="/business/apply/commission">{t('Apply: Commission model')}</Link><Link className="rewardme-ledger-business__button" to="/business/apply/credit">{t('Apply: Credit model')}</Link>{isWondertown ? <><Link className="rewardme-ledger-business__contact" to="/signin?portal=business">{t('Business sign in')}</Link><Link className="rewardme-ledger-business__contact" to="/guide">{t('Open the test guide')}</Link></> : <a className="rewardme-ledger-business__contact" href={`mailto:${supportEmail}`}>{t('Questions? Email the program team')}</a>}</div>
         </div>
       </section>
     </div>
@@ -165,9 +171,8 @@ export function ForBusinessesPage() {
   const { program } = useTenant()
   const { t } = useLanguage()
   if (program.slug === 'loyality') return <LoyalityBusinessPage />
-  if (program.slug === 'wondertown') return <WondertownBusinessPage />
-  if (program.slug === 'pinas' || program.slug === 'rewardme') {
-    return <RewardMeBusinessPage brand={program.name} supportEmail={program.supportEmail} />
+  if (isRewardMeExperience(program.slug)) {
+    return <RewardMeBusinessPage brand={program.name} supportEmail={program.supportEmail} isWondertown={program.slug === 'wondertown'} />
   }
   const isDemoTenant = program.featureFlags.demoTenant === true
   const partnerBenefits = getPartnerBenefits(t)

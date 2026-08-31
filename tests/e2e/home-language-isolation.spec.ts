@@ -21,24 +21,24 @@ for (const language of ['en', 'es', 'tl'] as const) {
       await openLocalizedHome(page, tenant, language)
 
       await expect(page.locator('html')).toHaveAttribute('lang', language)
-      if (tenant === 'rewardme') {
-        await expect(page.getByRole('heading', { level: 1, name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
-        await expect(page.getByRole('heading', { name: 'One account. Clear offers. Local rewards.' })).toBeVisible()
-        await expect(page.getByRole('heading', { name: 'The offer tells you exactly what you can earn.' })).toBeVisible()
-        await expect(page.getByRole('link', { name: 'Sign in' }).first()).toHaveAttribute('href', '/signin')
-        await expect(page.locator('.reference-rewardme')).toBeVisible()
-        await expect(page.locator('body')).not.toContainText('Cada pequeño detalle')
-        await expect(page.locator('body')).not.toContainText('Bawat munting bagay')
+      await expect(page.locator('.reference-rewardme')).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1, name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'One account. Clear offers. Local rewards.' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'The offer tells you exactly what you can earn.' })).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Sign in' }).first()).toHaveAttribute('href', '/signin')
+      await expect(page.locator('.reference-rewardme__logo').first()).toContainText(
+        tenant === 'wondertown' ? 'Wondertown Rewards' : 'RewardMe',
+      )
+      await expect(page.locator('body')).not.toContainText('Cada pequeño detalle')
+      await expect(page.locator('body')).not.toContainText('Bawat munting bagay')
+
+      if (tenant === 'wondertown') {
+        await expect(page.locator('.reference-rewardme')).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
+        await expect(page.locator('.reference-rewardme__eyebrow').first()).toHaveText('RewardMe test environment · fictional data')
+        await expect(page.locator('.reference-rewardme__stamp')).toHaveText('Sandbox account')
       } else {
-        const expected = {
-          en: { heading: 'Every little thing feels rewarding.', signIn: 'Member sign in' },
-          es: { heading: 'Cada pequeño detalle se siente gratificante.', signIn: 'Acceso de miembro' },
-          tl: { heading: 'Bawat munting bagay ay may gantimpala.', signIn: 'Pumasok bilang miyembro' },
-        }[language]
-        await expect(page.getByRole('heading', { level: 1, name: expected.heading })).toBeVisible()
-        await expect(page.locator('.wondertown-home')).toBeVisible()
-        await expect(page.getByRole('link', { name: expected.signIn }).first()).toHaveAttribute('href', '/signin')
-        await expect(page.locator('.reference-rewardme')).toHaveCount(0)
+        await expect(page.locator('.reference-rewardme')).not.toHaveAttribute('data-wondertown-rewardme-mirror')
+        await expect(page.locator('.reference-rewardme__stamp')).toHaveText('Member account')
       }
     })
   }
@@ -49,13 +49,10 @@ for (const tenant of ['rewardme', 'wondertown'] as const) {
     await page.setViewportSize({ width: 320, height: 700 })
     await openLocalizedHome(page, tenant, 'tl')
 
-    if (tenant === 'rewardme') {
-      await expect(page.getByRole('link', { name: 'Start free access' }).first()).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Start your free access' })).toBeVisible()
-    } else {
-      await expect(page.getByRole('link', { name: 'Subukan bilang miyembro' })).toBeVisible()
-      await expect(page.getByRole('link', { name: 'Gumawa ng kuwenta' })).toBeVisible()
-    }
+    await expect(page.locator('.reference-rewardme')).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Start free access' }).first()).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Start your free access' })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)
   })
 }

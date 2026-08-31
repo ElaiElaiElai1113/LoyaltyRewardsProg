@@ -11,6 +11,7 @@ on:
           - audit
           - apply-business-applications
           - apply-linter-cleanup
+          - apply-wondertown-theme
       confirmation:
         description: Type AUDIT or APPLY REVIEWED MIGRATION to confirm the selected operation
         required: true
@@ -68,3 +69,11 @@ jobs:
           grep -Eiq '^[[:space:]]*(alter|drop|create|revoke|grant|do|begin)[[:space:]]' supabase/migrations/20260827161438_rewards_linter_cleanup.sql
           npx supabase db query --linked --file supabase/migrations/20260827161438_rewards_linter_cleanup.sql
           npx supabase migration repair --linked --status applied 20260827161438 --password "$SUPABASE_DB_PASSWORD" --yes
+      - name: Apply the scoped Wondertown theme metadata
+        if: inputs.operation == 'apply-wondertown-theme'
+        run: |
+          npx supabase db advisors --linked --type all --level info --fail-on none
+          grep -Fq "where slug = 'wondertown'" supabase/migrations/20260831154128_align_wondertown_with_rewardme_theme.sql
+          npx supabase db query --linked --file supabase/migrations/20260831154128_align_wondertown_with_rewardme_theme.sql
+          npx supabase migration repair --linked --status applied 20260831154128 --password "$SUPABASE_DB_PASSWORD" --yes
+          npx supabase db query --linked --file supabase/preflight/wondertown-theme-verification.sql

@@ -271,21 +271,112 @@ test.describe('public acquisition workflow', () => {
     await expect(page).toHaveURL(/\/signin\?portal=admin/)
   })
 
-  test('RewardMe business page presents both approved participation models', async ({ page }) => {
-    await page.goto('/business')
+  for (const tenant of [
+    { name: 'RewardMe', query: '' },
+    { name: 'Wondertown', query: '?tenant=wondertown' },
+  ]) {
+    test(`${tenant.name} business page presents both approved participation models`, async ({ page }) => {
+      await page.goto(`/business${tenant.query}`)
 
-    await expect(page.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
-    await expect(page.getByText('Commission model', { exact: true })).toBeVisible()
-    await expect(page.getByText('Business-credit model', { exact: true })).toBeVisible()
-    await expect(page.getByText('Final commercial terms are confirmed in the signed agreement', { exact: false })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Connected economics. Separate products.' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Apply: Commission model' })).toHaveAttribute('href', '/business/apply/commission')
-    await expect(page.getByRole('link', { name: 'Apply: Credit model' })).toHaveAttribute('href', '/business/apply/credit')
-    await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' }))
-      .toHaveAttribute('src', /local-business-owner-wide(?:-[\w-]+)?\.webp/)
-    await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' })).toBeVisible()
-    expect(await page.getByRole('img', { name: 'Local business owner welcoming rewards members' }).evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
-  })
+      await expect(page.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
+      await expect(page.getByText('Commission model', { exact: true })).toBeVisible()
+      await expect(page.getByText('Business-credit model', { exact: true })).toBeVisible()
+      await expect(page.getByText('Final commercial terms are confirmed in the signed agreement', { exact: false })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Connected economics. Separate products.' })).toBeVisible()
+      await expect(page.getByRole('link', { name: 'Apply: Commission model' })).toHaveAttribute('href', '/business/apply/commission')
+      await expect(page.getByRole('link', { name: 'Apply: Credit model' })).toHaveAttribute('href', '/business/apply/credit')
+      await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' }))
+        .toHaveAttribute('src', /local-business-owner-wide(?:-[\w-]+)?\.webp/)
+      await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' })).toBeVisible()
+      expect(await page.getByRole('img', { name: 'Local business owner welcoming rewards members' }).evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
+    })
+  }
+
+  for (const application of [
+    { model: 'commission', heading: 'Commission Model', reference: 'WT-COMMISSION-001' },
+    { model: 'credit', heading: 'Business-credit Model', reference: 'WT-CREDIT-001' },
+  ] as const) {
+    test(`Wondertown ${application.model} application is a functional sandbox flow`, async ({ page }) => {
+      const submissions: Array<Record<string, unknown>> = []
+      await page.route('**/api/business-applications', async (route) => {
+        submissions.push(route.request().postDataJSON() as Record<string, unknown>)
+        await route.fulfill({
+          status: 201,
+          contentType: 'application/json',
+          body: JSON.stringify({ reference: application.reference }),
+        })
+      })
+
+      const response = await page.goto(`/business/apply/${application.model}?tenant=wondertown`)
+      expect(response?.ok()).toBeTruthy()
+      await expect(page).toHaveURL(new RegExp(`/business/apply/${application.model}`))
+      await expect(page.locator(`main[data-business-application="${application.model}"]`)).toBeVisible()
+      await expect(page.getByRole('heading', { name: `Join Wondertown Rewards — ${application.heading}.` })).toBeVisible()
+      await expect(page.getByText('Wondertown is a fictional RewardMe test environment.', { exact: false })).toBeVisible()
+
+      const requiredNames = await page.locator('form [required]').evaluateAll((elements) =>
+        elements.map((element) => element.getAttribute('name')),
+      )
+      expect(requiredNames).toEqual([
+        'legalName',
+        'industry',
+        'street',
+        'city',
+        'region',
+        'postal',
+        'country',
+        'representativeName',
+        'representativeTitle',
+        'representativeEmail',
+        'representativePhone',
+        'rewardRate',
+        'redemptionAccess',
+        'contactConsent',
+      ])
+
+      const creditMethod = page.locator('input[name="creditMethod"]')
+      await expect(creditMethod).toHaveCount(application.model === 'credit' ? 1 : 0)
+      if (application.model === 'credit') {
+        await expect(creditMethod).toHaveAttribute('placeholder', /in-store account credit/i)
+      }
+
+      await page.getByRole('button', { name: 'Submit application' }).click()
+      await expect(page.locator('input[name="legalName"]')).toBeFocused()
+      expect(submissions).toHaveLength(0)
+
+      const values = {
+        legalName: 'Wondertown Test Cafe LLC',
+        industry: 'Cafe',
+        street: '1 Fictional Market Street',
+        city: 'Wondertown',
+        region: 'Test State',
+        postal: '00001',
+        country: 'United States',
+        representativeName: 'Casey Tester',
+        representativeTitle: 'Test Owner',
+        representativeEmail: 'casey@example.test',
+        representativePhone: '+1 555 010 0200',
+      }
+      for (const [name, value] of Object.entries(values)) {
+        await page.locator(`input[name="${name}"]`).fill(value)
+      }
+      await page.locator('select[name="rewardRate"]').selectOption({ label: '20% back' })
+      await page.locator('input[name="contactConsent"]').check()
+      if (application.model === 'credit') await creditMethod.fill('Fictional in-store account credit')
+
+      await page.getByRole('button', { name: 'Submit application' }).click()
+      await expect(page.getByText('Application received', { exact: false })).toBeVisible()
+      await expect(page.getByText(`Reference: ${application.reference}`)).toBeVisible()
+      expect(submissions).toHaveLength(1)
+      expect(submissions[0]).toMatchObject({
+        model: application.model,
+        legalName: values.legalName,
+        representativeEmail: values.representativeEmail,
+        creditMethod: application.model === 'credit' ? 'Fictional in-store account credit' : '',
+        contactConsent: true,
+      })
+    })
+  }
 
   test('business page stays readable without horizontal overflow on mobile', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })

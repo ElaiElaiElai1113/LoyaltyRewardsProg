@@ -17,6 +17,7 @@ import { useTenant } from '@/hooks/use-tenant'
 import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 import { PASSWORD_MIN_LENGTH } from '@/lib/password-setup'
+import { isRewardMeExperience } from '@/lib/rewardme-experience'
 
 import './rewardme-join-page.css'
 
@@ -392,13 +393,14 @@ export function RewardMeJoinPage() {
   const [warning, setWarning] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
+  const isWondertown = program.slug === 'wondertown'
   const phonePlaceholder = program.countryCode === 'PH' ? '+63 900 000 0000' : '+1 555 000 0000'
   const form = useForm<MemberSignUpFormValues>({ resolver: zodResolver(memberSignUpSchema), defaultValues })
 
   if (profile && !complete) return <Navigate replace to={homePathForRole(profile.role)} />
 
   return (
-    <main className="rewardme-join" data-rewardme-editorial-join>
+    <main className="rewardme-join" data-rewardme-editorial-join data-wondertown-rewardme-mirror={isWondertown || undefined}>
       <header className="rewardme-join__header">
         <Link to="/" className="rewardme-join__logo"><span aria-hidden="true">✦</span>{program.name}</Link>
         <div className="rewardme-join__controls">
@@ -407,7 +409,7 @@ export function RewardMeJoinPage() {
           <Link className="rewardme-join__signin" to="/signin">{t('Already a member?')} {t('Sign in')}</Link>
         </div>
       </header>
-      <section className="rewardme-join__hero"><p>{t('Membership sign-up')}</p><h1>{t('Join {program}.', { program: program.name })}</h1><span>{t('Create your account now. No card or online payment is collected.')}</span></section>
+      <section className="rewardme-join__hero"><p>{isWondertown ? t('Sandbox membership sign-up') : t('Membership sign-up')}</p><h1>{t('Join {program}.', { program: program.name })}</h1><span>{isWondertown ? t('Create a test account with fictional information. Wondertown mirrors RewardMe and never collects a real card or online payment.') : t('Create your account now. No card or online payment is collected.')}</span></section>
 
       {complete ? (
         <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><p>{t('Account created')}</p><h2>{t('Welcome to {program}.', { program: program.name })}</h2><span>{t('Your account was created with Free access.')}{plan === 'free' ? '' : ` ${t('Your {plan} membership interest was sent to the team for manual review.', { plan: t(plan === 'regular' ? 'Regular' : 'Gold') })}`}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">{t('Go to sign in')}</Link></section>
@@ -663,6 +665,6 @@ export function SplitJoinRewardsPage() {
 export function JoinRewardsPage() {
   const { program } = useTenant()
   if (program.slug === 'loyality') return <LoyalityJoinPage />
-  if (program.slug === 'pinas' || program.slug === 'rewardme' || program.slug === 'wondertown') return <RewardMeJoinPage />
+  if (isRewardMeExperience(program.slug)) return <RewardMeJoinPage />
   return <CompactJoinRewardsPage />
 }

@@ -12,7 +12,7 @@ function collectRuntimeErrors(page: Page) {
 }
 
 test.describe('Wondertown public testing experience', () => {
-  test('homepage exposes the complete public journey on desktop and phone', async ({ page }) => {
+  test('homepage mirrors the RewardMe journey while keeping Wondertown test disclosure', async ({ page }) => {
     for (const viewport of [
       { width: 390, height: 844 },
       { width: 1440, height: 900 },
@@ -20,23 +20,43 @@ test.describe('Wondertown public testing experience', () => {
       await page.setViewportSize(viewport)
       await page.goto('/?tenant=wondertown')
 
-      const header = page.locator('.wondertown-home__header')
+      const experience = page.locator('[data-rewardme-editorial-home]')
+      await expect(experience).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
+      await expect(experience.getByRole('heading', {
+        name: 'Earn amazing rewards while supporting local businesses.',
+      })).toBeVisible()
+      await expect(experience.getByText('RewardMe test environment · fictional data', { exact: true })).toBeVisible()
+      await expect(experience.getByText(
+        'Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected.',
+        { exact: true },
+      )).toBeVisible()
+      await expect(experience.getByLabel('Wondertown Rewards homepage')).toHaveAttribute('href', '#top')
+
+      const header = experience.locator('.reference-rewardme__header')
       const signIn = header.locator('a[href="/signin"]')
       await expect(signIn).toHaveAttribute('href', '/signin')
-      await expect(signIn).toBeVisible()
       for (const [name, href] of [
-        ['Explore the city', '#businesses'],
-        ['How it works', '#how-it-works'],
-        ['Store', '/shop'],
-        ['Membership', '/membership'],
+        ['How it works', '#how'],
+        ['The store', '#store'],
+        ['Membership', '#membership'],
         ['For businesses', '/business'],
-        ['Guide', '/guide'],
+        ['Test guide', '/guide'],
       ] as const) {
         const link = header.locator(`a[href="${href}"]`)
         await expect(link).toHaveAttribute('href', href)
         await expect(link).toHaveText(name)
       }
-      await expect(page.locator('.wondertown-home__footer').getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms')
+      await expect(header.getByRole('link', { name: 'Start free access', exact: true })).toHaveAttribute('href', '/join')
+      await expect(header.getByRole('combobox')).toBeVisible()
+      await expect(experience.locator('.reference-rewardme__footer').getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms')
+      await expect(experience.locator('.reference-rewardme__footer')).toContainText(
+        'Production-equivalent RewardMe flows with fictional test data.',
+      )
+
+      if (viewport.width >= 920) {
+        await expect(signIn).toBeVisible()
+        await expect(header.getByRole('link', { name: 'Test guide', exact: true })).toBeVisible()
+      }
 
       const width = await page.evaluate(() => ({
         client: document.documentElement.clientWidth,

@@ -32,17 +32,17 @@ test.describe('cross-tenant public responsive layouts', () => {
               '.business-landing h1',
               '.business-landing__button',
               '.business-landing__benefit',
-              '.wondertown-home__header-inner',
-              '.wondertown-home__hero-content',
-              '.wondertown-home__business-card',
-              '.wondertown-home__steps-grid article',
-              '.wondertown-home__cta-card',
-              '.wondertown-home__button',
-              '.reference-rewardme__nav-inner',
-              '.reference-rewardme__hero-grid',
-              '.reference-rewardme__phone-wrap',
-              '.reference-rewardme__feat-card',
-              '.reference-rewardme__cta-actions',
+              '.reference-rewardme__nav',
+              '.reference-rewardme__nav-actions',
+              '.reference-rewardme__hero',
+              '.reference-rewardme__hero-copy',
+              '.reference-rewardme__passbook',
+              '.reference-rewardme__wide-photo',
+              '.reference-rewardme__ledger-list li',
+              '.reference-rewardme__rate-grid article',
+              '.reference-rewardme__tiers article',
+              '.reference-rewardme__business-card',
+              '.reference-rewardme__button',
             ].join(',')
             const clipped = Array.from(document.querySelectorAll<HTMLElement>(criticalSelector))
               .filter((element) => element.offsetParent !== null)
@@ -65,7 +65,6 @@ test.describe('cross-tenant public responsive layouts', () => {
 
             const homeNav = document.querySelector<HTMLElement>('.figma-home__nav')
             const referenceRewardMeNav = document.querySelector<HTMLElement>('.reference-rewardme__nav')
-            const wondertownNav = document.querySelector<HTMLElement>('.wondertown-home__nav')
             const businessNav = document.querySelector<HTMLElement>('.business-public-shell__nav')
 
             return {
@@ -74,7 +73,6 @@ test.describe('cross-tenant public responsive layouts', () => {
               membershipCardsShareRow,
               homeNavPosition: homeNav ? getComputedStyle(homeNav).position : null,
               referenceRewardMeNavDisplay: referenceRewardMeNav ? getComputedStyle(referenceRewardMeNav).display : null,
-              wondertownNavDisplay: wondertownNav ? getComputedStyle(wondertownNav).display : null,
               businessNavPosition: businessNav ? getComputedStyle(businessNav).position : null,
             }
           })
@@ -87,13 +85,8 @@ test.describe('cross-tenant public responsive layouts', () => {
             expect(layout.homeNavPosition, `${tenant} home navigation at ${width}px`).toBe('fixed')
           }
 
-          if (route === '/' && tenant === 'pinas') {
+          if (route === '/' && (tenant === 'pinas' || tenant === 'wondertown')) {
             expect(layout.referenceRewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('flex')
-          }
-
-          if (route === '/' && tenant === 'wondertown') {
-            expect(layout.wondertownNavDisplay, `${tenant} home navigation at ${width}px`)
-              .toBe(width <= 1080 ? 'none' : 'flex')
           }
 
           if (route === '/business' && width <= 820) {

@@ -19,8 +19,8 @@ const tenants = [
   {
     slug: 'wondertown',
     name: 'Wondertown Rewards',
-    color: '#e57267',
-    heading: 'Every little thing feels rewarding.',
+    color: '#b8862e',
+    heading: 'Earn amazing rewards while supporting local businesses.',
   },
   {
     slug: 'loyality',
@@ -51,7 +51,9 @@ test.describe('white-label tenant resolution', () => {
       if (tenant.slug === 'loyality') {
         await expect(page.locator('.reference-loyality__logo')).toHaveText('Loyality')
       } else if (tenant.slug === 'wondertown') {
-        await expect(page.locator('.wondertown-home__brand').first()).toContainText('WondertownRewards')
+        await expect(page.locator('.reference-rewardme__logo').first()).toContainText('Wondertown Rewards')
+        await expect(page.locator('.reference-rewardme')).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
+        await expect(page.locator('.reference-rewardme__stamp')).toHaveText('Sandbox account')
       } else if (tenant.slug === 'pinas') {
         await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('RewardMe')
       } else {
@@ -68,9 +70,7 @@ test.describe('white-label tenant resolution', () => {
       const landingHeader = page.locator(
         tenant.slug === 'loyality'
           ? '.reference-loyality__nav'
-          : tenant.slug === 'wondertown'
-            ? '.wondertown-home__header'
-            : tenant.slug === 'pinas'
+          : tenant.slug === 'wondertown' || tenant.slug === 'pinas'
             ? '.reference-rewardme__header'
             : '.figma-home__header',
       )
@@ -81,7 +81,7 @@ test.describe('white-label tenant resolution', () => {
 
       await page.reload()
       await expect(page).toHaveTitle(tenant.name)
-      if (tenant.slug !== 'pinas') {
+      if (tenant.slug !== 'pinas' && tenant.slug !== 'wondertown') {
         await expect(page.locator('body')).not.toContainText('RewardMe')
       }
     })

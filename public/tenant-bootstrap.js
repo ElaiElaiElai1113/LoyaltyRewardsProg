@@ -32,7 +32,7 @@
       description: 'Pinas Rewards member benefits and participating local businesses.',
     },
     wondertown: { name: 'Wondertown Rewards',
-      color: '#4f3b78',
+      color: '#173f32',
       locale: 'en',
       logo: '/wondertown-rewards-logo.svg',
       description: 'A fictional rewards city built for safe, end-to-end platform testing.',

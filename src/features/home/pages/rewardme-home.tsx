@@ -5,6 +5,7 @@ import hotelReward from '@/assets/business/hotel-partner.webp'
 import checkoutMoment from '@/assets/landing/coffee-member-wide.webp'
 import dinnerReward from '@/assets/landing/dinner-rewards.webp'
 import salonReward from '@/assets/landing/salon-rewards.webp'
+import { LanguagePicker } from '@/components/language-picker'
 import { useTenant } from '@/hooks/use-tenant'
 
 import './rewardme-home.css'
@@ -39,19 +40,30 @@ function LedgerMark() {
 export function RewardMeHomePage() {
   const { program } = useTenant()
   const brand = program.name
+  const isWondertown = program.slug === 'wondertown'
 
   return (
-    <main className="reference-rewardme" id="top" data-rewardme-editorial-home>
+    <main
+      className="reference-rewardme"
+      id="top"
+      data-rewardme-editorial-home
+      data-wondertown-rewardme-mirror={isWondertown || undefined}
+    >
       <header className="reference-rewardme__header">
         <nav className="reference-rewardme__nav" aria-label={`${brand} navigation`}>
-          <a className="reference-rewardme__logo" href="#top"><LedgerMark />{brand}</a>
+          <a className="reference-rewardme__logo" href="#top" aria-label={`${brand} homepage`}>
+            {isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <LedgerMark />}
+            <span className="reference-rewardme__brand-name">{brand}</span>
+          </a>
           <div className="reference-rewardme__nav-links">
             <a href="#how">How it works</a>
             <a href="#store">The store</a>
             <a href="#membership">Membership</a>
             <Link to="/business">For businesses</Link>
+            {isWondertown ? <Link to="/guide">Test guide</Link> : null}
           </div>
           <div className="reference-rewardme__nav-actions">
+            <LanguagePicker className="reference-rewardme__language" compact condenseOnNarrowScreens />
             <Link className="reference-rewardme__text-link" to="/signin">Sign in</Link>
             <Link className="reference-rewardme__button" to="/join">Start free access</Link>
           </div>
@@ -60,7 +72,7 @@ export function RewardMeHomePage() {
 
       <section className="reference-rewardme__hero reference-rewardme__wrap">
         <div className="reference-rewardme__hero-copy">
-          <p className="reference-rewardme__eyebrow">Three months free to join</p>
+          <p className="reference-rewardme__eyebrow">{isWondertown ? 'RewardMe test environment · fictional data' : 'Three months free to join'}</p>
           <h1>Earn amazing rewards while supporting local businesses.</h1>
           <p className="reference-rewardme__hero-highlight">Discover eligible offers with <strong>20% to 100% back</strong> in rewards for activated Regular and Gold members.</p>
           <p className="reference-rewardme__lead">Earn rewards when you spend with participating local businesses, then use them for something great or keep building toward something bigger.</p>
@@ -73,11 +85,11 @@ export function RewardMeHomePage() {
             <Link className="reference-rewardme__button reference-rewardme__button--gold" to="/join">Start your free access</Link>
             <a className="reference-rewardme__button reference-rewardme__button--outline" href="#how">See how it works</a>
           </div>
-          <p className="reference-rewardme__fine">Join with your name, email, and phone. No payment card is collected online.</p>
+          <p className="reference-rewardme__fine">{isWondertown ? 'Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected.' : 'Join with your name, email, and phone. No payment card is collected online.'}</p>
         </div>
 
         <div className="reference-rewardme__passbook" aria-label={`Example ${brand} account activity`}>
-          <span className="reference-rewardme__stamp">Member account</span>
+          <span className="reference-rewardme__stamp">{isWondertown ? 'Sandbox account' : 'Member account'}</span>
           <div className="reference-rewardme__passbook-title"><strong>My {brand} Account</strong><span>NO. 00482</span></div>
           <div className="reference-rewardme__entry"><span>Coffee run · eligible offer</span><strong>+ 20%</strong></div>
           <div className="reference-rewardme__entry"><span>Dinner out · off-peak offer</span><strong>+ 100%</strong></div>
@@ -155,8 +167,8 @@ export function RewardMeHomePage() {
 
       <footer className="reference-rewardme__footer">
         <div className="reference-rewardme__wrap reference-rewardme__footer-inner">
-          <div><a className="reference-rewardme__logo" href="#top"><LedgerMark />{brand}</a><p>Earn where you already spend. Support local businesses.</p></div>
-          <nav aria-label="Footer navigation"><a href="#how">How it works</a><Link to="/business">For businesses</Link><Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link><a href={`mailto:${program.supportEmail}`}>Contact</a></nav>
+          <div><a className="reference-rewardme__logo" href="#top">{isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <LedgerMark />}<span className="reference-rewardme__brand-name">{brand}</span></a><p>{isWondertown ? 'Production-equivalent RewardMe flows with fictional test data.' : 'Earn where you already spend. Support local businesses.'}</p></div>
+          <nav aria-label="Footer navigation"><a href="#how">How it works</a><Link to="/business">For businesses</Link>{isWondertown ? <Link to="/guide">Test guide</Link> : null}<Link to="/terms">Terms</Link><Link to="/privacy">Privacy</Link><a href={`mailto:${program.supportEmail}`}>Contact</a></nav>
         </div>
       </footer>
     </main>
