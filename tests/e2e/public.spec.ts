@@ -297,6 +297,10 @@ test.describe('public acquisition workflow', () => {
     { model: 'credit', heading: 'Business-credit Model', reference: 'WT-CREDIT-001' },
   ] as const) {
     test(`Wondertown ${application.model} application is a functional sandbox flow`, async ({ page }) => {
+      const wondertownOrigin = process.env.E2E_WONDERTOWN_URL?.replace(/\/+$/, '')
+      const applicationUrl = wondertownOrigin
+        ? `${wondertownOrigin}/business/apply/${application.model}`
+        : `/business/apply/${application.model}?tenant=wondertown`
       const submissions: Array<Record<string, unknown>> = []
       await page.route('**/api/business-applications', async (route) => {
         submissions.push(route.request().postDataJSON() as Record<string, unknown>)
@@ -307,7 +311,7 @@ test.describe('public acquisition workflow', () => {
         })
       })
 
-      const response = await page.goto(`/business/apply/${application.model}?tenant=wondertown`)
+      const response = await page.goto(applicationUrl)
       expect(response?.ok()).toBeTruthy()
       await expect(page).toHaveURL(new RegExp(`/business/apply/${application.model}`))
       await expect(page.locator(`main[data-business-application="${application.model}"]`)).toBeVisible()
