@@ -63,13 +63,11 @@ export function PublicBrowseLayout() {
             </nav>
 
             <div className="business-public-shell__header-actions">
-              {isLoyality ? null : (
-                <LanguagePicker
-                  className="business-public-shell__language-picker"
-                  compact
-                  condenseOnNarrowScreens
-                />
-              )}
+              <LanguagePicker
+                className="business-public-shell__language-picker"
+                compact
+                condenseOnNarrowScreens
+              />
               <NavLink to="/signin?portal=business" className="business-public-shell__login">
                 {t('Business Login')}
               </NavLink>
@@ -162,13 +160,11 @@ export function PublicBrowseLayout() {
           </div>
 
           <div className="flex shrink-0 items-center gap-2 sm:gap-3">
-            {isLoyality ? null : (
-              <LanguagePicker
-                className="inline-flex text-[var(--muted-foreground)]"
-                compact
-                condenseOnNarrowScreens
-              />
-            )}
+            <LanguagePicker
+              className="inline-flex text-[var(--muted-foreground)]"
+              compact
+              condenseOnNarrowScreens
+            />
             <div className="hidden sm:block">
               <ThemeToggle />
             </div>

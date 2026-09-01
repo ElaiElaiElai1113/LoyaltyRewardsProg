@@ -25,7 +25,7 @@ test.describe('Loyality public product', () => {
 
       await expect(page).toHaveTitle('Loyality')
       await expect(page.getByRole('heading', { name: 'Turn your customers into members.' })).toBeVisible()
-      await expect(page.getByLabel('Language')).toHaveCount(0)
+      await expect(page.getByLabel('Language')).toBeVisible()
       for (const heading of [
         'One membership. Any incentive you want.',
         "A partner that runs it with you — not a tool you're left to figure out.",
@@ -99,6 +99,46 @@ test.describe('Loyality public product', () => {
     await expect(page.getByRole('link', { name: 'Create customer account' })).toHaveAttribute('href', '/join?redirect=%2Fpromotions')
   })
 
+  for (const viewport of [
+    { name: 'phone', width: 320, height: 780 },
+    { name: 'desktop', width: 1440, height: 900 },
+  ]) {
+    test(`English and Spanish stay available across every Loyality public flow on ${viewport.name}`, async ({ page }) => {
+      const errors = runtimeErrors(page)
+      await page.setViewportSize(viewport)
+      await page.goto('/?tenant=loyality')
+
+      await page.getByLabel('Language').selectOption('es')
+      await expect(page.locator('html')).toHaveAttribute('lang', 'es')
+      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Convierte a tus clientes en miembros.' })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Turn your customers into members.' })).toHaveCount(0)
+
+      await page.goto('/business?tenant=loyality')
+      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Un programa de fidelidad que se siente como tu negocio.' })).toBeVisible()
+
+      await page.goto('/signin?tenant=loyality')
+      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Entra en tu ciclo.' })).toBeVisible()
+
+      await page.goto('/join?tenant=loyality')
+      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Únete al ciclo.' })).toBeVisible()
+
+      await page.goto('/promotions?tenant=loyality')
+      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Las ofertas se comparten de forma privada' })).toBeVisible()
+
+      const layout = await page.evaluate(() => ({
+        viewport: document.documentElement.clientWidth,
+        pageWidth: document.documentElement.scrollWidth,
+      }))
+      expect(layout.pageWidth).toBeLessThanOrEqual(layout.viewport + 1)
+      expect(errors).toEqual([])
+    })
+  }
+
   test('legacy network and customer-commerce routes stay out of Loyality', async ({ page }) => {
     for (const [source, destination] of [
       ['/guide', '/'],
@@ -142,7 +182,7 @@ test.describe('Loyality public product', () => {
       await expect(page.getByRole('heading', { name: 'Step into your loop.' })).toBeVisible()
       await expect(page.locator('.ly-auth')).toBeVisible()
       await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
-      await expect(page.getByLabel('Language')).toHaveCount(0)
+      await expect(page.getByLabel('Language')).toBeVisible()
       await expect(page.getByRole('group', { name: 'Choose sign-in account type' })).toHaveCount(0)
       await expect(page.locator('.ly-auth')).toHaveCSS('background-color', 'rgb(246, 241, 228)')
       await expect(page.locator('.ly-auth__story h1')).toHaveCSS('font-family', /Fraunces/)
@@ -217,7 +257,7 @@ test.describe('Loyality signed-in visual system', () => {
         await page.goto(route)
         await expect(page.locator(account.shell)).toBeVisible()
         await expect(page.locator('.soft-luxe-shell')).toHaveCount(0)
-        await expect(page.getByLabel('Language')).toHaveCount(0)
+        expect(await page.getByLabel(/Language|Idioma/).count()).toBeGreaterThan(0)
         for (const width of [320, 390]) {
           await page.setViewportSize({ width, height: 844 })
           const layout = await page.evaluate(() => {

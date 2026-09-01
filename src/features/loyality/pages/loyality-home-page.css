@@ -32,6 +32,8 @@
 .reference-loyality__nav-links a, .reference-loyality__sign-in { color: var(--ink-soft); font-size: .92rem; font-weight: 500; text-decoration: none; }
 .reference-loyality__nav-links a:hover, .reference-loyality__sign-in:hover { color: var(--ink); }
 .reference-loyality__nav-actions { gap: 18px; }
+.reference-loyality__language { color: var(--ink-soft); }
+.reference-loyality__language select { height: 38px; border-color: var(--line); border-radius: 3px; background: var(--paper-deep); color: var(--ink); font-family: "IBM Plex Mono", monospace; font-size: .72rem !important; }
 .reference-loyality__btn { display: inline-flex; border: 1px solid var(--ink); border-radius: 3px; padding: 12px 22px; align-items: center; justify-content: center; gap: 8px; background: var(--ink); color: var(--paper); font-size: .92rem; font-weight: 600; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
 .reference-loyality__btn:hover { box-shadow: 0 6px 16px rgb(31 58 46 / 25%); transform: translateY(-1px); }
 .reference-loyality__btn--outline { background: transparent; color: var(--ink); }
@@ -172,6 +174,9 @@
   .reference-loyality__nav { padding: 14px 20px; }
   .reference-loyality__nav-actions { gap: 10px; }
   .reference-loyality__sign-in { display: none; }
+  .reference-loyality__language { flex: 0 0 auto; }
+  .reference-loyality__language > :first-child { display: none; }
+  .reference-loyality__language select { width: 4rem; padding-inline: .55rem 1.55rem; }
   .reference-loyality__btn { padding-inline: 16px; }
   .reference-loyality__highlight { padding: 28px 24px; }
   .reference-loyality__ledger-head, .reference-loyality__ledger-foot { padding-inline: 20px; }

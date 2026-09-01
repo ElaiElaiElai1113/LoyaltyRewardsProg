@@ -1279,11 +1279,15 @@ runTest('tenant branding is bootstrapped before React loads', () => {
   const indexHtml = readFileSync('index.html', 'utf8')
   const bootstrap = readFileSync('public/tenant-bootstrap.js', 'utf8')
   const provider = readFileSync('src/features/tenant/tenant-provider.tsx', 'utf8')
+  const documentBrand = readFileSync('src/features/tenant/tenant-document-brand.ts', 'utf8')
+  const language = readFileSync('src/lib/language.tsx', 'utf8')
 
   assert.match(indexHtml, /<script src="\/tenant-bootstrap\.js"><\/script>/)
   assert.match(bootstrap, /medellin: \{ name: 'Medellin Rewards'/)
   assert.match(bootstrap, /document\.title = brand\.name/)
   assert.match(provider, /applyProgram\(initialProgram, inferTenantSlugHint\(window\.location\.hostname\) !== null\)/)
+  assert.doesNotMatch(documentBrand, /document\.documentElement\.lang/)
+  assert.match(language, /document\.documentElement\.lang = language/)
 })
 
 runTest('Rewards Platform is isolated to platform-admin surfaces', () => {
@@ -1400,6 +1404,10 @@ runTest('all literal translated UI strings have Tagalog entries', () => {
   }
 
   for (const filePath of getSourceFiles('src')) {
+    if (
+      /src[\\/]features[\\/]loyality[\\/]/.test(filePath)
+      || /src[\\/]features[\\/]business[\\/]pages[\\/]loyality-business-page\.tsx$/.test(filePath)
+    ) continue
     const source = readFileSync(filePath, 'utf8')
 
     for (const match of source.matchAll(literalTranslationPattern)) {

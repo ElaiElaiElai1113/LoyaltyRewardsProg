@@ -2,6 +2,8 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
+import { translateForLanguage } from './language'
+
 const root = process.cwd()
 const migration = readFileSync(resolve(root, 'supabase/migrations/20260824170041_loyality_single_business_platform.sql'), 'utf8')
 const themeMigration = readFileSync(resolve(root, 'supabase/migrations/20260831175223_align_loyality_option_b_theme.sql'), 'utf8')
@@ -12,6 +14,9 @@ const service = readFileSync(resolve(root, 'src/features/loyality/loyality-servi
 const businessGrowth = readFileSync(resolve(root, 'src/features/loyality/pages/loyality-business-growth-page.tsx'), 'utf8')
 const businessDashboard = readFileSync(resolve(root, 'src/features/business-owner/pages/business-dashboard-page.tsx'), 'utf8')
 const appShell = readFileSync(resolve(root, 'src/features/loyality/components/loyality-app-shell.tsx'), 'utf8')
+const languagePicker = readFileSync(resolve(root, 'src/components/language-picker.tsx'), 'utf8')
+const language = readFileSync(resolve(root, 'src/lib/language.tsx'), 'utf8')
+const publicLayout = readFileSync(resolve(root, 'src/layouts/public-browse-layout.tsx'), 'utf8')
 
 describe('Loyality product contract', () => {
   it('is a separate, single-business tenant on Loyalty Platforms', () => {
@@ -81,5 +86,25 @@ describe('Loyality product contract', () => {
     expect(businessGrowth).toContain("mode = 'manage'")
     expect(businessGrowth).toContain("mode === 'manage'")
     expect(appShell).toContain('businessLinks.filter((item) => canAccessBusinessPath(profile?.role, item.to))')
+  })
+
+  it('offers persistent English and Spanish controls on every Loyality surface', () => {
+    expect(languagePicker).toContain("program.slug === 'loyality' ? (['en', 'es'] as Language[])")
+    expect(languagePicker).not.toContain("if (program.slug === 'loyality') return null")
+    expect(language).not.toContain("if (getActiveProgram().slug === 'loyality') return 'en'")
+    expect(publicLayout).not.toContain('isLoyality ? null : (\n              <LanguagePicker')
+    expect(home).toContain('<LanguagePicker')
+    expect(appShell).toContain('<LanguagePicker')
+
+    for (const source of [
+      'Turn your customers into members.',
+      'One membership. Any incentive you want.',
+      'One business. One loyalty loop.',
+      'Private loyalty control room',
+      'Offers are shared privately',
+      'Voucher redeemed and recorded.',
+    ]) {
+      expect(translateForLanguage('es', source), source).not.toBe(source)
+    }
   })
 })

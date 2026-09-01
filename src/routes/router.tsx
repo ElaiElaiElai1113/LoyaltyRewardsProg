@@ -3,7 +3,6 @@ import { App as CapacitorApp } from '@capacitor/app'
 import { Navigate, Outlet, createBrowserRouter, useLocation, useNavigate } from 'react-router'
 import { RouterProvider } from 'react-router/dom'
 
-import { LanguagePicker } from '@/components/language-picker'
 import { AppInstallPrompt } from '@/components/app-install-prompt'
 import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
@@ -91,9 +90,6 @@ function RouteLoading() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-surface">
-      <div className="absolute right-6 top-6">
-        <LanguagePicker className="text-on-surface-variant" />
-      </div>
       <LoadingState title={t('Loading')} description={t('Preparing your workspace.')} />
     </div>
   )

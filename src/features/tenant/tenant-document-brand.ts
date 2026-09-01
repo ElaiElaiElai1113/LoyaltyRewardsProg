@@ -14,7 +14,6 @@ export function applyProgramDocumentBrand(program: Program) {
   root.style.setProperty('--tenant-accent', program.primaryColor)
   root.style.setProperty('--tenant-accent-soft', `color-mix(in srgb, ${program.accentColor} 24%, transparent)`)
   document.title = program.name
-  document.documentElement.lang = program.locale.split('-')[0]
   setMetaContent('meta[name="theme-color"]', program.primaryColor)
   setMetaContent('meta[property="og:site_name"]', program.name)
   setMetaContent('meta[property="og:title"]', program.name)

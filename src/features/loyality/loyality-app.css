@@ -89,6 +89,8 @@
 .ly-customer-header { position: sticky; z-index: 40; top: 0; display: grid; min-height: 76px; grid-template-columns: minmax(180px,1fr) auto minmax(180px,1fr); align-items: center; gap: 1.25rem; border-bottom: 1px solid var(--ly-line); background: color-mix(in srgb, var(--ly-cream) 94%, transparent); padding: .75rem clamp(1rem,3vw,3.5rem); backdrop-filter: blur(8px); }
 .ly-customer-nav, .ly-customer-tools { display: flex; align-items: center; gap: .35rem; }
 .ly-customer-tools { justify-content: flex-end; }
+.ly-shell-language { color: var(--ly-forest); }
+.ly-shell-language select, .ly-workspace-mobile-language select { border-color: var(--ly-line); border-radius: 3px; background: var(--ly-paper); color: var(--ly-forest); font-family: "IBM Plex Mono", monospace; font-size: .68rem !important; }
 .ly-icon-button { display: inline-grid; width: 2.6rem; height: 2.6rem; place-items: center; border: 1px solid var(--ly-line); border-radius: 3px; background: transparent; color: inherit; cursor: pointer; }
 .ly-icon-button:hover { border-color: var(--ly-coral); color: var(--ly-coral); }
 .ly-icon-button svg { width: 1.05rem; }
@@ -128,10 +130,14 @@
 .ly-user-chip strong { font-size: .76rem; }
 .ly-user-chip small { margin-top: .1rem; color: rgb(246 241 228 / 48%); font-size: .58rem; }
 .ly-rail__utilities { display: flex; align-items: center; gap: .35rem; margin-top: .85rem; }
+.ly-rail-language { flex: 1; color: #f6f1e4; }
+.ly-rail-language select { border-color: rgb(246 241 228 / 20%); border-radius: 3px; background: rgb(246 241 228 / 8%); color: #f6f1e4; font-family: "IBM Plex Mono", monospace; font-size: .66rem !important; }
+.ly-rail-language option { color: #1f3a2e; }
 .ly-rail__utilities > button:last-child { display: flex; min-height: 2.4rem; flex: 1; align-items: center; justify-content: center; gap: .4rem; border: 1px solid rgb(246 241 228 / 20%); border-radius: 3px; background: transparent; color: rgb(246 241 228 / 68%); font-size: .68rem; font-weight: 600; }
 .ly-rail__utilities > button:last-child:hover { border-color: var(--ly-lime); color: #f6f1e4; }
 .ly-rail__utilities svg { width: .95rem; }
 .ly-workspace-mobile-header { display: none; }
+.ly-workspace-mobile-language { color: var(--ly-forest); }
 .ly-workspace-main { min-height: 100vh; margin-left: 300px; padding: 1.5rem clamp(1.2rem,3vw,3.8rem) 4rem; }
 .ly-workspace-kicker { display: flex; max-width: 1680px; margin: 0 auto 1.3rem; align-items: center; gap: .6rem; color: var(--muted-foreground); font-family: "IBM Plex Mono", monospace; font-size: .62rem; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
 .ly-workspace-kicker span { width: 2.2rem; height: 2px; background: var(--ly-coral); }
@@ -155,6 +161,9 @@
 .ly-auth__story-footer { display: flex; justify-content: space-between; gap: 1rem; color: rgb(246 241 228 / 50%); font-size: .65rem; }
 .ly-auth__form-side { display: grid; min-height: 100vh; place-items: center; padding: clamp(1rem,4vw,4rem); background: var(--ly-cream); }
 .ly-auth-card { width: min(100%,560px); border: 1px solid var(--ly-line); border-radius: 8px; background: var(--ly-paper); padding: clamp(1.4rem,4vw,3rem); box-shadow: none; }
+.ly-auth-card__toolbar { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 1rem; }
+.ly-auth-card__language { color: var(--ly-forest); }
+.ly-auth-card__language select { border-color: var(--ly-line); border-radius: 3px; background: var(--ly-cream); color: var(--ly-forest); font-family: "IBM Plex Mono", monospace; font-size: .68rem !important; }
 .ly-auth-card__back { display: inline-flex; align-items: center; gap: .4rem; color: var(--foreground); font-size: .73rem; font-weight: 600; text-decoration: none; }
 .ly-auth-card__header { margin-top: 2rem; }
 .ly-auth-card__header p { margin: 0; color: var(--ly-coral); font-family: "IBM Plex Mono", monospace; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
@@ -280,7 +289,7 @@
   .ly-customer-header { min-height: 66px; padding: .55rem .8rem; }
   .ly-wordmark small { display: none; }
   .ly-wordmark__mark { width: 2.2rem; height: 2.2rem; }
-  .ly-customer-tools > :first-child { display: none; }
+  .ly-shell-theme { display: none; }
   .ly-customer-main { padding: 1rem .75rem 6.5rem; }
   .ly-auth__story { min-height: 380px; }
   .ly-auth__story-copy { margin-top: 3rem; }

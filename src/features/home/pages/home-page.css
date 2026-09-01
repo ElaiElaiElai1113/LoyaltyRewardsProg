@@ -907,6 +907,10 @@
     padding-left: 0;
   }
 
+  .figma-home__header {
+    backdrop-filter: none;
+  }
+
   .figma-home__brand span {
     display: none;
   }

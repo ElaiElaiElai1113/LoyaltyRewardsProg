@@ -17,8 +17,7 @@ export function LanguagePicker({
 }: LanguagePickerProps) {
   const { language, setLanguage, t } = useLanguage()
   const { program } = useTenant()
-
-  if (program.slug === 'loyality') return null
+  const options = program.slug === 'loyality' ? (['en', 'es'] as Language[]) : (['en', 'tl', 'es'] as Language[])
 
   return (
     <div className={cn('flex min-w-0 items-center gap-2', className)}>
@@ -44,7 +43,7 @@ export function LanguagePicker({
             condenseOnNarrowScreens && compact && 'max-[379px]:px-2 max-[379px]:pr-7',
           )}
         >
-          {(['en', 'tl', 'es'] as Language[]).map((option) => (
+          {options.map((option) => (
             <option key={option} value={option}>
               {compact ? option.toUpperCase() : languageDisplayNames[language][option]}
             </option>

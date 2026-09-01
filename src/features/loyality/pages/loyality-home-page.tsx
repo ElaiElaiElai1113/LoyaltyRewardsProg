@@ -1,7 +1,9 @@
 import { Link } from 'react-router'
 
+import { LanguagePicker } from '@/components/language-picker'
 import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useTenant } from '@/hooks/use-tenant'
+import { useLanguage } from '@/lib/language'
 
 import './loyality-home-page.css'
 
@@ -45,123 +47,126 @@ const features = [
 ]
 
 function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: string; children?: React.ReactNode }) {
-  return <div className="reference-loyality__section-head"><div className="reference-loyality__eyebrow">{eyebrow}</div><h2>{title}</h2>{children}</div>
+  const { t } = useLanguage()
+  return <div className="reference-loyality__section-head"><div className="reference-loyality__eyebrow">{t(eyebrow)}</div><h2>{t(title)}</h2>{children}</div>
 }
 
 function Cards({ items }: { items: string[][] }) {
-  return <div className="reference-loyality__card-grid">{items.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{label}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+  const { t } = useLanguage()
+  return <div className="reference-loyality__card-grid">{items.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{t(label)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
 }
 
 export function LoyalityHomePage() {
   const { program } = useTenant()
-  const getStartedHref = `mailto:${program.supportEmail}?subject=${encodeURIComponent('Build my Loyality membership')}`
+  const { t } = useLanguage()
+  const getStartedHref = `mailto:${program.supportEmail}?subject=${encodeURIComponent(t('Build my Loyality membership'))}`
 
   return (
     <div className="reference-loyality">
       <header className="reference-loyality__header">
-        <nav className="reference-loyality__nav" aria-label="Loyality navigation">
+        <nav className="reference-loyality__nav" aria-label={t('Loyality navigation')}>
           <a className="reference-loyality__logo" href="#top"><LoyalityMark />Loyality</a>
-          <div className="reference-loyality__nav-links"><a href="#concept">The concept</a><a href="#how">How it works</a><a href="#guarantee">Guarantee</a></div>
-          <div className="reference-loyality__nav-actions"><Link className="reference-loyality__sign-in" to="/signin">Sign in</Link><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">Get started</a></div>
+          <div className="reference-loyality__nav-links"><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a></div>
+          <div className="reference-loyality__nav-actions"><LanguagePicker className="reference-loyality__language" compact condenseOnNarrowScreens /><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">{t('Get started')}</a></div>
         </nav>
       </header>
 
       <main id="top">
         <div className="reference-loyality__wrap">
           <section className="reference-loyality__hero">
-            <div className="reference-loyality__eyebrow">White-label membership platform · Any business, any industry</div>
-            <h1>Turn your customers into members.</h1>
-            <p className="reference-loyality__lead">Loyality lets any business build a fully-branded membership program and hand out whatever incentives they want — loyalty rewards, milestone bonuses, referral perks, all of it, or just one — running on nothing but a QR code.</p>
-            <div className="reference-loyality__hero-ctas"><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">Get started</a><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept">See the concept</a></div>
-            <p className="reference-loyality__hero-note">Works for any business, in any industry, anywhere.</p>
+            <div className="reference-loyality__eyebrow">{t('White-label membership platform · Any business, any industry')}</div>
+            <h1>{t('Turn your customers into members.')}</h1>
+            <p className="reference-loyality__lead">{t('Loyality lets any business build a fully-branded membership program and hand out whatever incentives they want — loyalty rewards, milestone bonuses, referral perks, all of it, or just one — running on nothing but a QR code.')}</p>
+            <div className="reference-loyality__hero-ctas"><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">{t('Get started')}</a><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept">{t('See the concept')}</a></div>
+            <p className="reference-loyality__hero-note">{t('Works for any business, in any industry, anywhere.')}</p>
           </section>
-          <div className="reference-loyality__highlight" aria-label="Loyality platform highlights">
-            <div className="reference-loyality__stat"><strong>0</strong><span>Hardware or apps required</span></div>
-            <div className="reference-loyality__stat"><strong>100%</strong><span>Branded under your name</span></div>
-            <div className="reference-loyality__stat"><strong>20%</strong><span>Min. profit lift, guaranteed</span></div>
+          <div className="reference-loyality__highlight" aria-label={t('Loyality platform highlights')}>
+            <div className="reference-loyality__stat"><strong>0</strong><span>{t('Hardware or apps required')}</span></div>
+            <div className="reference-loyality__stat"><strong>100%</strong><span>{t('Branded under your name')}</span></div>
+            <div className="reference-loyality__stat"><strong>20%</strong><span>{t('Min. profit lift, guaranteed')}</span></div>
           </div>
         </div>
 
         <section className="reference-loyality__wrap" id="ledger">
           <div className="reference-loyality__ledger">
-            <div className="reference-loyality__ledger-head"><span><i aria-hidden="true" />Sample membership activity — one business</span><span>Every incentive tracked automatically</span></div>
-            <div>{ledgerRows.map(([id, description, type, amount]) => <div className="reference-loyality__ledger-row" key={id}><span className="reference-loyality__ledger-id">{id}</span><span className="reference-loyality__ledger-desc">{description}</span><span className="reference-loyality__ledger-type">{type}</span><strong>{amount}</strong></div>)}</div>
-            <div className="reference-loyality__ledger-foot"><span>No manual tally-keeping — the platform runs the loop.</span><strong>100% trackable</strong></div>
+            <div className="reference-loyality__ledger-head"><span><i aria-hidden="true" />{t('Sample membership activity — one business')}</span><span>{t('Every incentive tracked automatically')}</span></div>
+            <div>{ledgerRows.map(([id, description, type, amount]) => <div className="reference-loyality__ledger-row" key={id}><span className="reference-loyality__ledger-id">{id}</span><span className="reference-loyality__ledger-desc">{t(description)}</span><span className="reference-loyality__ledger-type">{t(type)}</span><strong>{t(amount)}</strong></div>)}</div>
+            <div className="reference-loyality__ledger-foot"><span>{t('No manual tally-keeping — the platform runs the loop.')}</span><strong>{t('100% trackable')}</strong></div>
           </div>
         </section>
 
         <section className="reference-loyality__wrap" id="concept">
-          <SectionHeading eyebrow="The concept" title="One membership. Any incentive you want."><p>Loyality isn&apos;t a single reward type — it&apos;s a membership you build for your own customers, then decide exactly what being a member is worth.</p></SectionHeading>
+          <SectionHeading eyebrow="The concept" title="One membership. Any incentive you want."><p>{t("Loyality isn't a single reward type — it's a membership you build for your own customers, then decide exactly what being a member is worth.")}</p></SectionHeading>
           <Cards items={incentiveCards} />
-          <div className="reference-loyality__flex-note"><strong>Mix and match, or run just one.</strong> It&apos;s your membership — combine loyalty rewards, milestones, and referral bonuses however you want, and change the rules any time.</div>
+          <div className="reference-loyality__flex-note"><strong>{t('Mix and match, or run just one.')}</strong> {t("It's your membership — combine loyalty rewards, milestones, and referral bonuses however you want, and change the rules any time.")}</div>
         </section>
 
         <section className="reference-loyality__wrap" id="support">
-          <SectionHeading eyebrow="More than software" title="A partner that runs it with you — not a tool you're left to figure out."><p>Loyality isn&apos;t something you&apos;re handed and left alone with. We work with you on both ends of it.</p></SectionHeading>
-          <div className="reference-loyality__support-grid">{supportCards.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{label}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+          <SectionHeading eyebrow="More than software" title="A partner that runs it with you — not a tool you're left to figure out."><p>{t("Loyality isn't something you're handed and left alone with. We work with you on both ends of it.")}</p></SectionHeading>
+          <div className="reference-loyality__support-grid">{supportCards.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{t(label)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
         </section>
 
         <figure className="reference-loyality__photo reference-loyality__wrap">
-          <img src="/loyality-member-scan.jpg" alt="A customer scanning a QR code at an independent café counter with their phone" width="2172" height="724" loading="lazy" />
-          <figcaption><span>One scan, no hardware</span><p>A customer scanning a QR code at the counter on their own phone — the moment they become a member.</p></figcaption>
+          <img src="/loyality-member-scan.jpg" alt={t('A customer scanning a QR code at an independent café counter with their phone')} width="2172" height="724" loading="lazy" />
+          <figcaption><span>{t('One scan, no hardware')}</span><p>{t('A customer scanning a QR code at the counter on their own phone — the moment they become a member.')}</p></figcaption>
         </figure>
 
         <section className="reference-loyality__wrap" id="pillars">
-          <SectionHeading eyebrow="Why it works" title="A membership does three jobs at once."><p>Once your customers are members, the same program pulls three different levers for your business.</p></SectionHeading>
+          <SectionHeading eyebrow="Why it works" title="A membership does three jobs at once."><p>{t('Once your customers are members, the same program pulls three different levers for your business.')}</p></SectionHeading>
           <Cards items={pillarCards} />
         </section>
 
         <section className="reference-loyality__wrap" id="how">
-          <SectionHeading eyebrow="How it works" title="Four steps, fully automated after launch."><p>You set the rules once. The platform runs the membership every time after that.</p></SectionHeading>
-          <div className="reference-loyality__steps">{steps.map(([number, title, copy]) => <article key={number}><span>{number}</span><h3>{title}</h3><p>{copy}</p></article>)}</div>
+          <SectionHeading eyebrow="How it works" title="Four steps, fully automated after launch."><p>{t('You set the rules once. The platform runs the membership every time after that.')}</p></SectionHeading>
+          <div className="reference-loyality__steps">{steps.map(([number, title, copy]) => <article key={number}><span>{t(number)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
         </section>
 
         <section className="reference-loyality__wrap" id="features">
           <SectionHeading eyebrow="Features" title="Everything a loyalty app does. Plus what most of them don't." />
-          <div className="reference-loyality__features">{features.map(([label, title, copy]) => <article key={label}><span>{label}</span><div><h3>{title}</h3><p>{copy}</p></div></article>)}</div>
+          <div className="reference-loyality__features">{features.map(([label, title, copy]) => <article key={label}><span>{t(label)}</span><div><h3>{t(title)}</h3><p>{t(copy)}</p></div></article>)}</div>
         </section>
 
         <section className="reference-loyality__wrap">
           <SectionHeading eyebrow="Why it's different" title="Built to run under your name, not someone else's." />
           <div className="reference-loyality__compare">
-            <article className="reference-loyality__compare-card"><span>Many marketing &amp; delivery platforms</span><h3>Take a cut of every sale</h3><p>Many third-party marketing and delivery platforms charge steep commissions on every transaction — and still push discounts on top, eating further into your margin.</p></article>
-            <article className="reference-loyality__compare-card reference-loyality__compare-card--new"><span>Loyality</span><h3>A membership that&apos;s actually yours</h3><p>Build the exact membership you want — every incentive, every rule — and keep it running under your own brand and your own margin.</p></article>
+            <article className="reference-loyality__compare-card"><span>{t('Many marketing & delivery platforms')}</span><h3>{t('Take a cut of every sale')}</h3><p>{t('Many third-party marketing and delivery platforms charge steep commissions on every transaction — and still push discounts on top, eating further into your margin.')}</p></article>
+            <article className="reference-loyality__compare-card reference-loyality__compare-card--new"><span>Loyality</span><h3>{t("A membership that's actually yours")}</h3><p>{t('Build the exact membership you want — every incentive, every rule — and keep it running under your own brand and your own margin.')}</p></article>
           </div>
         </section>
 
         <section className="reference-loyality__wrap" id="guarantee">
           <div className="reference-loyality__guarantee">
-             <div><span className="reference-loyality__stamp">Grand slam offer</span><h2>{"We're confident enough to put it in writing."}</h2><p>Follow the plan and don&apos;t see a minimum 20% profit increase within 3 months? You get extra months free until you do — and a straightforward money-back guarantee sits underneath that, no fine print.</p></div>
-            <div className="reference-loyality__guarantee-cards"><div><span>Profit guarantee</span><strong>20% or extra months free</strong></div><div><span>Satisfaction guarantee</span><strong>Money back</strong></div></div>
+             <div><span className="reference-loyality__stamp">{t('Grand slam offer')}</span><h2>{t("We're confident enough to put it in writing.")}</h2><p>{t("Follow the plan and don't see a minimum 20% profit increase within 3 months? You get extra months free until you do — and a straightforward money-back guarantee sits underneath that, no fine print.")}</p></div>
+            <div className="reference-loyality__guarantee-cards"><div><span>{t('Profit guarantee')}</span><strong>{t('20% or extra months free')}</strong></div><div><span>{t('Satisfaction guarantee')}</span><strong>{t('Money back')}</strong></div></div>
           </div>
         </section>
 
         <section className="reference-loyality__wrap" id="example">
-          <SectionHeading eyebrow="Your membership, your rules" title="What a membership tier could look like."><p>You design the tiers and the incentives. Here&apos;s one simple way businesses commonly structure them.</p></SectionHeading>
+          <SectionHeading eyebrow="Your membership, your rules" title="What a membership tier could look like."><p>{t("You design the tiers and the incentives. Here's one simple way businesses commonly structure them.")}</p></SectionHeading>
           <div className="reference-loyality__plans">
-            <article className="reference-loyality__plan"><span>Free tier</span><h3>Open to everyone</h3><strong>$0</strong><small>No cost to join</small><ul><li>One-scan sign-up, no app required</li><li>Earns loyalty rewards on every visit</li><li>Eligible for milestones and referral bonuses</li></ul></article>
-            <article className="reference-loyality__plan reference-loyality__plan--featured"><span>Paid tier</span><h3>Example tier</h3><strong>$10<small>/mo</small></strong><small>Illustrative — set your own price</small><ul><li>$10 of spendable credit included — net-neutral cost</li><li>Bonus perks and faster milestone rewards</li><li>Priority access to member-only promos</li></ul></article>
+            <article className="reference-loyality__plan"><span>{t('Free tier')}</span><h3>{t('Open to everyone')}</h3><strong>$0</strong><small>{t('No cost to join')}</small><ul><li>{t('One-scan sign-up, no app required')}</li><li>{t('Earns loyalty rewards on every visit')}</li><li>{t('Eligible for milestones and referral bonuses')}</li></ul></article>
+            <article className="reference-loyality__plan reference-loyality__plan--featured"><span>{t('Paid tier')}</span><h3>{t('Example tier')}</h3><strong>$10<small>{t('/mo')}</small></strong><small>{t('Illustrative — set your own price')}</small><ul><li>{t('$10 of spendable credit included — net-neutral cost')}</li><li>{t('Bonus perks and faster milestone rewards')}</li><li>{t('Priority access to member-only promos')}</li></ul></article>
           </div>
-          <p className="reference-loyality__example-flag">Illustrative example only — every business sets its own tiers, incentives, and pricing.</p>
+          <p className="reference-loyality__example-flag">{t('Illustrative example only — every business sets its own tiers, incentives, and pricing.')}</p>
         </section>
 
         <figure className="reference-loyality__photo reference-loyality__wrap">
-          <img src="/loyality-owner-dashboard.jpg" alt="An independent business owner reviewing member activity on a phone" width="2176" height="722" loading="lazy" />
-          <figcaption><span>Everything, at a glance</span><p>A business owner checking member activity on a simple phone dashboard — no extra software to learn.</p></figcaption>
+          <img src="/loyality-owner-dashboard.jpg" alt={t('An independent business owner reviewing member activity on a phone')} width="2176" height="722" loading="lazy" />
+          <figcaption><span>{t('Everything, at a glance')}</span><p>{t('A business owner checking member activity on a simple phone dashboard — no extra software to learn.')}</p></figcaption>
         </figure>
 
         <section className="reference-loyality__wrap" id="pricing">
           <SectionHeading eyebrow="Getting started" title="Onboarding, made simple." />
-          <div className="reference-loyality__pricing-box"><div><h3>Get a membership built for your business.</h3><p>No two memberships are priced the same, because no two businesses are the same. Tell us about your business and we&apos;ll put together an onboarding plan — backed by the profit and satisfaction guarantee above.</p></div><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>Get started</a></div>
+          <div className="reference-loyality__pricing-box"><div><h3>{t('Get a membership built for your business.')}</h3><p>{t("No two memberships are priced the same, because no two businesses are the same. Tell us about your business and we'll put together an onboarding plan — backed by the profit and satisfaction guarantee above.")}</p></div><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>{t('Get started')}</a></div>
         </section>
 
-        <section className="reference-loyality__final-cta reference-loyality__wrap"><h2>Ready to turn your customers into members?</h2><p>Tell us about your business and we&apos;ll show you what your branded membership could look like.</p><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>Get started</a></section>
+        <section className="reference-loyality__final-cta reference-loyality__wrap"><h2>{t('Ready to turn your customers into members?')}</h2><p>{t("Tell us about your business and we'll show you what your branded membership could look like.")}</p><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>{t('Get started')}</a></section>
       </main>
 
       <footer className="reference-loyality__footer">
         <div className="reference-loyality__wrap reference-loyality__footer-wrap">
-          <div><a className="reference-loyality__logo" href="#top"><LoyalityMark size={20} />Loyality</a><p>Turn your customers into members. A white-label membership platform for any business, anywhere.</p></div>
-          <nav aria-label="Footer navigation"><a href="#concept">The concept</a><a href="#how">How it works</a><a href="#guarantee">Guarantee</a><a href="#pricing">Get started</a><Link to="/signin">Sign in</Link></nav>
+          <div><a className="reference-loyality__logo" href="#top"><LoyalityMark size={20} />Loyality</a><p>{t('Turn your customers into members. A white-label membership platform for any business, anywhere.')}</p></div>
+          <nav aria-label={t('Footer navigation')}><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a><a href="#pricing">{t('Get started')}</a><Link to="/signin">{t('Sign in')}</Link></nav>
         </div>
       </footer>
     </div>

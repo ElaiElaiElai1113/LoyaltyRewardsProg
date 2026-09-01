@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-const tenantSlugs = ['pinas', 'pinasrewards', 'medellin', 'guatemala', 'wondertown', 'synergize'] as const
+const tenantSlugs = ['pinas', 'pinasrewards', 'medellin', 'guatemala', 'wondertown', 'synergize', 'loyality'] as const
 const viewportWidths = [320, 390, 768, 859, 1024, 1280] as const
 const publicRoutes = ['/', '/business'] as const
 
@@ -43,6 +43,14 @@ test.describe('cross-tenant public responsive layouts', () => {
               '.reference-rewardme__tiers article',
               '.reference-rewardme__business-card',
               '.reference-rewardme__button',
+              '.reference-loyality__nav',
+              '.reference-loyality__hero-grid',
+              '.reference-loyality__feature-grid article',
+              '.reference-loyality__process li',
+              '.reference-loyality__pricing-grid article',
+              '.loyality-business__hero-grid',
+              '.loyality-business__program-card',
+              '.loyality-business__benefits article',
             ].join(',')
             const clipped = Array.from(document.querySelectorAll<HTMLElement>(criticalSelector))
               .filter((element) => element.offsetParent !== null)
@@ -80,7 +88,7 @@ test.describe('cross-tenant public responsive layouts', () => {
           expect(layout.documentOverflow, `${tenant} ${route} at ${width}px`).toBeLessThanOrEqual(1)
           expect(layout.clipped, `${tenant} ${route} at ${width}px`).toEqual([])
 
-          if (route === '/' && width <= 1050 && tenant !== 'wondertown' && tenant !== 'pinas') {
+          if (route === '/' && width <= 1050 && !['wondertown', 'pinas', 'loyality'].includes(tenant)) {
             expect(layout.membershipCardsShareRow, `${tenant} membership cards at ${width}px`).toBe(false)
             expect(layout.homeNavPosition, `${tenant} home navigation at ${width}px`).toBe('fixed')
           }
