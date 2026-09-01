@@ -2,7 +2,6 @@ import { Link } from 'react-router'
 
 import { LanguagePicker } from '@/components/language-picker'
 import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
-import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 
 import './loyality-home-page.css'
@@ -57,9 +56,7 @@ function Cards({ items }: { items: string[][] }) {
 }
 
 export function LoyalityHomePage() {
-  const { program } = useTenant()
   const { t } = useLanguage()
-  const getStartedHref = `mailto:${program.supportEmail}?subject=${encodeURIComponent(t('Build my Loyality membership'))}`
 
   return (
     <div className="reference-loyality">
@@ -67,7 +64,7 @@ export function LoyalityHomePage() {
         <nav className="reference-loyality__nav" aria-label={t('Loyality navigation')}>
           <a className="reference-loyality__logo" href="#top"><LoyalityMark />Loyality</a>
           <div className="reference-loyality__nav-links"><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a></div>
-          <div className="reference-loyality__nav-actions"><LanguagePicker className="reference-loyality__language" compact condenseOnNarrowScreens /><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">{t('Get started')}</a></div>
+          <div className="reference-loyality__nav-actions"><LanguagePicker className="reference-loyality__language" compact condenseOnNarrowScreens /><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
         </nav>
       </header>
 
@@ -77,7 +74,7 @@ export function LoyalityHomePage() {
             <div className="reference-loyality__eyebrow">{t('White-label membership platform · Any business, any industry')}</div>
             <h1>{t('Turn your customers into members.')}</h1>
             <p className="reference-loyality__lead">{t('Loyality lets any business build a fully-branded membership program and hand out whatever incentives they want — loyalty rewards, milestone bonuses, referral perks, all of it, or just one — running on nothing but a QR code.')}</p>
-            <div className="reference-loyality__hero-ctas"><a className="reference-loyality__btn reference-loyality__btn--gold" href="#pricing">{t('Get started')}</a><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept">{t('See the concept')}</a></div>
+            <div className="reference-loyality__hero-ctas"><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept">{t('See the concept')}</a></div>
             <p className="reference-loyality__hero-note">{t('Works for any business, in any industry, anywhere.')}</p>
           </section>
           <div className="reference-loyality__highlight" aria-label={t('Loyality platform highlights')}>
@@ -157,16 +154,16 @@ export function LoyalityHomePage() {
 
         <section className="reference-loyality__wrap" id="pricing">
           <SectionHeading eyebrow="Getting started" title="Onboarding, made simple." />
-          <div className="reference-loyality__pricing-box"><div><h3>{t('Get a membership built for your business.')}</h3><p>{t("No two memberships are priced the same, because no two businesses are the same. Tell us about your business and we'll put together an onboarding plan — backed by the profit and satisfaction guarantee above.")}</p></div><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>{t('Get started')}</a></div>
+          <div className="reference-loyality__pricing-box"><div><h3>{t('Get a membership built for your business.')}</h3><p>{t("No two memberships are priced the same, because no two businesses are the same. Tell us about your business and we'll put together an onboarding plan — backed by the profit and satisfaction guarantee above.")}</p></div><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
         </section>
 
-        <section className="reference-loyality__final-cta reference-loyality__wrap"><h2>{t('Ready to turn your customers into members?')}</h2><p>{t("Tell us about your business and we'll show you what your branded membership could look like.")}</p><a className="reference-loyality__btn reference-loyality__btn--gold" href={getStartedHref}>{t('Get started')}</a></section>
+        <section className="reference-loyality__final-cta reference-loyality__wrap"><h2>{t('Ready to turn your customers into members?')}</h2><p>{t("Tell us about your business and we'll show you what your branded membership could look like.")}</p><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></section>
       </main>
 
       <footer className="reference-loyality__footer">
         <div className="reference-loyality__wrap reference-loyality__footer-wrap">
           <div><a className="reference-loyality__logo" href="#top"><LoyalityMark size={20} />Loyality</a><p>{t('Turn your customers into members. A white-label membership platform for any business, anywhere.')}</p></div>
-          <nav aria-label={t('Footer navigation')}><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a><a href="#pricing">{t('Get started')}</a><Link to="/signin">{t('Sign in')}</Link></nav>
+          <nav aria-label={t('Footer navigation')}><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a><Link to="/business">{t('Get started')}</Link><Link to="/signin">{t('Sign in')}</Link></nav>
         </div>
       </footer>
     </div>
