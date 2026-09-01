@@ -1104,7 +1104,7 @@
 :root[data-program="loyality"] .business-public-shell__nav a { color: var(--ly-text-muted) !important; }
 :root[data-program="loyality"] .business-public-shell__nav a:hover { color: var(--ly-teal) !important; }
 :root[data-program="loyality"] .business-public-shell__language-picker { color: var(--ly-text-muted) !important; }
-:root[data-program="loyality"] .business-public-shell__language-picker select { border-color: var(--ly-line) !important; border-radius: 3px !important; background: var(--ly-paper) !important; color: var(--ly-text) !important; }
+:root[data-program="loyality"] .business-public-shell__language-picker :is(select, .language-picker__control) { border-color: var(--ly-line) !important; border-radius: 3px !important; background: var(--ly-paper) !important; color: var(--ly-text) !important; }
 :root[data-program="loyality"] .business-public-shell__login { border: 1px solid var(--ly-navy); border-radius: 3px; background: var(--ly-navy); color: #fff !important; }
 :root[data-program="loyality"] .business-public-shell__footer { border-top: 1px solid rgb(246 241 228 / 12%) !important; background: #1f3a2e !important; color: rgb(246 241 228 / 70%) !important; }
 :root[data-program="loyality"] .business-public-shell__footer :is(.business-public-shell__brand, .business-public-shell__brand-copy) { color: var(--ly-offwhite) !important; }

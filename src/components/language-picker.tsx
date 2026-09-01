@@ -20,41 +20,41 @@ export function LanguagePicker({
   const options = program.slug === 'loyality' ? (['en', 'es'] as Language[]) : (['en', 'tl', 'es'] as Language[])
 
   return (
-    <div className={cn('flex min-w-0 items-center gap-2', className)}>
-      <Globe2
-        className={cn('size-4 shrink-0 text-current', condenseOnNarrowScreens && 'max-[379px]:hidden')}
-        aria-hidden="true"
-      />
+    <div className={cn('language-picker flex min-w-0 items-center', className)} data-language-picker>
       <div
         className={cn(
-          'relative min-w-0',
-          compact ? 'w-[5.25rem]' : 'w-[8.75rem] max-w-full',
-          condenseOnNarrowScreens && compact && 'max-[379px]:w-16',
+          'language-picker__control relative inline-flex h-10 shrink-0 items-center gap-2 rounded-2xl border border-primary-container/25 bg-primary-container/8 px-3 text-current shadow-none transition-colors focus-within:ring-2 focus-within:ring-primary-container/40',
+          compact ? 'w-[5.5rem]' : 'w-[9.5rem] max-w-full',
+          condenseOnNarrowScreens && compact && 'max-[379px]:w-[5.25rem] max-[379px]:gap-1.5 max-[379px]:px-2',
         )}
+        data-language-picker-trigger
+        title={`${t('Language')}: ${languageDisplayNames[language][language]}`}
       >
+        <Globe2 className="size-4 shrink-0 text-current" aria-hidden="true" data-language-picker-icon />
+        {compact ? (
+          <span className="grid min-w-0 flex-1 gap-0.5 leading-none" aria-hidden="true">
+            <span className="text-[0.48rem] font-extrabold uppercase tracking-[0.08em] opacity-65">LANG</span>
+            <strong className="text-[0.72rem] font-extrabold uppercase tracking-[0.1em]">{language.toUpperCase()}</strong>
+          </span>
+        ) : (
+          <span className="min-w-0 flex-1 truncate text-sm font-bold" aria-hidden="true">
+            {languageDisplayNames[language][language]}
+          </span>
+        )}
+        <ChevronDown className="pointer-events-none size-3.5 shrink-0 text-current opacity-70" aria-hidden="true" />
         <select
           aria-label={t('Language')}
           value={language}
           onChange={(event) => setLanguage(event.target.value as Language)}
           style={{ fontSize: '16px' }}
-          className={cn(
-            'h-10 w-full min-w-0 appearance-none rounded-2xl border border-primary-container/25 bg-primary-container/8 text-base font-bold uppercase tracking-[0.08em] text-current shadow-none outline-none transition-colors focus-visible:ring-2 focus-visible:ring-primary-container/40',
-            compact ? 'px-3 pr-8' : 'px-4 pr-9',
-            condenseOnNarrowScreens && compact && 'max-[379px]:px-2 max-[379px]:pr-7',
-          )}
+          className="absolute inset-0 z-10 h-full w-full cursor-pointer appearance-none opacity-0"
         >
           {options.map((option) => (
             <option key={option} value={option}>
-              {compact ? option.toUpperCase() : languageDisplayNames[language][option]}
+              {languageDisplayNames[language][option]}
             </option>
           ))}
         </select>
-        <ChevronDown
-          className={cn(
-            'pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-current opacity-70',
-            condenseOnNarrowScreens && 'max-[379px]:right-2',
-          )}
-        />
       </div>
     </div>
   )

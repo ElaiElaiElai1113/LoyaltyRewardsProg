@@ -90,7 +90,7 @@
 .ly-customer-nav, .ly-customer-tools { display: flex; align-items: center; gap: .35rem; }
 .ly-customer-tools { justify-content: flex-end; }
 .ly-shell-language { color: var(--ly-forest); }
-.ly-shell-language select, .ly-workspace-mobile-language select { border-color: var(--ly-line); border-radius: 3px; background: var(--ly-paper); color: var(--ly-forest); font-family: "IBM Plex Mono", monospace; font-size: .68rem !important; }
+.ly-shell-language :is(select, .language-picker__control), .ly-workspace-mobile-language :is(select, .language-picker__control) { border-color: var(--ly-line); border-radius: 3px; background: var(--ly-paper); color: var(--ly-forest); font-family: "IBM Plex Mono", monospace; font-size: .68rem !important; }
 .ly-icon-button { display: inline-grid; width: 2.6rem; height: 2.6rem; place-items: center; border: 1px solid var(--ly-line); border-radius: 3px; background: transparent; color: inherit; cursor: pointer; }
 .ly-icon-button:hover { border-color: var(--ly-coral); color: var(--ly-coral); }
 .ly-icon-button svg { width: 1.05rem; }
@@ -131,7 +131,7 @@
 .ly-user-chip small { margin-top: .1rem; color: rgb(246 241 228 / 48%); font-size: .58rem; }
 .ly-rail__utilities { display: flex; align-items: center; gap: .35rem; margin-top: .85rem; }
 .ly-rail-language { flex: 1; color: #f6f1e4; }
-.ly-rail-language select { border-color: rgb(246 241 228 / 20%); border-radius: 3px; background: rgb(246 241 228 / 8%); color: #f6f1e4; font-family: "IBM Plex Mono", monospace; font-size: .66rem !important; }
+.ly-rail-language :is(select, .language-picker__control) { border-color: rgb(246 241 228 / 20%); border-radius: 3px; background: rgb(246 241 228 / 8%); color: #f6f1e4; font-family: "IBM Plex Mono", monospace; font-size: .66rem !important; }
 .ly-rail-language option { color: #1f3a2e; }
 .ly-rail__utilities > button:last-child { display: flex; min-height: 2.4rem; flex: 1; align-items: center; justify-content: center; gap: .4rem; border: 1px solid rgb(246 241 228 / 20%); border-radius: 3px; background: transparent; color: rgb(246 241 228 / 68%); font-size: .68rem; font-weight: 600; }
 .ly-rail__utilities > button:last-child:hover { border-color: var(--ly-lime); color: #f6f1e4; }
@@ -163,7 +163,7 @@
 .ly-auth-card { width: min(100%,560px); border: 1px solid var(--ly-line); border-radius: 8px; background: var(--ly-paper); padding: clamp(1.4rem,4vw,3rem); box-shadow: none; }
 .ly-auth-card__toolbar { display: flex; min-width: 0; align-items: center; justify-content: space-between; gap: 1rem; }
 .ly-auth-card__language { color: var(--ly-forest); }
-.ly-auth-card__language select { border-color: var(--ly-line); border-radius: 3px; background: var(--ly-cream); color: var(--ly-forest); font-family: "IBM Plex Mono", monospace; font-size: .68rem !important; }
+.ly-auth-card__language :is(select, .language-picker__control) { border-color: var(--ly-line); border-radius: 3px; background: var(--ly-cream); color: var(--ly-forest); font-family: "IBM Plex Mono", monospace; font-size: .68rem !important; }
 .ly-auth-card__back { display: inline-flex; align-items: center; gap: .4rem; color: var(--foreground); font-size: .73rem; font-weight: 600; text-decoration: none; }
 .ly-auth-card__header { margin-top: 2rem; }
 .ly-auth-card__header p { margin: 0; color: var(--ly-coral); font-family: "IBM Plex Mono", monospace; font-size: .62rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }

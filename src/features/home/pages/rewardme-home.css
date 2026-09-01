@@ -29,7 +29,7 @@
 .reference-rewardme__nav-links a:hover, .reference-rewardme__text-link:hover { color: var(--gold); }
 .reference-rewardme__nav-actions, .reference-rewardme__actions { display: flex; align-items: center; gap: 12px; }
 .reference-rewardme__language { color: var(--ink-soft); }
-.reference-rewardme__language select { border-color: var(--line); border-radius: 3px; background: transparent; color: var(--ink); font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 16px !important; }
+.reference-rewardme__language :is(select, .language-picker__control) { border-color: var(--line); border-radius: 3px; background: transparent; color: var(--ink); font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 16px !important; }
 .reference-rewardme__text-link { font-size: .84rem; font-weight: 700; }
 .reference-rewardme__button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; border: 1px solid var(--ink); border-radius: 3px; padding: 11px 20px; background: var(--ink); color: var(--paper) !important; font-family: ui-monospace, "SFMono-Regular", monospace; font-size: .72rem; font-weight: 700; letter-spacing: .045em; line-height: 1.2; text-transform: uppercase; transition: transform .16s ease, background .16s ease; }
 .reference-rewardme__button:hover { transform: translateY(-2px); background: var(--ink-soft); }
@@ -111,9 +111,6 @@
   .reference-rewardme__nav { min-height: 68px; }
   .reference-rewardme__brand-name { display: none; }
   .reference-rewardme__logo img { height: 31px; }
-  .reference-rewardme__language { gap: 0; }
-  .reference-rewardme__language > svg { display: none; }
-  .reference-rewardme__language > div { width: 3.7rem; }
   .reference-rewardme__text-link { display: none; }
   .reference-rewardme__nav-actions .reference-rewardme__button { min-height: 39px; padding-inline: 12px; font-size: .63rem; }
   .reference-rewardme__hero { gap: 45px; padding-top: 64px; }

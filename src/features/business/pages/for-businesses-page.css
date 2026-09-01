@@ -95,7 +95,7 @@
   flex: 0 0 auto;
 }
 
-.business-public-shell__language-picker select {
+.business-public-shell__language-picker :is(select, .language-picker__control) {
   background-color: #fff;
   border-color: #d4ad22;
 }

@@ -130,7 +130,7 @@
   color: var(--wonder-ink);
 }
 
-.wondertown-home__language select {
+.wondertown-home__language :is(select, .language-picker__control) {
   background: var(--wonder-paper);
   border-color: rgb(79 59 120 / 24%);
 }

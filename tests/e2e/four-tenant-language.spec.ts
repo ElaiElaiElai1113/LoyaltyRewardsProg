@@ -89,6 +89,32 @@ for (const viewport of [
   }
 }
 
+for (const tenantCase of tenantCases.filter(({ tenant }) => tenant !== 'synergize')) {
+  test(`${tenantCase.tenant} keeps the language control identifiable at 320px`, async ({ page }) => {
+    await page.setViewportSize({ width: 320, height: 780 })
+    await page.goto(`/?tenant=${tenantCase.tenant}`)
+
+    const trigger = page.locator('[data-language-picker-trigger]').first()
+    const picker = page.getByRole('combobox', { name: 'Language' }).first()
+    await expect(trigger).toBeVisible()
+    await expect(trigger.locator('[data-language-picker-icon]')).toBeVisible()
+    await expect(trigger).toContainText('LANG')
+    await expect(trigger).toContainText('EN')
+    await expect(picker.locator('option').first()).toHaveText('English')
+
+    const bounds = await trigger.boundingBox()
+    expect(bounds).not.toBeNull()
+    expect(bounds!.width).toBeGreaterThanOrEqual(84)
+    expect(bounds!.x).toBeGreaterThanOrEqual(-1)
+    expect(bounds!.x + bounds!.width).toBeLessThanOrEqual(321)
+
+    await picker.selectOption('es')
+    await expect(page.getByRole('combobox', { name: 'Idioma' }).first()).toHaveValue('es')
+    await expect(trigger).toContainText('ES')
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)
+  })
+}
+
 for (const tenantCase of tenantCases) {
   test(`${tenantCase.tenant} keeps Spanish active beyond the homepage`, async ({ page }) => {
     await page.addInitScript(({ slug }) => {
