@@ -45,4 +45,34 @@ describe('RewardMe and Wondertown design synchronization', () => {
     expect(page).toContain("disclosureVersion: 'business-application-v1'")
     expect(existsSync('.github/workflows/rewards-database-maintenance.yml')).toBe(true)
   })
+
+  it('uses the approved theme tokens, fonts, readable controls, and automatic role routing', () => {
+    const theme = source('src/reference-design-systems.css')
+    const homeStyles = source('src/features/home/pages/rewardme-home.css')
+    const joinStyles = source('src/features/join/pages/rewardme-join-page.css')
+    const signIn = source('src/features/auth/pages/landing-page.tsx')
+
+    for (const token of [
+      '--espresso: #1f3a2e',
+      '--champagne: #b8862e',
+      '--blush: #efe8d6',
+      '--cream: #f6f1e4',
+      '--secondary-foreground: #211d16',
+    ]) {
+      expect(theme).toContain(token)
+    }
+
+    for (const styles of [theme, homeStyles, joinStyles]) {
+      expect(styles).toContain('IBM Plex Sans')
+      expect(styles).toContain('Fraunces')
+      expect(styles).toContain('IBM Plex Mono')
+    }
+
+    expect(homeStyles).toContain('color: #211d16 !important')
+    expect(joinStyles).toMatch(/color:\s*#211d16\s*!important/)
+    expect(signIn).toContain('signInAutomatically')
+    expect(signIn).toContain('getHomePathForRole(profile.role)')
+    expect(signIn).not.toContain('SIGN_IN_PORTALS.map')
+    expect(signIn).not.toContain('sign-in-portal-')
+  })
 })

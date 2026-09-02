@@ -12,11 +12,11 @@ test.describe('public keyboard accessibility', () => {
     await expect(page).toHaveURL(/\/join$/)
   })
 
-  test('sign-in role choices have accessible names', async ({ page }) => {
+  test('the unified sign-in form has an accessible name and labelled credentials', async ({ page }) => {
     await page.goto('/signin?tenant=pinas')
-    for (const role of ['Admin', 'Business', 'Customer']) {
-      await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
-    }
-    await expect(page.getByRole('button', { name: /^Sign in as (Admin|Business|Customer)$/ })).toHaveCount(3)
+    await expect(page.getByRole('form', { name: 'Sign in' })).toBeVisible()
+    await expect(page.getByLabel('Email address')).toBeVisible()
+    await expect(page.getByLabel('Password', { exact: true })).toBeVisible()
+    await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(0)
   })
 })

@@ -122,14 +122,12 @@ test.describe('Wondertown public testing experience', () => {
     }
   })
 
-  test('sign-in exposes role selection without public credentials', async ({ page }) => {
+  test('sign-in uses one credential form without public credentials', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 844 })
     await page.goto('/signin?tenant=wondertown')
 
-    for (const role of ['Admin', 'Business', 'Customer']) {
-      await expect(page.getByRole('button', { name: `Sign in as ${role}`, exact: true })).toBeVisible()
-    }
-    await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(3)
+    await expect(page.getByRole('form', { name: 'Sign in' })).toBeVisible()
+    await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(0)
     await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
     await expect(page.locator('#signin-email')).toBeVisible()
     await expect(page.locator('#signin-password')).toBeVisible()

@@ -4614,6 +4614,8 @@ const tagalogTranslations: Record<string, string> = {
   'Email Address': 'Tirahan ng Email',
   'Enter a valid email address and password to sign in.':
     'Maglagay ng wastong email at password upang makapasok.',
+  'Enter your email and password. We will open the workspace assigned to your account.':
+    'Ilagay ang iyong email at password. Bubuksan namin ang workspace na nakatalaga sa iyong account.',
   'Enter as decimal (e.g., 0.0875 for 8.75%)': 'Ilagay bilang desimal (hal., 0.0875 para sa 8.75%)',
   "Enter your email and we'll send you a reset link.":
     'Ilagay ang iyong email at padadalhan ka namin ng kawing para magtakda muli.',

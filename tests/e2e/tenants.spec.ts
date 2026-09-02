@@ -86,7 +86,7 @@ test.describe('white-label tenant resolution', () => {
       }
     })
 
-    test(`${tenant.name} identifies the platform-admin choice inside the unified sign-in entry`, async ({ page }) => {
+    test(`${tenant.name} uses one tenant-branded sign-in entry for protected admin routes`, async ({ page }) => {
       const errors = collectRuntimeErrors(page)
       await page.addInitScript((slug) => window.localStorage.setItem(`rewards:${slug}:language`, 'en'), tenant.slug)
       await page.goto(`/admin?tenant=${tenant.slug}`)
@@ -97,19 +97,11 @@ test.describe('white-label tenant resolution', () => {
         await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
         await expect(page.locator('#loyality-email')).toBeVisible()
         await expect(page.locator('body')).not.toContainText('Rewards Platform')
-      } else if (tenant.slug === 'wondertown') {
-        await expect(page).toHaveTitle('Rewards Platform Admin')
-        await expect(page.locator('#signin-email')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
-      } else if (tenant.slug === 'pinas') {
-        await expect(page).toHaveTitle('Rewards Platform Admin')
-        await expect(page.locator('#signin-email')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
       } else {
-        await expect(page).toHaveTitle('Rewards Platform Admin')
-        await expect(page.getByText('Rewards Platform', { exact: true })).toBeVisible()
+        await expect(page).toHaveTitle('Rewards Platform')
+        await expect(page.getByRole('form', { name: 'Sign in' })).toBeVisible()
         await expect(page.locator('#signin-email')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
+        await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(0)
       }
       await expect(page.getByText(tenant.name, { exact: false }).first()).toBeVisible()
       expect(errors).toEqual([])
@@ -126,15 +118,10 @@ test.describe('white-label tenant resolution', () => {
       if (tenant.slug === 'loyality') {
         await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
         await expect(page.locator('#loyality-email')).toBeVisible()
-      } else if (tenant.slug === 'wondertown') {
-        await expect(page.locator('#signin-email')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
-      } else if (tenant.slug === 'pinas') {
-        await expect(page.locator('#signin-email')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
       } else {
+        await expect(page.getByRole('form', { name: 'Sign in' })).toBeVisible()
         await expect(page.locator('#signin-email')).toBeVisible()
-        await expect(page.getByRole('button', { name: 'Sign in as Business', exact: true })).toHaveAttribute('aria-pressed', 'true')
+        await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(0)
       }
       await expect(page.locator('body')).not.toContainText('Rewards Platform')
       expect(errors).toEqual([])
@@ -155,7 +142,8 @@ test.describe('white-label tenant resolution', () => {
     await page.goto('/admin/programs')
     await expect(page).toHaveURL(/\/signin\?portal=admin&redirect=%2Fadmin%2Fprograms$/)
     await expect(page.locator('#signin-email')).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Sign in as Admin', exact: true })).toHaveAttribute('aria-pressed', 'true')
+    await expect(page.getByRole('form', { name: 'Sign in' })).toBeVisible()
+    await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(0)
     expect(errors).toEqual([])
   })
 

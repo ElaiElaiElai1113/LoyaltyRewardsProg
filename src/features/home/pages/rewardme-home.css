@@ -11,33 +11,33 @@
   overflow-x: clip;
   background: var(--paper);
   color: var(--ink);
-  font-family: Inter, "Segoe UI", sans-serif;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
   line-height: 1.65;
 }
 .reference-rewardme *, .reference-rewardme *::before, .reference-rewardme *::after { box-sizing: border-box; }
 .reference-rewardme a { color: inherit; text-decoration: none; }
-.reference-rewardme h1, .reference-rewardme h2, .reference-rewardme h3 { margin: 0; font-family: "Source Serif 4", Georgia, serif; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; text-transform: none; }
+.reference-rewardme h1, .reference-rewardme h2, .reference-rewardme h3 { margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; text-transform: none; }
 .reference-rewardme p { margin: 0; }
 .reference-rewardme [id] { scroll-margin-top: 6rem; }
 .reference-rewardme__wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
 .reference-rewardme__header { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid rgb(217 207 175 / 85%); background: rgb(246 241 228 / 94%); backdrop-filter: blur(12px); }
 .reference-rewardme__nav { display: flex; width: min(1180px, calc(100% - 48px)); min-height: 78px; align-items: center; justify-content: space-between; gap: 28px; margin-inline: auto; }
-.reference-rewardme__logo { display: inline-flex; align-items: center; gap: 10px; font-family: "Source Serif 4", Georgia, serif; font-size: 1.18rem; font-weight: 700; }
+.reference-rewardme__logo { display: inline-flex; align-items: center; gap: 10px; font-family: Fraunces, Georgia, serif; font-size: 1.18rem; font-weight: 700; }
 .reference-rewardme__logo svg { width: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; }
 .reference-rewardme__logo img { width: auto; height: 34px; object-fit: contain; }
 .reference-rewardme__nav-links { display: flex; align-items: center; gap: 28px; color: var(--ink-soft); font-size: .84rem; font-weight: 600; }
 .reference-rewardme__nav-links a:hover, .reference-rewardme__text-link:hover { color: var(--gold); }
 .reference-rewardme__nav-actions, .reference-rewardme__actions { display: flex; align-items: center; gap: 12px; }
 .reference-rewardme__language { color: var(--ink-soft); }
-.reference-rewardme__language :is(select, .language-picker__control) { border-color: var(--line); border-radius: 3px; background: transparent; color: var(--ink); font-family: ui-monospace, "SFMono-Regular", monospace; font-size: 16px !important; }
+.reference-rewardme__language :is(select, .language-picker__control) { border-color: var(--line); border-radius: 3px; background: transparent; color: var(--ink); font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: 16px !important; }
 .reference-rewardme__text-link { font-size: .84rem; font-weight: 700; }
-.reference-rewardme__button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; border: 1px solid var(--ink); border-radius: 3px; padding: 11px 20px; background: var(--ink); color: var(--paper) !important; font-family: ui-monospace, "SFMono-Regular", monospace; font-size: .72rem; font-weight: 700; letter-spacing: .045em; line-height: 1.2; text-transform: uppercase; transition: transform .16s ease, background .16s ease; }
+.reference-rewardme__button { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; border: 1px solid var(--ink); border-radius: 3px; padding: 11px 20px; background: var(--ink); color: var(--paper) !important; font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: .72rem; font-weight: 700; letter-spacing: .045em; line-height: 1.2; text-transform: uppercase; transition: transform .16s ease, background .16s ease; }
 .reference-rewardme__button:hover { transform: translateY(-2px); background: var(--ink-soft); }
-.reference-rewardme__button--gold { border-color: var(--gold); background: var(--gold); color: #fff !important; }
+.reference-rewardme__button--gold { border-color: var(--gold); background: var(--gold); color: #211d16 !important; }
 .reference-rewardme__button--outline { border-color: var(--ink); background: transparent; color: var(--ink) !important; }
 .reference-rewardme__hero { display: grid; grid-template-columns: minmax(0, 1.03fr) minmax(340px, .82fr); align-items: center; gap: 64px; padding-block: 96px 0; }
 .reference-rewardme__hero-copy { max-width: 650px; }
-.reference-rewardme__eyebrow { margin-bottom: 13px !important; color: var(--gold); font-family: ui-monospace, "SFMono-Regular", monospace; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.reference-rewardme__eyebrow { margin-bottom: 13px !important; color: var(--gold); font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .reference-rewardme__hero h1 { max-width: 680px; font-size: clamp(2.75rem, 5.5vw, 5rem); }
 .reference-rewardme__hero-highlight { max-width: 610px; margin-top: 25px !important; color: var(--ink-soft); font-size: 1.15rem; }
 .reference-rewardme__hero-highlight strong { color: var(--gold); }
@@ -47,10 +47,10 @@
 .reference-rewardme__hero-list li::before { color: var(--gold); content: "◆"; font-size: .58rem; transform: translateY(.32rem); }
 .reference-rewardme__fine { margin-top: 15px !important; color: var(--muted); font-size: .77rem; }
 .reference-rewardme__passbook { position: relative; border: 1px solid var(--line); border-radius: 6px; padding: 34px; background: var(--paper-deep); box-shadow: 18px 20px 0 rgb(31 58 46 / 8%); transform: rotate(1deg); }
-.reference-rewardme__stamp { position: absolute; top: -15px; right: 22px; border-radius: 2px; padding: 8px 13px; background: #a84935; color: #fff; font-family: ui-monospace, monospace; font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; transform: rotate(4deg); }
+.reference-rewardme__stamp { position: absolute; top: -15px; right: 22px; border-radius: 2px; padding: 8px 13px; background: #a84935; color: #fff; font-family: "IBM Plex Mono", monospace; font-size: .66rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; transform: rotate(4deg); }
 .reference-rewardme__passbook-title, .reference-rewardme__balance { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; border-bottom: 2px solid var(--ink); padding-bottom: 12px; }
-.reference-rewardme__passbook-title strong { font-family: "Source Serif 4", Georgia, serif; font-size: 1.05rem; }
-.reference-rewardme__passbook-title span, .reference-rewardme__entry strong, .reference-rewardme__balance strong { font-family: ui-monospace, monospace; font-size: .72rem; }
+.reference-rewardme__passbook-title strong { font-family: Fraunces, Georgia, serif; font-size: 1.05rem; }
+.reference-rewardme__passbook-title span, .reference-rewardme__entry strong, .reference-rewardme__balance strong { font-family: "IBM Plex Mono", monospace; font-size: .72rem; }
 .reference-rewardme__entry { display: flex; align-items: center; justify-content: space-between; gap: 18px; border-bottom: 1px dashed var(--line); padding: 12px 0; color: var(--muted); font-size: .79rem; }
 .reference-rewardme__entry strong { color: var(--ink-soft); white-space: nowrap; }
 .reference-rewardme__balance { margin-top: 15px; border-top: 2px solid var(--ink); border-bottom: 0; padding-top: 14px; padding-bottom: 0; font-size: .73rem; letter-spacing: .04em; text-transform: uppercase; }
@@ -64,7 +64,7 @@
 .reference-rewardme__section-head > p:last-child, .reference-rewardme__split > div > p:not(.reference-rewardme__eyebrow), .reference-rewardme__business-card p { margin-top: 14px; color: var(--muted); }
 .reference-rewardme__ledger-list { margin: 0; border-top: 2px solid var(--ink); padding: 0; list-style: none; }
 .reference-rewardme__ledger-list li { display: grid; grid-template-columns: 78px 1fr; gap: 24px; border-bottom: 1px solid var(--line); padding: 30px 0; }
-.reference-rewardme__ledger-list li > span { color: var(--gold-soft); font-family: "Source Serif 4", Georgia, serif; font-size: 2rem; font-weight: 600; }
+.reference-rewardme__ledger-list li > span { color: var(--gold-soft); font-family: Fraunces, Georgia, serif; font-size: 2rem; font-weight: 600; }
 .reference-rewardme__ledger-list h3 { font-size: 1.28rem; }
 .reference-rewardme__ledger-list p { max-width: 66ch; margin-top: 8px; color: var(--muted); }
 .reference-rewardme__split { display: grid; grid-template-columns: .85fr 1.15fr; align-items: center; gap: 70px; }
@@ -75,21 +75,21 @@
 .reference-rewardme__rate-grid, .reference-rewardme__tiers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
 .reference-rewardme__rate-grid article, .reference-rewardme__tiers article { min-height: 225px; border-right: 1px solid var(--line); padding: 29px 25px; background: var(--paper); }
 .reference-rewardme__rate-grid article:last-child, .reference-rewardme__tiers article:last-child { border-right: 0; }
-.reference-rewardme__rate-grid article > p, .reference-rewardme__tiers article > span { color: var(--gold); font-family: ui-monospace, monospace; font-size: .7rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
-.reference-rewardme__rate-grid strong { display: block; margin-top: 7px; font-family: "Source Serif 4", Georgia, serif; font-size: 2.55rem; }
+.reference-rewardme__rate-grid article > p, .reference-rewardme__tiers article > span { color: var(--gold); font-family: "IBM Plex Mono", monospace; font-size: .7rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; }
+.reference-rewardme__rate-grid strong { display: block; margin-top: 7px; font-family: Fraunces, Georgia, serif; font-size: 2.55rem; }
 .reference-rewardme__rate-grid span { display: block; margin-top: 12px; color: var(--muted); font-size: .88rem; }
 .reference-rewardme__savings { display: grid; grid-template-columns: 1fr .75fr; align-items: center; gap: 50px; border-radius: 7px; padding: 58px; background: var(--ink); color: var(--paper); }
 .reference-rewardme__savings h2 { color: var(--paper); }
 .reference-rewardme__savings > div > p:not(.reference-rewardme__eyebrow) { margin-top: 14px; color: rgb(246 241 228 / 74%); }
 .reference-rewardme__balance-card { border: 1px solid rgb(246 241 228 / 22%); border-radius: 5px; padding: 28px; text-align: center; }
-.reference-rewardme__balance-card span { display: inline-block; border-radius: 2px; padding: 6px 10px; background: #a84935; font-family: ui-monospace, monospace; font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; }
-.reference-rewardme__balance-card strong { display: block; margin-top: 18px; color: var(--gold-soft); font-family: "Source Serif 4", Georgia, serif; font-size: 1.7rem; }
+.reference-rewardme__balance-card span { display: inline-block; border-radius: 2px; padding: 6px 10px; background: #a84935; font-family: "IBM Plex Mono", monospace; font-size: .64rem; letter-spacing: .06em; text-transform: uppercase; }
+.reference-rewardme__balance-card strong { display: block; margin-top: 18px; color: var(--gold-soft); font-family: Fraunces, Georgia, serif; font-size: 1.7rem; }
 .reference-rewardme__balance-card p { margin-top: 8px; color: rgb(246 241 228 / 65%); font-size: .82rem; }
 .reference-rewardme__tiers { margin-bottom: 28px; }
 .reference-rewardme__tiers article { min-height: 238px; }
 .reference-rewardme__tiers article.is-featured { background: var(--ink); color: var(--paper); }
 .reference-rewardme__tiers h3 { margin-top: 8px; font-size: 1.38rem; }
-.reference-rewardme__tiers strong { display: block; margin-top: 4px; color: var(--gold); font-family: ui-monospace, monospace; font-size: 1rem; }
+.reference-rewardme__tiers strong { display: block; margin-top: 4px; color: var(--gold); font-family: "IBM Plex Mono", monospace; font-size: 1rem; }
 .reference-rewardme__tiers p { margin-top: 15px; color: var(--muted); font-size: .86rem; }
 .reference-rewardme__tiers .is-featured p { color: rgb(246 241 228 / 72%); }
 .reference-rewardme__business-card { display: grid; grid-template-columns: 1fr 290px; align-items: center; gap: 44px; border: 1px solid var(--line); border-radius: 6px; padding: 42px; background: var(--paper-deep); }

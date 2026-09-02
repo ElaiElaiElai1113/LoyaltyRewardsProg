@@ -1218,20 +1218,20 @@
   overflow-x: hidden;
   background: var(--rm-paper);
   color: var(--rm-ink);
-  font-family: Inter, "Segoe UI", sans-serif;
+  font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
 }
-.rewardme-ledger-business h1, .rewardme-ledger-business h2, .rewardme-ledger-business h3 { margin: 0; font-family: "Source Serif 4", Georgia, serif; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; text-transform: none; }
+.rewardme-ledger-business h1, .rewardme-ledger-business h2, .rewardme-ledger-business h3 { margin: 0; font-family: Fraunces, Georgia, serif; font-weight: 600; letter-spacing: -.025em; line-height: 1.08; text-transform: none; }
 .rewardme-ledger-business p { margin: 0; }
 .rewardme-ledger-business__hero, .rewardme-ledger-business__section { width: min(1080px, calc(100% - 48px)); margin-inline: auto; }
 .rewardme-ledger-business__hero { display: grid; grid-template-columns: .95fr 1.05fr; align-items: center; gap: 62px; padding-block: 82px 0; }
 .rewardme-ledger-business__hero h1 { font-size: clamp(2.7rem, 5.2vw, 4.8rem); }
 .rewardme-ledger-business__hero > div > p:not(.rewardme-ledger-business__eyebrow) { max-width: 610px; margin-top: 18px; color: var(--rm-muted); line-height: 1.65; }
 .rewardme-ledger-business__hero .rewardme-ledger-business__highlight { color: var(--rm-soft) !important; font-size: 1.15rem; }
-.rewardme-ledger-business__eyebrow { margin-bottom: 12px !important; color: var(--rm-gold); font-family: ui-monospace, "SFMono-Regular", monospace; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
+.rewardme-ledger-business__eyebrow { margin-bottom: 12px !important; color: var(--rm-gold); font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; }
 .rewardme-ledger-business__actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-.rewardme-ledger-business__button { display: inline-flex; min-height: 45px; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--rm-ink); border-radius: 3px; padding: 11px 20px; background: transparent; color: var(--rm-ink); font-family: ui-monospace, "SFMono-Regular", monospace; font-size: .7rem; font-weight: 700; letter-spacing: .045em; text-decoration: none; text-transform: uppercase; transition: transform .16s ease, background .16s ease; }
+.rewardme-ledger-business__button { display: inline-flex; min-height: 45px; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--rm-ink); border-radius: 3px; padding: 11px 20px; background: transparent; color: var(--rm-ink); font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: .7rem; font-weight: 700; letter-spacing: .045em; text-decoration: none; text-transform: uppercase; transition: transform .16s ease, background .16s ease; }
 .rewardme-ledger-business__button:hover { transform: translateY(-2px); background: rgb(31 58 46 / 7%); }
-.rewardme-ledger-business__button--gold { border-color: var(--rm-gold); background: var(--rm-gold); color: #fff; }
+.rewardme-ledger-business__button--gold { border-color: var(--rm-gold); background: var(--rm-gold); color: #211d16; }
 .rewardme-ledger-business__button--gold:hover { background: #a87827; }
 .rewardme-ledger-business__button svg { width: 15px; }
 .rewardme-ledger-business__hero-media { display: block; height: 410px; overflow: hidden; border-radius: 6px; }
@@ -1242,7 +1242,7 @@
 .rewardme-ledger-business__section-head > p:last-child, .rewardme-ledger-business__cost > div > p:not(.rewardme-ledger-business__eyebrow), .rewardme-ledger-business__bridge p, .rewardme-ledger-business__cta p { margin-top: 14px; color: var(--rm-muted); line-height: 1.65; }
 .rewardme-ledger-business__steps { margin: 0; border-top: 2px solid var(--rm-ink); padding: 0; list-style: none; }
 .rewardme-ledger-business__steps li { display: grid; grid-template-columns: 76px 1fr; gap: 24px; border-bottom: 1px solid var(--rm-line); padding: 30px 0; }
-.rewardme-ledger-business__steps li > span { color: #d8b765; font-family: "Source Serif 4", Georgia, serif; font-size: 2rem; font-weight: 600; }
+.rewardme-ledger-business__steps li > span { color: #d8b765; font-family: Fraunces, Georgia, serif; font-size: 2rem; font-weight: 600; }
 .rewardme-ledger-business__steps h3 { font-size: 1.25rem; }
 .rewardme-ledger-business__steps p { max-width: 70ch; margin-top: 8px; color: var(--rm-muted); }
 .rewardme-ledger-business__why { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--rm-line); border-radius: 4px; overflow: hidden; }
@@ -1256,7 +1256,7 @@
 .rewardme-ledger-business__cost > div > p:not(.rewardme-ledger-business__eyebrow) { color: rgb(246 241 228 / 70%); }
 .rewardme-ledger-business__model-list { border-top: 1px solid rgb(246 241 228 / 26%); }
 .rewardme-ledger-business__model-list > div { display: grid; grid-template-columns: 150px 1fr; gap: 18px; border-bottom: 1px solid rgb(246 241 228 / 26%); padding: 19px 0; }
-.rewardme-ledger-business__model-list strong { font-family: "Source Serif 4", Georgia, serif; }
+.rewardme-ledger-business__model-list strong { font-family: Fraunces, Georgia, serif; }
 .rewardme-ledger-business__model-list span { color: rgb(246 241 228 / 72%); font-size: .82rem; line-height: 1.6; }
 .rewardme-ledger-business__bridge, .rewardme-ledger-business__cta { display: flex; align-items: center; justify-content: space-between; gap: 40px; border: 1px solid var(--rm-line); border-radius: 6px; padding: 42px; background: var(--rm-paper-deep); }
 .rewardme-ledger-business__bridge > div, .rewardme-ledger-business__cta > div { max-width: 690px; }

@@ -908,7 +908,7 @@
   color: var(--ly-offwhite) !important;
 }
 /* -------------------------------------------------------------------------- */
-/* RewardMe / Wondertown approved warm editorial theme                         */
+/* RewardMe / Wondertown approved editorial theme                              */
 /* -------------------------------------------------------------------------- */
 
 :root[data-program="pinas"],
@@ -932,7 +932,7 @@
   --primary: #1f3a2e !important;
   --primary-foreground: #f6f1e4 !important;
   --secondary: #b8862e !important;
-  --secondary-foreground: #ffffff !important;
+  --secondary-foreground: #211d16 !important;
   --accent: #efe8d6 !important;
   --accent-foreground: #1f3a2e !important;
   --ring: #b8862e !important;
@@ -950,8 +950,21 @@
   --on-surface-variant: #1f3a2e !important;
   --outline-variant: #d9cfaf !important;
   --error: #a43e31 !important;
-  --font-sans: Inter, "Segoe UI", Arial, sans-serif;
-  --font-serif: "Source Serif 4", Georgia, serif;
+  --espresso: #1f3a2e !important;
+  --espresso-soft: #365848 !important;
+  --champagne: #b8862e !important;
+  --champagne-strong: #8d641f !important;
+  --blush: #efe8d6 !important;
+  --blush-foreground: #1f3a2e !important;
+  --rose-brown: #a23b2e !important;
+  --cream: #f6f1e4 !important;
+  --destructive: #a23b2e !important;
+  --destructive-foreground: #fffdf7 !important;
+  --success: #3e6b4f !important;
+  --warning: #8d641f !important;
+  --font-sans: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-serif: Fraunces, Georgia, serif;
+  --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
   color-scheme: light;
 }
 
@@ -959,11 +972,12 @@
 :root[data-program="wondertown"] body {
   background: #f6f1e4 !important;
   color: #1f3a2e !important;
+  font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif !important;
 }
 
 :root[data-program="pinas"] :is(h1, h2, h3, .font-serif),
 :root[data-program="wondertown"] :is(h1, h2, h3, .font-serif) {
-  font-family: "Source Serif 4", Georgia, serif !important;
+  font-family: Fraunces, Georgia, serif !important;
   font-weight: 600 !important;
   letter-spacing: -.015em !important;
   text-transform: none;
@@ -997,7 +1011,7 @@
 :root[data-program="pinas"] .product-auth-shell__card::before,
 :root[data-program="wondertown"] .product-auth-shell__card::before { background: #b8862e !important; }
 :root[data-program="pinas"] .product-auth-shell__card :is(h1, h2, .font-serif),
-:root[data-program="wondertown"] .product-auth-shell__card :is(h1, h2, .font-serif) { color: #1f3a2e !important; font-family: "Source Serif 4", Georgia, serif !important; text-transform: none; }
+:root[data-program="wondertown"] .product-auth-shell__card :is(h1, h2, .font-serif) { color: #1f3a2e !important; font-family: Fraunces, Georgia, serif !important; text-transform: none; }
 
 :root[data-program="pinas"] :is(input, select, textarea),
 :root[data-program="wondertown"] :is(input, select, textarea),
@@ -1051,6 +1065,66 @@
 
 :root[data-program="pinas"] [class~="bg-primary"],
 :root[data-program="wondertown"] [class~="bg-primary"] { background: #1f3a2e !important; color: #f6f1e4 !important; }
+
+:root[data-program="pinas"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell),
+:root[data-program="wondertown"] :is(.product-auth-shell, .product-customer-shell, .product-workspace-shell) {
+  font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif !important;
+}
+
+:root[data-program="pinas"] :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button),
+:root[data-program="wondertown"] :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button) {
+  border-color: #d9cfaf !important;
+  border-radius: 3px !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button):hover,
+:root[data-program="wondertown"] :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button):hover {
+  border-color: #b8862e !important;
+  color: #8d641f !important;
+}
+
+:root[data-program="pinas"] .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"],
+:root[data-program="pinas"] .product-auth-shell__card :is(button, a)[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .product-auth-shell__card :is(button, a)[class*="bg-[#d1ad4a]"] {
+  border-radius: 3px !important;
+  background: #b8862e !important;
+  color: #211d16 !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(h1, h2, h3),
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(h1, h2, h3) {
+  color: #1f3a2e !important;
+  font-family: Fraunces, Georgia, serif !important;
+  font-weight: 600 !important;
+  letter-spacing: -.015em !important;
+  line-height: 1.08 !important;
+  text-transform: none !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(section, article, div, a)[class~="bg-white"],
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(section, article, div, a)[class~="bg-white"] {
+  border-color: #d9cfaf !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) [class*="bg-[var(--muted)]"],
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) [class*="bg-[var(--muted)]"] {
+  border-color: #d9cfaf !important;
+  background: #efe8d6 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(button, a)[class~="bg-primary"],
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(button, a)[class~="bg-primary"] {
+  border-radius: 3px !important;
+  background: #1f3a2e !important;
+  color: #f6f1e4 !important;
+}
 :root[data-program="pinas"] :is(button, a)[class*="rounded-full"],
 :root[data-program="wondertown"] :is(button, a)[class*="rounded-full"] { border-radius: 3px !important; }
 :root[data-program="pinas"] [class*="rounded-3xl"],
@@ -1069,7 +1143,7 @@
 :root[data-program="pinas"] .product-legal-shell :is(h1, h2, h3, .font-serif),
 :root[data-program="wondertown"] .product-legal-shell :is(h1, h2, h3, .font-serif) {
   color: var(--foreground) !important;
-  font-family: "Source Serif 4", Georgia, serif !important;
+  font-family: Fraunces, Georgia, serif !important;
   font-weight: 600 !important;
   letter-spacing: -.015em !important;
   text-transform: none !important;

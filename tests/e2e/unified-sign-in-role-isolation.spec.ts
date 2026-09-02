@@ -6,61 +6,33 @@ const memberEmail = process.env.E2E_ROLE_ISOLATION_MEMBER_EMAIL ?? 'member@rewar
 const businessEmail = process.env.E2E_ROLE_ISOLATION_BUSINESS_EMAIL ?? 'owner@rewardme.test'
 const adminEmail = process.env.E2E_ROLE_ISOLATION_ADMIN_EMAIL ?? 'admin@rewardsplatform.test'
 
-async function expectRejectedRole(
+async function expectAutomaticRoleRoute(
   page: import('@playwright/test').Page,
-  portal: 'admin' | 'business' | 'customer',
   email: string,
-  expectedMessage: string,
+  expectedPath: RegExp,
 ) {
-  await page.goto(`/signin?portal=${portal}`, { waitUntil: 'domcontentloaded' })
+  await page.goto('/signin', { waitUntil: 'domcontentloaded' })
   await page.locator('#signin-email').fill(email)
   await page.locator('#signin-password').fill(password)
-  await page.getByRole('form', { name: `Sign in as ${portal[0].toUpperCase()}${portal.slice(1)}` })
+  await page.getByRole('form', { name: 'Sign in' })
     .locator('button[type="submit"]')
     .click()
 
-  await expect(page.getByText(expectedMessage, { exact: true })).toBeVisible({ timeout: 15_000 })
-  await expect(page).toHaveURL(new RegExp(`/signin\\?portal=${portal}$`))
-  await page.goto('/dashboard', { waitUntil: 'domcontentloaded' })
-  await expect(page).not.toHaveURL(/\/dashboard$/)
+  await expect(page).toHaveURL(expectedPath, { timeout: 15_000 })
 }
 
-test.describe.serial('unified sign-in role isolation', () => {
+test.describe.serial('automatic sign-in role routing', () => {
   test.skip(!roleIsolationEnabled, 'Enable only with the private QA account credentials.')
 
-  test('customer accounts cannot enter the business choice', async ({ page }) => {
-    await expectRejectedRole(
-      page,
-      'business',
-      memberEmail,
-      'This account does not have access to the business portal.',
-    )
+  test('customer credentials open the customer workspace', async ({ page }) => {
+    await expectAutomaticRoleRoute(page, memberEmail, /\/dashboard$/)
   })
 
-  test('business accounts cannot enter the customer choice', async ({ page }) => {
-    await expectRejectedRole(
-      page,
-      'customer',
-      businessEmail,
-      'This account does not have access to the customer portal.',
-    )
+  test('business credentials open the business workspace', async ({ page }) => {
+    await expectAutomaticRoleRoute(page, businessEmail, /\/business\/dashboard$/)
   })
 
-  test('non-admin accounts cannot enter the admin choice', async ({ page }) => {
-    await expectRejectedRole(
-      page,
-      'admin',
-      memberEmail,
-      'This account does not have access to the admin portal.',
-    )
-  })
-
-  test('admin accounts cannot enter the customer choice', async ({ page }) => {
-    await expectRejectedRole(
-      page,
-      'customer',
-      adminEmail,
-      'This account does not have access to the customer portal.',
-    )
+  test('admin credentials open the admin workspace', async ({ page }) => {
+    await expectAutomaticRoleRoute(page, adminEmail, /\/admin\/portal$/)
   })
 })
