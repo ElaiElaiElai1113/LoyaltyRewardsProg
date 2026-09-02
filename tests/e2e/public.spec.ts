@@ -247,7 +247,7 @@ test.describe('public acquisition workflow', () => {
 
   test('RewardMe sign-in keeps release mode credential-safe', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
-    await page.goto('/signin')
+    await page.goto('/signin?tenant=rewardme')
     const shell = page.locator('[data-rewardme-auth-shell]')
     const story = shell.locator('.rewardme-auth-shell__story')
     const card = shell.locator('.product-auth-shell__card')

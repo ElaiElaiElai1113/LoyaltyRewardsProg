@@ -114,6 +114,22 @@ describe('cross-tenant runtime safeguards', () => {
 
     expect(getFallbackProgram('guatemalarewards.com').slug).toBe('guatemala')
     expect(getFallbackProgram('localhost').slug).toBe('medellin')
+
+    vi.stubGlobal('window', { location: { search: '?tenant=rewardme' } })
+    expect(getFallbackProgram('127.0.0.1').slug).toBe('pinas')
+    expect(getFallbackProgram('rewardme.rewardsplatform.app').slug).toBe('pinas')
+  })
+
+  it('keeps local RewardMe previews off stale production service workers', () => {
+    const entry = source('src/main.tsx')
+    const viteConfig = source('vite.config.ts')
+
+    expect(entry).toContain('if (import.meta.env.PROD)')
+    expect(entry).toContain('navigator.serviceWorker.getRegistrations()')
+    expect(entry).toContain('registration.unregister()')
+    expect(viteConfig).toContain("server.middlewares.use('/sw.js'")
+    expect(viteConfig).toContain("response.setHeader('Cache-Control', 'no-store, max-age=0')")
+    expect(viteConfig).toContain('await self.registration.unregister()')
   })
 
   it('keeps every platform-admin document surface parent branded', () => {

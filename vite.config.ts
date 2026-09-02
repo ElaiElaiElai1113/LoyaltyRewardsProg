@@ -1,11 +1,44 @@
 import path from 'node:path'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, type Plugin } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
+
+function localServiceWorkerCleanup(): Plugin {
+  return {
+    name: 'local-service-worker-cleanup',
+    apply: 'serve',
+    configureServer(server) {
+      server.middlewares.use('/sw.js', (request, response, next) => {
+        if (request.method !== 'GET') {
+          next()
+          return
+        }
+
+        response.statusCode = 200
+        response.setHeader('Content-Type', 'application/javascript; charset=utf-8')
+        response.setHeader('Cache-Control', 'no-store, max-age=0')
+        response.end(`
+self.addEventListener('install', () => self.skipWaiting())
+self.addEventListener('activate', (event) => {
+  event.waitUntil((async () => {
+    const cacheNames = await caches.keys()
+    await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)))
+    await self.clients.claim()
+    await self.registration.unregister()
+    const clients = await self.clients.matchAll({ type: 'window' })
+    await Promise.all(clients.map((client) => client.navigate(client.url)))
+  })())
+})
+`)
+      })
+    },
+  }
+}
 
 export default defineConfig({
   plugins: [
+    localServiceWorkerCleanup(),
     react(),
     tailwindcss(),
     VitePWA({

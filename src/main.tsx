@@ -44,29 +44,35 @@ window.addEventListener('unhandledrejection', (event) => {
   })
 })
 
-const hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller)
-let reloadingForServiceWorkerUpdate = false
+if (import.meta.env.PROD) {
+  const hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller)
+  let reloadingForServiceWorkerUpdate = false
 
-if (hadServiceWorkerController) {
-  navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (reloadingForServiceWorkerUpdate) return
-    reloadingForServiceWorkerUpdate = true
-    window.location.reload()
+  if (hadServiceWorkerController) {
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (reloadingForServiceWorkerUpdate) return
+      reloadingForServiceWorkerUpdate = true
+      window.location.reload()
+    })
+  }
+
+  const updateServiceWorker = registerSW({
+    immediate: true,
+    onNeedRefresh() {
+      void updateServiceWorker(true)
+    },
+    onRegisteredSW(_serviceWorkerUrl, registration) {
+      void registration?.update()
+    },
+    onRegisterError(error) {
+      console.error('Service worker registration failed', error)
+    },
   })
+} else if ('serviceWorker' in navigator) {
+  void navigator.serviceWorker.getRegistrations().then((registrations) => (
+    Promise.all(registrations.map((registration) => registration.unregister()))
+  ))
 }
-
-const updateServiceWorker = registerSW({
-  immediate: true,
-  onNeedRefresh() {
-    void updateServiceWorker(true)
-  },
-  onRegisteredSW(_serviceWorkerUrl, registration) {
-    void registration?.update()
-  },
-  onRegisterError(error) {
-    console.error('Service worker registration failed', error)
-  },
-})
 
 function renderApp() {
   createRoot(document.getElementById('root')!).render(

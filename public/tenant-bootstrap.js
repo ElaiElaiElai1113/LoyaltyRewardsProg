@@ -51,6 +51,9 @@
     logo: '/rewards-program-mark.svg',
     description: 'Member rewards and local business benefits.',
   }
+  var brandAliases = {
+    rewardme: 'pinas',
+  }
   var isPlatformAdmin = /^\/admin(?:\/|$)/.test(window.location.pathname)
   var hostSlugs = {
     'medellinrewards.com': 'medellin',
@@ -76,9 +79,11 @@
     || hostname.endsWith('.rewardsplatform.app')
     || (hostname.indexOf('loyalty-rewards-prog-') === 0 && hostname.endsWith('-elaielaielai1113s-projects.vercel.app'))
   var querySlug = canUsePreviewOverride ? new URLSearchParams(window.location.search).get('tenant') : null
+  querySlug = querySlug ? (brandAliases[querySlug] || querySlug) : null
   var hostSlug = hostSlugs[hostname]
   if (!hostSlug && hostname.endsWith('.rewardsplatform.app')) {
     var platformSubdomain = hostname.slice(0, -'.rewardsplatform.app'.length)
+    platformSubdomain = brandAliases[platformSubdomain] || platformSubdomain
     if (brands[platformSubdomain]) hostSlug = platformSubdomain
   }
   var slug = querySlug && brands[querySlug] ? querySlug : hostSlug
