@@ -13,6 +13,72 @@ import {
 
 let pendingSignInRole: AuthFormValues['role'] | 'auto' | null = null
 
+export const INVALID_REFERRAL_CODE_MESSAGE =
+  'This referral code is invalid or no longer active. Check the code and try again.'
+
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+
+function cleanOptionalValue(value: string | null | undefined) {
+  const cleaned = value?.trim() ?? ''
+  return cleaned || null
+}
+
+async function validateReferralBeforeSignUp(
+  input: MemberSignUpSubmission,
+): Promise<{
+  referralCode: string | null
+  referralBusinessId: string | null
+  partnerReferralCode: string | null
+  partnerBusinessId: string | null
+}> {
+  const referralCode = cleanOptionalValue(input.referralCode)
+  const referralBusinessId = cleanOptionalValue(input.referralBusinessId)
+  const partnerReferralCode = cleanOptionalValue(input.partnerReferralCode)
+  const partnerBusinessId = cleanOptionalValue(input.partnerBusinessId)
+
+  if (!referralCode && !partnerReferralCode) {
+    return { referralCode, referralBusinessId, partnerReferralCode, partnerBusinessId }
+  }
+
+  if (
+    (referralCode && partnerReferralCode)
+    || (referralBusinessId && !UUID_PATTERN.test(referralBusinessId))
+    || (partnerReferralCode && (!partnerBusinessId || !UUID_PATTERN.test(partnerBusinessId)))
+  ) {
+    throw new Error(INVALID_REFERRAL_CODE_MESSAGE)
+  }
+
+  const kind = partnerReferralCode ? 'partner' : 'member'
+  const code = partnerReferralCode ?? referralCode
+  const businessId = partnerReferralCode ? partnerBusinessId : referralBusinessId
+  let response: Response
+  try {
+    response = await fetch('/api/validate-referral', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        referralCode: code,
+        programId: getActiveProgram().id,
+        businessId,
+        kind,
+      }),
+    })
+  } catch {
+    throw new Error('The referral code could not be verified. Please try again.')
+  }
+
+  if (!response.ok) {
+    throw new Error('The referral code could not be verified. Please try again.')
+  }
+
+  const result = await response.json() as { valid?: unknown }
+  if (result.valid !== true) {
+    throw new Error(INVALID_REFERRAL_CODE_MESSAGE)
+  }
+
+  return { referralCode, referralBusinessId, partnerReferralCode, partnerBusinessId }
+}
+
 function getUrlTokenParams() {
   if (typeof window === 'undefined') {
     return new URLSearchParams()
@@ -240,6 +306,8 @@ export const authService = {
       throw new Error('Enter your WhatsApp or phone number to create an account.')
     }
 
+    const referral = await validateReferralBeforeSignUp(input)
+
     const { data, error: authError } = await sb.auth.signUp({
       email,
       password: input.password,
@@ -249,11 +317,21 @@ export const authService = {
           full_name: name,
           phone,
           active_program_id: getActiveProgram().id,
+          ...(referral.referralCode ? { referral_code: referral.referralCode } : {}),
+          ...(referral.referralBusinessId ? { referral_business_id: referral.referralBusinessId } : {}),
+          ...(referral.partnerReferralCode ? { partner_referral_code: referral.partnerReferralCode } : {}),
+          ...(referral.partnerBusinessId ? { partner_business_id: referral.partnerBusinessId } : {}),
         },
       },
     })
 
     if (authError) {
+      if (
+        (referral.referralCode || referral.partnerReferralCode)
+        && (authError.message.includes('invalid_referral_code') || authError.message.includes('Database error saving new user'))
+      ) {
+        throw new Error(INVALID_REFERRAL_CODE_MESSAGE)
+      }
       if (authError.message.includes('already registered')) {
         throw new Error('That email already exists. Try signing in instead.')
       }

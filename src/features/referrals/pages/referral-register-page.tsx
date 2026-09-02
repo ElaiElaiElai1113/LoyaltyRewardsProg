@@ -144,19 +144,14 @@ export function ReferralRegisterPage() {
                 onSubmit={form.handleSubmit(async (values) => {
                   try {
                     setError(null)
-                    if (partnerCode) {
-                      sessionStorage.setItem('partnerReferrerCode', partnerCode)
-                      if (businessId) {
-                        sessionStorage.setItem('partnerBusinessId', businessId)
-                      }
-                    }
-                    if (referrerId) {
-                      sessionStorage.setItem('referralCode', referrerId)
-                      if (businessId) {
-                        sessionStorage.setItem('referralBusinessId', businessId)
-                      }
-                    }
-                    const result = await signUp({ ...values, role: 'customer' })
+                    const result = await signUp({
+                      ...values,
+                      role: 'customer',
+                      referralCode: referrerId,
+                      referralBusinessId: referrerId ? businessId : null,
+                      partnerReferralCode: partnerCode,
+                      partnerBusinessId: partnerCode ? businessId : null,
+                    })
                     setSignUpWarning(result.warning ?? null)
                     setSignUpComplete(true)
                     form.reset(defaultValues)
@@ -219,7 +214,7 @@ export function ReferralRegisterPage() {
                   />
                 </div>
 
-                {error ? <p className="text-center text-sm font-bold text-red-500">{error}</p> : null}
+                {error ? <p className="text-center text-sm font-bold text-red-500" role="alert">{t(error)}</p> : null}
 
                 <Button
                   type="submit"

@@ -35,9 +35,9 @@ export const rewardMeLaunchWorkstreams: LaunchReadinessWorkstream[] = [
     nextAction: 'Replace samples with signed, owner-approved partner data and create the review package.', href: '/admin/import', actionLabel: 'Open import tools',
   },
   {
-    id: 'authenticated-qa', title: 'Authenticated release QA', status: 'external-required', owner: 'Release owner',
-    description: 'Temporary-user Supabase isolation and RewardMe member browser checks run only with explicit QA credentials and clean up created users.',
-    nextAction: 'Provide isolated QA Supabase credentials and run the hosted-safe Playwright command.', href: '/admin/guide', actionLabel: 'Review QA guide',
+    id: 'authenticated-qa', title: 'Authenticated release verification', status: 'external-required', owner: 'Release owner',
+    description: 'Temporary-user isolation and RewardMe member browser checks run only with private release credentials and clean up created users.',
+    nextAction: 'Provide isolated release credentials and run the hosted-safe browser verification command.', href: '/admin/guide', actionLabel: 'Review verification guide',
   },
   {
     id: 'commercial', title: 'Commercial rules', status: 'approval-required', owner: 'RewardMe owner, legal, tax, and accounting',

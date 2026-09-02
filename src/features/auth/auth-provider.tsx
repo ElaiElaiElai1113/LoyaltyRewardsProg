@@ -14,27 +14,21 @@ interface AuthProviderProps {
   children: ReactNode
 }
 
-async function createPendingReferralForProfile(profile: Profile) {
-  const referralCode = sessionStorage.getItem('referralCode')
+async function createPendingReferralForProfile(profile: Profile, values: MemberSignUpSubmission) {
+  const referralCode = values.referralCode?.trim()
   if (!referralCode || referralCode === profile.id || referralCode === profile.referralCode) return null
 
-  const referralBusinessId = sessionStorage.getItem('referralBusinessId')
+  const referralBusinessId = values.referralBusinessId?.trim()
   const result = await referralsService.createReferral(referralCode, profile.id, referralBusinessId ?? null)
-  if (result) {
-    sessionStorage.removeItem('referralCode')
-    sessionStorage.removeItem('referralBusinessId')
-  }
   return result
 }
 
-async function createPendingPartnerReferralForProfile(profile: Profile) {
-  const partnerCode = sessionStorage.getItem('partnerReferrerCode')
-  const partnerBusinessId = sessionStorage.getItem('partnerBusinessId')
+async function createPendingPartnerReferralForProfile(profile: Profile, values: MemberSignUpSubmission) {
+  const partnerCode = values.partnerReferralCode?.trim()
+  const partnerBusinessId = values.partnerBusinessId?.trim()
   if (!partnerCode || !partnerBusinessId || profile.role !== 'customer') return
 
   await partnerService.attributePartnerReferral(partnerCode, profile.id, partnerBusinessId)
-  sessionStorage.removeItem('partnerReferrerCode')
-  sessionStorage.removeItem('partnerBusinessId')
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
@@ -186,8 +180,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
       const attributionWarnings: string[] = []
 
       try {
-        const hadReferral = Boolean(sessionStorage.getItem('referralCode'))
-        const referralResult = await createPendingReferralForProfile(sessionProfile)
+        const hadReferral = Boolean(values.referralCode?.trim())
+        const referralResult = await createPendingReferralForProfile(sessionProfile, values)
         if (hadReferral && !referralResult) {
           attributionWarnings.push('We could not link your referral invite. Your account was created successfully.')
         }
@@ -197,7 +191,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       }
 
       try {
-        await createPendingPartnerReferralForProfile(sessionProfile)
+        await createPendingPartnerReferralForProfile(sessionProfile, values)
       } catch (error) {
         console.warn('Pending partner referral creation skipped:', error)
         attributionWarnings.push('We could not link your partner invite. Your account was created successfully.')

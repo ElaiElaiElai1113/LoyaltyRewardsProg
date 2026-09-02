@@ -19,22 +19,17 @@ export function PromoPage() {
   const hasPartnerReferral = Boolean(partnerCode)
   const currentBusiness = businesses.data?.find((business) => business.id === businessId) ?? null
 
+  // Checkout can happen after leaving this page, so retain only the partner
+  // attribution context it consumes. Member signup referrals travel explicitly
+  // in the registration URL and never rely on stale browser storage.
   useEffect(() => {
-    if (partnerCode) {
-      sessionStorage.setItem('partnerReferrerCode', partnerCode)
-      if (businessId) {
-        sessionStorage.setItem('partnerBusinessId', businessId)
-      }
-      return
-    }
+    if (!partnerCode) return
 
-    if (!referrerId) return
-
-    sessionStorage.setItem('referralCode', referrerId)
+    sessionStorage.setItem('partnerReferrerCode', partnerCode)
     if (businessId) {
-      sessionStorage.setItem('referralBusinessId', businessId)
+      sessionStorage.setItem('partnerBusinessId', businessId)
     }
-  }, [businessId, partnerCode, referrerId])
+  }, [businessId, partnerCode])
 
   return (
     <main className="min-h-screen bg-transparent px-4 py-8 md:px-8 lg:px-12">

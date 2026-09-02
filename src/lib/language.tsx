@@ -584,6 +584,8 @@ const spanishTranslations: Record<string, string> = {
   optional: 'opcional',
   'Your full name': 'Tu nombre completo',
   'Enter a referral code': 'Ingresa un código de referido',
+  'This referral code is invalid or no longer active. Check the code and try again.': 'Este código de referido no es válido o ya no está activo. Revisa el código e inténtalo de nuevo.',
+  'The referral code could not be verified. Please try again.': 'No se pudo verificar el código de referido. Inténtalo de nuevo.',
   'At least 5 characters': 'Al menos 5 caracteres',
   'I agree to the': 'Acepto los',
   'Terms of Service': 'Términos del servicio',
@@ -3696,13 +3698,13 @@ const spanishTranslations: Record<string, string> = {
   'Replace samples with signed, owner-approved partner data and create the review package.':
     'Reemplaza las muestras con datos de aliados firmados y aprobados por el propietario, y crea el paquete de revisión.',
   'Open import tools': 'Abrir herramientas de importación',
-  'Authenticated release QA': 'Control de calidad autenticado de la versión',
-  'Temporary-user Supabase isolation and RewardMe member browser checks run only with explicit QA credentials and clean up created users.':
-    'El aislamiento de usuarios temporales en Supabase y las comprobaciones de miembros de RewardMe en el navegador solo se ejecutan con credenciales explícitas de QA y eliminan los usuarios creados.',
+  'Authenticated release verification': 'Verificación autenticada de la versión',
+  'Temporary-user isolation and RewardMe member browser checks run only with private release credentials and clean up created users.':
+    'El aislamiento de usuarios temporales y las comprobaciones de miembros de RewardMe en el navegador solo se ejecutan con credenciales privadas de versión y eliminan los usuarios creados.',
   'Release owner': 'Responsable de la versión',
-  'Provide isolated QA Supabase credentials and run the hosted-safe Playwright command.':
-    'Proporciona credenciales aisladas de Supabase para QA y ejecuta el comando de Playwright seguro para el entorno alojado.',
-  'Review QA guide': 'Revisar guía de QA',
+  'Provide isolated release credentials and run the hosted-safe browser verification command.':
+    'Proporciona credenciales aisladas de versión y ejecuta el comando seguro de verificación del navegador.',
+  'Review verification guide': 'Revisar guía de verificación',
   'Commercial rules': 'Reglas comerciales',
   'Trial, plan, cancellation, eligible-spend, referral, commission, settlement, and support defaults are decision-ready.':
     'Las opciones predeterminadas de prueba, plan, cancelación, gasto elegible, referido, comisión, liquidación y soporte están listas para decidirse.',
@@ -4084,6 +4086,8 @@ const tagalogTranslations: Record<string, string> = {
   optional: 'opsyonal',
   'Your full name': 'Buong pangalan mo',
   'Enter a referral code': 'Ilagay ang referral code',
+  'This referral code is invalid or no longer active. Check the code and try again.': 'Hindi wasto o hindi na aktibo ang referral code na ito. Suriin ang code at subukan muli.',
+  'The referral code could not be verified. Please try again.': 'Hindi ma-verify ang referral code. Pakisubukan muli.',
   'At least 5 characters': 'Hindi bababa sa 5 character',
   'I agree to the': 'Sumasang-ayon ako sa',
   'Terms of Service': 'Mga Tuntunin ng Serbisyo',
@@ -6343,13 +6347,13 @@ const tagalogTranslations: Record<string, string> = {
   'Replace samples with signed, owner-approved partner data and create the review package.':
     'Palitan ang mga halimbawa ng nilagdaan at inaprubahang datos ng katuwang, saka buuin ang pakete para sa pagsusuri.',
   'Open import tools': 'Buksan ang mga kagamitan sa pag-angkat',
-  'Authenticated release QA': 'Pinatunayang QA para sa paglabas',
-  'Temporary-user Supabase isolation and RewardMe member browser checks run only with explicit QA credentials and clean up created users.':
-    'Ang pagbukod ng pansamantalang user sa Supabase at mga pagsusuri sa browser ng miyembro ng RewardMe ay tumatakbo lamang gamit ang tahasang kredensiyal sa QA at binubura ang mga ginawang user.',
+  'Authenticated release verification': 'Pinatunayang beripikasyon para sa paglabas',
+  'Temporary-user isolation and RewardMe member browser checks run only with private release credentials and clean up created users.':
+    'Ang pagbukod ng pansamantalang user at mga pagsusuri sa browser ng miyembro ng RewardMe ay tumatakbo lamang gamit ang pribadong kredensiyal sa paglabas at binubura ang mga ginawang user.',
   'Release owner': 'May pananagutan sa paglabas',
-  'Provide isolated QA Supabase credentials and run the hosted-safe Playwright command.':
-    'Ibigay ang nakabukod na kredensiyal sa Supabase para sa QA at patakbuhin ang utos sa Playwright na ligtas sa naka-host na kapaligiran.',
-  'Review QA guide': 'Suriin ang gabay sa QA',
+  'Provide isolated release credentials and run the hosted-safe browser verification command.':
+    'Ibigay ang nakabukod na kredensiyal sa paglabas at patakbuhin ang ligtas na utos para sa beripikasyon ng browser.',
+  'Review verification guide': 'Suriin ang gabay sa beripikasyon',
   'Commercial rules': 'Mga tuntuning pangkalakalan',
   'Trial, plan, cancellation, eligible-spend, referral, commission, settlement, and support defaults are decision-ready.':
     'Handa nang pagpasiyahan ang mga karaniwang tuntunin sa panubok na panahon, plano, pagkansela, kuwalipikadong gastos, pagsangguni, komisyon, pag-aayos ng bayad, at tulong.',

@@ -23,7 +23,12 @@ export const memberSignUpSchema = authSchema.extend({
 })
 
 export type MemberSignUpFormValues = z.infer<typeof memberSignUpSchema>
-export type MemberSignUpSubmission = MemberSignUpFormValues
+export type MemberSignUpSubmission = MemberSignUpFormValues & {
+  referralCode?: string | null
+  referralBusinessId?: string | null
+  partnerReferralCode?: string | null
+  partnerBusinessId?: string | null
+}
 
 export const memberVerificationSchema = z.object({
   verificationIdNumber: z
