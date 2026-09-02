@@ -34,6 +34,8 @@ const required = {
     'workflow_run:',
     'VERCEL_TOKEN',
     'ops:deploy:tenants',
+    'ensure-direct-vercel-domain.mjs',
+    'Require direct RewardMe application and worker responses',
     'loyalty-rewards-prog.vercel.app',
     'www.medellinrewards.com',
     'guatemalarewards.com',

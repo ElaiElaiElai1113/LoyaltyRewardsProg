@@ -88,6 +88,19 @@ jobs:
       - name: Synchronize tenant deployments
         run: npm run ops:deploy:tenants -- --sha "$EXPECTED_COMMIT_SHA" --output artifacts/deployment/tenant-sync.json
 
+      - name: Remove the legacy RewardMe project-domain redirect
+        run: >-
+          node scripts/ensure-direct-vercel-domain.mjs
+          --project loyalty-rewards-prog
+          --domain loyalty-rewards-prog.vercel.app
+          --scope "$VERCEL_SCOPE"
+
+      - name: Require direct RewardMe application and worker responses
+        shell: bash
+        run: |
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'https://loyalty-rewards-prog.vercel.app/signin?tenant=rewardme')" = '200'
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'https://loyalty-rewards-prog.vercel.app/sw.js')" = '200'
+
       - name: Install browser for canonical domain verification
         run: npx playwright install --with-deps chromium
 
