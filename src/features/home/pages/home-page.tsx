@@ -472,14 +472,10 @@ export function HomePage() {
               <button
                 className="figma-home__language-toggle"
                 type="button"
-                onClick={() => setLanguage(isPinasRewards ? (language === 'tl' ? 'en' : 'tl') : (language === 'es' ? 'en' : 'es'))}
-                aria-label={isPinasRewards
-                  ? (language === 'tl' ? 'Lumipat sa Ingles' : 'Switch to Tagalog')
-                  : language === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish'}
+                onClick={() => setLanguage(language === 'es' ? 'en' : 'es')}
+                aria-label={language === 'es' ? 'Cambiar a Inglés' : 'Switch to Spanish'}
               >
-                {languageDisplayNames[language][isPinasRewards
-                  ? (language === 'tl' ? 'en' : 'tl')
-                  : (language === 'es' ? 'en' : 'es')]}
+                {languageDisplayNames[language][language === 'es' ? 'en' : 'es']}
               </button>
               <Link className="figma-home__button figma-home__button--header" to="/join">
                 {tx('Join now')}

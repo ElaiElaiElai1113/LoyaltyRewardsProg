@@ -89,7 +89,8 @@ describe('Loyality product contract', () => {
   })
 
   it('offers persistent English and Spanish controls on every Loyality surface', () => {
-    expect(languagePicker).toContain("program.slug === 'loyality' ? (['en', 'es'] as Language[])")
+    expect(languagePicker).toContain("const options = ['en', 'es'] as Language[]")
+    expect(languagePicker).not.toContain("['en', 'tl', 'es']")
     expect(languagePicker).not.toContain("if (program.slug === 'loyality') return null")
     expect(language).not.toContain("if (getActiveProgram().slug === 'loyality') return 'en'")
     expect(publicLayout).not.toContain('isLoyality ? null : (\n              <LanguagePicker')

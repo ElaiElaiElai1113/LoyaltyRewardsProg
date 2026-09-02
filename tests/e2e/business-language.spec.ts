@@ -151,58 +151,33 @@ test.describe('business onboarding language isolation', () => {
       await expectNoEnglishBusinessLabels(page, tenant)
     })
 
-    test(`${tenant.name} business page is fully Tagalog`, async ({ page }) => {
+    test(`${tenant.name} business page replaces a legacy Tagalog preference with English`, async ({ page }) => {
       await openBusinessPage(page, tenant, 'tl')
 
       const experience = page.locator('[data-rewardme-editorial-business]')
       const header = page.locator('header')
-      const footer = page.locator('footer')
       await expect(experience).toBeVisible()
-      if (tenant.wondertown) {
-        await expect(experience).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
-      } else {
-        await expect(experience).not.toHaveAttribute('data-wondertown-rewardme-mirror')
-      }
-      await expect(page.getByRole('combobox', { name: 'Wika' })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Mga Benepisyo', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Paano Ito Gumagana', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Magsimula', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Pagpasok ng Negosyo', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', {
-        name: `Pangunahing pahina ng kasapi sa ${tenant.programName}`,
-      })).toBeVisible()
-      await expect(footer).toContainText('Nakalaan ang lahat ng karapatan.')
-      await expect(footer.getByRole('link', { name: 'Patakaran sa Pagkapribado' })).toBeVisible()
-
-      await expect(experience.getByRole('heading', { name: 'Makakuha ng bagong customer habang ginagantimpalaan ang aming mga miyembro.' })).toBeVisible()
-      await expect(experience.getByRole('link', { name: 'Mag-apply: modelong komisyon' })).toBeVisible()
-      await expect(experience.getByRole('heading', { name: 'Tatlong hakbang. Resulta ang binabayaran mo, hindi access.' })).toBeVisible()
-      await expect(experience.locator('img[alt="May-ari ng lokal na negosyo na tumatanggap sa mga rewards member"]')).toBeVisible()
-
-      if (tenant.wondertown) {
-        await expect(experience.locator('.rewardme-ledger-business__highlight')).toContainText('Wondertown Rewards')
-        await expect(experience.locator('a[href="/signin?portal=business"]')).toBeVisible()
-        await expect(experience.locator('a[href="/guide"]')).toBeVisible()
-        await expect(footer).toContainText(
-          'Isang kathang-isip na workspace ng negosyo para subukan ang kumpletong rewards workflow.',
-        )
-        await expect(page.getByText('Patakbuhin ang tindahan sa Wondertown.', { exact: true })).toHaveCount(0)
-        await expect(page.locator('img[alt="Makulay na guhit ng kathang-isip na distrito ng negosyo sa Wondertown"]')).toHaveCount(0)
-      }
-
-      await expectNoEnglishBusinessLabels(page, tenant)
+      await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+      const languagePicker = page.getByRole('combobox', { name: 'Language' })
+      await expect(languagePicker).toHaveValue('en')
+      await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
+      await expect(header.getByRole('link', { name: 'Benefits', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'How It Works', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
+      await expect(experience.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
     })
   }
 
   for (const tenant of tenants) {
-    test(`${tenant.name} shared business header keeps all three languages usable at 320px`, async ({ page }) => {
+    test(`${tenant.name} shared business header keeps English and Spanish usable at 320px`, async ({ page }) => {
       await page.setViewportSize({ width: 320, height: 700 })
       await openBusinessPage(page, tenant, 'tl')
 
-      const languagePicker = page.getByRole('combobox', { name: 'Wika' })
+      const languagePicker = page.getByRole('combobox', { name: 'Language' })
       await expect(languagePicker).toBeVisible()
-      await expect(languagePicker.locator('option')).toHaveCount(3)
-      await expect(page.getByRole('link', { name: 'Pagpasok ng Negosyo', exact: true })).toBeVisible()
+      await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
+      await expect(page.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

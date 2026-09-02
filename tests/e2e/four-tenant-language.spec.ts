@@ -60,7 +60,7 @@ async function selectSpanishFromHome(page: Page, tenant: TargetTenant) {
 
   const picker = page.getByRole('combobox', { name: 'Language' })
   await expect(picker).toBeVisible()
-  await expect(picker.locator('option')).toHaveCount(tenant === 'loyality' ? 2 : 3)
+  await expect(picker.locator('option')).toHaveCount(2)
   await picker.selectOption('es')
   await expect(page.getByRole('combobox', { name: 'Idioma' })).toHaveValue('es')
 }

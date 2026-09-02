@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test'
 
-type SupportedLanguage = 'en' | 'es' | 'tl'
+type SupportedLanguage = 'en' | 'es'
 type HomeTenant = 'rewardme' | 'wondertown'
 
 const storageSlug: Record<HomeTenant, string> = {
@@ -44,18 +44,6 @@ const localizedHomeCopy: Record<SupportedLanguage, {
     wondertownStamp: 'Cuenta de prueba',
     rewardmeStamp: 'Cuenta de miembro',
   },
-  tl: {
-    hero: 'Makakuha ng magagandang reward habang sinusuportahan ang mga lokal na negosyo.',
-    account: 'Isang account. Malinaw na alok. Lokal na rewards.',
-    rates: 'Malinaw na sinasabi ng alok kung ano ang maaari mong kitain.',
-    signIn: 'Pumasok',
-    start: 'Simulan ang libreng pagpasok',
-    startLong: 'Simulan ang iyong libreng access',
-    seeHow: 'Tingnan kung paano ito gumagana',
-    wondertownEyebrow: 'RewardMe test environment · kathang-isip na data',
-    wondertownStamp: 'Test account',
-    rewardmeStamp: 'Account ng miyembro',
-  },
 }
 
 async function openLocalizedHome(page: Page, tenant: HomeTenant, language: SupportedLanguage) {
@@ -65,7 +53,7 @@ async function openLocalizedHome(page: Page, tenant: HomeTenant, language: Suppo
   await page.goto(`/?tenant=${tenant}`)
 }
 
-for (const language of ['en', 'es', 'tl'] as const) {
+for (const language of ['en', 'es'] as const) {
   for (const tenant of ['rewardme', 'wondertown'] as const) {
     test(`${tenant} home localizes the complete landing experience with ${language.toUpperCase()} saved`, async ({ page }) => {
       await openLocalizedHome(page, tenant, language)
@@ -96,13 +84,27 @@ for (const language of ['en', 'es', 'tl'] as const) {
 for (const tenant of ['rewardme', 'wondertown'] as const) {
   test(`${tenant} keeps the public actions reachable at 320px without horizontal overflow`, async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 700 })
-    await openLocalizedHome(page, tenant, 'tl')
-    const copy = localizedHomeCopy.tl
+    await openLocalizedHome(page, tenant, 'es')
+    const copy = localizedHomeCopy.es
 
     await expect(page.locator('.reference-rewardme')).toBeVisible()
     await expect(page.getByRole('link', { name: copy.start }).first()).toBeVisible()
     await expect(page.getByRole('link', { name: copy.startLong })).toBeVisible()
-    await expect(page.getByRole('link', { name: copy.seeHow })).toBeVisible()
+    await expect(page.getByRole('link', { name: copy.seeHow, exact: true })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)
+  })
+
+  test(`${tenant} falls back to English when an old Tagalog preference is stored`, async ({ page }) => {
+    await page.addInitScript(({ slug }) => {
+      window.localStorage.setItem(`rewards:${slug}:language`, 'tl')
+    }, { slug: storageSlug[tenant] })
+    await page.goto(`/?tenant=${tenant}`)
+
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page.getByRole('heading', { level: 1, name: localizedHomeCopy.en.hero })).toBeVisible()
+    const picker = page.getByRole('combobox', { name: 'Language' })
+    await expect(picker).toHaveValue('en')
+    await expect(picker.locator('option')).toHaveCount(2)
+    await expect(picker.locator('option')).toHaveText(['English', 'Spanish'])
   })
 }

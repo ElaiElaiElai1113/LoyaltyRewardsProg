@@ -6634,13 +6634,13 @@ const LanguageContext = createContext<LanguageContextValue | null>(null)
 
 export function getDefaultLanguageForLocale(locale: string): Language {
   const baseLanguage = locale.trim().toLowerCase().split('-')[0]
-  return baseLanguage === 'es' || baseLanguage === 'tl' ? baseLanguage : 'en'
+  return baseLanguage === 'es' ? 'es' : 'en'
 }
 
 function getStoredLanguage(): Language {
   if (typeof window === 'undefined') return 'en'
   const stored = window.localStorage.getItem(tenantStorageKey('language'))
-  if (stored === 'en' || stored === 'es' || stored === 'tl') return stored
+  if (stored === 'en' || stored === 'es') return stored
   return getDefaultLanguageForLocale(getActiveProgram().locale)
 }
 
@@ -6673,7 +6673,7 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const value = useMemo<LanguageContextValue>(
     () => ({
       language,
-      setLanguage: setLanguageState,
+      setLanguage: (nextLanguage) => setLanguageState(nextLanguage === 'es' ? 'es' : 'en'),
       t: (text, values) => translateForLanguage(language, text, values),
     }),
     [language],

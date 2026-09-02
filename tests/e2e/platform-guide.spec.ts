@@ -1,21 +1,17 @@
 import { expect, test, type Page } from '@playwright/test'
 
-async function expectTagalogPublicShell(page: Page) {
+async function expectEnglishPublicShell(page: Page) {
   const header = page.locator('header')
   const footer = page.locator('footer')
 
-  await expect(header).toContainText('Ginintuang Lupon')
-  await expect(header.getByRole('link', { name: 'Gabay', exact: true })).toBeVisible()
-  await expect(header.getByRole('link', { name: 'Para sa mga negosyo', exact: true })).toBeVisible()
-  await expect(header.getByRole('link', { name: 'Sumali sa Samahan ng Gantimpala', exact: true })).toBeVisible()
-  await expect(footer.getByRole('link', { name: 'Mga tuntunin', exact: true })).toBeVisible()
-  await expect(footer.getByRole('link', { name: 'Pagkapribado', exact: true })).toBeVisible()
-  await expect(page.getByText('Golden Circle', { exact: true })).toHaveCount(0)
-  await expect(page.getByText('For Businesses', { exact: true })).toHaveCount(0)
-  await expect(page.getByText('Join Rewards Club', { exact: true })).toHaveCount(0)
-  await expect(page.getByText('Terms', { exact: true })).toHaveCount(0)
-  await expect(page.getByText('Privacy', { exact: true })).toHaveCount(0)
+  await expect(header).toContainText('Golden Circle')
+  await expect(header.getByRole('link', { name: 'Guide', exact: true })).toBeVisible()
+  await expect(header.getByRole('link', { name: 'For Businesses', exact: true })).toBeVisible()
+  await expect(header.getByRole('link', { name: 'Join Rewards Club', exact: true })).toBeVisible()
+  await expect(footer.getByRole('link', { name: 'Terms', exact: true })).toBeVisible()
+  await expect(footer.getByRole('link', { name: 'Privacy', exact: true })).toBeVisible()
   await expect(page.locator('body')).not.toContainText('Círculo Dorado')
+  await expect(page.locator('body')).not.toContainText('Ginintuang Lupon')
 }
 
 test.describe('platform guide workflow', () => {
@@ -135,7 +131,7 @@ test.describe('platform guide workflow', () => {
     await expect(page.locator('main a[href^="/business/"]')).toHaveCount(0)
   })
 
-  test('RewardMe public guide follows the Tagalog preference without English or Spanish guide copy', async ({ page }) => {
+  test('RewardMe public guide replaces a legacy Tagalog preference with English', async ({ page }) => {
     await page.addInitScript(() => {
       window.localStorage.setItem('rewards:pinas:language', 'tl')
     })
@@ -143,20 +139,14 @@ test.describe('platform guide workflow', () => {
     await page.goto('/guide?tenant=rewardme')
 
     const guide = page.getByTestId('platform-guide')
-    await expect(page.getByRole('heading', { name: 'Gabay sa plataporma' })).toBeVisible()
-    await expect(page.getByRole('combobox', { name: 'Wika' })).toBeVisible()
-    await expect(guide.getByText('Magsimula rito')).toBeVisible()
-    await expect(guide.getByRole('link', { name: 'Tingnan ang mapa' })).toHaveAttribute('href', '/shop')
-    await expect(guide.getByRole('link', { name: 'Para sa mga negosyo' })).toHaveAttribute('href', '/business')
-    await expect(guide.getByRole('link', { name: 'Pumasok' })).toHaveAttribute('href', '/signin')
-    await expect(page.getByRole('link', { name: 'Gabay' })).toHaveAttribute('href', '/guide')
-    await expect(guide).not.toContainText('Platform guide')
-    await expect(guide).not.toContainText('Guia de la plataforma')
-    await expect(guide).not.toContainText('Start here')
-    await expect(guide).not.toContainText('Empieza aqui')
-    await expect(guide.locator('img[src*="/walkthrough-screenshots/"]')).toHaveCount(0)
-    await expect(guide.getByTestId('localized-guide-preview')).toHaveCount(2)
-    await expectTagalogPublicShell(page)
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page.getByRole('heading', { name: 'Platform guide' })).toBeVisible()
+    const picker = page.getByRole('combobox', { name: 'Language' })
+    await expect(picker).toHaveValue('en')
+    await expect(picker.locator('option')).toHaveText(['English', 'Spanish'])
+    await expect(guide.getByText('Start here')).toBeVisible()
+    await expect(guide.locator('img[src*="/walkthrough-screenshots/"]')).toHaveCount(2)
+    await expectEnglishPublicShell(page)
   })
 
   test('mobile guide keeps the active language control visible without overflow', async ({ page }) => {
@@ -167,13 +157,15 @@ test.describe('platform guide workflow', () => {
 
     await page.goto('/guide?tenant=rewardme')
 
-    await expect(page.getByRole('combobox', { name: 'Wika' })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Sumali' })).toBeVisible()
-    await expect(page.getByRole('banner').getByRole('link', { name: 'Pumasok' })).toBeVisible()
+    const picker = page.getByRole('combobox', { name: 'Language' })
+    await expect(picker).toBeVisible()
+    await expect(picker.locator('option')).toHaveCount(2)
+    await expect(page.getByRole('link', { name: 'Join' })).toBeVisible()
+    await expect(page.getByRole('banner').getByRole('link', { name: 'Sign in' })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)
   })
 
-  test('Wondertown public guide follows the Tagalog preference', async ({ page }) => {
+  test('Wondertown public guide replaces a legacy Tagalog preference with English', async ({ page }) => {
     await page.addInitScript(() => {
       window.localStorage.setItem('rewards:wondertown:language', 'tl')
     })
@@ -182,13 +174,13 @@ test.describe('platform guide workflow', () => {
 
     const guide = page.getByTestId('platform-guide')
     await expect(page).toHaveTitle('Wondertown Rewards')
-    await expect(page.getByRole('heading', { name: 'Gabay sa plataporma' })).toBeVisible()
-    await expect(guide.getByText('Magsimula rito')).toBeVisible()
-    await expect(guide).not.toContainText('Platform guide')
+    await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+    await expect(page.getByRole('heading', { name: 'Platform guide' })).toBeVisible()
+    await expect(guide.getByText('Start here')).toBeVisible()
     await expect(guide).not.toContainText('Guia de la plataforma')
-    await expect(guide.locator('img[src*="/walkthrough-screenshots/"]')).toHaveCount(0)
-    await expect(guide.getByTestId('localized-guide-preview')).toHaveCount(2)
-    await expectTagalogPublicShell(page)
+    await expect(guide.locator('img[src*="/walkthrough-screenshots/"]')).toHaveCount(2)
+    await expect(guide.getByTestId('localized-guide-preview')).toHaveCount(0)
+    await expectEnglishPublicShell(page)
   })
 
   test('Spanish guides do not embed English screenshot text', async ({ page }) => {

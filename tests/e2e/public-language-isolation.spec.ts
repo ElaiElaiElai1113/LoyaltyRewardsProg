@@ -98,15 +98,20 @@ const tagalogFixtures = [
 ] as const
 
 for (const tenant of ['rewardme', 'wondertown'] as const) {
-  test(`${tenant} keeps Tagalog public and account pages free of English and Spanish fixture copy`, async ({ page }) => {
+  test(`${tenant} replaces a legacy Tagalog preference with English on public and account pages`, async ({ page }) => {
     test.setTimeout(90_000)
     await setLanguage(page, tenant, 'tl')
 
     for (const route of routes) {
       await test.step(route, async () => {
         await openTenantPage(page, tenant, route)
-        await expect(page.locator('html')).toHaveAttribute('lang', 'tl')
-        await expectNoPhrases(page, [...englishFixtures, ...spanishFixtures])
+        await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+        await expectNoPhrases(page, [...spanishFixtures, ...tagalogFixtures])
+        const picker = page.getByRole('combobox', { name: 'Language' }).first()
+        if (await picker.count()) {
+          await expect(picker).toBeVisible()
+          await expect(picker.locator('option')).toHaveCount(2)
+        }
       })
     }
   })
@@ -130,11 +135,14 @@ test('mobile account entry keeps the active language and theme controls visible 
   await setLanguage(page, 'rewardme', 'tl')
   await openTenantPage(page, 'rewardme', '/join')
 
-  await expect(page.getByRole('combobox', { name: 'Wika' })).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Lumipat sa madilim na anyo' })).toBeVisible()
+  const languagePicker = page.getByRole('combobox', { name: 'Language' })
+  await expect(page.locator('html')).toHaveAttribute('lang', 'en')
+  await expect(languagePicker).toBeVisible()
+  await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
+  await expect(page.getByRole('button', { name: 'Switch to dark mode' })).toBeVisible()
   expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)
 
-  await page.getByRole('combobox', { name: 'Wika' }).selectOption('es')
+  await languagePicker.selectOption('es')
   await expect(page.locator('html')).toHaveAttribute('lang', 'es')
   await expect(page.getByRole('combobox', { name: 'Idioma' })).toBeVisible()
   await expect(page.getByRole('button', { name: 'Cambiar al modo oscuro' })).toBeVisible()
