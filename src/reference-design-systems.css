@@ -1495,8 +1495,8 @@
   font-family: Fraunces, Georgia, serif;
 }
 
-:root[data-program="pinas"] .rewardme-auth-shell__story h1,
-:root[data-program="wondertown"] .rewardme-auth-shell__story h1 {
+:root[data-program="pinas"] .rewardme-auth-shell__story h2,
+:root[data-program="wondertown"] .rewardme-auth-shell__story h2 {
   max-width: 10ch;
   color: #f6f1e4 !important;
   font-family: Fraunces, Georgia, serif !important;
@@ -1750,8 +1750,8 @@
     border-radius: 8px 8px 0 0;
   }
 
-  :root[data-program="pinas"] .rewardme-auth-shell__story h1,
-  :root[data-program="wondertown"] .rewardme-auth-shell__story h1 {
+  :root[data-program="pinas"] .rewardme-auth-shell__story h2,
+  :root[data-program="wondertown"] .rewardme-auth-shell__story h2 {
     max-width: 13ch;
   }
 
@@ -1793,8 +1793,8 @@
     padding: 28px 24px;
   }
 
-  :root[data-program="pinas"] .rewardme-auth-shell__story h1,
-  :root[data-program="wondertown"] .rewardme-auth-shell__story h1 {
+  :root[data-program="pinas"] .rewardme-auth-shell__story h2,
+  :root[data-program="wondertown"] .rewardme-auth-shell__story h2 {
     font-size: clamp(2.15rem, 12vw, 3rem);
   }
 

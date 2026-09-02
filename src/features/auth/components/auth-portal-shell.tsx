@@ -87,7 +87,7 @@ export function AuthPortalShell({
                 <p className="rewardme-auth-shell__eyebrow">
                   {t(isJoining ? 'Three months free to join' : 'Sign in')}
                 </p>
-                <h1>{t(isJoining ? 'Join with no card required' : 'One account. Clear offers. Local rewards.')}</h1>
+                <h2>{t(isJoining ? 'Join with no card required' : 'One account. Clear offers. Local rewards.')}</h2>
                 <p className="rewardme-auth-shell__lede">
                   {t(isJoining
                     ? 'Create your account with your name, email, and phone. Your first three months are free access while you explore the program.'
