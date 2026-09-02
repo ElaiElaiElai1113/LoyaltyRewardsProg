@@ -86,6 +86,17 @@ describe('signup referral validation', () => {
     expect(auth.signUp).not.toHaveBeenCalled()
   })
 
+  it('blocks signup when the referral validator returns an unreadable response', async () => {
+    vi.mocked(fetch).mockResolvedValue(new Response('not-json', { status: 200 }))
+
+    await expect(authService.signUp({
+      ...signUpValues,
+      referralCode: 'MEMBER-CODE',
+    })).rejects.toThrow('The referral code could not be verified. Please try again.')
+
+    expect(auth.signUp).not.toHaveBeenCalled()
+  })
+
   it('allows an ordinary signup to continue without a referral lookup', async () => {
     await expect(authService.signUp(signUpValues)).rejects.toThrow('stop after signup request')
 

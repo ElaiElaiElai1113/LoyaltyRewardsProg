@@ -71,7 +71,12 @@ async function validateReferralBeforeSignUp(
     throw new Error('The referral code could not be verified. Please try again.')
   }
 
-  const result = await response.json() as { valid?: unknown }
+  let result: { valid?: unknown }
+  try {
+    result = await response.json() as { valid?: unknown }
+  } catch {
+    throw new Error('The referral code could not be verified. Please try again.')
+  }
   if (result.valid !== true) {
     throw new Error(INVALID_REFERRAL_CODE_MESSAGE)
   }
