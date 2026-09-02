@@ -71,13 +71,17 @@ jobs:
       - name: Configure Loyality production
         env:
           LOYALITY_SUPABASE_ANON_KEY: ${{ secrets.NEW_VITE_SUPABASE_ANON_KEY }}
+          LOYALITY_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
+          test -n "$LOYALITY_SUPABASE_SERVICE_ROLE_KEY"
           printf '%s' "$LOYALITY_SUPABASE_URL" | npx vercel env add VITE_SUPABASE_URL production --force --yes --no-sensitive --visibility config \
             --project "$VERCEL_PROJECT" --scope "$VERCEL_ORG" --token "$VERCEL_TOKEN"
           printf '%s' "$LOYALITY_SUPABASE_ANON_KEY" | npx vercel env add VITE_SUPABASE_ANON_KEY production --force --yes --no-sensitive --visibility config \
+            --project "$VERCEL_PROJECT" --scope "$VERCEL_ORG" --token "$VERCEL_TOKEN"
+          printf '%s' "$LOYALITY_SUPABASE_SERVICE_ROLE_KEY" | npx vercel env add SUPABASE_SERVICE_ROLE_KEY production --sensitive --force --yes \
             --project "$VERCEL_PROJECT" --scope "$VERCEL_ORG" --token "$VERCEL_TOKEN"
 
       - name: Deploy Loyality
@@ -110,3 +114,9 @@ jobs:
             --data '{"p_hostname":"loyality-rewards.vercel.app"}' \
             "$LOYALITY_SUPABASE_URL/rest/v1/rpc/resolve_program_by_hostname" \
             | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const rows=JSON.parse(s);if(!Array.isArray(rows)||rows[0]?.slug!=='loyality')process.exit(1)})"
+          curl --fail --silent --show-error \
+            --request POST \
+            --header 'Content-Type: application/json' \
+            --data '{"referralCode":"__DEPLOYMENT_INVALID_CODE__","programId":"10000000-0000-4000-8000-000000000007","businessId":null,"kind":"member"}' \
+            https://loyality-rewards.vercel.app/api/validate-referral \
+            | node -e "let s='';process.stdin.on('data',d=>s+=d).on('end',()=>{const result=JSON.parse(s);if(result.valid!==false||result.error)process.exit(1)})"
