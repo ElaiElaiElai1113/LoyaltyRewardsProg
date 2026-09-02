@@ -248,6 +248,15 @@ test.describe('public acquisition workflow', () => {
   test('RewardMe sign-in keeps release mode credential-safe', async ({ page }) => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/signin')
+    const shell = page.locator('[data-rewardme-auth-shell]')
+    const story = shell.locator('.rewardme-auth-shell__story')
+    const card = shell.locator('.product-auth-shell__card')
+    await expect(shell).toBeVisible()
+    await expect(shell.locator('.rewardme-auth-shell__brand')).toContainText('RewardMe')
+    await expect(story.getByRole('heading', { name: 'One account. Clear offers. Local rewards.' })).toBeVisible()
+    await expect(shell).toHaveCSS('background-color', 'rgb(246, 241, 228)')
+    await expect(story).toHaveCSS('background-color', 'rgb(31, 58, 46)')
+    await expect(card).toHaveCSS('background-color', 'rgb(255, 253, 247)')
     await expect(page.locator('#signin-email')).toBeVisible()
     await expect(page.locator('#signin-password')).toBeVisible()
     await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
@@ -259,12 +268,17 @@ test.describe('public acquisition workflow', () => {
 
     await expect(page.locator('body')).not.toContainText(/medellin/i)
     await expect(page.locator('body')).not.toContainText('MedellinQA!2026')
+    await expect(page.getByRole('button', { name: /^Sign in/ })).toHaveCSS('background-color', 'rgb(31, 58, 46)')
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
     }))
     expect(dimensions.scrollWidth).toBeLessThanOrEqual(dimensions.clientWidth)
+
+    await page.getByRole('button', { name: 'Switch to dark mode' }).click()
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
+    await expect(shell).toHaveCSS('background-color', 'rgb(20, 39, 31)')
 
     await page.goto('/business/login?redirect=%2Fbusiness%2Fdashboard')
     await expect(page).toHaveURL(/\/signin\?redirect=%2Fbusiness%2Fdashboard&portal=business/)

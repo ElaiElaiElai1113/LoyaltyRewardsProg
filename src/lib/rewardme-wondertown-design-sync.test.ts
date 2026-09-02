@@ -51,6 +51,7 @@ describe('RewardMe and Wondertown design synchronization', () => {
     const homeStyles = source('src/features/home/pages/rewardme-home.css')
     const joinStyles = source('src/features/join/pages/rewardme-join-page.css')
     const signIn = source('src/features/auth/pages/landing-page.tsx')
+    const authShell = source('src/features/auth/components/auth-portal-shell.tsx')
 
     for (const token of [
       '--espresso: #1f3a2e',
@@ -74,5 +75,9 @@ describe('RewardMe and Wondertown design synchronization', () => {
     expect(signIn).toContain('getHomePathForRole(profile.role)')
     expect(signIn).not.toContain('SIGN_IN_PORTALS.map')
     expect(signIn).not.toContain('sign-in-portal-')
+    expect(authShell).toContain('isRewardMeExperience(program.slug)')
+    expect(authShell).toContain('data-rewardme-auth-shell')
+    expect(authShell).toContain('data-wondertown-rewardme-mirror')
+    expect(theme).toContain('RewardMe / Wondertown editorial authentication')
   })
 })

@@ -29,6 +29,7 @@ import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage, type Language } from '@/lib/language'
+import { isRewardMeExperience } from '@/lib/rewardme-experience'
 import { getHomePathForRole } from '@/lib/role-routes'
 import { authSchema, type AuthFormValues } from '@/types/forms'
 
@@ -895,6 +896,7 @@ export function LegacyAuthPage() {
 
 export function CompactAuthPage() {
   const { program } = useTenant()
+  const isRewardMe = isRewardMeExperience(program.slug)
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { signInAutomatically } = useAuth()
@@ -925,12 +927,12 @@ export function CompactAuthPage() {
 
   return (
     <AuthPortalShell activeTab="signin">
-      <div className="mb-7 text-center">
+      <div className="mb-7 text-center" data-rewardme-auth-content={isRewardMe || undefined}>
         <p className="font-serif text-[18px] font-bold leading-none text-[#d1ad4a]">
           {program.name}
         </p>
         <h1 className="mt-3 text-[12px] font-semibold uppercase tracking-[0.26em] text-[#8f8f8f]">
-          {t('Sign In').toUpperCase()}
+          {isRewardMe ? t('Sign in') : t('Sign In').toUpperCase()}
         </h1>
         <p className="mt-3 text-[11px] font-medium leading-4 text-[#8f8f8f]">
           {t('Enter your email and password. We will open the workspace assigned to your account.')}

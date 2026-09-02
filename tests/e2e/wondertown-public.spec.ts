@@ -126,6 +126,12 @@ test.describe('Wondertown public testing experience', () => {
     await page.setViewportSize({ width: 320, height: 844 })
     await page.goto('/signin?tenant=wondertown')
 
+    const shell = page.locator('[data-rewardme-auth-shell]')
+    await expect(shell).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
+    await expect(shell.locator('.rewardme-auth-shell__brand')).toContainText('Wondertown Rewards')
+    await expect(shell.getByRole('heading', { name: 'One account. Clear offers. Local rewards.' })).toBeVisible()
+    await expect(shell).toHaveCSS('background-color', 'rgb(246, 241, 228)')
+    await expect(shell.locator('.rewardme-auth-shell__story')).toHaveCSS('background-color', 'rgb(31, 58, 46)')
     await expect(page.getByRole('form', { name: 'Sign in' })).toBeVisible()
     await expect(page.locator('[data-testid^="sign-in-portal-"]')).toHaveCount(0)
     await expect(page.locator('[data-testid^="quick-sign-in-"]')).toHaveCount(0)
@@ -134,6 +140,7 @@ test.describe('Wondertown public testing experience', () => {
     await expect(page.getByTestId('wondertown-test-credentials')).toHaveCount(0)
     await expect(page.locator('body')).not.toContainText('Rewards 123!')
     await expect(page.locator('body')).not.toContainText('@wondertown.test')
+    await expect(page.locator('body')).not.toContainText(/medell[ií]n/i)
 
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,

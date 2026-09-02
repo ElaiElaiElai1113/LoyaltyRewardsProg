@@ -1389,3 +1389,433 @@
   :root[data-program="loyality"] .product-auth-shell { align-items: flex-start; padding: 16px 14px 32px; }
   :root[data-program="loyality"] .product-auth-shell__card { padding: 30px 20px !important; }
 }
+
+/* -------------------------------------------------------------------------- */
+/* RewardMe / Wondertown editorial authentication                              */
+/* -------------------------------------------------------------------------- */
+
+/*
+ * This is a separate RewardMe-authored layout, not a recolor of the legacy
+ * portal. Wondertown inherits the exact structure as the production sandbox.
+ */
+:root[data-program="pinas"] .rewardme-auth-shell,
+:root[data-program="wondertown"] .rewardme-auth-shell {
+  display: block !important;
+  align-items: initial !important;
+  justify-content: initial !important;
+  padding: 0 !important;
+  background: #f6f1e4 !important;
+  color: #211d16 !important;
+  font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .auth-portal-backdrop,
+:root[data-program="wondertown"] .rewardme-auth-shell .auth-portal-backdrop {
+  background:
+    radial-gradient(circle at 92% 4%, rgb(184 134 46 / 10%), transparent 24rem),
+    #f6f1e4 !important;
+  background-size: auto !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__header,
+:root[data-program="wondertown"] .rewardme-auth-shell__header,
+:root[data-program="pinas"] .rewardme-auth-shell__footer,
+:root[data-program="wondertown"] .rewardme-auth-shell__footer {
+  border-color: #d9cfaf !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__brand,
+:root[data-program="wondertown"] .rewardme-auth-shell__brand {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 10px;
+  color: #1f3a2e !important;
+  text-decoration: none;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__brand-name,
+:root[data-program="wondertown"] .rewardme-auth-shell__brand-name {
+  color: #1f3a2e !important;
+  font-family: Fraunces, Georgia, serif !important;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__header .product-auth-shell__utilities,
+:root[data-program="wondertown"] .rewardme-auth-shell__header .product-auth-shell__utilities {
+  width: auto;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button),
+:root[data-program="wondertown"] .rewardme-auth-shell :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button) {
+  min-height: 40px;
+  border: 1px solid #d9cfaf !important;
+  border-radius: 3px !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button):hover,
+:root[data-program="wondertown"] .rewardme-auth-shell :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button):hover {
+  border-color: #1f3a2e !important;
+  background: #efe8d6 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__frame,
+:root[data-program="wondertown"] .rewardme-auth-shell__frame {
+  max-width: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__story,
+:root[data-program="wondertown"] .rewardme-auth-shell__story {
+  border: 1px solid #1f3a2e;
+  border-radius: 8px 0 0 8px;
+  background: #1f3a2e;
+  color: #f6f1e4;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__eyebrow,
+:root[data-program="wondertown"] .rewardme-auth-shell__eyebrow {
+  margin-bottom: 20px;
+  color: #d8b36a;
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__eyebrow::before,
+:root[data-program="wondertown"] .rewardme-auth-shell__eyebrow::before {
+  margin-right: 8px;
+  content: "§";
+  font-family: Fraunces, Georgia, serif;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__story h1,
+:root[data-program="wondertown"] .rewardme-auth-shell__story h1 {
+  max-width: 10ch;
+  color: #f6f1e4 !important;
+  font-family: Fraunces, Georgia, serif !important;
+  font-size: clamp(2.7rem, 5vw, 4.8rem);
+  font-weight: 500 !important;
+  letter-spacing: -.04em !important;
+  line-height: .98;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__lede,
+:root[data-program="wondertown"] .rewardme-auth-shell__lede {
+  max-width: 49ch;
+  margin-top: 24px;
+  color: rgb(246 241 228 / 78%);
+  font-size: 1rem;
+  line-height: 1.65;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__ledger,
+:root[data-program="wondertown"] .rewardme-auth-shell__ledger {
+  width: min(100%, 420px);
+  border-top: 1px solid rgb(246 241 228 / 28%);
+  color: rgb(246 241 228 / 76%);
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace;
+  font-size: .72rem;
+  letter-spacing: .045em;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__ledger > div,
+:root[data-program="wondertown"] .rewardme-auth-shell__ledger > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 42px;
+  border-bottom: 1px solid rgb(246 241 228 / 18%);
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__ledger strong,
+:root[data-program="wondertown"] .rewardme-auth-shell__ledger strong {
+  color: #d8b36a;
+  font-weight: 600;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__form-column,
+:root[data-program="wondertown"] .rewardme-auth-shell__form-column {
+  min-height: 500px;
+  justify-content: center;
+  border: 1px solid #d9cfaf;
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+  background: #efe8d6;
+  padding: 36px;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__tabs,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__tabs {
+  height: 48px;
+  border: 1px solid #d9cfaf !important;
+  border-radius: 4px !important;
+  background: #fffdf7 !important;
+  padding: 4px;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__tabs a,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__tabs a {
+  height: 38px;
+  border-radius: 3px !important;
+  color: #365848 !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__tabs a[class*="bg-[#d1ad4a]"] {
+  background: #1f3a2e !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card {
+  position: relative;
+  overflow: visible;
+  border: 1px solid #d9cfaf !important;
+  border-radius: 6px !important;
+  background: #fffdf7 !important;
+  color: #211d16 !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card::before,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card::before {
+  display: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell [data-rewardme-auth-content] > p:first-child,
+:root[data-program="wondertown"] .rewardme-auth-shell [data-rewardme-auth-content] > p:first-child {
+  color: #b8862e !important;
+  font-family: "IBM Plex Mono", "SFMono-Regular", monospace !important;
+  font-size: .72rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell [data-rewardme-auth-content] > h1,
+:root[data-program="wondertown"] .rewardme-auth-shell [data-rewardme-auth-content] > h1 {
+  margin-top: 12px;
+  color: #1f3a2e !important;
+  font-family: Fraunces, Georgia, serif !important;
+  font-size: clamp(1.9rem, 4vw, 2.35rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: -.025em !important;
+  line-height: 1.05;
+  text-transform: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell [data-rewardme-auth-content] > h1 + p,
+:root[data-program="wondertown"] .rewardme-auth-shell [data-rewardme-auth-content] > h1 + p {
+  margin-top: 12px;
+  color: #5b5546 !important;
+  font-size: .86rem !important;
+  line-height: 1.55 !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card label,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card label {
+  color: #1f3a2e !important;
+  font-size: .78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: .045em;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card :is(input, select, textarea),
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card :is(input, select, textarea) {
+  min-height: 48px;
+  border: 1px solid #c8bea4 !important;
+  border-radius: 4px !important;
+  background: #fff !important;
+  color: #211d16 !important;
+  font-family: "IBM Plex Sans", "Segoe UI", Arial, sans-serif !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card :is(input, select, textarea):focus,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card :is(input, select, textarea):focus {
+  border-color: #b8862e !important;
+  box-shadow: 0 0 0 2px rgb(184 134 46 / 18%) !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card button[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card button[class*="bg-[#d1ad4a]"] {
+  min-height: 48px;
+  border-radius: 3px !important;
+  background: #1f3a2e !important;
+  color: #f6f1e4 !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card button[class*="bg-[#d1ad4a]"]:hover,
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card button[class*="bg-[#d1ad4a]"]:hover {
+  background: #365848 !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card :is(button, a)[class*="text-[#d1ad4a]"],
+:root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card :is(button, a)[class*="text-[#d1ad4a]"] {
+  color: #8d641f !important;
+}
+
+:root[data-program="pinas"] .rewardme-auth-shell__footer,
+:root[data-program="wondertown"] .rewardme-auth-shell__footer {
+  color: #5b5546;
+}
+
+/* The existing theme control remains functional using RewardMe green surfaces. */
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell,
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell .auth-portal-backdrop,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell .auth-portal-backdrop {
+  background: #14271f !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell__header,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell__header,
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell__footer,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell__footer {
+  border-color: #536b5d !important;
+  color: #d8d0bd !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell__brand-name,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell__brand-name {
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button),
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell :is(.product-auth-shell__utilities > a, .product-auth-shell__utilities button) {
+  border-color: #536b5d !important;
+  background: #20382d !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell__form-column,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell__form-column {
+  border-color: #536b5d;
+  background: #20382d;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell :is(.product-auth-shell__tabs, .product-auth-shell__card),
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell :is(.product-auth-shell__tabs, .product-auth-shell__card) {
+  border-color: #536b5d !important;
+  background: #14271f !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell [data-rewardme-auth-content] > h1,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell [data-rewardme-auth-content] > h1,
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell .product-auth-shell__card label,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell .product-auth-shell__card label {
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell [data-rewardme-auth-content] > h1 + p,
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell [data-rewardme-auth-content] > h1 + p {
+  color: #d8d0bd !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell .product-auth-shell__card :is(input, select, textarea),
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell .product-auth-shell__card :is(input, select, textarea) {
+  border-color: #536b5d !important;
+  background: #20382d !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"][data-theme="dark"] .rewardme-auth-shell .product-auth-shell__card button[class*="bg-[#d1ad4a]"],
+:root[data-program="wondertown"][data-theme="dark"] .rewardme-auth-shell .product-auth-shell__card button[class*="bg-[#d1ad4a]"] {
+  background: #d8b36a !important;
+  color: #14271f !important;
+}
+
+@media (max-width: 1023px) {
+  :root[data-program="pinas"] .rewardme-auth-shell__frame,
+  :root[data-program="wondertown"] .rewardme-auth-shell__frame {
+    max-width: 720px !important;
+    margin-inline: auto;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__story,
+  :root[data-program="wondertown"] .rewardme-auth-shell__story {
+    min-height: 340px;
+    border-radius: 8px 8px 0 0;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__story h1,
+  :root[data-program="wondertown"] .rewardme-auth-shell__story h1 {
+    max-width: 13ch;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__form-column,
+  :root[data-program="wondertown"] .rewardme-auth-shell__form-column {
+    min-height: 0;
+    border-top: 0;
+    border-left: 1px solid #d9cfaf;
+    border-radius: 0 0 8px 8px;
+  }
+}
+
+@media (max-width: 560px) {
+  :root[data-program="pinas"] .rewardme-auth-shell__page,
+  :root[data-program="wondertown"] .rewardme-auth-shell__page {
+    padding-inline: 14px;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__header,
+  :root[data-program="wondertown"] .rewardme-auth-shell__header {
+    align-items: stretch;
+    flex-direction: column;
+    padding-block: 16px;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__header .product-auth-shell__utilities,
+  :root[data-program="wondertown"] .rewardme-auth-shell__header .product-auth-shell__utilities {
+    width: 100%;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__frame,
+  :root[data-program="wondertown"] .rewardme-auth-shell__frame {
+    padding-block: 24px;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__story,
+  :root[data-program="wondertown"] .rewardme-auth-shell__story {
+    min-height: 0;
+    padding: 28px 24px;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__story h1,
+  :root[data-program="wondertown"] .rewardme-auth-shell__story h1 {
+    font-size: clamp(2.15rem, 12vw, 3rem);
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__lede,
+  :root[data-program="wondertown"] .rewardme-auth-shell__lede {
+    margin-top: 18px;
+    font-size: .9rem;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__ledger,
+  :root[data-program="wondertown"] .rewardme-auth-shell__ledger {
+    display: none;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell__form-column,
+  :root[data-program="wondertown"] .rewardme-auth-shell__form-column {
+    padding: 18px;
+  }
+
+  :root[data-program="pinas"] .rewardme-auth-shell .product-auth-shell__card,
+  :root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card {
+    padding: 28px 20px !important;
+  }
+}
