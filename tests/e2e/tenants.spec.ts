@@ -113,7 +113,11 @@ test.describe('white-label tenant resolution', () => {
       await page.goto(`/business/login?tenant=${tenant.slug}`)
 
       await expect(page).toHaveTitle(tenant.name)
-      await expect(page.getByText(tenant.name, { exact: true })).toBeVisible()
+      if (tenant.slug === 'pinas' || tenant.slug === 'wondertown') {
+        await expect(page.locator('.rewardme-auth-shell__brand-name')).toHaveText(tenant.name)
+      } else {
+        await expect(page.getByText(tenant.name, { exact: true })).toBeVisible()
+      }
       await expect(page).toHaveURL(new RegExp(`/signin\\?tenant=${tenant.slug}&portal=business`))
       if (tenant.slug === 'loyality') {
         await expect(page.getByRole('form', { name: 'Sign in to Loyality' })).toBeVisible()
