@@ -7,7 +7,7 @@ const email = JSON.parse(await readFile('docs/tenant-email-redirect-matrix.json'
 const git = (args) => execFileSync('git', args, { encoding: 'utf8' }).trim()
 const branch = process.env.GITHUB_REF_NAME ?? git(['branch', '--show-current'])
 const commit = process.env.GITHUB_SHA ?? git(['rev-parse', 'HEAD'])
-const productionOrigin = process.env.PRODUCTION_URL ?? 'https://loyalty-rewards-prog.vercel.app'
+const productionOrigin = process.env.PRODUCTION_URL ?? 'https://rewardme-prod.vercel.app'
 const migrations = await Promise.all(release.migrations.map(async (entry) => {
   const content = await readFile(entry.file)
   return { ...entry, sha256: createHash('sha256').update(content).digest('hex'), status: 'pending-approval' }

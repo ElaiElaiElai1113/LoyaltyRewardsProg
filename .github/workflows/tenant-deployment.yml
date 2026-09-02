@@ -88,18 +88,11 @@ jobs:
       - name: Synchronize tenant deployments
         run: npm run ops:deploy:tenants -- --sha "$EXPECTED_COMMIT_SHA" --output artifacts/deployment/tenant-sync.json
 
-      - name: Remove the legacy RewardMe project-domain redirect
-        run: >-
-          node scripts/ensure-direct-vercel-domain.mjs
-          --project loyalty-rewards-prog
-          --domain loyalty-rewards-prog.vercel.app
-          --scope "$VERCEL_SCOPE"
-
       - name: Require direct RewardMe application and worker responses
         shell: bash
         run: |
-          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'https://loyalty-rewards-prog.vercel.app/signin?tenant=rewardme')" = '200'
-          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'https://loyalty-rewards-prog.vercel.app/sw.js')" = '200'
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'https://rewardme-prod.vercel.app/signin?tenant=rewardme')" = '200'
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' 'https://rewardme-prod.vercel.app/sw.js')" = '200'
 
       - name: Install browser for canonical domain verification
         run: npx playwright install --with-deps chromium
@@ -113,7 +106,7 @@ jobs:
           status=0
           npm run ops:domain:check -- "www.medellinrewards.com" "Medellin Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           npm run ops:domain:check -- "guatemalarewards.com" "Guatemala Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
-          npm run ops:domain:check -- "loyalty-rewards-prog.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "rewardme-prod.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           npm run ops:domain:check -- "pinas-rewards.vercel.app" "Pinas Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           npm run ops:domain:check -- "wondertown-rewards.vercel.app" "Wondertown Rewards" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
           exit "$status"

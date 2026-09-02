@@ -125,7 +125,7 @@ $existingRedirects = @($current.uri_allow_list -split ',') |
     $_ -notlike '*/auth/reset-password'
   }
 $redirects = @($existingRedirects + $requiredRedirects) | Sort-Object -Unique
-$desiredSiteUrl = 'https://loyalty-rewards-prog.vercel.app/'
+$desiredSiteUrl = 'https://rewardme-prod.vercel.app/'
 
 $preview = [ordered]@{
   projectRef = $projectRef

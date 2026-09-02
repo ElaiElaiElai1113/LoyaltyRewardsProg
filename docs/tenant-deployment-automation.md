@@ -4,7 +4,7 @@ The Rewards repository has two Vercel projects and two tenant aliases:
 
 - `loyalty-rewards-prog` automatically builds the Medellin production release.
 - `guatemala-rewards` receives the same validated commit through a separate production deployment.
-- `loyalty-rewards-prog.vercel.app` is the Git-integrated, brand-neutral RewardMe production address.
+- `rewardme-prod.vercel.app` is the direct RewardMe production address. The transferred project address redirects here and is retained only for compatibility.
 - `pinas-rewards.vercel.app` serves the independent Pinas Rewards tenant from the exact primary deployment.
 - `wondertown-rewards.vercel.app` serves the fictional Wondertown testing tenant from the exact primary deployment.
 

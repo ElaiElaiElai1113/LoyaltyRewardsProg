@@ -10,8 +10,8 @@ import {
 const verifiedTenants = [
   ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
   ['guatemalarewards.com', 'https://guatemalarewards.com'],
-  ['loyalty-rewards-prog.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
-  ['rewardme-prod.vercel.app', 'https://loyalty-rewards-prog.vercel.app'],
+  ['loyalty-rewards-prog.vercel.app', 'https://rewardme-prod.vercel.app'],
+  ['rewardme-prod.vercel.app', 'https://rewardme-prod.vercel.app'],
   ['pinas-rewards.vercel.app', 'https://pinas-rewards.vercel.app'],
   ['wondertown-rewards.vercel.app', 'https://wondertown-rewards.vercel.app'],
 ] as const
@@ -67,9 +67,9 @@ describe('host-aware public discovery documents', () => {
   })
 
   it('never includes protected portal routes in a tenant sitemap', () => {
-    const sitemap = buildSitemapDocument('loyalty-rewards-prog.vercel.app')
+    const sitemap = buildSitemapDocument('rewardme-prod.vercel.app')
     for (const path of ['/admin', '/dashboard', '/profile', '/orders', '/cart', '/business/dashboard']) {
-      expect(sitemap).not.toContain(`<loc>https://loyalty-rewards-prog.vercel.app${path}`)
+      expect(sitemap).not.toContain(`<loc>https://rewardme-prod.vercel.app${path}`)
     }
   })
 })
