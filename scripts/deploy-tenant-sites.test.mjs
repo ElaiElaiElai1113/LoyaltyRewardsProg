@@ -69,6 +69,7 @@ test('validates arguments and preserves the audited alias set', () => {
     output: 'report.json',
   })
   assert.deepEqual(deploymentDefaults.aliases, [
+    'loyalty-rewards-prog.vercel.app',
     'rewardme-prod.vercel.app',
     'pinas-rewards.vercel.app',
     'wondertown-rewards.vercel.app',

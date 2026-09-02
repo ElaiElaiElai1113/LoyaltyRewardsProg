@@ -45,7 +45,10 @@ const required = {
     'githubCommitSha=',
     'REWARDS_SOURCE_COMMIT=',
     'guatemala-rewards',
-    "['rewardme-prod.vercel.app', 'pinas-rewards.vercel.app', 'wondertown-rewards.vercel.app']",
+    "'loyalty-rewards-prog.vercel.app'",
+    "'rewardme-prod.vercel.app'",
+    "'pinas-rewards.vercel.app'",
+    "'wondertown-rewards.vercel.app'",
     "runVercel(['alias', 'set'",
   ],
   'docs/tenant-deployment-automation.md': [
