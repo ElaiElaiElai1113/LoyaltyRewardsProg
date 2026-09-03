@@ -67,8 +67,9 @@ export function PublicBrowseLayout() {
             </NavLink>
 
             <nav id="business-public-navigation" className={`business-public-shell__nav${mobileMenuOpen ? ' is-open' : ''}`} aria-label={t('Business page navigation')}>
-              <a href="#benefits" onClick={() => setMobileMenuOpen(false)}>{t('Benefits')}</a>
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>{t('How It Works')}</a>
+              {isRewardMeExperience(program.slug) ? <NavLink to="/" onClick={() => setMobileMenuOpen(false)}>{t('Home')}</NavLink> : <a href="#benefits" onClick={() => setMobileMenuOpen(false)}>{t('Benefits')}</a>}
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>{t(isRewardMeExperience(program.slug) ? 'How it works' : 'How It Works')}</a>
+              {isRewardMeExperience(program.slug) ? <a href="#cost" onClick={() => setMobileMenuOpen(false)}>{t('What it costs')}</a> : null}
               {program.slug === 'pinas' || program.slug === 'wondertown' || program.slug === 'loyality'
                 ? null
                 : <NavLink to="/cost-calculator" onClick={() => setMobileMenuOpen(false)}>{t('Cost Calculator')}</NavLink>}
@@ -130,6 +131,8 @@ export function PublicBrowseLayout() {
                     : t('Helping local businesses grow while giving amazing Rewards to our members.')}</p>
               </div>
               <nav aria-label={t('Business footer navigation')}>
+                {isRewardMeExperience(program.slug) ? <NavLink to="/#how">{t('How it works (members)')}</NavLink> : null}
+                {isRewardMeExperience(program.slug) ? <NavLink to="/business">{t('For businesses')}</NavLink> : null}
                 <NavLink to="/privacy">{t('Privacy policy')}</NavLink>
                 {program.featureFlags.demoTenant ? (
                   <NavLink to="/guide">{t('Demo guide')}</NavLink>

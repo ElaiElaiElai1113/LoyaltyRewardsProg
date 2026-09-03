@@ -378,9 +378,9 @@ export function CompactJoinRewardsPage() {
 type RewardMePlan = 'free' | 'regular' | 'gold'
 
 const rewardMePlans: Array<{ value: RewardMePlan; name: string; price: string; description: string; featured?: boolean }> = [
-  { value: 'free', name: 'Free', price: '$0', description: 'Three-month free access, then continue with the currently approved Free terms.' },
-  { value: 'regular', name: 'Regular', price: '$25/month', description: 'Reference price. Request manual activation after account creation.' },
-  { value: 'gold', name: 'Gold', price: '$100/year', description: 'Reference price. Request full access after account creation.', featured: true },
+  { value: 'free', name: 'Free', price: '$0', description: 'No cost, ever. Earn 10% back in rewards at participating businesses.' },
+  { value: 'regular', name: 'Regular', price: '$25/month', description: '20–100% back in rewards per business, $10 in rewards per referral.' },
+  { value: 'gold', name: 'Gold', price: '$100/year', description: '20–100% back in rewards per business, bigger referral bonuses — $25/mo x 3 in rewards for a Regular referral, $100 in rewards (not cash) for a Gold referral.', featured: true },
 ]
 
 export function RewardMeJoinPage() {
@@ -391,6 +391,7 @@ export function RewardMeJoinPage() {
   const [referralCode, setReferralCode] = useState('')
   const [complete, setComplete] = useState(false)
   const [warning, setWarning] = useState<string | null>(null)
+  const [submission, setSubmission] = useState({ name: '', email: '', reference: '' })
   const [error, setError] = useState<string | null>(null)
   const [referralError, setReferralError] = useState<string | null>(null)
   const [showPassword, setShowPassword] = useState(false)
@@ -410,10 +411,10 @@ export function RewardMeJoinPage() {
           <Link className="rewardme-join__signin" to="/signin">{t('Already a member?')} {t('Sign in')}</Link>
         </div>
       </header>
-      <section className="rewardme-join__hero"><p>{isWondertown ? t('Sandbox membership sign-up') : t('Membership sign-up')}</p><h1>{t('Join {program}.', { program: program.name })}</h1><span>{isWondertown ? t('Create a test account with fictional information. Wondertown mirrors RewardMe and never collects a real card or online payment.') : t('Create your account now. No card or online payment is collected.')}</span></section>
+      <section className="rewardme-join__hero"><h1>{t('Join {program}.', { program: program.name })}</h1><span>{isWondertown ? t('Create a test account with fictional information. Wondertown mirrors RewardMe and never collects a real card or online payment.') : t("Pick your membership and tell us who you are — we'll follow up to finish setting up billing.")}</span></section>
 
       {complete ? (
-        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><p>{t('Account created')}</p><h2>{t('Welcome to {program}.', { program: program.name })}</h2><span>{t('Your account was created with Free access.')}{plan === 'free' ? '' : ` ${t('Your {plan} membership interest was sent to the team for manual review.', { plan: t(plan === 'regular' ? 'Regular' : 'Gold') })}`}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">{t('Go to sign in')}</Link></section>
+        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><h2>{t("You're joining {program}.", { program: program.name })}</h2><span>{t("Thanks, {name}. We've recorded your membership request and sent details to {email}.", { name: submission.name, email: submission.email })}</span><strong>{t('Reference number:')} {submission.reference}</strong><span>{t("We'll follow up shortly to finish setting up billing and your full profile.")}</span><span>{t('More account details will be collected later as you set up your full profile.')}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">{t('Go to sign in')}</Link></section>
       ) : (
         <form className="rewardme-join__form" onSubmit={form.handleSubmit(async (values) => {
           try {
@@ -425,6 +426,7 @@ export function RewardMeJoinPage() {
               role: 'customer',
               referralCode: code || null,
             })
+            setSubmission({ name: values.fullName, email: values.email, reference: result.profile.id })
             let nextWarning = result.warning ?? null
             if (plan !== 'free') {
               try {
@@ -447,17 +449,17 @@ export function RewardMeJoinPage() {
             }
           }
         })}>
-          <fieldset><legend>{t('Choose your starting membership')}</legend><div className="rewardme-join__plans">
-            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{item.price}</b></strong><small>{t(item.description)}</small></span></label>)}
-          </div><p className="rewardme-join__plan-note">{t('Regular and Gold are requests only. Pricing, activation, renewal, cancellation, tax, and payment evidence are confirmed separately by the program team.')}</p></fieldset>
+          <fieldset><legend>{t('Choose your membership')} *</legend><div className="rewardme-join__plans">
+            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{item.price}</b></strong>{item.featured ? <em>{t('Best for referrers')}</em> : null}<small>{t(item.description)}</small></span></label>)}
+          </div></fieldset>
           <div className="rewardme-join__grid">
             <label>{t('Full name')} <b>*</b><Input id="join-name" placeholder={t('Your full name')} {...form.register('fullName')} />{form.formState.errors.fullName ? <small>{form.formState.errors.fullName.message}</small> : null}</label>
             <label>{t('Email')} <b>*</b><Input id="join-email" type="email" placeholder={t('you@example.com')} {...form.register('email')} />{form.formState.errors.email ? <small>{form.formState.errors.email.message}</small> : null}</label>
             <label>{t('Phone')} <b>*</b><Input id="join-phone" type="tel" placeholder={phonePlaceholder} {...form.register('phone')} />{form.formState.errors.phone ? <small>{form.formState.errors.phone.message}</small> : null}</label>
-            <label>{t('Referral code')} <i>{t('optional')}</i><Input id="join-referral" value={referralCode} onChange={(event) => { setReferralCode(event.target.value); setReferralError(null) }} maxLength={120} placeholder={t('Enter a referral code')} aria-invalid={Boolean(referralError) || undefined} aria-describedby={referralError ? 'join-referral-error' : undefined} />{referralError ? <small id="join-referral-error" role="alert">{referralError}</small> : null}</label>
+            <label>{t('Referral code (optional)')}<Input id="join-referral" value={referralCode} onChange={(event) => { setReferralCode(event.target.value); setReferralError(null) }} maxLength={120} placeholder={t('Enter a referral code')} aria-invalid={Boolean(referralError) || undefined} aria-describedby={referralError ? 'join-referral-error' : undefined} />{referralError ? <small id="join-referral-error" role="alert">{referralError}</small> : null}</label>
             <label className="is-full">{t('Password')} <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder={t('Use at least {count} characters for your new password.', { count: PASSWORD_MIN_LENGTH })} {...form.register('password')} /><button type="button" aria-label={showPassword ? t('Hide password') : t('Show password')} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
           </div>
-          <label className="rewardme-join__agree"><input type="checkbox" required /><span>{t('I agree to the')} <Link to="/terms">{t('Terms of Service')}</Link>, <Link to="/privacy">{t('Privacy Policy')}</Link>, {t('and applicable membership terms. I understand paid memberships are manually reviewed and no card is collected here.')}</span></label>
+          <label className="rewardme-join__agree"><input type="checkbox" required /><span>{t("I agree to RewardMe's Terms of Service and Membership Agreement, and authorize billing for the plan selected above.")} <Link to="/terms">{t('Terms of Service')}</Link> · <Link to="/privacy">{t('Privacy Policy')}</Link></span></label>
           {error ? <p className="rewardme-join__error" role="alert">{error}</p> : null}
           <Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? t('Creating account…') : t('Join {program}', { program: program.name })}</Button>
         </form>

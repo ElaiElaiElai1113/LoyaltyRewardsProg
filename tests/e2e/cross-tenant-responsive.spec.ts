@@ -124,7 +124,10 @@ test.describe('cross-tenant public responsive layouts', () => {
       await menuToggle.click()
       await expect(menuToggle).toHaveAttribute('aria-expanded', 'true')
       await expect(mobileMenu).toBeVisible()
-      const mobileBusinessEntry = mobileMenu.getByRole('link', { name: 'Businesses', exact: true }).first()
+      const mobileBusinessEntry = mobileMenu.getByRole('link', {
+        name: tenant === 'loyality' ? 'Businesses' : 'For businesses',
+        exact: true,
+      }).first()
       await expect(mobileBusinessEntry).toBeVisible()
       await expect(mobileBusinessEntry).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
       if (tenant !== 'loyality') {
@@ -159,7 +162,7 @@ test.describe('cross-tenant public responsive layouts', () => {
         tenant === 'loyality' ? '.reference-loyality__nav' : '.reference-rewardme__nav',
       )
       await expect(topBar.getByRole('link', {
-        name: tenant === 'loyality' ? 'Get started' : 'Businesses',
+        name: tenant === 'loyality' ? 'Get started' : 'For businesses',
         exact: true,
       })).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
     })

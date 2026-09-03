@@ -131,15 +131,23 @@ test.describe('public acquisition workflow', () => {
 
     await expect(page).toHaveTitle('RewardMe')
     await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'One account. Clear offers. Local rewards.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'The offer tells you exactly what you can earn.' })).toBeVisible()
-    await expect(page.getByText('No payment card is collected online', { exact: false })).toBeVisible()
-    await expect(page.getByText('Example available rewards', { exact: true })).toBeVisible()
-    await expect(page.getByRole('link', { name: 'Start free access' }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('heading', { name: "Three steps. That's the whole system." })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Most places, 20% or more back. Some days, all of it.' })).toBeVisible()
+    await expect(page.locator('.reference-rewardme__fine')).toContainText('no card required until you decide to stay')
+    await expect(page.locator('.reference-rewardme__balance')).toContainText('Available to redeem')
+    await expect(page.locator('.reference-rewardme__passbook-title')).toContainText('NO. 00482')
+    await expect(page.locator('.reference-rewardme__entry').nth(0)).toContainText('Coffee run, The Daily Grind — $5 spent, 20% back')
+    await expect(page.locator('.reference-rewardme__entry').nth(0)).toContainText('+ $1')
+    await expect(page.locator('.reference-rewardme__entry').nth(1)).toContainText('Dinner out, Harvest & Vine — $60 spent, 100% back')
+    await expect(page.locator('.reference-rewardme__entry').nth(1)).toContainText('+ $60')
+    await expect(page.locator('.reference-rewardme__entry').nth(2)).toContainText('Weekend stay, The Wayfarer Inn — $240 spent, 20% back')
+    await expect(page.locator('.reference-rewardme__entry').nth(2)).toContainText('+ $48')
+    await expect(page.locator('.reference-rewardme__balance')).toContainText('$109')
+    await expect(page.getByRole('link', { name: 'Start free trial' }).first()).toHaveAttribute('href', '/join')
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how')
     const header = page.getByLabel('RewardMe navigation')
     await expect(header.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
-    await expect(header.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '#business')
+    await expect(header.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '#business')
     await expect(header.getByRole('link', { name: 'The store' })).toHaveAttribute('href', '#store')
     await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
@@ -155,7 +163,7 @@ test.describe('public acquisition workflow', () => {
 
     await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' }))
       .toHaveCSS('font-family', /Fraunces/)
-    await expect(page.getByText('Earn rewards when you spend', { exact: false }))
+    await expect(page.getByText('Earn high rewards when you spend', { exact: false }))
       .toHaveCSS('font-family', /IBM Plex Sans/)
     await expect(page.locator('.reference-rewardme img')).toHaveCount(5)
     await expect(page.locator('.reference-rewardme__passbook')).toBeVisible()
@@ -172,9 +180,9 @@ test.describe('public acquisition workflow', () => {
     await expect(menuToggle).toBeVisible()
     await menuToggle.click()
     const mobileNavigation = page.locator('#rewardme-mobile-navigation')
-    await expect(mobileNavigation.getByRole('link', { name: 'Start free access' })).toBeVisible()
+    await expect(mobileNavigation.getByRole('link', { name: 'Start free trial' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
-    await expect(mobileNavigation.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '#business')
+    await expect(mobileNavigation.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '#business')
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,
@@ -239,8 +247,9 @@ test.describe('public acquisition workflow', () => {
     expect(mobileDimensions.scrollWidth).toBeLessThanOrEqual(mobileDimensions.clientWidth)
 
     await page.goto('/join')
-    await expect(page.getByText('Three-month free access, then continue', { exact: false })).toBeVisible()
-    await expect(page.getByText('Regular and Gold are requests only', { exact: false })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Join RewardMe.' })).toBeVisible()
+    await expect(page.getByText('No cost, ever. Earn 10% back in rewards at participating businesses.')).toBeVisible()
+    await expect(page.getByText('authorize billing for the plan selected above', { exact: false })).toBeVisible()
     await expect(page.locator('#join-email')).toBeVisible()
     await expect(page.locator('#join-password')).toHaveAttribute(
       'placeholder',
@@ -298,10 +307,10 @@ test.describe('public acquisition workflow', () => {
       await page.goto(`/business${tenant.query}`)
 
       await expect(page.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
-      await expect(page.getByText('Commission model', { exact: true })).toBeVisible()
-      await expect(page.getByText('Business-credit model', { exact: true })).toBeVisible()
-      await expect(page.getByText('Final commercial terms are confirmed in the signed agreement', { exact: false })).toBeVisible()
-      await expect(page.getByRole('heading', { name: 'Connected economics. Separate products.' })).toBeVisible()
+      await expect(page.getByText('Commission Model', { exact: true })).toBeVisible()
+      await expect(page.getByText('Credit Model', { exact: true })).toBeVisible()
+      await expect(page.getByText('No surprise fees, nothing hidden in fine print.', { exact: false })).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'You can pay with Synergize credit instead of cash.' })).toBeVisible()
       await expect(page.getByRole('link', { name: 'Apply: Commission model' })).toHaveAttribute('href', '/business/apply/commission')
       await expect(page.getByRole('link', { name: 'Apply: Credit model' })).toHaveAttribute('href', '/business/apply/credit')
       await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' }))
@@ -313,7 +322,7 @@ test.describe('public acquisition workflow', () => {
 
   for (const application of [
     { model: 'commission', heading: 'Commission Model', reference: 'WT-COMMISSION-001' },
-    { model: 'credit', heading: 'Business-credit Model', reference: 'WT-CREDIT-001' },
+    { model: 'credit', heading: 'Credit Model', reference: 'WT-CREDIT-001' },
   ] as const) {
     test(`Wondertown ${application.model} application is a functional sandbox flow`, async ({ page }) => {
       const wondertownOrigin = process.env.E2E_WONDERTOWN_URL?.replace(/\/+$/, '')
@@ -363,7 +372,7 @@ test.describe('public acquisition workflow', () => {
         await expect(creditMethod).toHaveAttribute('placeholder', /in-store account credit/i)
       }
 
-      await page.getByRole('button', { name: 'Submit application' }).click()
+      await page.getByRole('button', { name: 'Submit Application' }).click()
       await expect(page.locator('input[name="legalName"]')).toBeFocused()
       expect(submissions).toHaveLength(0)
 
@@ -383,13 +392,13 @@ test.describe('public acquisition workflow', () => {
       for (const [name, value] of Object.entries(values)) {
         await page.locator(`input[name="${name}"]`).fill(value)
       }
-      await page.locator('select[name="rewardRate"]').selectOption({ label: '20% back' })
+      await page.locator('select[name="rewardRate"]').selectOption({ label: '20% back (minimum)' })
       await page.locator('input[name="contactConsent"]').check()
       if (application.model === 'credit') await creditMethod.fill('Fictional in-store account credit')
 
-      await page.getByRole('button', { name: 'Submit application' }).click()
-      await expect(page.getByText('Application received', { exact: false })).toBeVisible()
-      await expect(page.getByText(`Reference: ${application.reference}`)).toBeVisible()
+      await page.getByRole('button', { name: 'Submit Application' }).click()
+      await expect(page.getByRole('heading', { name: "You're in — application received." })).toBeVisible()
+      await expect(page.getByText(`Reference number: ${application.reference}`)).toBeVisible()
       expect(submissions).toHaveLength(1)
       expect(submissions[0]).toMatchObject({
         model: application.model,

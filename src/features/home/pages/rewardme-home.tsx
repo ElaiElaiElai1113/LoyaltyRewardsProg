@@ -14,21 +14,21 @@ import { useLanguage } from '@/lib/language'
 import './rewardme-home.css'
 
 const memberSteps = [
-  ['01', 'Join with no card required', 'Create your account with your name, email, and phone. Your first three months are free access while you explore the program.'],
-  ['02', 'Spend with participating businesses', 'Show your member QR when you visit. Each active offer states its reward rate, availability, and restrictions before you spend.'],
-  ['03', 'Use rewards when you are ready', 'Redeem available rewards in the store under the published offer terms, and follow every earned or redeemed entry in your account.'],
+  ['01', 'Join free for 3 months', 'Sign up with just an email, phone number, or a social account — no card needed. Every new member gets 3 months of full Gold-level access: the highest reward rate, every referral bonus, completely free.'],
+  ['02', 'Earn as you spend', 'From day one — trial included — you earn rewards back at participating restaurants, cafés, hotels, and shops around your city, most giving back 20% or more.'],
+  ['03', 'Redeem it, or save it', "Spend what you've earned in the RewardMe store any time — trial or not — or lock it into a savings plan and let it grow toward something bigger."],
 ] as const
 
 const rates = [
-  ['Up to 10%', 'Free membership', 'Access to participating offers without a paid membership.'],
-  ['20%+', 'Most partners', 'The expected starting point for many Regular and Gold member offers.'],
-  ['Up to 100%', 'Selected off-peak offers', 'Limited offers with published eligibility, timing, and caps.'],
+  ['20%+', 'Everyday spots', 'Nearly every participating business gives back at least 20% — restaurants, cafés, shops, and services around your city.'],
+  ['100%', 'Slow-time specials', 'Some partners give everything back during quieter hours — a great time to try somewhere new for the price of nothing.'],
+  ['<20%', 'Big purchases', 'Cars, real estate, and other big-ticket items give a lower percentage back — but on a purchase that size, it still adds up to real money back.'],
 ] as const
 
 const plans = [
-  ['Free', '$0', 'Explore the program and earn up to 10% back on eligible offers.'],
-  ['Regular', '$25/month', 'Reference price. Manual activation unlocks eligible rates and referral benefits.'],
-  ['Gold', '$100/year', 'Reference price. Full access is activated manually after review.'],
+  ['Free', 'Get a taste', '$0', '3 months of Gold, then up to 10% back forever — still eligible for the savings plan.'],
+  ['Regular', 'Full rewards', '$25/mo', '3 months of Gold, then 20–100% back, plus $10 in rewards for every member you refer.'],
+  ['Gold', 'Best for referrers', '$100/yr', 'Same great reward rate throughout, with the highest referral payouts on the platform.'],
 ] as const
 
 function LedgerMark() {
@@ -75,14 +75,14 @@ export function RewardMeHomePage() {
           <div className="reference-rewardme__nav-links">
             <a href="#how">{t('How it works')}</a>
             <a href="#store">{t('The store')}</a>
-            <a href="#membership">{t('Membership')}</a>
-            <a className="reference-rewardme__business-link" href="#business">{t('Businesses')}</a>
+            <a href="#savings">{t('Savings plan')}</a>
+            <a className="reference-rewardme__business-link" href="#business">{t('For businesses')}</a>
             {isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}
           </div>
           <div className="reference-rewardme__nav-actions">
             <LanguagePicker className="reference-rewardme__language" compact condenseOnNarrowScreens />
             <Link className="reference-rewardme__text-link" to="/signin">{t('Sign in')}</Link>
-            <Link className="reference-rewardme__button" to="/join">{t('Start free access')}</Link>
+            <Link className="reference-rewardme__button" to="/join">{t('Start free trial')}</Link>
           </div>
           <button
             className="reference-rewardme__menu-toggle"
@@ -103,42 +103,43 @@ export function RewardMeHomePage() {
         >
           <a href="#how" onClick={closeMobileMenu}>{t('How it works')}</a>
           <a href="#store" onClick={closeMobileMenu}>{t('The store')}</a>
-          <a href="#membership" onClick={closeMobileMenu}>{t('Membership')}</a>
-          <a className="reference-rewardme__business-link" href="#business" onClick={closeMobileMenu}>{t('Businesses')}</a>
+          <a href="#savings" onClick={closeMobileMenu}>{t('Savings plan')}</a>
+          <a className="reference-rewardme__business-link" href="#business" onClick={closeMobileMenu}>{t('For businesses')}</a>
           {isWondertown ? <Link to="/guide" onClick={closeMobileMenu}>{t('Test guide')}</Link> : null}
           <div className="reference-rewardme__mobile-actions">
             <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link>
-            <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Start free access')}</Link>
+            <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Start free trial')}</Link>
           </div>
         </nav>
       </header>
 
       <section className="reference-rewardme__hero reference-rewardme__wrap">
         <div className="reference-rewardme__hero-copy">
-          <p className="reference-rewardme__eyebrow">{t(isWondertown ? 'RewardMe test environment · fictional data' : 'Three months free to join')}</p>
+          <p className="reference-rewardme__eyebrow">{t(isWondertown ? 'RewardMe test environment · fictional data' : '3 months free to join')}</p>
           <h1>{t('Earn amazing rewards while supporting local businesses.')}</h1>
-          <p className="reference-rewardme__hero-highlight">{t('Discover eligible offers with')} <strong>{t('20% to 100% back')}</strong> {t('in rewards for activated Regular and Gold members.')}</p>
-          <p className="reference-rewardme__lead">{t('Earn rewards when you spend with participating local businesses, then use them for something great or keep building toward something bigger.')}</p>
+          <p className="reference-rewardme__hero-highlight">{t("The world's highest paying rewards program — earn a minimum of")} <strong>{t('20% to 100% back')}</strong> {t('in rewards.')}</p>
+          <p className="reference-rewardme__lead">{t('Earn high rewards when you spend with the local businesses we recommend — then treat yourself to something great, or save it toward something bigger.')}</p>
+          <p className="reference-rewardme__lead">{t('Your rewards can be used for so many things:')}</p>
           <ul className="reference-rewardme__hero-list">
-            <li>{t('Treat yourself to a night out')}</li>
-            <li>{t('Plan for a future trip or special purchase')}</li>
-            <li>{t('Support independent businesses in your community')}</li>
+            <li>{t('Treat yourself to a night out on the town')}</li>
+            <li>{t('Save toward your dream vacation')}</li>
+            <li>{t('Lock it away toward a car, a home, or paying off debt')}</li>
           </ul>
           <div className="reference-rewardme__actions">
-            <Link className="reference-rewardme__button reference-rewardme__button--gold" to="/join">{t('Start your free access')}</Link>
+            <Link className="reference-rewardme__button reference-rewardme__button--gold" to="/join">{t('Start your free trial')}</Link>
             <a className="reference-rewardme__button reference-rewardme__button--outline" href="#how">{t('See how it works')}</a>
           </div>
-          <p className="reference-rewardme__fine">{t(isWondertown ? 'Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected.' : 'Join with your name, email, and phone. No payment card is collected online.')}</p>
+          <p className="reference-rewardme__fine">{t(isWondertown ? 'Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected.' : 'Join with just an email, WhatsApp, or phone number — no card required until you decide to stay.')}</p>
         </div>
 
         <div className="reference-rewardme__passbook" aria-label={t('Example {brand} account activity', { brand })}>
           <span className="reference-rewardme__stamp">{t(isWondertown ? 'Sandbox account' : 'Member account')}</span>
           <div className="reference-rewardme__passbook-title"><strong>{t('My {brand} Account', { brand })}</strong><span>NO. 00482</span></div>
-          <div className="reference-rewardme__entry"><span>{t('Coffee run · eligible offer')}</span><strong>+ 20%</strong></div>
-          <div className="reference-rewardme__entry"><span>{t('Dinner out · off-peak offer')}</span><strong>+ 100%</strong></div>
-          <div className="reference-rewardme__entry"><span>{t('Weekend stay · eligible offer')}</span><strong>+ 20%</strong></div>
-          <div className="reference-rewardme__entry"><span>{t('Offer terms')}</span><strong>{t('Published')}</strong></div>
-          <div className="reference-rewardme__balance"><span>{t('Example available rewards')}</span><strong>109</strong></div>
+          <div className="reference-rewardme__entry"><span>{t('Coffee run, The Daily Grind — $5 spent, 20% back')}</span><strong>+ $1</strong></div>
+          <div className="reference-rewardme__entry"><span>{t('Dinner out, Harvest & Vine — $60 spent, 100% back')}</span><strong>+ $60</strong></div>
+          <div className="reference-rewardme__entry"><span>{t('Weekend stay, The Wayfarer Inn — $240 spent, 20% back')}</span><strong>+ $48</strong></div>
+          <div className="reference-rewardme__entry"><span>{t('Moved to savings plan')}</span><strong>{t('→ locked')}</strong></div>
+          <div className="reference-rewardme__balance"><span>{t('Available to redeem')}</span><strong>$109</strong></div>
         </div>
 
         <figure className="reference-rewardme__wide-photo">
@@ -149,8 +150,8 @@ export function RewardMeHomePage() {
       <section className="reference-rewardme__section reference-rewardme__wrap" id="how">
         <div className="reference-rewardme__section-head">
           <p className="reference-rewardme__eyebrow">{t('How it works')}</p>
-          <h2>{t('One account. Clear offers. Local rewards.')}</h2>
-          <p>{t('Every reward starts with a published partner offer and a verified purchase.')}</p>
+          <h2>{t("Three steps. That's the whole system.")}</h2>
+          <p>{t('No app gymnastics, no fine print you need a lawyer for. Just join, spend like you normally would, and watch your account fill up.')}</p>
         </div>
         <ol className="reference-rewardme__ledger-list">
           {memberSteps.map(([number, title, body]) => (
@@ -162,10 +163,14 @@ export function RewardMeHomePage() {
       <section className="reference-rewardme__section reference-rewardme__section--deep" id="store">
         <div className="reference-rewardme__wrap reference-rewardme__split">
           <div>
-            <p className="reference-rewardme__eyebrow">{t('The reward store')}</p>
-            <h2>{t('Use rewards for experiences you’ll remember.')}</h2>
-            <p>{t('Browse active rewards from participating restaurants, hotels, salons, and local shops. Availability and redemption terms are shown before you choose.')}</p>
-            <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/shop">{t('Explore participating businesses')}</Link>
+            <p className="reference-rewardme__eyebrow">{t('The store')}</p>
+            <h2>{t('Your rewards are real credit — spendable in one place, made for you.')}</h2>
+            <p>{t("Think of it like store credit, not cash you can spend anywhere: you earn it, then redeem it somewhere it's actually good for something — food, drink, stays, and bigger-ticket items too.")}</p>
+            <div className="reference-rewardme__store-options">
+              <article><h3>{t('Browse any time')}</h3><p>{t("The open store is always there — see what's available and shop it yourself, whenever you like.")}</p></article>
+              <article><h3>{t('Ask a concierge')}</h3><p>{t("Our virtual assistants can find things you won't see browsing on your own — a members-only selection, found for you.")}</p></article>
+            </div>
+            <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/shop">{t('The store')}</Link>
           </div>
           <div className="reference-rewardme__photo-grid">
             <img src={dinnerReward} alt={t('Dinner reward from a participating restaurant')} loading="lazy" />
@@ -178,40 +183,40 @@ export function RewardMeHomePage() {
       <section className="reference-rewardme__section reference-rewardme__wrap" id="rewards">
         <div className="reference-rewardme__section-head">
           <p className="reference-rewardme__eyebrow">{t('Reward rates')}</p>
-          <h2>{t('The offer tells you exactly what you can earn.')}</h2>
-          <p>{t('Rates vary by membership, partner, category, timing, and the active offer’s published limits.')}</p>
+          <h2>{t('Most places, 20% or more back. Some days, all of it.')}</h2>
+          <p>{t("Reward rates vary by business — here's roughly what to expect.")}</p>
         </div>
         <div className="reference-rewardme__rate-grid">
           {rates.map(([value, label, body]) => <article key={label}><p>{t(label)}</p><strong>{t(value)}</strong><span>{t(body)}</span></article>)}
         </div>
       </section>
 
-      <section className="reference-rewardme__section reference-rewardme__wrap" id="account-balance">
+      <section className="reference-rewardme__section reference-rewardme__wrap" id="savings">
         <div className="reference-rewardme__savings">
-          <div><p className="reference-rewardme__eyebrow">{t('Your reward balance')}</p><h2>{t('Know what you earned and where you can use it.')}</h2><p>{t('Your account keeps earned and redeemed entries together. Available rewards can be used only on eligible published offers and remain subject to the applicable membership and offer terms.')}</p></div>
-          <div className="reference-rewardme__balance-card"><span>{t('Available now')}</span><strong>{t('Rewards → eligible offer')}</strong><p>{t('Rewards are program value, not cash. Sign in to review your current balance and activity before choosing an offer.')}</p></div>
+          <div><p className="reference-rewardme__eyebrow">{t('Savings plan')}</p><h2>{t("Save it. Don't spend it. Watch it grow.")}</h2><p>{t("Lock away any amount, any time — rewards, cash, whatever you're setting aside — for a full year, growing toward a car, a home, or paying off a credit card. As a bonus: put your membership fee into savings, and we'll double it back at year's end.")}</p></div>
+          <div className="reference-rewardme__balance-card"><span>{t('12-month lock')}</span><strong>$100 → $200</strong><p>{t("Double back at year end. Monthly members get a bonus 13th-month payout instead. This bonus applies to your membership fee — general savings just grow safely, ready when you need them.")}</p></div>
         </div>
       </section>
 
       <section className="reference-rewardme__section reference-rewardme__wrap" id="membership">
-        <div className="reference-rewardme__section-head"><p className="reference-rewardme__eyebrow">{t('Membership')}</p><h2>{t('Choose how you want to earn.')}</h2><p>{t('Regular and Gold use reference pricing and are activated manually after review.')}</p></div>
+        <div className="reference-rewardme__section-head"><p className="reference-rewardme__eyebrow">{t('Membership')}</p><h2>{t('Try it free for 3 months.')}</h2><p>{t('Every new member starts with a free 3-month trial of our top-tier Gold rewards — the highest reward rate, no charge, no card required until you decide to stay.')}</p></div>
         <div className="reference-rewardme__tiers">
-          {plans.map(([name, price, body], index) => <article className={index === 1 ? 'is-featured' : ''} key={name}><span>{t(index === 1 ? 'Most popular' : 'Membership')}</span><h3>{t(name)}</h3><strong>{t(price)}</strong><p>{t(body)}</p></article>)}
+          {plans.map(([name, title, price, body], index) => <article className={index === 1 ? 'is-featured' : ''} key={name}><span>{t(name)}</span><h3>{t(title)}</h3><strong>{t(price)}</strong><p>{t(body)}</p></article>)}
         </div>
-        <Link className="reference-rewardme__button reference-rewardme__button--gold" to="/membership">{t('Compare membership terms')}</Link>
+        <Link className="reference-rewardme__button reference-rewardme__button--gold" to="/membership">{t('Compare plans & start free trial')}</Link>
       </section>
 
       <section className="reference-rewardme__section reference-rewardme__wrap" id="business">
         <div className="reference-rewardme__business-card">
-          <div><p className="reference-rewardme__eyebrow">{t('For local businesses')}</p><h2>{t('Turn a clear reward offer into a reason to visit.')}</h2><p>{t('Choose a participation model, publish the offer members will receive, and pay according to the signed commercial terms.')}</p><Link className="reference-rewardme__button reference-rewardme__button--gold" to="/business">{t('See how partnership works')}</Link></div>
+          <div><h2>{t('Own a restaurant, hotel, or shop?')}</h2><p>{t('Join the RewardMe network, put your slow hours to work, and bring in customers who are already looking for a reason to choose you.')}</p><Link className="reference-rewardme__button reference-rewardme__button--gold" to="/business">{t('See how businesses join →')}</Link></div>
           <img src={businessOwner} alt={t('Local business owner ready to welcome rewards members')} loading="lazy" />
         </div>
       </section>
 
       <footer className="reference-rewardme__footer">
         <div className="reference-rewardme__wrap reference-rewardme__footer-inner">
-          <div><a className="reference-rewardme__logo" href="#top">{isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <LedgerMark />}<span className="reference-rewardme__brand-name">{brand}</span></a><p>{t(isWondertown ? 'Production-equivalent RewardMe flows with fictional test data.' : 'Earn where you already spend. Support local businesses.')}</p></div>
-          <nav aria-label={t('Footer navigation')}><a href="#how">{t('How it works')}</a><Link to="/business">{t('For businesses')}</Link>{isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}<Link to="/terms">{t('Terms')}</Link><Link to="/privacy">{t('Privacy')}</Link><a href={`mailto:${program.supportEmail}`}>{t('Contact')}</a></nav>
+          <div><a className="reference-rewardme__logo" href="#top">{isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <LedgerMark />}<span className="reference-rewardme__brand-name">{brand}</span></a><p>{t(isWondertown ? 'Production-equivalent RewardMe flows with fictional test data.' : 'Earn where you already spend. Save toward what actually matters.')}</p></div>
+          <nav aria-label={t('Footer navigation')}><a href="#how">{t('How it works')}</a><a href="#membership">{t('Membership')}</a><Link to="/business">{t('Businesses')}</Link>{isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}<Link to="/terms">{t('Terms')}</Link><Link to="/privacy">{t('Privacy')}</Link><a href={`mailto:${program.supportEmail}`}>{t('Contact')}</a></nav>
         </div>
       </footer>
     </main>

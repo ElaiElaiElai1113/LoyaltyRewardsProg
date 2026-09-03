@@ -106,12 +106,13 @@ function RewardMeBusinessPage({ brand, supportEmail, isWondertown }: { brand: st
     >
       <section className="rewardme-ledger-business__hero">
         <div>
+          <Link to="/">{t('← Back home')}</Link>
           <p className="rewardme-ledger-business__eyebrow">{isWondertown ? t('For businesses · fictional test environment') : t('For businesses')}</p>
           <h1>{t('Get new customers while rewarding our members.')}</h1>
-          <p className="rewardme-ledger-business__highlight">{t('{program} members choose where to go based on the reward. Join, and they can choose you.', { program: brand })}</p>
+          <p className="rewardme-ledger-business__highlight">{t('{program} members choose where to go based on the reward. Join, and they choose you.', { program: brand })}</p>
           <p>{isWondertown
             ? t('Test the same offer, purchase-verification, and business-account workflows used by RewardMe with fictional businesses and sandbox data.')
-            : t('Publish a clear offer, reach members who are ready to spend, and pay only under the commercial model documented in your signed agreement.')}</p>
+            : t("You're seeing this because we think your business is a great fit for RewardMe members. Join, and you're in front of real members who are actively looking for a reason to spend — you only pay when it actually brings you a customer.")}</p>
           <div className="rewardme-ledger-business__actions">
             <a className="rewardme-ledger-business__button rewardme-ledger-business__button--gold" href="#how-it-works">{t('See how it works')}</a>
             <a className="rewardme-ledger-business__button" href="#get-started">{t('Get started')}</a>
@@ -124,42 +125,42 @@ function RewardMeBusinessPage({ brand, supportEmail, isWondertown }: { brand: st
       </section>
 
       <section id="how-it-works" className="rewardme-ledger-business__section">
-        <div className="rewardme-ledger-business__section-head"><p className="rewardme-ledger-business__eyebrow">{t('How it works')}</p><h2>{t('Three steps. You pay for results, not access.')}</h2><p>{t('Members only earn through participating businesses. An active offer puts your business in front of people deciding where to spend.')}</p></div>
+        <div className="rewardme-ledger-business__section-head"><p className="rewardme-ledger-business__eyebrow">{t('How it works')}</p><h2>{t('Three steps. You pay for results, not access.')}</h2><p>{t("Our members only earn rewards at businesses that are part of RewardMe. If you're not on the platform, you're not in the running — joining is what puts you in front of them.")}</p></div>
         <ol className="rewardme-ledger-business__steps">
-          <li><span>01</span><div><h3>{t('Join the network')}</h3><p>{t('Choose a participation model and propose a reward rate. The final offer, limits, and settlement rules go into your agreement.')}</p></div></li>
-          <li><span>02</span><div><h3>{t('Members choose you for the reward')}</h3><p>{t('Members see the active rate, availability, and restrictions before they visit or spend.')}</p></div></li>
-          <li><span>03</span><div><h3>{t('Verify purchases and settle clearly')}</h3><p>{t('Staff records each qualifying sale so the reward and business accounting both have an auditable entry.')}</p></div></li>
+          <li><span>01</span><div><h3>{t('Join RewardMe')}</h3><p>{t('Set your reward rate — typically 20–100% back, lower for big-ticket items — and choose whether members can just earn at your business, or earn and redeem too.')}</p></div></li>
+          <li><span>02</span><div><h3>{t('Members choose you for the reward')}</h3><p>{t("RewardMe members are actively looking for the best rewards out there. Businesses without access to our members aren't in the running — being on RewardMe puts you in front of them.")}</p></div></li>
+          <li><span>03</span><div><h3>{t('Choose how you pay')}</h3><p>{t('Pick whichever fits your business: pay RewardMe a commission and we pay the reward straight to the member (Commission Model), or issue the reward yourself as your own business credit — a store credit, gift card, or account balance (Credit Model). Either way, you only pay for rewards actually redeemed.')}</p></div></li>
         </ol>
       </section>
 
       <section id="benefits" className="rewardme-ledger-business__section">
-        <div className="rewardme-ledger-business__section-head"><p className="rewardme-ledger-business__eyebrow">{t('Why it works')}</p><h2>{t('You are paying for customer activity, not advertising space.')}</h2></div>
+        <div className="rewardme-ledger-business__section-head"><p className="rewardme-ledger-business__eyebrow">{t('Why it works')}</p><h2>{t("You're paying for customers, not advertising space.")}</h2></div>
         <div className="rewardme-ledger-business__why">
-          <article><h3>{t('Real customers, not impressions')}</h3><p>{t('Every verified transaction is an actual person spending with your business, not a click or a view.')}</p></article>
-          <article><h3>{t('Terms before launch')}</h3><p>{t('Your reward rate, redemption access, settlement cycle, and restrictions are documented before an offer goes live.')}</p></article>
-          <article><h3>{t('Simple to operate')}</h3><p>{t('Your staff verifies the member and purchase; the platform keeps the resulting customer and accounting record.')}</p></article>
+          <article><h3>{t('Real customers, not impressions')}</h3><p>{t('Every reward redeemed is an actual person spending money at your business — not a click or a view.')}</p></article>
+          <article><h3>{t('Pay for results')}</h3><p>{t('The commission is tied to rewards actually redeemed, not a flat fee regardless of what it brings in.')}</p></article>
+          <article><h3>{t('Simple to run')}</h3><p>{t('Pick your reward rate and redemption settings — we handle the member side.')}</p></article>
         </div>
         <img className="rewardme-ledger-business__service-photo" src={staffQrCheckout} alt={t('Staff member scanning a member QR code at checkout')} loading="lazy" />
       </section>
 
       <section className="rewardme-ledger-business__section" id="cost">
         <div className="rewardme-ledger-business__cost">
-          <div><p className="rewardme-ledger-business__eyebrow">{t('Participation models')}</p><h2>{t('Choose the model that fits your business.')}</h2><p>{t('No online fee or rate is accepted here. Final commercial terms are confirmed in the signed agreement before activation.')}</p></div>
+          <div><h2>{t('Simple, upfront pricing.')}</h2><p>{t("No surprise fees, nothing hidden in fine print. Here's the plain version.")}</p></div>
           <div className="rewardme-ledger-business__model-list">
-            <div><strong>{t('Commission model')}</strong><span>{t('{program} pays the eligible member reward; commission and settlement follow the signed agreement.', { program: brand })}</span></div>
-            <div><strong>{t('Business-credit model')}</strong><span>{t('Your business issues eligible credit; redemption, liability, and commission follow the signed agreement.')}</span></div>
-            <div><strong>{t('Cost to apply')}</strong><span>{t('No charge')}</span></div>
+            <div><strong>{t('Commission Model')}</strong><span>15–25%</span></div>
+            <div><strong>{t('Credit Model')}</strong><span>15–25%</span></div>
+            <div><strong>{t('Cost to join')}</strong><span>$0</span></div>
           </div>
         </div>
       </section>
 
       <section className="rewardme-ledger-business__section">
-        <div className="rewardme-ledger-business__bridge"><div><p className="rewardme-ledger-business__eyebrow">{t('If you already use Synergize')}</p><h2>{t('Connected economics. Separate products.')}</h2><p>{t('Synergize is a separate private B2B credit network. Eligible Synergize business credit may support a RewardMe offer only when the applicable agreements permit it; RewardMe members do not need a Synergize account.')}</p></div><a className="rewardme-ledger-business__button" href="https://synergize-business-group.vercel.app">{t('Learn about Synergize')} <ArrowRight aria-hidden="true" /></a></div>
+        <div className="rewardme-ledger-business__bridge"><div><p className="rewardme-ledger-business__eyebrow">{t("If you're already part of Synergize")}</p><h2>{t('You can pay with Synergize credit instead of cash.')}</h2><p>{t("Synergize is a separate, private network where businesses trade credit with each other. If you're already a Synergize member, you can use that credit to cover either the Commission or Credit Model above — since the network fee was already paid when you earned or bought that credit, there's no second charge.")}</p></div><a className="rewardme-ledger-business__button" href="https://synergize-business-group.vercel.app">{t('Learn about Synergize →')}</a></div>
       </section>
 
       <section className="rewardme-ledger-business__section" id="get-started">
         <div className="rewardme-ledger-business__cta">
-          <div><p className="rewardme-ledger-business__eyebrow">{t('Get started')}</p><h2>{t('Choose the application that matches your proposed model.')}</h2><p>{t('Your submission is an application for review. It does not activate an offer or replace the final signed commercial agreement.')}</p></div>
+          <div><h2>{t("Ready to see if it's a fit?")}</h2><p>{t("Tell us a bit about your business and we'll walk you through what joining looks like.")}</p></div>
           <div className="rewardme-ledger-business__cta-actions"><Link className="rewardme-ledger-business__button rewardme-ledger-business__button--gold" to="/business/apply/commission">{t('Apply: Commission model')}</Link><Link className="rewardme-ledger-business__button" to="/business/apply/credit">{t('Apply: Credit model')}</Link>{isWondertown ? <><Link className="rewardme-ledger-business__contact" to="/signin?portal=business">{t('Business sign in')}</Link><Link className="rewardme-ledger-business__contact" to="/guide">{t('Open the test guide')}</Link></> : <a className="rewardme-ledger-business__contact" href={`mailto:${supportEmail}`}>{t('Questions? Email the program team')}</a>}</div>
         </div>
       </section>

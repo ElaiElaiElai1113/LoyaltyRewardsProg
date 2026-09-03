@@ -27,8 +27,9 @@ const tenants: TenantCase[] = [
 
 const commonEnglishLabels = [
   'FOR BUSINESSES',
-  'Benefits',
-  'How It Works',
+  'Home',
+  'How it works',
+  'What it costs',
   'Cost Calculator',
   'Get Started',
   'Business Login',
@@ -43,15 +44,17 @@ const sharedRewardMeEnglishLabels = [
   'Get new customers while rewarding our members.',
   'Apply: Commission model',
   'Apply: Credit model',
-  'PARTICIPATION MODELS',
-  'Choose the model that fits your business.',
-  'Commission model',
-  'Business-credit model',
-  'HOW IT WORKS',
+  'Commission Model',
+  'Credit Model',
+  'How it works',
   'Three steps. You pay for results, not access.',
-  'IF YOU ALREADY USE SYNERGIZE',
-  'Connected economics. Separate products.',
-  'Choose the application that matches your proposed model.',
+  'Join RewardMe',
+  'Members choose you for the reward',
+  'Choose how you pay',
+  'Why it works',
+  'Simple, upfront pricing.',
+  'You can pay with Synergize credit instead of cash.',
+  "Ready to see if it's a fit?",
 ]
 
 const legacyWondertownEnglishLabels = [
@@ -122,8 +125,9 @@ test.describe('business onboarding language isolation', () => {
         await expect(experience).not.toHaveAttribute('data-wondertown-rewardme-mirror')
       }
       await expect(page.getByRole('combobox', { name: 'Idioma' })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Beneficios', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Inicio', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Cómo funciona', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Lo que cuesta', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Comenzar', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Acceso para negocios', exact: true })).toBeVisible()
       await expect(header.getByRole('link', {
@@ -161,8 +165,9 @@ test.describe('business onboarding language isolation', () => {
       const languagePicker = page.getByRole('combobox', { name: 'Language' })
       await expect(languagePicker).toHaveValue('en')
       await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
-      await expect(header.getByRole('link', { name: 'Benefits', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'How It Works', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Home', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'How it works', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'What it costs', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
       await expect(experience.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
