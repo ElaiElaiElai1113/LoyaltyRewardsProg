@@ -105,12 +105,12 @@ export function AdminLayout() {
         )}
       >
         <div className="flex items-center gap-3">
-          <div className="luxe-art flex size-10 items-center justify-center rounded-[0.9rem]">
+          <div className="product-workspace-shell__identity-mark luxe-art flex size-10 items-center justify-center rounded-[0.9rem]">
             <ShieldCheck className="size-5" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="text-lg font-semibold text-[var(--foreground)]">{platformBrand.name}</span>
-            <span className="text-xs font-medium text-[var(--muted-foreground)]">
+            <span className="product-workspace-shell__identity-name text-lg font-semibold text-[var(--foreground)]">{platformBrand.name}</span>
+            <span className="product-workspace-shell__identity-description text-xs font-medium text-[var(--muted-foreground)]">
               {platformBrand.controlPlaneLabel}
             </span>
           </div>
@@ -133,10 +133,10 @@ export function AdminLayout() {
                 to="/admin/guide"
                 onClick={() => setIsSidebarOpen(false)}
                 className={({ isActive }) =>
-                  `group mb-3 flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors ${
+                  `product-workspace-shell__nav-link group mb-3 flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors ${
                     isActive
-                      ? 'bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
-                      : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                      ? 'product-workspace-shell__nav-link--active bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
+                      : 'product-workspace-shell__nav-link--inactive text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                   }`
                 }
               >
@@ -149,10 +149,10 @@ export function AdminLayout() {
                   title={t(item.label)}
                   href={item.value === 'dashboard' ? '/admin/portal' : `/admin/portal#${item.value}`}
                   onClick={() => setIsSidebarOpen(false)}
-                  className={`group flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors ${
+                  className={`product-workspace-shell__nav-link group flex items-center justify-start rounded-[0.9rem] px-3 py-2 text-sm font-semibold transition-colors ${
                     activeAdminSection === item.value
-                      ? 'bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
-                      : 'text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                      ? 'product-workspace-shell__nav-link--active bg-[var(--muted)] text-[var(--foreground)] shadow-soft'
+                      : 'product-workspace-shell__nav-link--inactive text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                   }`}
                 >
                   <item.icon className="mr-3 size-5 shrink-0 opacity-80 group-hover:opacity-100" />
@@ -170,10 +170,10 @@ export function AdminLayout() {
                 to={item.to}
                 onClick={() => setIsSidebarOpen(false)}
                 className={({ isActive }) =>
-                  `group flex items-center justify-start rounded-[0.9rem] px-3 text-sm font-semibold transition-colors ${
-                    isActive
-                      ? 'bg-[var(--muted)] py-2 text-[var(--foreground)] shadow-soft'
-                      : 'py-2 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                  `product-workspace-shell__nav-link group flex items-center justify-start rounded-[0.9rem] px-3 text-sm font-semibold transition-colors ${
+                  isActive
+                    ? 'product-workspace-shell__nav-link--active bg-[var(--muted)] py-2 text-[var(--foreground)] shadow-soft'
+                    : 'product-workspace-shell__nav-link--inactive py-2 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                   }`
                 }
               >
@@ -196,8 +196,8 @@ export function AdminLayout() {
               </AvatarFallback>
             </Avatar>
             <div className="flex min-w-0 flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
-              <span className="text-xs text-[var(--muted-foreground)]">{t('Operations Lead')}</span>
+              <span className="product-workspace-shell__profile-name truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
+              <span className="product-workspace-shell__profile-role text-xs text-[var(--muted-foreground)]">{t('Operations Lead')}</span>
             </div>
           </div>
 

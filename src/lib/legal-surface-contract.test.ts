@@ -37,7 +37,7 @@ describe('tenant legal surfaces', () => {
     expect(legalPageSource).toContain('text-[var(--primary-container)]')
     expect(legalPageSource).toContain('border-[var(--secondary)]/25 bg-[var(--accent)]')
     expect(designSystemSource).toContain('--tenant-accent: var(--ly-teal) !important;')
-    expect(designSystemSource).toContain('--tenant-accent-foreground: #ffffff !important;')
+    expect(designSystemSource).toContain('--tenant-accent-foreground: #211d16 !important;')
     expect(designSystemSource).toContain('--tenant-accent-soft: #ead9b3 !important;')
     expect(designSystemSource).toContain('--font-sans: "IBM Plex Sans", "Segoe UI", sans-serif !important;')
     expect(designSystemSource).toContain('--font-serif: Fraunces, Georgia, serif !important;')

@@ -155,12 +155,12 @@ export function BusinessOwnerLayout() {
       >
         {/* Business Logo/Identity */}
         <div className="flex items-center gap-3">
-          <div className="luxe-art flex size-10 items-center justify-center rounded-[0.9rem]">
+          <div className="product-workspace-shell__identity-mark luxe-art flex size-10 items-center justify-center rounded-[0.9rem]">
             <Package className="size-5" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
-            <span className="truncate text-lg font-semibold text-[var(--foreground)]">{business.name}</span>
-            <span className="text-xs font-medium text-[var(--muted-foreground)]">
+            <span className="product-workspace-shell__identity-name truncate text-lg font-semibold text-[var(--foreground)]">{business.name}</span>
+            <span className="product-workspace-shell__identity-description text-xs font-medium text-[var(--muted-foreground)]">
               {t('Business Overview')}
             </span>
           </div>
@@ -187,10 +187,10 @@ export function BusinessOwnerLayout() {
               to={item.to}
               onClick={() => setIsSidebarOpen(false)}
               className={({ isActive }) =>
-                `group flex items-center justify-start rounded-[0.9rem] px-3 text-sm font-semibold transition-colors ${
+                `product-workspace-shell__nav-link group flex items-center justify-start rounded-[0.9rem] px-3 text-sm font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[var(--muted)] py-2 text-[var(--foreground)] shadow-soft'
-                    : 'py-2 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
+                    ? 'product-workspace-shell__nav-link--active bg-[var(--muted)] py-2 text-[var(--foreground)] shadow-soft'
+                    : 'product-workspace-shell__nav-link--inactive py-2 text-[var(--muted-foreground)] hover:bg-[var(--muted)] hover:text-[var(--foreground)]'
                 }`
               }
             >
@@ -213,8 +213,8 @@ export function BusinessOwnerLayout() {
               </AvatarFallback>
             </Avatar>
             <div className="flex min-w-0 flex-col overflow-hidden">
-              <span className="truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
-              <span className="text-xs text-[var(--muted-foreground)]">
+              <span className="product-workspace-shell__profile-name truncate text-sm font-semibold text-[var(--foreground)]">{profile?.fullName}</span>
+              <span className="product-workspace-shell__profile-role text-xs text-[var(--muted-foreground)]">
                 {profile?.role === 'business-owner' ? t('Business Owner') : t('Business Staff')}
               </span>
             </div>

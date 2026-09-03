@@ -287,12 +287,12 @@
   --primary: var(--ly-navy) !important;
   --primary-foreground: var(--ly-offwhite) !important;
   --secondary: var(--ly-teal) !important;
-  --secondary-foreground: #ffffff !important;
+  --secondary-foreground: #211d16 !important;
   --accent: #ead9b3 !important;
   --accent-foreground: var(--ly-text) !important;
   --ring: var(--ly-teal) !important;
   --tenant-accent: var(--ly-teal) !important;
-  --tenant-accent-foreground: #ffffff !important;
+  --tenant-accent-foreground: #211d16 !important;
   --tenant-accent-soft: #ead9b3 !important;
   --success: #466c55 !important;
   --warning: var(--ly-teal) !important;
@@ -926,7 +926,7 @@
   --card: #fffdf7 !important;
   --card-foreground: #1f3a2e !important;
   --muted: #efe8d6 !important;
-  --muted-foreground: #6c726a !important;
+  --muted-foreground: #5b5546 !important;
   --border: #d9cfaf !important;
   --input: #fffdf7 !important;
   --primary: #1f3a2e !important;
@@ -962,6 +962,9 @@
   --destructive-foreground: #fffdf7 !important;
   --success: #3e6b4f !important;
   --warning: #8d641f !important;
+  --tenant-accent: #b8862e !important;
+  --tenant-accent-foreground: #211d16 !important;
+  --tenant-accent-soft: #efe8d6 !important;
   --font-sans: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
   --font-serif: Fraunces, Georgia, serif;
   --font-mono: "IBM Plex Mono", "SFMono-Regular", monospace;
@@ -1818,4 +1821,87 @@
   :root[data-program="wondertown"] .rewardme-auth-shell .product-auth-shell__card {
     padding: 28px 20px !important;
   }
+}
+
+/* High-contrast operational surfaces for the three customer rewards brands. */
+:root[data-program="pinas"] .product-workspace-shell__sidebar,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar,
+:root[data-program="loyality"] .product-workspace-shell__sidebar {
+  --foreground: #f6f1e4;
+  --muted-foreground: #d8d0bd;
+  --muted: #365848;
+  --border: #718374;
+  --card: #294538;
+  --card-foreground: #f6f1e4;
+  --primary: #d8b36a;
+  --primary-foreground: #1f3a2e;
+  --destructive: #ffb4a7;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar :is(.product-workspace-shell__identity-name, .product-workspace-shell__profile-name),
+:root[data-program="wondertown"] .product-workspace-shell__sidebar :is(.product-workspace-shell__identity-name, .product-workspace-shell__profile-name),
+:root[data-program="loyality"] .product-workspace-shell__sidebar :is(.product-workspace-shell__identity-name, .product-workspace-shell__profile-name) {
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar :is(.product-workspace-shell__identity-description, .product-workspace-shell__profile-role, .product-workspace-shell__nav-link--inactive),
+:root[data-program="wondertown"] .product-workspace-shell__sidebar :is(.product-workspace-shell__identity-description, .product-workspace-shell__profile-role, .product-workspace-shell__nav-link--inactive),
+:root[data-program="loyality"] .product-workspace-shell__sidebar :is(.product-workspace-shell__identity-description, .product-workspace-shell__profile-role, .product-workspace-shell__nav-link--inactive) {
+  color: #d8d0bd !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar .product-workspace-shell__identity-mark,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar .product-workspace-shell__identity-mark,
+:root[data-program="loyality"] .product-workspace-shell__sidebar .product-workspace-shell__identity-mark {
+  background: #d8b36a !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar .product-workspace-shell__nav-link--active,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar .product-workspace-shell__nav-link--active,
+:root[data-program="loyality"] .product-workspace-shell__sidebar .product-workspace-shell__nav-link--active {
+  background: #d8b36a !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar .product-workspace-shell__nav-link--inactive:hover,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar .product-workspace-shell__nav-link--inactive:hover,
+:root[data-program="loyality"] .product-workspace-shell__sidebar .product-workspace-shell__nav-link--inactive:hover {
+  background: #365848 !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] .product-workspace-shell__sidebar :is([class~="bg-card"], select),
+:root[data-program="wondertown"] .product-workspace-shell__sidebar :is([class~="bg-card"], select),
+:root[data-program="loyality"] .product-workspace-shell__sidebar :is([class~="bg-card"], select) {
+  border-color: #718374 !important;
+  background: #294538 !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] .membership-status-card,
+:root[data-program="wondertown"] .membership-status-card,
+:root[data-program="loyality"] .membership-status-card {
+  border-color: #b8862e !important;
+  background: #efe8d6 !important;
+  color: #1f3a2e !important;
+}
+
+:root[data-program="pinas"] .membership-status-card__icon,
+:root[data-program="wondertown"] .membership-status-card__icon,
+:root[data-program="loyality"] .membership-status-card__icon {
+  background: #1f3a2e !important;
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] .membership-status-card__icon svg,
+:root[data-program="wondertown"] .membership-status-card__icon svg,
+:root[data-program="loyality"] .membership-status-card__icon svg {
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] .membership-status-card__meta,
+:root[data-program="wondertown"] .membership-status-card__meta,
+:root[data-program="loyality"] .membership-status-card__meta {
+  color: #5b5546 !important;
 }
