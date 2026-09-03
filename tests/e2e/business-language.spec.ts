@@ -125,13 +125,14 @@ test.describe('business onboarding language isolation', () => {
         await expect(experience).not.toHaveAttribute('data-wondertown-rewardme-mirror')
       }
       await expect(page.getByRole('combobox', { name: 'Idioma' })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Inicio', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Cómo funciona', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Lo que cuesta', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Comenzar', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Acceso para negocios', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'La tienda', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Plan de ahorro', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Para negocios', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Iniciar sesión', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Iniciar prueba gratuita', exact: true })).toBeVisible()
       await expect(header.getByRole('link', {
-        name: `Página principal para miembros de ${tenant.programName}`,
+        name: `Página de inicio de ${tenant.programName}`,
       })).toBeVisible()
       await expect(footer).toContainText('Todos los derechos reservados.')
       await expect(footer.getByRole('link', { name: 'Política de privacidad' })).toBeVisible()
@@ -165,11 +166,12 @@ test.describe('business onboarding language isolation', () => {
       const languagePicker = page.getByRole('combobox', { name: 'Language' })
       await expect(languagePicker).toHaveValue('en')
       await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
-      await expect(header.getByRole('link', { name: 'Home', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'How it works', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'What it costs', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Get Started', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'The store', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Savings plan', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'For businesses', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Sign in', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Start free trial', exact: true })).toBeVisible()
       await expect(experience.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
     })
   }
@@ -182,10 +184,12 @@ test.describe('business onboarding language isolation', () => {
       const languagePicker = page.getByRole('combobox', { name: 'Language' })
       await expect(languagePicker).toBeVisible()
       await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
-      const menuToggle = page.locator('.business-public-shell__menu-toggle')
+      const menuToggle = page.locator('.reference-rewardme__menu-toggle')
       await expect(menuToggle).toBeVisible()
       await menuToggle.click()
-      await expect(page.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
+      const mobileNavigation = page.locator('#rewardme-mobile-navigation')
+      await expect(mobileNavigation.getByRole('link', { name: 'Sign in', exact: true })).toBeVisible()
+      await expect(mobileNavigation.getByRole('link', { name: 'For businesses', exact: true })).toBeVisible()
       expect(
         await page.evaluate(
           () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
@@ -194,7 +198,8 @@ test.describe('business onboarding language isolation', () => {
 
       await languagePicker.selectOption('es')
       await expect(page.getByRole('combobox', { name: 'Idioma' })).toHaveValue('es')
-      await expect(page.getByRole('link', { name: 'Acceso para negocios', exact: true })).toBeVisible()
+      await expect(mobileNavigation.getByRole('link', { name: 'Iniciar sesión', exact: true })).toBeVisible()
+      await expect(mobileNavigation.getByRole('link', { name: 'Para negocios', exact: true })).toBeVisible()
     })
   }
 })

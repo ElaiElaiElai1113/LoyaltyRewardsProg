@@ -212,7 +212,10 @@ test.describe('white-label tenant resolution', () => {
       }
 
       await page.goto(`/business?tenant=${tenant.slug}`, { waitUntil: 'domcontentloaded' })
-      const businessHeader = page.locator('.business-public-shell__header')
+      const usesRewardMeHeader = ['pinas', 'wondertown'].includes(tenant.slug)
+      const businessHeader = page.locator(
+        usesRewardMeHeader ? '.reference-rewardme__header' : '.business-public-shell__header',
+      )
       await expect(businessHeader).toHaveCSS('position', 'sticky')
       await page.evaluate(() => window.scrollTo(0, Math.min(700, document.body.scrollHeight)))
       await expect.poll(() => businessHeader.evaluate((element) => Math.round(element.getBoundingClientRect().top))).toBe(0)
