@@ -118,14 +118,14 @@ test.describe('RewardMe mobile and tablet integrity', () => {
     })
   }
 
-  test('business transaction controls shrink and wrap at scrollbar-reduced phone widths', async ({ page }) => {
-    for (const width of [305, 320]) {
+  test('business transaction cards stay vertical and controls remain contained at every width', async ({ page }) => {
+    for (const width of [305, 320, 768, 1440]) {
       await page.setViewportSize({ width, height: 844 })
       await page.goto('/')
       await page.setContent(`
         <link rel="stylesheet" href="/src/index.css" />
         <main class="min-w-0 px-4">
-          <section class="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+          <section class="grid min-w-0 grid-cols-1 gap-6">
             <article class="min-w-0 overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--card)]">
               <header class="p-4 sm:p-6">
                 <h1 class="break-words font-serif text-4xl sm:text-5xl">Mga Transaksiyon</h1>
@@ -159,6 +159,10 @@ test.describe('RewardMe mobile and tablet integrity', () => {
 
       const layout = await page.evaluate(() => {
         const viewportWidth = document.documentElement.clientWidth
+        const cardRects = Array.from(document.querySelectorAll<HTMLElement>('article')).map((element) => {
+          const rect = element.getBoundingClientRect()
+          return { top: Math.round(rect.top), bottom: Math.round(rect.bottom) }
+        })
         const clippedControls = Array.from(document.querySelectorAll<HTMLElement>('button, input'))
           .map((element) => {
             const rect = element.getBoundingClientRect()
@@ -171,6 +175,7 @@ test.describe('RewardMe mobile and tablet integrity', () => {
           .filter((element) => element.left < -1 || element.right > viewportWidth + 1)
 
         return {
+          cardRects,
           clippedControls,
           overflow: Math.max(0, document.documentElement.scrollWidth - viewportWidth),
         }
@@ -178,6 +183,8 @@ test.describe('RewardMe mobile and tablet integrity', () => {
 
       expect(layout.overflow, `${width}px transaction harness overflow`).toBeLessThanOrEqual(1)
       expect(layout.clippedControls, `${width}px transaction harness clipped controls`).toEqual([])
+      expect(layout.cardRects, `${width}px transaction card count`).toHaveLength(2)
+      expect(layout.cardRects[1].top, `${width}px Step 4 position`).toBeGreaterThan(layout.cardRects[0].bottom)
     }
   })
 

@@ -116,11 +116,12 @@ describe('current UI process safeguards', () => {
     expect(shop).toContain("t('Browse other partners')")
   })
 
-  it('keeps business transaction controls inside narrow screens and statuses non-interactive', () => {
+  it('keeps the business transaction flow vertical, controls responsive, and statuses non-interactive', () => {
     const redemptions = source('src/features/gift-cards/pages/redemptions-page.tsx')
     const dashboard = source('src/features/business-owner/pages/business-dashboard-page.tsx')
 
-    expect(redemptions).toContain('xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]')
+    expect(redemptions).toContain('<section className="grid min-w-0 grid-cols-1 gap-6">')
+    expect(redemptions).not.toContain('xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]')
     expect(redemptions).toContain('[&_button]:whitespace-normal')
     expect(redemptions).toContain('w-full whitespace-normal py-2 text-center leading-snug sm:w-auto')
     expect(redemptions).toContain('w-full whitespace-normal py-3 text-center leading-snug')

@@ -513,7 +513,7 @@ export function RedemptionsPage() {
         </Card>
       ) : null}
 
-      <section className="grid min-w-0 gap-6 xl:grid-cols-[minmax(0,1fr)_minmax(0,0.9fr)]">
+      <section className="grid min-w-0 grid-cols-1 gap-6">
         <Card className="min-w-0 overflow-hidden">
           <CardHeader className="p-4 sm:p-6">
             <Badge variant="outline" className="w-fit">{t('Step 1')}</Badge>
