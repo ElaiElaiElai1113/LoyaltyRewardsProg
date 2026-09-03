@@ -112,21 +112,21 @@
   color: var(--rm-gold) !important;
 }
 
-:root[data-program="pinas"] aside,
-:root[data-program="wondertown"] aside {
+:root[data-program="pinas"] .product-workspace-shell__sidebar,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar {
   border-color: var(--border) !important;
   background: rgb(10 10 10 / 97%) !important;
   box-shadow: none !important;
   backdrop-filter: blur(12px);
 }
 
-:root[data-program="pinas"] aside nav a,
-:root[data-program="wondertown"] aside nav a {
+:root[data-program="pinas"] .product-workspace-shell__sidebar nav a,
+:root[data-program="wondertown"] .product-workspace-shell__sidebar nav a {
   border-radius: 10px !important;
 }
 
-:root[data-program="pinas"] aside nav a[class*="bg-[var(--muted)]"],
-:root[data-program="wondertown"] aside nav a[class*="bg-[var(--muted)]"] {
+:root[data-program="pinas"] .product-workspace-shell__sidebar nav a[class*="bg-[var(--muted)]"],
+:root[data-program="wondertown"] .product-workspace-shell__sidebar nav a[class*="bg-[var(--muted)]"] {
   color: var(--rm-gold) !important;
 }
 
@@ -1043,8 +1043,8 @@
   color: #365848 !important;
 }
 
-:root[data-program="pinas"] :is(.product-workspace-shell__rail, aside),
-:root[data-program="wondertown"] :is(.product-workspace-shell__rail, aside) {
+:root[data-program="pinas"] :is(.product-workspace-shell__rail, .product-workspace-shell__sidebar),
+:root[data-program="wondertown"] :is(.product-workspace-shell__rail, .product-workspace-shell__sidebar) {
   border-color: #d9cfaf !important;
   background: #1f3a2e !important;
   color: #f6f1e4 !important;
@@ -1059,6 +1059,30 @@
   background: #fffdf7 !important;
   color: #1f3a2e !important;
   box-shadow: none !important;
+}
+
+:root[data-program="pinas"] :is(.gold-frame, .luxe-card, .ornate-frame, .compact-catalog-card),
+:root[data-program="wondertown"] :is(.gold-frame, .luxe-card, .ornate-frame, .compact-catalog-card) {
+  border-color: #d9cfaf !important;
+  background: #fffdf7 !important;
+  color: #1f3a2e !important;
+  box-shadow: none !important;
+}
+
+:root[data-program="pinas"] .luxe-art,
+:root[data-program="wondertown"] .luxe-art {
+  background: #1f3a2e !important;
+  color: #d8b36a !important;
+}
+
+:root[data-program="pinas"] .luxe-art [class*="text-[var(--champagne)]"],
+:root[data-program="wondertown"] .luxe-art [class*="text-[var(--champagne)]"] {
+  color: #d8b36a !important;
+}
+
+:root[data-program="pinas"] .luxe-art [class*="text-[var(--cream)]"],
+:root[data-program="wondertown"] .luxe-art [class*="text-[var(--cream)]"] {
+  color: #f6f1e4 !important;
 }
 
 :root[data-program="pinas"] :is([class~="text-on-surface-variant/70"], [class~="text-on-surface-variant/85"]),
@@ -1105,6 +1129,24 @@
   letter-spacing: -.015em !important;
   line-height: 1.08 !important;
   text-transform: none !important;
+}
+
+/* Dark feature cards need their own foreground contract. This follows the
+   RewardMe forest, cream, and gold palette while keeping every title and
+   supporting line readable over the deep background. */
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) .warm-hero-muted :is(h1, h2, h3, strong),
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) .warm-hero-muted :is(h1, h2, h3, strong) {
+  color: #f6f1e4 !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) .warm-hero-muted p,
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) .warm-hero-muted p {
+  color: #eee5d1 !important;
+}
+
+:root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) .warm-hero-muted [class*="text-[var(--champagne)]"],
+:root[data-program="wondertown"] :is(.product-customer-shell__main, .product-workspace-shell__main) .warm-hero-muted [class*="text-[var(--champagne)]"] {
+  color: #d8b36a !important;
 }
 
 :root[data-program="pinas"] :is(.product-customer-shell__main, .product-workspace-shell__main) :is(section, article, div, a)[class~="bg-white"],
