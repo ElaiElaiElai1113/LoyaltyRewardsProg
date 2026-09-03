@@ -104,7 +104,7 @@ export function LoyalityHomePage() {
         </section>
 
         <figure className="reference-loyality__photo reference-loyality__wrap">
-          <img src="/loyality-member-scan.jpg" alt={t('A customer scanning a QR code at an independent café counter with their phone')} width="2172" height="724" loading="lazy" />
+          <img src="/loyality-member-scan.jpg" alt={t('A customer scanning a QR code at an independent café counter with their phone')} width="3600" height="1200" loading="lazy" />
           <figcaption><span>{t('One scan, no hardware')}</span><p>{t('A customer scanning a QR code at the counter on their own phone — the moment they become a member.')}</p></figcaption>
         </figure>
 
@@ -148,7 +148,7 @@ export function LoyalityHomePage() {
         </section>
 
         <figure className="reference-loyality__photo reference-loyality__wrap">
-          <img src="/loyality-owner-dashboard.jpg" alt={t('An independent business owner reviewing member activity on a phone')} width="2176" height="722" loading="lazy" />
+          <img src="/loyality-owner-dashboard.jpg" alt={t('An independent business owner reviewing member activity on a phone')} width="3600" height="1195" loading="lazy" />
           <figcaption><span>{t('Everything, at a glance')}</span><p>{t('A business owner checking member activity on a simple phone dashboard — no extra software to learn.')}</p></figcaption>
         </figure>
 
