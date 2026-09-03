@@ -30,9 +30,9 @@ test.describe('Wondertown public testing experience', () => {
         'Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected.',
         { exact: true },
       )).toBeVisible()
-      await expect(experience.getByLabel('Wondertown Rewards homepage')).toHaveAttribute('href', '#top')
+      await expect(page.getByLabel('Wondertown Rewards homepage')).toHaveAttribute('href', '#top')
 
-      const header = experience.locator('.reference-rewardme__header')
+      const header = page.locator('.reference-rewardme__header')
       const primaryNavigation = header.locator('.reference-rewardme__nav')
       const signIn = primaryNavigation.locator('a[href="/signin"]')
       await expect(signIn).toHaveAttribute('href', '/signin')

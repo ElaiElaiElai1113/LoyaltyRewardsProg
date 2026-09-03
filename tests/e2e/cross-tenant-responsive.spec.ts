@@ -97,7 +97,7 @@ test.describe('cross-tenant public responsive layouts', () => {
             expect(layout.referenceRewardMeNavDisplay, `${tenant} home navigation at ${width}px`).toBe('flex')
           }
 
-          if (route === '/business' && width <= 820) {
+          if (route === '/business' && width <= 820 && tenant !== 'pinas' && tenant !== 'wondertown') {
             expect(layout.businessNavPosition, `${tenant} business navigation at ${width}px`).toBe('absolute')
           }
         }
@@ -124,6 +124,10 @@ test.describe('cross-tenant public responsive layouts', () => {
       await menuToggle.click()
       await expect(menuToggle).toHaveAttribute('aria-expanded', 'true')
       await expect(mobileMenu).toBeVisible()
+      const homeHeaderBounds = tenant === 'loyality'
+        ? null
+        : await page.locator('.reference-rewardme__header').boundingBox()
+      const homeMenuBounds = tenant === 'loyality' ? null : await mobileMenu.boundingBox()
       const mobileBusinessEntry = mobileMenu.getByRole('link', {
         name: tenant === 'loyality' ? 'Businesses' : 'For businesses',
         exact: true,
@@ -144,12 +148,25 @@ test.describe('cross-tenant public responsive layouts', () => {
       expect(dockBounds!.y + dockBounds!.height).toBeLessThanOrEqual(844)
 
       await page.goto(`/business?tenant=${tenant}`, { waitUntil: 'domcontentloaded' })
-      const businessMenuToggle = page.locator('.business-public-shell__menu-toggle')
-      const businessMenu = page.locator('#business-public-navigation')
+      const businessMenuToggle = page.locator(
+        tenant === 'loyality' ? '.business-public-shell__menu-toggle' : '.reference-rewardme__menu-toggle',
+      )
+      const businessMenu = page.locator(
+        tenant === 'loyality' ? '#business-public-navigation' : '#rewardme-mobile-navigation',
+      )
       await expect(businessMenuToggle).toBeVisible()
       await businessMenuToggle.click()
       await expect(businessMenu).toBeVisible()
-      await expect(businessMenu.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
+      if (tenant === 'loyality') {
+        await expect(businessMenu.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
+      } else {
+        await expect(businessMenu.getByRole('link', { name: 'For businesses', exact: true })).toHaveAttribute('href', '/#business')
+        const businessHeaderBounds = await page.locator('.reference-rewardme__header').boundingBox()
+        const businessMenuBounds = await businessMenu.boundingBox()
+        expect(businessHeaderBounds).toEqual(homeHeaderBounds)
+        expect(businessMenuBounds).toEqual(homeMenuBounds)
+        await expect(businessMenu.locator(':scope > a').first()).toHaveCSS('text-align', 'center')
+      }
       await expect(page.locator('.main-site-language-dock')).toBeVisible()
     })
 

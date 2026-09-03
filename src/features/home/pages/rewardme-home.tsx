@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { Fragment } from 'react'
 import { Link } from 'react-router'
 
 import businessOwner from '@/assets/business/local-business-owner-wide.webp'
@@ -9,6 +8,7 @@ import dinnerReward from '@/assets/landing/dinner-rewards.webp'
 import salonReward from '@/assets/landing/salon-rewards.webp'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { RewardMeLedgerMark, RewardMePublicHeader } from '@/features/home/components/rewardme-public-header'
 
 import './rewardme-home.css'
 
@@ -30,87 +30,21 @@ const plans = [
   ['Gold', 'Best for referrers', '$100/yr', 'Same great reward rate throughout, with the highest referral payouts on the platform.'],
 ] as const
 
-function LedgerMark() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path d="M3 4h14a3 3 0 0 1 3 3v13a1 1 0 0 1-1.4.9L12 18l-6.6 2.9A1 1 0 0 1 4 20V4Z" />
-      <path d="M8 8h8M8 11.5h8" />
-    </svg>
-  )
-}
-
 export function RewardMeHomePage() {
   const { program } = useTenant()
   const { t } = useLanguage()
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const brand = program.name
   const isWondertown = program.slug === 'wondertown'
 
-  useEffect(() => {
-    if (!mobileMenuOpen) return
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileMenuOpen(false)
-    }
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [mobileMenuOpen])
-
-  const closeMobileMenu = () => setMobileMenuOpen(false)
-
   return (
-    <main
-      className="reference-rewardme"
-      id="top"
-      data-rewardme-editorial-home
-      data-wondertown-rewardme-mirror={isWondertown || undefined}
-    >
-      <header className="reference-rewardme__header">
-        <nav className="reference-rewardme__nav" aria-label={t('{brand} navigation', { brand })}>
-          <a className="reference-rewardme__logo" href="#top" aria-label={t('{brand} homepage', { brand })}>
-            {isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <LedgerMark />}
-            <span className="reference-rewardme__brand-name">{brand}</span>
-          </a>
-          <div className="reference-rewardme__nav-links">
-            <a href="#how">{t('How it works')}</a>
-            <a href="#store">{t('The store')}</a>
-            <a href="#savings">{t('Savings plan')}</a>
-            <a className="reference-rewardme__business-link" href="#business">{t('For businesses')}</a>
-            {isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}
-          </div>
-          <div className="reference-rewardme__nav-actions">
-            <Link className="reference-rewardme__text-link" to="/signin">{t('Sign in')}</Link>
-            <Link className="reference-rewardme__button" to="/join">{t('Start free trial')}</Link>
-          </div>
-          <button
-            className="reference-rewardme__menu-toggle"
-            type="button"
-            aria-label={t(mobileMenuOpen ? 'Close navigation' : 'Open navigation')}
-            aria-controls="rewardme-mobile-navigation"
-            aria-expanded={mobileMenuOpen}
-            onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}
-          >
-            {mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          </button>
-        </nav>
-        <nav
-          id="rewardme-mobile-navigation"
-          className={`reference-rewardme__mobile-menu${mobileMenuOpen ? ' is-open' : ''}`}
-          aria-label={t('{brand} mobile navigation', { brand })}
-          hidden={!mobileMenuOpen}
-        >
-          <a href="#how" onClick={closeMobileMenu}>{t('How it works')}</a>
-          <a href="#store" onClick={closeMobileMenu}>{t('The store')}</a>
-          <a href="#savings" onClick={closeMobileMenu}>{t('Savings plan')}</a>
-          <a className="reference-rewardme__business-link" href="#business" onClick={closeMobileMenu}>{t('For businesses')}</a>
-          {isWondertown ? <Link to="/guide" onClick={closeMobileMenu}>{t('Test guide')}</Link> : null}
-          <div className="reference-rewardme__mobile-actions">
-            <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link>
-            <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Start free trial')}</Link>
-          </div>
-        </nav>
-      </header>
-
+    <Fragment>
+      <RewardMePublicHeader />
+      <main
+        className="reference-rewardme"
+        id="top"
+        data-rewardme-editorial-home
+        data-wondertown-rewardme-mirror={isWondertown || undefined}
+      >
       <section className="reference-rewardme__hero reference-rewardme__wrap">
         <div className="reference-rewardme__hero-copy">
           <p className="reference-rewardme__eyebrow">{t(isWondertown ? 'RewardMe test environment · fictional data' : '3 months free to join')}</p>
@@ -213,10 +147,11 @@ export function RewardMeHomePage() {
 
       <footer className="reference-rewardme__footer">
         <div className="reference-rewardme__wrap reference-rewardme__footer-inner">
-          <div><a className="reference-rewardme__logo" href="#top">{isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <LedgerMark />}<span className="reference-rewardme__brand-name">{brand}</span></a><p>{t(isWondertown ? 'Production-equivalent RewardMe flows with fictional test data.' : 'Earn where you already spend. Save toward what actually matters.')}</p></div>
+          <div><a className="reference-rewardme__logo" href="#top">{isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <RewardMeLedgerMark />}<span className="reference-rewardme__brand-name">{brand}</span></a><p>{t(isWondertown ? 'Production-equivalent RewardMe flows with fictional test data.' : 'Earn where you already spend. Save toward what actually matters.')}</p></div>
           <nav aria-label={t('Footer navigation')}><a href="#how">{t('How it works')}</a><a href="#membership">{t('Membership')}</a><Link to="/business">{t('Businesses')}</Link>{isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}<Link to="/terms">{t('Terms')}</Link><Link to="/privacy">{t('Privacy')}</Link><a href={`mailto:${program.supportEmail}`}>{t('Contact')}</a></nav>
         </div>
       </footer>
-    </main>
+      </main>
+    </Fragment>
   )
 }

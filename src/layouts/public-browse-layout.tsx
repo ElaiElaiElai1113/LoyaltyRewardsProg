@@ -6,6 +6,7 @@ import { BrandLogo } from '@/components/brand-logo'
 import { LanguagePicker } from '@/components/language-picker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { RewardMePublicHeader } from '@/features/home/components/rewardme-public-header'
 import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
@@ -30,6 +31,7 @@ export function PublicBrowseLayout() {
   const location = useLocation()
   const isBusinessOnboarding = location.pathname === '/business'
   const isLoyality = program.slug === 'loyality'
+  const isRewardMe = isRewardMeExperience(program.slug)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const visibleNavigation = program.featureFlags.loyalitySingleBusiness
     ? navigation.filter((item) => item.to !== '/guide')
@@ -47,8 +49,8 @@ export function PublicBrowseLayout() {
 
   if (isBusinessOnboarding) {
     return (
-      <div className={`business-public-shell${isRewardMeExperience(program.slug) ? ' business-public-shell--rewardme' : ''}`}>
-        <header className="business-public-shell__header">
+      <div className={`business-public-shell${isRewardMe ? ' business-public-shell--rewardme' : ''}`}>
+        {isRewardMe ? <RewardMePublicHeader /> : <header className="business-public-shell__header">
           <div className="business-public-shell__container business-public-shell__header-inner">
             <NavLink
               to="/"
@@ -67,9 +69,8 @@ export function PublicBrowseLayout() {
             </NavLink>
 
             <nav id="business-public-navigation" className={`business-public-shell__nav${mobileMenuOpen ? ' is-open' : ''}`} aria-label={t('Business page navigation')}>
-              {isRewardMeExperience(program.slug) ? <NavLink to="/" onClick={() => setMobileMenuOpen(false)}>{t('Home')}</NavLink> : <a href="#benefits" onClick={() => setMobileMenuOpen(false)}>{t('Benefits')}</a>}
-              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>{t(isRewardMeExperience(program.slug) ? 'How it works' : 'How It Works')}</a>
-              {isRewardMeExperience(program.slug) ? <a href="#cost" onClick={() => setMobileMenuOpen(false)}>{t('What it costs')}</a> : null}
+              <a href="#benefits" onClick={() => setMobileMenuOpen(false)}>{t('Benefits')}</a>
+              <a href="#how-it-works" onClick={() => setMobileMenuOpen(false)}>{t('How It Works')}</a>
               {program.slug === 'pinas' || program.slug === 'wondertown' || program.slug === 'loyality'
                 ? null
                 : <NavLink to="/cost-calculator" onClick={() => setMobileMenuOpen(false)}>{t('Cost Calculator')}</NavLink>}
@@ -100,7 +101,7 @@ export function PublicBrowseLayout() {
               </button>
             </div>
           </div>
-        </header>
+        </header>}
 
         <main>
           <Outlet />
@@ -158,7 +159,7 @@ export function PublicBrowseLayout() {
 
   return (
     <div className="soft-luxe-shell product-public-shell flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 border-b border-primary/15 bg-card/88 shadow-soft backdrop-blur-xl">
+      {isRewardMe ? <RewardMePublicHeader /> : <header className="sticky top-0 z-50 border-b border-primary/15 bg-card/88 shadow-soft backdrop-blur-xl">
         <div className="mx-auto flex min-h-16 w-full flex-nowrap items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8 2xl:px-12">
           <div className="flex min-w-0 flex-1 items-center gap-5 xl:gap-10">
             <NavLink to="/" className="flex min-w-0 shrink-0 items-center gap-3">
@@ -236,7 +237,7 @@ export function PublicBrowseLayout() {
             <Button asChild variant="outline"><NavLink to="/signin" onClick={() => setMobileMenuOpen(false)}>{t('Sign In')}</NavLink></Button>
           </div>
         </nav>
-      </header>
+      </header>}
 
       <main className="flex-1">
         <div className="mx-auto w-full px-4 py-6 sm:px-6 sm:py-10 lg:px-8 2xl:px-12">

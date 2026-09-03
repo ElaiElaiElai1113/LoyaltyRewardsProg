@@ -20,7 +20,7 @@
 .reference-rewardme p { margin: 0; }
 .reference-rewardme [id] { scroll-margin-top: 6rem; }
 .reference-rewardme__wrap { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
-.reference-rewardme__header { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid rgb(217 207 175 / 85%); background: rgb(246 241 228 / 94%); backdrop-filter: blur(12px); }
+.reference-rewardme__header { --paper: #f6f1e4; --paper-deep: #efe8d6; --ink: #1f3a2e; --ink-soft: #365848; --gold: #b8862e; --gold-soft: #d8b765; --line: #d9cfaf; --muted: #6c726a; position: sticky; z-index: 50; top: 0; border-bottom: 1px solid rgb(217 207 175 / 85%); background: rgb(246 241 228 / 94%); color: var(--ink); font-family: "IBM Plex Sans", "Segoe UI", sans-serif; backdrop-filter: blur(12px); }
 .reference-rewardme__nav { display: flex; width: min(1240px, calc(100% - 48px)); min-height: 78px; align-items: center; justify-content: space-between; gap: clamp(20px, 2.6vw, 42px); margin-inline: auto; }
 .reference-rewardme__logo { display: inline-flex; align-items: center; gap: 10px; font-family: Fraunces, Georgia, serif; font-size: 1.18rem; font-weight: 700; }
 .reference-rewardme__logo svg { width: 23px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.6; }
@@ -108,7 +108,7 @@
 .reference-rewardme__menu-toggle svg { width: 26px; height: 26px; }
 .reference-rewardme__mobile-menu { position: absolute; top: 100%; right: 0; left: 0; width: min(100% - 32px, 620px); margin-inline: auto; border: 1px solid var(--ink); border-top: 0; padding: 14px 18px 18px; background: var(--paper); box-shadow: 0 22px 36px rgb(31 58 46 / 16%); }
 .reference-rewardme__mobile-menu[hidden] { display: none; }
-.reference-rewardme__mobile-menu > a { display: flex; min-height: 49px; align-items: center; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: .76rem; font-weight: 650; letter-spacing: .04em; text-decoration: none; text-transform: uppercase; }
+.reference-rewardme__mobile-menu > a { display: flex; min-height: 49px; align-items: center; justify-content: center; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-family: "IBM Plex Mono", "SFMono-Regular", monospace; font-size: .76rem; font-weight: 650; letter-spacing: .04em; text-align: center; text-decoration: none; text-transform: uppercase; }
 .reference-rewardme__mobile-menu > a:hover { color: var(--gold); }
 .reference-rewardme__mobile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 18px; }
 
