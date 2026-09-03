@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
 import { Link } from 'react-router'
 
 import businessOwner from '@/assets/business/local-business-owner-wide.webp'
@@ -41,8 +43,21 @@ function LedgerMark() {
 export function RewardMeHomePage() {
   const { program } = useTenant()
   const { t } = useLanguage()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const brand = program.name
   const isWondertown = program.slug === 'wondertown'
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [mobileMenuOpen])
+
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   return (
     <main
@@ -61,13 +76,39 @@ export function RewardMeHomePage() {
             <a href="#how">{t('How it works')}</a>
             <a href="#store">{t('The store')}</a>
             <a href="#membership">{t('Membership')}</a>
-            <Link to="/business">{t('For businesses')}</Link>
+            <Link className="reference-rewardme__business-link" to="/business">{t('Businesses')}</Link>
             {isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}
           </div>
           <div className="reference-rewardme__nav-actions">
             <LanguagePicker className="reference-rewardme__language" compact condenseOnNarrowScreens />
             <Link className="reference-rewardme__text-link" to="/signin">{t('Sign in')}</Link>
             <Link className="reference-rewardme__button" to="/join">{t('Start free access')}</Link>
+          </div>
+          <button
+            className="reference-rewardme__menu-toggle"
+            type="button"
+            aria-label={t(mobileMenuOpen ? 'Close navigation' : 'Open navigation')}
+            aria-controls="rewardme-mobile-navigation"
+            aria-expanded={mobileMenuOpen}
+            onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}
+          >
+            {mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
+          </button>
+        </nav>
+        <nav
+          id="rewardme-mobile-navigation"
+          className={`reference-rewardme__mobile-menu${mobileMenuOpen ? ' is-open' : ''}`}
+          aria-label={t('{brand} mobile navigation', { brand })}
+          hidden={!mobileMenuOpen}
+        >
+          <a href="#how" onClick={closeMobileMenu}>{t('How it works')}</a>
+          <a href="#store" onClick={closeMobileMenu}>{t('The store')}</a>
+          <a href="#membership" onClick={closeMobileMenu}>{t('Membership')}</a>
+          <Link className="reference-rewardme__business-link" to="/business" onClick={closeMobileMenu}>{t('Businesses')}</Link>
+          {isWondertown ? <Link to="/guide" onClick={closeMobileMenu}>{t('Test guide')}</Link> : null}
+          <div className="reference-rewardme__mobile-actions">
+            <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link>
+            <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Start free access')}</Link>
           </div>
         </nav>
       </header>

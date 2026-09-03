@@ -146,6 +146,13 @@
 .reference-loyality__footer nav { display: flex; padding: 0; flex-wrap: wrap; gap: 24px; }
 .reference-loyality__footer nav a { color: var(--ink-soft); font-size: .88rem; text-decoration: none; }
 .reference-loyality :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.reference-loyality__menu-toggle { display: none; width: 52px; height: 52px; border: 1px solid var(--ink); border-radius: 3px; padding: 0; align-items: center; justify-content: center; background: transparent; color: var(--ink); cursor: pointer; }
+.reference-loyality__menu-toggle svg { width: 26px; height: 26px; }
+.reference-loyality__mobile-menu { position: absolute; top: 100%; right: 0; left: 0; width: min(100% - 32px, 620px); margin-inline: auto; border: 1px solid var(--ink); border-top: 0; padding: 14px 18px 18px; background: var(--paper); box-shadow: 0 22px 36px rgb(31 58 46 / 16%); }
+.reference-loyality__mobile-menu[hidden] { display: none; }
+.reference-loyality__mobile-menu > a { display: flex; min-height: 49px; align-items: center; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-family: "IBM Plex Mono", monospace; font-size: .76rem; font-weight: 650; letter-spacing: .04em; text-decoration: none; text-transform: uppercase; }
+.reference-loyality__mobile-menu > a:hover { color: var(--gold); }
+.reference-loyality__mobile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 18px; }
 
 @media (max-width: 860px) {
   .reference-loyality__card-grid { grid-template-columns: 1fr; }
@@ -154,6 +161,7 @@
 
 @media (max-width: 820px) {
   .reference-loyality__nav-links { display: none; }
+  .reference-loyality__menu-toggle { display: inline-flex; flex: 0 0 auto; }
   .reference-loyality__support-grid, .reference-loyality__compare, .reference-loyality__pricing-box { grid-template-columns: 1fr; }
 }
 
@@ -172,9 +180,8 @@
 @media (max-width: 640px) {
   .reference-loyality__features > article { grid-template-columns: 1fr; gap: 6px; }
   .reference-loyality__nav { padding: 14px 20px; }
-  .reference-loyality__nav-actions { gap: 10px; }
-  .reference-loyality__sign-in { display: none; }
-  .reference-loyality__language { flex: 0 0 auto; }
+  .reference-loyality__nav-actions { display: none; }
+  .reference-loyality__menu-toggle { width: 48px; height: 48px; }
   .reference-loyality__btn { padding-inline: 16px; }
   .reference-loyality__highlight { padding: 28px 24px; }
   .reference-loyality__ledger-head, .reference-loyality__ledger-foot { padding-inline: 20px; }
@@ -183,6 +190,10 @@
   .reference-loyality__photo img { object-position: 58% center; }
   .reference-loyality__photo figcaption { top: auto; right: 24px; bottom: 24px; left: 24px; width: auto; transform: none; }
   .reference-loyality__photo::after { background: linear-gradient(0deg, rgb(31 58 46 / 90%), transparent 72%); }
+}
+
+@media (max-width: 420px) {
+  .reference-loyality__mobile-actions { grid-template-columns: 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) {

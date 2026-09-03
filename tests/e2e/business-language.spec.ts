@@ -177,6 +177,9 @@ test.describe('business onboarding language isolation', () => {
       const languagePicker = page.getByRole('combobox', { name: 'Language' })
       await expect(languagePicker).toBeVisible()
       await expect(languagePicker.locator('option')).toHaveText(['English', 'Spanish'])
+      const menuToggle = page.locator('.business-public-shell__menu-toggle')
+      await expect(menuToggle).toBeVisible()
+      await menuToggle.click()
       await expect(page.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
       expect(
         await page.evaluate(

@@ -4,6 +4,7 @@ import { Navigate, Outlet, createBrowserRouter, useLocation, useNavigate } from 
 import { RouterProvider } from 'react-router/dom'
 
 import { AppInstallPrompt } from '@/components/app-install-prompt'
+import { MainSiteLanguageDock } from '@/components/main-site-language-dock'
 import { useAuth } from '@/hooks/use-auth'
 import { useTenant } from '@/hooks/use-tenant'
 import { AdminLayout } from '@/layouts/admin-layout'
@@ -148,6 +149,7 @@ function RouteEffects() {
 
   return (
     <>
+      <MainSiteLanguageDock />
       <Outlet />
       <AppInstallPrompt />
     </>

@@ -98,10 +98,62 @@ test.describe('cross-tenant public responsive layouts', () => {
           }
 
           if (route === '/business' && width <= 820) {
-            expect(layout.businessNavPosition, `${tenant} business navigation at ${width}px`).toBe('fixed')
+            expect(layout.businessNavPosition, `${tenant} business navigation at ${width}px`).toBe('absolute')
           }
         }
       }
+    })
+  }
+
+  for (const tenant of ['pinas', 'wondertown', 'loyality'] as const) {
+    test(`${tenant} provides a spacious mobile menu and floating language control`, async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 })
+      await page.goto(`/?tenant=${tenant}`, { waitUntil: 'domcontentloaded' })
+      await page.locator('main').waitFor()
+
+      const menuToggle = page.locator(
+        tenant === 'loyality' ? '.reference-loyality__menu-toggle' : '.reference-rewardme__menu-toggle',
+      )
+      const mobileMenu = page.locator(
+        tenant === 'loyality' ? '#loyality-mobile-navigation' : '#rewardme-mobile-navigation',
+      )
+      const languageDock = page.locator('.main-site-language-dock')
+
+      await expect(menuToggle).toBeVisible()
+      await expect(menuToggle).toHaveAttribute('aria-expanded', 'false')
+      await menuToggle.click()
+      await expect(menuToggle).toHaveAttribute('aria-expanded', 'true')
+      await expect(mobileMenu).toBeVisible()
+      await expect(mobileMenu.getByRole('link', { name: 'Businesses', exact: true }).first()).toBeVisible()
+      await expect(languageDock).toBeVisible()
+
+      const dockBounds = await languageDock.boundingBox()
+      expect(dockBounds).not.toBeNull()
+      expect(dockBounds!.x + dockBounds!.width).toBeLessThanOrEqual(390)
+      expect(dockBounds!.y + dockBounds!.height).toBeLessThanOrEqual(844)
+
+      await page.goto(`/business?tenant=${tenant}`, { waitUntil: 'domcontentloaded' })
+      const businessMenuToggle = page.locator('.business-public-shell__menu-toggle')
+      const businessMenu = page.locator('#business-public-navigation')
+      await expect(businessMenuToggle).toBeVisible()
+      await businessMenuToggle.click()
+      await expect(businessMenu).toBeVisible()
+      await expect(businessMenu.getByRole('link', { name: 'Business Login', exact: true })).toBeVisible()
+      await expect(page.locator('.main-site-language-dock')).toBeVisible()
+    })
+
+    test(`${tenant} keeps the business entry visible in the desktop top bar`, async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 })
+      await page.goto(`/?tenant=${tenant}`, { waitUntil: 'domcontentloaded' })
+      await page.locator('main').waitFor()
+
+      const topBar = page.locator(
+        tenant === 'loyality' ? '.reference-loyality__nav' : '.reference-rewardme__nav',
+      )
+      await expect(topBar.getByRole('link', {
+        name: tenant === 'loyality' ? 'Get started' : 'Businesses',
+        exact: true,
+      })).toBeVisible()
     })
   }
 })

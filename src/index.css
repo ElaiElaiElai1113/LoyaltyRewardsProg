@@ -480,6 +480,60 @@ textarea {
   overflow-x: clip;
 }
 
+/* Public language control shared by RewardMe, Wondertown, and Loyality. */
+:root[data-main-site-language-dock="true"] .language-picker:not(.main-site-language-dock),
+:root:has(.main-site-language-dock) .language-picker:not(.main-site-language-dock) {
+  display: none !important;
+}
+
+.main-site-language-dock {
+  position: fixed;
+  z-index: 1200;
+  right: max(12px, calc(env(safe-area-inset-right) + 8px));
+  bottom: max(12px, calc(env(safe-area-inset-bottom) + 8px));
+  color: #1f3a2e;
+}
+
+.main-site-language-dock .language-picker__control {
+  width: 5.75rem;
+  min-height: 48px;
+  border: 1px solid #1f3a2e;
+  border-radius: 3px;
+  background: rgb(246 241 228 / 96%);
+  box-shadow: 4px 4px 0 rgb(31 58 46 / 16%);
+  color: #1f3a2e;
+  backdrop-filter: blur(10px);
+}
+
+.main-site-language-dock .language-picker__control:focus-within {
+  outline: 3px solid rgb(184 134 46 / 38%);
+  outline-offset: 2px;
+}
+
+@media (max-width: 379px) {
+  .main-site-language-dock {
+    right: max(8px, calc(env(safe-area-inset-right) + 6px));
+    bottom: max(8px, calc(env(safe-area-inset-bottom) + 6px));
+  }
+
+  .main-site-language-dock .language-picker__control {
+    width: 5.5rem;
+    min-height: 46px;
+  }
+}
+
+@media (max-width: 1279px) {
+  :root:has(.product-customer-shell) .main-site-language-dock {
+    bottom: max(118px, calc(env(safe-area-inset-bottom) + 112px));
+  }
+}
+
+@media (max-width: 850px) {
+  :root:has(.ly-shell--customer) .main-site-language-dock {
+    bottom: max(102px, calc(env(safe-area-inset-bottom) + 96px));
+  }
+}
+
 ::selection {
   background: rgb(218 186 110 / 0.45);
 }

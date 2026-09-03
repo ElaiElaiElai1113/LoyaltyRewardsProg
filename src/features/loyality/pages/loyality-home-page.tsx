@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { Menu, X } from 'lucide-react'
 import { Link } from 'react-router'
 
 import { LanguagePicker } from '@/components/language-picker'
@@ -57,6 +59,19 @@ function Cards({ items }: { items: string[][] }) {
 
 export function LoyalityHomePage() {
   const { t } = useLanguage()
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileMenuOpen(false)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [mobileMenuOpen])
+
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   return (
     <div className="reference-loyality">
@@ -65,6 +80,14 @@ export function LoyalityHomePage() {
           <a className="reference-loyality__logo" href="#top"><LoyalityMark />Loyality</a>
           <div className="reference-loyality__nav-links"><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a></div>
           <div className="reference-loyality__nav-actions"><LanguagePicker className="reference-loyality__language" compact condenseOnNarrowScreens /><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
+          <button className="reference-loyality__menu-toggle" type="button" aria-label={t(mobileMenuOpen ? 'Close navigation' : 'Open navigation')} aria-controls="loyality-mobile-navigation" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}>{mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
+        </nav>
+        <nav id="loyality-mobile-navigation" className={`reference-loyality__mobile-menu${mobileMenuOpen ? ' is-open' : ''}`} aria-label={t('Loyality mobile navigation')} hidden={!mobileMenuOpen}>
+          <a href="#concept" onClick={closeMobileMenu}>{t('The concept')}</a>
+          <a href="#how" onClick={closeMobileMenu}>{t('How it works')}</a>
+          <a href="#guarantee" onClick={closeMobileMenu}>{t('Guarantee')}</a>
+          <Link to="/business" onClick={closeMobileMenu}>{t('Businesses')}</Link>
+          <div className="reference-loyality__mobile-actions"><Link className="reference-loyality__btn reference-loyality__btn--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business" onClick={closeMobileMenu}>{t('Get started')}</Link></div>
         </nav>
       </header>
 

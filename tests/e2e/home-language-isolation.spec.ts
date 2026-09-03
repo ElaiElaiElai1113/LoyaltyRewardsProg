@@ -88,7 +88,10 @@ for (const tenant of ['rewardme', 'wondertown'] as const) {
     const copy = localizedHomeCopy.es
 
     await expect(page.locator('.reference-rewardme')).toBeVisible()
-    await expect(page.getByRole('link', { name: copy.start }).first()).toBeVisible()
+    const menuToggle = page.locator('.reference-rewardme__menu-toggle')
+    await expect(menuToggle).toBeVisible()
+    await menuToggle.click()
+    await expect(page.locator('#rewardme-mobile-navigation').getByRole('link', { name: copy.start })).toBeVisible()
     await expect(page.getByRole('link', { name: copy.startLong })).toBeVisible()
     await expect(page.getByRole('link', { name: copy.seeHow, exact: true })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)

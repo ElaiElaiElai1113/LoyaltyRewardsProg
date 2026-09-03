@@ -33,29 +33,35 @@ test.describe('Wondertown public testing experience', () => {
       await expect(experience.getByLabel('Wondertown Rewards homepage')).toHaveAttribute('href', '#top')
 
       const header = experience.locator('.reference-rewardme__header')
-      const signIn = header.locator('a[href="/signin"]')
+      const primaryNavigation = header.locator('.reference-rewardme__nav')
+      const signIn = primaryNavigation.locator('a[href="/signin"]')
       await expect(signIn).toHaveAttribute('href', '/signin')
       for (const [name, href] of [
         ['How it works', '#how'],
         ['The store', '#store'],
         ['Membership', '#membership'],
-        ['For businesses', '/business'],
+        ['Businesses', '/business'],
         ['Test guide', '/guide'],
       ] as const) {
-        const link = header.locator(`a[href="${href}"]`)
+        const link = primaryNavigation.locator(`a[href="${href}"]`)
         await expect(link).toHaveAttribute('href', href)
         await expect(link).toHaveText(name)
       }
-      await expect(header.getByRole('link', { name: 'Start free access', exact: true })).toHaveAttribute('href', '/join')
-      await expect(header.getByRole('combobox')).toBeVisible()
+      await expect(primaryNavigation.locator('a[href="/join"]')).toHaveAttribute('href', '/join')
+      await expect(page.getByRole('combobox')).toBeVisible()
       await expect(experience.locator('.reference-rewardme__footer').getByRole('link', { name: 'Terms' })).toHaveAttribute('href', '/terms')
       await expect(experience.locator('.reference-rewardme__footer')).toContainText(
         'Production-equivalent RewardMe flows with fictional test data.',
       )
 
-      if (viewport.width >= 920) {
+      if (viewport.width > 1100) {
         await expect(signIn).toBeVisible()
-        await expect(header.getByRole('link', { name: 'Test guide', exact: true })).toBeVisible()
+        await expect(primaryNavigation.getByRole('link', { name: 'Test guide', exact: true })).toBeVisible()
+      } else {
+        await header.locator('.reference-rewardme__menu-toggle').click()
+        const mobileNavigation = header.locator('#rewardme-mobile-navigation')
+        await expect(mobileNavigation.getByRole('link', { name: 'Sign in', exact: true })).toBeVisible()
+        await expect(mobileNavigation.getByRole('link', { name: 'Businesses', exact: true })).toBeVisible()
       }
 
       const width = await page.evaluate(() => ({
