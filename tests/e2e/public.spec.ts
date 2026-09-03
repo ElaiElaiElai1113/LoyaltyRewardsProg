@@ -139,7 +139,7 @@ test.describe('public acquisition workflow', () => {
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how')
     const header = page.getByLabel('RewardMe navigation')
     await expect(header.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
-    await expect(header.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '/business')
+    await expect(header.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '#business')
     await expect(header.getByRole('link', { name: 'The store' })).toHaveAttribute('href', '#store')
     await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
@@ -174,7 +174,7 @@ test.describe('public acquisition workflow', () => {
     const mobileNavigation = page.locator('#rewardme-mobile-navigation')
     await expect(mobileNavigation.getByRole('link', { name: 'Start free access' })).toBeVisible()
     await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
-    await expect(mobileNavigation.getByRole('link', { name: 'Businesses' })).toBeVisible()
+    await expect(mobileNavigation.getByRole('link', { name: 'Businesses' })).toHaveAttribute('href', '#business')
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

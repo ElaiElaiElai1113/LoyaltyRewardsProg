@@ -124,7 +124,15 @@ test.describe('cross-tenant public responsive layouts', () => {
       await menuToggle.click()
       await expect(menuToggle).toHaveAttribute('aria-expanded', 'true')
       await expect(mobileMenu).toBeVisible()
-      await expect(mobileMenu.getByRole('link', { name: 'Businesses', exact: true }).first()).toBeVisible()
+      const mobileBusinessEntry = mobileMenu.getByRole('link', { name: 'Businesses', exact: true }).first()
+      await expect(mobileBusinessEntry).toBeVisible()
+      await expect(mobileBusinessEntry).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
+      if (tenant !== 'loyality') {
+        await mobileBusinessEntry.click()
+        await expect(page).toHaveURL(/#business$/)
+        await expect(mobileMenu).toBeHidden()
+        await expect(page.locator('#business')).toBeInViewport()
+      }
       await expect(languageDock).toBeVisible()
 
       const dockBounds = await languageDock.boundingBox()
@@ -153,7 +161,7 @@ test.describe('cross-tenant public responsive layouts', () => {
       await expect(topBar.getByRole('link', {
         name: tenant === 'loyality' ? 'Get started' : 'Businesses',
         exact: true,
-      })).toBeVisible()
+      })).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
     })
   }
 })

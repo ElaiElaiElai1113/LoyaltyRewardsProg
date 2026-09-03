@@ -40,7 +40,7 @@ test.describe('Wondertown public testing experience', () => {
         ['How it works', '#how'],
         ['The store', '#store'],
         ['Membership', '#membership'],
-        ['Businesses', '/business'],
+        ['Businesses', '#business'],
         ['Test guide', '/guide'],
       ] as const) {
         const link = primaryNavigation.locator(`a[href="${href}"]`)
@@ -61,7 +61,7 @@ test.describe('Wondertown public testing experience', () => {
         await header.locator('.reference-rewardme__menu-toggle').click()
         const mobileNavigation = header.locator('#rewardme-mobile-navigation')
         await expect(mobileNavigation.getByRole('link', { name: 'Sign in', exact: true })).toBeVisible()
-        await expect(mobileNavigation.getByRole('link', { name: 'Businesses', exact: true })).toBeVisible()
+        await expect(mobileNavigation.getByRole('link', { name: 'Businesses', exact: true })).toHaveAttribute('href', '#business')
       }
 
       const width = await page.evaluate(() => ({

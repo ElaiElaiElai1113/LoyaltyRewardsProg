@@ -76,7 +76,7 @@ export function RewardMeHomePage() {
             <a href="#how">{t('How it works')}</a>
             <a href="#store">{t('The store')}</a>
             <a href="#membership">{t('Membership')}</a>
-            <Link className="reference-rewardme__business-link" to="/business">{t('Businesses')}</Link>
+            <a className="reference-rewardme__business-link" href="#business">{t('Businesses')}</a>
             {isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}
           </div>
           <div className="reference-rewardme__nav-actions">
@@ -104,7 +104,7 @@ export function RewardMeHomePage() {
           <a href="#how" onClick={closeMobileMenu}>{t('How it works')}</a>
           <a href="#store" onClick={closeMobileMenu}>{t('The store')}</a>
           <a href="#membership" onClick={closeMobileMenu}>{t('Membership')}</a>
-          <Link className="reference-rewardme__business-link" to="/business" onClick={closeMobileMenu}>{t('Businesses')}</Link>
+          <a className="reference-rewardme__business-link" href="#business" onClick={closeMobileMenu}>{t('Businesses')}</a>
           {isWondertown ? <Link to="/guide" onClick={closeMobileMenu}>{t('Test guide')}</Link> : null}
           <div className="reference-rewardme__mobile-actions">
             <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link>
