@@ -1403,63 +1403,14 @@ runTest('all literal translated UI strings have Spanish entries', () => {
   assert.deepEqual(missingKeys, [])
 })
 
-runTest('all literal translated UI strings have Tagalog entries', () => {
+runTest('public language controls expose only English and Spanish', () => {
   const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
-  const translationsSource = languageSource.match(
-    /const tagalogTranslations: Record<string, string> = \{([\s\S]*?)\n\}/,
-  )?.[1]
+  const languagePicker = readFileSync('src/components/language-picker.tsx', 'utf8')
 
-  assert.ok(translationsSource)
-
-  const translatedKeys = new Set<string>()
-  const translationKeyPattern =
-    /(?:^|\n)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z][A-Za-z0-9_]*))\s*:/g
-
-  for (const match of translationsSource.matchAll(translationKeyPattern)) {
-    translatedKeys.add(match[1] ?? match[2] ?? match[3])
-  }
-
-  const usedKeys = new Set<string>()
-  const literalTranslationPattern = /\bt\(\s*(?:'([^']+)'|"([^"]+)")/g
-
-  for (const value of Object.values(landingClientHero)) {
-    usedKeys.add(value)
-  }
-
-  for (const item of [
-    ...landingWhyJoinItems,
-    ...landingEarlySubscriberBenefits,
-    ...landingRewardsSteps,
-    ...landingMembershipAdvantages,
-  ]) {
-    usedKeys.add(item.title)
-    usedKeys.add(item.body)
-  }
-
-  for (const filePath of getSourceFiles('src')) {
-    if (
-      /src[\\/]features[\\/]loyality[\\/]/.test(filePath)
-      || /src[\\/]features[\\/]business[\\/]pages[\\/]loyality-business-page\.tsx$/.test(filePath)
-    ) continue
-    const source = readFileSync(filePath, 'utf8')
-
-    for (const match of source.matchAll(literalTranslationPattern)) {
-      usedKeys.add(match[1] ?? match[2])
-    }
-  }
-
-  const intentionallyInvariantKeys = new Set([
-    'CVC', // International payment-card security acronym.
-  ])
-  const missingKeys = [...usedKeys]
-    .filter((key) => !translatedKeys.has(key) && !intentionallyInvariantKeys.has(key))
-    .sort()
-
-  if (missingKeys.length > 0) {
-    console.error(`Missing Tagalog translation keys:\n${missingKeys.join('\n')}`)
-  }
-
-  assert.deepEqual(missingKeys, [])
+  assert.match(languagePicker, /const options = \['en', 'es'\]/)
+  assert.doesNotMatch(languagePicker, /const options = \[[^\]]*'tl'/)
+  assert.match(languageSource, /if \(stored === 'en' \|\| stored === 'es'\) return stored/)
+  assert.match(languageSource, /setLanguageState\(nextLanguage === 'es' \? 'es' : 'en'\)/)
 })
 
 runTest('Spanish and Tagalog translations preserve interpolation placeholders', () => {
@@ -2631,10 +2582,10 @@ runTest('public business page follows the supplied local-partner reference', () 
   assert.match(page, /t\('A steady stream of loyal, spending customers'\)/)
   assert.match(page, /t\('Three steps\. That’s it\.'\)/)
   assert.match(page, /t\('Sign the agreement\. We’ll take it from there\.'\)/)
-  assert.match(page, /local-business-owner\.png/)
-  assert.match(page, /hotel-partner\.png/)
-  assert.match(page, /salon-partner\.png/)
-  assert.match(page, /staff-qr-checkout\.png/)
+  assert.match(page, /local-business-owner\.webp/)
+  assert.match(page, /hotel-partner\.webp/)
+  assert.match(page, /salon-partner\.webp/)
+  assert.match(page, /staff-qr-checkout\.webp/)
   assert.match(page, /cta-overlay\.png/)
   assert.match(page, /id="benefits"/)
   assert.match(page, /id="how-it-works"/)

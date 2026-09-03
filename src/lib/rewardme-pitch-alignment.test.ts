@@ -31,6 +31,7 @@ describe('RewardMe pitch alignment', () => {
   it('gives the pinas tenant its supplied RewardMe HTML landing experience', () => {
     const home = source('src/features/home/pages/home-page.tsx')
     const rewardMeHome = source('src/features/home/pages/rewardme-home.tsx')
+    const rewardMeHeader = source('src/features/home/components/rewardme-public-header.tsx')
 
     expect(home).toContain('if (isRewardMeExperience(program.slug)) return <RewardMeHomePage />')
     expect(rewardMeHome).toContain('Earn amazing rewards while supporting local businesses.')
@@ -40,8 +41,8 @@ describe('RewardMe pitch alignment', () => {
     expect(rewardMeHome).toContain('<strong>$109</strong>')
     expect(rewardMeHome).toContain("Three steps. That's the whole system.")
     expect(rewardMeHome).toContain('Your rewards are real credit — spendable in one place, made for you.')
-    expect(rewardMeHome).toContain('to="/join"')
-    expect(rewardMeHome).toContain('to="/signin"')
+    expect(rewardMeHeader).toContain('to="/join"')
+    expect(rewardMeHeader).toContain('to="/signin"')
     expect(rewardMeHome).toContain('to="/business"')
     expect(rewardMeHome).not.toContain('Pinas Rewards')
     expect(rewardMeHome).not.toContain('Every plan starts with 3 months of Gold')
