@@ -1273,8 +1273,8 @@
 .rewardme-ledger-business__button--gold { border-color: var(--rm-gold); background: var(--rm-gold); color: #211d16; }
 .rewardme-ledger-business__button--gold:hover { background: #a87827; }
 .rewardme-ledger-business__button svg { width: 15px; }
-.rewardme-ledger-business__hero-media { display: block; height: 410px; overflow: hidden; border-radius: 6px; }
-.rewardme-ledger-business__hero-media img { width: 100%; height: 100%; object-fit: cover; }
+.rewardme-ledger-business__hero-media { display: block; overflow: hidden; border-radius: 6px; background: var(--rm-paper-deep); }
+.rewardme-ledger-business__hero-media img { display: block; width: 100%; height: auto; object-fit: contain; }
 .rewardme-ledger-business__section { padding-block: 90px; }
 .rewardme-ledger-business__section-head { max-width: 700px; margin-bottom: 48px; }
 .rewardme-ledger-business__section-head h2, .rewardme-ledger-business__cost h2, .rewardme-ledger-business__bridge h2, .rewardme-ledger-business__cta h2 { font-size: clamp(2rem, 4vw, 3.2rem); }
@@ -1289,7 +1289,7 @@
 .rewardme-ledger-business__why article:last-child { border-right: 0; }
 .rewardme-ledger-business__why h3 { font-size: 1.1rem; }
 .rewardme-ledger-business__why p { margin-top: 10px; color: var(--rm-muted); font-size: .86rem; line-height: 1.65; }
-.rewardme-ledger-business__service-photo { width: 100%; height: 280px; margin-top: 30px; border-radius: 5px; object-fit: cover; object-position: center 42%; }
+.rewardme-ledger-business__service-photo { display: block; width: min(100%, 820px); height: auto; margin: 30px auto 0; border-radius: 5px; object-fit: contain; }
 .rewardme-ledger-business__cost { display: grid; grid-template-columns: .8fr 1.2fr; align-items: center; gap: 55px; border-radius: 7px; padding: 55px; background: var(--rm-ink); color: var(--rm-paper); }
 .rewardme-ledger-business__cost h2 { color: var(--rm-paper); }
 .rewardme-ledger-business__cost > div > p:not(.rewardme-ledger-business__eyebrow) { color: rgb(246 241 228 / 70%); }
@@ -1303,7 +1303,6 @@
 .rewardme-ledger-business__contact { margin-top: 5px; color: var(--rm-soft); font-size: .78rem; font-weight: 700; text-align: center; text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 880px) {
   .rewardme-ledger-business__hero { grid-template-columns: 1fr; }
-  .rewardme-ledger-business__hero-media { height: 340px; }
   .rewardme-ledger-business__why { grid-template-columns: 1fr; }
   .rewardme-ledger-business__why article { min-height: 0; border-right: 0; border-bottom: 1px solid var(--rm-line); }
   .rewardme-ledger-business__why article:last-child { border-bottom: 0; }
@@ -1315,7 +1314,6 @@
   .rewardme-ledger-business__hero, .rewardme-ledger-business__section { width: min(100% - 32px, 1080px); }
   .rewardme-ledger-business__hero { gap: 40px; padding-top: 58px; }
   .rewardme-ledger-business__hero h1 { font-size: clamp(2.5rem, 12vw, 4rem); }
-  .rewardme-ledger-business__hero-media { height: 260px; }
   .rewardme-ledger-business__section { padding-block: 65px; }
   .rewardme-ledger-business__steps li { grid-template-columns: 46px 1fr; gap: 12px; }
   .rewardme-ledger-business__cost, .rewardme-ledger-business__bridge, .rewardme-ledger-business__cta { padding: 28px 23px; }

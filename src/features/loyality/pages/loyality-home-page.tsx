@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { Menu, X } from 'lucide-react'
 import { Link } from 'react-router'
 
-import { LanguagePicker } from '@/components/language-picker'
 import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useLanguage } from '@/lib/language'
 
@@ -79,7 +78,7 @@ export function LoyalityHomePage() {
         <nav className="reference-loyality__nav" aria-label={t('Loyality navigation')}>
           <a className="reference-loyality__logo" href="#top"><LoyalityMark />Loyality</a>
           <div className="reference-loyality__nav-links"><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a></div>
-          <div className="reference-loyality__nav-actions"><LanguagePicker className="reference-loyality__language" compact condenseOnNarrowScreens /><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
+          <div className="reference-loyality__nav-actions"><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
           <button className="reference-loyality__menu-toggle" type="button" aria-label={t(mobileMenuOpen ? 'Close navigation' : 'Open navigation')} aria-controls="loyality-mobile-navigation" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}>{mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
         </nav>
         <nav id="loyality-mobile-navigation" className={`reference-loyality__mobile-menu${mobileMenuOpen ? ' is-open' : ''}`} aria-label={t('Loyality mobile navigation')} hidden={!mobileMenuOpen}>

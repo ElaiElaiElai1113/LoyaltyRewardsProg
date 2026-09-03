@@ -7,7 +7,6 @@ import hotelReward from '@/assets/business/hotel-partner.webp'
 import checkoutMoment from '@/assets/landing/coffee-member-wide.webp'
 import dinnerReward from '@/assets/landing/dinner-rewards.webp'
 import salonReward from '@/assets/landing/salon-rewards.webp'
-import { LanguagePicker } from '@/components/language-picker'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 
@@ -80,7 +79,6 @@ export function RewardMeHomePage() {
             {isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}
           </div>
           <div className="reference-rewardme__nav-actions">
-            <LanguagePicker className="reference-rewardme__language" compact condenseOnNarrowScreens />
             <Link className="reference-rewardme__text-link" to="/signin">{t('Sign in')}</Link>
             <Link className="reference-rewardme__button" to="/join">{t('Start free trial')}</Link>
           </div>

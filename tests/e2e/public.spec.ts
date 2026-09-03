@@ -169,6 +169,21 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('.reference-rewardme__passbook')).toBeVisible()
     await expect(page.locator('.reference-rewardme__logo').first()).toContainText('RewardMe')
     await expect(page.locator('.reference-rewardme__balance')).toContainText('109')
+
+    const editorialPhotos = page.locator([
+      '.reference-rewardme__wide-photo img',
+      '.reference-rewardme__photo-grid img',
+      '.reference-rewardme__business-card img',
+    ].join(','))
+    await expect(editorialPhotos).toHaveCount(5)
+    for (let index = 0; index < 5; index += 1) {
+      const photo = editorialPhotos.nth(index)
+      await photo.scrollIntoViewIfNeeded()
+      await expect(photo).toHaveCSS('object-fit', 'contain')
+      await expect.poll(() => photo.evaluate((image: HTMLImageElement) =>
+        image.complete && image.naturalWidth > 0 && image.naturalHeight > 0,
+      )).toBe(true)
+    }
   })
 
   test('mobile homepage has no horizontal overflow and keeps every CTA reachable', async ({ page }) => {
@@ -316,6 +331,8 @@ test.describe('public acquisition workflow', () => {
       await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' }))
         .toHaveAttribute('src', /local-business-owner-wide(?:-[\w-]+)?\.webp/)
       await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' })).toBeVisible()
+      await expect(page.getByRole('img', { name: 'Local business owner welcoming rewards members' })).toHaveCSS('object-fit', 'contain')
+      await expect(page.getByRole('img', { name: 'Staff member scanning a member QR code at checkout' })).toHaveCSS('object-fit', 'contain')
       expect(await page.getByRole('img', { name: 'Local business owner welcoming rewards members' }).evaluate((image: HTMLImageElement) => image.naturalWidth)).toBeGreaterThan(0)
     })
   }

@@ -46,6 +46,7 @@ test.describe('Loyality public product', () => {
       for (let index = 0; index < 2; index += 1) {
         const photo = photos.nth(index)
         await photo.scrollIntoViewIfNeeded()
+        await expect(photo).toHaveCSS('object-fit', 'contain')
         await expect.poll(() => photo.evaluate((image) => {
           const element = image as HTMLImageElement
           return element.complete && element.naturalWidth > 0

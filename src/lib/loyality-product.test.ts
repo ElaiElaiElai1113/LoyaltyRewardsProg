@@ -15,6 +15,7 @@ const businessGrowth = readFileSync(resolve(root, 'src/features/loyality/pages/l
 const businessDashboard = readFileSync(resolve(root, 'src/features/business-owner/pages/business-dashboard-page.tsx'), 'utf8')
 const appShell = readFileSync(resolve(root, 'src/features/loyality/components/loyality-app-shell.tsx'), 'utf8')
 const languagePicker = readFileSync(resolve(root, 'src/components/language-picker.tsx'), 'utf8')
+const mainSiteLanguageDock = readFileSync(resolve(root, 'src/components/main-site-language-dock.tsx'), 'utf8')
 const language = readFileSync(resolve(root, 'src/lib/language.tsx'), 'utf8')
 const publicLayout = readFileSync(resolve(root, 'src/layouts/public-browse-layout.tsx'), 'utf8')
 
@@ -94,7 +95,9 @@ describe('Loyality product contract', () => {
     expect(languagePicker).not.toContain("if (program.slug === 'loyality') return null")
     expect(language).not.toContain("if (getActiveProgram().slug === 'loyality') return 'en'")
     expect(publicLayout).not.toContain('isLoyality ? null : (\n              <LanguagePicker')
-    expect(home).toContain('<LanguagePicker')
+    expect(mainSiteLanguageDock).toContain("'loyality'")
+    expect(mainSiteLanguageDock).toContain('<LanguagePicker')
+    expect(home).not.toContain('<LanguagePicker')
     expect(appShell).toContain('<LanguagePicker')
 
     for (const source of [
