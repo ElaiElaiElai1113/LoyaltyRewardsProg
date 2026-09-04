@@ -122,8 +122,9 @@ test.describe('RewardMe mobile and tablet integrity', () => {
     for (const width of [305, 320, 768, 1440]) {
       await page.setViewportSize({ width, height: 844 })
       await page.goto('/')
-      await page.setContent(`
-        <link rel="stylesheet" href="/src/index.css" />
+      await page.evaluate((markup) => {
+        document.body.innerHTML = markup
+      }, `
         <main class="min-w-0 px-4">
           <section class="grid min-w-0 grid-cols-1 gap-6">
             <article class="min-w-0 overflow-hidden rounded-[1.75rem] border border-[var(--border)] bg-[var(--card)]">

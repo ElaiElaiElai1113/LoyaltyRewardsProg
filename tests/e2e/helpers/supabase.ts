@@ -42,7 +42,7 @@ interface E2ECommerceBusiness {
 }
 
 const qaAccountEmailPattern = /(?:^|[._+-])(?:qa|test)(?:[._+@-]|$)|@(?:medellin|rewardme|rewardsplatform|velvetbrew|wondertown)\.test$/i
-const qaBusinessSlugPattern = /(?:qa|test|velvet|wondertown)/i
+const qaBusinessSlugPattern = /(?:qa|test|velvet|wondertown)|^rewardme-partner$/i
 
 export interface E2EAgreementAcceptance {
   id: string
@@ -250,7 +250,7 @@ export function assertExpectedQaAccount(
 
   if (!qaAccountEmailPattern.test(configuredEmail)) {
     throw new Error(
-      `Refusing hosted commerce write: ${accountLabel} ${expectedEmail} is not an explicitly marked QA account.`,
+      `Refusing hosted commerce write: ${accountLabel} ${expectedEmail} is not an allowlisted acceptance account.`,
     )
   }
 }
@@ -276,7 +276,7 @@ export function assertExpectedQaCommerceContext(input: {
 
   if (input.staff.businessId !== input.business.id) {
     throw new Error(
-      'Refusing hosted commerce write: configured QA staff account does not belong to the expected business ID.',
+      'Refusing hosted commerce write: configured acceptance staff account does not belong to the expected business ID.',
     )
   }
 }
@@ -291,19 +291,19 @@ export function assertExpectedQaOwnerBusinessContext(input: {
 
   if (input.business.slug !== input.expectedBusinessSlug) {
     throw new Error(
-      `Refusing hosted commerce write: owner business ${input.business.slug} does not match configured QA business ${input.expectedBusinessSlug}.`,
+      `Refusing hosted commerce write: owner business ${input.business.slug} does not match configured acceptance business ${input.expectedBusinessSlug}.`,
     )
   }
 
   if (!qaBusinessSlugPattern.test(input.expectedBusinessSlug)) {
     throw new Error(
-      `Refusing hosted commerce write: ${input.expectedBusinessSlug} is not an explicitly marked QA business.`,
+      `Refusing hosted commerce write: ${input.expectedBusinessSlug} is not an allowlisted acceptance business.`,
     )
   }
 
   if (input.owner.businessId !== input.business.id) {
     throw new Error(
-      'Refusing hosted commerce write: configured QA owner account does not belong to the expected business ID.',
+      'Refusing hosted commerce write: configured acceptance owner account does not belong to the expected business ID.',
     )
   }
 }

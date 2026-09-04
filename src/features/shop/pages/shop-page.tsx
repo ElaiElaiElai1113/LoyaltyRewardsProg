@@ -62,7 +62,8 @@ const MAP_BUILDINGS = [
 ] as const
 
 function isQaReleaseFixture(business: Business) {
-  return business.slug.endsWith('-qa-partner')
+  return business.slug === 'rewardme-partner'
+    || business.slug.endsWith('-qa-partner')
     || business.description === 'Isolated partner used only for authenticated release testing.'
 }
 
