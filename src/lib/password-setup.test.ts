@@ -6,6 +6,7 @@ import { describe, expect, it } from 'vitest'
 import { resolveInvitationOrigin } from '../../supabase/functions/_shared/invitation-origin'
 import {
   PASSWORD_MIN_LENGTH,
+  getPasswordResetSignInRoute,
   getPasswordSetupParams,
   getPasswordSetupRoute,
   getPasswordSetupType,
@@ -29,6 +30,16 @@ describe('password setup links', () => {
   it('supports PKCE codes while ignoring unrelated auth-link types', () => {
     expect(getPasswordSetupParams('?code=one-time-code', '').get('code')).toBe('one-time-code')
     expect(getPasswordSetupType('?type=magiclink', '#type=signup')).toBeNull()
+  })
+
+  it('builds a clean tenant sign-in route without carrying recovery credentials', () => {
+    expect(getPasswordResetSignInRoute('?code=one-time-code&tenant=rewardme')).toBe(
+      '/signin?tenant=rewardme',
+    )
+    expect(getPasswordResetSignInRoute('?code=one-time-code')).toBe('/signin')
+    expect(getPasswordResetSignInRoute('?tenant=reward me&type=recovery')).toBe(
+      '/signin?tenant=reward%20me',
+    )
   })
 })
 
@@ -91,5 +102,18 @@ describe('invitation origin selection', () => {
     expect(setupSession.indexOf('exchangeCodeForSession(code)')).toBeLessThan(
       setupSession.indexOf('sb.auth.getSession()'),
     )
+  })
+
+  it('ends a completed recovery session before redirecting to sign in', () => {
+    const resetPage = readFileSync(
+      join(process.cwd(), 'src/features/auth/pages/reset-password-page.tsx'),
+      'utf8',
+    )
+
+    const signOutIndex = resetPage.indexOf('await authService.signOut()')
+    const redirectIndex = resetPage.indexOf('navigate(signInPath, { replace: true })')
+
+    expect(signOutIndex).toBeGreaterThan(-1)
+    expect(redirectIndex).toBeGreaterThan(signOutIndex)
   })
 })

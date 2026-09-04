@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
@@ -10,7 +10,11 @@ import { Label } from '@/components/ui/label'
 import { AuthPortalShell } from '@/features/auth/components/auth-portal-shell'
 import { authService } from '@/integrations/supabase/services/auth-service'
 import { useLanguage } from '@/lib/language'
-import { PASSWORD_MIN_LENGTH, type PasswordSetupType } from '@/lib/password-setup'
+import {
+  getPasswordResetSignInRoute,
+  PASSWORD_MIN_LENGTH,
+  type PasswordSetupType,
+} from '@/lib/password-setup'
 import { getHomePathForRole } from '@/lib/role-routes'
 
 const resetPasswordSchema = z
@@ -27,11 +31,13 @@ type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
 
 export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupType }) {
   const { t } = useLanguage()
+  const location = useLocation()
   const navigate = useNavigate()
   const [isSessionReady, setIsSessionReady] = useState(false)
   const [sessionError, setSessionError] = useState<string | null>(null)
   const isInvitation = flow === 'invite'
   const linkLabel = isInvitation ? 'invitation' : 'reset'
+  const signInPath = getPasswordResetSignInRoute(location.search)
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -87,7 +93,11 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
       if (isInvitation) {
         const profile = await authService.getSessionProfile()
         navigate(profile ? getHomePathForRole(profile.role) : '/signin', { replace: true })
+        return
       }
+
+      await authService.signOut()
+      navigate(signInPath, { replace: true })
     } catch (error) {
       form.setError('root', {
         message: error instanceof Error ? error.message : 'Password could not be updated.',
@@ -155,7 +165,7 @@ export function ResetPasswordPage({ flow = 'recovery' }: { flow?: PasswordSetupT
             {form.formState.isSubmitting ? t('Saving...') : t('Update password')}
           </Button>
           <Button asChild type="button" variant="outline">
-            <Link to="/signin">{t('Back to sign in')}</Link>
+            <Link to={signInPath}>{t('Back to sign in')}</Link>
           </Button>
         </div>
       </form>

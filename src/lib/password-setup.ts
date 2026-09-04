@@ -31,3 +31,8 @@ export function getPasswordSetupType(search: string, hash: string) {
 export function getPasswordSetupRoute(type: PasswordSetupType) {
   return type === 'invite' ? '/accept-invitation' : '/reset-password'
 }
+
+export function getPasswordResetSignInRoute(search: string) {
+  const tenant = parseParams(search).get('tenant')?.trim()
+  return tenant ? `/signin?tenant=${encodeURIComponent(tenant)}` : '/signin'
+}
