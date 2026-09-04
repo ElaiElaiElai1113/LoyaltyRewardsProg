@@ -44,7 +44,7 @@ const sites = [
     name: 'RewardMe',
     slug: 'pinas',
     origin: process.env.E2E_REWARDME_URL ?? 'https://rewardme-prod.vercel.app',
-    businessSlugs: ['pinas-qa-partner'],
+    businessSlugs: ['rewardme-partner'],
     catalogMinimum: 1,
     accounts: [
       { email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test', role: 'customer', membershipRole: 'member' },

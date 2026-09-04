@@ -74,7 +74,7 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(provisioner).not.toContain('Set-Content')
 
     const fixtureProvisioner = source('scripts/provision-tenant-qa-fixtures.mjs')
-    expect(fixtureProvisioner).toContain("businessName: 'RewardMe QA Partner'")
+    expect(fixtureProvisioner).toContain("businessName: 'RewardMe Partner'")
     expect(fixtureProvisioner).toContain('Could not update QA business')
   })
 

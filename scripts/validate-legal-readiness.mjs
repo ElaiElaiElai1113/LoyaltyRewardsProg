@@ -15,6 +15,7 @@ const directory = 'docs/legal-drafts'
 const readme = await readFile(`${directory}/README.md`, 'utf8')
 const checklist = await readFile(`${directory}/legal-approval-checklist.md`, 'utf8')
 const legalPage = await readFile('src/features/legal/pages/legal-page.tsx', 'utf8')
+const legalContent = await readFile('src/features/legal/legal-content.ts', 'utf8')
 const router = await readFile('src/routes/router.tsx', 'utf8')
 const failures = []
 const unresolvedOwnerInputs = []
@@ -46,7 +47,7 @@ if (/Medellin|PinasRewards|Pinas Rewards/i.test(legalPage)) {
 if (!legalPage.includes(".replaceAll('RewardMe', program.name)")) {
   failures.push('public legal summaries are not tenant-aware')
 }
-if (!legalPage.includes('pending final legal approval before paid membership launch')) {
+if (!legalContent.includes('pending final legal approval before paid membership launch')) {
   failures.push('public legal summaries do not disclose draft status')
 }
 if (/\|\s*Yes\s*\|/.test(checklist)) {

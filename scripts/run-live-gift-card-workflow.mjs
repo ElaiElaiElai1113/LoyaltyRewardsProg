@@ -22,7 +22,7 @@ const configurations = {
     owner: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
     staff: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
     admin: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
-    businessSlug: 'pinas-qa-partner',
+    businessSlug: 'rewardme-partner',
   },
   wondertown: {
     baseUrl: process.env.E2E_WONDERTOWN_URL ?? 'https://wondertown-rewards.vercel.app',

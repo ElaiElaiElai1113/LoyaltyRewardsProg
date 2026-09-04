@@ -2821,7 +2821,7 @@ runTest('hosted commerce QA confines writes to named fixtures and cleans visible
   assert.match(giftCards, /Promise\.all\(\[\s*redeemGiftCardForBusinessViaRpc/)
   assert.match(rewards, /getRewardForBusinessByTitle/)
   assert.match(rewards, /restoreRewardInventoryIfUnchanged/)
-  assert.match(workflow, /E2E_REWARD_NAME: QA Welcome Reward/)
+  assert.match(workflow, /E2E_REWARD_NAME: Welcome Reward/)
   assert.match(workflow, /E2E_REWARD_NAME: Moonbeam Breakfast/)
   assert.equal(
     (workflow.match(/if: steps\.verify_seeded_data\.outcome == 'success'/g) ?? []).length,

@@ -31,10 +31,10 @@ if (password.length < 12) {
 }
 
 const accounts = [
-  { email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test', role: 'customer', name: 'RewardMe Test Member' },
-  { email: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test', role: 'business-staff', name: 'RewardMe QA Staff' },
-  { email: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test', role: 'business-owner', name: 'RewardMe QA Owner' },
-  { email: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test', role: 'platform-admin', name: 'RewardMe QA Administrator' },
+  { email: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test', role: 'customer', name: 'RewardMe Member' },
+  { email: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test', role: 'business-staff', name: 'RewardMe Business Staff' },
+  { email: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test', role: 'business-owner', name: 'RewardMe Business Owner' },
+  { email: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test', role: 'platform-admin', name: 'Rewards Platform Administrator' },
 ]
 const requestedEmails = new Set(
   (process.env.QA_ACCOUNT_EMAILS ?? '')
@@ -127,7 +127,7 @@ let { data: qaBusiness, error: businessReadError } = await client
   .from('businesses')
   .select('id')
   .eq('program_id', pinasProgram.id)
-  .eq('slug', process.env.QA_BUSINESS_SLUG ?? 'pinas-qa-partner')
+  .eq('slug', process.env.QA_BUSINESS_SLUG ?? 'rewardme-partner')
   .maybeSingle()
 if (businessReadError) throw businessReadError
 
@@ -136,8 +136,8 @@ if (!qaBusiness && process.env.QA_ALLOW_BUSINESS_CREATE === 'true') {
     .from('businesses')
     .insert({
       program_id: pinasProgram.id,
-      name: 'RewardMe QA Partner',
-      slug: 'pinas-qa-partner',
+      name: 'RewardMe Partner',
+      slug: 'rewardme-partner',
       description: 'Isolated partner used only for release acceptance testing.',
       earn_rate: 10,
       tax_rate: 0.12,

@@ -20,20 +20,20 @@ loadDotEnv()
 
 const configurations = {
   pinas: {
-    businessName: 'RewardMe QA Partner',
-    businessSlug: 'pinas-qa-partner',
+    businessName: 'RewardMe Partner',
+    businessSlug: 'rewardme-partner',
     customerEmail: process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',
-    customerName: 'RewardMe Test Member',
+    customerName: 'RewardMe Member',
     ownerEmail: process.env.E2E_REWARDME_BUSINESS_OWNER_EMAIL ?? 'owner@rewardme.test',
-    ownerName: 'RewardMe QA Owner',
+    ownerName: 'RewardMe Business Owner',
     staffEmail: process.env.E2E_REWARDME_BUSINESS_STAFF_EMAIL ?? 'staff@rewardme.test',
-    staffName: 'RewardMe QA Staff',
+    staffName: 'RewardMe Business Staff',
     adminEmail: process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test',
-    adminName: 'RewardMe QA Administrator',
+    adminName: 'Rewards Platform Administrator',
     recoveryRedirect: 'https://rewardme-prod.vercel.app/reset-password',
     phone: '+63 917 555 0101',
     transactionRequestId: 'f1000000-0000-4000-8000-000000000001',
-    transactionReceipt: 'REWARDME-QA-001',
+    transactionReceipt: 'REWARDME-001',
   },
   guatemala: {
     businessName: 'Guatemala QA Partner',
@@ -281,35 +281,49 @@ async function ensureCatalogRow(table, title, values) {
   return data.id
 }
 
-await ensureCatalogRow('products', 'QA Coffee', {
-  description: 'Authenticated tenant QA product.',
+const catalogLabels = programSlug === 'pinas'
+  ? {
+      product: 'Member Coffee',
+      reward: 'Welcome Reward',
+      giftCard: 'RewardMe Gift Card',
+      promotion: 'Member Bonus',
+    }
+  : {
+      product: 'QA Coffee',
+      reward: 'QA Welcome Reward',
+      giftCard: 'QA Gift Card',
+      promotion: 'QA Member Bonus',
+    }
+
+await ensureCatalogRow('products', catalogLabels.product, {
+  description: 'Authenticated member catalog product.',
   category: 'Coffee',
   price: 5,
   inventory: 100,
   featured: false,
-  highlight: 'QA fixture',
+  highlight: 'Member favorite',
 })
-await ensureCatalogRow('rewards', 'QA Welcome Reward', {
-  description: 'Authenticated tenant QA reward.',
+await ensureCatalogRow('rewards', catalogLabels.reward, {
+  description: 'Authenticated member catalog reward.',
   category: 'Drink',
   points_cost: 10,
   inventory: 100,
   featured: false,
-  highlight: 'QA fixture',
+  highlight: 'Welcome offer',
 })
-const giftCardCatalogId = await ensureCatalogRow('gift_card_catalog', 'QA Gift Card', {
-  description: 'Authenticated tenant QA gift card.',
+const giftCardCatalogId = await ensureCatalogRow('gift_card_catalog', catalogLabels.giftCard, {
+  description: 'Authenticated member gift card.',
   points_cost: 10,
   value_label: `${program.currency} 5`,
   expiry_days: 30,
   is_active: true,
   created_by: owner.id,
 })
-await ensureCatalogRow('promotions', 'QA Member Bonus', {
-  description: 'Authenticated tenant QA promotion.',
-  badge: 'QA fixture',
-  cta: 'View QA partner',
-  audience: 'QA members',
+await ensureCatalogRow('promotions', catalogLabels.promotion, {
+  description: 'Authenticated member promotion.',
+  badge: 'Member offer',
+  cta: 'View partner',
+  audience: 'RewardMe members',
   expires_at: '2099-12-31T23:59:59.000Z',
   active: true,
 })
@@ -351,7 +365,7 @@ const { data: transactionFixture, error: transactionFixtureError } = await authC
     p_member_qr_token: customerProfile.member_qr_token,
     p_purchase_amount: 25,
     p_receipt_number: configuration.transactionReceipt,
-    p_note: 'Idempotent authenticated QA fixture.',
+    p_note: 'Permanent launch account transaction.',
     p_client_request_id: configuration.transactionRequestId,
   },
 )

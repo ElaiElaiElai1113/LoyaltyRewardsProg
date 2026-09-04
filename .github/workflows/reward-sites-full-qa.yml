@@ -116,10 +116,10 @@ jobs:
           E2E_TENANT_CUSTOMER_EMAIL: member@rewardme.test
           E2E_TENANT_BUSINESS_OWNER_EMAIL: owner@rewardme.test
           E2E_TENANT_BUSINESS_STAFF_EMAIL: staff@rewardme.test
-          E2E_TENANT_BUSINESS_NAME: RewardMe QA Partner
-          E2E_TENANT_PRODUCT_NAME: QA Coffee
-          E2E_TENANT_REWARD_NAME: QA Welcome Reward
-          E2E_TENANT_GIFT_CARD_NAME: QA Gift Card
+          E2E_TENANT_BUSINESS_NAME: RewardMe Partner
+          E2E_TENANT_PRODUCT_NAME: Member Coffee
+          E2E_TENANT_REWARD_NAME: Welcome Reward
+          E2E_TENANT_GIFT_CARD_NAME: RewardMe Gift Card
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
         run: npm run test:e2e:tenant-authenticated
       - name: QR workflow and authenticated usability — Wondertown
@@ -203,8 +203,8 @@ jobs:
           E2E_BUSINESS_OWNER_EMAIL: owner@rewardme.test
           E2E_BUSINESS_STAFF_EMAIL: staff@rewardme.test
           E2E_ADMIN_EMAIL: admin@rewardsplatform.test
-          E2E_BUSINESS_SLUG: pinas-qa-partner
-          E2E_REWARD_NAME: QA Welcome Reward
+          E2E_BUSINESS_SLUG: rewardme-partner
+          E2E_REWARD_NAME: Welcome Reward
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           WORKFLOW_TEST_RUN_ID: rewardme-${{ github.run_id }}
         run: npx playwright test tests/e2e/rewards-redemption.spec.ts --config=playwright.local.config.ts --workers=1

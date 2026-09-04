@@ -88,6 +88,7 @@
     "ops:restore:rehearse": "node scripts/rehearse-backup-restore.mjs",
     "ops:release:validate": "node scripts/validate-release-environment.mjs",
     "ops:health:diagnose": "node scripts/diagnose-health-endpoint.mjs",
+    "ops:rewardme:promote-accounts": "node scripts/promote-rewardme-launch-accounts.mjs",
     "ops:launch:gates": "node scripts/run-launch-gates.mjs",
     "ops:hosted:preflight": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/hosted-launch-preflight.ps1",
     "ops:tenant:export": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/export-linked-program.ps1",
