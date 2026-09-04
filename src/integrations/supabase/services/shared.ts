@@ -1,11 +1,12 @@
 import { supabase } from '@/integrations/supabase/client'
+import { sanitizeVisibleData } from '@/lib/visible-labels'
 
 /** Map a Supabase row (snake_case) to camelCase by converting keys. */
 export function camelCaseRow<T extends Record<string, unknown>>(row: T): Record<string, unknown> {
   const out: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(row)) {
     const camel = key.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())
-    out[camel] = value
+    out[camel] = sanitizeVisibleData(value)
   }
   return out
 }

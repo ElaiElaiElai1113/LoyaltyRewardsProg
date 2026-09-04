@@ -1,14 +1,15 @@
 import type { MemberTransaction, Profile, ScannedMember } from '@/types/domain'
+import { removeRetiredInternalLabels } from '@/lib/visible-labels'
 import { camelCaseRow, friendlySupabaseError, requireSupabase } from './shared'
 
 function mapMemberTransaction(row: Record<string, unknown>): MemberTransaction {
   const transaction = camelCaseRow(row)
   const rawMember = row.profiles as Record<string, unknown> | undefined
   const rawBusiness = row.businesses as Record<string, unknown> | undefined
-  const memberFullName = (transaction.memberFullName ?? rawMember?.full_name) as string | undefined
+  const rawMemberFullName = (transaction.memberFullName ?? rawMember?.full_name) as string | undefined
   const memberEmail = (transaction.memberEmail ?? rawMember?.email) as string | undefined
   const memberVerificationStatus = (transaction.memberVerificationStatus ?? rawMember?.verification_status) as Profile['verificationStatus'] | undefined
-  const businessName = (transaction.businessName ?? rawBusiness?.name) as string | undefined
+  const rawBusinessName = (transaction.businessName ?? rawBusiness?.name) as string | undefined
   const businessCurrency = (transaction.businessCurrency ?? rawBusiness?.currency) as string | undefined
 
   return {
@@ -31,18 +32,18 @@ function mapMemberTransaction(row: Record<string, unknown>): MemberTransaction {
     clientRequestId: (transaction.clientRequestId as string | null) ?? null,
     createdAt: transaction.createdAt as string,
     updatedAt: transaction.updatedAt as string,
-    member: memberFullName && memberEmail && memberVerificationStatus
+    member: rawMemberFullName && memberEmail && memberVerificationStatus
       ? {
           id: transaction.profileId as string,
-          fullName: memberFullName,
+          fullName: removeRetiredInternalLabels(rawMemberFullName),
           email: memberEmail,
           verificationStatus: memberVerificationStatus,
         }
       : undefined,
-    business: businessName && businessCurrency
+    business: rawBusinessName && businessCurrency
       ? {
           id: transaction.businessId as string,
-          name: businessName,
+          name: removeRetiredInternalLabels(rawBusinessName),
           currency: businessCurrency,
         }
       : undefined,

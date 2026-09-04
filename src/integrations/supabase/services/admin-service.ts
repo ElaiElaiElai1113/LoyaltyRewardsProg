@@ -10,6 +10,7 @@ import type {
 } from '@/types/domain'
 import type { RewardAdjustmentFormValues } from '@/types/forms'
 import { MEMBER_VERIFICATION_BUCKET } from '@/lib/member-verification'
+import { removeRetiredInternalLabels } from '@/lib/visible-labels'
 import { requireSupabase, camelCaseRow, friendlySupabaseError, snakeCaseObj, toNullableNumber } from './shared'
 
 function toTierProgress(points: number, target: number) {
@@ -321,7 +322,9 @@ export const adminService = {
       if (profile.role === 'business-owner') {
         ownerByBusiness.set(profile.business_id, {
           id: profile.id as string,
-          fullName: (profile.full_name as string | null) ?? (profile.email as string),
+          fullName: removeRetiredInternalLabels(
+            (profile.full_name as string | null) ?? (profile.email as string),
+          ),
           email: profile.email as string,
         })
       }
@@ -553,7 +556,9 @@ export const adminService = {
 
         records.push({
           profileId: profile.id,
-          fullName: profile.full_name ?? profile.email ?? 'Unknown user',
+          fullName: removeRetiredInternalLabels(
+            profile.full_name ?? profile.email ?? 'Unknown user',
+          ),
           email: profile.email ?? '',
           role: profile.role,
           businessId: profile.business_id,

@@ -19,6 +19,7 @@ import type {
   PromotionDraftFormValues,
   RewardAdjustmentFormValues,
 } from '@/types/forms'
+import { removeRetiredInternalLabels } from '@/lib/visible-labels'
 import { useAuth } from './use-auth'
 
 export function useBusinessOwnerData() {
@@ -260,7 +261,7 @@ export function useBusinessMembers(businessId?: string) {
 
       return ((data ?? []) as Record<string, unknown>[]).map((customer) => ({
         id: customer.id as string,
-        fullName: customer.full_name as string,
+        fullName: removeRetiredInternalLabels(customer.full_name as string),
         email: customer.email as string,
         memberQrToken: (customer.member_qr_token as string | null) ?? null,
         points: Number(customer.points ?? 0),
