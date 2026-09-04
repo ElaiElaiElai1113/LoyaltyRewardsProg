@@ -7,7 +7,7 @@ vi.mock('@supabase/supabase-js', () => ({
   createClient: () => ({ rpc }),
 }))
 
-import handler from './validate-referral'
+import handler from '../../api/validate-referral'
 
 function responseHarness() {
   const json = vi.fn()
