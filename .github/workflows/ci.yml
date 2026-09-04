@@ -183,7 +183,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Production dependency audit
-        run: npm audit --omit=dev --audit-level=critical
+        shell: bash
+        run: |
+          set -euo pipefail
+          for attempt in 1 2 3; do
+            if timeout 90s npm audit --omit=dev --audit-level=critical; then
+              exit 0
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "Dependency audit failed after three attempts."
+              exit 1
+            fi
+            echo "Dependency audit attempt $attempt failed; retrying after a transient registry delay."
+            sleep $((attempt * 15))
+          done
       - name: Secret scan
         uses: gitleaks/gitleaks-action@v3
         env:
