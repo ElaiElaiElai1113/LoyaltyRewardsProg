@@ -111,6 +111,8 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'synergize-business-group.vercel.app': 'synergize',
   'loyalty-rewards-prog.vercel.app': 'pinas',
   'rewardme-prod.vercel.app': 'pinas',
+  'myrewardme.com': 'pinas',
+  'www.myrewardme.com': 'pinas',
   'pinas-rewards.vercel.app': 'pinasrewards',
   'wondertown-rewards.vercel.app': 'wondertown',
   'loyality-rewards.vercel.app': 'loyality',

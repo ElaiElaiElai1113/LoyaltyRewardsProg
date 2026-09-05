@@ -13,6 +13,7 @@ on:
           - apply-linter-cleanup
           - apply-wondertown-theme
           - apply-loyality-theme
+          - configure-rewardme-domains
       confirmation:
         description: Type AUDIT or APPLY REVIEWED MIGRATION to confirm the selected operation
         required: true
@@ -59,6 +60,9 @@ jobs:
         run: |
           npx supabase db advisors --linked --type all --level info --fail-on none
           npx supabase db query --linked --file supabase/preflight/rewards-linter-audit.sql
+      - name: Retain existing Auth redirects and add the RewardMe domains
+        if: inputs.operation == 'configure-rewardme-domains'
+        run: node scripts/register-rewardme-auth-domains.mjs --apply
       - name: Apply the business application schema
         if: inputs.operation == 'apply-business-applications'
         run: |

@@ -1,5 +1,7 @@
 const canonicalTenantHostByAlias: Readonly<Record<string, string>> = {
   'rewardme-prod.vercel.app': 'loyalty-rewards-prog.vercel.app',
+  'myrewardme.com': 'loyalty-rewards-prog.vercel.app',
+  'www.myrewardme.com': 'loyalty-rewards-prog.vercel.app',
 }
 
 export function resolveTenantDatabaseHostname(hostname: string) {

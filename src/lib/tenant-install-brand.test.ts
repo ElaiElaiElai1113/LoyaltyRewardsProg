@@ -15,6 +15,8 @@ const tenantCases = [
   ['synergize-business-group.vercel.app', 'synergize', 'Synergize'],
   ['loyalty-rewards-prog.vercel.app', 'pinas', 'RewardMe'],
   ['rewardme-prod.vercel.app', 'pinas', 'RewardMe'],
+  ['myrewardme.com', 'pinas', 'RewardMe'],
+  ['www.myrewardme.com', 'pinas', 'RewardMe'],
   ['pinas-rewards.vercel.app', 'pinasrewards', 'Pinas Rewards'],
   ['wondertown-rewards.vercel.app', 'wondertown', 'Wondertown Rewards'],
 ] as const
