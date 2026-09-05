@@ -6,7 +6,7 @@ export function camelCaseRow<T extends Record<string, unknown>>(row: T): Record<
   const out: Record<string, unknown> = {}
   for (const [key, value] of Object.entries(row)) {
     const camel = key.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())
-    out[camel] = sanitizeVisibleData(value)
+    out[camel] = sanitizeVisibleData(value, camel)
   }
   return out
 }

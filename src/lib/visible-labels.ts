@@ -13,9 +13,13 @@ export function removeRetiredInternalLabels(copy: string) {
     .trim()
 }
 
-export function sanitizeVisibleData<T>(value: T): T {
+const displayFields = new Set(['name', 'fullname', 'displayname', 'businessname', 'memberfullname', 'ownername', 'contactname', 'title', 'description', 'category'])
+
+export function sanitizeVisibleData<T>(value: T, field = ''): T {
   if (typeof value === 'string') {
-    return removeRetiredInternalLabels(value) as T
+    return (displayFields.has(field.replaceAll('_', '').toLowerCase())
+      ? removeRetiredInternalLabels(value)
+      : value) as T
   }
 
   if (Array.isArray(value)) {
@@ -32,7 +36,7 @@ export function sanitizeVisibleData<T>(value: T): T {
     let changed = false
     const nextValue = Object.fromEntries(
       Object.entries(value).map(([key, item]) => {
-        const nextItem = sanitizeVisibleData(item)
+        const nextItem = sanitizeVisibleData(item, key)
         changed ||= nextItem !== item
         return [key, nextItem]
       }),
