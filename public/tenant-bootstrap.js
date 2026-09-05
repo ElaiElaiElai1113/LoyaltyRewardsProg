@@ -62,6 +62,8 @@
     'www.guatemalarewards.com': 'guatemala',
     'loyalty-rewards-prog.vercel.app': 'pinas',
     'rewardme-prod.vercel.app': 'pinas',
+    'myrewardme.com': 'pinas',
+    'www.myrewardme.com': 'pinas',
     'rewardme.localhost': 'pinas',
     'pinas-rewards.vercel.app': 'pinasrewards',
     'pinas.localhost': 'pinasrewards',

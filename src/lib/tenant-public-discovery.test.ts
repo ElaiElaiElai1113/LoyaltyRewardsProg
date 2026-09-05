@@ -8,6 +8,8 @@ import {
 } from '../../api/_tenant-public-discovery'
 
 const verifiedTenants = [
+  ['myrewardme.com', 'https://www.myrewardme.com'],
+  ['www.myrewardme.com', 'https://www.myrewardme.com'],
   ['www.medellinrewards.com', 'https://www.medellinrewards.com'],
   ['guatemalarewards.com', 'https://guatemalarewards.com'],
   ['loyalty-rewards-prog.vercel.app', 'https://rewardme-prod.vercel.app'],
