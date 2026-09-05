@@ -45,17 +45,6 @@ window.addEventListener('unhandledrejection', (event) => {
 })
 
 if (import.meta.env.PROD) {
-  const hadServiceWorkerController = Boolean(navigator.serviceWorker?.controller)
-  let reloadingForServiceWorkerUpdate = false
-
-  if (hadServiceWorkerController) {
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (reloadingForServiceWorkerUpdate) return
-      reloadingForServiceWorkerUpdate = true
-      window.location.reload()
-    })
-  }
-
   const updateServiceWorker = registerSW({
     immediate: true,
     onNeedRefresh() {
