@@ -120,16 +120,25 @@ describe('cross-tenant runtime safeguards', () => {
     expect(getFallbackProgram('rewardme.rewardsplatform.app').slug).toBe('pinas')
   })
 
-  it('keeps local RewardMe previews off stale production service workers', () => {
+  it('removes stale production service workers and their cached tenant bundles', () => {
     const entry = source('src/main.tsx')
     const viteConfig = source('vite.config.ts')
+    const cleanupWorker = source('src/sw.js')
 
-    expect(entry).toContain('if (import.meta.env.PROD)')
+    expect(entry).toContain('registerSW')
     expect(entry).toContain('navigator.serviceWorker.getRegistrations()')
     expect(entry).toContain('registration.unregister()')
+    expect(viteConfig).toContain('VitePWA')
+    expect(viteConfig).toContain("strategies: 'injectManifest'")
+    expect(viteConfig).toContain("filename: 'sw.js'")
+    expect(viteConfig).toContain('injectionPoint: undefined')
     expect(viteConfig).toContain("server.middlewares.use('/sw.js'")
     expect(viteConfig).toContain("response.setHeader('Cache-Control', 'no-store, max-age=0')")
     expect(viteConfig).toContain('await self.registration.unregister()')
+    expect(cleanupWorker).toContain('await caches.keys()')
+    expect(cleanupWorker).toContain('client.navigate(client.url)')
+    expect(cleanupWorker).not.toContain('precacheAndRoute')
+    expect(cleanupWorker).not.toContain('self.registration.unregister()')
   })
 
   it('keeps every platform-admin document surface parent branded', () => {
