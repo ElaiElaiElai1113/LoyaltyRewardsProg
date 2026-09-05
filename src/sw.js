@@ -5,8 +5,5 @@ self.addEventListener('activate', (event) => {
     const cacheNames = await caches.keys()
     await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)))
     await self.clients.claim()
-
-    const clients = await self.clients.matchAll({ type: 'window' })
-    await Promise.all(clients.map((client) => client.navigate(client.url)))
   })())
 })

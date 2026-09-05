@@ -136,7 +136,7 @@ describe('cross-tenant runtime safeguards', () => {
     expect(viteConfig).toContain("response.setHeader('Cache-Control', 'no-store, max-age=0')")
     expect(viteConfig).toContain('await self.registration.unregister()')
     expect(cleanupWorker).toContain('await caches.keys()')
-    expect(cleanupWorker).toContain('client.navigate(client.url)')
+    expect(cleanupWorker).not.toContain('client.navigate(client.url)')
     expect(cleanupWorker).not.toContain('precacheAndRoute')
     expect(cleanupWorker).not.toContain('self.registration.unregister()')
   })
