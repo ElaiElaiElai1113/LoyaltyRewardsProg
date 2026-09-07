@@ -450,7 +450,7 @@ export function RewardMeJoinPage() {
           }
         })}>
           <fieldset><legend>{t('Choose your membership')} *</legend><div className="rewardme-join__plans">
-            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{item.price}</b></strong>{item.featured ? <em>{t('Best for referrers')}</em> : null}<small>{t(item.description)}</small></span></label>)}
+            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{t(item.price)}</b></strong>{item.featured ? <em>{t('Best for referrers')}</em> : null}<small>{t(item.description)}</small></span></label>)}
           </div></fieldset>
           <div className="rewardme-join__grid">
             <label>{t('Full name')} <b>*</b><Input id="join-name" placeholder={t('Your full name')} {...form.register('fullName')} />{form.formState.errors.fullName ? <small>{form.formState.errors.fullName.message}</small> : null}</label>

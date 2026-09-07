@@ -11,6 +11,7 @@ import {
   setActiveProgram,
 } from '@/features/tenant/tenant-service'
 import type { Program } from '@/types/domain'
+import { LanguageProvider, useLanguage } from '@/lib/language'
 
 function isPlatformAdminPath() {
   return /^\/admin(?:\/|$)/.test(window.location.pathname)
@@ -53,15 +54,19 @@ export function TenantProvider({ children }: { children: ReactNode }) {
   return (
     <TenantContext.Provider value={{ program, isLoading, error, refresh }}>
       {isLoading ? (
-        <div className="flex min-h-screen items-center justify-center bg-[var(--background)] text-sm text-[var(--muted-foreground)]">
-          Loading rewards program...
-        </div>
-      ) : error ? <TenantUnavailable error={error} onRetry={() => void refresh()} /> : children}
+        <LanguageProvider><TenantLoading /></LanguageProvider>
+      ) : error ? <LanguageProvider><TenantUnavailable error={error} onRetry={() => void refresh()} /></LanguageProvider> : children}
     </TenantContext.Provider>
   )
 }
 
+function TenantLoading() {
+  const { t } = useLanguage()
+  return <div className="flex min-h-screen items-center justify-center bg-[var(--background)] text-sm text-[var(--muted-foreground)]">{t('Loading rewards program...')}</div>
+}
+
 function TenantUnavailable({ error, onRetry }: { error: string; onRetry: () => void }) {
+  const { t } = useLanguage()
   const content = error === 'program_suspended'
     ? { title: 'Program temporarily unavailable', body: 'This rewards program has been suspended. Contact the program administrator for assistance.' }
     : error === 'domain_pending'
@@ -71,9 +76,9 @@ function TenantUnavailable({ error, onRetry }: { error: string; onRetry: () => v
     <main className="flex min-h-screen items-center justify-center bg-[var(--background)] px-5 text-[var(--foreground)]">
       <div className="max-w-lg text-center">
         <AlertTriangle className="mx-auto size-10 text-[var(--muted-foreground)]" />
-        <h1 className="mt-5 text-3xl font-semibold">{content.title}</h1>
-        <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">{content.body}</p>
-        <Button className="mt-6" variant="outline" onClick={onRetry}><RotateCw className="size-4" />Try again</Button>
+        <h1 className="mt-5 text-3xl font-semibold">{t(content.title)}</h1>
+        <p className="mt-3 text-sm leading-6 text-[var(--muted-foreground)]">{t(content.body)}</p>
+        <Button className="mt-6" variant="outline" onClick={onRetry}><RotateCw className="size-4" />{t('Try again')}</Button>
       </div>
     </main>
   )

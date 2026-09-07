@@ -182,7 +182,7 @@ export function CustomerLayout() {
                 </span>
                 <nav className="flex flex-col gap-2">
                   {!isLoyality ? <NavLink to="/shop" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Partner Map')}</NavLink> : null}
-                  {!isLoyality ? <NavLink to="/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink> : <NavLink to="/dashboard" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">My vouchers</NavLink>}
+                  {!isLoyality ? <NavLink to="/gift-cards" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Gift Cards')}</NavLink> : <NavLink to="/dashboard" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('My vouchers')}</NavLink>}
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Member QR')}</NavLink>
                   <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Activity')}</NavLink>
                 </nav>
@@ -207,7 +207,7 @@ export function CustomerLayout() {
                 </span>
                 <nav className="flex flex-col gap-2">
                   <NavLink to="/profile" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Settings')}</NavLink>
-                  {!isLoyality ? <NavLink to="/orders" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Order History')}</NavLink> : <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">Visit history</NavLink>}
+                  {!isLoyality ? <NavLink to="/orders" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Order History')}</NavLink> : <NavLink to="/activity" className="text-sm text-[var(--muted-foreground)] transition-colors hover:text-[var(--foreground)]">{t('Visit history')}</NavLink>}
                 </nav>
               </div>
               <div className="flex flex-col gap-4">

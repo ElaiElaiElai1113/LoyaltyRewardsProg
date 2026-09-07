@@ -64,6 +64,10 @@ for (const language of ['en', 'es'] as const) {
       await expect(page.getByRole('heading', { level: 1, name: copy.hero })).toBeVisible()
       await expect(page.getByRole('heading', { name: copy.account })).toBeVisible()
       await expect(page.getByRole('heading', { name: copy.rates })).toBeVisible()
+      if (language === 'es') {
+        await expect(page.locator('body')).not.toContainText('3 months of Gold, then')
+        await expect(page.locator('body')).not.toContainText('Same great reward rate throughout')
+      }
       await expect(page.getByRole('link', { name: copy.signIn }).first()).toHaveAttribute('href', '/signin')
       await expect(page.locator('.reference-rewardme__logo').first()).toContainText(
         tenant === 'wondertown' ? 'Wondertown Rewards' : 'RewardMe',

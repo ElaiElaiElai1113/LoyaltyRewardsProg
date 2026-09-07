@@ -93,7 +93,7 @@ function StandardMembershipPage({ isWondertown }: { isWondertown: boolean }) {
               </div>
               <div className="rounded-lg border border-[var(--border)] p-4">
                 <p className="text-sm font-medium text-[var(--muted-foreground)]">{t('Provider')}</p>
-                <p className="mt-2 text-2xl font-semibold">{membership?.provider ?? 'mock'}</p>
+                <p className="mt-2 text-2xl font-semibold">{!membership?.provider || membership.provider === 'mock' ? t('Mock') : membership.provider}</p>
               </div>
             </div>
           </div>

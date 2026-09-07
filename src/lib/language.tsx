@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
 import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { tenantStorageKey } from '@/lib/tenant-storage'
+import { spanishBusinessTranslations } from '@/lib/spanish-business-translations'
 
 type Language = 'en' | 'es' | 'tl'
 
@@ -38,6 +39,43 @@ const languageDisplayNames: Record<Language, Record<Language, string>> = {
 }
 
 const spanishTranslations: Record<string, string> = {
+  'Loading rewards program...': 'Cargando el programa de recompensas...',
+  'Program temporarily unavailable': 'Programa temporalmente no disponible',
+  'This rewards program has been suspended. Contact the program administrator for assistance.': 'Este programa de recompensas ha sido suspendido. Contacta al administrador del programa para obtener ayuda.',
+  'Domain connection pending': 'Conexión del dominio pendiente',
+  'This domain has not completed ownership verification yet.': 'Todavía no se ha completado la verificación de propiedad de este dominio.',
+  'Rewards program not found': 'No se encontró el programa de recompensas',
+  'This hostname is not connected to an active rewards program.': 'Este dominio no está conectado a un programa de recompensas activo.',
+  Notifications: 'Notificaciones',
+  '3 months of Gold, then up to 10% back forever — still eligible for the savings plan.': '3 meses de Gold; después, hasta un 10 % de vuelta para siempre, con acceso al plan de ahorro.',
+  '3 months of Gold, then 20–100% back, plus $10 in rewards for every member you refer.': '3 meses de Gold; después, entre un 20 % y un 100 % de vuelta, más $10 en recompensas por cada miembro que recomiendes.',
+  'Same great reward rate throughout, with the highest referral payouts on the platform.': 'El mismo excelente porcentaje de recompensa en todo momento, con los mayores bonos por referidos de la plataforma.',
+  'Request RewardMe program information': 'Solicita información sobre el programa RewardMe',
+  'Leave your details if you would like help choosing the current RewardMe membership or business path.': 'Deja tus datos si necesitas ayuda para elegir una membresía de RewardMe o una opción de participación para tu negocio.',
+  'No payment card is collected here': 'Aquí no se solicita ninguna tarjeta de pago',
+  'Terms and eligibility are confirmed before activation': 'Los términos y los requisitos se confirman antes de la activación',
+  'Your request is reviewed by the RewardMe team': 'El equipo de RewardMe revisará tu solicitud',
+  'Send information request': 'Enviar solicitud de información',
+  'Back to membership': 'Volver a la membresía',
+  'Demo support': 'Ayuda con la demostración',
+  'Ask the Wondertown demo team for help': 'Pide ayuda al equipo de demostración de Wondertown',
+  'Wondertown is a fictional test city. Use this form if you need help choosing a demo role or completing an end-to-end test.': 'Wondertown es una ciudad ficticia de prueba. Usa este formulario si necesitas ayuda para elegir un rol de demostración o completar una prueba de principio a fin.',
+  'No real payment or customer data': 'Sin pagos ni datos reales de clientes',
+  'Permanent fictional demo roles': 'Roles ficticios permanentes para demostraciones',
+  'Guided member and business workflows': 'Procesos guiados para miembros y negocios',
+  'Request demo help': 'Solicitar ayuda con la demostración',
+  'Create a demo member account': 'Crear una cuenta de miembro de demostración',
+  'Close notification': 'Cerrar notificación',
+  LANG: 'IDIOMA',
+  'Rewards program': 'Programa de recompensas',
+  '{program} invited you as {role}.': '{program} te ha invitado como {role}.',
+  'Program invitation accepted.': 'Invitación al programa aceptada.',
+  'Program invitation could not be accepted.': 'No se pudo aceptar la invitación al programa.',
+  'Accepting...': 'Aceptando...',
+  Accept: 'Aceptar',
+  'My vouchers': 'Mis cupones',
+  'Visit history': 'Historial de visitas',
+  ...spanishBusinessTranslations,
   ...({
     '$100/year': '$100/año',
     '$25/month': '$25/mes',
@@ -1123,7 +1161,7 @@ const spanishTranslations: Record<string, string> = {
   'For businesses · fictional test environment': 'Para negocios · entorno de prueba ficticio',
   'Business tools': 'Herramientas para negocios',
   'Business Login': 'Acceso para negocios',
-  'Start Onboarding': 'Iniciar onboarding',
+  'Start Onboarding': 'Iniciar incorporación',
   'Browse rewards': 'Ver recompensas',
   'Earn 20% to 100% back': 'Gana de 20% a 100% de vuelta',
   'Redeem through Medellin Rewards': 'Canjea con Medellin Rewards',
@@ -1305,7 +1343,7 @@ const spanishTranslations: Record<string, string> = {
     'Crea tu cuenta de miembro, activa tu suscripcion, explora recompensas disponibles y manten tu valor de recompensas conectado en toda la red.',
   'Start as a member, explore participating businesses, or book a demo to launch rewards for your own business.':
     'Empieza como miembro, explora negocios participantes o agenda una demo para lanzar recompensas en tu propio negocio.',
-  Terms: 'Terminos',
+  Terms: 'Términos',
   Privacy: 'Privacidad',
   'Reward Terms': 'Términos de recompensas',
   'Verification Policy': 'Política de verificación',
@@ -4084,6 +4122,8 @@ const spanishTranslations: Record<string, string> = {
 }
 
 const tagalogTranslations: Record<string, string> = {
+  'My vouchers': 'Mga kupon ko',
+  'Visit history': 'Kasaysayan ng mga pagbisita',
   '20% to 100% back': '20% hanggang 100% pabalik',
   'Access to participating offers without a paid membership.': 'Makagamit ng mga kalahok na alok nang walang bayad na membership.',
   'Available now': 'Magagamit ngayon',

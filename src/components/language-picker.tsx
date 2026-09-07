@@ -31,7 +31,7 @@ export function LanguagePicker({
         <Globe2 className="size-4 shrink-0 text-current" aria-hidden="true" data-language-picker-icon />
         {compact ? (
           <span className="grid min-w-0 flex-1 gap-0.5 leading-none" aria-hidden="true">
-            <span className="text-[0.48rem] font-extrabold uppercase tracking-[0.08em] opacity-65">LANG</span>
+            <span className="text-[0.48rem] font-extrabold uppercase tracking-[0.08em] opacity-65">{t('LANG')}</span>
             <strong className="text-[0.72rem] font-extrabold uppercase tracking-[0.1em]">{language.toUpperCase()}</strong>
           </span>
         ) : (

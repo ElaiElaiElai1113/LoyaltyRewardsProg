@@ -5,10 +5,15 @@ import { OfflineNotice } from '@/components/offline-notice'
 import { ThemeInitializer } from '@/components/theme-toggle'
 import { AuthProvider } from '@/features/auth/auth-provider'
 import { TenantProvider } from '@/features/tenant/tenant-provider'
-import { LanguageProvider } from '@/lib/language'
+import { LanguageProvider, useLanguage } from '@/lib/language'
 import { queryClient } from '@/lib/query-client'
 import { AppRouter } from '@/routes/router'
 import { Toaster } from 'sonner'
+
+function AppToaster() {
+  const { t } = useLanguage()
+  return <Toaster position="bottom-right" closeButton richColors containerAriaLabel={t('Notifications')} toastOptions={{ closeButtonAriaLabel: t('Close notification') }} />
+}
 
 function App() {
   return (
@@ -20,7 +25,7 @@ function App() {
             <AuthProvider>
               <OfflineNotice />
               <AppRouter />
-              <Toaster position="bottom-right" closeButton richColors />
+              <AppToaster />
             </AuthProvider>
           </QueryClientProvider>
         </ErrorBoundary>

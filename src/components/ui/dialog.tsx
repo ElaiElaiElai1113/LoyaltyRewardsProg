@@ -2,6 +2,7 @@ import * as DialogPrimitive from '@radix-ui/react-dialog'
 import { X } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
+import { useLanguage } from '@/lib/language'
 
 const Dialog = DialogPrimitive.Root
 const DialogTrigger = DialogPrimitive.Trigger
@@ -25,6 +26,7 @@ function DialogContent({
   children,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content>) {
+  const { t } = useLanguage()
   return (
     <DialogPortal>
       <DialogOverlay />
@@ -38,7 +40,7 @@ function DialogContent({
         {children}
         <DialogPrimitive.Close className="absolute right-6 top-6 rounded-full p-3 text-[var(--muted-foreground)] transition-colors hover:bg-[var(--muted)] hover:text-[var(--foreground)]">
           <X className="size-5" />
-          <span className="sr-only">Close</span>
+          <span className="sr-only">{t('Close')}</span>
         </DialogPrimitive.Close>
       </DialogPrimitive.Content>
     </DialogPortal>

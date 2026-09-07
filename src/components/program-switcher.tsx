@@ -2,9 +2,11 @@ import { Building2, ChevronDown } from 'lucide-react'
 
 import { useAccessiblePrograms } from '@/hooks/use-program-access'
 import { useTenant } from '@/hooks/use-tenant'
+import { useLanguage } from '@/lib/language'
 
 export function ProgramSwitcher({ className = '' }: { className?: string }) {
   const { program } = useTenant()
+  const { t } = useLanguage()
   const programs = useAccessiblePrograms()
   if (!programs.data || programs.data.length < 2) return null
   const prioritizedPrograms = [...programs.data].sort((left, right) =>
@@ -24,7 +26,7 @@ export function ProgramSwitcher({ className = '' }: { className?: string }) {
   return (
     <label className={`relative flex items-center gap-2 ${className}`}>
       <Building2 className="size-4 shrink-0 text-[var(--muted-foreground)]" />
-      <span className="sr-only">Rewards program</span>
+      <span className="sr-only">{t('Rewards program')}</span>
       <select
         value={program.slug}
         onChange={(event) => changeProgram(event.target.value)}

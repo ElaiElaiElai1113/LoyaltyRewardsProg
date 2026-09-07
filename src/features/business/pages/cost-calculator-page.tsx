@@ -4,9 +4,11 @@ import { CostCalculator } from '@/features/business/components/cost-calculator'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { useTenant } from '@/hooks/use-tenant'
+import { useLanguage } from '@/lib/language'
 
 export function CostCalculatorPage() {
   const { program } = useTenant()
+  const { t } = useLanguage()
   if (program.slug === 'wondertown' || program.slug === 'loyality') return <Navigate replace to="/business" />
 
   return (
@@ -14,21 +16,20 @@ export function CostCalculatorPage() {
       <div className="space-y-10">
         <section className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl space-y-4">
-            <Badge variant="accent" className="w-fit">Cost calculator</Badge>
-            <h1 className="font-serif text-[clamp(2.75rem,7vw,6rem)] font-semibold leading-[0.94] tracking-[0.01em] text-primary-container">
-              Show the real food cost behind reward-funded growth.
+            <Badge variant="accent" className="w-fit">{t('Cost calculator')}</Badge>
+            <h1 className="break-words font-serif text-[clamp(2rem,7vw,6rem)] font-semibold leading-[0.94] tracking-[0.01em] text-primary-container">
+              {t('Show the real food cost behind reward-funded growth.')}
             </h1>
             <p className="text-base leading-7 text-on-surface-variant/85">
-              Rewards are product and service value, not cash payouts. Use this live calculator to show
-              the actual food cost impact and keep cash-heavy channels like Food Panda or paid ads in context.
+              {t('Rewards are product and service value, not cash payouts. Use this live calculator to show the actual food cost impact and keep cash-heavy channels like Food Panda or paid ads in context.')}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="outline" size="lg" className="rounded-full">
-              <Link to="/business">Back to Business</Link>
+              <Link to="/business">{t('Back to Business')}</Link>
             </Button>
             <Button asChild size="lg" className="rounded-full">
-              <Link to="/business#book-demo">Start Onboarding</Link>
+              <Link to="/business#book-demo">{t('Start Onboarding')}</Link>
             </Button>
           </div>
         </section>

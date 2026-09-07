@@ -18,6 +18,7 @@ async function openTenantPage(page: Page, tenant: PublicTenant, path: string) {
   const separator = path.includes('?') ? '&' : '?'
   await page.goto(`${path}${separator}tenant=${tenant}`)
   await expect(page.locator('body')).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1 }).first()).toBeVisible()
 }
 
 async function userFacingCopy(page: Page) {
@@ -72,6 +73,24 @@ const englishFixtures = [
   'No cash payout promise',
   'Why verification is required',
   'Page not found',
+  'Request RewardMe program information',
+  'Leave your details if you would like help choosing',
+  'No payment card is collected here',
+  'Terms and eligibility are confirmed before activation',
+  'Your request is reviewed by the RewardMe team',
+  'Send information request',
+  'Back to membership',
+  'Demo support',
+  'Ask the Wondertown demo team for help',
+  'Wondertown is a fictional test city. Use this form',
+  'No real payment or customer data',
+  'Permanent fictional demo roles',
+  'Guided member and business workflows',
+  'Request demo help',
+  'Create a demo member account',
+  '$25/month',
+  '$100/year',
+  'Notifications alt+T',
 ] as const
 
 const spanishFixtures = [
