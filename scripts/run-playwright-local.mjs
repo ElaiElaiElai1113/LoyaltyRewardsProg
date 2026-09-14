@@ -8,8 +8,10 @@ const host = '127.0.0.1'
 const port = Number(process.env.E2E_PORT ?? 5177)
 const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 const lifecycleEvent = process.env.npm_lifecycle_event ?? ''
-const offlineRun = lifecycleEvent === 'test:e2e:ci'
+const offlineRun = ['test:e2e:ci', 'test:e2e:loyality-public', 'test:e2e:client-scope'].includes(lifecycleEvent)
 if (offlineRun) {
+  process.env.E2E_AUTH_ENABLED = 'false'
+  process.env.LOYALITY_E2E_AUTH_ENABLED = 'false'
   process.env.VITE_SUPABASE_URL = ''
   process.env.VITE_SUPABASE_ANON_KEY = ''
 }

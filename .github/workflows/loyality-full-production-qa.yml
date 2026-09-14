@@ -2,8 +2,32 @@ name: Loyality full production QA
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '41 6 * * *'
+    inputs:
+      base_url:
+        description: Approved isolated acceptance origin
+        required: true
+        type: string
+      app_revision:
+        description: Exact approved deployed 40-character commit
+        required: true
+        type: string
+      project_ref:
+        description: Approved Supabase project ref
+        required: true
+        type: string
+      test_accounts:
+        description: Dedicated approved test accounts
+        required: true
+        type: string
+      cleanup_plan:
+        description: Fixture cleanup and reconciliation plan
+        required: true
+        type: string
+      allow_mutations:
+        description: Approve the specified fixture mutations
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -17,7 +41,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
-      E2E_BASE_URL: https://loyality-rewards.vercel.app
+      E2E_BASE_URL: ${{ inputs.base_url }}
+      E2E_APPROVED_APP_REVISION: ${{ inputs.app_revision }}
+      E2E_APPROVED_PROJECT_REF: ${{ inputs.project_ref }}
+      E2E_APPROVED_TEST_ACCOUNTS: ${{ inputs.test_accounts }}
+      E2E_FIXTURE_CLEANUP_PLAN: ${{ inputs.cleanup_plan }}
+      E2E_ALLOW_HOSTED_MUTATIONS: ${{ inputs.allow_mutations }}
       E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
       LOYALITY_E2E_AUTH_ENABLED: 'true'
       LOYALITY_PRODUCTION_WORKFLOW_ENABLED: 'true'
@@ -29,7 +58,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
       - run: npm ci
       - name: Provision private Loyality QA accounts

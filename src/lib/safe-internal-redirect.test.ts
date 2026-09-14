@@ -14,6 +14,15 @@ describe('resolveSafeInternalRedirect', () => {
     '/\\example.com/steal-session',
     'javascript:alert(1)',
     'offer/welcome',
+    '/offer/%ZZ',
+    '/offer/%E0%A4%A',
+    '/offer/welcome\n?ref=member',
+    '/offer/\\welcome',
+    '/%2f%2fexample.com/outside',
+    '/%5cexample.com/outside',
+    '/offer/%00welcome',
+    '/safe/..//example.com/outside',
+    '/%2e%2e//example.com/outside',
   ])('rejects unsafe or non-root-relative destinations: %s', (candidate) => {
     expect(resolveSafeInternalRedirect(candidate, '/dashboard')).toBe('/dashboard')
   })

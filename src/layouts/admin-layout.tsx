@@ -37,6 +37,7 @@ import { useLanguage } from '@/lib/language'
 import { cn, getInitials } from '@/lib/utils'
 
 const navigation = [
+  { to: '/admin/applications', label: 'Business applications', icon: ClipboardList },
   { to: '/admin/programs', label: 'Programs', icon: Building2 },
   { to: '/admin/readiness', label: 'Launch Readiness', icon: ClipboardCheck },
   { to: '/admin/memberships', label: 'Memberships', icon: ClipboardList },

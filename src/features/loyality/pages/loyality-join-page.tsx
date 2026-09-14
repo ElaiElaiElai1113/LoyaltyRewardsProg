@@ -30,7 +30,7 @@ export function LoyalityJoinPage() {
   const redirect = resolveSafeInternalRedirect(searchParams.get('redirect'), '')
   const signInPath = redirect ? `/signin?redirect=${encodeURIComponent(redirect)}` : '/signin'
 
-  if (profile && !complete) return <Navigate replace to={getHomePathForRole(profile.role)} />
+  if (profile && !complete) return <Navigate replace to={redirect || getHomePathForRole(profile.role)} />
 
   return (
     <main className="ly-auth">

@@ -42,6 +42,11 @@ async function callMembershipRpc(name: 'mock_subscribe' | 'mock_renew' | 'mock_c
 }
 
 export const membershipService = {
+  async getRewardMeEntitlements(): Promise<{tier:'free';canEarn:boolean;canRedeem:boolean;paidActivationAvailable:boolean}> {
+    const {data,error}=await requireSupabase().rpc('get_rewardme_member_entitlements',{p_program_id:getActiveProgram().id})
+    if(error || !data) throw new Error(friendlySupabaseError(error,'Membership access could not be checked.'))
+    return data
+  },
   async getMyMembership(): Promise<Membership | null> {
     const sb = requireSupabase()
     const { data, error } = await sb

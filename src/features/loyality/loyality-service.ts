@@ -3,6 +3,16 @@ import { camelCaseRow, friendlySupabaseError, requireSupabase } from '@/integrat
 
 export type LoyalityRewardKind = 'item' | 'amount' | 'discount'
 
+/** The RPC reserves LY001 for a serialized new request that issued no voucher. */
+export class VoucherRequestRejectedError extends Error {
+  readonly code = 'LY001'
+
+  constructor(message: string) {
+    super(message)
+    this.name = 'VoucherRequestRejectedError'
+  }
+}
+
 export type LoyalityOffer = {
   id: string
   programId: string
@@ -195,8 +205,22 @@ export const loyalityService = {
       p_client_request_id: clientRequestId,
     })
     const row = (Array.isArray(data) ? data[0] : data) as Record<string, unknown> | null
+    if (error?.code === 'LY001') throw new VoucherRequestRejectedError(friendlySupabaseError(error, 'The voucher could not be created.'))
     if (error || !row) throw new Error(friendlySupabaseError(error, 'The voucher could not be created.'))
     return map<LoyalityVoucher>(row)
+  },
+
+  async findCatalogRedemption(catalogId: string, clientRequestId: string, customerId: string): Promise<LoyalityVoucher | null> {
+    const sb = requireSupabase()
+    const { data, error } = await sb.from('loyality_vouchers').select('*')
+      .eq('program_id', getActiveProgram().id)
+      .eq('customer_id', customerId)
+      .eq('source_kind', 'points_catalog')
+      .eq('source_id', catalogId)
+      .eq('source_event_id', clientRequestId)
+      .maybeSingle()
+    if (error) throw new Error(friendlySupabaseError(error, 'The voucher request could not be checked.'))
+    return data ? map<LoyalityVoucher>(data as Record<string, unknown>) : null
   },
 
   async redeemVoucher(publicToken: string) {

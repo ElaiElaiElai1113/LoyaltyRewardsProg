@@ -38,6 +38,8 @@ export default async function handler(request: VercelRequest, response: VercelRe
       database: 'reachable',
       latencyMs: Date.now() - startedAt,
       timestamp: new Date().toISOString(),
+      sourceRevision: process.env.REWARDS_SOURCE_COMMIT ?? process.env.VERCEL_GIT_COMMIT_SHA ?? null,
+      projectRef: new URL(url).hostname.split('.')[0],
       version: (process.env.REWARDS_SOURCE_COMMIT ?? process.env.VERCEL_GIT_COMMIT_SHA)?.slice(0, 12) ?? 'local',
       requestId,
     }

@@ -70,9 +70,9 @@
 :root[data-program="wondertown"] :is(h1, h2),
 :root[data-program="pinas"] .font-serif,
 :root[data-program="wondertown"] .font-serif {
-  font-family: Anton, Impact, sans-serif !important;
-  font-weight: 400 !important;
-  letter-spacing: 0.01em !important;
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
 }
 
@@ -582,8 +582,8 @@
 :root[data-program="pinas"] .product-auth-shell__card :is(h1, h2, .font-serif),
 :root[data-program="wondertown"] .product-auth-shell__card :is(h1, h2, .font-serif) {
   color: var(--rm-cream) !important;
-  font-family: Anton, Impact, sans-serif !important;
-  font-weight: 400 !important;
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
   letter-spacing: .02em !important;
   text-transform: uppercase;
 }
@@ -683,8 +683,8 @@
 :root[data-program="pinas"] .product-customer-shell__main :is(h1, h2),
 :root[data-program="wondertown"] .product-customer-shell__main :is(h1, h2) {
   color: var(--rm-cream) !important;
-  font-family: Anton, Impact, sans-serif !important;
-  font-weight: 400 !important;
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
   letter-spacing: .01em !important;
   line-height: 1.05;
   text-transform: uppercase;
@@ -748,8 +748,8 @@
 :root[data-program="pinas"] .product-workspace-shell__main :is(h1, h2),
 :root[data-program="wondertown"] .product-workspace-shell__main :is(h1, h2) {
   color: var(--rm-cream) !important;
-  font-family: Anton, Impact, sans-serif !important;
-  font-weight: 400 !important;
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
   letter-spacing: .01em !important;
   text-transform: uppercase;
 }
@@ -806,8 +806,8 @@
   color: var(--rm-cream) !important;
 }
 
-:root[data-program="pinas"] .product-public-shell > :is(header, footer),
-:root[data-program="wondertown"] .product-public-shell > :is(header, footer),
+:root[data-program="pinas"] .product-public-shell > :is(header, footer):not(.reference-rewardme__header),
+:root[data-program="wondertown"] .product-public-shell > :is(header, footer):not(.reference-rewardme__header),
 :root[data-program="pinas"] .product-program-shell > header,
 :root[data-program="wondertown"] .product-program-shell > header {
   border-color: #35332d !important;
@@ -823,8 +823,8 @@
 :root[data-program="pinas"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif),
 :root[data-program="wondertown"] :is(.product-legal-shell, .product-agreement-shell, .product-program-shell) :is(h1, h2, h3, .font-serif) {
   color: var(--rm-cream) !important;
-  font-family: Anton, Impact, sans-serif !important;
-  font-weight: 400 !important;
+  font-family: Anton, Impact, sans-serif;
+  font-weight: 400;
   letter-spacing: .01em !important;
   text-transform: uppercase;
 }
@@ -980,9 +980,9 @@
 
 :root[data-program="pinas"] :is(h1, h2, h3, .font-serif),
 :root[data-program="wondertown"] :is(h1, h2, h3, .font-serif) {
-  font-family: Fraunces, Georgia, serif !important;
-  font-weight: 600 !important;
-  letter-spacing: -.015em !important;
+  font-family: Fraunces, Georgia, serif;
+  font-weight: 600;
+  letter-spacing: -.015em;
   text-transform: none;
 }
 
@@ -1947,3 +1947,6 @@
 :root[data-program="loyality"] .membership-status-card__meta {
   color: #5b5546 !important;
 }
+/* Preserve readable public footer colors under the tenant's dark footer surface. */
+:root[data-program="pinas"] .product-public-shell > footer,
+:root[data-program="wondertown"] .product-public-shell > footer { --foreground:#f6f1e4; --muted-foreground:#d8d0bd; color:#f6f1e4; }

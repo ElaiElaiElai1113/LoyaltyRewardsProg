@@ -1,38 +1,18 @@
 # Supabase Setup Guide
 
-## Quick Start
+## Current rewards project (verified 2026-09-14)
 
-### 1. Create a Supabase Project
+Loyalty Rewards Platforms: bftuvmywtmpflizsomim. RewardMe slug: pinas; Loyality slug: loyality. The retired retfuxpfstatpdsunkgj project is not a deployment target.
 
-Create a new Supabase project in the dashboard and keep the project ref handy for CLI linking.
+Run `node scripts/verify-rewards-supabase-target.mjs` before any database operation. It compares client/server configuration, CLI link and release target without printing keys. Run CLI commands sequentially on Windows.
 
-### 2. Link and Push Migrations
+The 20260908121931 integrity/retry migration is already deployed and recorded. Do not replay or repair it again. Use read-only history/schema checks and the integrity preflight before proposing any additive migration. Test new SQL only in an explicitly identified disposable local/test database, then obtain approval naming the exact production files and project. Do not blanket-push or reset the linked database.
 
-Use the Supabase CLI so the remote schema and migration history stay in sync:
+Earlier setup instructions recommended broad push/reset and automatic history repair. Those instructions are superseded: history must be reconciled against actual schema evidence, one verified version at a time.
 
-```bash
-# Link this repo to your Supabase project
-supabase link --project-ref your-project-ref
+## Isolated local verification
 
-# Push all repo migrations to the linked remote database
-supabase db push
-```
-
-If the remote database already contains schema changes that were applied manually, repair the migration history before pushing again:
-
-```bash
-supabase migration list --linked
-supabase migration repair <version> --status applied
-supabase db push
-```
-
-### 3. Seed Local Data
-
-Use a reset when you want the full local schema plus seed data:
-
-```bash
-supabase db reset
-```
+The focused database runners accept only loopback and create/drop their own disposable database. Set LOYALITY_TEST_PSQL, LOYALITY_TEST_PGPORT and LOYALITY_TEST_PGUSER for your chosen local runtime. They never accept DATABASE_URL. Never use hosted customer data as test fixtures.
 
 ### 4. Create Demo Users
 
@@ -113,23 +93,7 @@ If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set, the app uses Supaba
 
 ## Using Supabase CLI
 
-```bash
-# Link to your project
-supabase link --project-ref your-project-ref
-
-# See local vs remote migration history
-supabase migration list --linked
-
-# Push new migrations
-supabase db push
-
-# Reset and re-seed locally
-supabase db reset
-```
-
-Avoid mixing manual SQL execution in the dashboard with CLI-managed migrations unless you also repair the remote migration history afterward.
-
----
+Inspect `supabase --help` and command-specific help for the installed version. Use `supabase migration new <name>` to generate additive filenames. Read-only linked queries and migration listings do not authorize new remote changes. See the local candidate release guide for the exact ordered migration set.
 
 ## Migration Path from Mock Store
 

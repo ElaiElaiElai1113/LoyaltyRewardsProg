@@ -3,6 +3,7 @@ import { defineConfig, devices } from '@playwright/test'
 import { e2eBaseUrl } from './tests/e2e/helpers/env.js'
 
 export default defineConfig({
+  globalSetup: './scripts/verify-hosted-acceptance.mjs',
   testDir: './tests/e2e',
   timeout: 30_000,
   expect: {
@@ -10,7 +11,7 @@ export default defineConfig({
   },
   fullyParallel: false,
   retries: process.env.CI ? 1 : 0,
-  reporter: [['list']],
+  reporter: [['list'], ['./scripts/required-acceptance-reporter.mjs']],
   use: {
     baseURL: e2eBaseUrl,
     trace: 'retain-on-failure',

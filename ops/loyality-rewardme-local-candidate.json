@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "status": "local-partial-candidate-not-release-approved",
+  "createdAt": "2026-09-14T14:03:18.050Z",
+  "branch": "main",
+  "baseRevision": "80dfca28b11b7218a73fed06b6e28da45169b742",
+  "appRevision": "uncommitted; defined by file hashes below",
+  "projectRef": "bftuvmywtmpflizsomim",
+  "programs": [
+    "loyality",
+    "pinas"
+  ],
+  "preservedStash": "6f13e6303ae24e91bcbf1c6556f2a3f896884740",
+  "trackedDiffSha256": "45f8be421894a64a96a1392d0dc12bf5b3018b1d0d4e085b97b18588fe8feef3",
+  "alreadyDeployedMigration": "20260908121931_loyality_review_integrity_and_retry.sql",
+  "newLocalMigrations": [
+    {
+      "path": "supabase/migrations/20260914132132_business_application_intake_integrity.sql",
+      "sha256": "6121d2c398688e954adce5b8ebe1e8d90bcc3d3aa3802667437c3df36219abd7"
+    },
+    {
+      "path": "supabase/migrations/20260914132714_rewardme_free_first_entitlements.sql",
+      "sha256": "e4a5876ad52a0307586814d39ae16fb8e137a717b9a5bf6bfc2b7b8c5cfed6cd"
+    },
+    {
+      "path": "supabase/migrations/20260914133201_business_application_review.sql",
+      "sha256": "309e1626b1b31758c4ff0b63fe1be6e6d6ee983c7e90fe1b84d7263dd4466c8b"
+    },
+    {
+      "path": "supabase/migrations/20260914133559_business_application_notification_outbox.sql",
+      "sha256": "b82423a804fa8c0ccf178a4b1e22a10e790e9e51e8126a7c8468c3556e717132"
+    }
+  ],
+  "files": [
+    {
+      "path": ".env.example",
+      "sha256": "d3145b7a21327e14d1f41f66524885e989d9d74bd0dc81595eac998ad67c1af7"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "eadae922f52e681731f03efe52aba8733aba7e32de9ef49d2f87e5dbacd1268e"
+    },
+    {
+      "path": ".github/workflows/loyality-full-production-qa.yml",
+      "sha256": "f0dc92fa8fe4525ffcf584c798d4e997274e87349db33f358310499c1d39070d"
+    },
+    {
+      "path": "api/business-applications.test.ts",
+      "sha256": "5d458c240a2d5c704b3650a8982d36388c1572569b895667d1ec9e0aa9244fd6"
+    },
+    {
+      "path": "api/business-applications.ts",
+      "sha256": "7a3da8a933ed4f27bebdeeec90176dd593c2b5ee1114b7e3a152519ddc575101"
+    },
+    {
+      "path": "api/health.ts",
+      "sha256": "d0c75b2192d10da0fbb176de705b87d11ed310d3bb88808dce313e1b140db208"
+    },
+    {
+      "path": "docs/client-product-decisions.md",
+      "sha256": "5932ccf34bbfb2e01fbc6565651b884e3a247f1d9ea62f9c1b7b24ecb55ee40e"
+    },
+    {
+      "path": "docs/loyality-rewardme-acceptance-evidence.md",
+      "sha256": "2a5bc96656357830546f44bc72be54c05a64d79baad5074fab68ba9e97cd3316"
+    },
+    {
+      "path": "docs/loyality-rewardme-local-release.md",
+      "sha256": "c9da097e898d73f2eb72a310b352908f7f6ddb58a546fea576863ef713cd411c"
+    },
+    {
+      "path": "docs/platform-administrator-guide.md",
+      "sha256": "b7ffaddc41b942394994113d8377704404eaad4ae84949b8626c0c2a6fded5ae"
+    },
+    {
+      "path": "docs/supabase-setup.md",
+      "sha256": "b5c5803aa9bcd39eb41d6d7552ee199bb6654c458efa6fd63c3103bbf5fdaa06"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-14-loyality-rewardme-execution-prompt.md",
+      "sha256": "ddc783f0f3102424cdfb9ce2d8100cd651b3b2c259a388257c6b64c62c9d5618"
+    },
+    {
+      "path": "docs/superpowers/plans/2026-09-14-loyality-rewardme-remaining-work.md",
+      "sha256": "62dce8f3fbab1d32f93b1ef3f95eb8e3bed394339aa82b3a9702f8440e5e259d"
+    },
+    {
+      "path": "package.json",
+      "sha256": "a793ffd0f78f3ebc8772f91dad3c384ff3b28b9442f1cd7e61625b6925404173"
+    },
+    {
+      "path": "playwright.remote.config.ts",
+      "sha256": "696eb88dac8f858808e7eaa34496a16f7eedf010d189ff9abbab765d99699234"
+    },
+    {
+      "path": "scripts/provision-loyality-qa.mjs",
+      "sha256": "d0b1539cd0f298aca3ff1b4c69e22e81614590ec1aca04872e82594bb1cbaf64"
+    },
+    {
+      "path": "scripts/required-acceptance-reporter.mjs",
+      "sha256": "06da24d740ac11bd0919430df2b69b0f0abad5f7e7b20bc98e6a7a31e6c93181"
+    },
+    {
+      "path": "scripts/run-playwright-local.mjs",
+      "sha256": "bd840ffdec3a348284899367a7e780da54d4143a5b7dd19b3fd558509a48c153"
+    },
+    {
+      "path": "scripts/run-rewardme-live-membership.mjs",
+      "sha256": "27da3e58f49bcf4248477954e96bac78600e85d66392db74ccf3c36231e772e5"
+    },
+    {
+      "path": "scripts/verify-hosted-acceptance.mjs",
+      "sha256": "ee33f60510967783c45727772ec72758f3887868e3c54e570bf38ffc036d75e9"
+    },
+    {
+      "path": "scripts/verify-hosted-acceptance.test.mjs",
+      "sha256": "7696ac5c40a3bbf6d97448514cac91e5c5be0afee0dff1b7c22bd2538ebc4e2f"
+    },
+    {
+      "path": "scripts/verify-rewards-supabase-target.mjs",
+      "sha256": "9950773222063de659ef14dc5814893abbf786175c73a52b51aef91c9c27c4b9"
+    },
+    {
+      "path": "scripts/verify-rewards-supabase-target.test.mjs",
+      "sha256": "1693c4c20a236b0bb82cc1d75805e6e607944096db95544c06d0a99c3dd6aa34"
+    },
+    {
+      "path": "src/features/business/business-application-request.test.ts",
+      "sha256": "5799e6031f64f0720b339c1c1af029994fdebebeb7b04f4f39c96d6593abb431"
+    },
+    {
+      "path": "src/features/business/business-application-request.ts",
+      "sha256": "d23c47aa791a0ad86933f06b18a06c3a73f179271c60d7e2cdc45807c3273e1a"
+    },
+    {
+      "path": "src/features/business/pages/business-application-page.css",
+      "sha256": "af6197210d5eaf7d638086817719844865129af5bf2df4bfeb0364e3addb9f74"
+    },
+    {
+      "path": "src/features/business/pages/business-application-page.tsx",
+      "sha256": "5faedeb307dac576e810d91a1295ce51d08ceddc3042f3dd6ab8e4ba1a9f1574"
+    },
+    {
+      "path": "src/features/home/components/rewardme-public-header.tsx",
+      "sha256": "9d5827399cbf9b515b16e46798d1c3cf8fd3c36ad84af424cdf355d78e9ae06e"
+    },
+    {
+      "path": "src/features/home/pages/rewardme-home.tsx",
+      "sha256": "756e3c428579a387df8b872e79a8a67ed1e27839d567e255260369638c56f37f"
+    },
+    {
+      "path": "src/features/join/pages/join-rewards-page.tsx",
+      "sha256": "c047de7a38e8ed2b80a6dee502d2c9b0f44fcc1c8281daa7d901ae7986fa0520"
+    },
+    {
+      "path": "src/features/loyality/components/loyality-app-shell.tsx",
+      "sha256": "99da4edec90c38a6fd28bf6c07ecfe2119a1d668e4c71802334f67305e533e5e"
+    },
+    {
+      "path": "src/features/loyality/loyality-app.css",
+      "sha256": "de526a3a8a80881deaf30b2ccfab093c5f1bd7941ce4571d4beceda328cd6a2a"
+    },
+    {
+      "path": "src/features/loyality/loyality-service.test.ts",
+      "sha256": "a1caaed27a0366b0ee0703fecd8effe69081a4d39813d541d0551a0cbf0d0ecf"
+    },
+    {
+      "path": "src/features/loyality/loyality-service.ts",
+      "sha256": "73e602581ace80099c4d36a04fe453c6d8ac47a61e9d1c8d8d081c80a80cb4fa"
+    },
+    {
+      "path": "src/features/loyality/pages/loyality-auth-page.tsx",
+      "sha256": "917f1688e8dd4debe92559fa2304f342410b684daf1409ac4e2367716ae56502"
+    },
+    {
+      "path": "src/features/loyality/pages/loyality-business-growth-page.tsx",
+      "sha256": "afa11cbac8b76f502dab4c8400a61c3439998d6841d636f3eddf766987495709"
+    },
+    {
+      "path": "src/features/loyality/pages/loyality-customer-dashboard.tsx",
+      "sha256": "da89d81b12d7b34a4b1495ac7900b151b7c1bd630c9a01869b48d15db05412df"
+    },
+    {
+      "path": "src/features/loyality/pages/loyality-home-page.tsx",
+      "sha256": "b34aab6951654600d5345b33dede41d8f19cda87d49396781fb0ff5da81cb8ff"
+    },
+    {
+      "path": "src/features/loyality/pages/loyality-join-page.tsx",
+      "sha256": "d2c1fea56b739fca8bd5e0c2d44604ea66e6815f106f07843b44066b8a3dd4e5"
+    },
+    {
+      "path": "src/features/loyality/pages/loyality-offer-page.tsx",
+      "sha256": "4e46d4caa5607d5e36e3ca201a5e3bba01f8b2bfc5b2b22b8112678ed20918e3"
+    },
+    {
+      "path": "src/features/membership/components/earn-redeem-gate.tsx",
+      "sha256": "bf5cee42abe6ad123b0d09e280ccc222a4633416adb483eb3675bcfcf9f30a1c"
+    },
+    {
+      "path": "src/features/membership/pages/rewardme-membership-page.tsx",
+      "sha256": "b9cda67a7a45755a560ea90f33c1b4866be35d2e65eca5a87ffb5f504cf34b57"
+    },
+    {
+      "path": "src/features/platform/pages/business-applications-page.tsx",
+      "sha256": "565912a6b3c8f9494885fb10f0a06cc90da07fbbd043ae3d297c47bba6391561"
+    },
+    {
+      "path": "src/features/platform/pages/membership-operations-page.tsx",
+      "sha256": "6d8bf2e52b505d00a5f150242ac5dca9f75853862d7ec8f4315f5770d630aea8"
+    },
+    {
+      "path": "src/hooks/use-membership.ts",
+      "sha256": "66ea1c2c760a63e906826fd85f0fb07c3cfd7a233c4c8d5b1c889ca620ea1ce9"
+    },
+    {
+      "path": "src/integrations/supabase/services/business-applications-service.ts",
+      "sha256": "0fc263a13a0665721cbdd4ac010576e15bf644b63c3d209ad76f622a4d6f247d"
+    },
+    {
+      "path": "src/integrations/supabase/services/membership-service.ts",
+      "sha256": "ab16377126699f70b7fa28e40b40311e33afe7c20179c744a4d3c9797fafd4ca"
+    },
+    {
+      "path": "src/layouts/admin-layout.tsx",
+      "sha256": "fc362fa4f5f13fdc3e66ee2ee0dbffacae8abea4d99c26a9d8b03aaf10773d20"
+    },
+    {
+      "path": "src/lib/client-scope-translations.ts",
+      "sha256": "db6d57f4c7dc8a3ca8c5c403d4a3509af0b68993618a1479cc581883a8ccfff8"
+    },
+    {
+      "path": "src/lib/language.tsx",
+      "sha256": "c46e78e797002f0821050a750de7dbd2f43b9542ccbd1f5dac9b348abf19fd8c"
+    },
+    {
+      "path": "src/lib/loyality-product.test.ts",
+      "sha256": "d94c7c2492780c22ae0274f890af27c783bfea03d3f58ae3cdae1b993d568cba"
+    },
+    {
+      "path": "src/lib/loyality-voucher-request.test.ts",
+      "sha256": "bb6c49cf8927808dcf7fa0ee85c39efbb7a314a74b65b038c79ae6e0b11c47f2"
+    },
+    {
+      "path": "src/lib/loyality-voucher-request.ts",
+      "sha256": "1fbbd7bbcfe37f97cd067bbab082a0d1050be301a34d83d44914af9a70bb8c2f"
+    },
+    {
+      "path": "src/lib/rewardme-launch-foundations.test.ts",
+      "sha256": "6a79508c0466f3f35a3e128c2b2910964bb48b5b46ee8db3fa6cd9465ba245b0"
+    },
+    {
+      "path": "src/lib/rewardme-pitch-alignment.test.ts",
+      "sha256": "430454b0250efded8768229be306b2111ae4c3e582a44d6e753ce61254f97c74"
+    },
+    {
+      "path": "src/lib/rewardme-wondertown-design-sync.test.ts",
+      "sha256": "4ca1610091a2222c7139560b94f70ddcdef4226f6afd62bebee322e54508dbcf"
+    },
+    {
+      "path": "src/lib/safe-internal-redirect.test.ts",
+      "sha256": "43bd3896725846659ecc2f8ad03ba3cfd1c759d9336df52ea5fabdf7b055039c"
+    },
+    {
+      "path": "src/lib/safe-internal-redirect.ts",
+      "sha256": "517dd0959bbd6e8152afc991a34f99eb2acdb2a5a6c80478333cb27cb23e5113"
+    },
+    {
+      "path": "src/reference-design-systems.css",
+      "sha256": "d575e213e12f42f11d72914bc7b74a62cbf9dfc5332b262af9eb5c87ec8a21c7"
+    },
+    {
+      "path": "src/routes/router.tsx",
+      "sha256": "f9e07979de449686e48fa490b7ca730efeff5362a155d94701ebe71d3bd565cc"
+    },
+    {
+      "path": "supabase/diagnostics/loyality-integrity-preflight.sql",
+      "sha256": "838cd52440d3334724601caa66e6f7fe3878036b0f955449f14fb4470deb566d"
+    },
+    {
+      "path": "supabase/migrations/20260908121931_loyality_review_integrity_and_retry.sql",
+      "sha256": "5b135c816564b821506ab8784ef09f5d87610249fba55253a2fa312773e7517f"
+    },
+    {
+      "path": "supabase/migrations/20260914132132_business_application_intake_integrity.sql",
+      "sha256": "6121d2c398688e954adce5b8ebe1e8d90bcc3d3aa3802667437c3df36219abd7"
+    },
+    {
+      "path": "supabase/migrations/20260914132714_rewardme_free_first_entitlements.sql",
+      "sha256": "e4a5876ad52a0307586814d39ae16fb8e137a717b9a5bf6bfc2b7b8c5cfed6cd"
+    },
+    {
+      "path": "supabase/migrations/20260914133201_business_application_review.sql",
+      "sha256": "309e1626b1b31758c4ff0b63fe1be6e6d6ee983c7e90fe1b84d7263dd4466c8b"
+    },
+    {
+      "path": "supabase/migrations/20260914133559_business_application_notification_outbox.sql",
+      "sha256": "b82423a804fa8c0ccf178a4b1e22a10e790e9e51e8126a7c8468c3556e717132"
+    },
+    {
+      "path": "tests/database/business-applications.test.mjs",
+      "sha256": "c2278ba11b3c49f164f0b29d81f39502be69381b303fdbb86413e6c6eda8d3b6"
+    },
+    {
+      "path": "tests/database/local-postgres.mjs",
+      "sha256": "d67b22ddbe9c67f2149e43b6a54aca9cb886084d560b0b1142edf7ca27742740"
+    },
+    {
+      "path": "tests/database/loyality-fixture.mjs",
+      "sha256": "9adccf57c93ea27b011994e6ae9ff47c6c67e63bbcfeeeba42c29611bc7e9f7f"
+    },
+    {
+      "path": "tests/database/loyality-review.test.mjs",
+      "sha256": "4c03559bab67644e49bf489636bc6f69070fb075b96cf08b5fc32e07d94d8cd3"
+    },
+    {
+      "path": "tests/database/rewardme-entitlements.test.mjs",
+      "sha256": "a06b622afa179b0b66d1a873142a5a1d4e01c95cfe92e340699cb031edfdf90c"
+    },
+    {
+      "path": "tests/e2e/business-applications-review.spec.ts",
+      "sha256": "0cf28ea5c8a0b83dc560cdc13cb8c4254cd5b216ad2bee16cf94bbaa519f9d36"
+    },
+    {
+      "path": "tests/e2e/client-reference-visual.spec.ts",
+      "sha256": "547e3a0e8b57ef5cfa5ac6f66d235c8ff8dc1a1fb037e1af36c8966cc20cb742"
+    },
+    {
+      "path": "tests/e2e/fixtures/loyality-review-harness.tsx",
+      "sha256": "768d3e5c33ee6b749bcfbf7a624b3b821ca7173fb7b44f0a416b6faa32fca520"
+    },
+    {
+      "path": "tests/e2e/loyality-public.spec.ts",
+      "sha256": "256a9601373f2a6ac57b48ed747cc14821181d2a528eec3bcfc235f7ddef2f43"
+    },
+    {
+      "path": "tests/e2e/loyality-review-local.spec.ts",
+      "sha256": "b8c7d0ed2650b0a8f2a17e264d0705c8b1a82c485e6546f827670ff3fb0e838b"
+    },
+    {
+      "path": "tests/run-tests.ts",
+      "sha256": "3ff535ad73d16bddbd7f15fb4548637f3d12d29d8e0a54ada24f263a0d31b763"
+    }
+  ],
+  "localLogs": [
+    {
+      "path": ".tools/loyality-pg/baseline.log",
+      "sha256": "39948276e09e2f536b0068a1e2cc110f80cbe787240e36b3ef6fabf0960b4103"
+    },
+    {
+      "path": ".tools/loyality-pg/client-browser.log",
+      "sha256": "ec527ce367b33afe40bd1ed75d4981c7f87b69d2074e783ae5bafccffe07c43a"
+    },
+    {
+      "path": ".tools/loyality-pg/final-budget.log",
+      "sha256": "454f48b59127c755d4590a64d26953b5a59f76f7dbbe9d642f1b7bfdf7f555f1"
+    },
+    {
+      "path": ".tools/loyality-pg/final-build.log",
+      "sha256": "dea5370872d3d42c3efcade2d9e89bb0bdfbb9ebd478a55f077e915e6e6c1171"
+    },
+    {
+      "path": ".tools/loyality-pg/final-contracts.log",
+      "sha256": "e3898869e76f8b55a778f4c0eb4584e7b23a6205ddcdb4992460fc1293d0bc18"
+    },
+    {
+      "path": ".tools/loyality-pg/final-db-client.log",
+      "sha256": "bc95c17bd072887ce85045069a0b17f5372e9d14e370c96660e3a3dd5596d616"
+    },
+    {
+      "path": ".tools/loyality-pg/final-db-loyality.log",
+      "sha256": "099f33353eb87e922db5831eab8a9467c40ac48c6be188b319de272286cad0f9"
+    },
+    {
+      "path": ".tools/loyality-pg/final-guards.log",
+      "sha256": "cc7a24fec7ccae14717e916cf4350c09729e9352806760ac94972d163ccd78ec"
+    },
+    {
+      "path": ".tools/loyality-pg/final-legacy.log",
+      "sha256": "e0df10ea6c9493bfd0ad0c93fea229e44fdc107cbe58f7d7dbc62373885f5421"
+    },
+    {
+      "path": ".tools/loyality-pg/final-lint.log",
+      "sha256": "1fd4a12a03217c6c86ab8bdd5aaf6868384042f76f08d2b01c6e04f3f7e4e360"
+    },
+    {
+      "path": ".tools/loyality-pg/final-unit.log",
+      "sha256": "084211dbad20c7f3c8bd29d87187caa8238c0af4e7f3a1701062ab3751dab82a"
+    },
+    {
+      "path": ".tools/loyality-pg/loyality-browser.log",
+      "sha256": "f2c1493ce069c4f326a0fe5ac19b6553bab7e9a46b07d071fd65f0f67372ee85"
+    }
+  ],
+  "databaseRuntime": {
+    "host": "127.0.0.1",
+    "port": 55439,
+    "version": "PostgreSQL 17.11",
+    "stopped": true,
+    "disposableDatabasesRemaining": 0
+  },
+  "limitations": [
+    "No new deployment, remote mutation, financial activation or mail sent",
+    "Full client scope incomplete; see evidence task matrix",
+    "Unit/DB/browser fixtures do not establish authenticated hosted acceptance"
+  ]
+}

@@ -33,7 +33,7 @@
     "test:e2e:rewardme-gift-cards-live": "node scripts/run-live-gift-card-workflow.mjs rewardme",
     "test:e2e:wondertown-gift-cards-live": "node scripts/run-live-gift-card-workflow.mjs wondertown",
     "test:e2e:tenant-authenticated": "node scripts/run-tenant-authenticated-smoke.mjs",
-    "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts tests/e2e/accessibility.spec.ts tests/e2e/cross-tenant-responsive.spec.ts tests/e2e/mobile-tablet-integrity.spec.ts tests/e2e/pagination.spec.ts tests/e2e/qr-full-screenshot.spec.ts tests/e2e/wondertown-public.spec.ts tests/e2e/home-language-isolation.spec.ts tests/e2e/four-tenant-language.spec.ts tests/e2e/business-language.spec.ts tests/e2e/public-language-isolation.spec.ts --workers=2",
+    "test:e2e:ci": "node scripts/run-playwright-local.mjs tests/e2e/public.spec.ts tests/e2e/loyality-public.spec.ts tests/e2e/loyality-review-local.spec.ts tests/e2e/platform-guide.spec.ts tests/e2e/tenants.spec.ts tests/e2e/accessibility.spec.ts tests/e2e/cross-tenant-responsive.spec.ts tests/e2e/mobile-tablet-integrity.spec.ts tests/e2e/pagination.spec.ts tests/e2e/qr-full-screenshot.spec.ts tests/e2e/wondertown-public.spec.ts tests/e2e/home-language-isolation.spec.ts tests/e2e/four-tenant-language.spec.ts tests/e2e/business-language.spec.ts tests/e2e/public-language-isolation.spec.ts --workers=2",
     "test:e2e:quality": "node scripts/run-playwright-local.mjs tests/e2e/performance-accessibility.spec.ts --workers=1",
     "test:playwright": "node scripts/run-playwright-local.mjs",
     "test:e2e:workflows": "node scripts/run-playwright-local.mjs --workers=1",
@@ -99,7 +99,11 @@
     "ops:health": "node scripts/check-health.mjs",
     "ops:smoke": "node scripts/deployment-smoke.mjs",
     "test:launch": "node scripts/run-playwright-local.mjs tests/e2e/launch-checklist.spec.ts",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "test:db:loyality": "node --test tests/database/loyality-review.test.mjs",
+    "test:e2e:loyality-public": "node scripts/run-playwright-local.mjs tests/e2e/loyality-public.spec.ts tests/e2e/loyality-review-local.spec.ts --workers=1",
+    "test:e2e:client-scope": "node scripts/run-playwright-local.mjs tests/e2e/client-reference-visual.spec.ts tests/e2e/business-applications-review.spec.ts --workers=1",
+    "test:db:client-scope": "node --test --test-concurrency=1 tests/database/business-applications.test.mjs tests/database/rewardme-entitlements.test.mjs"
   },
   "dependencies": {
     "@fontsource/anton": "^5.3.0",

@@ -1,8 +1,12 @@
+import { verifyHostedAcceptance, assertApprovedTestAccounts } from './verify-hosted-acceptance.mjs'
 import { spawn } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 
 const repoRoot = fileURLToPath(new URL('..', import.meta.url))
 const playwrightCli = fileURLToPath(new URL('../node_modules/@playwright/test/cli.js', import.meta.url))
+
+assertApprovedTestAccounts([process.env.E2E_REWARDME_MEMBER_EMAIL ?? 'member@rewardme.test',process.env.E2E_REWARDME_ADMIN_EMAIL ?? 'admin@rewardsplatform.test'])
+await verifyHostedAcceptance()
 
 const child = spawn(process.execPath, [
   playwrightCli,
@@ -14,7 +18,7 @@ const child = spawn(process.execPath, [
   cwd: repoRoot,
   env: {
     ...process.env,
-    E2E_BASE_URL: process.env.E2E_BASE_URL ?? 'https://rewardme-prod.vercel.app',
+    E2E_BASE_URL: process.env.E2E_BASE_URL,
     E2E_AUTH_ENABLED: 'true',
     E2E_REWARDME_MEMBERSHIP_OPERATIONS_CHECK: 'true',
   },

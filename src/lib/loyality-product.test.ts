@@ -20,6 +20,12 @@ const language = readFileSync(resolve(root, 'src/lib/language.tsx'), 'utf8')
 const publicLayout = readFileSync(resolve(root, 'src/layouts/public-browse-layout.tsx'), 'utf8')
 
 describe('Loyality product contract', () => {
+  it('describes browser signup honestly in English and Spanish', () => {
+    const copy = 'Scan to join in your browser; no app download required. Create your account with your name, email, phone, and password.'
+    expect(home).toContain(copy)
+    expect(home).not.toMatch(/entire sign-up|no account setup|join as members with one scan/i)
+    expect(translateForLanguage('es', copy)).toBe('Escanea para registrarte en tu navegador; no necesitas descargar una aplicación. Crea tu cuenta con tu nombre, correo electrónico, teléfono y contraseña.')
+  })
   it('is a separate, single-business tenant on Loyalty Platforms', () => {
     expect(migration).toContain('"loyalitySingleBusiness":true')
     expect(migration).toContain("'10000000-0000-4000-8000-000000000007'")
@@ -41,7 +47,7 @@ describe('Loyality product contract', () => {
     expect(migration).toContain('referral_reward_issued_at')
   })
 
-  it('publishes the approved Option B promise without marketplace leakage or dead ends', () => {
+  it('preserves the selected layout with capability-accurate copy without marketplace leakage or dead ends', () => {
     for (const copy of [
       'Turn your customers into members.',
       'Hardware or apps required',
@@ -49,7 +55,7 @@ describe('Loyality product contract', () => {
       'A membership does three jobs at once.',
       'Four steps, fully automated after launch.',
       "Everything a loyalty app does. Plus what most of them don't.",
-      "We're confident enough to put it in writing.",
+      "Guarantee terms are under review.",
       'Onboarding, made simple.',
     ]) expect(home).toContain(copy)
     expect(home).not.toContain('partner businesses')

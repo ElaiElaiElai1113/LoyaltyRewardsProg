@@ -39,3 +39,7 @@
 .rewardme-application__confirmation > span { display:block; max-width:650px; margin:15px 0; color:var(--muted); line-height:1.7; }
 .rewardme-application__confirmation strong { display:block; margin-bottom:25px; font-family:"JetBrains Mono",monospace; }
 @media(max-width:620px){.rewardme-application__header{padding-inline:16px}.rewardme-application__header>a:last-child{display:none}.rewardme-application__hero,.rewardme-application__form,.rewardme-application__confirmation{width:min(100% - 32px,900px)}.rewardme-application__hero{padding-top:52px}.rewardme-application__grid{grid-template-columns:1fr}.rewardme-application label.is-full{grid-column:auto}.rewardme-application__confirmation{padding:28px 22px}.rewardme-application__submit button{width:100%}}
+/* Application typography belongs to this surface, independent of tenant display headings. */
+:root[data-program] .rewardme-application :is(h1,h2) { font-family:"Space Grotesk",Inter,"Segoe UI",sans-serif; font-weight:700; letter-spacing:-.025em; text-transform:none; }
+.rewardme-application__hero > span { border:0; padding:0; color:var(--muted); font-family:inherit; font-size:1rem; line-height:1.65; text-transform:none; }
+.rewardme-application label > span { display:block; }

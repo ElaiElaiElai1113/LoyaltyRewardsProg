@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react'
+import { clientScopeSpanish, clientScopeTagalog } from './client-scope-translations'
 import { getActiveProgram } from '@/features/tenant/tenant-service'
 import { tenantStorageKey } from '@/lib/tenant-storage'
 
@@ -38,6 +39,18 @@ const languageDisplayNames: Record<Language, Record<Language, string>> = {
 }
 
 const spanishTranslations: Record<string, string> = {
+  ...clientScopeSpanish,
+  'This voucher request is being checked in another tab.': 'Esta solicitud de vale se está comprobando en otra pestaña.',
+  'This browser cannot safely coordinate voucher requests. Please use a supported browser.': 'Este navegador no puede coordinar las solicitudes de vales de forma segura. Utiliza un navegador compatible.',
+  'Scan to join in your browser; no app download required. Create your account with your name, email, phone, and password.': 'Escanea para registrarte en tu navegador; no necesitas descargar una aplicación. Crea tu cuenta con tu nombre, correo electrónico, teléfono y contraseña.',
+  'Customers scan to open browser signup': 'Los clientes escanean para abrir el registro en el navegador',
+  'A QR code on the counter, receipt, or menu opens the signup form. Create an account in your browser, with no app to install or card to carry.': 'Un código QR en el mostrador, recibo o menú abre el formulario de registro. Crea una cuenta en tu navegador, sin instalar una aplicación ni llevar una tarjeta.',
+  'Voucher request pending': 'Solicitud de cupón pendiente',
+  'We could not confirm your voucher yet. Retry this request to check its status safely.': 'Aún no hemos podido confirmar tu cupón. Reintenta esta solicitud para comprobar su estado de forma segura.',
+  'Retry voucher request': 'Reintentar solicitud de cupón',
+  'Finish your pending voucher request before choosing another reward.': 'Completa tu solicitud de cupón pendiente antes de elegir otra recompensa.',
+  'Your pending voucher request could not be read. Please contact support before trying again.': 'No se pudo leer tu solicitud de cupón pendiente. Contacta con soporte antes de volver a intentarlo.',
+  'The voucher request could not be checked.': 'No se pudo comprobar la solicitud de cupón.',
   ...({
     '$100/year': '$100/año',
     '$25/month': '$25/mes',
@@ -4084,6 +4097,7 @@ const spanishTranslations: Record<string, string> = {
 }
 
 const tagalogTranslations: Record<string, string> = {
+  ...clientScopeTagalog,
   '20% to 100% back': '20% hanggang 100% pabalik',
   'Access to participating offers without a paid membership.': 'Makagamit ng mga kalahok na alok nang walang bayad na membership.',
   'Available now': 'Magagamit ngayon',

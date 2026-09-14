@@ -1,6 +1,6 @@
 import { Check, Copy, Gift, LoaderCircle, QrCode, Repeat2, Sparkles, TicketCheck, UsersRound } from 'lucide-react'
 import { QRCodeSVG } from 'qrcode.react'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
@@ -11,8 +11,10 @@ import { useRewardBalance } from '@/hooks/use-customer-data'
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { formatCurrency } from '@/lib/utils'
+import { withVoucherRequestLock, beginVoucherRequest, completeVoucherRequest, readVoucherRequest, voucherRequestKey, type PendingVoucherRequest } from '@/lib/loyality-voucher-request'
 import {
   loyalityService,
+  VoucherRequestRejectedError,
   type LoyalityCustomerSnapshot,
   type LoyalityVoucher,
 } from '@/features/loyality/loyality-service'
@@ -31,10 +33,13 @@ export function LoyalityCustomerDashboard() {
   const { language, t } = useLanguage()
   const locale = language === 'es' ? 'es-ES' : language === 'tl' ? 'fil-PH' : program.locale
   const rewardBalance = useRewardBalance(profile?.id)
+  const refetchBalance = rewardBalance.refetch
   const [snapshot, setSnapshot] = useState<LoyalityCustomerSnapshot | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [pendingRequest, setPendingRequest] = useState<PendingVoucherRequest | null>(null)
+  const redeemInFlight = useRef(false)
   const [copied, setCopied] = useState(false)
 
   const load = useCallback(async () => {
@@ -42,13 +47,25 @@ export function LoyalityCustomerDashboard() {
     setIsLoading(true)
     setError(null)
     try {
+      const key = voucherRequestKey(program.id, profile.id)
+      const pending = readVoucherRequest(localStorage, key)
+      setPendingRequest(pending)
+      if (pending) {
+        // A failed read or absent row is still uncertain: never rotate the request ID.
+        const confirmed = await loyalityService.findCatalogRedemption(pending.catalogId, pending.requestId, profile.id).catch(() => null)
+        if (confirmed) {
+          await withVoucherRequestLock(key, async () => completeVoucherRequest(localStorage, key, pending)).catch(() => undefined)
+          setPendingRequest(readVoucherRequest(localStorage, key))
+          void refetchBalance()
+        }
+      }
       setSnapshot(await loyalityService.getCustomerSnapshot(profile.id))
     } catch (loadError) {
       setError(loadError instanceof Error ? t(loadError.message) : t('Your Loyality wallet could not be loaded.'))
     } finally {
       setIsLoading(false)
     }
-  }, [profile?.id, t])
+  }, [profile?.id, program.id, refetchBalance, t])
 
   useEffect(() => { void load() }, [load])
 
@@ -69,14 +86,35 @@ export function LoyalityCustomerDashboard() {
   }
 
   async function chooseVoucher(catalogId: string) {
+    if (!profile?.id || redeemInFlight.current) return
+    redeemInFlight.current = true
     setBusyId(catalogId)
     try {
-      await loyalityService.redeemCatalogVoucher(catalogId, crypto.randomUUID())
+      const key = voucherRequestKey(program.id, profile.id)
+      await withVoucherRequestLock(key, async () => {
+      const request = beginVoucherRequest(localStorage, key, catalogId)
+      setPendingRequest(request)
+      try {
+        await loyalityService.redeemCatalogVoucher(catalogId, request.requestId)
+      } catch (redeemError) {
+        if (redeemError instanceof VoucherRequestRejectedError) {
+          // Only the RPC's no-commit code can release a rejected request.
+          completeVoucherRequest(localStorage, key, request)
+          setPendingRequest(readVoucherRequest(localStorage, key))
+          throw redeemError
+        }
+        const confirmed = await loyalityService.findCatalogRedemption(catalogId, request.requestId, profile.id).catch(() => null)
+        if (!confirmed) throw redeemError
+      }
+      completeVoucherRequest(localStorage, key, request)
+      setPendingRequest(readVoucherRequest(localStorage, key))
+      })
       toast.success(t('Voucher added to your wallet.'))
       await Promise.all([load(), rewardBalance.refetch()])
     } catch (redeemError) {
       toast.error(redeemError instanceof Error ? t(redeemError.message) : t('Voucher could not be created.'))
     } finally {
+      redeemInFlight.current = false
       setBusyId(null)
     }
   }
@@ -141,11 +179,16 @@ export function LoyalityCustomerDashboard() {
         <section className="rounded-[2rem] border border-[var(--border)] bg-card p-5 shadow-sm sm:p-7">
           <div className="flex items-center gap-3"><Sparkles className="text-[#b8862e]" /><h2 className="text-2xl font-black">{t('Choose a reward voucher')}</h2></div>
           <p className="mt-2 text-sm text-[var(--muted-foreground)]">{t('Your balance is {points} points. Points become one clear voucher—not an open cash balance.', { points: rewardBalance.data?.points ?? 0 })}</p>
+          {pendingRequest ? <div role="status" className="mt-4 rounded-2xl border border-[#b8862e]/40 bg-[#d8b36a]/15 p-4">
+            <strong>{t('Voucher request pending')}</strong>
+            <p className="mt-2 text-sm">{t('We could not confirm your voucher yet. Retry this request to check its status safely.')}</p>
+            <Button className="mt-3 rounded-full" variant="outline" disabled={busyId !== null} onClick={() => void chooseVoucher(pendingRequest.catalogId)}>{t('Retry voucher request')}</Button>
+          </div> : null}
           <div className="mt-5 grid gap-3">
             {snapshot.catalog.map((item) => (
               <div key={item.id} className="flex flex-col gap-4 rounded-2xl border border-[var(--border)] p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div><h3 className="font-black">{item.title}</h3><p className="mt-1 text-sm text-[var(--muted-foreground)]">{item.description}</p><p className="mt-2 text-xs font-black uppercase tracking-wider text-[#b8862e]">{t('{points} points', { points: item.pointsCost })}</p></div>
-                <Button className="shrink-0 rounded-full" onClick={() => void chooseVoucher(item.id)} disabled={busyId !== null || (rewardBalance.data?.points ?? 0) < item.pointsCost}>{busyId === item.id ? <LoaderCircle className="animate-spin" /> : <Gift />}{t('Choose')}</Button>
+                <Button className="shrink-0 rounded-full" onClick={() => void chooseVoucher(item.id)} disabled={busyId !== null || pendingRequest !== null || (rewardBalance.data?.points ?? 0) < item.pointsCost}>{busyId === item.id ? <LoaderCircle className="animate-spin" /> : <Gift />}{t('Choose')}</Button>
               </div>
             ))}
           </div>

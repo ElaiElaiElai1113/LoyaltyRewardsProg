@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import { getActiveProgram } from '@/features/tenant/tenant-service'
+import { useTenant } from '@/hooks/use-tenant'
 import { useAuth } from '@/hooks/use-auth'
 import { useLanguage } from '@/lib/language'
 import { membershipService } from '@/integrations/supabase/services/membership-service'
 
 export const membershipKeys = {
-  mine: (profileId?: string) => ['membership', profileId ?? 'guest'] as const,
+  mine: (profileId?: string) => ['membership', getActiveProgram().id, profileId ?? 'guest'] as const,
 }
 
 function isMembershipActive(membership: Awaited<ReturnType<typeof membershipService.getMyMembership>>) {
@@ -24,6 +26,7 @@ function requireLaunchCustomer(profile: { id?: string | null; fullName?: string 
 
 export function useMembership() {
   const { profile } = useAuth()
+  const { program } = useTenant()
   const { t } = useLanguage()
   const queryClient = useQueryClient()
   const localizedMembershipError = (error: Error, fallback: string) => {
@@ -34,7 +37,13 @@ export function useMembership() {
     queryKey: membershipKeys.mine(profile?.id),
     queryFn: () => membershipService.getMyMembership(),
     enabled: Boolean(profile?.id),
-    initialData: profile?.membership ?? undefined,
+    initialData: profile?.membership?.programId === program.id ? profile.membership : undefined,
+  })
+
+  const entitlements = useQuery({
+    queryKey:['member-entitlements',program.id,profile?.id],
+    queryFn:()=>membershipService.getRewardMeEntitlements(),
+    enabled:program.slug==='pinas' && Boolean(profile?.id),
   })
 
   function invalidateMembershipData() {
@@ -82,8 +91,11 @@ export function useMembership() {
 
   return {
     membership,
-    isActive: isMembershipActive(membership),
-    isLoading: query.isLoading,
+    isActive: program.slug === 'pinas' ? entitlements.data?.canRedeem === true : isMembershipActive(membership),
+    isPaidActive: isMembershipActive(membership),
+    entitlements: entitlements.data,
+    entitlementsError: entitlements.error,
+    isLoading: query.isLoading || (program.slug === 'pinas' && Boolean(profile?.id) && entitlements.isPending),
     subscribe,
     renew,
     cancel,

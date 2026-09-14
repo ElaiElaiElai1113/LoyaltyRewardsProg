@@ -16,20 +16,20 @@ import type { ManualMembershipEventType, ManualMembershipTier } from '@/types/do
 const tiers = [
   {
     name: 'Free',
-    price: '$0',
-    details: ['Earn up to 10% back', 'No referral bonuses', 'Eligible retroactive bonuses may apply after upgrading'],
+    price: 'Free',
+    details: ['Free membership for everyone', 'Earn and redeem eligible rewards at participating businesses'],
     featured: false,
   },
   {
     name: 'Regular',
-    price: '$25/month',
-    details: ['Earn 20%–100% back', '$10 for each qualifying referral', 'Full member access after manual activation'],
+    price: 'Planned — not available',
+    details: ['Additional tier planned', 'Benefits and pricing await approval'],
     featured: true,
   },
   {
     name: 'Gold',
-    price: '$100/year',
-    details: ['Full member access after manual activation', 'Regular referrals: $25 per month for three months', 'Gold referrals: $100 in Rewards'],
+    price: 'Planned — not available',
+    details: ['Additional tier planned', 'Benefits and pricing await approval'],
     featured: false,
   },
 ] as const
@@ -52,7 +52,7 @@ function readableDate(value: string | null | undefined, language: 'en' | 'es' | 
 export function RewardMeMembershipPage() {
   const { profile } = useAuth()
   const { language, t } = useLanguage()
-  const { membership, isActive, isLoading: membershipLoading } = useMembership()
+  const { membership, isPaidActive: isActive, isLoading: membershipLoading } = useMembership()
   const manual = useManualMembership()
   const [tier, setTier] = useState<ManualMembershipTier>('regular')
   const [note, setNote] = useState('')
@@ -87,13 +87,13 @@ export function RewardMeMembershipPage() {
         <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#b77b1f]">{t('RewardMe membership')}</p>
         <h1 className="mt-3 max-w-3xl font-serif text-4xl leading-tight text-[#173f32] sm:text-5xl">{t('Choose how you want to earn.')}</h1>
         <p className="mt-4 max-w-2xl text-sm leading-6 text-[#5f655d]">
-          {t('Start with three-month free access to explore RewardMe. Rewards and referral bonuses begin only after the RewardMe team activates an eligible Regular or Gold membership.')}
+          {t('Free membership for everyone. Regular and Gold are planned additional tiers; no paid upgrade is required to use eligible rewards.')}
         </p>
       </header>
 
       <aside className="flex items-start gap-3 rounded-2xl border border-amber-600/25 bg-amber-50 p-4 text-sm leading-6 text-amber-950">
         <Info className="mt-0.5 size-5 shrink-0" aria-hidden="true" />
-        <p><strong>{t('Manual enrollment:')}</strong> {t('RewardMe does not collect online payments or card details. Regular and Gold prices are reference terms from the pitch; access requests are reviewed and activated by the RewardMe team.')}</p>
+        <p><strong>{t('Manual enrollment:')}</strong> {t('Regular and Gold interest can be recorded for review. Pricing, benefits and activation are pending approval. Existing membership records are preserved.')}</p>
       </aside>
 
       <section className="grid overflow-hidden rounded-3xl border border-[#d7ccb2] bg-[#faf7ec] lg:grid-cols-3" aria-label={t('RewardMe membership plans')}>
@@ -101,7 +101,7 @@ export function RewardMeMembershipPage() {
           <article className={`p-7 sm:p-9 ${item.featured ? 'bg-[#173f32] text-[#faf7ec]' : ''}`} key={item.name}>
             <h2 className="font-serif text-2xl">{t(item.name)}</h2>
             <p className={`mt-3 text-3xl font-bold ${item.featured ? 'text-[#e0ae4b]' : 'text-[#b77b1f]'}`}>{t(item.price)}</p>
-            {item.name !== 'Free' ? <p className={`mt-1 text-xs font-bold uppercase tracking-[0.12em] ${item.featured ? 'text-[#d8dccf]' : 'text-[#5f655d]'}`}>{t('Reference price · manual activation')}</p> : null}
+            {item.name !== 'Free' ? <p className={`mt-1 text-xs font-bold uppercase tracking-[0.12em] ${item.featured ? 'text-[#d8dccf]' : 'text-[#5f655d]'}`}>{t('Planned — activation unavailable')}</p> : null}
             <ul className={`mt-6 space-y-3 text-sm leading-6 ${item.featured ? 'text-[#d8dccf]' : 'text-[#5f655d]'}`}>
               {item.details.map((detail) => <li className="flex gap-2" key={detail}><Check className="mt-1 size-4 shrink-0 text-[#b77b1f]" aria-hidden="true" />{t(detail)}</li>)}
             </ul>
@@ -112,7 +112,7 @@ export function RewardMeMembershipPage() {
       {!profile ? (
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link className="inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-[#173f32] px-5 py-3 text-sm font-bold text-[#faf7ec]" to="/join">{t('Start free access')} <ArrowRight className="size-4" /></Link>
-          <Link className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#d7ccb2] bg-[#fffdf7] px-5 py-3 text-sm font-bold text-[#173f32]" to="/invitation?interest=membership">{t('Request Regular or Gold access')}</Link>
+          <Link className="inline-flex min-h-11 items-center justify-center rounded-md border border-[#d7ccb2] bg-[#fffdf7] px-5 py-3 text-sm font-bold text-[#173f32]" to="/invitation?interest=membership">{t('Register tier interest')}</Link>
         </div>
       ) : (
         <section className="rounded-3xl border border-[#d7ccb2] bg-card p-5 shadow-soft sm:p-8" aria-labelledby="membership-account-title" data-membership-request-panel>
@@ -166,17 +166,17 @@ export function RewardMeMembershipPage() {
           ) : (
             <div className="mt-6 grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,0.8fr)]">
               <div>
-                <p className="text-sm font-bold text-[#173f32]">{t('Choose the plan to request')}</p>
+                <p className="text-sm font-bold text-[#173f32]">{t('Register interest in a future tier')}</p>
                 <div className="mt-3 grid grid-cols-2 gap-3" role="radiogroup" aria-label={t('Requested membership tier')}>
                   {(['regular', 'gold'] as const).map((value) => (
                     <button key={value} type="button" role="radio" aria-checked={tier === value} className={`min-h-20 rounded-2xl border p-4 text-left capitalize transition ${tier === value ? 'border-[#173f32] bg-[#173f32] text-white' : 'border-[#d7ccb2] bg-[#faf7ec] text-[#173f32]'}`} onClick={() => setTier(value)}>
-                      <span className="font-serif text-xl">{t(value)}</span><span className="mt-1 block text-xs">{value === 'gold' ? t('$100/year reference') : t('$25/month reference')}</span>
+                      <span className="font-serif text-xl">{t(value)}</span><span className="mt-1 block text-xs">{value === 'gold' ? t('Planned') : t('Planned')}</span>
                     </button>
                   ))}
                 </div>
                 <label className="mt-5 block text-sm font-bold text-[#173f32]" htmlFor="membership-request-note">{t('Optional note')}</label>
                 <Textarea id="membership-request-note" className="mt-2" maxLength={1000} placeholder={t('Questions or details for the RewardMe team')} value={note} onChange={(event) => setNote(event.target.value)} />
-                <Button className="mt-4 w-full bg-[#173f32] text-white sm:w-auto" disabled={manual.requestMembership.isPending} onClick={() => void submitMembershipRequest()}>{manual.requestMembership.isPending ? t('Sending request…') : t('Request {tier} access', { tier: t(tier) })}</Button>
+                <Button className="mt-4 w-full bg-[#173f32] text-white sm:w-auto" disabled={manual.requestMembership.isPending} onClick={() => void submitMembershipRequest()}>{manual.requestMembership.isPending ? t('Sending request…') : t('Register {tier} interest', { tier: t(tier) })}</Button>
               </div>
               <aside className="rounded-2xl border border-[#d7ccb2] bg-[#faf7ec] p-5 text-sm leading-6 text-[#5f655d]">
                 <p className="font-bold text-[#173f32]">{t('Before you send')}</p>

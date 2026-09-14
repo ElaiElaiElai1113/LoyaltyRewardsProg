@@ -14,7 +14,6 @@ import { useAuth } from '@/hooks/use-auth'
 import { LoyalityJoinPage } from '@/features/loyality/pages/loyality-join-page'
 import { useLanguage } from '@/lib/language'
 import { useTenant } from '@/hooks/use-tenant'
-import { earlyAccessService } from '@/integrations/supabase/services/early-access-service'
 import { memberSignUpSchema, type MemberSignUpFormValues } from '@/types/forms'
 import { PASSWORD_MIN_LENGTH } from '@/lib/password-setup'
 import { isRewardMeExperience } from '@/lib/rewardme-experience'
@@ -249,7 +248,7 @@ export function CompactJoinRewardsPage() {
         <aside className="mb-6 rounded-lg border border-[#b77b1f]/30 bg-[#f4efdf] p-4 text-left text-[#173f32]">
           <p className="font-serif text-lg font-bold">{t('Three-month free access')}</p>
           <p className="mt-1 text-xs leading-5 text-[#5f655d]">
-            {t('Explore RewardMe without adding a payment card. Rewards and referral bonuses begin after the RewardMe team activates an eligible Regular or Gold membership.')}
+            {t('Free membership for everyone. Earn and redeem eligible rewards.')}
           </p>
         </aside>
       ) : null}
@@ -378,9 +377,9 @@ export function CompactJoinRewardsPage() {
 type RewardMePlan = 'free' | 'regular' | 'gold'
 
 const rewardMePlans: Array<{ value: RewardMePlan; name: string; price: string; description: string; featured?: boolean }> = [
-  { value: 'free', name: 'Free', price: '$0', description: 'No cost, ever. Earn 10% back in rewards at participating businesses.' },
-  { value: 'regular', name: 'Regular', price: '$25/month', description: '20–100% back in rewards per business, $10 in rewards per referral.' },
-  { value: 'gold', name: 'Gold', price: '$100/year', description: '20–100% back in rewards per business, bigger referral bonuses — $25/mo x 3 in rewards for a Regular referral, $100 in rewards (not cash) for a Gold referral.', featured: true },
+  { value: 'free', name: 'Free', price: 'Free', description: 'Free membership for everyone. Earn and redeem eligible rewards.' },
+  { value: 'regular', name: 'Regular', price: 'Planned', description: 'Additional tier planned. Register interest from Membership after signing in.' },
+  { value: 'gold', name: 'Gold', price: 'Planned', description: 'Additional tier planned. Register interest from Membership after signing in.', featured: true },
 ]
 
 export function RewardMeJoinPage() {
@@ -411,10 +410,10 @@ export function RewardMeJoinPage() {
           <Link className="rewardme-join__signin" to="/signin">{t('Already a member?')} {t('Sign in')}</Link>
         </div>
       </header>
-      <section className="rewardme-join__hero"><h1>{t('Join {program}.', { program: program.name })}</h1><span>{isWondertown ? t('Create a test account with fictional information. Wondertown mirrors RewardMe and never collects a real card or online payment.') : t("Pick your membership and tell us who you are — we'll follow up to finish setting up billing.")}</span></section>
+      <section className="rewardme-join__hero"><h1>{t('Join {program}.', { program: program.name })}</h1><span>{isWondertown ? t('Create a test account with fictional information. Wondertown mirrors RewardMe and never collects a real card or online payment.') : t("Create your free account. Additional tiers are planned and cannot be activated yet.")}</span></section>
 
       {complete ? (
-        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><h2>{t("You're joining {program}.", { program: program.name })}</h2><span>{t("Thanks, {name}. We've recorded your membership request and sent details to {email}.", { name: submission.name, email: submission.email })}</span><strong>{t('Reference number:')} {submission.reference}</strong><span>{t("We'll follow up shortly to finish setting up billing and your full profile.")}</span><span>{t('More account details will be collected later as you set up your full profile.')}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">{t('Go to sign in')}</Link></section>
+        <section className="rewardme-join__confirmation" aria-live="polite"><BadgeCheck aria-hidden="true" /><h2>{t("You're joining {program}.", { program: program.name })}</h2><span>{t("Thanks, {name}. Your account was created for {email}.", { name: submission.name, email: submission.email })}</span><strong>{t('Reference number:')} {submission.reference}</strong><span>{t("Sign in to complete your profile and explore eligible rewards.")}</span><span>{t('More account details will be collected later as you set up your full profile.')}</span>{warning ? <strong>{warning}</strong> : null}<Link to="/signin">{t('Go to sign in')}</Link></section>
       ) : (
         <form className="rewardme-join__form" onSubmit={form.handleSubmit(async (values) => {
           try {
@@ -427,15 +426,7 @@ export function RewardMeJoinPage() {
               referralCode: code || null,
             })
             setSubmission({ name: values.fullName, email: values.email, reference: result.profile.id })
-            let nextWarning = result.warning ?? null
-            if (plan !== 'free') {
-              try {
-                await earlyAccessService.createLead({ fullName: values.fullName, email: values.email, whatsapp: values.phone, notes: `${plan[0].toUpperCase()}${plan.slice(1)} membership interest submitted during account creation.`, marketingConsent: true }, { source: `membership-interest-${plan}` })
-              } catch {
-                nextWarning = t('Your account was created, but the membership interest could not be sent. Request it from the Membership page after signing in.')
-              }
-            }
-            setWarning(nextWarning)
+            setWarning(result.warning ?? null)
             form.reset(defaultValues)
             setComplete(true)
           } catch (submissionError) {
@@ -450,7 +441,7 @@ export function RewardMeJoinPage() {
           }
         })}>
           <fieldset><legend>{t('Choose your membership')} *</legend><div className="rewardme-join__plans">
-            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{item.price}</b></strong>{item.featured ? <em>{t('Best for referrers')}</em> : null}<small>{t(item.description)}</small></span></label>)}
+            {rewardMePlans.map((item) => <label className={`${plan === item.value ? 'is-selected' : ''}${item.featured ? ' is-featured' : ''}`} key={item.value}><input type="radio" name="membershipPlan" value={item.value} disabled={item.value !== 'free'} checked={plan === item.value} onChange={() => setPlan(item.value)} /><span><strong>{t(item.name)}<b>{item.price}</b></strong>{item.featured ? <em>{t('Planned')}</em> : null}<small>{t(item.description)}</small></span></label>)}
           </div></fieldset>
           <div className="rewardme-join__grid">
             <label>{t('Full name')} <b>*</b><Input id="join-name" placeholder={t('Your full name')} {...form.register('fullName')} />{form.formState.errors.fullName ? <small>{form.formState.errors.fullName.message}</small> : null}</label>
@@ -459,7 +450,7 @@ export function RewardMeJoinPage() {
             <label>{t('Referral code (optional)')}<Input id="join-referral" value={referralCode} onChange={(event) => { setReferralCode(event.target.value); setReferralError(null) }} maxLength={120} placeholder={t('Enter a referral code')} aria-invalid={Boolean(referralError) || undefined} aria-describedby={referralError ? 'join-referral-error' : undefined} />{referralError ? <small id="join-referral-error" role="alert">{referralError}</small> : null}</label>
             <label className="is-full">{t('Password')} <b>*</b><span className="rewardme-join__password"><Input id="join-password" type={showPassword ? 'text' : 'password'} placeholder={t('Use at least {count} characters for your new password.', { count: PASSWORD_MIN_LENGTH })} {...form.register('password')} /><button type="button" aria-label={showPassword ? t('Hide password') : t('Show password')} onClick={() => setShowPassword((value) => !value)}>{showPassword ? <EyeOff /> : <Eye />}</button></span>{form.formState.errors.password ? <small>{form.formState.errors.password.message}</small> : null}</label>
           </div>
-          <label className="rewardme-join__agree"><input type="checkbox" required /><span>{t("I agree to RewardMe's Terms of Service and Membership Agreement, and authorize billing for the plan selected above.")} <Link to="/terms">{t('Terms of Service')}</Link> · <Link to="/privacy">{t('Privacy Policy')}</Link></span></label>
+          <label className="rewardme-join__agree"><input type="checkbox" required /><span>{t("I agree to the Terms of Service and Privacy Policy for my free account.")} <Link to="/terms">{t('Terms of Service')}</Link> · <Link to="/privacy">{t('Privacy Policy')}</Link></span></label>
           {error ? <p className="rewardme-join__error" role="alert">{error}</p> : null}
           <Button type="submit" disabled={form.formState.isSubmitting}>{form.formState.isSubmitting ? t('Creating account…') : t('Join {program}', { program: program.name })}</Button>
         </form>

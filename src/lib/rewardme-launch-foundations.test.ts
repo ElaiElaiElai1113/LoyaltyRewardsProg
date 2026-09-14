@@ -45,7 +45,7 @@ describe('RewardMe approval-gated launch foundations', () => {
     expect(existsSync('api/stripe-create-checkout-session.ts')).toBe(false)
     expect(existsSync('api/stripe-webhook.ts')).toBe(false)
     expect(membership).toContain('Manual enrollment:')
-    expect(membership).toContain('does not collect online payments or card details')
+    expect(membership).toContain('Pricing, benefits and activation are pending approval.')
     expect(planAdministration).toContain('RewardMe does not collect payments online.')
     expect(migration).toContain('{"memberBilling":false}')
   })

@@ -10,8 +10,10 @@ Record the reason and affected program, export current audit evidence, then susp
 
 ## Migration approval
 
-Run `npm run ops:migrations:validate` and `npm run ops:hosted:preflight`. Approval must name project `retfuxpfstatpdsunkgj` and every migration filename. A code commit or deployment approval is not database approval.
+Run `npm run ops:migrations:validate` and `npm run ops:hosted:preflight`. Run `node scripts/verify-rewards-supabase-target.mjs` first. Approval must name project `bftuvmywtmpflizsomim` and every migration filename. A code commit or deployment approval is not database approval.
 
 ## Incident response
 
 Follow `incident-and-cutover-runbook.md`. Preserve request IDs, audit exports, reconciliation reports, and deployment identifiers before corrective action.
+
+Target correction (2026-09-14): the former retfuxpfstatpdsunkgj reference was retired. Historical incident records retain their original targets and are not current execution instructions.

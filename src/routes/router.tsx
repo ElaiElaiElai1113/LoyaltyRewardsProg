@@ -1,3 +1,4 @@
+const BusinessApplicationsPage = lazy(() => import('@/features/platform/pages/business-applications-page').then(module => ({default:module.BusinessApplicationsPage})))
 import { lazy, Suspense, useEffect, type ReactNode } from 'react'
 import { App as CapacitorApp } from '@capacitor/app'
 import { Navigate, Outlet, createBrowserRouter, useLocation, useNavigate } from 'react-router'
@@ -549,6 +550,7 @@ const router = createBrowserRouter([
           { path: '/admin/portal', element: <AdminPage /> },
           { path: '/admin/programs', element: <PlatformProgramsPage /> },
           { path: '/admin/readiness', element: <LoyalityLegacySurfaceRoute><LaunchReadinessPage /></LoyalityLegacySurfaceRoute> },
+          { path: '/admin/applications', element: <BusinessApplicationsPage /> },
           { path: '/admin/memberships', element: <LoyalityLegacySurfaceRoute><MembershipOperationsPage /></LoyalityLegacySurfaceRoute> },
           { path: '/admin/import', element: <LoyalityLegacySurfaceRoute><TenantImportPage /></LoyalityLegacySurfaceRoute> },
           { path: '/admin/gift-cards', element: <LoyalityLegacySurfaceRoute><AdminGiftCardsPage /></LoyalityLegacySurfaceRoute> },

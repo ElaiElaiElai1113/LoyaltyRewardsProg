@@ -1,4 +1,4 @@
-import { randomBytes } from 'node:crypto'
+import { createHmac } from 'node:crypto'
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import { createClient } from '@supabase/supabase-js'
 
@@ -6,6 +6,7 @@ import { applyRequestContext } from './_request-context.js'
 import { resolveTenantDatabaseHostname } from './_tenant-host-alias.js'
 
 type Payload = Record<string, unknown>
+class ValidationError extends Error {}
 const models = new Set(['commission', 'credit'])
 const rewardRates = new Set(['20% back', '30% back', '50% back', '100% back', 'Other — discuss with the team'])
 const accessOptions = new Set(['earn-and-redeem', 'earn-only'])
@@ -15,7 +16,7 @@ function clean(body: Payload, key: string, max: number) {
 }
 
 function required(value: string, label: string, min = 1) {
-  if (value.length < min) throw new Error(`${label} is required.`)
+  if (value.length < min) throw new ValidationError(`${label} is required.`)
   return value
 }
 
@@ -29,9 +30,10 @@ function parse(body: unknown): Payload {
   try { return JSON.parse(body) as Payload } catch { return {} }
 }
 
-function reference() {
-  return `RWD-BIZ-${Date.now().toString(36).toUpperCase()}-${randomBytes(3).toString('hex').toUpperCase()}`
+const applicationHosts: Readonly<Record<string,string>> = {
+ 'myrewardme.com':'pinas','www.myrewardme.com':'pinas','rewardme-prod.vercel.app':'pinas','loyalty-rewards-prog.vercel.app':'pinas','wondertown-rewards.vercel.app':'wondertown',
 }
+
 
 export default async function handler(request: VercelRequest, response: VercelResponse) {
   const requestId = applyRequestContext(request, response)
@@ -49,11 +51,18 @@ export default async function handler(request: VercelRequest, response: VercelRe
     return
   }
 
+  const rateSecret = process.env.BUSINESS_APPLICATION_RATE_LIMIT_SECRET
+  const hourlyLimit = Number(process.env.BUSINESS_APPLICATION_HOURLY_LIMIT ?? 10)
+  if (!rateSecret || !Number.isInteger(hourlyLimit) || hourlyLimit < 1 || hourlyLimit > 100) {
+    json(response, 503, {ok:false,error:'Business application intake is temporarily unavailable.'}); return
+  }
   const body = parse(request.body)
   const model = clean(body, 'model', 20)
   const hostname = clean(body, 'hostname', 253).toLowerCase()
-  if (!models.has(model) || body.contactConsent !== true) {
-    json(response, 400, { ok: false, error: 'Choose a valid model and accept the application disclosures.' })
+  const actualHost = typeof request.headers.host === 'string' ? request.headers.host.toLowerCase() : ''
+  const expectedSlug = applicationHosts[actualHost]
+  if (!expectedSlug || hostname !== actualHost || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(body.requestId ?? '')) || body.disclosureVersion !== 'application-review-v1' || !models.has(model) || body.contactConsent !== true) {
+    json(response, 400, { ok: false, noCommit: true, error: 'Choose a valid model and accept the application disclosures.' })
     return
   }
 
@@ -72,22 +81,19 @@ export default async function handler(request: VercelRequest, response: VercelRe
     const rewardRate = clean(body, 'rewardRate', 60)
     const redemptionAccess = clean(body, 'redemptionAccess', 30)
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(representativeEmail) || !rewardRates.has(rewardRate) || !accessOptions.has(redemptionAccess)) {
-      throw new Error('Enter a valid email, reward rate, and member access option.')
+      throw new ValidationError('Enter a valid email, reward rate, and member access option.')
     }
 
     const supabase = createClient(url, serviceRoleKey, { auth: { autoRefreshToken: false, persistSession: false } })
     const databaseHostname = resolveTenantDatabaseHostname(hostname)
     const { data: programs, error: programError } = await supabase.rpc('resolve_program_by_hostname', { p_hostname: databaseHostname })
     const program = Array.isArray(programs) ? programs[0] : null
-    if (programError || !program?.id || !['pinas', 'rewardme', 'wondertown'].includes(String(program.slug))) {
+    if (programError || !program?.id || String(program.slug) !== expectedSlug) {
       json(response, 404, { ok: false, error: 'The rewards program was not found.' })
       return
     }
 
-    const applicationReference = reference()
-    const { error } = await supabase.from('business_applications').insert({
-      program_id: program.id,
-      application_reference: applicationReference,
+    const payload = {
       model,
       legal_name: legalName,
       dba: clean(body, 'dba', 140) || null,
@@ -106,15 +112,26 @@ export default async function handler(request: VercelRequest, response: VercelRe
       reward_rate: rewardRate,
       redemption_access: redemptionAccess,
       credit_method: model === 'credit' ? clean(body, 'creditMethod', 180) || null : null,
-      disclosure_version: clean(body, 'disclosureVersion', 80) || 'business-application-v1',
-      contact_consent_at: new Date().toISOString(),
+      disclosure_version: 'application-review-v1',
+      contact_consent: true,
       source_hostname: databaseHostname,
+    }
+    // Vercel supplies this header; do not use user-controlled forwarding chains.
+    const source = typeof request.headers['x-vercel-forwarded-for'] === 'string' ? request.headers['x-vercel-forwarded-for'] : request.socket?.remoteAddress ?? 'unknown'
+    const {data: receipt,error} = await supabase.rpc('submit_business_application_intent', {
+      p_program_id:program.id,p_request_id:body.requestId,p_payload:payload,
+      p_source_hash:createHmac('sha256',rateSecret).update(source).digest('hex'),p_hourly_limit:hourlyLimit,
     })
-    if (error) throw error
-    json(response, 201, { ok: true, reference: applicationReference })
+    if(error){
+      if(error.code==='BA409'){json(response,409,{ok:false,error:'This request was already submitted with different details. Restore the original application to check its receipt.'});return}
+      if(error.code==='BA429'){json(response,429,{ok:false,error:'Too many applications. Please try again later.'});return}
+      json(response,503,{ok:false,error:'The application could not be confirmed. Retry with the same details.'});return
+    }
+    if(!receipt?.reference || !receipt?.status){json(response,503,{ok:false,error:'The application could not be confirmed. Retry with the same details.'});return}
+    json(response, receipt.replayed ? 200 : 201, {ok:true,reference:receipt.reference,status:receipt.status})
   } catch (error) {
     console.error('Business application submission failed.', { requestId, message: error instanceof Error ? error.message : 'Unknown error' })
-    const message = error instanceof Error && !('code' in error) ? error.message : 'The application could not be submitted.'
-    json(response, 400, { ok: false, error: message })
+    const definitive = error instanceof ValidationError
+    json(response, definitive ? 400 : 503, {ok:false,noCommit:definitive,error:definitive ? error.message : 'The application could not be confirmed. Retry with the same details.'})
   }
 }

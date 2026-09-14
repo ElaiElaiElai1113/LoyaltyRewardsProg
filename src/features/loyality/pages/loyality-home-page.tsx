@@ -16,7 +16,7 @@ const ledgerRows = [
 
 const incentiveCards = [
   ['Loyalty rewards', 'Points or free items', 'Reward every visit or purchase however you like — points toward a redemption, or a free item after so many visits.'],
-  ['Milestones', 'Celebrate the moments that matter', "A 10th visit, a one-year anniversary, a spend threshold — or something as simple as a free item on a member's birthday. Set the milestone and the reward, and the platform delivers it for you."],
+  ['Milestones', 'Celebrate the moments that matter', "Visit-count rewards are available. Birthday, anniversary and spend milestones are planned and require approved rules before activation."],
   ['Referral bonuses', 'Reward members for bringing friends', 'When a member refers a friend who joins and redeems, both sides get rewarded — automatically, from the first share to the final redemption.'],
 ]
 
@@ -27,19 +27,19 @@ const supportCards = [
 
 const pillarCards = [
   ['Attraction', 'Get new eyes on your business', 'Members share your referral offers through social media, word of mouth, or a simple invite — and every channel is trackable.'],
-  ['Acquisition', 'Turn interest into members', 'A single QR scan is the entire sign-up. No app download, no account setup — nothing stands between a passerby and becoming a member.'],
+  ['Acquisition', 'Turn interest into members', 'Scan to join in your browser; no app download required. Create your account with your name, email, phone, and password.'],
   ['Retention', 'Give them a reason to return', 'Loyalty rewards, milestones, and referral perks keep the next visit worth coming back for — instead of leaving it to chance.'],
 ]
 
 const steps = [
   ['01 / Launch', 'Set up your branded membership', 'Your name, your look, your rules. Loyality runs underneath it — members never see anything but your brand.'],
-  ['02 / Invite', 'Customers join as members with one scan', 'A QR code on the counter, receipt, or menu is the entire sign-up. No app to install, no card to carry.'],
+  ['02 / Invite', 'Customers scan to open browser signup', 'A QR code on the counter, receipt, or menu opens the signup form. Create an account in your browser, with no app to install or card to carry.'],
   ['03 / Set incentives', 'Choose your loyalty rewards, milestones, and referral bonuses', "Run one, run all three, or design your own combination — it's your membership to shape."],
   ['04 / Reward', 'The platform tracks and rewards automatically', "Every visit, milestone, and referral is tracked end to end. When a member earns something, it's issued automatically — no manual tally-keeping."],
 ]
 
 const features = [
-  ['Membership tiers', 'Free and paid tiers, your call', "Build a free tier for everyone, and an optional paid tier on top — say, a monthly fee that includes spendable credit plus extra perks free members don't get. Fully customizable to your business."],
+  ['Membership tiers', 'Free and paid tiers, your call', "Free enrollment is available. Paid tiers and cycle credits are planned; pricing and credit rules require approval before activation."],
   ['No hardware', 'Nothing to install, nothing to carry', 'No card, no key tag, no app to download. Everything runs on QR codes your members already know how to use.'],
   ['Tracking', 'Every incentive, in one place', 'Loyalty rewards, milestones, and referral bonuses all show up in a single dashboard — no spreadsheets, no manual tally-keeping.'],
   ['Redemption', "One scan and it's done", 'Free item, gift card, or voucher — redeeming is as simple as it gets. The member pulls up their QR code, your staff scans it, and the reward is applied. No codes to read out, nothing to check manually.'],
@@ -102,7 +102,7 @@ export function LoyalityHomePage() {
           <div className="reference-loyality__highlight" aria-label={t('Loyality platform highlights')}>
             <div className="reference-loyality__stat"><strong>0</strong><span>{t('Hardware or apps required')}</span></div>
             <div className="reference-loyality__stat"><strong>100%</strong><span>{t('Branded under your name')}</span></div>
-            <div className="reference-loyality__stat"><strong>20%</strong><span>{t('Min. profit lift, guaranteed')}</span></div>
+            <div className="reference-loyality__stat"><strong>—</strong><span>{t('Guarantee policy pending')}</span></div>
           </div>
         </div>
 
@@ -155,18 +155,18 @@ export function LoyalityHomePage() {
 
         <section className="reference-loyality__wrap" id="guarantee">
           <div className="reference-loyality__guarantee">
-             <div><span className="reference-loyality__stamp">{t('Grand slam offer')}</span><h2>{t("We're confident enough to put it in writing.")}</h2><p>{t("Follow the plan and don't see a minimum 20% profit increase within 3 months? You get extra months free until you do — and a straightforward money-back guarantee sits underneath that, no fine print.")}</p></div>
-            <div className="reference-loyality__guarantee-cards"><div><span>{t('Profit guarantee')}</span><strong>{t('20% or extra months free')}</strong></div><div><span>{t('Satisfaction guarantee')}</span><strong>{t('Money back')}</strong></div></div>
+             <div><span className="reference-loyality__stamp">{t('Grand slam offer')}</span><h2>{t("Guarantee terms are under review.")}</h2><p>{t("Profit guarantees require an agreed baseline, measurement period, costs and remedy. No guarantee is active until those terms are approved.")}</p></div>
+            <div className="reference-loyality__guarantee-cards"><div><span>{t('Profit guarantee')}</span><strong>{t('Terms pending')}</strong></div><div><span>{t('Satisfaction guarantee')}</span><strong>{t('Remedy pending')}</strong></div></div>
           </div>
         </section>
 
         <section className="reference-loyality__wrap" id="example">
           <SectionHeading eyebrow="Your membership, your rules" title="What a membership tier could look like."><p>{t("You design the tiers and the incentives. Here's one simple way businesses commonly structure them.")}</p></SectionHeading>
           <div className="reference-loyality__plans">
-            <article className="reference-loyality__plan"><span>{t('Free tier')}</span><h3>{t('Open to everyone')}</h3><strong>$0</strong><small>{t('No cost to join')}</small><ul><li>{t('One-scan sign-up, no app required')}</li><li>{t('Earns loyalty rewards on every visit')}</li><li>{t('Eligible for milestones and referral bonuses')}</li></ul></article>
+            <article className="reference-loyality__plan"><span>{t('Free tier')}</span><h3>{t('Open to everyone')}</h3><strong>$0</strong><small>{t('No cost to join')}</small><ul><li>{t('Scan to open browser signup')}</li><li>{t('Earns loyalty rewards on every visit')}</li><li>{t('Eligible visit and offer rewards')}</li></ul></article>
             <article className="reference-loyality__plan reference-loyality__plan--featured"><span>{t('Paid tier')}</span><h3>{t('Example tier')}</h3><strong>$10<small>{t('/mo')}</small></strong><small>{t('Illustrative — set your own price')}</small><ul><li>{t('$10 of spendable credit included — net-neutral cost')}</li><li>{t('Bonus perks and faster milestone rewards')}</li><li>{t('Priority access to member-only promos')}</li></ul></article>
           </div>
-          <p className="reference-loyality__example-flag">{t('Illustrative example only — every business sets its own tiers, incentives, and pricing.')}</p>
+          <p className="reference-loyality__example-flag">{t('Illustrative example only. Paid tiers and cycle credit are planned and unavailable for activation.')}</p>
         </section>
 
         <figure className="reference-loyality__photo reference-loyality__wrap">
@@ -176,7 +176,7 @@ export function LoyalityHomePage() {
 
         <section className="reference-loyality__wrap" id="pricing">
           <SectionHeading eyebrow="Getting started" title="Onboarding, made simple." />
-          <div className="reference-loyality__pricing-box"><div><h3>{t('Get a membership built for your business.')}</h3><p>{t("No two memberships are priced the same, because no two businesses are the same. Tell us about your business and we'll put together an onboarding plan — backed by the profit and satisfaction guarantee above.")}</p></div><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
+          <div className="reference-loyality__pricing-box"><div><h3>{t('Get a membership built for your business.')}</h3><p>{t("Tell us about your business to discuss onboarding. Paid tiers and any guarantee require separately approved terms.")}</p></div><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
         </section>
 
         <section className="reference-loyality__final-cta reference-loyality__wrap"><h2>{t('Ready to turn your customers into members?')}</h2><p>{t("Tell us about your business and we'll show you what your branded membership could look like.")}</p><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></section>

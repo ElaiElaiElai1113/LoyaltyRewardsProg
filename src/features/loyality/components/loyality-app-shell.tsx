@@ -21,6 +21,7 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import '@/features/loyality/loyality-app.css'
 import { canAccessBusinessPath } from '@/lib/business-role-policy'
+import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
 import { getInitials } from '@/lib/utils'
 import type { Profile } from '@/types/domain'
@@ -58,10 +59,11 @@ const adminLinks: RailItem[] = [
 
 function LoyalityWordmark({ inverse = false }: { inverse?: boolean }) {
   const { t } = useLanguage()
+  const { program } = useTenant()
   return (
     <NavLink className={`ly-wordmark${inverse ? ' ly-wordmark--inverse' : ''}`} to="/">
-      <span className="ly-wordmark__mark"><LoyalityMark /></span>
-      <span><strong>Loyality</strong><small>{t('One business. One loyalty loop.')}</small></span>
+      <span className="ly-wordmark__mark">{program.logoUrl ? <img src={program.logoUrl} alt="" /> : <LoyalityMark />}</span>
+      <span><strong>{program.name}</strong><small>{t('One business. One loyalty loop.')}</small></span>
     </NavLink>
   )
 }

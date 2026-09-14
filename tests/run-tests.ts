@@ -1,6 +1,9 @@
 import assert from 'node:assert/strict'
 import { existsSync, readdirSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { runInNewContext } from 'node:vm'
+import ts from 'typescript'
+import { clientScopeSpanish } from '../src/lib/client-scope-translations.js'
 
 import {
   earlyAccessMessageLines,
@@ -1357,19 +1360,17 @@ runTest('early access English source copy has Spanish translations', () => {
 
 runTest('all literal translated UI strings have Spanish entries', () => {
   const languageSource = readFileSync('src/lib/language.tsx', 'utf8')
-  const translationsSource = languageSource.match(
-    /const spanishTranslations: Record<string, string> = \{([\s\S]*?)\n\}/,
-  )?.[1]
-
-  assert.ok(translationsSource)
-
-  const translatedKeys = new Set<string>()
-  const translationKeyPattern =
-    /(?:^|\n)\s*(?:'([^']+)'|"([^"]+)"|([A-Za-z][A-Za-z0-9_]*))\s*:/g
-
-  for (const match of translationsSource.matchAll(translationKeyPattern)) {
-    translatedKeys.add(match[1] ?? match[2] ?? match[3])
-  }
+  const sourceFile = ts.createSourceFile('language.tsx', languageSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
+  const declaration = sourceFile.statements.filter(ts.isVariableStatement)
+    .flatMap((statement) => [...statement.declarationList.declarations])
+    .find((item) => ts.isIdentifier(item.name) && item.name.text === 'spanishTranslations')
+  assert.ok(declaration?.initializer, 'The Spanish catalog must be available to audit.')
+  // Evaluate the real initializer, including its inline spreads, without loading React or browser code.
+  const catalogCode = ts.transpileModule(`(${declaration.initializer.getText(sourceFile)})`, {
+    compilerOptions: { target: ts.ScriptTarget.ES2023 },
+  }).outputText
+  const composedCatalog = runInNewContext(catalogCode, { clientScopeSpanish }) as Record<string, string>
+  const translatedKeys = new Set(Object.entries(composedCatalog).filter(([, value]) => value.trim()).map(([key]) => key))
 
   const usedKeys = new Set<string>()
   const literalTranslationPattern = /\bt\(\s*(?:'([^']+)'|"([^"]+)")/g

@@ -32,6 +32,8 @@ const defaultValues: AuthFormValues = {
 export function LoyalityAuthPage() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
+  const redirect = resolveSafeInternalRedirect(searchParams.get('redirect'), '')
+  const joinPath = redirect ? `/join?redirect=${encodeURIComponent(redirect)}` : '/join'
   const { signInAutomatically } = useAuth()
   const { t } = useLanguage()
   const { program } = useTenant()
@@ -59,7 +61,7 @@ export function LoyalityAuthPage() {
       <LoyalityAuthStory />
       <section className="ly-auth__form-side">
         <div className="ly-auth-card">
-          <div className="ly-auth-card__toolbar"><Link className="ly-auth-card__back" to="/"><ArrowLeft /> {t('Back to Loyality')}</Link><LanguagePicker className="ly-auth-card__language" compact condenseOnNarrowScreens /></div>
+          <div className="ly-auth-card__toolbar"><Link className="ly-auth-card__back" to="/"><ArrowLeft /> {t('Back to {brand}',{brand:program.name})}</Link><LanguagePicker className="ly-auth-card__language" compact condenseOnNarrowScreens /></div>
           <div className="ly-auth-card__header">
             <p>{t('Welcome back')}</p>
             <h2>{forgotPassword ? t('Reset access') : t('Step into your loop.')}</h2>
@@ -100,7 +102,7 @@ export function LoyalityAuthPage() {
             </form>
           ) : (
             <form
-              aria-label={t('Sign in to Loyality')}
+              aria-label={t('Sign in to {brand}',{brand:program.name})}
               className="ly-auth-form"
               onSubmit={form.handleSubmit(async (values) => {
                 try {
@@ -135,7 +137,7 @@ export function LoyalityAuthPage() {
               </button>
               <div className="ly-auth__helper">
                 <button onClick={() => { setForgotPassword(true); setError(null) }} type="button">{t('Forgot password?')}</button>
-                <Link to="/join">{t('Create an account')}</Link>
+                <Link to={joinPath}>{t('Create an account')}</Link>
               </div>
             </form>
           )}
@@ -147,11 +149,12 @@ export function LoyalityAuthPage() {
 
 export function LoyalityAuthStory() {
   const { t } = useLanguage()
+  const { program } = useTenant()
   return (
     <section className="ly-auth__story">
       <Link className="ly-wordmark ly-wordmark--inverse" to="/">
-        <span className="ly-wordmark__mark"><LoyalityMark /></span>
-        <span><strong>Loyality</strong><small>{t('One business. One loyalty loop.')}</small></span>
+        <span className="ly-wordmark__mark">{program.logoUrl ? <img src={program.logoUrl} alt="" /> : <LoyalityMark />}</span>
+        <span><strong>{program.name}</strong><small>{t('One business. One loyalty loop.')}</small></span>
       </Link>
       <div className="ly-auth__story-copy">
         <p className="ly-auth__eyebrow"><Repeat2 /> {t('Your relationship keeps moving')}</p>
@@ -159,7 +162,7 @@ export function LoyalityAuthStory() {
         <p>{t('One simple place for visits, personal offers, vouchers, referrals, and the rewards a business creates for its own customers.')}</p>
         <div className="ly-auth__loop"><span>{t('Visit')}</span><span>{t('Scan')}</span><span>{t('Unlock')}</span><span>{t('Return')}</span></div>
       </div>
-      <div className="ly-auth__story-footer"><span>{t('Built for real customer relationships')}</span><span>© 2026 Loyality</span></div>
+      <div className="ly-auth__story-footer"><span>{t('Built for real customer relationships')}</span><span>© 2026 {program.name}</span></div>
     </section>
   )
 }

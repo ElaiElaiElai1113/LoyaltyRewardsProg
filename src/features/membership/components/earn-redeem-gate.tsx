@@ -11,6 +11,7 @@ import {
   MEMBERSHIP_PRICE_USD,
   MEMBERSHIP_REWARD_CREDIT_USD,
 } from '@/features/membership/membership-pricing'
+import { useTenant } from '@/hooks/use-tenant'
 import { useAuth } from '@/hooks/use-auth'
 import { useMembership } from '@/hooks/use-membership'
 import { useLanguage } from '@/lib/language'
@@ -24,13 +25,18 @@ interface EarnRedeemGateProps {
 export function EarnRedeemGate({ children, action }: EarnRedeemGateProps) {
   const { t } = useLanguage()
   const { profile } = useAuth()
+  const { program } = useTenant()
   const navigate = useNavigate()
-  const { isActive, subscribe } = useMembership()
+  const { isActive, isLoading, subscribe } = useMembership()
   const [open, setOpen] = useState(false)
   const isGuest = !profile
   const portalRoot = typeof document === 'undefined' ? null : document.body
 
   if (isActive) return <>{children}</>
+  if (program.slug === 'pinas') return <div role="status" className="rounded-xl border p-4">
+    <p>{t(isGuest ? 'Sign in to use your free membership.' : isLoading ? 'Checking reward access…' : 'Your reward access could not be confirmed. Check your account status and try again.')}</p>
+    <Button className="mt-3" onClick={() => navigate(isGuest ? '/signin' : '/membership')}>{t(isGuest ? 'Sign in' : 'Membership status')}</Button>
+  </div>
 
   return (
     <>

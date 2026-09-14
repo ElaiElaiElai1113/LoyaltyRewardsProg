@@ -80,7 +80,7 @@ export function RewardMePublicHeader() {
         </div>
         <div className="reference-rewardme__nav-actions">
           <Link className="reference-rewardme__text-link" to="/signin">{t('Sign in')}</Link>
-          <Link className="reference-rewardme__button" to="/join">{t('Start free trial')}</Link>
+          <Link className="reference-rewardme__button" to="/join">{t('Join free')}</Link>
         </div>
         <button
           ref={toggleRef}
@@ -117,7 +117,7 @@ export function RewardMePublicHeader() {
         {isWondertown ? <Link to="/guide" onClick={closeMobileMenu}>{t('Test guide')}</Link> : null}
         <div className="reference-rewardme__mobile-actions">
           <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link>
-          <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Start free trial')}</Link>
+          <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Join free')}</Link>
         </div>
       </nav>
     </header>

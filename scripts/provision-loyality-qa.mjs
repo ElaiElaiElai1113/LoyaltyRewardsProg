@@ -1,3 +1,5 @@
+import { verifyHostedAcceptance, assertApprovedTestAccounts } from './verify-hosted-acceptance.mjs'
+await verifyHostedAcceptance()
 import { createClient } from '@supabase/supabase-js'
 import { randomBytes } from 'node:crypto'
 
@@ -16,6 +18,8 @@ const accounts = [
   { email: 'owner@loyality.test', fullName: 'Loyality Demo Owner', role: 'business-owner' },
   { email: 'admin@loyality.test', fullName: 'Loyality QA Administrator', role: 'platform-admin' },
 ]
+
+assertApprovedTestAccounts(accounts.map(account=>account.email))
 
 const adminClient = createClient(supabaseUrl, serviceRoleKey, {
   auth: { autoRefreshToken: false, persistSession: false },

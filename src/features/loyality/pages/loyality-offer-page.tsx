@@ -1,6 +1,6 @@
 import { ArrowRight, CheckCircle2, Gift, LoaderCircle, ScanLine } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { Link, useParams, useSearchParams } from 'react-router'
+import { Link, useLocation, useParams, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 
 import { BrandLogo } from '@/components/brand-logo'
@@ -15,6 +15,7 @@ import { useLanguage } from '@/lib/language'
 export function LoyalityOfferPage() {
   const { publicToken = '' } = useParams()
   const [search] = useSearchParams()
+  const location = useLocation()
   const { profile } = useAuth()
   const { t } = useLanguage()
   const [offer, setOffer] = useState<LoyalityOffer | null>(null)
@@ -31,7 +32,7 @@ export function LoyalityOfferPage() {
     return () => { active = false }
   }, [publicToken])
 
-  const returnPath = `/offer/${encodeURIComponent(publicToken)}?${search.toString()}`
+  const returnPath = `${location.pathname}${location.search}${location.hash}`
 
   async function claim() {
     setClaiming(true)

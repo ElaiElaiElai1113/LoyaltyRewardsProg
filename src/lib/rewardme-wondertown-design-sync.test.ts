@@ -37,13 +37,13 @@ describe('RewardMe and Wondertown design synchronization', () => {
     const page = source('src/features/business/pages/business-application-page.tsx')
 
     expect(api).toContain('SUPABASE_SERVICE_ROLE_KEY')
-    expect(api).toContain(".from('business_applications').insert")
+    expect(api).toContain(".rpc('submit_business_application_intent'")
     expect(migration).toContain('alter table public.business_applications enable row level security')
     expect(migration).toContain('revoke all on table public.business_applications from public, anon, authenticated')
-    expect(page).toContain('No printing, no separate paperwork — this page is your complete application.')
+    expect(page).toContain('Any commercial terms will require separate approval and acceptance.')
     expect(page).toContain('Wondertown is a fictional RewardMe test environment.')
-    expect(page).toContain('I have read and agree to the RewardMe Business Agreement')
-    expect(page).toContain("disclosureVersion: 'business-application-v1'")
+    expect(page).toContain('I consent to being contacted about this application')
+    expect(page).toContain("disclosureVersion: 'application-review-v1'")
     expect(existsSync('.github/workflows/rewards-database-maintenance.yml')).toBe(true)
   })
 

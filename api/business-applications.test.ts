@@ -1,0 +1,13 @@
+import { beforeEach, expect, it, vi } from 'vitest'
+const rpc=vi.hoisted(()=>vi.fn())
+vi.mock('@supabase/supabase-js',()=>({createClient:()=>({rpc})}))
+import handler from './business-applications'
+import type { VercelRequest,VercelResponse } from '@vercel/node'
+const body={requestId:'10000000-0000-4000-8000-000000000001',model:'commission',hostname:'myrewardme.com',contactConsent:true,disclosureVersion:'application-review-v1',legalName:'Test company',industry:'Cafe',street:'Test street',city:'City',region:'Region',postal:'1000',country:'Test',representativeName:'Test Person',representativeTitle:'Owner',representativeEmail:'test@example.test',representativePhone:'123456789',rewardRate:'20% back',redemptionAccess:'earn-only'}
+async function send(overrides={},host='myrewardme.com') {const response={setHeader:vi.fn(),status:vi.fn().mockReturnThis(),json:vi.fn()};await handler({method:'POST',headers:{host},socket:{remoteAddress:'127.0.0.1'},body:{...body,...overrides}} as unknown as VercelRequest,response as unknown as VercelResponse);return response}
+beforeEach(()=>{vi.stubEnv('SUPABASE_URL','https://example.supabase.co');vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY','test-only');vi.stubEnv('BUSINESS_APPLICATION_RATE_LIMIT_SECRET','test-only-secret');rpc.mockReset();rpc.mockImplementation(async(name)=>name==='resolve_program_by_hostname'?{data:[{id:'p',slug:'pinas'}],error:null}:{data:{reference:'RWD-BIZ-test',status:'submitted'},error:null})})
+it('returns the database receipt for a stable request',async()=>{const r=await send();expect(r.status).toHaveBeenCalledWith(201);expect(rpc).toHaveBeenLastCalledWith('submit_business_application_intent',expect.objectContaining({p_request_id:body.requestId}))})
+it('rejects a payload tenant that disagrees with the actual request host',async()=>{const r=await send({hostname:'wondertown.com'});expect(r.status).toHaveBeenCalledWith(400);expect(rpc).not.toHaveBeenCalled()})
+it.each([{representativeEmail:'bad'},{contactConsent:false},{disclosureVersion:'invented'},{requestId:''}])('rejects invalid intake before writing: %j',async patch=>{const r=await send(patch);expect(r.status).toHaveBeenCalledWith(400);expect(rpc).not.toHaveBeenCalled()})
+it('reports payload conflicts without claiming a receipt',async()=>{rpc.mockResolvedValueOnce({data:[{id:'p',slug:'pinas'}],error:null}).mockResolvedValueOnce({data:null,error:{code:'BA409'}});const r=await send();expect(r.status).toHaveBeenCalledWith(409)})
+it('requires server rate-limit configuration',async()=>{vi.stubEnv('BUSINESS_APPLICATION_RATE_LIMIT_SECRET','');const r=await send();expect(r.status).toHaveBeenCalledWith(503);expect(rpc).not.toHaveBeenCalled()})
