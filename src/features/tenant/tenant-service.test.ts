@@ -8,6 +8,23 @@ import {
 } from '@/features/tenant/tenant-service'
 
 describe('tenant resolution fallback', () => {
+  it('recognizes the exact RewardMe project alias without enabling tenant overrides', () => {
+    expect(inferTenantSlugHint('reward-me-prog.vercel.app')).toBe('pinas')
+    expect(getFallbackProgram('reward-me-prog.vercel.app').slug).toBe('pinas')
+    expect(canUseTenantPreviewOverride('reward-me-prog.vercel.app')).toBe(false)
+  })
+
+  it('does not trust lookalikes of the RewardMe project alias', () => {
+    for (const hostname of [
+      'reward-me-prog.vercel.app.attacker.example',
+      'attacker-reward-me-prog.vercel.app',
+      'reward-me-prog-extra.vercel.app',
+    ]) {
+      expect(inferTenantSlugHint(hostname)).toBeNull()
+      expect(canUseTenantPreviewOverride(hostname)).toBe(false)
+    }
+  })
+
   it('recognizes the exact RewardMe custom domains without trusting lookalikes', () => {
     expect(inferTenantSlugHint('myrewardme.com')).toBe('pinas')
     expect(inferTenantSlugHint('www.myrewardme.com')).toBe('pinas')

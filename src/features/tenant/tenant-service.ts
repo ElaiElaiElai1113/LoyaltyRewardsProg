@@ -146,6 +146,7 @@ const programSlugByHost: Record<string, keyof typeof programs> = {
   'synergize.localhost': 'synergize',
   'loyalty-rewards-prog.vercel.app': 'pinas',
   'rewardme-prod.vercel.app': 'pinas',
+  'reward-me-prog.vercel.app': 'pinas',
   'myrewardme.com': 'pinas',
   'www.myrewardme.com': 'pinas',
   'rewardme.localhost': 'pinas',
