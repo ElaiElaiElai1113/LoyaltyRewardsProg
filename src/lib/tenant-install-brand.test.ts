@@ -37,11 +37,11 @@ describe('tenant install branding', () => {
     }
   })
 
-  it('versions only RewardMe master-derived icons and its black install theme', () => {
+  it('versions only RewardMe master-derived icons and restores its forest and cream install theme', () => {
     const brand = resolveInstallBrand('myrewardme.com')
     const manifest = buildInstallManifest(brand)
-    expect(manifest.theme_color).toBe('#11100e')
-    expect(manifest.background_color).toBe('#11100e')
+    expect(manifest.theme_color).toBe('#1f3a2e')
+    expect(manifest.background_color).toBe('#f6f1e4')
     for (const size of [180, 192, 512] as const) {
       const icon = new URL(getInstallIconPath(brand, size), 'https://myrewardme.com')
       expect(icon.pathname).toBe(`/install-icons/rewardme-${size}.png`)

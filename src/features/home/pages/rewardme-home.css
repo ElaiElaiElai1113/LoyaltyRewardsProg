@@ -1611,53 +1611,42 @@
   scroll-behavior: auto !important;
 } }
 
-/* RewardMe client correction: black/gold public identity. Wondertown retains
-   the shared forest/cream presentation; supplied photos and logo stay intact. */
-:root[data-program="pinas"]:has(.reference-rewardme) { color-scheme: dark; scrollbar-color: #776231 #11100e; }
+/* RewardMe forest, warm cream and brass. Wondertown retains its existing palette. */
 :root[data-program="pinas"] :is(.reference-rewardme,.reference-rewardme__header) {
-  --dark: #f5f1e8;
-  --muted: #d0c8b6;
-  --orange: #d4af37;
-  --cream: #11100e;
-  --line: #51472d;
-  color: #f5f1e8;
-  background: #11100e;
+  --dark: #1f3a2e;
+  --muted: #52604e;
+  --orange: #1f3a2e;
+  --cream: #f6f1e4;
+  --line: #d9cfaf;
+  color: var(--dark);
+  background: var(--cream);
 }
-:root[data-program="pinas"] .reference-rewardme__header { border-color: #51472d; }
-:root[data-program="pinas"] :is(.reference-rewardme__brand-name,.reference-rewardme__eyebrow,.reference-rewardme__hero-highlight strong) { color: #e4c665; }
-:root[data-program="pinas"] .reference-rewardme__hero .reference-rewardme__eyebrow { background: #1c1911; border-color: #66552a; }
-:root[data-program="pinas"] :is(.reference-rewardme__hero-highlight,.reference-rewardme__lead,.reference-rewardme__fine) { color: #d0c8b6; }
-:root[data-program="pinas"] .reference-rewardme__button { background: #d4af37; border-color: #d4af37; color: #11100e !important; }
-:root[data-program="pinas"] .reference-rewardme__button--outline { background: transparent; border-color: #a88b42; color: #f5f1e8 !important; }
-:root[data-program="pinas"] :is(.reference-rewardme,.reference-rewardme__header) :is(a,button,select):focus-visible { outline-color: #f4d77e; }
-:root[data-program="pinas"] .reference-rewardme__wide-photo>.reference-rewardme__glyph { background: #dfbd54; color: #11100e; }
-:root[data-program="pinas"] .reference-rewardme__discovery { border-color: #51472d; }
-:root[data-program="pinas"] .reference-rewardme__passbook { background: #201d15; border-color: #776231; box-shadow: 8px 8px 0 #3a3018; }
-:root[data-program="pinas"] .reference-rewardme__stamp { background: #d4af37; color: #11100e; }
-:root[data-program="pinas"] :is(.reference-rewardme__passbook-title,.reference-rewardme__entry,.reference-rewardme__balance) { border-color: #776231; }
-:root[data-program="pinas"] :is(.reference-rewardme__entry strong,.reference-rewardme__balance strong,.reference-rewardme__ledger-list .reference-rewardme__glyph) { color: #e4c665; }
-:root[data-program="pinas"] .reference-rewardme__ledger-list li { border-color: #66552a; }
-:root[data-program="pinas"] .reference-rewardme__ledger-list li>span { color: #c4a45a; }
-:root[data-program="pinas"] .reference-rewardme__section--deep { background: #1c1912; color: #f5f1e8; border-block: 1px solid #51472d; }
-:root[data-program="pinas"] :is(.reference-rewardme__split>div>p:not(.reference-rewardme__eyebrow),.reference-rewardme__store-options p) { color: #d0c8b6; }
-:root[data-program="pinas"] .reference-rewardme__store-options article { border-color: #d4af37; }
-:root[data-program="pinas"] .reference-rewardme__rate-grid article { border-color: #776231; }
-:root[data-program="pinas"] .reference-rewardme__rate-grid p { color: #e4c665; }
-:root[data-program="pinas"] .reference-rewardme__tiers article { border-color: #66552a; background: #1b1811; }
-:root[data-program="pinas"] .reference-rewardme__tiers :is(strong,article>span) { color: #e4c665; }
-:root[data-program="pinas"] .reference-rewardme__tiers p { color: #d0c8b6; }
-:root[data-program="pinas"] .reference-rewardme__tiers article:first-child { background: #d4af37; border-color: #d4af37; }
-:root[data-program="pinas"] .reference-rewardme__tiers article:first-child :is(h3,p,strong,span) { color: #11100e; }
-:root[data-program="pinas"] .reference-rewardme__business-card { background: #211c10; border: 1px solid #776231; }
-:root[data-program="pinas"] .reference-rewardme__business-card p { color: #d0c8b6; }
-:root[data-program="pinas"] .reference-rewardme__business-card .reference-rewardme__button--gold { background: #d4af37; border-color: #d4af37; color: #11100e !important; }
-:root[data-program="pinas"] .reference-rewardme__footer { background: #0a0907; color: #f5f1e8; border-top: 1px solid #51472d; }
-:root[data-program="pinas"] .reference-rewardme__footer :is(p,nav) { color: #d0c8b6; }
-:root[data-program="pinas"] .main-site-language-dock--pinas .language-picker__control { background: #1c1912; color: #f5f1e8; border-color: #a88b42; }
-:root[data-program="pinas"] .rewardme-ledger-business { --rm-ink: #191714; --rm-soft: #4d4537; --rm-gold: #8b6519; --rm-muted: #625d53; }
-:root[data-program="pinas"] .rewardme-ledger-business__button--gold { background: #d4af37; border-color: #d4af37; color: #11100e; }
-:root[data-program="pinas"] .rewardme-ledger-business__cost .rewardme-ledger-business__eyebrow { color: #e4c665; }
+:root[data-program="pinas"] :is(.reference-rewardme__brand-name,.reference-rewardme__eyebrow,.reference-rewardme__hero-highlight strong,.reference-rewardme__ledger-list .reference-rewardme__glyph,.reference-rewardme__rate-grid p,.reference-rewardme__tiers article>span) { color: #806021; }
+:root[data-program="pinas"] .reference-rewardme__hero .reference-rewardme__eyebrow { background: #faf7ee; border-color: #d9cfaf; }
+:root[data-program="pinas"] :is(.reference-rewardme,.reference-rewardme__header) :is(a,button,select):focus-visible { outline-color: #806021; }
+:root[data-program="pinas"] :is(.reference-rewardme__section--deep,.reference-rewardme__footer) :is(a,button):focus-visible { outline-color: #d8b765; }
+:root[data-program="pinas"] .reference-rewardme__wide-photo>.reference-rewardme__glyph { background: #b8862e; color: #1f3a2e; }
+:root[data-program="pinas"] .reference-rewardme__button { color: #f6f1e4 !important; }
+:root[data-program="pinas"] .reference-rewardme__button--outline { color: #1f3a2e !important; }
+:root[data-program="pinas"] .reference-rewardme__split .reference-rewardme__button--outline { color: #f6f1e4 !important; }
+:root[data-program="pinas"] .reference-rewardme__split .reference-rewardme__eyebrow { color: #d8b765; }
+:root[data-program="pinas"] .reference-rewardme__store-options article { border-color: #b8862e; }
+:root[data-program="pinas"] .reference-rewardme__ledger-list li>span { color: #806021; }
+:root[data-program="pinas"] .reference-rewardme__tiers article:first-child { background: #e7d6af; border-color: #b8862e; }
+:root[data-program="pinas"] .reference-rewardme__tiers article:first-child>span { color: #1f3a2e; }
+:root[data-program="pinas"] .reference-rewardme__business-card { background: #e9e3d1; }
+:root[data-program="pinas"] .reference-rewardme__footer .reference-rewardme__brand-name { color: #d8b765; }
+:root[data-program="pinas"] .rewardme-ledger-business { --rm-gold: #806021; --rm-muted: #5d665b; }
+:root[data-program="pinas"] .rewardme-ledger-business__button--gold { background: #1f3a2e; border-color: #1f3a2e; color: #f6f1e4; }
+:root[data-program="pinas"] .rewardme-ledger-business__button--gold:hover { background: #365848; }
+:root[data-program="pinas"] .rewardme-ledger-business__cost .rewardme-ledger-business__eyebrow { color: #d8b765; }
 :root[data-program="pinas"] .rewardme-ledger-business__steps li>span { color: var(--rm-gold); }
-:root[data-program="pinas"] :is(.business-public-shell__footer,.product-public-shell>footer) { background: #11100e !important; color: #f5f1e8 !important; border-color: #51472d; }
-:root[data-program="pinas"] :is(.business-public-shell__footer,.product-public-shell>footer) :is(a,p,span) { color: #d0c8b6 !important; }
-:root[data-program="pinas"] .business-public-shell__footer-bottom { border-color: #51472d; }
+:root[data-program="pinas"] :is(.business-public-shell__footer,.product-public-shell>footer) { background: #1f3a2e !important; color: #f6f1e4 !important; border-color: #52604e; }
+:root[data-program="pinas"] :is(.business-public-shell__footer,.product-public-shell>footer) :is(a,p,span) { color: #e0e3d6 !important; }
+:root[data-program="pinas"] .business-public-shell__footer-bottom { border-color: #52604e; }
+:root[data-program="pinas"] .reference-rewardme__mobile-menu { max-height: calc(100svh - 160px); }
+@media (min-width:761px) and (max-width:960px) {
+  :root[data-program="pinas"] .reference-rewardme__hero { column-gap: 32px; }
+  :root[data-program="pinas"] .reference-rewardme__hero h1 { font-size: clamp(40px,5.4vw,50px); }
+  :root[data-program="pinas"] .reference-rewardme__wide-photo { min-height: 480px; }
+}

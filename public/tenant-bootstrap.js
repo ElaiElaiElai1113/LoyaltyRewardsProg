@@ -20,7 +20,7 @@
       description: 'Synergize member benefits and participating local businesses.',
     },
     pinas: { name: 'RewardMe',
-      color: '#11100e',
+      color: '#1f3a2e',
       locale: 'en',
       logo: '/rewardme-client-logo-132.webp',
       description: 'RewardMe membership rewards and participating local businesses.',
@@ -116,7 +116,7 @@
     var iconVersion = 'rewardme-client-e2f05324-20261023'
     iconHref += '&v=' + iconVersion
     appleTouchIconHref += '&v=' + iconVersion
-    manifestHref += '&iconv=' + iconVersion
+    manifestHref += '&iconv=' + iconVersion + '&theme=forest-20261023'
   }
   var canonicalUrl = window.location.origin + '/'
   document.title = brand.name

@@ -20,10 +20,12 @@ describe('RewardMe document install identity', () => {
     if (slug === 'pinas') {
       expect(icon.searchParams.get('v')).toBe('rewardme-client-e2f05324-20261023')
       expect(manifest.searchParams.get('iconv')).toBe('rewardme-client-e2f05324-20261023')
-      expect(writes.get('meta[name="theme-color"]:content')).toBe('#11100e')
+      expect(manifest.searchParams.get('theme')).toBe('forest-20261023')
+      expect(writes.get('meta[name="theme-color"]:content')).toBe('#1f3a2e')
     } else {
       expect(icon.searchParams.has('v')).toBe(false)
       expect(manifest.searchParams.has('iconv')).toBe(false)
+      expect(manifest.searchParams.has('theme')).toBe(false)
       expect(writes.get('meta[name="theme-color"]:content')).toBe(program.primaryColor)
     }
   })
