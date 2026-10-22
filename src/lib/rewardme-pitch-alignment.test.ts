@@ -16,7 +16,7 @@ describe('RewardMe pitch alignment', () => {
 
     expect(tenantService).toMatch(/pinas:\s*\{[\s\S]*name: 'RewardMe'[\s\S]*slug: 'pinas'/)
     expect(tenantBootstrap).toMatch(/pinas:\s*\{ name: 'RewardMe'/)
-    expect(tenantBootstrap).toContain("logo: '/rewardme-mark.svg'")
+    expect(tenantBootstrap).toContain("logo: '/rewardme-client-logo-132.webp'")
     expect(installBrand).toMatch(/pinas:\s*\{[\s\S]*name: 'RewardMe'[\s\S]*shortName: 'RewardMe'/)
     expect(migrationPackage).toContain('"programName": "RewardMe"')
     expect(migrationPackage).toContain('"sourceSystem": "RewardMe platform"')
