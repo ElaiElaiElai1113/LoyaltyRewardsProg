@@ -9,12 +9,14 @@ export function applyProgramDocumentBrand(program: Program) {
   root.dataset.program = program.slug
   const description = `${program.name} rewards and local business benefits.`
   const tenant = encodeURIComponent(program.slug)
-  const iconHref = `/api/tenant-icon?size=192&tenant=${tenant}`
-  const appleTouchIconHref = `/api/tenant-icon?size=180&tenant=${tenant}`
+  const rewardMeIconVersion = program.slug === 'pinas' ? 'rewardme-client-e2f05324-20261023' : ''
+  const iconVersionQuery = rewardMeIconVersion ? `&v=${rewardMeIconVersion}` : ''
+  const iconHref = `/api/tenant-icon?size=192&tenant=${tenant}${iconVersionQuery}`
+  const appleTouchIconHref = `/api/tenant-icon?size=180&tenant=${tenant}${iconVersionQuery}`
   root.style.setProperty('--tenant-accent', program.primaryColor)
   root.style.setProperty('--tenant-accent-soft', `color-mix(in srgb, ${program.accentColor} 24%, transparent)`)
   document.title = program.name
-  setMetaContent('meta[name="theme-color"]', program.primaryColor)
+  setMetaContent('meta[name="theme-color"]', program.slug === 'pinas' ? '#11100e' : program.primaryColor)
   setMetaContent('meta[property="og:site_name"]', program.name)
   setMetaContent('meta[property="og:title"]', program.name)
   setMetaContent('meta[property="og:description"]', description)
@@ -28,6 +30,6 @@ export function applyProgramDocumentBrand(program: Program) {
   document.querySelector<HTMLLinkElement>('link[rel="canonical"]')?.setAttribute('href', `${window.location.origin}/`)
   document.querySelector<HTMLLinkElement>('link[rel="manifest"]')?.setAttribute(
     'href',
-    `/api/manifest?v=host-aware-2026&tenant=${tenant}`,
+    `/api/manifest?v=host-aware-2026&tenant=${tenant}${rewardMeIconVersion ? `&iconv=${rewardMeIconVersion}` : ''}`,
   )
 }

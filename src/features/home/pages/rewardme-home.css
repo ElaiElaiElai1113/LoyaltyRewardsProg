@@ -232,15 +232,6 @@
   margin: 0 auto;
   overflow: hidden
 }
-.reference-rewardme__hero-copy {
-  position: relative;
-  padding: 65px 54px 65px max(48px,calc((1440px - 1240px)/2));
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start
-}
 .reference-rewardme__hero h1 {
   font-size: clamp(62px,5.2vw,78px);
   line-height: 1.04;
@@ -689,9 +680,6 @@
 .reference-rewardme__nav {
   width: 100%
 }
-.reference-rewardme__hero-copy {
-  padding-inline: 40px
-}
 .reference-rewardme__hero h1 {
   font-size: 62px
 }
@@ -743,9 +731,6 @@
   flex-direction: column;
   min-height: 0;
   overflow: visible
-}
-.reference-rewardme__hero-copy {
-  padding: 36px 22px 40px
 }
 .reference-rewardme__hero h1 {
   font-size: 51px;
@@ -966,8 +951,6 @@
   font-size: 10px
 }}
 @media(prefers-reduced-motion:no-preference){
-.reference-rewardme__hero-copy {
-}
 .reference-rewardme__wide-photo {
 }}
 .reference-rewardme__tiers article:first-child p {
@@ -1062,9 +1045,6 @@
 }
 .reference-rewardme__hero .reference-rewardme__eyebrow {
   font-size: 10px;
-}
-.reference-rewardme__hero-copy {
-  padding: 30px 20px 34px;
 }
 .reference-rewardme__hero h1 {
   margin-bottom: 23px;
@@ -1195,9 +1175,6 @@
 .reference-rewardme__hero {
   grid-template-columns: 1fr 1fr;
   min-height: 0;
-}
-.reference-rewardme__hero-copy {
-  padding: 45px 32px;
 }
 .reference-rewardme__hero h1 {
   font-size: 54px;
@@ -1633,3 +1610,54 @@
   transition: none !important;
   scroll-behavior: auto !important;
 } }
+
+/* RewardMe client correction: black/gold public identity. Wondertown retains
+   the shared forest/cream presentation; supplied photos and logo stay intact. */
+:root[data-program="pinas"]:has(.reference-rewardme) { color-scheme: dark; scrollbar-color: #776231 #11100e; }
+:root[data-program="pinas"] :is(.reference-rewardme,.reference-rewardme__header) {
+  --dark: #f5f1e8;
+  --muted: #d0c8b6;
+  --orange: #d4af37;
+  --cream: #11100e;
+  --line: #51472d;
+  color: #f5f1e8;
+  background: #11100e;
+}
+:root[data-program="pinas"] .reference-rewardme__header { border-color: #51472d; }
+:root[data-program="pinas"] :is(.reference-rewardme__brand-name,.reference-rewardme__eyebrow,.reference-rewardme__hero-highlight strong) { color: #e4c665; }
+:root[data-program="pinas"] .reference-rewardme__hero .reference-rewardme__eyebrow { background: #1c1911; border-color: #66552a; }
+:root[data-program="pinas"] :is(.reference-rewardme__hero-highlight,.reference-rewardme__lead,.reference-rewardme__fine) { color: #d0c8b6; }
+:root[data-program="pinas"] .reference-rewardme__button { background: #d4af37; border-color: #d4af37; color: #11100e !important; }
+:root[data-program="pinas"] .reference-rewardme__button--outline { background: transparent; border-color: #a88b42; color: #f5f1e8 !important; }
+:root[data-program="pinas"] :is(.reference-rewardme,.reference-rewardme__header) :is(a,button,select):focus-visible { outline-color: #f4d77e; }
+:root[data-program="pinas"] .reference-rewardme__wide-photo>.reference-rewardme__glyph { background: #dfbd54; color: #11100e; }
+:root[data-program="pinas"] .reference-rewardme__discovery { border-color: #51472d; }
+:root[data-program="pinas"] .reference-rewardme__passbook { background: #201d15; border-color: #776231; box-shadow: 8px 8px 0 #3a3018; }
+:root[data-program="pinas"] .reference-rewardme__stamp { background: #d4af37; color: #11100e; }
+:root[data-program="pinas"] :is(.reference-rewardme__passbook-title,.reference-rewardme__entry,.reference-rewardme__balance) { border-color: #776231; }
+:root[data-program="pinas"] :is(.reference-rewardme__entry strong,.reference-rewardme__balance strong,.reference-rewardme__ledger-list .reference-rewardme__glyph) { color: #e4c665; }
+:root[data-program="pinas"] .reference-rewardme__ledger-list li { border-color: #66552a; }
+:root[data-program="pinas"] .reference-rewardme__ledger-list li>span { color: #c4a45a; }
+:root[data-program="pinas"] .reference-rewardme__section--deep { background: #1c1912; color: #f5f1e8; border-block: 1px solid #51472d; }
+:root[data-program="pinas"] :is(.reference-rewardme__split>div>p:not(.reference-rewardme__eyebrow),.reference-rewardme__store-options p) { color: #d0c8b6; }
+:root[data-program="pinas"] .reference-rewardme__store-options article { border-color: #d4af37; }
+:root[data-program="pinas"] .reference-rewardme__rate-grid article { border-color: #776231; }
+:root[data-program="pinas"] .reference-rewardme__rate-grid p { color: #e4c665; }
+:root[data-program="pinas"] .reference-rewardme__tiers article { border-color: #66552a; background: #1b1811; }
+:root[data-program="pinas"] .reference-rewardme__tiers :is(strong,article>span) { color: #e4c665; }
+:root[data-program="pinas"] .reference-rewardme__tiers p { color: #d0c8b6; }
+:root[data-program="pinas"] .reference-rewardme__tiers article:first-child { background: #d4af37; border-color: #d4af37; }
+:root[data-program="pinas"] .reference-rewardme__tiers article:first-child :is(h3,p,strong,span) { color: #11100e; }
+:root[data-program="pinas"] .reference-rewardme__business-card { background: #211c10; border: 1px solid #776231; }
+:root[data-program="pinas"] .reference-rewardme__business-card p { color: #d0c8b6; }
+:root[data-program="pinas"] .reference-rewardme__business-card .reference-rewardme__button--gold { background: #d4af37; border-color: #d4af37; color: #11100e !important; }
+:root[data-program="pinas"] .reference-rewardme__footer { background: #0a0907; color: #f5f1e8; border-top: 1px solid #51472d; }
+:root[data-program="pinas"] .reference-rewardme__footer :is(p,nav) { color: #d0c8b6; }
+:root[data-program="pinas"] .main-site-language-dock--pinas .language-picker__control { background: #1c1912; color: #f5f1e8; border-color: #a88b42; }
+:root[data-program="pinas"] .rewardme-ledger-business { --rm-ink: #191714; --rm-soft: #4d4537; --rm-gold: #8b6519; --rm-muted: #625d53; }
+:root[data-program="pinas"] .rewardme-ledger-business__button--gold { background: #d4af37; border-color: #d4af37; color: #11100e; }
+:root[data-program="pinas"] .rewardme-ledger-business__cost .rewardme-ledger-business__eyebrow { color: #e4c665; }
+:root[data-program="pinas"] .rewardme-ledger-business__steps li>span { color: var(--rm-gold); }
+:root[data-program="pinas"] :is(.business-public-shell__footer,.product-public-shell>footer) { background: #11100e !important; color: #f5f1e8 !important; border-color: #51472d; }
+:root[data-program="pinas"] :is(.business-public-shell__footer,.product-public-shell>footer) :is(a,p,span) { color: #d0c8b6 !important; }
+:root[data-program="pinas"] .business-public-shell__footer-bottom { border-color: #51472d; }

@@ -23,3 +23,5 @@ tests
 *.png
 !public/**/*.png
 !src/**/*.png
+!api/_assets/rewardme-client-*.png
+api/tenant-icon.test.ts

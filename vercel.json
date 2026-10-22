@@ -3,6 +3,11 @@
   "framework": "vite",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {
+    "api/tenant-icon.ts": {
+      "includeFiles": "api/_assets/rewardme-client-*.png"
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",

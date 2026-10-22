@@ -119,7 +119,7 @@ export function PublicBrowseLayout() {
                   {isLoyality ? (
                     <LoyalityMark className="business-public-shell__brand-mark" size={34} />
                   ) : (
-                    <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} />
+                    <BrandLogo className="business-public-shell__brand-logo" markClassName="business-public-shell__brand-mark" showText={false} imageSrc={program.slug === 'pinas' ? '/rewardme-client-logo-132.webp' : undefined} />
                   )}
                   <span className="business-public-shell__brand-copy">
                     {isLoyality ? program.name : program.name.toUpperCase()}
@@ -246,7 +246,7 @@ export function PublicBrowseLayout() {
       </main>
       <footer className="border-t border-primary/15 bg-card px-4 py-8 sm:px-6 lg:px-8 2xl:px-12">
         <div className="mx-auto flex w-full flex-col justify-between gap-4 text-sm text-[var(--muted-foreground)] md:flex-row md:items-center">
-          <span className="font-semibold text-[var(--foreground)]">{program.name}</span>
+          <span className="font-semibold text-[var(--foreground)]">{program.slug === 'pinas' ? <img src="/rewardme-client-logo-132.webp" alt="" aria-hidden="true" className="mr-2 inline-block h-8 w-auto align-middle object-contain" /> : null}{program.name}</span>
           <nav className="flex flex-wrap gap-4">
             {legalLinks.map((link) => (
               <NavLink key={link.to} to={link.to} className="transition-colors hover:text-[var(--foreground)]">
