@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os'
 import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
-import { publishReviewedSite, targets, teamId, protectedMappings } from './publish-reviewed-site.mjs'
+import { publishReviewedSite, readCandidateHealth, vercelArguments, scope, targets, teamId, protectedMappings } from './publish-reviewed-site.mjs'
 
 const sha = 'a'.repeat(40)
 function harness(target = 'rewardme', options = {}) {
@@ -47,6 +47,7 @@ function harness(target = 'rewardme', options = {}) {
       assert.equal(args[1],'set');assert(config.aliases.includes(args[3]))
       if(options.aliasFailure)throw new Error('assignment failed')
       aliases.get(args[3]).deploymentId='dpl_candidate'
+      if(options.timeoutAfterSecondWrite&&commands.filter(command=>command[0]==='alias').length===2)throw new Error('alias timeout after remote write')
       return ''
     }
     throw new Error('Unexpected mutation')
@@ -100,6 +101,49 @@ test('assignment failure records state and never falls back to broad promotion o
   assert.equal(h.evidence.at(-1).error,'assignment failed')
   assert.equal(h.evidence.at(-1).pendingAlias,'myrewardme.com')
   assert(h.commands.every(args=>!args.includes('promote')&&!args.includes('rollback')&&!args.includes('env')))
+})
+
+test('second alias timeout after remote write records uncertain mapping and stops bounded recovery',async()=>{
+  const h=harness('rewardme',{timeoutAfterSecondWrite:true})
+  await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),/timeout after remote write/)
+  const state=h.evidence.at(-1)
+  assert.deepEqual(state.assigned,['myrewardme.com'])
+  assert.equal(state.pendingAlias,'www.myrewardme.com')
+  assert.equal(state.phase,'assign')
+  assert.equal(state.candidate,'https://reviewed-candidate.vercel.app')
+  assert.equal(h.aliases.get('myrewardme.com').deploymentId,'dpl_candidate')
+  assert.equal(h.aliases.get('www.myrewardme.com').deploymentId,'dpl_candidate')
+  assert.equal(h.aliases.get('rewardme-prod.vercel.app').deploymentId,'dpl_old')
+  assert.equal(h.aliases.get('pinas-rewards.vercel.app').deploymentId,protectedMappings['pinas-rewards.vercel.app'].deploymentId)
+  assert.equal(h.commands.filter(command=>command[0]==='alias').length,2)
+  assert(h.commands.every(command=>!command.includes('promote')&&!command.includes('rollback')))
+})
+
+for(const kind of ['401','non-JSON','redirect'])test(`immutable health ${kind} refuses alias writes without bypassing protection`,async()=>{
+  const h=harness()
+  h.health=origin=>readCandidateHealth(origin,async args=>{
+    assert.equal(args[0],'curl');assert.equal(args[1],'/api/health');assert.equal(args[3],origin)
+    assert(args.includes('--fail'));assert(!args.includes('--location'));assert(!args.includes('-L'))
+    if(kind==='401')throw new Error('Vercel curl failed (HTTP 401)')
+    return kind==='redirect'?'redirect\n302 text/plain':'<html>login</html>\n200 text/html'
+  },'/local/linked-health')
+  await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),kind==='401'?/HTTP 401/:/requires HTTP 200 JSON/)
+  assert.equal(h.commands.filter(command=>command[0]==='alias').length,0)
+})
+
+test('authenticated health uses linked cwd and environment auth without forwarding Vercel flags to curl',async()=>{
+  const status={ok:true,sourceRevision:sha}
+  const health=await readCandidateHealth('https://reviewed-candidate.vercel.app',async(args,options)=>{
+    const command=vercelArguments(args,'test-token'),separator=command.indexOf('--')
+    assert.equal(options.cwd,'/local/linked-health')
+    assert(separator>0)
+    assert(!command.includes('--scope'));assert(!command.includes('--token'));assert(!command.includes('--cwd'));assert(!command.includes('test-token'))
+    assert.equal(command.at(-1),'\n%{http_code} %{content_type}')
+    return JSON.stringify(status)+'\n200 application/json; charset=utf-8'
+  },'/local/linked-health')
+  assert.deepEqual(health,status)
+  assert.deepEqual(vercelArguments(['api','/v9/projects/example'],'test-token'),['api','/v9/projects/example','--scope',scope,'--token','test-token'])
+  await assert.rejects(readCandidateHealth('https://reviewed-candidate.vercel.app',async()=>'<html>\n200 application/json','/local/linked-health'),/invalid JSON/)
 })
 
 for(const host of Object.keys(protectedMappings))for(const kind of ['missing','wrong project','wrong deployment'])test(`refuses audited protected pin ${host} ${kind} before staging`,async()=>{

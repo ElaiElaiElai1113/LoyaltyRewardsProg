@@ -64,6 +64,9 @@ jobs:
       - name: Install pinned Vercel CLI
         run: npm install --global vercel@58.7.1
 
+      - name: Check publication scope contracts before external operations
+        run: node --test scripts/deployment-workflows.test.mjs scripts/publish-reviewed-site.test.mjs
+
       - name: Synchronize RewardMe production server secret
         if: github.event_name == 'workflow_dispatch' && inputs.legacy_tenant_sync == true
         shell: bash

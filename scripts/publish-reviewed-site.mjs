@@ -21,6 +21,19 @@ function mapping(record) {
 }
 function same(left, right) { return JSON.stringify(left) === JSON.stringify(right) }
 
+export function vercelArguments(args, token) {
+  // Vercel curl forwards even nominal global flags to OS curl. Use its linked
+  // cwd and supported VERCEL_TOKEN environment authentication instead.
+  return args[0] === 'curl' ? [...args] : [...args, '--scope', scope, '--token', token]
+}
+
+export async function readCandidateHealth(origin, run, linkedDirectory) {
+  const raw = await run(['curl', '/api/health', '--deployment', origin, '--', '--silent', '--show-error', '--fail', '--max-time', '30', '--write-out', '\n%{http_code} %{content_type}'], { cwd: linkedDirectory })
+  const separator = raw.lastIndexOf('\n')
+  if (separator < 0 || !/^200 application\/json(?:;.*)?$/.test(raw.slice(separator + 1).trim())) throw new Error('Candidate health requires HTTP 200 JSON without redirects')
+  try { return JSON.parse(raw.slice(0, separator)) } catch { throw new Error('Candidate health returned invalid JSON') }
+}
+
 export async function publishReviewedSite({ target, sha }, { run, health, record = async () => {} }) {
   const config = targets[target]
   if (!config) throw new Error('Only rewardme or loyality may be published')
@@ -117,17 +130,16 @@ async function main() {
   if (status.status !== 0 || status.stdout.trim()) throw new Error('Use a clean checkout without untracked source before publication')
   if (!process.env.VERCEL_TOKEN) throw new Error('VERCEL_TOKEN required')
   const cli = resolveVercelInvocation(process.env.VERCEL_CLI_BIN)
-  const run = async args => {
-    const result = spawnSync(cli.executable, [...cli.prefixArguments, ...args, '--scope', scope, '--token', process.env.VERCEL_TOKEN], { encoding: 'utf8', timeout: 15 * 60 * 1000, maxBuffer: 20 * 1024 * 1024 })
+  const run = async (args, { cwd = process.cwd() } = {}) => {
+    const result = spawnSync(cli.executable, [...cli.prefixArguments, ...vercelArguments(args, process.env.VERCEL_TOKEN)], { cwd, env: process.env, encoding: 'utf8', timeout: 15 * 60 * 1000, maxBuffer: 20 * 1024 * 1024 })
     if (result.error || result.status !== 0) throw new Error(`Vercel ${args[0]} failed; inspect platform logs (credentials omitted)`)
     return result.stdout.trim()
   }
-  const health = async origin => {
-    const response = await fetch(`${origin}/api/health`, { signal: AbortSignal.timeout(30000), redirect: 'error' })
-    if (!response.ok) throw new Error(`Candidate health HTTP ${response.status}`)
-    return response.json()
-  }
-  await publishReviewedSite({ target, sha }, { run, health, record: async state => {
+  if (!targets[target]) throw new Error('Only rewardme or loyality may be published')
+  const healthDirectory = resolve(dirname(output), `health-client-${target}`)
+  await mkdir(resolve(healthDirectory, '.vercel'), { recursive: true })
+  await writeFile(resolve(healthDirectory, '.vercel/project.json'), JSON.stringify({ orgId: teamId, projectId: targets[target].projectId }))
+  await publishReviewedSite({ target, sha }, { run, health: origin => readCandidateHealth(origin, run, healthDirectory), record: async state => {
     await mkdir(dirname(resolve(output)), { recursive: true })
     await writeFile(output, JSON.stringify(state, null, 2))
   } })
