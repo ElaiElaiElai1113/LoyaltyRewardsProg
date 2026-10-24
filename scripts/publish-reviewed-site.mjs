@@ -11,8 +11,8 @@ export const protectedMappings = Object.freeze({
   'pinas-rewards.vercel.app': Object.freeze({ projectId: 'prj_PaxiTVRFRuqys5uKfDXUL3ieSHKF', deploymentId: 'dpl_GikUCoGgrFurhkphhrThUc2r1pUR' }),
 })
 export const targets = Object.freeze({
-  rewardme: Object.freeze({ project: 'loyalty-rewards-prog', projectId: 'prj_PaxiTVRFRuqys5uKfDXUL3ieSHKF', backend: 'bftuvmywtmpflizsomim', aliases: Object.freeze(['myrewardme.com', 'www.myrewardme.com', 'rewardme-prod.vercel.app', 'reward-me-prog.vercel.app', 'loyalty-rewards-prog.vercel.app']) }),
-  loyality: Object.freeze({ project: 'loyality-rewards', projectId: 'prj_tiFNyQNSAlLpNfX7Mok03DOrclvH', backend: 'bftuvmywtmpflizsomim', aliases: Object.freeze(['loyality-rewards.vercel.app']) }),
+  rewardme: Object.freeze({ project: 'loyalty-rewards-prog', projectId: 'prj_PaxiTVRFRuqys5uKfDXUL3ieSHKF', stagingAlias: 'loyalty-rewards-prog-elaielaielai1113s-projects.vercel.app', backend: 'bftuvmywtmpflizsomim', aliases: Object.freeze(['myrewardme.com', 'www.myrewardme.com', 'rewardme-prod.vercel.app', 'reward-me-prog.vercel.app', 'loyalty-rewards-prog.vercel.app']) }),
+  loyality: Object.freeze({ project: 'loyality-rewards', projectId: 'prj_tiFNyQNSAlLpNfX7Mok03DOrclvH', stagingAlias: 'loyality-rewards-elaielaielai1113s-projects.vercel.app', backend: 'bftuvmywtmpflizsomim', aliases: Object.freeze(['loyality-rewards.vercel.app']) }),
 })
 
 function mapping(record) {
@@ -39,7 +39,7 @@ export async function publishReviewedSite({ target, sha }, { run, health, assert
   const config = targets[target]
   if (!config) throw new Error('Only rewardme or loyality may be published')
   sha = normalizeCommitSha(sha)
-  const state = { target, sha, project: config.project, phase: 'preflight', assigned: [] }
+  const state = { target, sha, project: config.project, stagingAlias: config.stagingAlias, phase: 'preflight', assigned: [] }
   const api = async path => JSON.parse(await run(['api', `${path}${path.includes('?') ? '&' : '?'}teamId=${teamId}`]))
   const getAlias = async host => mapping(await api(`/v4/aliases/${encodeURIComponent(host)}`))
   async function snapshot() {
@@ -64,7 +64,10 @@ export async function publishReviewedSite({ target, sha }, { run, health, assert
   }
   async function verifyBaseline(before, allowedChanges = new Set()) {
     const current = await snapshot()
+    const staging = current.get(config.stagingAlias)
+    if (staging?.projectId !== config.projectId || staging.deploymentId !== state.deploymentId || staging.redirect) throw new Error(`Staging alias drift: ${config.stagingAlias}`)
     for (const [host, value] of before) {
+      if (host === config.stagingAlias) continue
       const alias = current.get(host)
       if (allowedChanges.has(host)) {
         if (alias?.projectId !== config.projectId || alias.deploymentId !== state.deploymentId || alias.redirect) throw new Error(`Published alias drift: ${host}`)
@@ -78,6 +81,8 @@ export async function publishReviewedSite({ target, sha }, { run, health, assert
     if (!existingBypass) throw new Error('Existing automation bypass required; creation is forbidden')
     const before = await snapshot()
     state.before = Object.fromEntries(before)
+    const staging = before.get(config.stagingAlias)
+    if (staging?.projectId !== config.projectId || staging.redirect) throw new Error(`Unapproved staging alias mapping: ${config.stagingAlias}`)
     for (const host of config.aliases) {
       const alias = await getAlias(host)
       if (alias.projectId !== config.projectId || alias.redirect || !same(alias, before.get(host))) throw new Error(`Unapproved alias mapping: ${host}`)

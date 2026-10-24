@@ -8,9 +8,14 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { publishReviewedSite, readCandidateHealth, vercelArguments, scope, targets, teamId, protectedMappings } from './publish-reviewed-site.mjs'
 
 const sha = 'a'.repeat(40)
+const stagingAliases = {
+  rewardme: 'loyalty-rewards-prog-elaielaielai1113s-projects.vercel.app',
+  loyality: 'loyality-rewards-elaielaielai1113s-projects.vercel.app',
+}
 function harness(target = 'rewardme', options = {}) {
   const config = targets[target], commands = [], evidence = []
   const aliases = new Map(Object.values(targets).flatMap(t => t.aliases.map(alias => [alias, {alias,projectId:t.projectId,deploymentId:'dpl_old',redirect:null}])))
+  for(const [name,alias] of Object.entries(stagingAliases))aliases.set(alias,{alias,projectId:targets[name].projectId,deploymentId:'dpl_old_system',redirect:null})
   for (const [alias, projectId, deploymentId] of [
     ['wondertown-rewards.vercel.app',targets.rewardme.projectId,protectedMappings['wondertown-rewards.vercel.app'].deploymentId],
     ['pinas-rewards.vercel.app',targets.rewardme.projectId,protectedMappings['pinas-rewards.vercel.app'].deploymentId],
@@ -26,7 +31,8 @@ function harness(target = 'rewardme', options = {}) {
       assert.equal(url.searchParams.get('teamId'), teamId)
       if(url.pathname.startsWith('/v9/projects/'))return JSON.stringify({id:config.projectId,name:config.project,accountId:teamId,protectionBypass:{'dummy-existing-bypass':{scope:'automation-bypass'}},...options.project})
       if(url.pathname==='/v4/aliases') {
-        if(options.assignedRace&&[...aliases.values()].some(a=>a.deploymentId==='dpl_candidate'))aliases.get(config.aliases[0]).deploymentId='dpl_external'
+        if(options.stagingAliasRace&&commands.some(command=>command[0]==='alias'))aliases.get(stagingAliases[target]).deploymentId='dpl_external'
+        if(options.assignedRace&&config.aliases.some(alias=>aliases.get(alias).deploymentId==='dpl_candidate'))aliases.get(config.aliases[0]).deploymentId='dpl_external'
         const records=[...aliases.values()]
         return JSON.stringify(url.searchParams.has('until')?{aliases:records.slice(6),pagination:{next:null}}:{aliases:records.slice(0,6),pagination:{next:100}})
       }
@@ -40,6 +46,12 @@ function harness(target = 'rewardme', options = {}) {
     }
     if(args[0]==='deploy') {
       staged=true
+      const system=aliases.get(stagingAliases[target])
+      system.deploymentId=options.systemWrongCandidate?'dpl_wrong':'dpl_candidate'
+      if(options.systemWrongProject)system.projectId='prj_other'
+      if(options.systemMissing)aliases.delete(stagingAliases[target])
+      if(options.canonicalEarlyMove)aliases.get(config.aliases[0]).deploymentId='dpl_candidate'
+      if(options.otherSystemMove)aliases.get(stagingAliases[target==='rewardme'?'loyality':'rewardme']).deploymentId='dpl_candidate'
       if(options.protectedDrift)aliases.get('pinas-rewards.vercel.app').deploymentId='dpl_external'
       return 'https://reviewed-candidate.vercel.app'
     }
@@ -62,7 +74,9 @@ for(const target of ['rewardme','loyality'])test(`${target}: stages exact source
   const deploy=h.commands.find(args=>args[0]==='deploy')
   assert.deepEqual(deploy,['deploy','--prod','--skip-domain','--yes','--force','--project',targets[target].project,'--env',`REWARDS_SOURCE_COMMIT=${sha}`,'--meta',`githubCommitSha=${sha}`])
   assert.deepEqual(h.commands.filter(args=>args[0]==='alias').map(args=>args[3]),targets[target].aliases)
-  for(const [alias,mapping] of before)if(!targets[target].aliases.includes(alias))assert.deepEqual(h.aliases.get(alias),mapping)
+  assert.equal(targets[target].stagingAlias,stagingAliases[target])
+  assert.equal(h.aliases.get(stagingAliases[target]).deploymentId,'dpl_candidate')
+  for(const [alias,mapping] of before)if(!targets[target].aliases.includes(alias)&&alias!==stagingAliases[target])assert.deepEqual(h.aliases.get(alias),mapping)
   assert(h.commands.every(args=>['api','deploy','alias'].includes(args[0])))
   assert(!JSON.stringify(h.evidence).includes('dummy-existing-bypass'))
   assert(h.commands.filter(args=>args[0]==='api'&&args[1].includes('/v4/aliases?')).some(args=>args[1].includes('until=100')))
@@ -76,6 +90,11 @@ for(const [label,options] of [
   ['wrong backend',{health:{projectRef:'wrong'}}],['wrong health source',{health:{sourceRevision:'b'.repeat(40)}}],
   ['database unavailable',{health:{database:'unreachable'}}],['protected alias drift',{protectedDrift:true}],
   ['allowed alias changes before assignment',{race:true}],
+  ['canonical alias moves early',{canonicalEarlyMove:true}],
+  ['another project internal alias moves',{otherSystemMove:true}],
+  ['own internal alias wrong candidate',{systemWrongCandidate:true}],
+  ['own internal alias wrong project',{systemWrongProject:true}],
+  ['own internal alias missing after stage',{systemMissing:true}],
 ])test(`fails closed with no alias writes: ${label}`,async()=>{
   const h=harness('rewardme',options)
   await assert.rejects(publishReviewedSite({target:'rewardme',sha},h))
@@ -179,6 +198,12 @@ test('previously assigned alias drift stops subsequent assignments',async()=>{
   const h=harness('rewardme',{assignedRace:true})
   await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),/Published alias drift/)
   assert.equal(h.commands.filter(args=>args[0]==='alias').length,1)
+})
+
+test('own exact staging alias racing after first assignment stops further writes',async()=>{
+  const h=harness('rewardme',{stagingAliasRace:true})
+  await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),/Staging alias drift/)
+  assert.equal(h.commands.filter(command=>command[0]==='alias').length,1)
 })
 
 test('real CLI provenance gate rejects untracked deployable inputs and tracked edits before any authenticated command',async()=>{
