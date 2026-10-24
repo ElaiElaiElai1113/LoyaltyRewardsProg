@@ -17,7 +17,13 @@ node_modules
 ops
 stitch_medellinrewards
 test-results
-tests
+# Source tests remain in the strict app typecheck. Include only their fixtures.
+tests/*
+!tests/fixtures/
+tests/fixtures/*
+!tests/fixtures/rewardme-reference-copy.json
+!tests/fixtures/wondertown-home-main-7428.json
+!tests/fixtures/home-markup.ts
 *.docx
 *.log
 *.png
