@@ -27,14 +27,15 @@ export function vercelArguments(args, token) {
   return args[0] === 'curl' ? [...args] : [...args, '--scope', scope, '--token', token]
 }
 
-export async function readCandidateHealth(origin, run, linkedDirectory) {
-  const raw = await run(['curl', '/api/health', '--deployment', origin, '--', '--silent', '--show-error', '--fail', '--max-time', '30', '--write-out', '\n%{http_code} %{content_type}'], { cwd: linkedDirectory })
+export async function readCandidateHealth(origin, run, linkedDirectory, existingBypass) {
+  if (!existingBypass?.trim()) throw new Error('Existing automation bypass required; creation is forbidden')
+  const raw = await run(['curl', '/api/health', '--deployment', origin, '--', '--silent', '--show-error', '--fail', '--max-time', '30', '--write-out', '\n%{http_code} %{content_type}'], { cwd: linkedDirectory, env: { VERCEL_AUTOMATION_BYPASS_SECRET: existingBypass } })
   const separator = raw.lastIndexOf('\n')
   if (separator < 0 || !/^200 application\/json(?:;.*)?$/.test(raw.slice(separator + 1).trim())) throw new Error('Candidate health requires HTTP 200 JSON without redirects')
   try { return JSON.parse(raw.slice(0, separator)) } catch { throw new Error('Candidate health returned invalid JSON') }
 }
 
-export async function publishReviewedSite({ target, sha }, { run, health, record = async () => {} }) {
+export async function publishReviewedSite({ target, sha }, { run, health, assertCurrentMain, record = async () => {} }) {
   const config = targets[target]
   if (!config) throw new Error('Only rewardme or loyality may be published')
   sha = normalizeCommitSha(sha)
@@ -73,6 +74,8 @@ export async function publishReviewedSite({ target, sha }, { run, health, record
   try {
     const project = await api(`/v9/projects/${config.project}`)
     if (project.id !== config.projectId || project.name !== config.project || project.accountId !== teamId) throw new Error('Project identity drift')
+    const existingBypass = Object.keys(project.protectionBypass ?? {}).find(key => project.protectionBypass[key]?.scope === 'automation-bypass')
+    if (!existingBypass) throw new Error('Existing automation bypass required; creation is forbidden')
     const before = await snapshot()
     state.before = Object.fromEntries(before)
     for (const host of config.aliases) {
@@ -80,13 +83,14 @@ export async function publishReviewedSite({ target, sha }, { run, health, record
       if (alias.projectId !== config.projectId || alias.redirect || !same(alias, before.get(host))) throw new Error(`Unapproved alias mapping: ${host}`)
     }
     await record(state)
+    await assertCurrentMain(sha)
     state.phase = 'stage'
     const url = extractDeploymentUrl(await run(['deploy', '--prod', '--skip-domain', '--yes', '--force', '--project', config.project,
       '--env', `REWARDS_SOURCE_COMMIT=${sha}`, '--meta', `githubCommitSha=${sha}`]))
     state.candidate = url
     const candidate = await api(`/v13/deployments/${new URL(url).hostname}`)
     if (candidate.projectId !== config.projectId || candidate.readyState !== 'READY' || candidate.target !== 'production' || candidate.meta?.githubCommitSha !== sha || !candidate.id) throw new Error('Candidate deployment identity/source mismatch')
-    const status = await health(url)
+    const status = await health(url, existingBypass)
     if (status.ok !== true || status.status !== 'ready' || status.database !== 'reachable' || status.sourceRevision !== sha || status.projectRef !== config.backend) throw new Error('Candidate health/source/backend mismatch')
     state.deploymentId = candidate.id
     state.phase = 'verified'
@@ -94,6 +98,7 @@ export async function publishReviewedSite({ target, sha }, { run, health, record
     await record(state)
     state.phase = 'assign'
     for (const host of config.aliases) {
+      await assertCurrentMain(sha)
       await verifyBaseline(before, new Set(state.assigned))
       if (!same(await getAlias(host), before.get(host))) throw new Error(`Alias changed before assignment: ${host}`)
       state.pendingAlias = host
@@ -130,8 +135,8 @@ async function main() {
   if (status.status !== 0 || status.stdout.trim()) throw new Error('Use a clean checkout without untracked source before publication')
   if (!process.env.VERCEL_TOKEN) throw new Error('VERCEL_TOKEN required')
   const cli = resolveVercelInvocation(process.env.VERCEL_CLI_BIN)
-  const run = async (args, { cwd = process.cwd() } = {}) => {
-    const result = spawnSync(cli.executable, [...cli.prefixArguments, ...vercelArguments(args, process.env.VERCEL_TOKEN)], { cwd, env: process.env, encoding: 'utf8', timeout: 15 * 60 * 1000, maxBuffer: 20 * 1024 * 1024 })
+  const run = async (args, { cwd = process.cwd(), env = {} } = {}) => {
+    const result = spawnSync(cli.executable, [...cli.prefixArguments, ...vercelArguments(args, process.env.VERCEL_TOKEN)], { cwd, env: { ...process.env, ...env }, encoding: 'utf8', timeout: 15 * 60 * 1000, maxBuffer: 20 * 1024 * 1024 })
     if (result.error || result.status !== 0) throw new Error(`Vercel ${args[0]} failed; inspect platform logs (credentials omitted)`)
     return result.stdout.trim()
   }
@@ -139,7 +144,11 @@ async function main() {
   const healthDirectory = resolve(dirname(output), `health-client-${target}`)
   await mkdir(resolve(healthDirectory, '.vercel'), { recursive: true })
   await writeFile(resolve(healthDirectory, '.vercel/project.json'), JSON.stringify({ orgId: teamId, projectId: targets[target].projectId }))
-  await publishReviewedSite({ target, sha }, { run, health: origin => readCandidateHealth(origin, run, healthDirectory), record: async state => {
+  const assertCurrentMain = async expected => {
+    const remote = spawnSync('git', ['ls-remote', '--exit-code', 'origin', 'refs/heads/main'], { encoding: 'utf8', timeout: 30000 })
+    if (remote.status !== 0 || remote.stdout.trim().split(/\s+/)[0] !== expected) throw new Error('Source is stale or origin/main cannot be verified; publication stopped')
+  }
+  await publishReviewedSite({ target, sha }, { run, assertCurrentMain, health: (origin, bypass) => readCandidateHealth(origin, run, healthDirectory, bypass), record: async state => {
     await mkdir(dirname(resolve(output)), { recursive: true })
     await writeFile(output, JSON.stringify(state, null, 2))
   } })

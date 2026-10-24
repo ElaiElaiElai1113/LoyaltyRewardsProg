@@ -18,13 +18,13 @@ function harness(target = 'rewardme', options = {}) {
     ['www.medellinrewards.com','prj_medellin','dpl_medellin'],
     ['innerfire.example','prj_innerfire','dpl_innerfire'],
   ]) aliases.set(alias,{alias,projectId,deploymentId,redirect:null})
-  let aliasReads = 0, staged = false
+  let aliasReads = 0, staged = false, mainChecks = 0
   const run = async args => {
     commands.push(args)
     if (args[0] === 'api') {
       const url = new URL(args[1], 'https://api.vercel.com')
       assert.equal(url.searchParams.get('teamId'), teamId)
-      if(url.pathname.startsWith('/v9/projects/'))return JSON.stringify({id:config.projectId,name:config.project,accountId:teamId,...options.project})
+      if(url.pathname.startsWith('/v9/projects/'))return JSON.stringify({id:config.projectId,name:config.project,accountId:teamId,protectionBypass:{'dummy-existing-bypass':{scope:'automation-bypass'}},...options.project})
       if(url.pathname==='/v4/aliases') {
         if(options.assignedRace&&[...aliases.values()].some(a=>a.deploymentId==='dpl_candidate'))aliases.get(config.aliases[0]).deploymentId='dpl_external'
         const records=[...aliases.values()]
@@ -52,7 +52,7 @@ function harness(target = 'rewardme', options = {}) {
     }
     throw new Error('Unexpected mutation')
   }
-  return {aliases,commands,evidence,run,health:async()=>({ok:true,status:'ready',database:'reachable',sourceRevision:sha,projectRef:config.backend,...options.health}),record:async state=>evidence.push(structuredClone(state))}
+  return {aliases,commands,evidence,run,assertCurrentMain:async expected=>{assert.equal(expected,sha);if(++mainChecks===options.staleAt)throw new Error('origin/main advanced')},health:async(origin,bypass)=>{assert.equal(bypass,'dummy-existing-bypass');return {ok:true,status:'ready',database:'reachable',sourceRevision:sha,projectRef:config.backend,...options.health}},record:async state=>evidence.push(structuredClone(state))}
 }
 
 for(const target of ['rewardme','loyality'])test(`${target}: stages exact source and publishes only its allowlist, preserving every other mapping`,async()=>{
@@ -64,11 +64,13 @@ for(const target of ['rewardme','loyality'])test(`${target}: stages exact source
   assert.deepEqual(h.commands.filter(args=>args[0]==='alias').map(args=>args[3]),targets[target].aliases)
   for(const [alias,mapping] of before)if(!targets[target].aliases.includes(alias))assert.deepEqual(h.aliases.get(alias),mapping)
   assert(h.commands.every(args=>['api','deploy','alias'].includes(args[0])))
+  assert(!JSON.stringify(h.evidence).includes('dummy-existing-bypass'))
   assert(h.commands.filter(args=>args[0]==='api'&&args[1].includes('/v4/aliases?')).some(args=>args[1].includes('until=100')))
 })
 
 for(const [label,options] of [
   ['wrong project',{project:{id:'prj_unrelated'}}],['wrong team',{project:{accountId:'team_other'}}],
+  ['missing existing bypass',{project:{protectionBypass:{}}}],
   ['candidate source mismatch',{candidate:{meta:{githubCommitSha:'b'.repeat(40)}}}],
   ['candidate not ready',{candidate:{readyState:'ERROR'}}],['candidate wrong project',{candidate:{projectId:'prj_unrelated'}}],
   ['wrong backend',{health:{projectRef:'wrong'}}],['wrong health source',{health:{sourceRevision:'b'.repeat(40)}}],
@@ -85,6 +87,16 @@ test('refuses unexpected alias ownership before even staging',async()=>{
   const h=harness();h.aliases.get('myrewardme.com').projectId='prj_other'
   await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),/Unapproved alias mapping/)
   assert.equal(h.commands.filter(args=>args[0]==='deploy').length,0)
+})
+
+test('runtime missing bypass stops before deploy, health curl or alias commands',async()=>{
+  const h=harness('loyality',{project:{protectionBypass:{}}})
+  let healthCalls=0
+  h.health=async()=>{healthCalls++;throw new Error('health must not run')}
+  await assert.rejects(publishReviewedSite({target:'loyality',sha},h),/Existing automation bypass required/)
+  assert.equal(healthCalls,0)
+  assert(h.commands.every(command=>command[0]==='api'))
+  assert(!JSON.stringify(h.evidence).includes('dummy-existing-bypass'))
 })
 
 test('rejects unapproved target and abbreviated source without any subprocess',async()=>{
@@ -121,12 +133,12 @@ test('second alias timeout after remote write records uncertain mapping and stop
 
 for(const kind of ['401','non-JSON','redirect'])test(`immutable health ${kind} refuses alias writes without bypassing protection`,async()=>{
   const h=harness()
-  h.health=origin=>readCandidateHealth(origin,async args=>{
+  h.health=(origin,bypass)=>readCandidateHealth(origin,async args=>{
     assert.equal(args[0],'curl');assert.equal(args[1],'/api/health');assert.equal(args[3],origin)
     assert(args.includes('--fail'));assert(!args.includes('--location'));assert(!args.includes('-L'))
     if(kind==='401')throw new Error('Vercel curl failed (HTTP 401)')
     return kind==='redirect'?'redirect\n302 text/plain':'<html>login</html>\n200 text/html'
-  },'/local/linked-health')
+  },'/local/linked-health',bypass)
   await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),kind==='401'?/HTTP 401/:/requires HTTP 200 JSON/)
   assert.equal(h.commands.filter(command=>command[0]==='alias').length,0)
 })
@@ -136,14 +148,23 @@ test('authenticated health uses linked cwd and environment auth without forwardi
   const health=await readCandidateHealth('https://reviewed-candidate.vercel.app',async(args,options)=>{
     const command=vercelArguments(args,'test-token'),separator=command.indexOf('--')
     assert.equal(options.cwd,'/local/linked-health')
+    assert.equal(options.env.VERCEL_AUTOMATION_BYPASS_SECRET,'dummy-existing-bypass')
     assert(separator>0)
     assert(!command.includes('--scope'));assert(!command.includes('--token'));assert(!command.includes('--cwd'));assert(!command.includes('test-token'))
     assert.equal(command.at(-1),'\n%{http_code} %{content_type}')
     return JSON.stringify(status)+'\n200 application/json; charset=utf-8'
-  },'/local/linked-health')
+  },'/local/linked-health','dummy-existing-bypass')
   assert.deepEqual(health,status)
   assert.deepEqual(vercelArguments(['api','/v9/projects/example'],'test-token'),['api','/v9/projects/example','--scope',scope,'--token','test-token'])
-  await assert.rejects(readCandidateHealth('https://reviewed-candidate.vercel.app',async()=>'<html>\n200 application/json','/local/linked-health'),/invalid JSON/)
+  await assert.rejects(readCandidateHealth('https://reviewed-candidate.vercel.app',async()=>'<html>\n200 application/json','/local/linked-health','dummy-existing-bypass'),/invalid JSON/)
+  await assert.rejects(readCandidateHealth('https://reviewed-candidate.vercel.app',async()=>{throw new Error('must not execute curl')},'/local/linked-health',''),/creation is forbidden/)
+})
+
+for(const staleAt of [1,2,3])test(`origin/main advancement at check${staleAt} stops stale publication`,async()=>{
+  const h=harness('rewardme',{staleAt})
+  await assert.rejects(publishReviewedSite({target:'rewardme',sha},h),/origin\/main advanced/)
+  assert.equal(h.commands.filter(command=>command[0]==='alias').length,Math.max(0,staleAt-2))
+  if(staleAt===1)assert.equal(h.commands.filter(command=>command[0]==='deploy').length,0)
 })
 
 for(const host of Object.keys(protectedMappings))for(const kind of ['missing','wrong project','wrong deployment'])test(`refuses audited protected pin ${host} ${kind} before staging`,async()=>{
