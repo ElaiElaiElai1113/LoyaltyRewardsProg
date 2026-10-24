@@ -73,6 +73,9 @@ jobs:
       - name: Tenant import validator
         run: npm run validate:tenant-import -- docs/tenant-import-template.json
 
+      - name: Deployment target and trigger scope contracts
+        run: node --test scripts/deployment-workflows.test.mjs scripts/publish-reviewed-site.test.mjs
+
       - name: RewardMe partner intake tests
         run: npm run test:rewardme-partner-import
 

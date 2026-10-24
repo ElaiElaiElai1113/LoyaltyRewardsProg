@@ -2,6 +2,12 @@ name: Deploy Loyality production
 
 on:
   workflow_dispatch:
+    inputs:
+      refresh_server_environment:
+        description: Explicitly refresh existing Loyality server variables from configured GitHub secrets
+        required: false
+        type: boolean
+        default: false
   push:
     branches:
       - main
@@ -13,6 +19,8 @@ on:
       - 'index.html'
       - 'package-lock.json'
       - 'package.json'
+      - 'scripts/publish-reviewed-site.mjs'
+      - 'scripts/deploy-tenant-sites.mjs'
       - 'tsconfig*.json'
       - 'vercel.json'
 
@@ -20,8 +28,8 @@ permissions:
   contents: read
 
 concurrency:
-  group: loyality-production
-  cancel-in-progress: true
+  group: coffee-production-publish
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -40,6 +48,9 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@58.7.1
 
       - name: Verify the Loyalty Platforms connection
         env:
@@ -65,10 +76,12 @@ jobs:
           npm run typecheck
           npm run lint
           npm run test:unit
+          node --test scripts/deployment-workflows.test.mjs scripts/publish-reviewed-site.test.mjs
           npm run build
           npm run build:budget
 
       - name: Configure Loyality production
+        if: github.event_name == 'workflow_dispatch' && inputs.refresh_server_environment == true
         env:
           LOYALITY_SUPABASE_ANON_KEY: ${{ secrets.NEW_VITE_SUPABASE_ANON_KEY }}
           LOYALITY_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
@@ -87,7 +100,15 @@ jobs:
       - name: Deploy Loyality
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: npx vercel deploy . --prod --yes --archive=tgz --project "$VERCEL_PROJECT" --scope "$VERCEL_ORG" --token "$VERCEL_TOKEN"
+        run: node scripts/publish-reviewed-site.mjs loyality "$GITHUB_SHA" artifacts/deployment/loyality.json
+
+      - name: Upload bounded publication evidence
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: loyality-deployment-${{ github.run_id }}
+          path: artifacts/deployment/loyality.json
+          if-no-files-found: warn
 
       - name: Verify production is live
         env:
