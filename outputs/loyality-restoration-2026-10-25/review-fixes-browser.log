@@ -1,0 +1,12 @@
+
+Running 3 tests using 1 worker
+
+(node:59688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:59688) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok 1 [chromium] › tests\e2e\loyality-public.spec.ts:22:3 › Loyality public product › homepage restores every supplied PDF copy entry (1.7s)
+  ok 2 [chromium] › tests\e2e\loyality-public.spec.ts:52:5 › Loyality public product › landing page is complete and responsive on phone (2.0s)
+  ok 3 [chromium] › tests\e2e\loyality-public.spec.ts:52:5 › Loyality public product › landing page is complete and responsive on tablet (2.0s)
+
+  3 passed (6.8s)

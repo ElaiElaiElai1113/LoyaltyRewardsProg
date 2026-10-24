@@ -179,7 +179,7 @@ test.describe('cross-tenant public responsive layouts', () => {
         tenant === 'loyality' ? '.reference-loyality__nav' : '.reference-rewardme__nav',
       )
       await expect(topBar.getByRole('link', {
-        name: tenant === 'loyality' ? 'Get started' : 'For businesses',
+        name: tenant === 'loyality' ? 'See a Demo' : 'For businesses',
         exact: true,
       })).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
     })

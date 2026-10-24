@@ -2327,3 +2327,47 @@
     display: none;
   }
 }
+
+/* Source-copy restoration retains the approved forest/lime presentation. */
+.reference-loyality .restored-anchor:is(#ledger,#example,#how,#concept,#support,#features,#guarantee) {
+  display: block; height: 0; min-height: 0; padding: 0; margin: 0; border: 0; background: none;
+}
+.reference-loyality .v2-hero-photo:has(+.restored-demo-card) { height: 280px; }
+.reference-loyality .restored-demo-card {
+  position: relative; margin-top: 18px; padding: 26px; border-radius: 18px;
+  background: #edf2e6; border: 1px solid #cbdac3;
+}
+.reference-loyality .restored-demo-card h2 { font-size: 28px; margin: 18px 0 6px; }
+.reference-loyality .restored-demo-card p { font-size: 14px; line-height: 1.7; color: var(--muted); }
+.reference-loyality .restored-demo-tag { font: 11px/1.6 'IBM Plex Mono',monospace; color: var(--dark); }
+.reference-loyality .restored-qr-row { display: flex; gap: 20px; align-items: center; margin: 24px 0; }
+.reference-loyality .restored-qr {
+  width: 96px; height: 96px; flex-shrink: 0; border: 6px solid var(--paper); border-radius: 8px;
+  background: conic-gradient(var(--dark) 25%,var(--paper) 0 50%,var(--dark) 0 75%,var(--paper) 0) 0 0/12px 12px;
+}
+.reference-loyality .restored-progress { padding: 18px; background: var(--paper); border-radius: 10px; border-left: 3px solid #759849; }
+.reference-loyality .restored-progress strong { font-size: 14px; }
+.reference-loyality .restored-progress p { font-size: 12px; }
+.reference-loyality .restored-progress-bar { height: 6px; margin-top: 12px; border-radius: 4px; background: #d3dfd1; overflow: hidden; }
+.reference-loyality .restored-progress-bar span { display: block; height: 100%; width: 70%; background: #759849; }
+.reference-loyality .restored-white-label { padding-block: 85px; background: var(--dark); color: var(--paper); }
+.reference-loyality .restored-white-label .reference-loyality__eyebrow { color: var(--lime); }
+.reference-loyality .restored-benefits-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; }
+.reference-loyality .restored-benefits { display: grid; gap: 24px; }
+.reference-loyality .restored-benefits .reference-loyality__compare-card { padding: 30px; border-radius: 14px; background: #244b3b; color: var(--paper); }
+.reference-loyality .restored-benefits .reference-loyality__compare-card>span { color: var(--lime); }
+.reference-loyality .restored-benefits .reference-loyality__compare-card p { color: #d3e1ce; }
+.reference-loyality .restored-white-label .restored-benefit-photo { width: 100%; height: 100%; margin: 0; border-radius: 18px; overflow: hidden; }
+.reference-loyality .restored-white-label .restored-benefit-photo img { width: 100%; height: 100%; min-height: 360px; object-fit: cover; }
+.reference-loyality .reference-loyality__footer .restored-copyright { max-width: 1240px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid #456344; }
+@media (max-width:960px) {
+  .reference-loyality .restored-benefits-layout { grid-template-columns: 1fr; }
+  .reference-loyality .restored-white-label .restored-benefit-photo img { height: 320px; min-height: 0; }
+}
+@media (max-width:760px) {
+  .reference-loyality .restored-white-label { padding-block: 55px; }
+  .reference-loyality .restored-demo-card { padding: 22px; }
+  .reference-loyality .restored-qr-row { gap: 14px; align-items: flex-start; }
+  .reference-loyality .restored-qr { width: 64px; height: 64px; border-width: 4px; }
+  .reference-loyality .restored-benefits .reference-loyality__compare-card { padding: 24px; }
+}

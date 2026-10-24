@@ -1,0 +1,128 @@
+
+> rewardme@0.0.0 build
+> tsc -b && vite build
+
+vite v8.1.0 building client environment for production...
+[2K
+transforming...✓ 708 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                               3.49 kB │ gzip:   0.90 kB
+dist/assets/space-grotesk-latin-700-normal-RjhwGPKo.woff2    12.84 kB
+dist/assets/ibm-plex-mono-latin-400-normal-CvHOgSBP.woff     13.14 kB
+dist/assets/ibm-plex-mono-latin-500-normal-CB9ihrfo.woff     13.15 kB
+dist/assets/ibm-plex-mono-latin-600-normal-DWFSQ4vo.woff     13.20 kB
+dist/assets/space-grotesk-latin-500-normal-lFbtlQH6.woff2    13.31 kB
+dist/assets/ibm-plex-mono-latin-400-normal-DMJ8VG8y.woff2    14.70 kB
+dist/assets/ibm-plex-mono-latin-500-normal-DSY6xOcd.woff2    14.88 kB
+dist/assets/ibm-plex-mono-latin-600-normal-BgSNZQsw.woff2    15.62 kB
+dist/assets/anton-latin-400-normal-AUNGEG_V.woff             15.63 kB
+dist/assets/space-grotesk-latin-700-normal-CwsQ-cCU.woff     16.41 kB
+dist/assets/fraunces-latin-400-normal-6IfK1voy.woff2         17.96 kB
+dist/assets/fraunces-latin-500-normal-DnGCNyPD.woff2         18.00 kB
+dist/assets/fraunces-latin-600-normal-BFCDtZfi.woff2         18.09 kB
+dist/assets/fraunces-latin-700-normal-CEOla-zY.woff2         18.21 kB
+dist/assets/anton-latin-400-normal-Byf51wtH.woff2            18.61 kB
+dist/assets/source-serif-4-latin-500-normal-CUHe9xxf.woff2   21.52 kB
+dist/assets/source-serif-4-latin-600-normal-DouSKlru.woff2   21.53 kB
+dist/assets/source-serif-4-latin-700-normal-CGGdTIBe.woff2   21.71 kB
+dist/assets/jetbrains-mono-latin-600-normal-C8RAYTDA.woff2   21.86 kB
+dist/assets/ibm-plex-sans-latin-400-normal-CYLoc0-x.woff     22.10 kB
+dist/assets/fraunces-latin-500-normal-BTR4KCeb.woff          22.46 kB
+dist/assets/fraunces-latin-400-normal-NUPT2cO8.woff          22.48 kB
+dist/assets/fraunces-latin-600-normal-DL5QCzvS.woff          22.51 kB
+dist/assets/fraunces-latin-700-normal-DTjk5d1Q.woff          22.51 kB
+dist/assets/ibm-plex-sans-latin-400-normal-CDDApCn2.woff2    22.58 kB
+dist/assets/inter-latin-400-normal-C38fXH4l.woff2            23.66 kB
+dist/assets/ibm-plex-sans-latin-600-normal-Cu4Hd6ag.woff     23.87 kB
+dist/assets/ibm-plex-sans-latin-500-normal-BgVn5rGT.woff     23.91 kB
+dist/assets/ibm-plex-sans-latin-500-normal-6ng42L7E.woff2    24.18 kB
+dist/assets/ibm-plex-sans-latin-600-normal-CuJfVYMP.woff2    24.25 kB
+dist/assets/inter-latin-500-normal-Cerq10X2.woff2            24.27 kB
+dist/assets/inter-latin-700-normal-Yt3aPRUw.woff2            24.35 kB
+dist/assets/inter-latin-800-normal-BYj_oED-.woff2            24.40 kB
+dist/assets/inter-latin-600-normal-LgqL8muc.woff2            24.45 kB
+dist/assets/source-serif-4-latin-500-normal-DVVamBqs.woff    25.52 kB
+dist/assets/source-serif-4-latin-600-normal-DMD1h6_f.woff    25.62 kB
+dist/assets/source-serif-4-latin-700-normal-3V4Pv1hj.woff    25.71 kB
+dist/assets/jetbrains-mono-latin-600-normal-BfsvjouI.woff    28.18 kB
+dist/assets/inter-latin-400-normal-CyCys3Eg.woff             30.69 kB
+dist/assets/inter-latin-600-normal-CiBQ2DWP.woff             31.26 kB
+dist/assets/inter-latin-500-normal-BL9OpVg8.woff             31.28 kB
+dist/assets/inter-latin-800-normal-D1mf63XC.woff             31.29 kB
+dist/assets/inter-latin-700-normal-BLAVimhd.woff             31.32 kB
+dist/assets/real-estate-rewards-768-GOlpiwBB.webp            33.92 kB
+dist/assets/car-rewards-clean-768-DEVnWFHV.webp              37.79 kB
+dist/assets/real-estate-rewards-DmLQWocv.webp                43.93 kB
+dist/assets/hero-5sT3BiRD.png                                44.91 kB
+dist/assets/coffee-rewards-B98-G2UI.webp                     47.52 kB
+dist/assets/salon-rewards-768-CwInJez3.webp                  61.67 kB
+dist/assets/coffee-member-768-B0VcdnBX.webp                  61.69 kB
+dist/assets/car-rewards-clean-D3e82KyG.webp                  69.65 kB
+dist/assets/salon-rewards-CVKpomTe.webp                      73.71 kB
+dist/assets/salon-partner-CJbsBzqi.webp                      79.66 kB
+dist/assets/local-business-owner-wide-768-8WCcVYXM.webp      86.28 kB
+dist/assets/coffee-member-wide-BBeBuds4.webp                 86.36 kB
+dist/assets/staff-qr-checkout-C0KA6ibg.webp                  87.20 kB
+dist/assets/local-business-owner-CXsHS1eP.webp               90.35 kB
+dist/assets/paper-texture-CAvRFLAG.png                      101.16 kB
+dist/assets/dinner-rewards-768-Db4CfvtC.webp                108.69 kB
+dist/assets/vacation-beach-clean-Bh_UF4W1.webp              126.60 kB
+dist/assets/dinner-rewards-552n_E0K.webp                    130.14 kB
+dist/assets/hotel-partner-BljGrJ-Z.webp                     135.81 kB
+dist/assets/medellinrewards-hero-BXURWOlk.webp              141.72 kB
+dist/assets/local-business-owner-wide-CW_HtB1H.webp         147.03 kB
+dist/assets/coffee-member-Bpz6-eFN.webp                     255.83 kB
+dist/assets/cta-overlay-BUhNB0EB.png                        406.90 kB
+dist/assets/vendor-C9I0VaoD.css                               4.83 kB │ gzip:   0.77 kB
+dist/assets/feature-join-D0aV-8d7.css                         5.28 kB │ gzip:   1.47 kB
+dist/assets/feature-auth-PYg6u9gY.css                        23.86 kB │ gzip:   5.03 kB
+dist/assets/feature-business-BO0PWhJG.css                    40.26 kB │ gzip:   7.60 kB
+dist/assets/reference-design-systems-BuE2-mIh.css            71.18 kB │ gzip:   8.79 kB
+dist/assets/feature-home-BbifKpBD.css                        95.53 kB │ gzip:  15.59 kB
+dist/assets/index-Cjg7pe_s.css                              171.46 kB │ gzip:  25.77 kB
+dist/assets/rolldown-runtime-BgaNhQyE.js                      0.78 kB │ gzip:   0.47 kB
+dist/assets/feature-not-found-C_X_428O.js                     1.17 kB │ gzip:   0.61 kB
+dist/assets/feature-tenant-sX0KZd0x.js                        2.27 kB │ gzip:   1.08 kB
+dist/assets/feature-promotions-3kwiEzEQ.js                    3.06 kB │ gzip:   1.31 kB
+dist/assets/feature-profile-0A9NSDxK.js                      10.55 kB │ gzip:   3.17 kB
+dist/assets/feature-legal-D9QS8puc.js                        10.85 kB │ gzip:   3.41 kB
+dist/assets/feature-ambassadors-DGUuyog8.js                  11.05 kB │ gzip:   3.45 kB
+dist/assets/feature-referrals-D6S6cpjq.js                    11.39 kB │ gzip:   3.65 kB
+dist/assets/feature-early-access-CUWSqkGv.js                 11.72 kB │ gzip:   4.02 kB
+dist/assets/feature-join-ZfKmdLYd.js                         17.06 kB │ gzip:   4.82 kB
+dist/assets/feature-dashboard-BwyX1w3n.js                    20.99 kB │ gzip:   6.34 kB
+dist/assets/feature-loyality-D44ESvEC.js                     21.25 kB │ gzip:   6.37 kB
+dist/assets/feature-membership-CufSYLHI.js                   24.07 kB │ gzip:   6.73 kB
+dist/assets/feature-platform-guide-EQ2jvI_b.js               30.19 kB │ gzip:   8.04 kB
+dist/assets/feature-program-Di5w20ls.js                      30.87 kB │ gzip:   8.58 kB
+dist/assets/feature-business-ck54CBbE.js                     45.66 kB │ gzip:  11.95 kB
+dist/assets/feature-shop-B7bZFK4e.js                         47.32 kB │ gzip:  12.95 kB
+dist/assets/feature-activity-DiGjsGyI.js                     48.77 kB │ gzip:  15.92 kB
+dist/assets/feature-platform-CL_zRrxC.js                     54.14 kB │ gzip:  15.35 kB
+dist/assets/feature-auth-DoAErD_k.js                         54.35 kB │ gzip:  15.63 kB
+dist/assets/feature-home-DOlEyYzk.js                         60.90 kB │ gzip:  15.72 kB
+dist/assets/feature-gift-cards-D6MKLLxo.js                   67.60 kB │ gzip:  17.14 kB
+dist/assets/index-BUX5W4F1.js                                72.64 kB │ gzip:  16.25 kB
+dist/assets/vendor-ui-Ytz2VbtP.js                           128.84 kB │ gzip:  36.63 kB
+dist/assets/feature-business-owner-C0lhucnz.js              157.72 kB │ gzip:  33.24 kB
+dist/assets/vendor-supabase-C1FO8qvH.js                     181.82 kB │ gzip:  47.81 kB
+dist/assets/feature-admin-CM8HPst4.js                       210.56 kB │ gzip:  41.26 kB
+dist/assets/vendor-BETmzt1A.js                              337.84 kB │ gzip: 111.68 kB
+dist/assets/vendor-react-DU5RzgOp.js                        344.66 kB │ gzip: 109.23 kB
+dist/assets/language-catalog-CXTaDgBp.js                    481.22 kB │ gzip: 149.04 kB
+
+✓ built in 1.94s
+PWA v1.3.0
+Building src/sw.js service worker ("es" format)...
+vite v8.1.0 building client environment for production...
+
+ WARN  inlineDynamicImports option is deprecated, please use codeSplitting: false instead.
+
+[2K
+transforming...✓ 2 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/sw.mjs  0.22 kB │ gzip: 0.17 kB
+
+✓ built in 42ms

@@ -1,0 +1,44 @@
+{
+  "source": "Loyality-Website.pdf",
+  "sha256": "11e9a8a2a736a4b7310b83c8342ae8dc8d28be509f002a4d7e07fab2e66755bd",
+  "review": "Transcribed from the supplied page raster; companion HTML checked for punctuation. Whitespace normalized only.",
+  "sections": {
+    "navigation": ["Product", "Pricing", "Contact", "See a Demo"],
+    "hero": [
+      "Your Own Branded Loyalty Program",
+      "Your loyalty card, reimagined.",
+      "A white-label, QR-based loyalty platform that runs under your own brand. Customers scan, earn, and redeem — you focus on running your business.",
+      "See a Demo", "How it works"
+    ],
+    "example": [
+      "Powered by Loyality", "Harvest & Vine", "Neighborhood wine bar & kitchen",
+      "Scan at checkout to earn points automatically — no app download required for the customer.",
+      "3 visits to next reward", "Almost there — one more visit unlocks it"
+    ],
+    "pillars": [
+      "Two Core Pillars", "Built to bring customers in, and keep them coming back.",
+      "Acquisition", "Trackable referrals",
+      "Every promotion becomes trackable. Give a new customer an incentive via a QR code, and see exactly where each redemption came from — no guesswork on what's working.",
+      "Retention", "Visit-based rewards",
+      "Reward customers automatically on their 2nd or 3rd visit, or run a classic punch-card model. Retention raises both spend and repeat-visit rate.",
+      "Simplicity", "No POS integration needed",
+      "Staff scan a QR code and see the customer's balance. No new hardware, no complicated setup — it works alongside whatever you already use."
+    ],
+    "whiteLabel": [
+      "Why It Works", "White-label means it's yours, not ours.",
+      "For Your Customers", "Feels like your program",
+      "Your branding, your name, your look — customers never see \"Loyality,\" they see a loyalty program built by you, for them.",
+      "For Your Business", "Runs itself in the background",
+      "Once it's set up, the acquisition and retention mechanics run automatically. You focus on the business, not the software."
+    ],
+    "demo": [
+      "See it running for a business like yours.",
+      "We'll walk you through a live demo built around your business type — no commitment required.",
+      "Request a Demo"
+    ],
+    "footer": [
+      "Your loyalty card, reimagined.", "Product", "Why It Works", "Contact",
+      "© Loyality. A white-label loyalty platform for independent businesses."
+    ]
+  }
+}

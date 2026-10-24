@@ -33,9 +33,9 @@ const tenantCases: Array<{
   {
     tenant: 'loyality',
     storageSlug: 'loyality',
-    spanishHeading: 'Convierte a tus clientes en miembros.',
+    spanishHeading: 'Tu tarjeta de fidelidad, reinventada.',
     businessSpanish: 'Un programa de fidelidad que se siente como tu negocio.',
-    englishHeading: 'Turn your customers into members.',
+    englishHeading: 'Your loyalty card, reimagined.',
   },
 ]
 

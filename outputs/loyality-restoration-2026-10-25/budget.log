@@ -1,0 +1,12 @@
+
+> rewardme@0.0.0 build:budget
+> node scripts/check-build-budgets.mjs
+
+{
+  "passed": true,
+  "totalBytes": 12577951,
+  "totalLimit": 12582912,
+  "violations": [],
+  "precachedMedia": [],
+  "credentialExposures": []
+}

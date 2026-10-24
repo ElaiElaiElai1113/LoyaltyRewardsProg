@@ -26,7 +26,7 @@ const tenants = [
     slug: 'loyality',
     name: 'Loyality',
     color: '#b8862e',
-    heading: 'Turn your customers into members.',
+    heading: 'Your loyalty card, reimagined.',
   },
 ] as const
 

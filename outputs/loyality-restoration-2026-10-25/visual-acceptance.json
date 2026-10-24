@@ -1,0 +1,928 @@
+{
+  "viewports": [
+    {
+      "width": 320,
+      "height": 780,
+      "clientWidth": 320,
+      "pageWidth": 305,
+      "pageHeight": 4745,
+      "fonts": [
+        {
+          "family": "Fraunces",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "400"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "500"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        }
+      ],
+      "fontErrors": [],
+      "images": [
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        },
+        {
+          "src": "/loyality-member-scan.jpg",
+          "width": 3600,
+          "height": 1200
+        },
+        {
+          "src": "/loyality-owner-dashboard.jpg",
+          "width": 3600,
+          "height": 1195
+        },
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        }
+      ],
+      "brokenHashes": [],
+      "targets": [
+        {
+          "label": "EnglishSpanish",
+          "width": 86,
+          "height": 44
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Open navigation",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "label": "See a Demo",
+          "width": 265,
+          "height": 52
+        },
+        {
+          "label": "How it works",
+          "width": 265,
+          "height": 52
+        },
+        {
+          "label": "Request a Demo",
+          "width": 139.671875,
+          "height": 52
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Product",
+          "width": 55.28125,
+          "height": 44
+        },
+        {
+          "label": "Why It Works",
+          "width": 89.734375,
+          "height": 44
+        },
+        {
+          "label": "Contact",
+          "width": 54.84375,
+          "height": 44
+        },
+        {
+          "label": "Sign in",
+          "width": 47.734375,
+          "height": 44
+        }
+      ],
+      "footerHits": [
+        {
+          "label": "Loyality",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Product",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Why It Works",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Contact",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Sign in",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "copyEntries": 42,
+      "spanishCopy": "PASS"
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "clientWidth": 390,
+      "pageWidth": 375,
+      "pageHeight": 4295,
+      "fonts": [
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        },
+        {
+          "family": "Fraunces",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "400"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "500"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        }
+      ],
+      "fontErrors": [],
+      "images": [
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        },
+        {
+          "src": "/loyality-member-scan.jpg",
+          "width": 3600,
+          "height": 1200
+        },
+        {
+          "src": "/loyality-owner-dashboard.jpg",
+          "width": 3600,
+          "height": 1195
+        },
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        }
+      ],
+      "brokenHashes": [],
+      "targets": [
+        {
+          "label": "EnglishSpanish",
+          "width": 90,
+          "height": 46
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Open navigation",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "label": "See a Demo",
+          "width": 161.5,
+          "height": 52
+        },
+        {
+          "label": "How it works",
+          "width": 161.5,
+          "height": 52
+        },
+        {
+          "label": "Request a Demo",
+          "width": 139.671875,
+          "height": 52
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Product",
+          "width": 55.28125,
+          "height": 44
+        },
+        {
+          "label": "Why It Works",
+          "width": 89.734375,
+          "height": 44
+        },
+        {
+          "label": "Contact",
+          "width": 54.84375,
+          "height": 44
+        },
+        {
+          "label": "Sign in",
+          "width": 47.734375,
+          "height": 44
+        }
+      ],
+      "footerHits": [
+        {
+          "label": "Loyality",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Product",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Why It Works",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Contact",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Sign in",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "copyEntries": 42,
+      "spanishCopy": "PASS"
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "clientWidth": 768,
+      "pageWidth": 753,
+      "pageHeight": 4183,
+      "fonts": [
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        },
+        {
+          "family": "Fraunces",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "400"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "500"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        }
+      ],
+      "fontErrors": [],
+      "images": [
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        },
+        {
+          "src": "/loyality-member-scan.jpg",
+          "width": 3600,
+          "height": 1200
+        },
+        {
+          "src": "/loyality-owner-dashboard.jpg",
+          "width": 3600,
+          "height": 1195
+        },
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        }
+      ],
+      "brokenHashes": [],
+      "targets": [
+        {
+          "label": "EnglishSpanish",
+          "width": 90,
+          "height": 46
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Open navigation",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "label": "See a Demo",
+          "width": 122.9375,
+          "height": 50
+        },
+        {
+          "label": "How it works",
+          "width": 130.390625,
+          "height": 50
+        },
+        {
+          "label": "Request a Demo",
+          "width": 150.125,
+          "height": 50
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Product",
+          "width": 55.28125,
+          "height": 44
+        },
+        {
+          "label": "Why It Works",
+          "width": 89.734375,
+          "height": 44
+        },
+        {
+          "label": "Contact",
+          "width": 54.84375,
+          "height": 44
+        },
+        {
+          "label": "Sign in",
+          "width": 47.734375,
+          "height": 44
+        }
+      ],
+      "footerHits": [
+        {
+          "label": "Loyality",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Product",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Why It Works",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Contact",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Sign in",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "copyEntries": 42,
+      "spanishCopy": "PASS"
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "clientWidth": 1440,
+      "pageWidth": 1425,
+      "pageHeight": 3286,
+      "fonts": [
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        },
+        {
+          "family": "Fraunces",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "400"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "500"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        }
+      ],
+      "fontErrors": [],
+      "images": [
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        },
+        {
+          "src": "/loyality-member-scan.jpg",
+          "width": 3600,
+          "height": 1200
+        },
+        {
+          "src": "/loyality-owner-dashboard.jpg",
+          "width": 3600,
+          "height": 1195
+        },
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        }
+      ],
+      "brokenHashes": [],
+      "targets": [
+        {
+          "label": "EnglishSpanish",
+          "width": 90,
+          "height": 46
+        },
+        {
+          "label": "Loyality",
+          "width": 140,
+          "height": 70
+        },
+        {
+          "label": "Product",
+          "width": 45.765625,
+          "height": 44
+        },
+        {
+          "label": "Pricing",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "label": "Contact",
+          "width": 45.359375,
+          "height": 44
+        },
+        {
+          "label": "Sign in",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "label": "See a Demo",
+          "width": 122.9375,
+          "height": 46.890625
+        },
+        {
+          "label": "See a Demo",
+          "width": 122.9375,
+          "height": 50
+        },
+        {
+          "label": "How it works",
+          "width": 130.390625,
+          "height": 50
+        },
+        {
+          "label": "Request a Demo",
+          "width": 150.125,
+          "height": 50
+        },
+        {
+          "label": "Loyality",
+          "width": 140,
+          "height": 70
+        },
+        {
+          "label": "Product",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "label": "Why It Works",
+          "width": 71.765625,
+          "height": 44
+        },
+        {
+          "label": "Contact",
+          "width": 44,
+          "height": 44
+        },
+        {
+          "label": "Sign in",
+          "width": 44,
+          "height": 44
+        }
+      ],
+      "footerHits": [
+        {
+          "label": "Loyality",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Product",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Why It Works",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Contact",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Sign in",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "copyEntries": 42,
+      "spanishCopy": "PASS"
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "clientWidth": 844,
+      "pageWidth": 829,
+      "pageHeight": 4183,
+      "fonts": [
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        },
+        {
+          "family": "Fraunces",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "400"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "500"
+        },
+        {
+          "family": "IBM Plex Sans",
+          "weight": "600"
+        },
+        {
+          "family": "IBM Plex Mono",
+          "weight": "400"
+        },
+        {
+          "family": "Space Grotesk",
+          "weight": "500"
+        }
+      ],
+      "fontErrors": [],
+      "images": [
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        },
+        {
+          "src": "/loyality-member-scan.jpg",
+          "width": 3600,
+          "height": 1200
+        },
+        {
+          "src": "/loyality-owner-dashboard.jpg",
+          "width": 3600,
+          "height": 1195
+        },
+        {
+          "src": "/loyality-client-logo.webp",
+          "width": 280,
+          "height": 140
+        }
+      ],
+      "brokenHashes": [],
+      "targets": [
+        {
+          "label": "EnglishSpanish",
+          "width": 90,
+          "height": 46
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Open navigation",
+          "width": 48,
+          "height": 48
+        },
+        {
+          "label": "See a Demo",
+          "width": 122.9375,
+          "height": 50
+        },
+        {
+          "label": "How it works",
+          "width": 130.390625,
+          "height": 50
+        },
+        {
+          "label": "Request a Demo",
+          "width": 150.125,
+          "height": 50
+        },
+        {
+          "label": "Loyality",
+          "width": 128,
+          "height": 64
+        },
+        {
+          "label": "Product",
+          "width": 55.28125,
+          "height": 44
+        },
+        {
+          "label": "Why It Works",
+          "width": 89.734375,
+          "height": 44
+        },
+        {
+          "label": "Contact",
+          "width": 54.84375,
+          "height": 44
+        },
+        {
+          "label": "Sign in",
+          "width": 47.734375,
+          "height": 44
+        }
+      ],
+      "footerHits": [
+        {
+          "label": "Loyality",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Product",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Why It Works",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Contact",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        },
+        {
+          "label": "Sign in",
+          "intersectsDock": false,
+          "hits": [
+            true,
+            true,
+            true
+          ]
+        }
+      ],
+      "copyEntries": 42,
+      "spanishCopy": "PASS"
+    }
+  ],
+  "checks": [
+    "Escape closes and returns keyboard focus",
+    "Outside pointer closes menu",
+    "Product anchor closes menu and marks current section",
+    "Desktop resize resets menu",
+    "All legacy and reference deep-link IDs resolve",
+    "Demo/business, sign-in and join render through existing routes",
+    "Reduced-motion transitions disabled"
+  ],
+  "httpErrors": [],
+  "pageErrors": [],
+  "contrast": [
+    {
+      "selector": ".reference-loyality__lead",
+      "foreground": "rgb(82, 103, 88)",
+      "background": "rgb(248, 250, 246)",
+      "ratio": 5.81324437630116
+    },
+    {
+      "selector": ".restored-demo-tag",
+      "foreground": "rgb(68, 97, 66)",
+      "background": "rgb(237, 242, 230)",
+      "ratio": 6.0785595925588645
+    },
+    {
+      "selector": ".restored-demo-sub",
+      "foreground": "rgb(82, 103, 88)",
+      "background": "rgb(237, 242, 230)",
+      "ratio": 5.362080070076337
+    },
+    {
+      "selector": ".restored-qr-row p",
+      "foreground": "rgb(82, 103, 88)",
+      "background": "rgb(237, 242, 230)",
+      "ratio": 5.362080070076337
+    },
+    {
+      "selector": ".restored-progress p",
+      "foreground": "rgb(82, 103, 88)",
+      "background": "rgb(248, 250, 246)",
+      "ratio": 5.81324437630116
+    },
+    {
+      "selector": "#pillars article p",
+      "foreground": "rgb(82, 103, 88)",
+      "background": "rgb(248, 250, 246)",
+      "ratio": 5.81324437630116
+    },
+    {
+      "selector": "#pricing h2",
+      "foreground": "rgb(248, 250, 246)",
+      "background": "rgb(21, 57, 46)",
+      "ratio": 12.070771976268547
+    },
+    {
+      "selector": "#pricing article>span",
+      "foreground": "rgb(212, 242, 138)",
+      "background": "rgb(36, 75, 59)",
+      "ratio": 7.8649981690627415
+    },
+    {
+      "selector": "#pricing article p",
+      "foreground": "rgb(211, 225, 206)",
+      "background": "rgb(36, 75, 59)",
+      "ratio": 7.19533921361691
+    },
+    {
+      "selector": "footer p",
+      "foreground": "rgb(199, 216, 197)",
+      "background": "rgb(21, 57, 46)",
+      "ratio": 8.485520279689508
+    }
+  ]
+}
