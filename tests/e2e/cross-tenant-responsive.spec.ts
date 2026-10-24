@@ -165,7 +165,7 @@ test.describe('cross-tenant public responsive layouts', () => {
         const businessMenuBounds = await businessMenu.boundingBox()
         expect(businessHeaderBounds).toEqual(homeHeaderBounds)
         expect(businessMenuBounds).toEqual(homeMenuBounds)
-        await expect(businessMenu.locator(':scope > a').first()).toHaveCSS('text-align', 'center')
+        await expect(businessMenu.locator(':scope > a').first()).toHaveCSS('justify-content', 'center')
       }
       await expect(page.locator('.main-site-language-dock')).toBeVisible()
     })

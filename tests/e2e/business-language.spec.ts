@@ -40,6 +40,7 @@ const commonEnglishLabels = [
 ]
 
 const sharedRewardMeEnglishLabels = [
+  'Join free',
   'FOR BUSINESSES',
   'Get new customers while rewarding our members.',
   'Apply: Commission model',
@@ -130,7 +131,7 @@ test.describe('business onboarding language isolation', () => {
       await expect(header.getByRole('link', { name: 'Plan de ahorro', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Para negocios', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Iniciar sesión', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Iniciar prueba gratuita', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Únete gratis', exact: true })).toBeVisible()
       await expect(header.getByRole('link', {
         name: `Página de inicio de ${tenant.programName}`,
       })).toBeVisible()
@@ -171,7 +172,7 @@ test.describe('business onboarding language isolation', () => {
       await expect(header.getByRole('link', { name: 'Savings plan', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'For businesses', exact: true })).toBeVisible()
       await expect(header.getByRole('link', { name: 'Sign in', exact: true })).toBeVisible()
-      await expect(header.getByRole('link', { name: 'Start free trial', exact: true })).toBeVisible()
+      await expect(header.getByRole('link', { name: 'Join free', exact: true })).toBeVisible()
       await expect(experience.getByRole('heading', { name: 'Get new customers while rewarding our members.' })).toBeVisible()
     })
   }
