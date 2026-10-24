@@ -12,12 +12,17 @@ on:
         description: Full Git commit SHA to deploy; defaults to the selected branch commit
         required: false
         type: string
+      legacy_tenant_sync:
+        description: Run legacy multi-tenant deployment, alias synchronization and server-secret refresh
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: tenant-deployment-${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}
+  group: coffee-production-publish
   cancel-in-progress: false
 
 jobs:
@@ -25,12 +30,14 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' ||
       (github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.head_branch == 'main')
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
       EXPECTED_COMMIT_SHA: ${{ github.event.workflow_run.head_sha || inputs.commit_sha || github.sha }}
-      VERCEL_SCOPE: ${{ vars.VERCEL_SCOPE || 'elaielaielai1113s-projects' }}
+      VERCEL_SCOPE: elaielaielai1113s-projects
       VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
     steps:
       - name: Checkout exact validated commit
@@ -47,7 +54,8 @@ jobs:
       - name: Require deployment credentials
         shell: bash
         run: |
-          test -n "$EXPECTED_COMMIT_SHA"
+          [[ "$EXPECTED_COMMIT_SHA" =~ ^[a-fA-F0-9]{40}$ ]]
+          test "$(git rev-parse HEAD)" = "$EXPECTED_COMMIT_SHA"
           test -n "$VERCEL_TOKEN"
 
       - name: Install dependencies
@@ -56,7 +64,11 @@ jobs:
       - name: Install pinned Vercel CLI
         run: npm install --global vercel@58.7.1
 
+      - name: Check publication scope contracts before external operations
+        run: node --test scripts/deployment-workflows.test.mjs scripts/publish-reviewed-site.test.mjs
+
       - name: Synchronize RewardMe production server secret
+        if: github.event_name == 'workflow_dispatch' && inputs.legacy_tenant_sync == true
         shell: bash
         env:
           REWARDME_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -77,15 +89,10 @@ jobs:
           | node scripts/audit-vercel-environment.mjs
 
       - name: Deploy exact validated RewardMe commit with current server variables
-        run: >-
-          vercel deploy --prod --yes --force
-          --project loyalty-rewards-prog
-          --env "REWARDS_SOURCE_COMMIT=$EXPECTED_COMMIT_SHA"
-          --meta "githubCommitSha=$EXPECTED_COMMIT_SHA"
-          --scope "$VERCEL_SCOPE"
-          --token "$VERCEL_TOKEN"
+        run: node scripts/publish-reviewed-site.mjs rewardme "$EXPECTED_COMMIT_SHA" artifacts/deployment/rewardme.json
 
       - name: Synchronize tenant deployments
+        if: github.event_name == 'workflow_dispatch' && inputs.legacy_tenant_sync == true
         run: npm run ops:deploy:tenants -- --sha "$EXPECTED_COMMIT_SHA" --output artifacts/deployment/tenant-sync.json
 
       - name: Require direct RewardMe application and worker responses
@@ -97,7 +104,22 @@ jobs:
       - name: Install browser for canonical domain verification
         run: npx playwright install --with-deps chromium
 
-      - name: Verify every canonical tenant domain
+      - name: Verify RewardMe production domains
+        shell: bash
+        env:
+          DOMAIN_VERSION_RETRY_ATTEMPTS: '6'
+          DOMAIN_VERSION_RETRY_DELAY_MS: '10000'
+        run: |
+          status=0
+          npm run ops:domain:check -- "myrewardme.com" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "www.myrewardme.com" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "loyalty-rewards-prog.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "rewardme-prod.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          npm run ops:domain:check -- "reward-me-prog.vercel.app" "RewardMe" --expected-version "$EXPECTED_COMMIT_SHA" || status=1
+          exit "$status"
+
+      - name: Verify legacy canonical tenant domains
+        if: github.event_name == 'workflow_dispatch' && inputs.legacy_tenant_sync == true
         shell: bash
         env:
           DOMAIN_VERSION_RETRY_ATTEMPTS: '6'
@@ -112,10 +134,11 @@ jobs:
           exit "$status"
 
       - name: Upload deployment evidence
+        continue-on-error: true
         if: always()
         uses: actions/upload-artifact@v7
         with:
           name: tenant-deployment-${{ github.run_id }}
-          path: artifacts/deployment/tenant-sync.json
+          path: artifacts/deployment/*.json
           if-no-files-found: warn
           retention-days: 30

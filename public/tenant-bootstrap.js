@@ -20,9 +20,9 @@
       description: 'Synergize member benefits and participating local businesses.',
     },
     pinas: { name: 'RewardMe',
-      color: '#173f32',
+      color: '#1f3a2e',
       locale: 'en',
-      logo: '/rewardme-mark.svg',
+      logo: '/rewardme-client-logo-132.webp',
       description: 'RewardMe membership rewards and participating local businesses.',
     },
     pinasrewards: { name: 'Pinas Rewards',
@@ -62,6 +62,7 @@
     'www.guatemalarewards.com': 'guatemala',
     'loyalty-rewards-prog.vercel.app': 'pinas',
     'rewardme-prod.vercel.app': 'pinas',
+    'reward-me-prog.vercel.app': 'pinas',
     'myrewardme.com': 'pinas',
     'www.myrewardme.com': 'pinas',
     'rewardme.localhost': 'pinas',
@@ -111,6 +112,12 @@
   var iconHref = '/api/tenant-icon?size=192' + installQuery
   var appleTouchIconHref = '/api/tenant-icon?size=180' + installQuery
   var manifestHref = '/api/manifest?v=host-aware-2026&tenant=' + encodeURIComponent(installSlug)
+  if (installSlug === 'pinas') {
+    var iconVersion = 'rewardme-client-e2f05324-20261023'
+    iconHref += '&v=' + iconVersion
+    appleTouchIconHref += '&v=' + iconVersion
+    manifestHref += '&iconv=' + iconVersion + '&theme=forest-20261023'
+  }
   var canonicalUrl = window.location.origin + '/'
   document.title = brand.name
   document.documentElement.lang = brand.locale

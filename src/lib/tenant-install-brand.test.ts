@@ -28,6 +28,32 @@ function readPngDimensions(path: string) {
 }
 
 describe('tenant install branding', () => {
+  it('recognizes only the exact RewardMe production alias and rejects tenant overrides', () => {
+    for (const requested of ['pinas', 'loyality', 'wondertown']) {
+      expect(resolveInstallBrand('reward-me-prog.vercel.app', requested).slug).toBe('pinas')
+    }
+    for (const hostname of ['reward-me-prog.vercel.app.attacker.example', 'attacker-reward-me-prog.vercel.app']) {
+      expect(resolveInstallBrand(hostname, 'pinas').slug).toBe('platform')
+    }
+  })
+
+  it('versions only RewardMe master-derived icons and restores its forest and cream install theme', () => {
+    const brand = resolveInstallBrand('myrewardme.com')
+    const manifest = buildInstallManifest(brand)
+    expect(manifest.theme_color).toBe('#1f3a2e')
+    expect(manifest.background_color).toBe('#f6f1e4')
+    for (const size of [180, 192, 512] as const) {
+      const icon = new URL(getInstallIconPath(brand, size), 'https://myrewardme.com')
+      expect(icon.pathname).toBe(`/install-icons/rewardme-${size}.png`)
+      expect(icon.searchParams.has('v')).toBe(false)
+    }
+    for (const icon of manifest.icons) expect(new URL(icon.src, 'https://myrewardme.com').searchParams.get('v')).toBe('rewardme-client-e2f05324-20261023')
+    const wondertown = resolveInstallBrand('wondertown-rewards.vercel.app')
+    expect(getInstallIconPath(wondertown, 180)).toBe('/install-icons/wondertown-180.png')
+    expect(buildInstallManifest(wondertown).theme_color).toBe('#173f32')
+    expect(buildInstallManifest(wondertown).icons[0].src).toBe('/api/tenant-icon?size=192&tenant=wondertown')
+  })
+
   it('does not ship shared legacy icon files that can leak one tenant into another', () => {
     for (const path of [
       'public/site.webmanifest',

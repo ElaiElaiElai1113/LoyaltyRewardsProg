@@ -66,7 +66,7 @@ test.describe('Loyality public product', () => {
       for (let index = 0; index < 2; index += 1) {
         const photo = photos.nth(index)
         await photo.scrollIntoViewIfNeeded()
-        await expect(photo).toHaveCSS('object-fit', 'contain')
+        await expect(photo).toHaveCSS('object-fit', 'cover')
         await expect.poll(() => photo.evaluate((image) => {
           const element = image as HTMLImageElement
           return element.complete && element.naturalWidth > 0
@@ -89,10 +89,10 @@ test.describe('Loyality public product', () => {
       expect(layout.emptyLinks).toBe(0)
       expect(layout.brokenHashLinks).toEqual([])
       expect(layout.bodyFont).toContain('IBM Plex Sans')
-      expect(layout.headingFont).toContain('Fraunces')
+      expect(layout.headingFont).toContain('Space Grotesk')
       expect(layout.labelFont).toContain('IBM Plex Mono')
-      expect(layout.background).toBe('rgb(246, 241, 228)')
-      expect(layout.headingColor).toBe('rgb(31, 58, 46)')
+      expect(layout.background).toBe('rgb(248, 250, 246)')
+      expect(layout.headingColor).toBe('rgb(21, 57, 46)')
       expect(errors).toEqual([])
     })
   }

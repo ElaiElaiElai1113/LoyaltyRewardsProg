@@ -10,6 +10,7 @@ export type InstallBrand = {
   backgroundColor: string
   startUrl: string
   iconBase: string
+  iconVersion?: string
 }
 
 const brands: Record<InstallBrandSlug, InstallBrand> = {
@@ -63,10 +64,11 @@ const brands: Record<InstallBrandSlug, InstallBrand> = {
     shortName: 'RewardMe',
     description: 'RewardMe membership rewards and participating local businesses.',
     locale: 'en',
-    themeColor: '#173f32',
-    backgroundColor: '#f4efdf',
+    themeColor: '#1f3a2e',
+    backgroundColor: '#f6f1e4',
     startUrl: '/',
     iconBase: 'rewardme',
+    iconVersion: 'rewardme-client-e2f05324-20261023',
   },
   pinasrewards: {
     slug: 'pinasrewards',
@@ -111,6 +113,7 @@ const hostSlugs: Record<string, InstallBrandSlug> = {
   'synergize-business-group.vercel.app': 'synergize',
   'loyalty-rewards-prog.vercel.app': 'pinas',
   'rewardme-prod.vercel.app': 'pinas',
+  'reward-me-prog.vercel.app': 'pinas',
   'myrewardme.com': 'pinas',
   'www.myrewardme.com': 'pinas',
   'pinas-rewards.vercel.app': 'pinasrewards',
@@ -158,6 +161,7 @@ export function getInstallIconPath(brand: InstallBrand, size: 180 | 192 | 512) {
 
 export function buildInstallManifest(brand: InstallBrand) {
   const tenantQuery = `tenant=${encodeURIComponent(brand.slug)}`
+  const iconVersionQuery = brand.iconVersion ? `&v=${brand.iconVersion}` : ''
   const startSeparator = brand.startUrl.includes('?') ? '&' : '?'
   return {
     name: brand.name,
@@ -174,13 +178,13 @@ export function buildInstallManifest(brand: InstallBrand) {
     dir: 'ltr',
     icons: [
       {
-        src: `/api/tenant-icon?size=192&${tenantQuery}`,
+        src: `/api/tenant-icon?size=192&${tenantQuery}${iconVersionQuery}`,
         sizes: brand.slug === 'loyality' ? 'any' : '192x192',
         type: brand.slug === 'loyality' ? 'image/svg+xml' : 'image/png',
         purpose: 'any',
       },
       {
-        src: `/api/tenant-icon?size=512&${tenantQuery}`,
+        src: `/api/tenant-icon?size=512&${tenantQuery}${iconVersionQuery}`,
         sizes: brand.slug === 'loyality' ? 'any' : '512x512',
         type: brand.slug === 'loyality' ? 'image/svg+xml' : 'image/png',
         purpose: 'any maskable',

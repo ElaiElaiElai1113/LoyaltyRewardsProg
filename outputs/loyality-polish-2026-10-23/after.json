@@ -1,0 +1,1157 @@
+{
+  "phase": "after",
+  "at": "2026-10-22T19:06:55.383Z",
+  "views": [
+    {
+      "width": 320,
+      "pageWidth": 305,
+      "pageHeight": 14946,
+      "hero": {
+        "x": 20,
+        "y": 75,
+        "w": 265,
+        "h": 1326.296875
+      },
+      "sections": [
+        {
+          "id": "concept",
+          "height": 1524.171875
+        },
+        {
+          "id": "support",
+          "height": 1107.0625
+        },
+        {
+          "id": "pillars",
+          "height": 1190.703125
+        },
+        {
+          "id": "how",
+          "height": 1454.546875
+        },
+        {
+          "id": "ledger",
+          "height": 916.6875
+        },
+        {
+          "id": "features",
+          "height": 2513.390625
+        },
+        {
+          "id": "",
+          "height": 1038.28125
+        },
+        {
+          "id": "guarantee",
+          "height": 808.671875
+        },
+        {
+          "id": "example",
+          "height": 1481.578125
+        },
+        {
+          "id": "pricing",
+          "height": 632.21875
+        },
+        {
+          "id": "",
+          "height": 430.953125
+        }
+      ],
+      "conceptCards": [
+        {
+          "rect": {
+            "x": 20,
+            "y": 1733.21875,
+            "w": 265,
+            "h": 263.5625
+          },
+          "columns": "44px 153px"
+        },
+        {
+          "rect": {
+            "x": 20,
+            "y": 2014.78125,
+            "w": 265,
+            "h": 321.75
+          },
+          "columns": "44px 153px"
+        },
+        {
+          "rect": {
+            "x": 20,
+            "y": 2354.53125,
+            "w": 265,
+            "h": 352.9375
+          },
+          "columns": "44px 153px"
+        }
+      ],
+      "fontErrors": []
+    },
+    {
+      "width": 390,
+      "pageWidth": 375,
+      "pageHeight": 13287,
+      "hero": {
+        "x": 20,
+        "y": 75,
+        "w": 335,
+        "h": 1200.140625
+      },
+      "sections": [
+        {
+          "id": "concept",
+          "height": 1293.71875
+        },
+        {
+          "id": "support",
+          "height": 977.1875
+        },
+        {
+          "id": "pillars",
+          "height": 1080.8125
+        },
+        {
+          "id": "how",
+          "height": 1298.484375
+        },
+        {
+          "id": "ledger",
+          "height": 812.703125
+        },
+        {
+          "id": "features",
+          "height": 2200.1875
+        },
+        {
+          "id": "",
+          "height": 935.859375
+        },
+        {
+          "id": "guarantee",
+          "height": 681.84375
+        },
+        {
+          "id": "example",
+          "height": 1313.59375
+        },
+        {
+          "id": "pricing",
+          "height": 551.5
+        },
+        {
+          "id": "",
+          "height": 444.40625
+        }
+      ],
+      "conceptCards": [
+        {
+          "rect": {
+            "x": 20,
+            "y": 1578.171875,
+            "w": 335,
+            "h": 205.375
+          },
+          "columns": "44px 223px"
+        },
+        {
+          "rect": {
+            "x": 20,
+            "y": 1801.546875,
+            "w": 335,
+            "h": 294.75
+          },
+          "columns": "44px 223px"
+        },
+        {
+          "rect": {
+            "x": 20,
+            "y": 2114.296875,
+            "w": 335,
+            "h": 263.5625
+          },
+          "columns": "44px 223px"
+        }
+      ],
+      "fontErrors": []
+    },
+    {
+      "width": 768,
+      "pageWidth": 753,
+      "pageHeight": 10980,
+      "hero": {
+        "x": 48,
+        "y": 75,
+        "w": 657,
+        "h": 1270.390625
+      },
+      "sections": [
+        {
+          "id": "concept",
+          "height": 1071.0625
+        },
+        {
+          "id": "support",
+          "height": 702.25
+        },
+        {
+          "id": "pillars",
+          "height": 879.1875
+        },
+        {
+          "id": "how",
+          "height": 860.046875
+        },
+        {
+          "id": "ledger",
+          "height": 493.25
+        },
+        {
+          "id": "features",
+          "height": 1879.265625
+        },
+        {
+          "id": "",
+          "height": 704.21875
+        },
+        {
+          "id": "guarantee",
+          "height": 669.9375
+        },
+        {
+          "id": "example",
+          "height": 953.84375
+        },
+        {
+          "id": "pricing",
+          "height": 554.1875
+        },
+        {
+          "id": "",
+          "height": 557.46875
+        }
+      ],
+      "conceptCards": [
+        {
+          "rect": {
+            "x": 48,
+            "y": 1654.578125,
+            "w": 657,
+            "h": 185.5625
+          },
+          "columns": "44px 533px"
+        },
+        {
+          "rect": {
+            "x": 48,
+            "y": 1862.140625,
+            "w": 657,
+            "h": 185.5625
+          },
+          "columns": "44px 533px"
+        },
+        {
+          "rect": {
+            "x": 48,
+            "y": 2069.703125,
+            "w": 657,
+            "h": 185.5625
+          },
+          "columns": "44px 533px"
+        }
+      ],
+      "fontErrors": []
+    },
+    {
+      "width": 1440,
+      "pageWidth": 1425,
+      "pageHeight": 8385,
+      "hero": {
+        "x": 92.5,
+        "y": 89,
+        "w": 1240,
+        "h": 775
+      },
+      "sections": [
+        {
+          "id": "concept",
+          "height": 711.125
+        },
+        {
+          "id": "support",
+          "height": 541.5
+        },
+        {
+          "id": "pillars",
+          "height": 753.46875
+        },
+        {
+          "id": "how",
+          "height": 622.765625
+        },
+        {
+          "id": "ledger",
+          "height": 449.0625
+        },
+        {
+          "id": "features",
+          "height": 1275.390625
+        },
+        {
+          "id": "",
+          "height": 583
+        },
+        {
+          "id": "guarantee",
+          "height": 473.375
+        },
+        {
+          "id": "example",
+          "height": 882.453125
+        },
+        {
+          "id": "pricing",
+          "height": 455.390625
+        },
+        {
+          "id": "",
+          "height": 481.3125
+        }
+      ],
+      "conceptCards": [
+        {
+          "rect": {
+            "x": 92.5,
+            "y": 1173.1875,
+            "w": 398.65625,
+            "h": 240.75
+          },
+          "columns": "44px 274.656px"
+        },
+        {
+          "rect": {
+            "x": 513.15625,
+            "y": 1173.1875,
+            "w": 398.671875,
+            "h": 240.75
+          },
+          "columns": "44px 274.672px"
+        },
+        {
+          "rect": {
+            "x": 933.828125,
+            "y": 1173.1875,
+            "w": 398.65625,
+            "h": 240.75
+          },
+          "columns": "44px 274.656px"
+        }
+      ],
+      "fontErrors": []
+    },
+    {
+      "width": 844,
+      "pageWidth": 829,
+      "pageHeight": 10860,
+      "hero": {
+        "x": 74.5,
+        "y": 75,
+        "w": 680,
+        "h": 1270.390625
+      },
+      "sections": [
+        {
+          "id": "concept",
+          "height": 1071.0625
+        },
+        {
+          "id": "support",
+          "height": 651.875
+        },
+        {
+          "id": "pillars",
+          "height": 879.1875
+        },
+        {
+          "id": "how",
+          "height": 860.046875
+        },
+        {
+          "id": "ledger",
+          "height": 471.15625
+        },
+        {
+          "id": "features",
+          "height": 1879.265625
+        },
+        {
+          "id": "",
+          "height": 704.21875
+        },
+        {
+          "id": "guarantee",
+          "height": 669.9375
+        },
+        {
+          "id": "example",
+          "height": 930.046875
+        },
+        {
+          "id": "pricing",
+          "height": 554.1875
+        },
+        {
+          "id": "",
+          "height": 557.46875
+        }
+      ],
+      "conceptCards": [
+        {
+          "rect": {
+            "x": 48,
+            "y": 1654.578125,
+            "w": 733,
+            "h": 185.5625
+          },
+          "columns": "44px 609px"
+        },
+        {
+          "rect": {
+            "x": 48,
+            "y": 1862.140625,
+            "w": 733,
+            "h": 185.5625
+          },
+          "columns": "44px 609px"
+        },
+        {
+          "rect": {
+            "x": 48,
+            "y": 2069.703125,
+            "w": 733,
+            "h": 185.5625
+          },
+          "columns": "44px 609px"
+        }
+      ],
+      "fontErrors": []
+    }
+  ],
+  "copy": {
+    "en": {
+      "text": [
+        "The concept",
+        "How it works",
+        "Guarantee",
+        "Sign in",
+        "Get started",
+        "The concept",
+        "How it works",
+        "Guarantee",
+        "Businesses",
+        "Sign in",
+        "Get started",
+        "White-label membership platform · Any business, any industry",
+        "Turn your customers into members.",
+        "Loyality lets any business build a fully-branded membership program and hand out whatever incentives they want — loyalty rewards, milestone bonuses, referral perks, all of it, or just one — running on nothing but a QR code.",
+        "Get started",
+        "See the concept",
+        "Works for any business, in any industry, anywhere.",
+        "One scan, no hardware",
+        "A customer scanning a QR code at the counter on their own phone — the moment they become a member.",
+        "0",
+        "Hardware or apps required",
+        "100%",
+        "Branded under your name",
+        "—",
+        "Guarantee policy pending",
+        "The concept",
+        "One membership. Any incentive you want.",
+        "Loyality isn't a single reward type — it's a membership you build for your own customers, then decide exactly what being a member is worth.",
+        "Loyalty rewards",
+        "Points or free items",
+        "Reward every visit or purchase however you like — points toward a redemption, or a free item after so many visits.",
+        "Milestones",
+        "Celebrate the moments that matter",
+        "Visit-count rewards are available. Birthday, anniversary and spend milestones are planned and require approved rules before activation.",
+        "Referral bonuses",
+        "Reward members for bringing friends",
+        "When a member refers a friend who joins and redeems, both sides get rewarded — automatically, from the first share to the final redemption.",
+        "Mix and match, or run just one.",
+        "It's your membership — combine loyalty rewards, milestones, and referral bonuses however you want, and change the rules any time.",
+        "More than software",
+        "A partner that runs it with you — not a tool you're left to figure out.",
+        "Loyality isn't something you're handed and left alone with. We work with you on both ends of it.",
+        "Strategy",
+        "We help you decide what to offer",
+        "Not sure whether points, milestones, or referral bonuses fit your business best? We look at what you sell and who buys it, and suggest the incentives most likely to actually grow your business.",
+        "Management",
+        "We run the system, day to day",
+        "Once it's live, you're not the one maintaining it. We handle the technical side and keep the membership running smoothly — so growing your business doesn't mean adding another job to your plate.",
+        "Why it works",
+        "A membership does three jobs at once.",
+        "Once your customers are members, the same program pulls three different levers for your business.",
+        "Attraction",
+        "Get new eyes on your business",
+        "Members share your referral offers through social media, word of mouth, or a simple invite — and every channel is trackable.",
+        "Acquisition",
+        "Turn interest into members",
+        "Scan to join in your browser; no app download required. Create your account with your name, email, phone, and password.",
+        "Retention",
+        "Give them a reason to return",
+        "Loyalty rewards, milestones, and referral perks keep the next visit worth coming back for — instead of leaving it to chance.",
+        "How it works",
+        "Four steps, fully automated after launch.",
+        "You set the rules once. The platform runs the membership every time after that.",
+        "01 / Launch",
+        "Set up your branded membership",
+        "Your name, your look, your rules. Loyality runs underneath it — members never see anything but your brand.",
+        "02 / Invite",
+        "Customers scan to open browser signup",
+        "A QR code on the counter, receipt, or menu opens the signup form. Create an account in your browser, with no app to install or card to carry.",
+        "03 / Set incentives",
+        "Choose your loyalty rewards, milestones, and referral bonuses",
+        "Run one, run all three, or design your own combination — it's your membership to shape.",
+        "04 / Reward",
+        "The platform tracks and rewards automatically",
+        "Every visit, milestone, and referral is tracked end to end. When a member earns something, it's issued automatically — no manual tally-keeping.",
+        "Sample membership activity — one business",
+        "Every incentive tracked automatically",
+        "LOY-204",
+        "New member joined — referred by an existing member",
+        "Referral bonus",
+        "+1 member",
+        "LOY-205",
+        "Member hit their 10th-visit milestone — reward issued automatically",
+        "Milestone",
+        "Auto",
+        "LOY-206",
+        "Member redeemed points for a free item",
+        "Loyalty reward",
+        "−40 pts",
+        "LOY-207",
+        "Member upgraded from free to paid tier",
+        "Upgrade",
+        "+1 tier",
+        "No manual tally-keeping — the platform runs the loop.",
+        "100% trackable",
+        "Features",
+        "Everything a loyalty app does. Plus what most of them don't.",
+        "Everything, at a glance",
+        "A business owner checking member activity on a simple phone dashboard — no extra software to learn.",
+        "Membership tiers",
+        "Free and paid tiers, your call",
+        "Free enrollment is available. Paid tiers and cycle credits are planned; pricing and credit rules require approval before activation.",
+        "No hardware",
+        "Nothing to install, nothing to carry",
+        "No card, no key tag, no app to download. Everything runs on QR codes your members already know how to use.",
+        "Tracking",
+        "Every incentive, in one place",
+        "Loyalty rewards, milestones, and referral bonuses all show up in a single dashboard — no spreadsheets, no manual tally-keeping.",
+        "Redemption",
+        "One scan and it's done",
+        "Free item, gift card, or voucher — redeeming is as simple as it gets. The member pulls up their QR code, your staff scans it, and the reward is applied. No codes to read out, nothing to check manually.",
+        "Full control",
+        "You decide the reward level, any time",
+        "Give back 10%, 100%, or anything in between — it's entirely up to you, and you can change it whenever you want. Dial it up during a slow stretch to bring members in, then bring it back down once things pick up.",
+        "Why it's different",
+        "Built to run under your name, not someone else's.",
+        "Many marketing & delivery platforms",
+        "Take a cut of every sale",
+        "Many third-party marketing and delivery platforms charge steep commissions on every transaction — and still push discounts on top, eating further into your margin.",
+        "Loyality",
+        "A membership that's actually yours",
+        "Build the exact membership you want — every incentive, every rule — and keep it running under your own brand and your own margin.",
+        "Grand slam offer",
+        "Guarantee terms are under review.",
+        "Profit guarantees require an agreed baseline, measurement period, costs and remedy. No guarantee is active until those terms are approved.",
+        "Profit guarantee",
+        "Terms pending",
+        "Satisfaction guarantee",
+        "Remedy pending",
+        "Your membership, your rules",
+        "What a membership tier could look like.",
+        "You design the tiers and the incentives. Here's one simple way businesses commonly structure them.",
+        "Free tier",
+        "Open to everyone",
+        "$0",
+        "No cost to join",
+        "Scan to open browser signup",
+        "Earns loyalty rewards on every visit",
+        "Eligible visit and offer rewards",
+        "Paid tier",
+        "Example tier",
+        "$10",
+        "/mo",
+        "Illustrative — set your own price",
+        "$10 of spendable credit included — net-neutral cost",
+        "Bonus perks and faster milestone rewards",
+        "Priority access to member-only promos",
+        "Illustrative example only. Paid tiers and cycle credit are planned and unavailable for activation.",
+        "Getting started",
+        "Onboarding, made simple.",
+        "Get a membership built for your business.",
+        "Tell us about your business to discuss onboarding. Paid tiers and any guarantee require separately approved terms.",
+        "Get started",
+        "Ready to turn your customers into members?",
+        "Tell us about your business and we'll show you what your branded membership could look like.",
+        "Get started",
+        "Turn your customers into members. A white-label membership platform for any business, anywhere.",
+        "The concept",
+        "How it works",
+        "Guarantee",
+        "Get started",
+        "Sign in"
+      ],
+      "links": [
+        {
+          "text": "",
+          "href": "#top",
+          "label": null,
+          "imgAlt": "Loyality"
+        },
+        {
+          "text": "The concept",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "How it works",
+          "href": "#how",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Guarantee",
+          "href": "#guarantee",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Sign in",
+          "href": "/signin",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Get started",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "The concept",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "How it works",
+          "href": "#how",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Guarantee",
+          "href": "#guarantee",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Businesses",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Sign in",
+          "href": "/signin",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Get started",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Get started",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "See the concept",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Get started",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Get started",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "",
+          "href": "#top",
+          "label": null,
+          "imgAlt": "Loyality"
+        },
+        {
+          "text": "The concept",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "How it works",
+          "href": "#how",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Guarantee",
+          "href": "#guarantee",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Get started",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Sign in",
+          "href": "/signin",
+          "label": null,
+          "imgAlt": null
+        }
+      ],
+      "accessible": [
+        {
+          "tag": "NAV",
+          "ariaLabel": "Loyality navigation",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "Loyality"
+        },
+        {
+          "tag": "BUTTON",
+          "ariaLabel": "Open navigation",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "NAV",
+          "ariaLabel": "Loyality mobile navigation",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "A customer scanning a QR code at an independent café counter with their phone"
+        },
+        {
+          "tag": "DIV",
+          "ariaLabel": "Loyality platform highlights",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "An independent business owner reviewing member activity on a phone"
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "Loyality"
+        },
+        {
+          "tag": "NAV",
+          "ariaLabel": "Footer navigation",
+          "title": null,
+          "alt": null
+        }
+      ]
+    },
+    "es": {
+      "text": [
+        "El concepto",
+        "Cómo funciona",
+        "Garantía",
+        "Iniciar sesión",
+        "Comenzar",
+        "El concepto",
+        "Cómo funciona",
+        "Garantía",
+        "Negocios",
+        "Iniciar sesión",
+        "Comenzar",
+        "Plataforma de membresía de marca blanca · Cualquier negocio, cualquier sector",
+        "Convierte a tus clientes en miembros.",
+        "Loyality permite que cualquier negocio cree un programa de membresía totalmente personalizado y ofrezca los incentivos que quiera —recompensas de fidelidad, bonos por hitos, beneficios por referidos, todos o solo uno— usando únicamente un código QR.",
+        "Comenzar",
+        "Ver el concepto",
+        "Funciona para cualquier negocio, en cualquier sector y lugar.",
+        "Un escaneo, sin hardware",
+        "Un cliente escanea un código QR en el mostrador con su propio teléfono: el momento en que se convierte en miembro.",
+        "0",
+        "Hardware o aplicaciones requeridos",
+        "100%",
+        "Con tu propio nombre de marca",
+        "—",
+        "Política de garantía pendiente",
+        "El concepto",
+        "Una membresía. Cualquier incentivo que quieras.",
+        "Loyality no es un solo tipo de recompensa: es una membresía que creas para tus propios clientes y en la que decides exactamente cuánto vale ser miembro.",
+        "Recompensas de fidelidad",
+        "Puntos o artículos gratis",
+        "Recompensa cada visita o compra como prefieras: puntos para un canje o un artículo gratis después de cierto número de visitas.",
+        "Hitos",
+        "Celebra los momentos importantes",
+        "Las recompensas por número de visitas están disponibles. Los hitos de cumpleaños, aniversario y gasto están previstos y requieren reglas aprobadas antes de activarse.",
+        "Bonos por referidos",
+        "Recompensa a los miembros por traer amigos",
+        "Cuando un miembro refiere a un amigo que se une y canjea, ambos reciben una recompensa automáticamente, desde que se comparte hasta el canje final.",
+        "Combina opciones o usa solo una.",
+        "Es tu membresía: combina recompensas de fidelidad, hitos y bonos por referidos como quieras y cambia las reglas en cualquier momento.",
+        "Más que software",
+        "Un aliado que lo gestiona contigo, no una herramienta que debes descifrar por tu cuenta.",
+        "Loyality no es algo que te entregamos para dejarte solo. Trabajamos contigo en ambos extremos del proceso.",
+        "Estrategia",
+        "Te ayudamos a decidir qué ofrecer",
+        "¿No sabes si los puntos, hitos o bonos por referidos se adaptan mejor a tu negocio? Analizamos lo que vendes y quién lo compra para sugerir los incentivos con más probabilidades de hacer crecer tu negocio.",
+        "Gestión",
+        "Gestionamos el sistema día a día",
+        "Una vez activo, no tienes que mantenerlo. Nos ocupamos de la parte técnica y de que la membresía funcione sin problemas, para que hacer crecer tu negocio no signifique sumar otra tarea.",
+        "Por qué funciona",
+        "Una membresía cumple tres funciones al mismo tiempo.",
+        "Cuando tus clientes se convierten en miembros, el mismo programa activa tres palancas distintas para tu negocio.",
+        "Atracción",
+        "Haz que nuevas personas conozcan tu negocio",
+        "Los miembros comparten tus ofertas de referido en redes sociales, de boca en boca o mediante una invitación sencilla, y cada canal es rastreable.",
+        "Captación",
+        "Convierte el interés en miembros",
+        "Escanea para registrarte en tu navegador; no necesitas descargar una aplicación. Crea tu cuenta con tu nombre, correo electrónico, teléfono y contraseña.",
+        "Retención",
+        "Dales una razón para volver",
+        "Las recompensas de fidelidad, los hitos y los beneficios por referidos hacen que valga la pena volver, en vez de dejar la próxima visita al azar.",
+        "Cómo funciona",
+        "Cuatro pasos, totalmente automatizados después del lanzamiento.",
+        "Estableces las reglas una vez. Después, la plataforma gestiona la membresía cada vez.",
+        "01 / Lanzamiento",
+        "Configura tu membresía con marca propia",
+        "Tu nombre, tu imagen y tus reglas. Loyality funciona por debajo: los miembros solo ven tu marca.",
+        "02 / Invitación",
+        "Los clientes escanean para abrir el registro en el navegador",
+        "Un código QR en el mostrador, recibo o menú abre el formulario de registro. Crea una cuenta en tu navegador, sin instalar una aplicación ni llevar una tarjeta.",
+        "03 / Configuración de incentivos",
+        "Elige tus recompensas de fidelidad, hitos y bonos por referidos",
+        "Usa uno, los tres o diseña tu propia combinación: es tu membresía y tú le das forma.",
+        "04 / Recompensa",
+        "La plataforma registra y recompensa automáticamente",
+        "Cada visita, hito y referido se registra de principio a fin. Cuando un miembro obtiene algo, se emite automáticamente, sin conteos manuales.",
+        "Ejemplo de actividad de membresía — un negocio",
+        "Cada incentivo se registra automáticamente",
+        "LOY-204",
+        "Nuevo miembro registrado — referido por un miembro actual",
+        "Bono por referido",
+        "+1 miembro",
+        "LOY-205",
+        "El miembro alcanzó el hito de 10 visitas — recompensa emitida automáticamente",
+        "Hito",
+        "Automático",
+        "LOY-206",
+        "El miembro canjeó puntos por un artículo gratis",
+        "Recompensa de fidelidad",
+        "−40 pts",
+        "LOY-207",
+        "El miembro pasó del nivel gratuito al nivel de pago",
+        "Mejora de nivel",
+        "+1 nivel",
+        "Sin conteos manuales: la plataforma gestiona el ciclo.",
+        "100% rastreable",
+        "Funciones",
+        "Todo lo que hace una aplicación de fidelidad, y además lo que la mayoría no hace.",
+        "Todo de un vistazo",
+        "Un propietario revisando la actividad de miembros en un panel sencillo desde su teléfono, sin software adicional que aprender.",
+        "Niveles de membresía",
+        "Niveles gratuitos y de pago: tú decides",
+        "El registro gratuito está disponible. Los niveles de pago y créditos por ciclo están previstos; sus precios y reglas requieren aprobación.",
+        "Sin hardware",
+        "Nada que instalar ni llevar",
+        "Sin tarjeta, llavero ni aplicación que descargar. Todo funciona con códigos QR que tus miembros ya saben usar.",
+        "Seguimiento",
+        "Todos los incentivos en un solo lugar",
+        "Las recompensas de fidelidad, los hitos y los bonos por referidos aparecen en un solo panel, sin hojas de cálculo ni conteos manuales.",
+        "Canje",
+        "Un escaneo y listo",
+        "Artículo gratis, tarjeta de regalo o cupón: el canje es muy sencillo. El miembro muestra su QR, el personal lo escanea y se aplica la recompensa. Sin códigos que dictar ni comprobaciones manuales.",
+        "Control total",
+        "Tú decides el nivel de recompensa en cualquier momento",
+        "Devuelve un 10%, un 100% o cualquier valor intermedio: tú decides y puedes cambiarlo cuando quieras. Auméntalo en una temporada lenta para atraer miembros y redúcelo cuando la actividad mejore.",
+        "Por qué es diferente",
+        "Creado para funcionar bajo tu nombre, no el de otra empresa.",
+        "Muchas plataformas de marketing y entrega",
+        "Se quedan con una parte de cada venta",
+        "Muchas plataformas externas de marketing y entrega cobran comisiones elevadas por cada transacción y además impulsan descuentos que reducen aún más tu margen.",
+        "Loyality",
+        "Una membresía que realmente es tuya",
+        "Crea exactamente la membresía que deseas, con cada incentivo y cada regla, y mantenla funcionando bajo tu propia marca y con tu propio margen.",
+        "Oferta integral",
+        "Las condiciones de garantía están en revisión.",
+        "Las garantías de beneficio requieren una referencia, período de medición, costos y compensación acordados. Ninguna garantía está activa hasta aprobar esas condiciones.",
+        "Garantía de ganancias",
+        "Condiciones pendientes",
+        "Garantía de satisfacción",
+        "Compensación pendiente",
+        "Tu membresía, tus reglas",
+        "Cómo podría ser un nivel de membresía.",
+        "Tú diseñas los niveles y los incentivos. Esta es una forma sencilla en que los negocios suelen estructurarlos.",
+        "Nivel gratuito",
+        "Abierto para todos",
+        "$0",
+        "Sin costo para unirse",
+        "Escanea para abrir el registro en el navegador",
+        "Obtiene recompensas de fidelidad en cada visita",
+        "Recompensas elegibles por visitas y ofertas",
+        "Nivel de pago",
+        "Nivel de ejemplo",
+        "$10",
+        "/mes",
+        "Ilustrativo: establece tu propio precio",
+        "$10 de crédito para gastar incluido — costo neto neutral",
+        "Beneficios extra y recompensas de hitos más rápidas",
+        "Acceso prioritario a promociones exclusivas para miembros",
+        "Solo ejemplo ilustrativo. Los niveles de pago y créditos por ciclo están previstos y no se pueden activar.",
+        "Primeros pasos",
+        "Incorporación simplificada.",
+        "Obtén una membresía creada para tu negocio.",
+        "Cuéntanos sobre tu negocio para planear la incorporación. Los niveles de pago y garantías requieren condiciones aprobadas por separado.",
+        "Comenzar",
+        "¿Listo para convertir a tus clientes en miembros?",
+        "Cuéntanos sobre tu negocio y te mostraremos cómo podría verse tu membresía con marca propia.",
+        "Comenzar",
+        "Convierte a tus clientes en miembros. Una plataforma de membresía de marca blanca para cualquier negocio, en cualquier lugar.",
+        "El concepto",
+        "Cómo funciona",
+        "Garantía",
+        "Comenzar",
+        "Iniciar sesión"
+      ],
+      "links": [
+        {
+          "text": "",
+          "href": "#top",
+          "label": null,
+          "imgAlt": "Loyality"
+        },
+        {
+          "text": "El concepto",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Cómo funciona",
+          "href": "#how",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Garantía",
+          "href": "#guarantee",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Iniciar sesión",
+          "href": "/signin",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Comenzar",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "El concepto",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Cómo funciona",
+          "href": "#how",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Garantía",
+          "href": "#guarantee",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Negocios",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Iniciar sesión",
+          "href": "/signin",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Comenzar",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Comenzar",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Ver el concepto",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Comenzar",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Comenzar",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "",
+          "href": "#top",
+          "label": null,
+          "imgAlt": "Loyality"
+        },
+        {
+          "text": "El concepto",
+          "href": "#concept",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Cómo funciona",
+          "href": "#how",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Garantía",
+          "href": "#guarantee",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Comenzar",
+          "href": "/business",
+          "label": null,
+          "imgAlt": null
+        },
+        {
+          "text": "Iniciar sesión",
+          "href": "/signin",
+          "label": null,
+          "imgAlt": null
+        }
+      ],
+      "accessible": [
+        {
+          "tag": "NAV",
+          "ariaLabel": "Navegación de Loyality",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "Loyality"
+        },
+        {
+          "tag": "BUTTON",
+          "ariaLabel": "Abrir navegación",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "NAV",
+          "ariaLabel": "Navegación móvil de Loyality",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "Un cliente escaneando un código QR con su teléfono en el mostrador de una cafetería independiente"
+        },
+        {
+          "tag": "DIV",
+          "ariaLabel": "Aspectos destacados de la plataforma Loyality",
+          "title": null,
+          "alt": null
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "Un propietario de negocio independiente revisando la actividad de miembros en un teléfono"
+        },
+        {
+          "tag": "IMG",
+          "ariaLabel": null,
+          "title": null,
+          "alt": "Loyality"
+        },
+        {
+          "tag": "NAV",
+          "ariaLabel": "Navegación del pie de página",
+          "title": null,
+          "alt": null
+        }
+      ]
+    }
+  },
+  "errors": [],
+  "copyPreservation": "PASS: exact ordered EN/ES text, links and accessible labels"
+}

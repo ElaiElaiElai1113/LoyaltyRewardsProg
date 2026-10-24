@@ -23,26 +23,26 @@ const localizedHomeCopy: Record<SupportedLanguage, {
   en: {
     hero: 'Earn amazing rewards while supporting local businesses.',
     account: "Three steps. That's the whole system.",
-    rates: 'Most places, 20% or more back. Some days, all of it.',
+    rates: 'Discover the offers available to you.',
     signIn: 'Sign in',
-    start: 'Start free trial',
-    startLong: 'Start your free trial',
+    start: 'Join free',
+    startLong: 'Join free',
     seeHow: 'See how it works',
     wondertownEyebrow: 'RewardMe test environment · fictional data',
     wondertownStamp: 'Sandbox account',
-    rewardmeStamp: 'Member account',
+    rewardmeStamp: 'Illustrative account preview',
   },
   es: {
     hero: 'Obtén recompensas increíbles mientras apoyas a los negocios locales.',
     account: 'Tres pasos. Ese es todo el sistema.',
-    rates: 'En la mayoría de los lugares, recibes un 20 % o más. Algunos días, todo.',
+    rates: 'Descubre las ofertas disponibles para ti.',
     signIn: 'Iniciar sesión',
-    start: 'Iniciar prueba gratuita',
-    startLong: 'Inicia tu prueba gratuita',
+    start: 'Únete gratis',
+    startLong: 'Únete gratis',
     seeHow: 'Ver cómo funciona',
     wondertownEyebrow: 'Entorno de prueba de RewardMe · datos ficticios',
     wondertownStamp: 'Cuenta de prueba',
-    rewardmeStamp: 'Cuenta de miembro',
+    rewardmeStamp: 'Vista ilustrativa de una cuenta',
   },
 }
 
@@ -92,7 +92,7 @@ for (const tenant of ['rewardme', 'wondertown'] as const) {
     await expect(menuToggle).toBeVisible()
     await menuToggle.click()
     await expect(page.locator('#rewardme-mobile-navigation').getByRole('link', { name: copy.start })).toBeVisible()
-    await expect(page.getByRole('link', { name: copy.startLong })).toBeVisible()
+    await expect(page.locator('.reference-rewardme__actions').getByRole('link', { name: copy.startLong, exact: true })).toBeVisible()
     await expect(page.getByRole('link', { name: copy.seeHow, exact: true })).toBeVisible()
     expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(2)
   })

@@ -30,6 +30,12 @@ const plans = [
  ['Gold','Additional tier','Planned','Benefits and pricing await approval. Register interest without payment.'],
 ] as const
 
+function RewardMeGlyph({ kind }: { kind: 'join' | 'earn' | 'spark' }) {
+  return <div className="reference-rewardme__glyph" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.5">
+    {kind === 'join' ? <><rect x="6" y="6" width="25" height="25" rx="7" /><rect x="17" y="17" width="25" height="25" rx="7" /></> : kind === 'earn' ? <><circle cx="24" cy="24" r="18" /><circle cx="24" cy="24" r="9" /><path d="M24 1v10m0 26v10M1 24h10m26 0h10" /></> : <path d="M24 3v42M3 24h42M9 9l30 30M9 39 39 9" />}
+  </svg></div>
+}
+
 export function RewardMeHomePage() {
   const { program } = useTenant()
   const { t } = useLanguage()
@@ -46,24 +52,33 @@ export function RewardMeHomePage() {
         data-wondertown-rewardme-mirror={isWondertown || undefined}
       >
       <section className="reference-rewardme__hero reference-rewardme__wrap">
-        <div className="reference-rewardme__hero-copy">
+        <div className="reference-rewardme__hero-title">
           <p className="reference-rewardme__eyebrow">{t(isWondertown ? 'RewardMe test environment · fictional data' : 'Free membership for everyone')}</p>
           <h1>{t('Earn amazing rewards while supporting local businesses.')}</h1>
-          <p className="reference-rewardme__hero-highlight">{t("Join local businesses and discover")} <strong>{t('eligible rewards')}</strong> {t('in rewards.')}</p>
-          <p className="reference-rewardme__lead">{t('Earn eligible rewards with participating local businesses and explore the available catalog.')}</p>
-          <p className="reference-rewardme__lead">{t('Your rewards can be used for so many things:')}</p>
-          <ul className="reference-rewardme__hero-list">
-            <li>{t('Treat yourself to a night out on the town')}</li>
-            <li>{t('Explore participating partners')}</li>
-            <li>{t('Check each offer before spending')}</li>
-          </ul>
+        </div>
+        <figure className="reference-rewardme__wide-photo">
+          <img src={checkoutMoment} alt={t('Member using a phone while paying at a local café')} fetchPriority="high" />
+          <RewardMeGlyph kind="spark" />
+        </figure>
           <div className="reference-rewardme__actions">
             <Link className="reference-rewardme__button reference-rewardme__button--gold" to="/join">{t('Join free')}</Link>
             <a className="reference-rewardme__button reference-rewardme__button--outline" href="#how">{t('See how it works')}</a>
           </div>
           <p className="reference-rewardme__fine">{t(isWondertown ? 'Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected.' : 'Create an account with your name, email, phone and password. Membership is free.')}</p>
+      </section>
+      <section className="reference-rewardme__discovery reference-rewardme__wrap">
+        <div className="reference-rewardme__discovery-copy">
+          <div className="reference-rewardme__context">
+          <p className="reference-rewardme__hero-highlight">{t("Join local businesses and discover")} <strong>{t('eligible rewards')}</strong> {t('in rewards.')}</p>
+          <p className="reference-rewardme__lead">{t('Earn eligible rewards with participating local businesses and explore the available catalog.')}</p>
+          </div>
+          <p className="reference-rewardme__lead">{t('Your rewards can be used for so many things:')}</p>
+          <ul className="reference-rewardme__hero-list">
+            <li><img src={dinnerReward} alt="" aria-hidden="true" loading="lazy" /><span>{t('Treat yourself to a night out on the town')}</span></li>
+            <li><img src={hotelReward} alt="" aria-hidden="true" loading="lazy" /><span>{t('Explore participating partners')}</span></li>
+            <li><img src={salonReward} alt="" aria-hidden="true" loading="lazy" /><span>{t('Check each offer before spending')}</span></li>
+          </ul>
         </div>
-
         <div className="reference-rewardme__passbook" aria-label={t('Example {brand} account activity', { brand })}>
           <span className="reference-rewardme__stamp">{t(isWondertown ? 'Sandbox account' : 'Illustrative account preview')}</span>
           <div className="reference-rewardme__passbook-title"><strong>{t('My {brand} Account', { brand })}</strong><span>NO. 00482</span></div>
@@ -74,9 +89,6 @@ export function RewardMeHomePage() {
           <div className="reference-rewardme__balance"><span>{t('Available to redeem')}</span><strong>—</strong></div>
         </div>
 
-        <figure className="reference-rewardme__wide-photo">
-          <img src={checkoutMoment} alt={t('Member using a phone while paying at a local café')} fetchPriority="high" />
-        </figure>
       </section>
 
       <section className="reference-rewardme__section reference-rewardme__wrap" id="how">
@@ -87,7 +99,7 @@ export function RewardMeHomePage() {
         </div>
         <ol className="reference-rewardme__ledger-list">
           {memberSteps.map(([number, title, body]) => (
-            <li key={number}><span>{number}</span><div><h3>{t(title)}</h3><p>{t(body)}</p></div></li>
+            <li key={number}><RewardMeGlyph kind={number === '01' ? 'join' : number === '02' ? 'earn' : 'spark'} /><span>{number}</span><div><h3>{t(title)}</h3><p>{t(body)}</p></div></li>
           ))}
         </ol>
       </section>

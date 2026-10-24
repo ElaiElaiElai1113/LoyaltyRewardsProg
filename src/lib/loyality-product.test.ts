@@ -65,8 +65,9 @@ describe('Loyality product contract', () => {
   })
 
   it('carries the approved fonts and palette through public and signed-in Loyality surfaces', () => {
+    expect(homeCss).toContain('Space Grotesk')
+    expect(appCss).toContain('Fraunces')
     for (const source of [homeCss, appCss]) {
-      expect(source).toContain('Fraunces')
       expect(source).toContain('IBM Plex Sans')
       expect(source).toContain('IBM Plex Mono')
     }

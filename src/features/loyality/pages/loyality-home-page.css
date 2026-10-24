@@ -1,202 +1,2329 @@
+/* New presentation weight: share the installed Latin WOFF2; keep baseline 700 as-is. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url('@fontsource/space-grotesk/files/space-grotesk-latin-500-normal.woff2') format('woff2');
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+
+/* Approved final composition: presentation scoped to this homepage. */
+
+/* designs.css */
+
+.reference-loyality *, .reference-loyality :before, .reference-loyality :after {
+  box-sizing: border-box;
+}
+
 .reference-loyality {
-  --paper: #f6f1e4;
-  --paper-deep: #efe8d6;
-  --ink: #1f3a2e;
-  --ink-soft: #2c4a3b;
-  --gold: #b8862e;
-  --gold-soft: #d8b36a;
-  --stamp: #a23b2e;
-  --line: #d9cfaf;
-  --text: #211d16;
-  --text-muted: #5b5546;
-  min-height: 100vh;
-  background: var(--paper);
-  color: var(--text);
-  font-family: "IBM Plex Sans", sans-serif;
-  line-height: 1.55;
+  scroll-behavior: smooth;
+}
+
+.reference-loyality {
+  margin: 0;
+  color: #15392e;
+  background: #f8faf6;
+  font: 15px/1.7 'IBM Plex Sans',sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-.reference-loyality *, .reference-loyality *::before, .reference-loyality *::after { box-sizing: border-box; }
-.reference-loyality :is(h1, h2, h3) { margin: 0; color: var(--ink); font-family: Fraunces, serif; font-weight: 600; letter-spacing: -.01em; }
-.reference-loyality a { color: inherit; }
-.reference-loyality img, .reference-loyality svg { display: block; max-width: 100%; }
-.reference-loyality [id] { scroll-margin-top: 5.5rem; }
-.reference-loyality__wrap { width: min(100%, 1120px); margin-inline: auto; padding-inline: 32px; }
-.reference-loyality main > section { padding-block: 80px; }
-
-.reference-loyality__header { position: sticky; z-index: 50; top: 0; border-bottom: 1px solid var(--line); background: rgb(246 241 228 / 92%); backdrop-filter: blur(6px); }
-.reference-loyality__nav { display: flex; max-width: 1120px; margin-inline: auto; padding: 18px 32px; align-items: center; justify-content: space-between; gap: 24px; }
-.reference-loyality__logo { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); font-family: Fraunces, serif; font-size: 1.25rem; font-weight: 700; text-decoration: none; }
-.reference-loyality__nav-links, .reference-loyality__nav-actions { display: flex; align-items: center; gap: 32px; }
-.reference-loyality__nav-links a, .reference-loyality__sign-in { color: var(--ink-soft); font-size: .92rem; font-weight: 500; text-decoration: none; }
-.reference-loyality__nav-links a:hover, .reference-loyality__sign-in:hover { color: var(--ink); }
-.reference-loyality__nav-actions { gap: 18px; }
-.reference-loyality__language { color: var(--ink-soft); }
-.reference-loyality__language :is(select, .language-picker__control) { height: 38px; border-color: var(--line); border-radius: 3px; background: var(--paper-deep); color: var(--ink); font-family: "IBM Plex Mono", monospace; font-size: .72rem !important; }
-.reference-loyality__btn { display: inline-flex; border: 1px solid var(--ink); border-radius: 3px; padding: 12px 22px; align-items: center; justify-content: center; gap: 8px; background: var(--ink); color: var(--paper); font-size: .92rem; font-weight: 600; text-decoration: none; transition: transform .15s ease, box-shadow .15s ease; }
-.reference-loyality__btn:hover { box-shadow: 0 6px 16px rgb(31 58 46 / 25%); transform: translateY(-1px); }
-.reference-loyality__btn--outline { background: transparent; color: var(--ink); }
-.reference-loyality__btn--gold { border-color: var(--gold); background: var(--gold); color: #fff; }
-
-.reference-loyality__hero { max-width: 760px; margin-inline: auto; padding: 76px 0 8px !important; text-align: center; }
-.reference-loyality__eyebrow { display: inline-flex; margin-bottom: 18px; align-items: center; gap: 8px; color: var(--gold); font-family: "IBM Plex Mono", monospace; font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; }
-.reference-loyality__eyebrow::before { content: "§"; font-family: Fraunces, serif; }
-.reference-loyality__hero h1 { margin-bottom: 20px; font-size: clamp(2.2rem, 4.6vw, 3.3rem); line-height: 1.08; }
-.reference-loyality__lead { max-width: 58ch; margin: 0 auto 30px; color: var(--text-muted); font-size: 1.1rem; }
-.reference-loyality__hero-ctas { display: flex; margin-bottom: 18px; flex-wrap: wrap; justify-content: center; gap: 14px; }
-.reference-loyality__hero-note { color: var(--text-muted); font-family: "IBM Plex Mono", monospace; font-size: .85rem; }
-.reference-loyality__highlight { display: flex; margin-top: 44px; border-radius: 8px; padding: 32px 40px; flex-wrap: wrap; gap: 36px; background: var(--ink); color: var(--paper); }
-.reference-loyality__stat { min-width: 185px; flex: 1; }
-.reference-loyality__stat strong { display: block; color: var(--gold-soft); font-family: Fraunces, serif; font-size: 2rem; }
-.reference-loyality__stat span { display: block; margin-top: 2px; color: rgb(246 241 228 / 70%); font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; }
-
-.reference-loyality__ledger { overflow: hidden; border-radius: 8px; background: var(--ink); }
-.reference-loyality__ledger-head, .reference-loyality__ledger-foot { display: flex; padding: 22px 32px; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; color: var(--gold-soft); font-family: "IBM Plex Mono", monospace; font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; }
-.reference-loyality__ledger-head { border-bottom: 1px solid rgb(246 241 228 / 14%); }
-.reference-loyality__ledger-head i { display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--gold); animation: reference-loyality-pulse 1.6s infinite; }
-.reference-loyality__ledger-row { display: grid; grid-template-columns: 96px 1fr 130px 110px; padding: 16px 32px; align-items: center; gap: 18px; border-bottom: 1px dashed rgb(246 241 228 / 16%); font-family: "IBM Plex Mono", monospace; font-size: .85rem; }
-.reference-loyality__ledger-id { color: rgb(246 241 228 / 35%); }
-.reference-loyality__ledger-desc { color: var(--paper); font-family: "IBM Plex Sans", sans-serif; }
-.reference-loyality__ledger-type { color: var(--gold-soft); font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; }
-.reference-loyality__ledger-row strong { color: #9fc7ae; text-align: right; }
-.reference-loyality__ledger-foot { padding-block: 18px; color: rgb(246 241 228 / 75%); letter-spacing: 0; text-transform: none; }
-.reference-loyality__ledger-foot strong { color: var(--gold-soft); }
-@keyframes reference-loyality-pulse { 50% { opacity: .3; } }
-
-.reference-loyality__section-head { max-width: 640px; margin-bottom: 40px; }
-.reference-loyality__section-head h2 { margin-bottom: 12px; font-size: clamp(1.6rem, 3vw, 2.1rem); }
-.reference-loyality__section-head p, .reference-loyality__card p, .reference-loyality__features p, .reference-loyality__compare-card p, .reference-loyality__pricing-box p { color: var(--text-muted); }
-.reference-loyality__section-head p { font-size: 1.02rem; }
-.reference-loyality__card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
-.reference-loyality__support-grid, .reference-loyality__compare { display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-.reference-loyality__card { border: 1px solid var(--line); border-radius: 4px; padding: 26px 24px; background: var(--paper-deep); }
-.reference-loyality__card > span, .reference-loyality__features > article > span, .reference-loyality__compare-card > span, .reference-loyality__plan > span { color: var(--gold); font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; }
-.reference-loyality__card h3 { margin: 8px 0 10px; font-size: 1.2rem; }
-.reference-loyality__card p { font-size: .92rem; }
-.reference-loyality__support-grid .reference-loyality__card { border-radius: 6px; padding: 30px 28px; }
-.reference-loyality__flex-note { margin-top: 24px; border: 1px dashed var(--gold); border-radius: 6px; padding: 20px 24px; background: var(--paper-deep); color: var(--text-muted); font-size: .95rem; }
-.reference-loyality__flex-note strong { color: var(--ink); font-family: Fraunces, serif; }
-
-.reference-loyality__photo { position: relative; overflow: hidden; width: min(calc(100% - 64px), 1056px); aspect-ratio: 3 / 1; height: auto; margin-block: 0; border-radius: 8px; padding: 0; background: var(--ink); }
-.reference-loyality__photo img { width: 100%; height: 100%; object-fit: contain; }
-.reference-loyality__photo::after { position: absolute; inset: 0; background: linear-gradient(90deg, rgb(31 58 46 / 84%), transparent 58%); content: ""; }
-.reference-loyality__photo figcaption { position: absolute; z-index: 1; top: 50%; left: clamp(24px, 6vw, 64px); width: min(40ch, 70%); color: var(--paper); transform: translateY(-50%); }
-.reference-loyality__photo figcaption span { font-family: Fraunces, serif; font-size: clamp(1.35rem, 3vw, 2rem); font-weight: 600; }
-.reference-loyality__photo figcaption p { margin-top: 8px; color: rgb(246 241 228 / 82%); }
-
-.reference-loyality__steps { margin-left: 8px; border-left: 2px solid var(--line); }
-.reference-loyality__steps article { position: relative; padding: 0 0 40px 34px; }
-.reference-loyality__steps article:last-child { padding-bottom: 0; }
-.reference-loyality__steps article::before { position: absolute; top: 2px; left: -7px; width: 12px; height: 12px; border: 2px solid var(--paper); border-radius: 50%; background: var(--gold); box-shadow: 0 0 0 2px var(--line); content: ""; }
-.reference-loyality__steps article > span { display: block; margin-bottom: 6px; color: var(--gold); font-family: "IBM Plex Mono", monospace; font-size: .76rem; letter-spacing: .04em; text-transform: uppercase; }
-.reference-loyality__steps h3 { margin-bottom: 8px; font-size: 1.2rem; }
-.reference-loyality__steps p { max-width: 62ch; color: var(--text-muted); }
-
-.reference-loyality__features > article { display: grid; grid-template-columns: 150px 1fr; padding: 22px 0; gap: 22px; border-bottom: 1px dashed var(--line); }
-.reference-loyality__features > article:first-child { border-top: 1px dashed var(--line); }
-.reference-loyality__features h3 { margin-bottom: 6px; font-size: 1.1rem; }
-.reference-loyality__features p { max-width: 64ch; font-size: .92rem; }
-.reference-loyality__compare-card { border: 1px solid var(--line); border-radius: 6px; padding: 30px 28px; background: var(--paper); }
-.reference-loyality__compare-card h3 { margin: 12px 0 10px; font-size: 1.15rem; }
-.reference-loyality__compare-card p { font-size: .94rem; }
-.reference-loyality__compare-card--new { border-color: var(--ink); background: var(--ink); box-shadow: 0 24px 48px -18px rgb(31 58 46 / 35%); color: var(--paper); }
-.reference-loyality__compare-card--new > span { color: var(--gold-soft); }
-.reference-loyality__compare-card--new h3 { color: var(--paper); }
-.reference-loyality__compare-card--new p { color: rgb(246 241 228 / 78%); }
-
-.reference-loyality__guarantee { display: grid; grid-template-columns: 1.1fr 1fr; border-radius: 8px; padding: 48px 44px; align-items: center; gap: 40px; background: var(--ink); color: var(--paper); }
-.reference-loyality__guarantee h2 { margin-bottom: 12px; color: var(--paper); font-size: 1.7rem; }
-.reference-loyality__guarantee p { color: rgb(246 241 228 / 78%); }
-.reference-loyality__stamp { display: inline-block; margin-bottom: 14px; border-radius: 2px; padding: 6px 12px; background: var(--stamp); color: #fff; font-family: "IBM Plex Mono", monospace; font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; transform: rotate(-2deg); }
-.reference-loyality__guarantee-cards { display: flex; flex-direction: column; gap: 16px; }
-.reference-loyality__guarantee-cards > div { border: 1px solid rgb(246 241 228 / 16%); border-radius: 6px; padding: 22px 24px; background: rgb(246 241 228 / 6%); }
-.reference-loyality__guarantee-cards span { display: block; color: var(--gold-soft); font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; }
-.reference-loyality__guarantee-cards strong { display: block; margin-top: 6px; color: var(--paper); font-family: Fraunces, serif; font-size: 1.3rem; }
-
-.reference-loyality__plans { display: grid; max-width: 760px; grid-template-columns: repeat(2, 1fr); gap: 24px; }
-.reference-loyality__plan { display: flex; border: 1px solid var(--line); border-radius: 6px; padding: 30px 26px; flex-direction: column; background: var(--paper); }
-.reference-loyality__plan h3 { margin: 10px 0 2px; font-size: 1.3rem; }
-.reference-loyality__plan > strong { margin-bottom: 4px; color: var(--ink); font-family: "IBM Plex Mono", monospace; font-size: 1.4rem; }
-.reference-loyality__plan > strong small { color: var(--text-muted); font-size: .9rem; font-weight: 400; }
-.reference-loyality__plan > small { margin-bottom: 20px; color: var(--text-muted); font-size: .85rem; }
-.reference-loyality__plan ul { margin: 0; padding: 0; flex: 1; list-style: none; }
-.reference-loyality__plan li { display: flex; padding: 9px 0; gap: 10px; border-bottom: 1px dashed var(--line); color: var(--text-muted); font-size: .9rem; }
-.reference-loyality__plan li::before { margin-top: 5px; color: var(--gold); font-size: .65rem; content: "◆"; }
-.reference-loyality__plan--featured { border-color: var(--ink); background: var(--ink); box-shadow: 0 24px 48px -18px rgb(31 58 46 / 40%); color: var(--paper); }
-.reference-loyality__plan--featured h3,
-.reference-loyality__plan--featured > strong { color: var(--paper); }
-.reference-loyality__plan--featured > strong small { color: var(--gold-soft); }
-.reference-loyality__plan--featured > small { color: rgb(246 241 228 / 65%); }
-.reference-loyality__plan--featured li { border-color: rgb(246 241 228 / 20%); color: rgb(246 241 228 / 85%); }
-.reference-loyality__example-flag { margin-top: 16px; color: var(--text-muted); font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .04em; text-transform: uppercase; }
-
-.reference-loyality__pricing-box { display: grid; grid-template-columns: 1.3fr 1fr; border: 1px solid var(--line); border-radius: 8px; padding: 44px; align-items: center; gap: 32px; background: var(--paper-deep); }
-.reference-loyality__pricing-box h3 { margin-bottom: 10px; font-size: 1.35rem; }
-.reference-loyality__pricing-box p { font-size: .95rem; }
-.reference-loyality__pricing-box .reference-loyality__btn { width: 100%; }
-.reference-loyality__final-cta { padding-top: 20px !important; text-align: center; }
-.reference-loyality__final-cta h2 { margin-bottom: 16px; }
-.reference-loyality__final-cta p { max-width: 52ch; margin: 0 auto 28px; color: var(--text-muted); }
-.reference-loyality__final-cta .reference-loyality__btn { padding: 16px 32px; font-size: 1rem; }
-
-.reference-loyality__footer { margin-top: 8px; border-top: 1px solid var(--line); padding: 48px 0; }
-.reference-loyality__footer-wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 24px; }
-.reference-loyality__footer p { max-width: 40ch; color: var(--text-muted); font-size: .82rem; }
-.reference-loyality__footer nav { display: flex; padding: 0; flex-wrap: wrap; gap: 24px; }
-.reference-loyality__footer nav a { color: var(--ink-soft); font-size: .88rem; text-decoration: none; }
-.reference-loyality :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-.reference-loyality__menu-toggle { display: none; width: 52px; height: 52px; border: 1px solid var(--ink); border-radius: 3px; padding: 0; align-items: center; justify-content: center; background: transparent; color: var(--ink); cursor: pointer; }
-.reference-loyality__menu-toggle svg { width: 26px; height: 26px; }
-.reference-loyality__mobile-menu { position: absolute; top: 100%; right: 0; left: 0; width: min(100% - 32px, 620px); margin-inline: auto; border: 1px solid var(--ink); border-top: 0; padding: 14px 18px 18px; background: var(--paper); box-shadow: 0 22px 36px rgb(31 58 46 / 16%); }
-.reference-loyality__mobile-menu[hidden] { display: none; }
-.reference-loyality__mobile-menu > a { display: flex; min-height: 49px; align-items: center; border-bottom: 1px solid var(--line); color: var(--ink-soft); font-family: "IBM Plex Mono", monospace; font-size: .76rem; font-weight: 650; letter-spacing: .04em; text-decoration: none; text-transform: uppercase; }
-.reference-loyality__mobile-menu > a:hover { color: var(--gold); }
-.reference-loyality__mobile-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding-top: 18px; }
-
-@media (max-width: 860px) {
-  .reference-loyality__card-grid { grid-template-columns: 1fr; }
-  .reference-loyality__guarantee { grid-template-columns: 1fr; }
+.reference-loyality a {
+  color: inherit;
+  text-decoration: none;
 }
 
-@media (max-width: 820px) {
-  .reference-loyality__nav-links { display: none; }
-  .reference-loyality__menu-toggle { display: inline-flex; flex: 0 0 auto; }
-  .reference-loyality__support-grid, .reference-loyality__compare, .reference-loyality__pricing-box { grid-template-columns: 1fr; }
+.reference-loyality button, .reference-loyality select {
+  font: inherit;
+}
+
+.reference-loyality button, .reference-loyality a {
+  touch-action: manipulation;
+}
+
+.reference-loyality button {
+  cursor: pointer;
+}
+
+.reference-loyality img {
+  display: block;
+  max-width: 100%;
+}
+
+.reference-loyality h1, .reference-loyality h2, .reference-loyality h3, .reference-loyality p, .reference-loyality figure {
+  margin: 0;
+}
+
+.reference-loyality h1, .reference-loyality h2, .reference-loyality h3 {
+  line-height: 1.12;
+  text-wrap: pretty;
+}
+
+.reference-loyality p, .reference-loyality li {
+  text-wrap: pretty;
+}
+
+.reference-loyality ul, .reference-loyality ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.reference-loyality svg {
+  display: block;
+  max-width: 100%;
+}
+
+.reference-loyality a:focus-visible, .reference-loyality button:focus-visible, .reference-loyality select:focus-visible {
+  outline: 3px solid #b15c20;
+  outline-offset: 5px;
+}
+
+.reference-loyality [hidden] {
+  display: none !important;
+}
+
+.reference-loyality [id] {
+  scroll-margin-top: 30px;
+}
+
+.reference-loyality button {
+  background: none;
+  border: 1px solid #becbbf;
+  color: inherit;
+}
+
+.reference-loyality .v2-glyph {
+  width: 48px;
+  height: 48px;
+  color: currentColor;
+  flex-shrink: 0;
+}
+
+.reference-loyality .v2-glyph svg {
+  width: 100%;
+  height: 100%;
+}
+
+.reference-loyality .reference-loyality__wrap {
+  width: calc(100% - 96px);
+  max-width: 1240px;
+  margin-inline: auto;
+}
+
+.reference-loyality footer {
+  position: relative;
+}
+
+.reference-loyality .reference-loyality__mobile-menu {
+  padding: 24px;
+  gap: 20px;
+  background: #fff;
+}
+
+.reference-loyality .reference-loyality__mobile-menu.is-open {
+  display: grid;
+}
+
+.reference-loyality .reference-loyality__mobile-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.reference-loyality .reference-loyality__menu-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+}
+
+.reference-loyality .reference-loyality__logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.reference-loyality .reference-loyality__logo svg {
+  width: 24px;
+  height: 24px;
+}
+
+.reference-loyality .reference-loyality__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 14px 25px;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 13px;
+  line-height: 1.3;
+  transition: transform .2s,background .2s;
+}
+
+.reference-loyality .reference-loyality__btn:hover {
+  transform: translateY(-3px);
+}
+
+.reference-loyality {
+  --dark: #15392e;
+  --muted: #526758;
+  --line: #d3dfd1;
+  --lime: #d4f28a;
+  --paper: #f8faf6;
+  background: var(--paper);
+  color: var(--dark);
+}
+
+.reference-loyality :is(h1,h2,h3) {
+  font-family: 'Space Grotesk',sans-serif;
+  font-weight: 500;
+  letter-spacing: -.05em;
+}
+
+.reference-loyality .reference-loyality__header {
+  border-bottom: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.reference-loyality .reference-loyality__nav {
+  min-height: 94px;
+  max-width: 1336px;
+  margin: auto;
+  padding: 22px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.reference-loyality .reference-loyality__logo {
+  font: 700 27px 'Space Grotesk',sans-serif;
+  letter-spacing: -1.5px;
+}
+
+.reference-loyality .reference-loyality__nav-links, .reference-loyality .reference-loyality__nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  font-size: 13px;
+}
+
+.reference-loyality .reference-loyality__btn {
+  border-radius: 8px;
+  background: var(--dark);
+  color: var(--paper);
+  border: 1px solid var(--dark);
+}
+
+.reference-loyality .reference-loyality__btn--gold {
+  background: var(--lime);
+  color: var(--dark);
+  border-color: var(--lime);
+}
+
+.reference-loyality .reference-loyality__btn--outline {
+  background: transparent;
+  color: var(--dark);
+  border-color: #99ad98;
+}
+
+.reference-loyality .reference-loyality__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 10px/1.8 'IBM Plex Mono',monospace;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: #456344;
+  margin-bottom: 23px;
+}
+
+.reference-loyality .reference-loyality__eyebrow:before {
+  content: '';
+  display: block;
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  background: #759849;
+  border-radius: 50%;
+}
+
+.reference-loyality .v2-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding-block: 70px 60px;
+}
+
+.reference-loyality .reference-loyality__hero {
+  max-width: 610px;
+}
+
+.reference-loyality .reference-loyality__hero h1 {
+  font-size: clamp(64px,6.35vw,92px);
+  line-height: 1.02;
+  letter-spacing: -6px;
+  margin-bottom: 28px;
+}
+
+.reference-loyality .reference-loyality__lead {
+  font-size: 16px;
+  line-height: 1.85;
+  color: var(--muted);
+  margin-bottom: 29px;
+  max-width: 540px;
+}
+
+.reference-loyality .reference-loyality__hero-ctas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.reference-loyality .reference-loyality__hero-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 22px;
+}
+
+.reference-loyality .v2-product-visual {
+  position: relative;
+  padding: 24px 18px 22px 0;
+  min-width: 0;
+}
+
+.reference-loyality .v2-product-visual:before {
+  content: '';
+  position: absolute;
+  inset: 0 0 36px 28px;
+  z-index: -1;
+  background: radial-gradient(#9ab27f80 .8px,transparent .8px) 0 0/12px 12px,#e8f1d9;
+  border-radius: 28px;
+}
+
+.reference-loyality .v2-product-visual>.v2-glyph {
+  position: absolute;
+  top: 4px;
+  right: -8px;
+  width: 74px;
+  height: 74px;
+  transform: rotate(12deg);
+  padding: 15px;
+  border-radius: 18px;
+  background: var(--dark);
+  color: var(--lime);
+  box-shadow: 0 10px 20px #15392e22;
+}
+
+.reference-loyality .v2-hero-photo {
+  position: relative;
+  overflow: hidden;
+  height: 510px;
+  border-radius: 20px;
+  background: var(--dark);
+}
+
+.reference-loyality .v2-hero-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 48% 50%;
+}
+
+.reference-loyality .v2-hero-photo:after {
+  position: absolute;
+  content: '';
+  inset: 45% 0 0;
+  background: linear-gradient(transparent,#112f23e6);
+}
+
+.reference-loyality .v2-hero-photo figcaption {
+  position: absolute;
+  left: 28px;
+  right: 28px;
+  bottom: 50px;
+  z-index: 1;
+  color: white;
+}
+
+.reference-loyality .v2-hero-photo figcaption span {
+  font: 11px 'IBM Plex Mono',monospace;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: #d4f28a;
+}
+
+.reference-loyality .v2-hero-photo figcaption p {
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 10px;
+  max-width: 350px;
+}
+
+.reference-loyality .reference-loyality__highlight {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  background: #fff;
+  padding: 26px 24px;
+  margin: -30px -12px 0 28px;
+  border: 1px solid var(--line);
+  box-shadow: 0 16px 26px -20px #15392e66;
+  border-radius: 12px;
+}
+
+.reference-loyality .reference-loyality__stat {
+  flex: 1;
+  min-width: 0;
+  border-right: 1px solid var(--line);
+  padding-right: 12px;
+}
+
+.reference-loyality .reference-loyality__stat:last-child {
+  border: 0;
+  padding: 0;
+}
+
+.reference-loyality .reference-loyality__stat strong {
+  display: block;
+  font: 500 32px 'Space Grotesk',sans-serif;
+  letter-spacing: -1px;
+}
+
+.reference-loyality .reference-loyality__stat span {
+  display: block;
+  margin-top: 7px;
+  font-size: 10px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 130px;
+}
+
+.reference-loyality main>section {
+  padding-block: 80px;
+}
+
+.reference-loyality #ledger.reference-loyality__wrap {
+  padding-block: 15px 70px;
+}
+
+.reference-loyality .reference-loyality__ledger {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.reference-loyality .reference-loyality__ledger-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 26px;
+  background: #e9efdf;
+  font: 10px/1.7 'IBM Plex Mono',monospace;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.reference-loyality .reference-loyality__ledger-head i {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #4b7546;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.reference-loyality .reference-loyality__ledger-row {
+  display: grid;
+  grid-template-columns: 85px 1fr 140px 100px;
+  gap: 24px;
+  align-items: center;
+  padding: 19px 26px;
+  border-bottom: 1px solid #e8eee2;
+  font-size: 13px;
+}
+
+.reference-loyality .reference-loyality__ledger-id {
+  font: 10px 'IBM Plex Mono',monospace;
+  color: #526b54;
+}
+
+.reference-loyality .reference-loyality__ledger-type {
+  font-size: 10px;
+  color: #526b54;
+}
+
+.reference-loyality .reference-loyality__ledger-row strong {
+  font: 500 12px 'IBM Plex Mono',monospace;
+  text-align: right;
+}
+
+.reference-loyality .reference-loyality__ledger-foot {
+  padding: 17px 26px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 11px;
+  color: #526b54;
+}
+
+.reference-loyality .reference-loyality__section-head {
+  max-width: 800px;
+  margin-bottom: 42px;
+}
+
+.reference-loyality .reference-loyality__section-head h2 {
+  font-size: 50px;
+  line-height: 1.1;
+  margin-bottom: 22px;
+  max-width: 800px;
+}
+
+.reference-loyality .reference-loyality__section-head p {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.85;
+  max-width: 680px;
+}
+
+.reference-loyality .reference-loyality__card-grid {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 22px;
+}
+
+.reference-loyality .reference-loyality__card {
+  padding: 32px;
+  border-top: 1px solid #a9bea4;
+  background: #edf2e6;
+  border-radius: 0 0 12px 12px;
+}
+
+.reference-loyality .reference-loyality__card>.v2-glyph {
+  color: #608143;
+  margin-bottom: 28px;
+}
+
+.reference-loyality .reference-loyality__card>span {
+  font: 10px 'IBM Plex Mono',monospace;
+  color: #446142;
+}
+
+.reference-loyality .reference-loyality__card h3 {
+  font-size: 25px;
+  line-height: 1.2;
+  margin: 16px 0;
+}
+
+.reference-loyality .reference-loyality__card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.reference-loyality #concept .reference-loyality__card:first-child {
+  background: var(--dark);
+  color: #f8faf6;
+}
+
+.reference-loyality #concept .reference-loyality__card:first-child :is(p,span,.v2-glyph) {
+  color: #d4e8bd;
+}
+
+.reference-loyality .reference-loyality__flex-note {
+  font-size: 14px;
+  line-height: 1.9;
+  max-width: 1000px;
+  padding-top: 28px;
+  color: var(--muted);
+}
+
+.reference-loyality #support {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 70px;
+  border-top: 1px solid var(--line);
+}
+
+.reference-loyality #support .reference-loyality__section-head h2 {
+  font-size: 43px;
+}
+
+.reference-loyality .reference-loyality__support-grid {
+  display: grid;
+  gap: 30px;
+}
+
+.reference-loyality .reference-loyality__support-grid .reference-loyality__card {
+  background: none;
+  border-radius: 0;
+  padding: 28px 0 0;
+}
+
+.reference-loyality .reference-loyality__support-grid .v2-glyph {
+  float: left;
+  margin: 0 22px 60px 0;
+}
+
+.reference-loyality .reference-loyality__photo:not(.v2-hero-photo) {
+  margin: 30px auto;
+  width: calc(100% - 96px);
+  max-width: 1240px;
+}
+
+.reference-loyality .reference-loyality__photo:not(.v2-hero-photo) img {
+  height: 450px;
+  width: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+.reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption {
+  display: flex;
+  gap: 35px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption span {
+  font-size: 20px;
+  font-family: 'Space Grotesk',sans-serif;
+  letter-spacing: -.5px;
+}
+
+.reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption p {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.reference-loyality .reference-loyality__steps {
+  display: grid;
+  grid-template-columns: repeat(4,minmax(0,1fr));
+  gap: 30px;
+}
+
+.reference-loyality .reference-loyality__steps article {
+  border-top: 2px solid #93b774;
+  padding-top: 24px;
+}
+
+.reference-loyality .reference-loyality__steps article>span {
+  font: 10px 'IBM Plex Mono',monospace;
+  color: #456344;
+}
+
+.reference-loyality .reference-loyality__steps h3 {
+  font-size: 25px;
+  line-height: 1.2;
+  margin: 23px 0 16px;
+}
+
+.reference-loyality .reference-loyality__steps p {
+  font-size: 14px;
+  line-height: 1.85;
+  color: var(--muted);
+}
+
+.reference-loyality #features {
+  padding-inline: 50px;
+  background: var(--dark);
+  color: #f8faf6;
+  border-radius: 20px;
+}
+
+.reference-loyality #features .reference-loyality__eyebrow {
+  color: #c8e6b4;
+}
+
+.reference-loyality .reference-loyality__features article {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 50px;
+  border-top: 1px solid #55725a;
+  padding: 32px 0;
+}
+
+.reference-loyality .reference-loyality__features article>span {
+  font: 10px 'IBM Plex Mono',monospace;
+  color: #c8e6b4;
+}
+
+.reference-loyality .reference-loyality__features h3 {
+  font-size: 30px;
+  margin-bottom: 15px;
+}
+
+.reference-loyality .reference-loyality__features p {
+  color: #c5d7c4;
+  line-height: 1.8;
+  font-size: 15px;
+  max-width: 740px;
+}
+
+.reference-loyality .reference-loyality__compare {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.reference-loyality .reference-loyality__compare-card {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 38px;
+}
+
+.reference-loyality .reference-loyality__compare-card>span {
+  font: 10px 'IBM Plex Mono',monospace;
+  color: #456344;
+}
+
+.reference-loyality .reference-loyality__compare-card h3 {
+  font-size: 31px;
+  margin: 22px 0 18px;
+}
+
+.reference-loyality .reference-loyality__compare-card p {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+.reference-loyality .reference-loyality__compare-card--new {
+  background: #e1edce;
+  border-color: #c8dcad;
+}
+
+.reference-loyality .reference-loyality__guarantee {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 50px;
+  padding: 45px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #edf2e6;
+}
+
+.reference-loyality .reference-loyality__stamp {
+  display: inline-block;
+  font: 10px 'IBM Plex Mono',monospace;
+  color: #fff;
+  background: #785947;
+  padding: 6px 10px;
+  margin-bottom: 18px;
+}
+
+.reference-loyality .reference-loyality__guarantee h2 {
+  font-size: 38px;
+  margin-bottom: 20px;
+}
+
+.reference-loyality .reference-loyality__guarantee p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+
+.reference-loyality .reference-loyality__guarantee-cards {
+  display: grid;
+  gap: 14px;
+}
+
+.reference-loyality .reference-loyality__guarantee-cards>div {
+  background: #fff;
+  padding: 25px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.reference-loyality .reference-loyality__guarantee-cards span {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.reference-loyality .reference-loyality__guarantee-cards strong {
+  display: block;
+  font: 500 25px 'Space Grotesk',sans-serif;
+  letter-spacing: -1px;
+  margin-top: 8px;
+}
+
+.reference-loyality .reference-loyality__plans {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  max-width: 950px;
+}
+
+.reference-loyality .reference-loyality__plan {
+  padding: 40px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+}
+
+.reference-loyality .reference-loyality__plan>span {
+  font: 11px 'IBM Plex Mono',monospace;
+  color: #456344;
+}
+
+.reference-loyality .reference-loyality__plan h3 {
+  font-size: 30px;
+  margin: 17px 0;
+}
+
+.reference-loyality .reference-loyality__plan>strong {
+  display: block;
+  font: 500 65px 'Space Grotesk',sans-serif;
+  letter-spacing: -3px;
+}
+
+.reference-loyality .reference-loyality__plan strong small {
+  font-size: 16px;
+  letter-spacing: 0;
+}
+
+.reference-loyality .reference-loyality__plan>small {
+  display: block;
+  color: #526758;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.reference-loyality .reference-loyality__plan li {
+  font-size: 14px;
+  padding-top: 15px;
+}
+
+.reference-loyality .reference-loyality__plan li:before {
+  content: '✓';
+  margin-right: 10px;
+}
+
+.reference-loyality .reference-loyality__plan--featured {
+  background: var(--dark);
+  color: #fff;
+}
+
+.reference-loyality .reference-loyality__plan--featured :is(span,small) {
+  color: #d4e8bd;
+}
+
+.reference-loyality .reference-loyality__example-flag {
+  max-width: 900px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 24px;
+}
+
+.reference-loyality .reference-loyality__pricing-box {
+  padding: 42px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+  border-radius: 14px;
+  background: #e8f0db;
+}
+
+.reference-loyality .reference-loyality__pricing-box h3 {
+  font-size: 30px;
+  margin-bottom: 16px;
+}
+
+.reference-loyality .reference-loyality__pricing-box p {
+  max-width: 720px;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.reference-loyality .reference-loyality__pricing-box .reference-loyality__btn {
+  flex-shrink: 0;
+}
+
+.reference-loyality .reference-loyality__final-cta {
+  text-align: center;
+  padding-block: 100px !important;
+}
+
+.reference-loyality .reference-loyality__final-cta h2 {
+  max-width: 900px;
+  font-size: 68px;
+  margin: auto;
+  letter-spacing: -4px;
+}
+
+.reference-loyality .reference-loyality__final-cta p {
+  font-size: 15px;
+  line-height: 1.8;
+  color: var(--muted);
+  max-width: 600px;
+  margin: 25px auto 30px;
+}
+
+.reference-loyality .reference-loyality__footer {
+  background: var(--dark);
+  color: #fff;
+  padding: 55px 0 95px;
+}
+
+.reference-loyality .reference-loyality__footer-wrap {
+  display: flex;
+  justify-content: space-between;
+  gap: 60px;
+}
+
+.reference-loyality .reference-loyality__footer p {
+  max-width: 400px;
+  color: #c7d8c5;
+  font-size: 13px;
+  line-height: 1.8;
+  margin-top: 18px;
+}
+
+.reference-loyality .reference-loyality__footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  align-content: flex-start;
+  font-size: 12px;
+  color: #d3e1ce;
+  max-width: 480px;
+}
+
+@media (min-width:761px) and (max-width:1100px) {
+  .reference-loyality .reference-loyality__nav-links {
+    gap: 15px;
+    font-size: 11px;
+  }
+
+  .reference-loyality .reference-loyality__nav {
+    padding-inline: 30px;
+  }
+
+  .reference-loyality .v2-hero {
+    gap: 30px;
+  }
+
+  .reference-loyality .reference-loyality__hero h1 {
+    font-size: 67px;
+    letter-spacing: -4px;
+  }
+
+  .reference-loyality .reference-loyality__highlight {
+    padding: 22px 17px;
+    gap: 12px;
+  }
+
+  .reference-loyality .reference-loyality__stat strong {
+    font-size: 25px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-row {
+    gap: 15px;
+    grid-template-columns: 70px 1fr 100px 80px;
+  }
+
+  .reference-loyality .reference-loyality__card {
+    padding: 25px;
+  }
+}
+
+@media (max-width:760px) {
+  .reference-loyality .reference-loyality__wrap {
+    width: calc(100% - 44px);
+  }
+
+  .reference-loyality .reference-loyality__nav {
+    min-height: 78px;
+    padding: 17px 22px;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .reference-loyality .reference-loyality__logo {
+    font-size: 24px;
+  }
+
+  .reference-loyality .reference-loyality__nav-links, .reference-loyality .reference-loyality__nav-actions {
+    display: none;
+  }
+
+  .reference-loyality .reference-loyality__menu-toggle {
+    display: flex;
+  }
+
+  .reference-loyality .reference-loyality__mobile-menu {
+    font-size: 14px;
+  }
+
+  .reference-loyality .reference-loyality__mobile-menu a {
+    min-height: 35px;
+  }
+
+  .reference-loyality .v2-hero {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-block: 36px 40px;
+  }
+
+  .reference-loyality .reference-loyality__hero h1 {
+    font-size: 56px;
+    letter-spacing: -3.8px;
+    line-height: 1.02;
+    margin-bottom: 24px;
+  }
+
+  .reference-loyality .reference-loyality__eyebrow {
+    font-size: 8px;
+    letter-spacing: .06em;
+    line-height: 1.9;
+    margin-bottom: 23px;
+  }
+
+  .reference-loyality .reference-loyality__lead {
+    font-size: 14px;
+    line-height: 1.85;
+    margin-bottom: 25px;
+  }
+
+  .reference-loyality .reference-loyality__btn {
+    min-height: 48px;
+    padding: 14px 21px;
+    font-size: 12px;
+  }
+
+  .reference-loyality .reference-loyality__hero-note {
+    font-size: 10px;
+    line-height: 1.8;
+    margin-top: 20px;
+  }
+
+  .reference-loyality .v2-product-visual {
+    padding: 16px 10px 12px 0;
+  }
+
+  .reference-loyality .v2-hero-photo {
+    height: 410px;
+    border-radius: 15px;
+  }
+
+  .reference-loyality .v2-hero-photo figcaption {
+    bottom: 45px;
+    left: 22px;
+    right: 22px;
+  }
+
+  .reference-loyality .v2-hero-photo figcaption span {
+    font-size: 9px;
+  }
+
+  .reference-loyality .v2-hero-photo figcaption p {
+    font-size: 12px;
+  }
+
+  .reference-loyality .v2-product-visual>.v2-glyph {
+    width: 59px;
+    height: 59px;
+    padding: 13px;
+    right: 0;
+  }
+
+  .reference-loyality .reference-loyality__highlight {
+    padding: 20px 16px;
+    margin: -25px -2px 0 15px;
+    gap: 13px;
+  }
+
+  .reference-loyality .reference-loyality__stat {
+    padding-right: 10px;
+  }
+
+  .reference-loyality .reference-loyality__stat strong {
+    font-size: 26px;
+  }
+
+  .reference-loyality .reference-loyality__stat span {
+    font-size: 8px;
+    margin-top: 7px;
+    line-height: 1.7;
+  }
+
+  .reference-loyality main>section {
+    padding-block: 55px;
+  }
+
+  .reference-loyality #ledger.reference-loyality__wrap {
+    padding-block: 10px 55px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-head {
+    font-size: 8px;
+    padding: 18px;
+    display: grid;
+    gap: 8px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-row {
+    grid-template-columns: minmax(0,1fr) 65px;
+    gap: 9px 12px;
+    padding: 19px 18px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-id {
+    font-size: 9px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-desc {
+    font-size: 12px;
+    line-height: 1.8;
+    grid-column: 1;
+  }
+
+  .reference-loyality .reference-loyality__ledger-type {
+    font-size: 9px;
+    grid-column: 1;
+  }
+
+  .reference-loyality .reference-loyality__ledger-row strong {
+    grid-column: 2;
+    grid-row: 1/4;
+    align-self: center;
+    font-size: 10px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-foot {
+    display: grid;
+    font-size: 10px;
+    padding: 18px;
+    gap: 8px;
+  }
+
+  .reference-loyality .reference-loyality__section-head {
+    margin-bottom: 30px;
+  }
+
+  .reference-loyality .reference-loyality__section-head h2 {
+    font-size: 37px;
+    letter-spacing: -1.8px;
+    line-height: 1.15;
+  }
+
+  .reference-loyality .reference-loyality__section-head p {
+    font-size: 14px;
+  }
+
+  .reference-loyality .reference-loyality__card-grid {
+    grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .reference-loyality .reference-loyality__card {
+    padding: 28px;
+  }
+
+  .reference-loyality .reference-loyality__card h3 {
+    font-size: 26px;
+  }
+
+  .reference-loyality .reference-loyality__card p {
+    font-size: 13px;
+  }
+
+  .reference-loyality .reference-loyality__flex-note {
+    font-size: 13px;
+  }
+
+  .reference-loyality .reference-loyality__support-grid .v2-glyph {
+    float: none;
+    margin: 0 0 20px;
+  }
+
+  .reference-loyality #support {
+    display: block;
+  }
+
+  .reference-loyality #support .reference-loyality__section-head h2 {
+    font-size: 36px;
+  }
+
+  .reference-loyality .reference-loyality__steps {
+    grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 30px 22px;
+  }
+
+  .reference-loyality .reference-loyality__steps article {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .reference-loyality .reference-loyality__steps h3 {
+    font-size: 24px;
+  }
+
+  .reference-loyality .reference-loyality__steps p {
+    font-size: 13px;
+  }
+
+  .reference-loyality #features {
+    padding-inline: 26px;
+    border-radius: 13px;
+  }
+
+  .reference-loyality .reference-loyality__features article {
+    display: block;
+    padding-block: 28px;
+  }
+
+  .reference-loyality .reference-loyality__features h3 {
+    font-size: 27px;
+    line-height: 1.2;
+    margin-top: 18px;
+  }
+
+  .reference-loyality .reference-loyality__features p {
+    font-size: 13px;
+  }
+
+  .reference-loyality .reference-loyality__compare {
+    grid-template-columns: 1fr;
+  }
+
+  .reference-loyality .reference-loyality__compare-card {
+    padding: 28px;
+  }
+
+  .reference-loyality .reference-loyality__compare-card h3 {
+    font-size: 28px;
+  }
+
+  .reference-loyality .reference-loyality__guarantee {
+    grid-template-columns: 1fr;
+    padding: 27px;
+    gap: 30px;
+  }
+
+  .reference-loyality .reference-loyality__guarantee h2 {
+    font-size: 33px;
+  }
+
+  .reference-loyality .reference-loyality__guarantee p {
+    font-size: 13px;
+  }
+
+  .reference-loyality .reference-loyality__plans {
+    grid-template-columns: 1fr;
+  }
+
+  .reference-loyality .reference-loyality__plan {
+    padding: 30px;
+  }
+
+  .reference-loyality .reference-loyality__plan>strong {
+    font-size: 58px;
+  }
+
+  .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) {
+    width: calc(100% - 44px);
+    margin-block: 25px;
+  }
+
+  .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) img {
+    height: 320px;
+    border-radius: 12px;
+  }
+
+  .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption {
+    display: block;
+  }
+
+  .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption p {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+
+  .reference-loyality .reference-loyality__pricing-box {
+    display: block;
+    padding: 28px;
+  }
+
+  .reference-loyality .reference-loyality__pricing-box h3 {
+    font-size: 27px;
+  }
+
+  .reference-loyality .reference-loyality__pricing-box .reference-loyality__btn {
+    margin-top: 28px;
+  }
+
+  .reference-loyality .reference-loyality__final-cta {
+    padding-block: 65px !important;
+  }
+
+  .reference-loyality .reference-loyality__final-cta h2 {
+    font-size: 44px;
+    letter-spacing: -2.5px;
+  }
+
+  .reference-loyality .reference-loyality__final-cta p {
+    font-size: 14px;
+  }
+
+  .reference-loyality .reference-loyality__footer-wrap {
+    display: block;
+  }
+
+  .reference-loyality .reference-loyality__footer nav {
+    margin-top: 30px;
+    gap: 20px;
+  }
+}
+
+@media (max-width:350px) {
+  .reference-loyality .reference-loyality__hero h1 {
+    font-size: 48px;
+    letter-spacing: -3px;
+  }
+
+  .reference-loyality .reference-loyality__steps {
+    grid-template-columns: 1fr;
+  }
+
+  .reference-loyality .reference-loyality__highlight {
+    gap: 10px;
+    padding: 18px 13px;
+  }
+
+  .reference-loyality .reference-loyality__stat strong {
+    font-size: 23px;
+  }
+
+  .reference-loyality .reference-loyality__stat span {
+    font-size: 7.5px;
+  }
+}
+
+@media (prefers-reduced-motion:no-preference) {
+  .reference-loyality .reference-loyality__hero {
+    animation: rise .7s both;
+  }
+
+  .reference-loyality .v2-product-visual {
+    animation: rise .9s .1s both;
+  }
+
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .reference-loyality {
+    scroll-behavior: auto;
+  }
+
+  .reference-loyality *, .reference-loyality *:before, .reference-loyality *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* mobile.css */
+
+@media (max-width: 960px) {
+  .reference-loyality {
+    scroll-padding-top: 90px;
+  }
+
+  .reference-loyality [id] {
+    scroll-margin-top: 96px;
+  }
+
+  .reference-loyality .reference-loyality__header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    width: 100%;
+  }
+
+  .reference-loyality .reference-loyality__header {
+    background: #f8faf6;
+  }
+
+  .reference-loyality .reference-loyality__nav {
+    min-height: 74px;
+    padding: 13px 22px;
+  }
+
+  .reference-loyality .reference-loyality__nav-links, .reference-loyality .reference-loyality__nav-actions {
+    display: none;
+  }
+
+  .reference-loyality .reference-loyality__menu-toggle {
+    display: flex;
+    width: 48px;
+    height: 48px;
+  }
+
+  .reference-loyality .reference-loyality__logo {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .reference-loyality .reference-loyality__mobile-menu {
+    padding: 12px 22px 22px;
+    max-height: calc(100svh - 74px);
+    overflow-y: auto;
+    gap: 3px;
+    border-bottom: 1px solid #b6c4ae;
+  }
+
+  .reference-loyality .reference-loyality__mobile-menu a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding-block: 10px;
+    font-size: 16px;
+  }
+
+  .reference-loyality .reference-loyality__mobile-actions {
+    padding-top: 15px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 @media (max-width: 760px) {
-  .reference-loyality__ledger-row { grid-template-columns: 1fr; padding: 14px 20px; gap: 4px; }
-  .reference-loyality__ledger-row strong { text-align: left; }
+  .reference-loyality {
+    font-size: 16px;
+  }
+
+  .reference-loyality .reference-loyality__wrap {
+    width: calc(100% - 40px);
+  }
+
+  .reference-loyality .reference-loyality__btn {
+    min-height: 52px;
+    padding: 15px 16px;
+    font-size: 14px;
+  }
+
+  .reference-loyality .reference-loyality__eyebrow {
+    font-size: 10px;
+    line-height: 1.7;
+    letter-spacing: .05em;
+  }
+
+  .reference-loyality .reference-loyality__hero h1 {
+    font-size: clamp(43px, 12.4vw, 52px);
+    letter-spacing: -.065em;
+    line-height: 1.06;
+  }
+
+  .reference-loyality .reference-loyality__lead {
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  .reference-loyality .reference-loyality__hero-ctas {
+    display: grid;
+    width: 100%;
+    grid-template-columns: minmax(0,1fr) minmax(0,1fr);
+    gap: 12px;
+  }
+
+  .reference-loyality .reference-loyality__hero-note {
+    font-size: 12px;
+    line-height: 1.7;
+    max-width: none;
+  }
+
+  .reference-loyality .reference-loyality__hero-note {
+    margin-top: 17px;
+  }
+
+  .reference-loyality .v2-hero {
+    padding-top: 30px;
+    gap: 26px;
+  }
+
+  .reference-loyality .v2-product-visual {
+    padding: 12px 0 0;
+  }
+
+  .reference-loyality .v2-product-visual:before {
+    inset: 0 0 30px 12px;
+  }
+
+  .reference-loyality .v2-product-visual>.v2-glyph {
+    right: 8px;
+    top: 0;
+    width: 54px;
+    height: 54px;
+  }
+
+  .reference-loyality .v2-hero-photo {
+    height: 350px;
+  }
+
+  .reference-loyality .v2-hero-photo figcaption {
+    bottom: 24px;
+    left: 22px;
+    right: 22px;
+  }
+
+  .reference-loyality .v2-hero-photo figcaption span {
+    font-size: 11px;
+  }
+
+  .reference-loyality .v2-hero-photo figcaption p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .reference-loyality .reference-loyality__highlight {
+    margin: 14px 0 0;
+    padding: 6px 20px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+
+  .reference-loyality .reference-loyality__stat {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 16px 0;
+    border-right: 0;
+    border-bottom: 1px solid #d3dfd1;
+  }
+
+  .reference-loyality .reference-loyality__stat:last-child {
+    padding: 16px 0;
+  }
+
+  .reference-loyality .reference-loyality__stat strong {
+    min-width: 82px;
+    font-size: 31px;
+  }
+
+  .reference-loyality .reference-loyality__stat span {
+    font-size: 13px;
+    line-height: 1.6;
+    max-width: none;
+    margin: 0;
+  }
+
+  .reference-loyality .reference-loyality__ledger-head {
+    font-size: 10px;
+    line-height: 1.8;
+  }
+
+  .reference-loyality .reference-loyality__ledger-desc {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .reference-loyality .reference-loyality__ledger-id, .reference-loyality .reference-loyality__ledger-type, .reference-loyality .reference-loyality__ledger-row strong {
+    font-size: 11px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-foot {
+    font-size: 12px;
+    line-height: 1.7;
+  }
+
+  .reference-loyality .reference-loyality__section-head h2 {
+    font-size: clamp(31px, 8.7vw, 37px);
+    letter-spacing: -.045em;
+  }
+
+  .reference-loyality .reference-loyality__section-head p, .reference-loyality .reference-loyality__card p, .reference-loyality .reference-loyality__features p, .reference-loyality .reference-loyality__compare-card p, .reference-loyality .reference-loyality__guarantee p, .reference-loyality .reference-loyality__pricing-box p {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .reference-loyality .reference-loyality__card>span, .reference-loyality .reference-loyality__features article>span, .reference-loyality .reference-loyality__compare-card>span, .reference-loyality .reference-loyality__plan>span {
+    font-size: 12px;
+    line-height: 1.6;
+  }
+
+  .reference-loyality .reference-loyality__flex-note {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .reference-loyality #support .reference-loyality__section-head h2 {
+    font-size: clamp(31px, 8.7vw, 37px);
+  }
+
+  .reference-loyality .reference-loyality__steps {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .reference-loyality .reference-loyality__steps article {
+    border-top: 0;
+    border-left: 2px solid #93b774;
+    padding: 0 0 0 22px;
+  }
+
+  .reference-loyality .reference-loyality__steps article>span {
+    font-size: 12px;
+  }
+
+  .reference-loyality .reference-loyality__steps h3 {
+    font-size: 26px;
+    margin-block: 15px;
+  }
+
+  .reference-loyality .reference-loyality__steps p {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .reference-loyality .reference-loyality__plan li {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+
+  .reference-loyality .reference-loyality__plan>small, .reference-loyality .reference-loyality__example-flag {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .reference-loyality .reference-loyality__guarantee-cards span {
+    font-size: 13px;
+  }
+
+  .reference-loyality .reference-loyality__stamp {
+    font-size: 11px;
+  }
+
+  .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) {
+    width: calc(100% - 40px);
+  }
+
+  .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption p {
+    font-size: 14px;
+    line-height: 1.75;
+  }
+
+  .reference-loyality .reference-loyality__final-cta h2 {
+    font-size: clamp(35px, 10vw, 44px);
+  }
+
+  .reference-loyality .reference-loyality__final-cta p {
+    font-size: 16px;
+  }
+
+  .reference-loyality .reference-loyality__footer p {
+    font-size: 14px;
+    line-height: 1.8;
+  }
+
+  .reference-loyality footer nav {
+    gap: 8px 20px !important;
+  }
+
+  .reference-loyality footer nav a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding-inline: 3px;
+    font-size: 14px;
+  }
+
+  .reference-loyality .reference-loyality__footer .reference-loyality__logo {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .reference-loyality .reference-loyality__footer {
+    padding-bottom: max(100px, calc(75px + env(safe-area-inset-bottom)));
+  }
 }
 
-@media (max-width: 720px) {
-  .reference-loyality__wrap { padding-inline: 20px; }
-  .reference-loyality main > section { padding-block: 56px; }
-  .reference-loyality__photo { width: calc(100% - 40px); }
-  .reference-loyality__plans { grid-template-columns: 1fr; }
+@media (min-width: 761px) and (max-width: 960px) {
+  .reference-loyality .v2-hero {
+    grid-template-columns: 1fr;
+    max-width: 680px;
+    gap: 45px;
+  }
+
+  .reference-loyality .reference-loyality__hero {
+    max-width: 680px;
+  }
+
+  .reference-loyality .reference-loyality__hero h1 {
+    max-width: 650px;
+    font-size: 74px;
+  }
+
+  .reference-loyality .v2-product-visual {
+    max-width: 680px;
+  }
+
+  .reference-loyality .reference-loyality__card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .reference-loyality .reference-loyality__card {
+    padding: 32px;
+  }
+
+  .reference-loyality #support {
+    gap: 35px;
+  }
+
+  .reference-loyality .reference-loyality__steps {
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+  }
+
+  .reference-loyality .reference-loyality__guarantee {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .reference-loyality .reference-loyality__pricing-box {
+    display: block;
+  }
+
+  .reference-loyality .reference-loyality__pricing-box .reference-loyality__btn {
+    margin-top: 25px;
+  }
 }
 
-@media (max-width: 640px) {
-  .reference-loyality__features > article { grid-template-columns: 1fr; gap: 6px; }
-  .reference-loyality__nav { padding: 14px 20px; }
-  .reference-loyality__nav-actions { display: none; }
-  .reference-loyality__menu-toggle { width: 48px; height: 48px; }
-  .reference-loyality__btn { padding-inline: 16px; }
-  .reference-loyality__highlight { padding: 28px 24px; }
-  .reference-loyality__ledger-head, .reference-loyality__ledger-foot { padding-inline: 20px; }
-  .reference-loyality__guarantee, .reference-loyality__pricing-box { padding: 32px 24px; }
-  .reference-loyality__photo { aspect-ratio: auto; }
-  .reference-loyality__photo img { height: auto; }
-  .reference-loyality__photo figcaption { position: static; width: auto; padding: 24px; background: var(--ink); transform: none; }
-  .reference-loyality__photo::after { display: none; }
+@media (max-width: 350px) {
+  .reference-loyality .reference-loyality__hero-ctas {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
 }
 
-@media (max-width: 420px) {
-  .reference-loyality__mobile-actions { grid-template-columns: 1fr; }
+/* polish.css */
+
+.reference-loyality {
+  --final-ease: cubic-bezier(.2,.7,.2,1);
+}
+
+.reference-loyality .reference-loyality__header {
+  background: #f8faf6;
+}
+
+.reference-loyality [id] {
+  scroll-margin-top: 115px;
+}
+
+.reference-loyality :is(a,button,select):focus-visible {
+  outline: 3px solid var(--dark);
+  outline-offset: 5px;
+}
+
+.reference-loyality .reference-loyality__nav {
+  min-height: 88px;
+}
+
+.reference-loyality .v2-hero {
+  padding-block: 60px 72px;
+  gap: 68px;
+}
+
+.reference-loyality .reference-loyality__hero h1 {
+  font-size: clamp(66px,6.1vw,88px);
+  letter-spacing: -.065em;
+}
+
+.reference-loyality .reference-loyality__hero-note {
+  font-size: 12px;
+}
+
+.reference-loyality .reference-loyality__lead {
+  max-width: 520px;
+}
+
+.reference-loyality #concept {
+  padding-top: 35px;
+  padding-bottom: 80px;
+}
+
+.reference-loyality #concept .reference-loyality__section-head {
+  max-width: 850px;
+}
+
+.reference-loyality #concept .reference-loyality__card {
+  border-radius: 14px;
+  border: 1px solid #cbdac3;
+  padding: 30px;
+}
+
+.reference-loyality #concept .reference-loyality__card:first-child {
+  border-color: #15392e;
+}
+
+/* Group existing card labels with their glyphs; keep the copy at full measure. */
+.reference-loyality :is(#concept,#support) .reference-loyality__card {
+  display: grid;
+  grid-template-columns: 44px minmax(0,1fr);
+  gap: 8px 18px;
+  align-content: start;
+}
+
+.reference-loyality :is(#concept,#support) .reference-loyality__card>.v2-glyph {
+  grid-column: 1;
+  grid-row: 1/3;
+  width: 44px;
+  height: 44px;
+  margin: 0;
+  float: none;
+}
+
+.reference-loyality :is(#concept,#support) .reference-loyality__card>span {
+  grid-column: 2;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.reference-loyality :is(#concept,#support) .reference-loyality__card h3 {
+  grid-column: 2;
+  margin: 0;
+}
+
+.reference-loyality :is(#concept,#support) .reference-loyality__card p {
+  grid-column: 1/-1;
+  max-width: 68ch;
+  margin-top: 8px;
+}
+
+.reference-loyality #support {
+  padding-block: 70px 85px;
+}
+
+.reference-loyality #pillars {
+  border-top: 1px solid #cad8c5;
+  padding-block: 74px;
+}
+
+.reference-loyality #pillars .reference-loyality__card-grid {
+  gap: 0;
+}
+
+.reference-loyality #pillars .reference-loyality__card {
+  position: relative;
+  background: none;
+  padding: 26px 36px 8px;
+  border: 0;
+  border-right: 1px solid #cad8c5;
+  border-radius: 0;
+}
+
+.reference-loyality #pillars .reference-loyality__card:first-child {
+  padding-left: 0;
+}
+
+.reference-loyality #pillars .reference-loyality__card:last-child {
+  border: 0;
+  padding-right: 0;
+}
+
+.reference-loyality #pillars .reference-loyality__card>.v2-glyph {
+  background: #e1edce;
+  width: 66px;
+  height: 66px;
+  padding: 15px;
+  border-radius: 50%;
+  margin-bottom: 27px;
+}
+
+.reference-loyality #pillars .reference-loyality__card h3 {
+  font-size: 27px;
+  max-width: 290px;
+}
+
+.reference-loyality #pillars .reference-loyality__card p {
+  font-size: 15px;
+}
+
+.reference-loyality #how {
+  padding-block: 75px 45px;
+}
+
+.reference-loyality #ledger {
+  padding-block: 0 90px;
+}
+
+.reference-loyality .reference-loyality__ledger-head {
+  background: #dfeccf;
+  padding-block: 20px;
+}
+
+.reference-loyality .reference-loyality__ledger-row {
+  padding-block: 20px;
+}
+
+.reference-loyality #features {
+  padding: 58px 44px;
+  border-radius: 20px;
+}
+
+.reference-loyality #features .reference-loyality__section-head {
+  max-width: 870px;
+  margin-bottom: 44px;
+}
+
+.reference-loyality #features .final-feature-layout {
+  display: grid;
+  grid-template-columns: .88fr 1.12fr;
+  gap: 48px;
+  align-items: start;
+}
+
+.reference-loyality #features .final-feature-media {
+  position: sticky;
+  top: 118px;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.reference-loyality #features .final-feature-media img {
+  height: 550px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: 57% 50%;
+}
+
+.reference-loyality #features .final-feature-media figcaption {
+  display: block;
+  border-color: #668167;
+  padding-top: 24px;
+}
+
+.reference-loyality #features .final-feature-media figcaption span {
+  color: #f8faf6;
+  font-size: 25px;
+}
+
+.reference-loyality #features .final-feature-media figcaption p {
+  color: #c5d7c4;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-top: 13px;
+}
+
+.reference-loyality .reference-loyality__features article {
+  display: block;
+  padding-block: 25px;
+}
+
+.reference-loyality .reference-loyality__features article>span {
+  display: block;
+  font-size: 11px;
+  line-height: 1.7;
+  margin-bottom: 13px;
+}
+
+.reference-loyality .reference-loyality__features h3 {
+  font-size: 27px;
+  line-height: 1.2;
+  letter-spacing: -1px;
+  margin-bottom: 13px;
+}
+
+.reference-loyality .reference-loyality__features p {
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.reference-loyality .reference-loyality__guarantee {
+  background: #f0f3e9;
+  padding: 38px;
+  gap: 42px;
+}
+
+.reference-loyality .reference-loyality__guarantee h2 {
+  font-size: 35px;
+}
+
+.reference-loyality .reference-loyality__plans {
+  max-width: none;
+  gap: 26px;
+}
+
+.reference-loyality .reference-loyality__plan {
+  padding: 42px;
+}
+
+.reference-loyality .reference-loyality__final-cta {
+  padding-block: 85px !important;
+}
+
+@media (min-width:961px) and (max-width:1100px) {
+  .reference-loyality .v2-hero {
+    gap: 35px;
+  }
+
+  .reference-loyality .reference-loyality__hero h1 {
+    font-size: 68px;
+  }
+
+  .reference-loyality #features .final-feature-layout {
+    grid-template-columns: .8fr 1.2fr;
+    gap: 30px;
+  }
+
+  .reference-loyality #features {
+    padding-inline: 30px;
+  }
+
+  .reference-loyality #features .final-feature-media img {
+    height: 500px;
+  }
+}
+
+@media (max-width:960px) {
+  .reference-loyality .reference-loyality__nav {
+    min-height: 74px;
+  }
+
+  .reference-loyality #features .final-feature-layout {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+
+  .reference-loyality #features .final-feature-media {
+    position: static;
+  }
+
+  .reference-loyality #features .final-feature-media img {
+    height: 360px;
+    object-position: 55% 50%;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card h3 {
+    font-size: 25px;
+  }
+
+  .reference-loyality footer nav a {
+    display: inline-flex;
+    align-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding-inline: 3px;
+    font-size: 14px;
+  }
+
+  .reference-loyality .language-picker__control {
+    min-height: 48px;
+  }
+
+  .reference-loyality .language-dock {
+    min-height: 48px;
+    padding-block: 0;
+  }
+
+  .reference-loyality .language-dock select {
+    min-width: 48px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 960px) {
+
+  .reference-loyality #pillars .reference-loyality__card-grid {
+    gap: 25px;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card:nth-child(n) {
+    display: grid;
+    grid-template-columns: 52px minmax(0,1fr);
+    gap: 10px 20px;
+    border: 0;
+    border-bottom: 1px solid #cad8c5;
+    padding: 0 0 25px;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card:last-child {
+    border: 0;
+    padding-bottom: 0;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card>.v2-glyph {
+    width: 52px;
+    height: 52px;
+    padding: 12px;
+    grid-column: 1;
+    grid-row: 1/4;
+    margin: 0;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card>span {
+    grid-column: 2;
+    font-size: 11px;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card h3 {
+    grid-column: 2;
+    font-size: 25px;
+    margin: 0;
+    max-width: none;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card p {
+    grid-column: 2;
+    font-size: 15px;
+    margin: 0;
+  }
+}
+
+@media (max-width:760px) {
+  .reference-loyality .v2-hero {
+    padding-block: 30px 45px;
+    gap: 28px;
+  }
+
+  .reference-loyality .reference-loyality__hero h1 {
+    font-size: clamp(43px,12.4vw,52px);
+    letter-spacing: -.065em;
+  }
+
+  .reference-loyality .reference-loyality__hero-note {
+    font-size: 12px;
+  }
+
+  .reference-loyality #concept {
+    padding-block: 25px 55px;
+  }
+
+  .reference-loyality #concept .reference-loyality__card {
+    padding: 24px;
+  }
+
+  .reference-loyality #support {
+    padding-block: 50px 55px;
+  }
+
+  .reference-loyality #pillars {
+    padding-block: 55px;
+  }
+
+  .reference-loyality #how {
+    padding-block: 50px 35px;
+  }
+
+  .reference-loyality #ledger {
+    padding-bottom: 55px;
+  }
+
+  .reference-loyality .reference-loyality__ledger-head {
+    padding-block: 18px;
+  }
+
+  .reference-loyality #features {
+    padding: 35px 26px;
+    border-radius: 14px;
+  }
+
+  .reference-loyality #features .reference-loyality__section-head {
+    margin-bottom: 28px;
+  }
+
+  .reference-loyality #features .final-feature-media {
+    width: 100%;
+    margin: 0;
+  }
+
+  .reference-loyality #features .final-feature-media img {
+    height: 275px;
+    border-radius: 10px;
+    object-position: 56% 50%;
+  }
+
+  .reference-loyality #features .final-feature-media figcaption {
+    padding-top: 20px;
+  }
+
+  .reference-loyality #features .final-feature-media figcaption span {
+    font-size: 23px;
+  }
+
+  .reference-loyality #features .final-feature-media figcaption p {
+    font-size: 14px;
+  }
+
+  .reference-loyality .reference-loyality__features article {
+    padding-block: 25px;
+  }
+
+  .reference-loyality .reference-loyality__features article>span {
+    font-size: 12px;
+  }
+
+  .reference-loyality .reference-loyality__guarantee {
+    padding: 27px;
+    gap: 28px;
+  }
+
+  .reference-loyality .reference-loyality__guarantee h2 {
+    font-size: 32px;
+  }
+
+  .reference-loyality .reference-loyality__plan {
+    padding: 30px;
+  }
+
+  .reference-loyality .reference-loyality__final-cta {
+    padding-block: 60px !important;
+  }
+}
+
+@media (max-width:350px) {
+  .reference-loyality #pillars .reference-loyality__card:nth-child(n) {
+    grid-template-columns: 40px minmax(0,1fr);
+    gap: 10px 16px;
+  }
+
+  .reference-loyality #pillars .reference-loyality__card>.v2-glyph {
+    width: 40px;
+    height: 40px;
+    padding: 8px;
+  }
+}
+
+/* Existing tenant typography uses !important; override only this homepage. */
+
+:root[data-program="loyality"] .reference-loyality :is(h1,h2,h3) {
+  font-family: 'Space Grotesk', sans-serif !important;
+  font-weight: 500 !important;
+  letter-spacing: -.05em !important;
+}
+
+:root[data-program="loyality"] .reference-loyality h1 {
+  letter-spacing: -.065em !important;
+}
+
+.reference-loyality {
+  min-height: 100vh;
+}
+
+.reference-loyality .v2-product-visual {
+  isolation: isolate;
+}
+
+.reference-loyality .v2-hero-photo {
+  width: 100%;
+}
+
+.reference-loyality .reference-loyality__nav a {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.reference-loyality .reference-loyality__footer a {
+  min-width: 44px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.reference-loyality .reference-loyality__footer a:focus-visible {
+  outline-color: var(--lime);
+}
+
+@media (hover:hover) {
+  .reference-loyality .reference-loyality__footer nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 5px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reference-loyality__ledger-head i { animation: none; }
-  .reference-loyality__btn { transition: none; }
+  .reference-loyality *, .reference-loyality *::before, .reference-loyality *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.reference-loyality .reference-loyality__logo {
+  flex-shrink: 0;
+  background: white;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.reference-loyality .reference-loyality__logo img {
+  width: 140px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.reference-loyality .reference-loyality__nav {
+  padding-block: 9px;
+}
+
+@media (max-width: 960px) {
+  .reference-loyality .reference-loyality__nav {
+    padding-block: 5px;
+  }
+
+  .reference-loyality .reference-loyality__logo img {
+    width: 128px;
+    height: 64px;
+  }
+}
+
+.reference-loyality .reference-loyality__header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.reference-loyality .reference-loyality__nav-links a {
+  position: relative;
+}
+
+.reference-loyality .reference-loyality__nav-links a[aria-current="location"]::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: currentColor;
+  opacity: .65;
+}
+
+.reference-loyality .reference-loyality__mobile-menu {
+  max-height: calc(100svh - 74px);
+  overflow-y: auto;
+}
+
+@media (max-width: 960px) {
+  .reference-loyality .reference-loyality__nav-links a[aria-current="location"]::after {
+    display: none;
+  }
 }

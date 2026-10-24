@@ -1,8 +1,7 @@
-import { useEffect, useState } from 'react'
-import { Menu, X } from 'lucide-react'
+import { useEffect, useRef, useState } from 'react'
+import { Menu, X, Layers, Gift, Flag, Users, Compass, Settings, Eye, UserPlus, RotateCcw } from 'lucide-react'
 import { Link } from 'react-router'
 
-import { LoyalityMark } from '@/features/loyality/components/loyality-mark'
 import { useLanguage } from '@/lib/language'
 
 import './loyality-home-page.css'
@@ -51,68 +50,108 @@ function SectionHeading({ eyebrow, title, children }: { eyebrow: string; title: 
   return <div className="reference-loyality__section-head"><div className="reference-loyality__eyebrow">{t(eyebrow)}</div><h2>{t(title)}</h2>{children}</div>
 }
 
+const cardIcons = [Gift, Flag, Users]
+const pillarIcons = [Eye, UserPlus, RotateCcw]
+
 function Cards({ items }: { items: string[][] }) {
   const { t } = useLanguage()
-  return <div className="reference-loyality__card-grid">{items.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{t(label)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
+  const icons = items === pillarCards ? pillarIcons : cardIcons
+  return (
+    <div className="reference-loyality__card-grid">
+      {items.map(([label, title, copy], index) => {
+        const Icon = icons[index]
+        return (
+          <article className="reference-loyality__card" key={title}>
+            <div className="v2-glyph" aria-hidden="true"><Icon /></div>
+            <span>{t(label)}</span><h3>{t(title)}</h3><p>{t(copy)}</p>
+          </article>
+        )
+      })}
+    </div>
+  )
 }
 
 export function LoyalityHomePage() {
   const { t } = useLanguage()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
+  const menuButtonRef = useRef<HTMLButtonElement>(null)
+  const headerRef = useRef<HTMLElement>(null)
+  const [activeSection, setActiveSection] = useState('')
+
+  useEffect(() => {
+    const updateSection = () => {
+      const sections = ['concept', 'how', 'guarantee']
+      const current = sections.filter(id => (document.getElementById(id)?.getBoundingClientRect().top ?? Infinity) <= 130).at(-1)
+      setActiveSection(current ?? '')
+    }
+    window.addEventListener('scroll', updateSection, { passive: true })
+    updateSection()
+    return () => window.removeEventListener('scroll', updateSection)
+  }, [])
+
   useEffect(() => {
     if (!mobileMenuOpen) return
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setMobileMenuOpen(false)
+      if (event.key === 'Escape') { setMobileMenuOpen(false); menuButtonRef.current?.focus() }
     }
+    const outside = (event: PointerEvent) => { if (!headerRef.current?.contains(event.target as Node)) setMobileMenuOpen(false) }
+    const desktop = window.matchMedia('(min-width: 961px)')
+    const resize = () => { if (desktop.matches) setMobileMenuOpen(false) }
+    document.addEventListener('pointerdown', outside)
+    desktop.addEventListener('change', resize)
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('pointerdown', outside)
+      desktop.removeEventListener('change', resize)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [mobileMenuOpen])
 
   const closeMobileMenu = () => setMobileMenuOpen(false)
 
   return (
     <div className="reference-loyality">
-      <header className="reference-loyality__header">
+      <header className="reference-loyality__header" ref={headerRef}>
         <nav className="reference-loyality__nav" aria-label={t('Loyality navigation')}>
-          <a className="reference-loyality__logo" href="#top"><LoyalityMark />Loyality</a>
-          <div className="reference-loyality__nav-links"><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a></div>
+          <a className="reference-loyality__logo" href="#top"><img src="/loyality-client-logo.webp" alt="Loyality" width="280" height="140" /></a>
+          <div className="reference-loyality__nav-links"><a href="#concept" aria-current={activeSection === 'concept' ? 'location' : undefined}>{t('The concept')}</a><a href="#how" aria-current={activeSection === 'how' ? 'location' : undefined}>{t('How it works')}</a><a href="#guarantee" aria-current={activeSection === 'guarantee' ? 'location' : undefined}>{t('Guarantee')}</a></div>
           <div className="reference-loyality__nav-actions"><Link className="reference-loyality__sign-in" to="/signin">{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link></div>
-          <button className="reference-loyality__menu-toggle" type="button" aria-label={t(mobileMenuOpen ? 'Close navigation' : 'Open navigation')} aria-controls="loyality-mobile-navigation" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}>{mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
+          <button ref={menuButtonRef} className="reference-loyality__menu-toggle" type="button" aria-label={t(mobileMenuOpen ? 'Close navigation' : 'Open navigation')} aria-controls="loyality-mobile-navigation" aria-expanded={mobileMenuOpen} onClick={() => setMobileMenuOpen((isOpen) => !isOpen)}>{mobileMenuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}</button>
         </nav>
         <nav id="loyality-mobile-navigation" className={`reference-loyality__mobile-menu${mobileMenuOpen ? ' is-open' : ''}`} aria-label={t('Loyality mobile navigation')} hidden={!mobileMenuOpen}>
-          <a href="#concept" onClick={closeMobileMenu}>{t('The concept')}</a>
-          <a href="#how" onClick={closeMobileMenu}>{t('How it works')}</a>
-          <a href="#guarantee" onClick={closeMobileMenu}>{t('Guarantee')}</a>
+          <a href="#concept" aria-current={activeSection === 'concept' ? 'location' : undefined} onClick={closeMobileMenu}>{t('The concept')}</a>
+          <a href="#how" aria-current={activeSection === 'how' ? 'location' : undefined} onClick={closeMobileMenu}>{t('How it works')}</a>
+          <a href="#guarantee" aria-current={activeSection === 'guarantee' ? 'location' : undefined} onClick={closeMobileMenu}>{t('Guarantee')}</a>
           <Link to="/business" onClick={closeMobileMenu}>{t('Businesses')}</Link>
           <div className="reference-loyality__mobile-actions"><Link className="reference-loyality__btn reference-loyality__btn--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business" onClick={closeMobileMenu}>{t('Get started')}</Link></div>
         </nav>
       </header>
 
       <main id="top">
-        <div className="reference-loyality__wrap">
+        <div className="reference-loyality__wrap v2-hero">
           <section className="reference-loyality__hero">
             <div className="reference-loyality__eyebrow">{t('White-label membership platform · Any business, any industry')}</div>
             <h1>{t('Turn your customers into members.')}</h1>
             <p className="reference-loyality__lead">{t('Loyality lets any business build a fully-branded membership program and hand out whatever incentives they want — loyalty rewards, milestone bonuses, referral perks, all of it, or just one — running on nothing but a QR code.')}</p>
-            <div className="reference-loyality__hero-ctas"><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept">{t('See the concept')}</a></div>
+            <div className="reference-loyality__hero-ctas"><Link className="reference-loyality__btn reference-loyality__btn--gold" to="/business">{t('Get started')}</Link><a className="reference-loyality__btn reference-loyality__btn--outline" href="#concept" aria-current={activeSection === 'concept' ? 'location' : undefined}>{t('See the concept')}</a></div>
             <p className="reference-loyality__hero-note">{t('Works for any business, in any industry, anywhere.')}</p>
           </section>
+          <div className="v2-product-visual">
+        <figure className="reference-loyality__photo v2-hero-photo">
+          <img src="/loyality-member-scan.jpg" alt={t('A customer scanning a QR code at an independent café counter with their phone')} width="3600" height="1200" loading="eager" />
+          <figcaption><span>{t('One scan, no hardware')}</span><p>{t('A customer scanning a QR code at the counter on their own phone — the moment they become a member.')}</p></figcaption>
+        </figure>
           <div className="reference-loyality__highlight" aria-label={t('Loyality platform highlights')}>
             <div className="reference-loyality__stat"><strong>0</strong><span>{t('Hardware or apps required')}</span></div>
             <div className="reference-loyality__stat"><strong>100%</strong><span>{t('Branded under your name')}</span></div>
             <div className="reference-loyality__stat"><strong>—</strong><span>{t('Guarantee policy pending')}</span></div>
           </div>
+          <div className="v2-glyph" aria-hidden="true"><Layers /></div></div>
         </div>
 
-        <section className="reference-loyality__wrap" id="ledger">
-          <div className="reference-loyality__ledger">
-            <div className="reference-loyality__ledger-head"><span><i aria-hidden="true" />{t('Sample membership activity — one business')}</span><span>{t('Every incentive tracked automatically')}</span></div>
-            <div>{ledgerRows.map(([id, description, type, amount]) => <div className="reference-loyality__ledger-row" key={id}><span className="reference-loyality__ledger-id">{id}</span><span className="reference-loyality__ledger-desc">{t(description)}</span><span className="reference-loyality__ledger-type">{t(type)}</span><strong>{t(amount)}</strong></div>)}</div>
-            <div className="reference-loyality__ledger-foot"><span>{t('No manual tally-keeping — the platform runs the loop.')}</span><strong>{t('100% trackable')}</strong></div>
-          </div>
-        </section>
+
 
         <section className="reference-loyality__wrap" id="concept">
           <SectionHeading eyebrow="The concept" title="One membership. Any incentive you want."><p>{t("Loyality isn't a single reward type — it's a membership you build for your own customers, then decide exactly what being a member is worth.")}</p></SectionHeading>
@@ -122,13 +161,10 @@ export function LoyalityHomePage() {
 
         <section className="reference-loyality__wrap" id="support">
           <SectionHeading eyebrow="More than software" title="A partner that runs it with you — not a tool you're left to figure out."><p>{t("Loyality isn't something you're handed and left alone with. We work with you on both ends of it.")}</p></SectionHeading>
-          <div className="reference-loyality__support-grid">{supportCards.map(([label, title, copy]) => <article className="reference-loyality__card" key={title}><span>{t(label)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
+          <div className="reference-loyality__support-grid">{supportCards.map(([label, title, copy], index) => <article className="reference-loyality__card" key={title}><div className="v2-glyph" aria-hidden="true">{index === 0 ? <Compass /> : <Settings />}</div><span>{t(label)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
         </section>
 
-        <figure className="reference-loyality__photo reference-loyality__wrap">
-          <img src="/loyality-member-scan.jpg" alt={t('A customer scanning a QR code at an independent café counter with their phone')} width="3600" height="1200" loading="lazy" />
-          <figcaption><span>{t('One scan, no hardware')}</span><p>{t('A customer scanning a QR code at the counter on their own phone — the moment they become a member.')}</p></figcaption>
-        </figure>
+
 
         <section className="reference-loyality__wrap" id="pillars">
           <SectionHeading eyebrow="Why it works" title="A membership does three jobs at once."><p>{t('Once your customers are members, the same program pulls three different levers for your business.')}</p></SectionHeading>
@@ -140,9 +176,22 @@ export function LoyalityHomePage() {
           <div className="reference-loyality__steps">{steps.map(([number, title, copy]) => <article key={number}><span>{t(number)}</span><h3>{t(title)}</h3><p>{t(copy)}</p></article>)}</div>
         </section>
 
+        <section className="reference-loyality__wrap" id="ledger">
+          <div className="reference-loyality__ledger">
+            <div className="reference-loyality__ledger-head"><span><i aria-hidden="true" />{t('Sample membership activity — one business')}</span><span>{t('Every incentive tracked automatically')}</span></div>
+            <div>{ledgerRows.map(([id, description, type, amount]) => <div className="reference-loyality__ledger-row" key={id}><span className="reference-loyality__ledger-id">{id}</span><span className="reference-loyality__ledger-desc">{t(description)}</span><span className="reference-loyality__ledger-type">{t(type)}</span><strong>{t(amount)}</strong></div>)}</div>
+            <div className="reference-loyality__ledger-foot"><span>{t('No manual tally-keeping — the platform runs the loop.')}</span><strong>{t('100% trackable')}</strong></div>
+          </div>
+        </section>
+
         <section className="reference-loyality__wrap" id="features">
           <SectionHeading eyebrow="Features" title="Everything a loyalty app does. Plus what most of them don't." />
-          <div className="reference-loyality__features">{features.map(([label, title, copy]) => <article key={label}><span>{t(label)}</span><div><h3>{t(title)}</h3><p>{t(copy)}</p></div></article>)}</div>
+          <div className="final-feature-layout">
+        <figure className="reference-loyality__photo final-feature-media">
+          <img src="/loyality-owner-dashboard.jpg" alt={t('An independent business owner reviewing member activity on a phone')} width="3600" height="1195" loading="lazy" />
+          <figcaption><span>{t('Everything, at a glance')}</span><p>{t('A business owner checking member activity on a simple phone dashboard — no extra software to learn.')}</p></figcaption>
+        </figure>
+          <div className="reference-loyality__features">{features.map(([label, title, copy]) => <article key={label}><span>{t(label)}</span><div><h3>{t(title)}</h3><p>{t(copy)}</p></div></article>)}</div></div>
         </section>
 
         <section className="reference-loyality__wrap">
@@ -169,10 +218,7 @@ export function LoyalityHomePage() {
           <p className="reference-loyality__example-flag">{t('Illustrative example only. Paid tiers and cycle credit are planned and unavailable for activation.')}</p>
         </section>
 
-        <figure className="reference-loyality__photo reference-loyality__wrap">
-          <img src="/loyality-owner-dashboard.jpg" alt={t('An independent business owner reviewing member activity on a phone')} width="3600" height="1195" loading="lazy" />
-          <figcaption><span>{t('Everything, at a glance')}</span><p>{t('A business owner checking member activity on a simple phone dashboard — no extra software to learn.')}</p></figcaption>
-        </figure>
+
 
         <section className="reference-loyality__wrap" id="pricing">
           <SectionHeading eyebrow="Getting started" title="Onboarding, made simple." />
@@ -184,8 +230,8 @@ export function LoyalityHomePage() {
 
       <footer className="reference-loyality__footer">
         <div className="reference-loyality__wrap reference-loyality__footer-wrap">
-          <div><a className="reference-loyality__logo" href="#top"><LoyalityMark size={20} />Loyality</a><p>{t('Turn your customers into members. A white-label membership platform for any business, anywhere.')}</p></div>
-          <nav aria-label={t('Footer navigation')}><a href="#concept">{t('The concept')}</a><a href="#how">{t('How it works')}</a><a href="#guarantee">{t('Guarantee')}</a><Link to="/business">{t('Get started')}</Link><Link to="/signin">{t('Sign in')}</Link></nav>
+          <div><a className="reference-loyality__logo" href="#top"><img src="/loyality-client-logo.webp" alt="Loyality" width="280" height="140" loading="lazy" /></a><p>{t('Turn your customers into members. A white-label membership platform for any business, anywhere.')}</p></div>
+          <nav aria-label={t('Footer navigation')}><a href="#concept" aria-current={activeSection === 'concept' ? 'location' : undefined}>{t('The concept')}</a><a href="#how" aria-current={activeSection === 'how' ? 'location' : undefined}>{t('How it works')}</a><a href="#guarantee" aria-current={activeSection === 'guarantee' ? 'location' : undefined}>{t('Guarantee')}</a><Link to="/business">{t('Get started')}</Link><Link to="/signin">{t('Sign in')}</Link></nav>
         </div>
       </footer>
     </div>

@@ -1,38 +1,45 @@
 name: Deploy Loyality production
 
 on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - '.github/workflows/loyality-production.yml'
-      - 'api/**'
-      - 'public/**'
-      - 'src/**'
-      - 'index.html'
-      - 'package-lock.json'
-      - 'package.json'
-      - 'tsconfig*.json'
-      - 'vercel.json'
+    inputs:
+      refresh_server_environment:
+        description: Explicitly refresh existing Loyality server variables from configured GitHub secrets
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: loyality-production
-  cancel-in-progress: true
+  group: coffee-production-publish
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.head_branch == 'main' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
+      EXPECTED_COMMIT_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
       LOYALITY_SUPABASE_URL: https://bftuvmywtmpflizsomim.supabase.co
       VERCEL_ORG: elaielaielai1113s-projects
       VERCEL_PROJECT: loyality-rewards
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
       - uses: actions/setup-node@v6
         with:
@@ -40,6 +47,12 @@ jobs:
           cache: npm
 
       - run: npm ci
+
+      - name: Install pinned Vercel CLI
+        run: npm install --global vercel@58.7.1
+
+      - name: Check publication scope contracts before external operations
+        run: node --test scripts/deployment-workflows.test.mjs scripts/publish-reviewed-site.test.mjs
 
       - name: Verify the Loyalty Platforms connection
         env:
@@ -69,6 +82,7 @@ jobs:
           npm run build:budget
 
       - name: Configure Loyality production
+        if: github.event_name == 'workflow_dispatch' && inputs.refresh_server_environment == true
         env:
           LOYALITY_SUPABASE_ANON_KEY: ${{ secrets.NEW_VITE_SUPABASE_ANON_KEY }}
           LOYALITY_SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.NEW_SUPABASE_SERVICE_ROLE_KEY }}
@@ -87,7 +101,16 @@ jobs:
       - name: Deploy Loyality
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-        run: npx vercel deploy . --prod --yes --archive=tgz --project "$VERCEL_PROJECT" --scope "$VERCEL_ORG" --token "$VERCEL_TOKEN"
+        run: node scripts/publish-reviewed-site.mjs loyality "$EXPECTED_COMMIT_SHA" artifacts/deployment/loyality.json
+
+      - name: Upload bounded publication evidence
+        continue-on-error: true
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: loyality-deployment-${{ github.run_id }}
+          path: artifacts/deployment/loyality.json
+          if-no-files-found: warn
 
       - name: Verify production is live
         env:
