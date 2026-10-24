@@ -49,7 +49,16 @@ test.describe('white-label tenant resolution', () => {
 
       await expect(page).toHaveTitle(tenant.name)
       if (tenant.slug === 'loyality') {
-        await expect(page.locator('.reference-loyality__logo').first()).toHaveText('Loyality')
+        const logoLink = page.locator('.reference-loyality__logo').first()
+        const logo = logoLink.getByRole('img', { name: 'Loyality', exact: true })
+        await expect(logoLink).toHaveAccessibleName('Loyality')
+        await expect(logoLink).toHaveAttribute('href', '#top')
+        await expect(logo).toBeVisible()
+        await expect(logo).toHaveAttribute('src', '/loyality-client-logo.webp')
+        await expect.poll(() => logo.evaluate((image) => {
+          const element = image as HTMLImageElement
+          return element.complete && element.naturalWidth === 280 && element.naturalHeight === 140
+        })).toBe(true)
       } else if (tenant.slug === 'wondertown') {
         await expect(page.locator('.reference-rewardme__logo').first()).toContainText('Wondertown Rewards')
         await expect(page.locator('.reference-rewardme')).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
