@@ -12,9 +12,9 @@ const tenantCases: Array<{
   {
     tenant: 'rewardme',
     storageSlug: 'pinas',
-    spanishHeading: 'Obtén recompensas increíbles mientras apoyas a los negocios locales.',
+    spanishHeading: 'Recibe recompensas por gastar en los lugares que ya te encantan.',
     businessSpanish: 'Consigue nuevos clientes mientras recompensas a nuestros miembros.',
-    englishHeading: 'Earn amazing rewards while supporting local businesses.',
+    englishHeading: 'Get rewarded for spending where you already love.',
   },
   {
     tenant: 'wondertown',
@@ -33,9 +33,9 @@ const tenantCases: Array<{
   {
     tenant: 'loyality',
     storageSlug: 'loyality',
-    spanishHeading: 'Convierte a tus clientes en miembros.',
+    spanishHeading: 'Tu tarjeta de fidelidad, reinventada.',
     businessSpanish: 'Un programa de fidelidad que se siente como tu negocio.',
-    englishHeading: 'Turn your customers into members.',
+    englishHeading: 'Your loyalty card, reimagined.',
   },
 ]
 

@@ -1,0 +1,34 @@
+
+Running 25 tests using 1 worker
+
+(node:57380) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:57380) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ok  1 [chromium] › tests\e2e\cross-tenant-responsive.spec.ts:11:5 › cross-tenant public responsive layouts › loyality keeps public content inside every supported viewport (9.9s)
+  ok  2 [chromium] › tests\e2e\cross-tenant-responsive.spec.ts:109:5 › cross-tenant public responsive layouts › loyality provides a spacious mobile menu and floating language control (1.8s)
+  ok  3 [chromium] › tests\e2e\cross-tenant-responsive.spec.ts:173:5 › cross-tenant public responsive layouts › loyality keeps the business entry visible in the desktop top bar (978ms)
+  ok  4 [chromium] › tests\e2e\four-tenant-language.spec.ts:74:5 › loyality exposes a working Spanish toggle on phone (998ms)
+  ok  5 [chromium] › tests\e2e\four-tenant-language.spec.ts:74:5 › loyality exposes a working Spanish toggle on tablet (1.1s)
+  ok  6 [chromium] › tests\e2e\four-tenant-language.spec.ts:74:5 › loyality exposes a working Spanish toggle on desktop (1.1s)
+  ok  7 [chromium] › tests\e2e\four-tenant-language.spec.ts:93:3 › loyality keeps the language control identifiable at 320px (1.0s)
+  ok  8 [chromium] › tests\e2e\four-tenant-language.spec.ts:119:3 › loyality keeps Spanish active beyond the homepage (2.3s)
+  ok  9 [chromium] › tests\e2e\loyality-public.spec.ts:22:3 › Loyality public product › homepage restores every supplied PDF copy entry (1.3s)
+  ok 10 [chromium] › tests\e2e\loyality-public.spec.ts:31:3 › Loyality public product › signin and signup discard external and malformed destinations in both directions (6.1s)
+  ok 11 [chromium] › tests\e2e\loyality-public.spec.ts:44:5 › Loyality public product › landing page is complete and responsive on phone (2.0s)
+  ok 12 [chromium] › tests\e2e\loyality-public.spec.ts:44:5 › Loyality public product › landing page is complete and responsive on tablet (2.0s)
+  ok 13 [chromium] › tests\e2e\loyality-public.spec.ts:44:5 › Loyality public product › landing page is complete and responsive on desktop (2.0s)
+  ok 14 [chromium] › tests\e2e\loyality-public.spec.ts:97:3 › Loyality public product › business and customer calls to action have real destinations (1.9s)
+  ok 15 [chromium] › tests\e2e\loyality-public.spec.ts:117:3 › Loyality public product › signed-out offers explain the private-link flow instead of hanging (902ms)
+  ok 16 [chromium] › tests\e2e\loyality-public.spec.ts:130:5 › Loyality public product › English and Spanish stay available across every Loyality public flow on phone (3.4s)
+  ok 17 [chromium] › tests\e2e\loyality-public.spec.ts:130:5 › Loyality public product › English and Spanish stay available across every Loyality public flow on desktop (3.9s)
+  ok 18 [chromium] › tests\e2e\loyality-public.spec.ts:167:3 › Loyality public product › legacy network and customer-commerce routes stay out of Loyality (3.1s)
+  ok 19 [chromium] › tests\e2e\loyality-public.spec.ts:184:3 › Loyality public product › join preserves only a safe internal destination (1.5s)
+  ok 20 [chromium] › tests\e2e\loyality-public.spec.ts:200:5 › Loyality public product › sign in and join continue the Loyality visual system on phone (1.6s)
+  ok 21 [chromium] › tests\e2e\loyality-public.spec.ts:200:5 › Loyality public product › sign in and join continue the Loyality visual system on desktop (1.5s)
+  ok 22 [chromium] › tests\e2e\tenants.spec.ts:45:5 › white-label tenant resolution › Loyality loads isolated branding without runtime errors (1.2s)
+  ok 23 [chromium] › tests\e2e\tenants.spec.ts:98:5 › white-label tenant resolution › Loyality uses one tenant-branded sign-in entry for protected admin routes (640ms)
+  ok 24 [chromium] › tests\e2e\tenants.spec.ts:119:5 › white-label tenant resolution › Loyality keeps the business entry tenant branded (646ms)
+  ok 25 [chromium] › tests\e2e\tenants.spec.ts:191:5 › white-label tenant resolution › Loyality never renders Medellin text, imagery, or links (2.4s)
+
+  25 passed (57.0s)

@@ -284,12 +284,6 @@
   flex-wrap: wrap;
 }
 
-.reference-loyality .reference-loyality__hero-note {
-  font-size: 11px;
-  color: var(--muted);
-  margin-top: 22px;
-}
-
 .reference-loyality .v2-product-visual {
   position: relative;
   padding: 24px 18px 22px 0;
@@ -364,114 +358,12 @@
   max-width: 350px;
 }
 
-.reference-loyality .reference-loyality__highlight {
-  position: relative;
-  display: flex;
-  gap: 20px;
-  justify-content: space-between;
-  background: #fff;
-  padding: 26px 24px;
-  margin: -30px -12px 0 28px;
-  border: 1px solid var(--line);
-  box-shadow: 0 16px 26px -20px #15392e66;
-  border-radius: 12px;
-}
-
-.reference-loyality .reference-loyality__stat {
-  flex: 1;
-  min-width: 0;
-  border-right: 1px solid var(--line);
-  padding-right: 12px;
-}
-
-.reference-loyality .reference-loyality__stat:last-child {
-  border: 0;
-  padding: 0;
-}
-
-.reference-loyality .reference-loyality__stat strong {
-  display: block;
-  font: 500 32px 'Space Grotesk',sans-serif;
-  letter-spacing: -1px;
-}
-
-.reference-loyality .reference-loyality__stat span {
-  display: block;
-  margin-top: 7px;
-  font-size: 10px;
-  line-height: 1.6;
-  color: var(--muted);
-  max-width: 130px;
-}
-
 .reference-loyality main>section {
   padding-block: 80px;
 }
 
 .reference-loyality #ledger.reference-loyality__wrap {
   padding-block: 15px 70px;
-}
-
-.reference-loyality .reference-loyality__ledger {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.reference-loyality .reference-loyality__ledger-head {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  align-items: center;
-  padding: 20px 26px;
-  background: #e9efdf;
-  font: 10px/1.7 'IBM Plex Mono',monospace;
-  letter-spacing: .04em;
-  text-transform: uppercase;
-}
-
-.reference-loyality .reference-loyality__ledger-head i {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: #4b7546;
-  border-radius: 50%;
-  margin-right: 10px;
-}
-
-.reference-loyality .reference-loyality__ledger-row {
-  display: grid;
-  grid-template-columns: 85px 1fr 140px 100px;
-  gap: 24px;
-  align-items: center;
-  padding: 19px 26px;
-  border-bottom: 1px solid #e8eee2;
-  font-size: 13px;
-}
-
-.reference-loyality .reference-loyality__ledger-id {
-  font: 10px 'IBM Plex Mono',monospace;
-  color: #526b54;
-}
-
-.reference-loyality .reference-loyality__ledger-type {
-  font-size: 10px;
-  color: #526b54;
-}
-
-.reference-loyality .reference-loyality__ledger-row strong {
-  font: 500 12px 'IBM Plex Mono',monospace;
-  text-align: right;
-}
-
-.reference-loyality .reference-loyality__ledger-foot {
-  padding: 17px 26px;
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  font-size: 11px;
-  color: #526b54;
 }
 
 .reference-loyality .reference-loyality__section-head {
@@ -537,14 +429,6 @@
   color: #d4e8bd;
 }
 
-.reference-loyality .reference-loyality__flex-note {
-  font-size: 14px;
-  line-height: 1.9;
-  max-width: 1000px;
-  padding-top: 28px;
-  color: var(--muted);
-}
-
 .reference-loyality #support {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -554,22 +438,6 @@
 
 .reference-loyality #support .reference-loyality__section-head h2 {
   font-size: 43px;
-}
-
-.reference-loyality .reference-loyality__support-grid {
-  display: grid;
-  gap: 30px;
-}
-
-.reference-loyality .reference-loyality__support-grid .reference-loyality__card {
-  background: none;
-  border-radius: 0;
-  padding: 28px 0 0;
-}
-
-.reference-loyality .reference-loyality__support-grid .v2-glyph {
-  float: left;
-  margin: 0 22px 60px 0;
 }
 
 .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) {
@@ -604,34 +472,6 @@
   color: var(--muted);
 }
 
-.reference-loyality .reference-loyality__steps {
-  display: grid;
-  grid-template-columns: repeat(4,minmax(0,1fr));
-  gap: 30px;
-}
-
-.reference-loyality .reference-loyality__steps article {
-  border-top: 2px solid #93b774;
-  padding-top: 24px;
-}
-
-.reference-loyality .reference-loyality__steps article>span {
-  font: 10px 'IBM Plex Mono',monospace;
-  color: #456344;
-}
-
-.reference-loyality .reference-loyality__steps h3 {
-  font-size: 25px;
-  line-height: 1.2;
-  margin: 23px 0 16px;
-}
-
-.reference-loyality .reference-loyality__steps p {
-  font-size: 14px;
-  line-height: 1.85;
-  color: var(--muted);
-}
-
 .reference-loyality #features {
   padding-inline: 50px;
   background: var(--dark);
@@ -641,31 +481,6 @@
 
 .reference-loyality #features .reference-loyality__eyebrow {
   color: #c8e6b4;
-}
-
-.reference-loyality .reference-loyality__features article {
-  display: grid;
-  grid-template-columns: 190px 1fr;
-  gap: 50px;
-  border-top: 1px solid #55725a;
-  padding: 32px 0;
-}
-
-.reference-loyality .reference-loyality__features article>span {
-  font: 10px 'IBM Plex Mono',monospace;
-  color: #c8e6b4;
-}
-
-.reference-loyality .reference-loyality__features h3 {
-  font-size: 30px;
-  margin-bottom: 15px;
-}
-
-.reference-loyality .reference-loyality__features p {
-  color: #c5d7c4;
-  line-height: 1.8;
-  font-size: 15px;
-  max-width: 740px;
 }
 
 .reference-loyality .reference-loyality__compare {
@@ -694,159 +509,6 @@
   color: var(--muted);
   font-size: 14px;
   line-height: 1.85;
-}
-
-.reference-loyality .reference-loyality__compare-card--new {
-  background: #e1edce;
-  border-color: #c8dcad;
-}
-
-.reference-loyality .reference-loyality__guarantee {
-  display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 50px;
-  padding: 45px;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-  background: #edf2e6;
-}
-
-.reference-loyality .reference-loyality__stamp {
-  display: inline-block;
-  font: 10px 'IBM Plex Mono',monospace;
-  color: #fff;
-  background: #785947;
-  padding: 6px 10px;
-  margin-bottom: 18px;
-}
-
-.reference-loyality .reference-loyality__guarantee h2 {
-  font-size: 38px;
-  margin-bottom: 20px;
-}
-
-.reference-loyality .reference-loyality__guarantee p {
-  font-size: 14px;
-  color: var(--muted);
-  line-height: 1.8;
-}
-
-.reference-loyality .reference-loyality__guarantee-cards {
-  display: grid;
-  gap: 14px;
-}
-
-.reference-loyality .reference-loyality__guarantee-cards>div {
-  background: #fff;
-  padding: 25px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-}
-
-.reference-loyality .reference-loyality__guarantee-cards span {
-  display: block;
-  font-size: 11px;
-  color: var(--muted);
-}
-
-.reference-loyality .reference-loyality__guarantee-cards strong {
-  display: block;
-  font: 500 25px 'Space Grotesk',sans-serif;
-  letter-spacing: -1px;
-  margin-top: 8px;
-}
-
-.reference-loyality .reference-loyality__plans {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  max-width: 950px;
-}
-
-.reference-loyality .reference-loyality__plan {
-  padding: 40px;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 14px;
-}
-
-.reference-loyality .reference-loyality__plan>span {
-  font: 11px 'IBM Plex Mono',monospace;
-  color: #456344;
-}
-
-.reference-loyality .reference-loyality__plan h3 {
-  font-size: 30px;
-  margin: 17px 0;
-}
-
-.reference-loyality .reference-loyality__plan>strong {
-  display: block;
-  font: 500 65px 'Space Grotesk',sans-serif;
-  letter-spacing: -3px;
-}
-
-.reference-loyality .reference-loyality__plan strong small {
-  font-size: 16px;
-  letter-spacing: 0;
-}
-
-.reference-loyality .reference-loyality__plan>small {
-  display: block;
-  color: #526758;
-  font-size: 12px;
-  margin-top: 5px;
-}
-
-.reference-loyality .reference-loyality__plan li {
-  font-size: 14px;
-  padding-top: 15px;
-}
-
-.reference-loyality .reference-loyality__plan li:before {
-  content: '✓';
-  margin-right: 10px;
-}
-
-.reference-loyality .reference-loyality__plan--featured {
-  background: var(--dark);
-  color: #fff;
-}
-
-.reference-loyality .reference-loyality__plan--featured :is(span,small) {
-  color: #d4e8bd;
-}
-
-.reference-loyality .reference-loyality__example-flag {
-  max-width: 900px;
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 24px;
-}
-
-.reference-loyality .reference-loyality__pricing-box {
-  padding: 42px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 50px;
-  border-radius: 14px;
-  background: #e8f0db;
-}
-
-.reference-loyality .reference-loyality__pricing-box h3 {
-  font-size: 30px;
-  margin-bottom: 16px;
-}
-
-.reference-loyality .reference-loyality__pricing-box p {
-  max-width: 720px;
-  font-size: 14px;
-  color: var(--muted);
-}
-
-.reference-loyality .reference-loyality__pricing-box .reference-loyality__btn {
-  flex-shrink: 0;
 }
 
 .reference-loyality .reference-loyality__final-cta {
@@ -918,20 +580,6 @@
     letter-spacing: -4px;
   }
 
-  .reference-loyality .reference-loyality__highlight {
-    padding: 22px 17px;
-    gap: 12px;
-  }
-
-  .reference-loyality .reference-loyality__stat strong {
-    font-size: 25px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-row {
-    gap: 15px;
-    grid-template-columns: 70px 1fr 100px 80px;
-  }
-
   .reference-loyality .reference-loyality__card {
     padding: 25px;
   }
@@ -1001,12 +649,6 @@
     font-size: 12px;
   }
 
-  .reference-loyality .reference-loyality__hero-note {
-    font-size: 10px;
-    line-height: 1.8;
-    margin-top: 20px;
-  }
-
   .reference-loyality .v2-product-visual {
     padding: 16px 10px 12px 0;
   }
@@ -1037,74 +679,12 @@
     right: 0;
   }
 
-  .reference-loyality .reference-loyality__highlight {
-    padding: 20px 16px;
-    margin: -25px -2px 0 15px;
-    gap: 13px;
-  }
-
-  .reference-loyality .reference-loyality__stat {
-    padding-right: 10px;
-  }
-
-  .reference-loyality .reference-loyality__stat strong {
-    font-size: 26px;
-  }
-
-  .reference-loyality .reference-loyality__stat span {
-    font-size: 8px;
-    margin-top: 7px;
-    line-height: 1.7;
-  }
-
   .reference-loyality main>section {
     padding-block: 55px;
   }
 
   .reference-loyality #ledger.reference-loyality__wrap {
     padding-block: 10px 55px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-head {
-    font-size: 8px;
-    padding: 18px;
-    display: grid;
-    gap: 8px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-row {
-    grid-template-columns: minmax(0,1fr) 65px;
-    gap: 9px 12px;
-    padding: 19px 18px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-id {
-    font-size: 9px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-desc {
-    font-size: 12px;
-    line-height: 1.8;
-    grid-column: 1;
-  }
-
-  .reference-loyality .reference-loyality__ledger-type {
-    font-size: 9px;
-    grid-column: 1;
-  }
-
-  .reference-loyality .reference-loyality__ledger-row strong {
-    grid-column: 2;
-    grid-row: 1/4;
-    align-self: center;
-    font-size: 10px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-foot {
-    display: grid;
-    font-size: 10px;
-    padding: 18px;
-    gap: 8px;
   }
 
   .reference-loyality .reference-loyality__section-head {
@@ -1138,15 +718,6 @@
     font-size: 13px;
   }
 
-  .reference-loyality .reference-loyality__flex-note {
-    font-size: 13px;
-  }
-
-  .reference-loyality .reference-loyality__support-grid .v2-glyph {
-    float: none;
-    margin: 0 0 20px;
-  }
-
   .reference-loyality #support {
     display: block;
   }
@@ -1155,42 +726,9 @@
     font-size: 36px;
   }
 
-  .reference-loyality .reference-loyality__steps {
-    grid-template-columns: repeat(2,minmax(0,1fr));
-    gap: 30px 22px;
-  }
-
-  .reference-loyality .reference-loyality__steps article {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .reference-loyality .reference-loyality__steps h3 {
-    font-size: 24px;
-  }
-
-  .reference-loyality .reference-loyality__steps p {
-    font-size: 13px;
-  }
-
   .reference-loyality #features {
     padding-inline: 26px;
     border-radius: 13px;
-  }
-
-  .reference-loyality .reference-loyality__features article {
-    display: block;
-    padding-block: 28px;
-  }
-
-  .reference-loyality .reference-loyality__features h3 {
-    font-size: 27px;
-    line-height: 1.2;
-    margin-top: 18px;
-  }
-
-  .reference-loyality .reference-loyality__features p {
-    font-size: 13px;
   }
 
   .reference-loyality .reference-loyality__compare {
@@ -1203,32 +741,6 @@
 
   .reference-loyality .reference-loyality__compare-card h3 {
     font-size: 28px;
-  }
-
-  .reference-loyality .reference-loyality__guarantee {
-    grid-template-columns: 1fr;
-    padding: 27px;
-    gap: 30px;
-  }
-
-  .reference-loyality .reference-loyality__guarantee h2 {
-    font-size: 33px;
-  }
-
-  .reference-loyality .reference-loyality__guarantee p {
-    font-size: 13px;
-  }
-
-  .reference-loyality .reference-loyality__plans {
-    grid-template-columns: 1fr;
-  }
-
-  .reference-loyality .reference-loyality__plan {
-    padding: 30px;
-  }
-
-  .reference-loyality .reference-loyality__plan>strong {
-    font-size: 58px;
   }
 
   .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) {
@@ -1248,19 +760,6 @@
   .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) figcaption p {
     font-size: 12px;
     margin-top: 12px;
-  }
-
-  .reference-loyality .reference-loyality__pricing-box {
-    display: block;
-    padding: 28px;
-  }
-
-  .reference-loyality .reference-loyality__pricing-box h3 {
-    font-size: 27px;
-  }
-
-  .reference-loyality .reference-loyality__pricing-box .reference-loyality__btn {
-    margin-top: 28px;
   }
 
   .reference-loyality .reference-loyality__final-cta {
@@ -1290,23 +789,6 @@
   .reference-loyality .reference-loyality__hero h1 {
     font-size: 48px;
     letter-spacing: -3px;
-  }
-
-  .reference-loyality .reference-loyality__steps {
-    grid-template-columns: 1fr;
-  }
-
-  .reference-loyality .reference-loyality__highlight {
-    gap: 10px;
-    padding: 18px 13px;
-  }
-
-  .reference-loyality .reference-loyality__stat strong {
-    font-size: 23px;
-  }
-
-  .reference-loyality .reference-loyality__stat span {
-    font-size: 7.5px;
   }
 }
 
@@ -1448,16 +930,6 @@
     gap: 12px;
   }
 
-  .reference-loyality .reference-loyality__hero-note {
-    font-size: 12px;
-    line-height: 1.7;
-    max-width: none;
-  }
-
-  .reference-loyality .reference-loyality__hero-note {
-    margin-top: 17px;
-  }
-
   .reference-loyality .v2-hero {
     padding-top: 30px;
     gap: 26px;
@@ -1497,60 +969,6 @@
     line-height: 1.65;
   }
 
-  .reference-loyality .reference-loyality__highlight {
-    margin: 14px 0 0;
-    padding: 6px 20px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0;
-    border-radius: 12px;
-    box-shadow: none;
-  }
-
-  .reference-loyality .reference-loyality__stat {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    padding: 16px 0;
-    border-right: 0;
-    border-bottom: 1px solid #d3dfd1;
-  }
-
-  .reference-loyality .reference-loyality__stat:last-child {
-    padding: 16px 0;
-  }
-
-  .reference-loyality .reference-loyality__stat strong {
-    min-width: 82px;
-    font-size: 31px;
-  }
-
-  .reference-loyality .reference-loyality__stat span {
-    font-size: 13px;
-    line-height: 1.6;
-    max-width: none;
-    margin: 0;
-  }
-
-  .reference-loyality .reference-loyality__ledger-head {
-    font-size: 10px;
-    line-height: 1.8;
-  }
-
-  .reference-loyality .reference-loyality__ledger-desc {
-    font-size: 14px;
-    line-height: 1.7;
-  }
-
-  .reference-loyality .reference-loyality__ledger-id, .reference-loyality .reference-loyality__ledger-type, .reference-loyality .reference-loyality__ledger-row strong {
-    font-size: 11px;
-  }
-
-  .reference-loyality .reference-loyality__ledger-foot {
-    font-size: 12px;
-    line-height: 1.7;
-  }
-
   .reference-loyality .reference-loyality__section-head h2 {
     font-size: clamp(31px, 8.7vw, 37px);
     letter-spacing: -.045em;
@@ -1566,56 +984,8 @@
     line-height: 1.6;
   }
 
-  .reference-loyality .reference-loyality__flex-note {
-    font-size: 15px;
-    line-height: 1.8;
-  }
-
   .reference-loyality #support .reference-loyality__section-head h2 {
     font-size: clamp(31px, 8.7vw, 37px);
-  }
-
-  .reference-loyality .reference-loyality__steps {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .reference-loyality .reference-loyality__steps article {
-    border-top: 0;
-    border-left: 2px solid #93b774;
-    padding: 0 0 0 22px;
-  }
-
-  .reference-loyality .reference-loyality__steps article>span {
-    font-size: 12px;
-  }
-
-  .reference-loyality .reference-loyality__steps h3 {
-    font-size: 26px;
-    margin-block: 15px;
-  }
-
-  .reference-loyality .reference-loyality__steps p {
-    font-size: 15px;
-    line-height: 1.8;
-  }
-
-  .reference-loyality .reference-loyality__plan li {
-    font-size: 15px;
-    line-height: 1.8;
-  }
-
-  .reference-loyality .reference-loyality__plan>small, .reference-loyality .reference-loyality__example-flag {
-    font-size: 14px;
-    line-height: 1.75;
-  }
-
-  .reference-loyality .reference-loyality__guarantee-cards span {
-    font-size: 13px;
-  }
-
-  .reference-loyality .reference-loyality__stamp {
-    font-size: 11px;
   }
 
   .reference-loyality .reference-loyality__photo:not(.v2-hero-photo) {
@@ -1695,24 +1065,6 @@
   .reference-loyality #support {
     gap: 35px;
   }
-
-  .reference-loyality .reference-loyality__steps {
-    grid-template-columns: 1fr 1fr;
-    gap: 35px;
-  }
-
-  .reference-loyality .reference-loyality__guarantee {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .reference-loyality .reference-loyality__pricing-box {
-    display: block;
-  }
-
-  .reference-loyality .reference-loyality__pricing-box .reference-loyality__btn {
-    margin-top: 25px;
-  }
 }
 
 @media (max-width: 350px) {
@@ -1753,10 +1105,6 @@
 .reference-loyality .reference-loyality__hero h1 {
   font-size: clamp(66px,6.1vw,88px);
   letter-spacing: -.065em;
-}
-
-.reference-loyality .reference-loyality__hero-note {
-  font-size: 12px;
 }
 
 .reference-loyality .reference-loyality__lead {
@@ -1873,15 +1221,6 @@
   padding-block: 0 90px;
 }
 
-.reference-loyality .reference-loyality__ledger-head {
-  background: #dfeccf;
-  padding-block: 20px;
-}
-
-.reference-loyality .reference-loyality__ledger-row {
-  padding-block: 20px;
-}
-
 .reference-loyality #features {
   padding: 58px 44px;
   border-radius: 20px;
@@ -1890,89 +1229,6 @@
 .reference-loyality #features .reference-loyality__section-head {
   max-width: 870px;
   margin-bottom: 44px;
-}
-
-.reference-loyality #features .final-feature-layout {
-  display: grid;
-  grid-template-columns: .88fr 1.12fr;
-  gap: 48px;
-  align-items: start;
-}
-
-.reference-loyality #features .final-feature-media {
-  position: sticky;
-  top: 118px;
-  width: 100%;
-  max-width: none;
-  margin: 0;
-}
-
-.reference-loyality #features .final-feature-media img {
-  height: 550px;
-  border-radius: 12px;
-  object-fit: cover;
-  object-position: 57% 50%;
-}
-
-.reference-loyality #features .final-feature-media figcaption {
-  display: block;
-  border-color: #668167;
-  padding-top: 24px;
-}
-
-.reference-loyality #features .final-feature-media figcaption span {
-  color: #f8faf6;
-  font-size: 25px;
-}
-
-.reference-loyality #features .final-feature-media figcaption p {
-  color: #c5d7c4;
-  font-size: 14px;
-  line-height: 1.8;
-  margin-top: 13px;
-}
-
-.reference-loyality .reference-loyality__features article {
-  display: block;
-  padding-block: 25px;
-}
-
-.reference-loyality .reference-loyality__features article>span {
-  display: block;
-  font-size: 11px;
-  line-height: 1.7;
-  margin-bottom: 13px;
-}
-
-.reference-loyality .reference-loyality__features h3 {
-  font-size: 27px;
-  line-height: 1.2;
-  letter-spacing: -1px;
-  margin-bottom: 13px;
-}
-
-.reference-loyality .reference-loyality__features p {
-  font-size: 15px;
-  line-height: 1.8;
-}
-
-.reference-loyality .reference-loyality__guarantee {
-  background: #f0f3e9;
-  padding: 38px;
-  gap: 42px;
-}
-
-.reference-loyality .reference-loyality__guarantee h2 {
-  font-size: 35px;
-}
-
-.reference-loyality .reference-loyality__plans {
-  max-width: none;
-  gap: 26px;
-}
-
-.reference-loyality .reference-loyality__plan {
-  padding: 42px;
 }
 
 .reference-loyality .reference-loyality__final-cta {
@@ -1988,37 +1244,14 @@
     font-size: 68px;
   }
 
-  .reference-loyality #features .final-feature-layout {
-    grid-template-columns: .8fr 1.2fr;
-    gap: 30px;
-  }
-
   .reference-loyality #features {
     padding-inline: 30px;
-  }
-
-  .reference-loyality #features .final-feature-media img {
-    height: 500px;
   }
 }
 
 @media (max-width:960px) {
   .reference-loyality .reference-loyality__nav {
     min-height: 74px;
-  }
-
-  .reference-loyality #features .final-feature-layout {
-    grid-template-columns: 1fr;
-    gap: 36px;
-  }
-
-  .reference-loyality #features .final-feature-media {
-    position: static;
-  }
-
-  .reference-loyality #features .final-feature-media img {
-    height: 360px;
-    object-position: 55% 50%;
   }
 
   .reference-loyality #pillars .reference-loyality__card h3 {
@@ -2108,10 +1341,6 @@
     letter-spacing: -.065em;
   }
 
-  .reference-loyality .reference-loyality__hero-note {
-    font-size: 12px;
-  }
-
   .reference-loyality #concept {
     padding-block: 25px 55px;
   }
@@ -2136,10 +1365,6 @@
     padding-bottom: 55px;
   }
 
-  .reference-loyality .reference-loyality__ledger-head {
-    padding-block: 18px;
-  }
-
   .reference-loyality #features {
     padding: 35px 26px;
     border-radius: 14px;
@@ -2147,50 +1372,6 @@
 
   .reference-loyality #features .reference-loyality__section-head {
     margin-bottom: 28px;
-  }
-
-  .reference-loyality #features .final-feature-media {
-    width: 100%;
-    margin: 0;
-  }
-
-  .reference-loyality #features .final-feature-media img {
-    height: 275px;
-    border-radius: 10px;
-    object-position: 56% 50%;
-  }
-
-  .reference-loyality #features .final-feature-media figcaption {
-    padding-top: 20px;
-  }
-
-  .reference-loyality #features .final-feature-media figcaption span {
-    font-size: 23px;
-  }
-
-  .reference-loyality #features .final-feature-media figcaption p {
-    font-size: 14px;
-  }
-
-  .reference-loyality .reference-loyality__features article {
-    padding-block: 25px;
-  }
-
-  .reference-loyality .reference-loyality__features article>span {
-    font-size: 12px;
-  }
-
-  .reference-loyality .reference-loyality__guarantee {
-    padding: 27px;
-    gap: 28px;
-  }
-
-  .reference-loyality .reference-loyality__guarantee h2 {
-    font-size: 32px;
-  }
-
-  .reference-loyality .reference-loyality__plan {
-    padding: 30px;
   }
 
   .reference-loyality .reference-loyality__final-cta {
@@ -2326,4 +1507,48 @@
   .reference-loyality .reference-loyality__nav-links a[aria-current="location"]::after {
     display: none;
   }
+}
+
+/* Source-copy restoration retains the approved forest/lime presentation. */
+.reference-loyality .restored-anchor:is(#ledger,#example,#how,#concept,#support,#features,#guarantee) {
+  display: block; height: 0; min-height: 0; padding: 0; margin: 0; border: 0; background: none;
+}
+.reference-loyality .v2-hero-photo:has(+.restored-demo-card) { height: 280px; }
+.reference-loyality .restored-demo-card {
+  position: relative; margin-top: 18px; padding: 26px; border-radius: 18px;
+  background: #edf2e6; border: 1px solid #cbdac3;
+}
+.reference-loyality .restored-demo-card h2 { font-size: 28px; margin: 18px 0 6px; }
+.reference-loyality .restored-demo-card p { font-size: 14px; line-height: 1.7; color: var(--muted); }
+.reference-loyality .restored-demo-tag { font: 11px/1.6 'IBM Plex Mono',monospace; color: var(--dark); }
+.reference-loyality .restored-qr-row { display: flex; gap: 20px; align-items: center; margin: 24px 0; }
+.reference-loyality .restored-qr {
+  width: 96px; height: 96px; flex-shrink: 0; border: 6px solid var(--paper); border-radius: 8px;
+  background: conic-gradient(var(--dark) 25%,var(--paper) 0 50%,var(--dark) 0 75%,var(--paper) 0) 0 0/12px 12px;
+}
+.reference-loyality .restored-progress { padding: 18px; background: var(--paper); border-radius: 10px; border-left: 3px solid #759849; }
+.reference-loyality .restored-progress strong { font-size: 14px; }
+.reference-loyality .restored-progress p { font-size: 12px; }
+.reference-loyality .restored-progress-bar { height: 6px; margin-top: 12px; border-radius: 4px; background: #d3dfd1; overflow: hidden; }
+.reference-loyality .restored-progress-bar span { display: block; height: 100%; width: 70%; background: #759849; }
+.reference-loyality .restored-white-label { padding-block: 85px; background: var(--dark); color: var(--paper); }
+.reference-loyality .restored-white-label .reference-loyality__eyebrow { color: var(--lime); }
+.reference-loyality .restored-benefits-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; }
+.reference-loyality .restored-benefits { display: grid; gap: 24px; }
+.reference-loyality .restored-benefits .reference-loyality__compare-card { padding: 30px; border-radius: 14px; background: #244b3b; color: var(--paper); }
+.reference-loyality .restored-benefits .reference-loyality__compare-card>span { color: var(--lime); }
+.reference-loyality .restored-benefits .reference-loyality__compare-card p { color: #d3e1ce; }
+.reference-loyality .restored-white-label .restored-benefit-photo { width: 100%; height: 100%; margin: 0; border-radius: 18px; overflow: hidden; }
+.reference-loyality .restored-white-label .restored-benefit-photo img { width: 100%; height: 100%; min-height: 360px; object-fit: cover; }
+.reference-loyality .reference-loyality__footer .restored-copyright { max-width: 1240px; margin: 32px auto 0; padding-top: 24px; border-top: 1px solid #456344; }
+@media (max-width:960px) {
+  .reference-loyality .restored-benefits-layout { grid-template-columns: 1fr; }
+  .reference-loyality .restored-white-label .restored-benefit-photo img { height: 320px; min-height: 0; }
+}
+@media (max-width:760px) {
+  .reference-loyality .restored-white-label { padding-block: 55px; }
+  .reference-loyality .restored-demo-card { padding: 22px; }
+  .reference-loyality .restored-qr-row { gap: 14px; align-items: flex-start; }
+  .reference-loyality .restored-qr { width: 64px; height: 64px; border-width: 4px; }
+  .reference-loyality .restored-benefits .reference-loyality__compare-card { padding: 24px; }
 }

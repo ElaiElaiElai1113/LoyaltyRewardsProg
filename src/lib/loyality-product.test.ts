@@ -20,9 +20,9 @@ const language = readFileSync(resolve(root, 'src/lib/language.tsx'), 'utf8')
 const publicLayout = readFileSync(resolve(root, 'src/layouts/public-browse-layout.tsx'), 'utf8')
 
 describe('Loyality product contract', () => {
-  it('describes browser signup honestly in English and Spanish', () => {
+  it('preserves the existing browser-signup translation without overriding the supplied homepage copy', () => {
     const copy = 'Scan to join in your browser; no app download required. Create your account with your name, email, phone, and password.'
-    expect(home).toContain(copy)
+    expect(language).toContain(copy)
     expect(home).not.toMatch(/entire sign-up|no account setup|join as members with one scan/i)
     expect(translateForLanguage('es', copy)).toBe('Escanea para registrarte en tu navegador; no necesitas descargar una aplicación. Crea tu cuenta con tu nombre, correo electrónico, teléfono y contraseña.')
   })
@@ -49,14 +49,12 @@ describe('Loyality product contract', () => {
 
   it('preserves the selected layout with capability-accurate copy without marketplace leakage or dead ends', () => {
     for (const copy of [
-      'Turn your customers into members.',
-      'Hardware or apps required',
-      'One membership. Any incentive you want.',
-      'A membership does three jobs at once.',
-      'Four steps, fully automated after launch.',
-      "Everything a loyalty app does. Plus what most of them don't.",
-      "Guarantee terms are under review.",
-      'Onboarding, made simple.',
+      'Your loyalty card, reimagined.',
+      'Trackable referrals',
+      'Visit-based rewards',
+      'No POS integration needed',
+      "White-label means it's yours, not ours.",
+      'Request a Demo',
     ]) expect(home).toContain(copy)
     expect(home).not.toContain('partner businesses')
     expect(home).not.toContain('href="#"')

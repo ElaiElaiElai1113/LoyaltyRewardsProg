@@ -1,0 +1,64 @@
+{
+  "viewports": [
+    {
+      "width": 320,
+      "height": 780,
+      "elementCount": 143,
+      "computedStyleGeometryEqual": true,
+      "beforeSha256": "0f70143c61ae7523cdbe015f77938a77e3f290e8fb354ba397cb140a215f92bf",
+      "afterSha256": "0f70143c61ae7523cdbe015f77938a77e3f290e8fb354ba397cb140a215f92bf",
+      "approvedSha256": "b2d382f3cbc98355f2b6cd1905aa8381e3cd67f8d717a9be1405ddaffd38fe71",
+      "screenshotEqual": true,
+      "approvedScreenshotEqual": false,
+      "openMenuComputedEqual": true
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "elementCount": 143,
+      "computedStyleGeometryEqual": true,
+      "beforeSha256": "85dc0e24418c5d3a84843433ad827c4096e9d6adb53440ef39296714a7868296",
+      "afterSha256": "85dc0e24418c5d3a84843433ad827c4096e9d6adb53440ef39296714a7868296",
+      "approvedSha256": "85dc0e24418c5d3a84843433ad827c4096e9d6adb53440ef39296714a7868296",
+      "screenshotEqual": true,
+      "approvedScreenshotEqual": true,
+      "openMenuComputedEqual": true
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "elementCount": 143,
+      "computedStyleGeometryEqual": true,
+      "beforeSha256": "271b5fda6c61c9f44c96ce6ee4afba70c2510408feca95afeed8b44782b4f39b",
+      "afterSha256": "271b5fda6c61c9f44c96ce6ee4afba70c2510408feca95afeed8b44782b4f39b",
+      "approvedSha256": "271b5fda6c61c9f44c96ce6ee4afba70c2510408feca95afeed8b44782b4f39b",
+      "screenshotEqual": true,
+      "approvedScreenshotEqual": true,
+      "openMenuComputedEqual": true
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "elementCount": 143,
+      "computedStyleGeometryEqual": true,
+      "beforeSha256": "dffef9c7ae5369d5ca5d2526a39db1a804f02dd4ea5835c2da069047a5d6858b",
+      "afterSha256": "dffef9c7ae5369d5ca5d2526a39db1a804f02dd4ea5835c2da069047a5d6858b",
+      "approvedSha256": "dffef9c7ae5369d5ca5d2526a39db1a804f02dd4ea5835c2da069047a5d6858b",
+      "screenshotEqual": true,
+      "approvedScreenshotEqual": true
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "elementCount": 143,
+      "computedStyleGeometryEqual": true,
+      "beforeSha256": "b937b5947341b58b6f8524456453683acfe4e9685eb1167f33dcd36fb8fef945",
+      "afterSha256": "b937b5947341b58b6f8524456453683acfe4e9685eb1167f33dcd36fb8fef945",
+      "approvedSha256": "b937b5947341b58b6f8524456453683acfe4e9685eb1167f33dcd36fb8fef945",
+      "screenshotEqual": true,
+      "approvedScreenshotEqual": true,
+      "openMenuComputedEqual": true
+    }
+  ],
+  "pageErrors": []
+}

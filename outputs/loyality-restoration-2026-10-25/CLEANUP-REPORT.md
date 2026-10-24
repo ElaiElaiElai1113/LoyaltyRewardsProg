@@ -1,0 +1,16 @@
+# Authorized Loyality unused CSS cleanup
+
+Parent24c2fc0e18380af344525fbe4d85a6b972343e9f; parent-integrated restoration85ade6d remains the source/copy approval. Only production file changed: src/features/loyality/pages/loyality-home-page.css. Exactly the authorized candidate applied: input SHA191697e56fc4dc5041b9162aa7926c44e6cafd5ceaf916d9b44b36486d0d150f; output SHA7e218b17150bccec31fc29ee07aace49350960f176000ae536a70e0232992889.
+
+Removed148 dead rules requiring positive classes absent from the restored homepage, plus media wrappers left empty. No splitting of mixed used/unused rules; no cascade reordering, used selector/declaration changes, copy, assets, translations, routes, business logic or supporting screens modified. Scoped language-control rules retained conservatively. All299 surviving rules retain identical selectors, declarations, order and media context (cleanup-static-proof.json).
+
+Source savings17,524 bytes (52,782 ->35,258),819 lines. Standalone minifier estimates: Lightning CSS14,540 bytes saved; esbuild14,605. These are stylesheet-only estimates. No build/unit run performed; actual combined build/budget remains PM-owned and required before publication.
+
+## Browser evidence, one worker/server5191
+
+- Same-session original-versus-candidate comparison: all five sizes320x780,390x844,768x1024,1440x900,844x390 have identical geometry and computed styles across143 elements (all standard properties plus stylesheet-defined custom properties, including before/after pseudo-elements), identical full-page PNGs and identical open-menu styles. See cleanup-parity.json. Font readiness/animation completion synchronized before comparing; the initial unnormalized menu comparison caught a transient30px animation-phase difference in the harness, resolved by settling animations, with no source amendment.
+- Original audited capture flow rerun into a separate cleanup-functional directory preserves the approved images. All12 reference PNGs match byte-for-byte: five full-page English views, five footer views, and390/1440 Spanish views. See cleanup-approved-screenshots.json. The faster parity harness's first320 capture differed under both old/new CSS; rerunning the unchanged approved flow establishes exact320 equality too.
+- Full focused audit passes: English reference copy, functional Spanish body/footer, exact headings, all42 source entries and dictionary mappings, fonts/images,44px targets, footer actual hits/dock exclusion, all reference/legacy IDs, Escape/focus return, outside pointer, current Product/Contact section, desktop resize, existing demo/business/signin/join routes, reduced motion and sampled contrast. No page/HTTP errors. See cleanup-functional/visual-acceptance.json and audit.log. Shared/global CSS and operational routes unchanged.
+- Source oracle and git diff --check pass. No used rules or thresholds weakened. No push/merge/deploy.
+
+Keep full original stylesheet evidence and exact removed selector/context/line inventory for reproduction. The owner worktree's unrelated preflight outputs remain untouched. Heavy browser slot is released on handoff; PM may proceed with the actual combined build/budget.

@@ -36,8 +36,9 @@ for (const tenant of ['pinas', 'wondertown']) {
       await expect(menu).toBeHidden()
       await expect(page.locator('#how')).toBeInViewport()
       await expect(menu.locator('a[href="#how"]')).toHaveAttribute('aria-current', 'location')
-      await page.locator('#store').scrollIntoViewIfNeeded()
-      await expect(menu.locator('a[href="#store"]')).toHaveAttribute('aria-current', 'location')
+      const destination = tenant === 'pinas' ? 'rewards' : 'store'
+      await page.locator(`#${destination}`).scrollIntoViewIfNeeded()
+      await expect(menu.locator(`a[href="#${destination}"]`)).toHaveAttribute('aria-current', 'location')
     })
 
     test('retains real account destinations and tenant-specific branding', async ({ page }) => {

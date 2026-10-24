@@ -1,0 +1,7 @@
+import fs from 'node:fs';import assert from 'node:assert/strict';import crypto from 'node:crypto';import postcss from 'postcss';
+const out='outputs/loyality-restoration-2026-10-25/',old=fs.readFileSync(out+'cleanup-original.css','utf8'),next=fs.readFileSync('src/features/loyality/pages/loyality-home-page.css','utf8'),inventory=JSON.parse(fs.readFileSync(out+'unused-css-candidate.json'));
+const removed=new Set(inventory.candidates.map(c=>c.start));
+const rules=(text,filter)=>{const result=[];postcss.parse(text).walkRules(r=>{if(filter&&removed.has(r.source.start.line))return;const context=[];for(let p=r.parent;p&&p.type!=='root';p=p.parent)context.unshift(`${p.name} ${p.params}`);result.push({context,selector:r.selector,declarations:r.nodes.map(n=>n.toString())})});return result};
+const a=rules(old,true),b=rules(next,false);assert.deepEqual(b,a);
+const hash=s=>crypto.createHash('sha256').update(s).digest('hex');assert.equal(hash(old),'191697e56fc4dc5041b9162aa7926c44e6cafd5ceaf916d9b44b36486d0d150f');assert.equal(hash(next),'7e218b17150bccec31fc29ee07aace49350960f176000ae536a70e0232992889');
+fs.writeFileSync(out+'cleanup-static-proof.json',JSON.stringify({passed:true,inputSha256:hash(old),candidateSha256:hash(next),survivingRules:a.length,removedRules:removed.size,proof:'Every surviving rule retains identical selector, declarations, order and at-rule context'},null,2));console.log('PASS:148 absent-class rules removed;299 surviving rules identical with contexts/order/declarations unchanged');

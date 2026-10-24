@@ -46,6 +46,11 @@ const localizedHomeCopy: Record<SupportedLanguage, {
   },
 }
 
+const restoredHomeCopy = {
+  en: { hero: 'Get rewarded for spending where you already love.', account: 'Three steps. Zero cost.', rates: 'Built to feel like a win, every visit.' },
+  es: { hero: 'Recibe recompensas por gastar en los lugares que ya te encantan.', account: 'Tres pasos. Cero costo.', rates: 'Diseñado para que cada visita se sienta como una victoria.' },
+}
+
 async function openLocalizedHome(page: Page, tenant: HomeTenant, language: SupportedLanguage) {
   await page.addInitScript(({ slug, selectedLanguage }) => {
     window.localStorage.setItem(`rewards:${slug}:language`, selectedLanguage)
@@ -57,7 +62,7 @@ for (const language of ['en', 'es'] as const) {
   for (const tenant of ['rewardme', 'wondertown'] as const) {
     test(`${tenant} home localizes the complete landing experience with ${language.toUpperCase()} saved`, async ({ page }) => {
       await openLocalizedHome(page, tenant, language)
-      const copy = localizedHomeCopy[language]
+      const copy = tenant === 'rewardme' ? { ...localizedHomeCopy[language], ...restoredHomeCopy[language] } : localizedHomeCopy[language]
 
       await expect(page.locator('html')).toHaveAttribute('lang', language)
       await expect(page.locator('.reference-rewardme')).toBeVisible()
@@ -66,7 +71,7 @@ for (const language of ['en', 'es'] as const) {
       await expect(page.getByRole('heading', { name: copy.rates })).toBeVisible()
       await expect(page.getByRole('link', { name: copy.signIn }).first()).toHaveAttribute('href', '/signin')
       await expect(page.locator('.reference-rewardme__logo').first()).toContainText(
-        tenant === 'wondertown' ? 'Wondertown Rewards' : 'RewardMe',
+        tenant === 'wondertown' ? 'Wondertown Rewards' : 'REWARDME',
       )
 
       if (tenant === 'wondertown') {
@@ -75,7 +80,8 @@ for (const language of ['en', 'es'] as const) {
         await expect(page.locator('.reference-rewardme__stamp')).toHaveText(copy.wondertownStamp)
       } else {
         await expect(page.locator('.reference-rewardme')).not.toHaveAttribute('data-wondertown-rewardme-mirror')
-        await expect(page.locator('.reference-rewardme__stamp')).toHaveText(copy.rewardmeStamp)
+        await expect(page.locator('.restored-rewardme__balance strong')).toHaveText('2,340 PTS')
+        await expect(page.locator('.restored-rewardme__account h2')).toHaveText('Maria')
       }
     })
   }
@@ -104,7 +110,7 @@ for (const tenant of ['rewardme', 'wondertown'] as const) {
     await page.goto(`/?tenant=${tenant}`)
 
     await expect(page.locator('html')).toHaveAttribute('lang', 'en')
-    await expect(page.getByRole('heading', { level: 1, name: localizedHomeCopy.en.hero })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 1, name: tenant === 'rewardme' ? restoredHomeCopy.en.hero : localizedHomeCopy.en.hero })).toBeVisible()
     const picker = page.getByRole('combobox', { name: 'Language' })
     await expect(picker).toHaveValue('en')
     await expect(picker.locator('option')).toHaveCount(2)

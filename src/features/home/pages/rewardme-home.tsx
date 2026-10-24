@@ -11,6 +11,7 @@ import { useLanguage } from '@/lib/language'
 import { RewardMeLedgerMark, RewardMePublicHeader } from '@/features/home/components/rewardme-public-header'
 
 import './rewardme-home.css'
+import { RewardMeReferenceHomePage } from './rewardme-reference-home'
 
 const memberSteps = [
  ['01','Join free','Create your account in your browser. No membership payment is required.'],
@@ -37,6 +38,11 @@ function RewardMeGlyph({ kind }: { kind: 'join' | 'earn' | 'spark' }) {
 }
 
 export function RewardMeHomePage() {
+  const { program } = useTenant()
+  return program.slug === 'pinas' ? <RewardMeReferenceHomePage /> : <RewardMeMirrorHomePage />
+}
+
+function RewardMeMirrorHomePage() {
   const { program } = useTenant()
   const { t } = useLanguage()
   const brand = program.name

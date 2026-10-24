@@ -28,12 +28,18 @@ describe('RewardMe pitch alignment', () => {
     expect(canonicalMigration).toContain("email_from_address = ''")
   })
 
-  it('gives the pinas tenant its supplied RewardMe HTML landing experience', () => {
+  it('routes pinas to its supplied PDF narrative while retaining the existing Wondertown mirror', () => {
     const home = source('src/features/home/pages/home-page.tsx')
     const rewardMeHome = source('src/features/home/pages/rewardme-home.tsx')
     const rewardMeHeader = source('src/features/home/components/rewardme-public-header.tsx')
+    const referenceHome = source('src/features/home/pages/rewardme-reference-home.tsx')
 
     expect(home).toContain('if (isRewardMeExperience(program.slug)) return <RewardMeHomePage />')
+    expect(rewardMeHome).toContain("program.slug === 'pinas' ? <RewardMeReferenceHomePage /> : <RewardMeMirrorHomePage />")
+    expect(referenceHome).toContain('Get rewarded for spending where you already love.')
+    expect(referenceHome).toContain('2,340 PTS')
+    expect(referenceHome).toContain('Three steps. Zero cost.')
+    expect(referenceHome).toContain('Built to feel like a win, every visit.')
     expect(rewardMeHome).toContain('Earn amazing rewards while supporting local businesses.')
     expect(rewardMeHome).toContain('Example purchase recorded')
     expect(rewardMeHome).toContain('Example reward earned')

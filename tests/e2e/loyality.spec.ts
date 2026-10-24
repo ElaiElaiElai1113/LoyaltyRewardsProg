@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { expect, test, type Page } from '@playwright/test'
 
 import { e2ePassword } from './helpers/env.js'
@@ -12,7 +13,38 @@ function runtimeErrors(page: Page) {
   return errors
 }
 
+function publicLanguagePicker(page: Page, language: 'Language' | 'Idioma') {
+  return page.locator('.main-site-language-dock').getByRole('combobox', { name: language, exact: true })
+}
+
+const referenceCopy = JSON.parse(readFileSync(new URL('../fixtures/loyality-reference-copy.json', import.meta.url), 'utf8')) as { sections: Record<string, string[]> }
+
 test.describe('Loyality public product', () => {
+  test('homepage restores every supplied PDF copy entry', async ({ page }) => {
+    await page.goto('/?tenant=loyality')
+    for (const copy of Object.values(referenceCopy.sections).flat()) {
+      await expect(page.locator('.reference-loyality').getByText(copy, { exact: true }).first(), copy).toBeVisible()
+    }
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Your loyalty card, reimagined.')
+    await expect(page.locator('.reference-loyality')).not.toContainText(/Guarantee terms|Paid tier|Grand slam offer|Illustrative example only/)
+    for (const id of ['concept', 'support', 'how', 'ledger', 'features', 'guarantee', 'example']) {
+      const alias = page.locator(`#${id}`)
+      await expect(alias).toHaveCount(1)
+      await expect(alias).toHaveCSS('height', '0px')
+      await expect(alias).toHaveCSS('padding', '0px')
+    }
+    await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' }))
+    await expect(page.locator('.reference-loyality__nav-links a[href="#contact"]')).toHaveAttribute('aria-current', 'location')
+  })
+
+  test('signin and signup discard external and malformed destinations in both directions', async ({ page }) => {
+    for (const candidate of ['https://example.com/outside', '//example.com/outside', '/\\example.com', '/offer/%ZZ', '/offer/%00welcome']) {
+      await page.goto(`/signin?tenant=loyality&redirect=${encodeURIComponent(candidate)}`)
+      await expect(page.getByRole('link', { name: 'Create an account' })).toHaveAttribute('href', '/join')
+      await page.goto(`/join?tenant=loyality&redirect=${encodeURIComponent(candidate)}`)
+      await expect(page.getByRole('link', { name: 'Sign in', exact: true })).toHaveAttribute('href', '/signin')
+    }
+  })
   for (const viewport of [
     { name: 'phone', width: 360, height: 780 },
     { name: 'tablet', width: 768, height: 1024 },
@@ -24,29 +56,24 @@ test.describe('Loyality public product', () => {
       await page.goto('/?tenant=loyality')
 
       await expect(page).toHaveTitle('Loyality')
-      await expect(page.getByRole('heading', { name: 'Turn your customers into members.' })).toBeVisible()
-      await expect(page.getByLabel('Language')).toBeVisible()
+      await expect(page.getByRole('heading', { name: 'Your loyalty card, reimagined.' })).toBeVisible()
+      await expect(publicLanguagePicker(page, 'Language')).toBeVisible()
       for (const heading of [
-        'One membership. Any incentive you want.',
-        "A partner that runs it with you — not a tool you're left to figure out.",
-        'A membership does three jobs at once.',
-        'Four steps, fully automated after launch.',
-        "Everything a loyalty app does. Plus what most of them don't.",
-        "Built to run under your name, not someone else's.",
-        "We're confident enough to put it in writing.",
-        'What a membership tier could look like.',
-        'Onboarding, made simple.',
-        'Ready to turn your customers into members?',
+        'Harvest & Vine',
+        'Built to bring customers in, and keep them coming back.',
+        "White-label means it's yours, not ours.",
+        'See it running for a business like yours.',
       ]) await expect(page.getByRole('heading', { name: heading })).toBeVisible()
       await expect(page.locator('.reference-loyality')).toBeVisible()
       await expect(page.locator('.reference-loyality__header')).toHaveCSS('position', 'sticky')
       await expect(page.locator('body')).not.toContainText(/RewardMe|Wondertown|Medellin|Guatemala/i)
       const photos = page.locator('.reference-loyality__photo img')
       await expect(photos).toHaveCount(2)
+      if (viewport.width <= 960) await expect(page.locator('.restored-benefit-photo img')).toHaveCSS('height', '320px')
       for (let index = 0; index < 2; index += 1) {
         const photo = photos.nth(index)
         await photo.scrollIntoViewIfNeeded()
-        await expect(photo).toHaveCSS('object-fit', 'contain')
+        await expect(photo).toHaveCSS('object-fit', 'cover')
         await expect.poll(() => photo.evaluate((image) => {
           const element = image as HTMLImageElement
           return element.complete && element.naturalWidth > 0
@@ -69,10 +96,10 @@ test.describe('Loyality public product', () => {
       expect(layout.emptyLinks).toBe(0)
       expect(layout.brokenHashLinks).toEqual([])
       expect(layout.bodyFont).toContain('IBM Plex Sans')
-      expect(layout.headingFont).toContain('Fraunces')
+      expect(layout.headingFont).toContain('Space Grotesk')
       expect(layout.labelFont).toContain('IBM Plex Mono')
-      expect(layout.background).toBe('rgb(246, 241, 228)')
-      expect(layout.headingColor).toBe('rgb(31, 58, 46)')
+      expect(layout.background).toBe('rgb(248, 250, 246)')
+      expect(layout.headingColor).toBe('rgb(21, 57, 46)')
       expect(errors).toEqual([])
     })
   }
@@ -81,14 +108,12 @@ test.describe('Loyality public product', () => {
     await page.goto('/?tenant=loyality')
     const header = page.locator('.reference-loyality__nav')
     await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
-    await expect(header.getByRole('link', { name: 'Get started' })).toHaveAttribute('href', '/business')
-    await expect(page.getByRole('link', { name: 'See the concept' })).toHaveAttribute('href', '#concept')
-    const getStartedLinks = page.getByRole('link', { name: 'Get started' })
-    await expect(getStartedLinks).toHaveCount(5)
-    for (let index = 0; index < 5; index += 1) {
-      await expect(getStartedLinks.nth(index)).toHaveAttribute('href', '/business')
-    }
-    await getStartedLinks.nth(3).click()
+    await expect(header.getByRole('link', { name: 'See a Demo' })).toHaveAttribute('href', '/business')
+    await expect(page.locator('.reference-loyality__hero-ctas').getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
+    const demoLinks = page.locator('.reference-loyality').getByRole('link', { name: /^(See a Demo|Request a Demo)$/ })
+    await expect(demoLinks).toHaveCount(3)
+    for (const link of await demoLinks.all()) await expect(link).toHaveAttribute('href', '/business')
+    await page.getByRole('link', { name: 'Request a Demo' }).click()
     await expect(page).toHaveURL(/\/business$/)
     await expect(page.getByRole('heading', { name: 'A loyalty program that feels like your business.' })).toBeVisible()
     await page.goto('/?tenant=loyality')
@@ -117,26 +142,27 @@ test.describe('Loyality public product', () => {
       await page.setViewportSize(viewport)
       await page.goto('/?tenant=loyality')
 
-      await page.getByLabel('Language').selectOption('es')
+      await publicLanguagePicker(page, 'Language').selectOption('es')
       await expect(page.locator('html')).toHaveAttribute('lang', 'es')
-      await expect(page.getByLabel('Idioma')).toBeVisible()
-      await expect(page.getByRole('heading', { name: 'Convierte a tus clientes en miembros.' })).toBeVisible()
-      await expect(page.getByRole('heading', { name: 'Turn your customers into members.' })).toHaveCount(0)
+      await expect(publicLanguagePicker(page, 'Idioma')).toBeVisible()
+      await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tu tarjeta de fidelidad, reinventada.')
+      await expect(page.getByRole('heading', { name: 'Your loyalty card, reimagined.' })).toHaveCount(0)
+      await expect(page.locator('.reference-loyality__footer').getByRole('link', { name: 'Contacto', exact: true })).toBeVisible()
 
       await page.goto('/business?tenant=loyality')
-      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(publicLanguagePicker(page, 'Idioma')).toBeVisible()
       await expect(page.getByRole('heading', { name: 'Un programa de fidelidad que se siente como tu negocio.' })).toBeVisible()
 
       await page.goto('/signin?tenant=loyality')
-      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(publicLanguagePicker(page, 'Idioma')).toBeVisible()
       await expect(page.getByRole('heading', { name: 'Entra en tu ciclo.' })).toBeVisible()
 
       await page.goto('/join?tenant=loyality')
-      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(publicLanguagePicker(page, 'Idioma')).toBeVisible()
       await expect(page.getByRole('heading', { name: 'Únete al ciclo.' })).toBeVisible()
 
       await page.goto('/promotions?tenant=loyality')
-      await expect(page.getByLabel('Idioma')).toBeVisible()
+      await expect(publicLanguagePicker(page, 'Idioma')).toBeVisible()
       await expect(page.getByRole('heading', { name: 'Las ofertas se comparten de forma privada' })).toBeVisible()
 
       const layout = await page.evaluate(() => ({

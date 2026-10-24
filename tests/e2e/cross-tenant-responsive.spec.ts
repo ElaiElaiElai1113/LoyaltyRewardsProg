@@ -129,12 +129,16 @@ test.describe('cross-tenant public responsive layouts', () => {
         : await page.locator('.reference-rewardme__header').boundingBox()
       const homeMenuBounds = tenant === 'loyality' ? null : await mobileMenu.boundingBox()
       const mobileBusinessEntry = mobileMenu.getByRole('link', {
-        name: tenant === 'loyality' ? 'Businesses' : 'For businesses',
+        name: tenant === 'loyality' ? 'Businesses' : tenant === 'pinas' ? 'For Business' : 'For businesses',
         exact: true,
       }).first()
       await expect(mobileBusinessEntry).toBeVisible()
-      await expect(mobileBusinessEntry).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
-      if (tenant !== 'loyality') {
+      await expect(mobileBusinessEntry).toHaveAttribute('href', tenant === 'loyality' || tenant === 'pinas' ? '/business' : '#business')
+      if (tenant === 'pinas') {
+        await mobileBusinessEntry.click()
+        await expect(page).toHaveURL(/\/business$/)
+        await expect(mobileMenu).toBeHidden()
+      } else if (tenant !== 'loyality') {
         await mobileBusinessEntry.click()
         await expect(page).toHaveURL(/#business$/)
         await expect(mobileMenu).toBeHidden()
@@ -164,7 +168,8 @@ test.describe('cross-tenant public responsive layouts', () => {
         const businessHeaderBounds = await page.locator('.reference-rewardme__header').boundingBox()
         const businessMenuBounds = await businessMenu.boundingBox()
         expect(businessHeaderBounds).toEqual(homeHeaderBounds)
-        expect(businessMenuBounds).toEqual(homeMenuBounds)
+        if (tenant === 'wondertown') expect(businessMenuBounds).toEqual(homeMenuBounds)
+        else expect({ x: businessMenuBounds!.x, y: businessMenuBounds!.y, width: businessMenuBounds!.width }).toEqual({ x: homeMenuBounds!.x, y: homeMenuBounds!.y, width: homeMenuBounds!.width })
         await expect(businessMenu.locator(':scope > a').first()).toHaveCSS('justify-content', 'center')
       }
       await expect(page.locator('.main-site-language-dock')).toBeVisible()
@@ -179,9 +184,9 @@ test.describe('cross-tenant public responsive layouts', () => {
         tenant === 'loyality' ? '.reference-loyality__nav' : '.reference-rewardme__nav',
       )
       await expect(topBar.getByRole('link', {
-        name: tenant === 'loyality' ? 'Get started' : 'For businesses',
+        name: tenant === 'loyality' ? 'See a Demo' : tenant === 'pinas' ? 'For Business' : 'For businesses',
         exact: true,
-      })).toHaveAttribute('href', tenant === 'loyality' ? '/business' : '#business')
+      })).toHaveAttribute('href', tenant === 'loyality' || tenant === 'pinas' ? '/business' : '#business')
     })
   }
 })

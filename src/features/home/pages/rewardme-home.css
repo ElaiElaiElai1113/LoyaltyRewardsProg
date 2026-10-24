@@ -1650,3 +1650,47 @@
   :root[data-program="pinas"] .reference-rewardme__hero h1 { font-size: clamp(40px,5.4vw,50px); }
   :root[data-program="pinas"] .reference-rewardme__wide-photo { min-height: 480px; }
 }
+/* The PDF narrative uses the current RewardMe visual system, never its old
+   black/orange skin. This root is absent from the unchanged Wondertown mirror. */
+.restored-rewardme .reference-rewardme__hero-title>.reference-rewardme__lead { margin-top: 24px; font-size: 16px; }
+.restored-rewardme__preview { grid-template-columns: 1fr 1fr; }
+.restored-rewardme__account { width: min(100%,520px); margin-inline: auto; }
+.restored-rewardme__time { margin-bottom: 20px; color: #52604e; font: 12px 'IBM Plex Mono',monospace; }
+.restored-rewardme__greeting { color: #52604e; font-size: 14px; }
+.restored-rewardme__account h2 { margin: 4px 0 22px; font-size: 32px; }
+.restored-rewardme__balance { display: grid; gap: 5px; border: 1px solid #b8862e; border-radius: 10px; padding: 22px; background: #e7d6af; }
+.restored-rewardme__balance p { font: 600 11px 'IBM Plex Mono',monospace; letter-spacing: .06em; }
+.restored-rewardme__balance strong { font: 500 38px/1.3 Fraunces,Georgia,serif; }
+.restored-rewardme__balance span { font-size: 13px; }
+.restored-rewardme__streak { margin-top: 14px; border-radius: 8px; padding: 17px 20px; background: #1f3a2e; color: #f6f1e4; }
+.restored-rewardme__streak p { margin-top: 4px; font-size: 13px; color: #e0e3d6; }
+.restored-rewardme__nearby { margin: 24px 0 8px !important; font-size: 18px; }
+.restored-rewardme__nearby a { display: inline-flex; min-height: 44px; align-items: center; text-decoration: underline; text-underline-offset: 4px; }
+.restored-rewardme__rewards li { display: flex; align-items: center; gap: 15px; padding-block: 15px; border-bottom: 1px solid #bfccac; }
+.restored-rewardme__rewards li:last-child { border: 0; padding-bottom: 0; }
+.restored-rewardme__rewards strong { font-size: 15px; }
+.restored-rewardme__rewards p { margin-top: 3px; font-size: 13px; color: #52604e; }
+.restored-rewardme__dot { flex: 0 0 28px; height: 28px; border-radius: 50%; background: #b8862e; }
+.restored-rewardme .reference-rewardme__ledger-list li { padding-right: 36px; }
+.restored-rewardme .reference-rewardme__ledger-list h3 { margin-top: 5px; }
+:root[data-program="pinas"] .restored-rewardme .reference-rewardme__section--deep .reference-rewardme__eyebrow { color: #d8b765; }
+.restored-rewardme__benefits { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
+.restored-rewardme__benefits article { border: 1px solid #627564; border-radius: 12px; padding: 30px; background: #294636; }
+.restored-rewardme__benefit-icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-bottom: 22px; border: 1px solid #a68c4d; border-radius: 10px; color: #d8b765; }
+.restored-rewardme__benefits h3 { font-size: 23px; margin-bottom: 14px; }
+.restored-rewardme__benefits p { font-size: 15px; color: #e0e3d6; line-height: 1.8; }
+.restored-rewardme__closing img { min-height: 360px; }
+.restored-rewardme__anchor { display: block; height: 1px; scroll-margin-top: 110px; }
+.restored-rewardme__copyright { margin-top: 36px; border-top: 1px solid #627564; padding-top: 24px; color: #e0e3d6; font-size: 12px; }
+@media(max-width:960px) {
+  .restored-rewardme__preview { grid-template-columns: 1fr; gap: 44px; }
+  .restored-rewardme__preview .reference-rewardme__photo-grid { width: 100%; max-width: 620px; margin-inline: auto; }
+  .restored-rewardme__benefits { grid-template-columns: 1fr; }
+}
+@media(max-width:760px) {
+  .restored-rewardme .reference-rewardme__hero-title>.reference-rewardme__lead { font-size: 15px; margin-top: 20px; }
+  .restored-rewardme__balance { padding: 18px; }
+  .restored-rewardme__balance strong { font-size: 34px; }
+  .restored-rewardme__benefits article { padding: 25px; }
+  .restored-rewardme__closing img { min-height: 0; height: 250px; }
+}
