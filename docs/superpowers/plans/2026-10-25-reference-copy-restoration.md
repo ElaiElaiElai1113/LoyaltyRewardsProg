@@ -68,7 +68,7 @@ All three chats may inspect/edit independently. Heavy local unit/build/browser w
 
 - [ ] PM receives all scoped candidate commits and independently reviews diffs and copy against the actual supplied files.
 - [ ] PM integrates the two non-overlapping coffee changes in the attached integration worktree, preserving unrelated root work.
-- [ ] Check exact English copy and functional language controls; do not invent client-approved Spanish prose. Any missing source-language mappings must be reported and handled without breaking existing locale behavior.
+- [ ] Check exact English copy and meaningful Spanish language switching. Reuse existing mappings or add brand-scoped faithful translations of restored phrases. New translations are functional equivalents and must not be described as separately client-approved copy. Do not weaken language tests to accept an all-English Spanish view. Keep English verbatim and other tenants' translations unchanged.
 - [ ] Check 1440 and 390 for all three sites, plus 320, 768 and 844x390 overflow/menu/footer/image checks. Exercise real route/anchor destinations, auth/join page rendering, Synergize industries/calculator and Wondertown unaffected behavior. No real submissions, mail, payments or production data writes.
 - [ ] Review/fix/review any discrepancies through the owning implementation chat. Keep other sites unchanged.
 - [ ] After independent review and successful checks, PM owns integration, main/CI verification and scoped publication to the same three already-authorized sites, followed by live desktop/mobile copy and behavior checks. Preserve every other site's deployment pins. Implementation chats must not deploy independently.
