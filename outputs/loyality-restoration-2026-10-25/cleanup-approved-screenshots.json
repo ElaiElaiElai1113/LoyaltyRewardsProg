@@ -1,0 +1,65 @@
+{
+  "passed": true,
+  "screenshots": [
+    {
+      "name": "final-320x780.png",
+      "equal": true,
+      "sha256": "b2d382f3cbc98355f2b6cd1905aa8381e3cd67f8d717a9be1405ddaffd38fe71"
+    },
+    {
+      "name": "final-390x844.png",
+      "equal": true,
+      "sha256": "85dc0e24418c5d3a84843433ad827c4096e9d6adb53440ef39296714a7868296"
+    },
+    {
+      "name": "final-768x1024.png",
+      "equal": true,
+      "sha256": "271b5fda6c61c9f44c96ce6ee4afba70c2510408feca95afeed8b44782b4f39b"
+    },
+    {
+      "name": "final-1440x900.png",
+      "equal": true,
+      "sha256": "dffef9c7ae5369d5ca5d2526a39db1a804f02dd4ea5835c2da069047a5d6858b"
+    },
+    {
+      "name": "final-844x390.png",
+      "equal": true,
+      "sha256": "b937b5947341b58b6f8524456453683acfe4e9685eb1167f33dcd36fb8fef945"
+    },
+    {
+      "name": "spanish-390.png",
+      "equal": true,
+      "sha256": "0979bfb11acf3c22e879e902bcab659dda6cd0cb32e60ef3bc413939564f41c5"
+    },
+    {
+      "name": "spanish-1440.png",
+      "equal": true,
+      "sha256": "1bf525f37e380663d636859d27fd7c3a22639bddd20a31aaa9dfed4ce613879e"
+    },
+    {
+      "name": "footer-320.png",
+      "equal": true,
+      "sha256": "77de16a87a4f3f4678050103c53d607320a03b89f527f841918e52eac7c3c6cf"
+    },
+    {
+      "name": "footer-390.png",
+      "equal": true,
+      "sha256": "8aaea7ec8a5664ccb7e37999ae88c50187b08674c44af367117333b40fc1c3ae"
+    },
+    {
+      "name": "footer-768.png",
+      "equal": true,
+      "sha256": "18c3b82b61c040c9649a5f29b89301746b562120c411978d0954ca07c1441f06"
+    },
+    {
+      "name": "footer-1440.png",
+      "equal": true,
+      "sha256": "13aaee3637255006eda85c03eaeac4908dbc2f2125cbe99caf504a598b80043d"
+    },
+    {
+      "name": "footer-844.png",
+      "equal": true,
+      "sha256": "7db3d3080f28e69e94c9046da666e780831061fc97fd12eeefe60287fb030133"
+    }
+  ]
+}

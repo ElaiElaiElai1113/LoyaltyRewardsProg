@@ -1,0 +1,1504 @@
+{
+  "originalBytes": 52782,
+  "candidateBytes": 35258,
+  "savedSourceBytes": 17524,
+  "removedRules": 148,
+  "keptRules": 299,
+  "candidates": [
+    {
+      "start": 287,
+      "end": 291,
+      "selector": ".reference-loyality .reference-loyality__hero-note",
+      "absent": [
+        "reference-loyality__hero-note"
+      ],
+      "sourceBytes": 116,
+      "context": "root"
+    },
+    {
+      "start": 367,
+      "end": 378,
+      "selector": ".reference-loyality .reference-loyality__highlight",
+      "absent": [
+        "reference-loyality__highlight"
+      ],
+      "sourceBytes": 311,
+      "context": "root"
+    },
+    {
+      "start": 380,
+      "end": 385,
+      "selector": ".reference-loyality .reference-loyality__stat",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 138,
+      "context": "root"
+    },
+    {
+      "start": 387,
+      "end": 390,
+      "selector": ".reference-loyality .reference-loyality__stat:last-child",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 87,
+      "context": "root"
+    },
+    {
+      "start": 392,
+      "end": 396,
+      "selector": ".reference-loyality .reference-loyality__stat strong",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 143,
+      "context": "root"
+    },
+    {
+      "start": 398,
+      "end": 405,
+      "selector": ".reference-loyality .reference-loyality__stat span",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 173,
+      "context": "root"
+    },
+    {
+      "start": 415,
+      "end": 420,
+      "selector": ".reference-loyality .reference-loyality__ledger",
+      "absent": [
+        "reference-loyality__ledger"
+      ],
+      "sourceBytes": 147,
+      "context": "root"
+    },
+    {
+      "start": 422,
+      "end": 432,
+      "selector": ".reference-loyality .reference-loyality__ledger-head",
+      "absent": [
+        "reference-loyality__ledger-head"
+      ],
+      "sourceBytes": 286,
+      "context": "root"
+    },
+    {
+      "start": 434,
+      "end": 441,
+      "selector": ".reference-loyality .reference-loyality__ledger-head i",
+      "absent": [
+        "reference-loyality__ledger-head"
+      ],
+      "sourceBytes": 179,
+      "context": "root"
+    },
+    {
+      "start": 443,
+      "end": 451,
+      "selector": ".reference-loyality .reference-loyality__ledger-row",
+      "absent": [
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 232,
+      "context": "root"
+    },
+    {
+      "start": 453,
+      "end": 456,
+      "selector": ".reference-loyality .reference-loyality__ledger-id",
+      "absent": [
+        "reference-loyality__ledger-id"
+      ],
+      "sourceBytes": 112,
+      "context": "root"
+    },
+    {
+      "start": 458,
+      "end": 461,
+      "selector": ".reference-loyality .reference-loyality__ledger-type",
+      "absent": [
+        "reference-loyality__ledger-type"
+      ],
+      "sourceBytes": 93,
+      "context": "root"
+    },
+    {
+      "start": 463,
+      "end": 466,
+      "selector": ".reference-loyality .reference-loyality__ledger-row strong",
+      "absent": [
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 127,
+      "context": "root"
+    },
+    {
+      "start": 468,
+      "end": 475,
+      "selector": ".reference-loyality .reference-loyality__ledger-foot",
+      "absent": [
+        "reference-loyality__ledger-foot"
+      ],
+      "sourceBytes": 179,
+      "context": "root"
+    },
+    {
+      "start": 540,
+      "end": 546,
+      "selector": ".reference-loyality .reference-loyality__flex-note",
+      "absent": [
+        "reference-loyality__flex-note"
+      ],
+      "sourceBytes": 158,
+      "context": "root"
+    },
+    {
+      "start": 559,
+      "end": 562,
+      "selector": ".reference-loyality .reference-loyality__support-grid",
+      "absent": [
+        "reference-loyality__support-grid"
+      ],
+      "sourceBytes": 87,
+      "context": "root"
+    },
+    {
+      "start": 564,
+      "end": 568,
+      "selector": ".reference-loyality .reference-loyality__support-grid .reference-loyality__card",
+      "absent": [
+        "reference-loyality__support-grid"
+      ],
+      "sourceBytes": 144,
+      "context": "root"
+    },
+    {
+      "start": 570,
+      "end": 573,
+      "selector": ".reference-loyality .reference-loyality__support-grid .v2-glyph",
+      "absent": [
+        "reference-loyality__support-grid"
+      ],
+      "sourceBytes": 107,
+      "context": "root"
+    },
+    {
+      "start": 607,
+      "end": 611,
+      "selector": ".reference-loyality .reference-loyality__steps",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 130,
+      "context": "root"
+    },
+    {
+      "start": 613,
+      "end": 616,
+      "selector": ".reference-loyality .reference-loyality__steps article",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 112,
+      "context": "root"
+    },
+    {
+      "start": 618,
+      "end": 621,
+      "selector": ".reference-loyality .reference-loyality__steps article>span",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 121,
+      "context": "root"
+    },
+    {
+      "start": 623,
+      "end": 627,
+      "selector": ".reference-loyality .reference-loyality__steps h3",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 115,
+      "context": "root"
+    },
+    {
+      "start": 629,
+      "end": 633,
+      "selector": ".reference-loyality .reference-loyality__steps p",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 115,
+      "context": "root"
+    },
+    {
+      "start": 646,
+      "end": 652,
+      "selector": ".reference-loyality .reference-loyality__features article",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 179,
+      "context": "root"
+    },
+    {
+      "start": 654,
+      "end": 657,
+      "selector": ".reference-loyality .reference-loyality__features article>span",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 124,
+      "context": "root"
+    },
+    {
+      "start": 659,
+      "end": 662,
+      "selector": ".reference-loyality .reference-loyality__features h3",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 98,
+      "context": "root"
+    },
+    {
+      "start": 664,
+      "end": 669,
+      "selector": ".reference-loyality .reference-loyality__features p",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 132,
+      "context": "root"
+    },
+    {
+      "start": 699,
+      "end": 702,
+      "selector": ".reference-loyality .reference-loyality__compare-card--new",
+      "absent": [
+        "reference-loyality__compare-card--new"
+      ],
+      "sourceBytes": 110,
+      "context": "root"
+    },
+    {
+      "start": 704,
+      "end": 712,
+      "selector": ".reference-loyality .reference-loyality__guarantee",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 216,
+      "context": "root"
+    },
+    {
+      "start": 714,
+      "end": 721,
+      "selector": ".reference-loyality .reference-loyality__stamp",
+      "absent": [
+        "reference-loyality__stamp"
+      ],
+      "sourceBytes": 197,
+      "context": "root"
+    },
+    {
+      "start": 723,
+      "end": 726,
+      "selector": ".reference-loyality .reference-loyality__guarantee h2",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 99,
+      "context": "root"
+    },
+    {
+      "start": 728,
+      "end": 732,
+      "selector": ".reference-loyality .reference-loyality__guarantee p",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 118,
+      "context": "root"
+    },
+    {
+      "start": 734,
+      "end": 737,
+      "selector": ".reference-loyality .reference-loyality__guarantee-cards",
+      "absent": [
+        "reference-loyality__guarantee-cards"
+      ],
+      "sourceBytes": 90,
+      "context": "root"
+    },
+    {
+      "start": 739,
+      "end": 744,
+      "selector": ".reference-loyality .reference-loyality__guarantee-cards>div",
+      "absent": [
+        "reference-loyality__guarantee-cards"
+      ],
+      "sourceBytes": 156,
+      "context": "root"
+    },
+    {
+      "start": 746,
+      "end": 750,
+      "selector": ".reference-loyality .reference-loyality__guarantee-cards span",
+      "absent": [
+        "reference-loyality__guarantee-cards"
+      ],
+      "sourceBytes": 125,
+      "context": "root"
+    },
+    {
+      "start": 752,
+      "end": 757,
+      "selector": ".reference-loyality .reference-loyality__guarantee-cards strong",
+      "absent": [
+        "reference-loyality__guarantee-cards"
+      ],
+      "sourceBytes": 173,
+      "context": "root"
+    },
+    {
+      "start": 759,
+      "end": 764,
+      "selector": ".reference-loyality .reference-loyality__plans",
+      "absent": [
+        "reference-loyality__plans"
+      ],
+      "sourceBytes": 134,
+      "context": "root"
+    },
+    {
+      "start": 766,
+      "end": 771,
+      "selector": ".reference-loyality .reference-loyality__plan",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 142,
+      "context": "root"
+    },
+    {
+      "start": 773,
+      "end": 776,
+      "selector": ".reference-loyality .reference-loyality__plan>span",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 112,
+      "context": "root"
+    },
+    {
+      "start": 778,
+      "end": 781,
+      "selector": ".reference-loyality .reference-loyality__plan h3",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 89,
+      "context": "root"
+    },
+    {
+      "start": 783,
+      "end": 787,
+      "selector": ".reference-loyality .reference-loyality__plan>strong",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 143,
+      "context": "root"
+    },
+    {
+      "start": 789,
+      "end": 792,
+      "selector": ".reference-loyality .reference-loyality__plan strong small",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 102,
+      "context": "root"
+    },
+    {
+      "start": 794,
+      "end": 799,
+      "selector": ".reference-loyality .reference-loyality__plan>small",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 129,
+      "context": "root"
+    },
+    {
+      "start": 801,
+      "end": 804,
+      "selector": ".reference-loyality .reference-loyality__plan li",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 92,
+      "context": "root"
+    },
+    {
+      "start": 806,
+      "end": 809,
+      "selector": ".reference-loyality .reference-loyality__plan li:before",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 99,
+      "context": "root"
+    },
+    {
+      "start": 811,
+      "end": 814,
+      "selector": ".reference-loyality .reference-loyality__plan--featured",
+      "absent": [
+        "reference-loyality__plan--featured"
+      ],
+      "sourceBytes": 101,
+      "context": "root"
+    },
+    {
+      "start": 816,
+      "end": 818,
+      "selector": ".reference-loyality .reference-loyality__plan--featured :is(span,small)",
+      "absent": [
+        "reference-loyality__plan--featured"
+      ],
+      "sourceBytes": 93,
+      "context": "root"
+    },
+    {
+      "start": 820,
+      "end": 825,
+      "selector": ".reference-loyality .reference-loyality__example-flag",
+      "absent": [
+        "reference-loyality__example-flag"
+      ],
+      "sourceBytes": 139,
+      "context": "root"
+    },
+    {
+      "start": 827,
+      "end": 835,
+      "selector": ".reference-loyality .reference-loyality__pricing-box",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 206,
+      "context": "root"
+    },
+    {
+      "start": 837,
+      "end": 840,
+      "selector": ".reference-loyality .reference-loyality__pricing-box h3",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 101,
+      "context": "root"
+    },
+    {
+      "start": 842,
+      "end": 846,
+      "selector": ".reference-loyality .reference-loyality__pricing-box p",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 120,
+      "context": "root"
+    },
+    {
+      "start": 848,
+      "end": 850,
+      "selector": ".reference-loyality .reference-loyality__pricing-box .reference-loyality__btn",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 99,
+      "context": "root"
+    },
+    {
+      "start": 921,
+      "end": 924,
+      "selector": ".reference-loyality .reference-loyality__highlight",
+      "absent": [
+        "reference-loyality__highlight"
+      ],
+      "sourceBytes": 95,
+      "context": "@media (min-width:761px) and (max-width:1100px)"
+    },
+    {
+      "start": 926,
+      "end": 928,
+      "selector": ".reference-loyality .reference-loyality__stat strong",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 79,
+      "context": "@media (min-width:761px) and (max-width:1100px)"
+    },
+    {
+      "start": 930,
+      "end": 933,
+      "selector": ".reference-loyality .reference-loyality__ledger-row",
+      "absent": [
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 120,
+      "context": "@media (min-width:761px) and (max-width:1100px)"
+    },
+    {
+      "start": 1004,
+      "end": 1008,
+      "selector": ".reference-loyality .reference-loyality__hero-note",
+      "absent": [
+        "reference-loyality__hero-note"
+      ],
+      "sourceBytes": 121,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1040,
+      "end": 1044,
+      "selector": ".reference-loyality .reference-loyality__highlight",
+      "absent": [
+        "reference-loyality__highlight"
+      ],
+      "sourceBytes": 126,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1046,
+      "end": 1048,
+      "selector": ".reference-loyality .reference-loyality__stat",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 76,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1050,
+      "end": 1052,
+      "selector": ".reference-loyality .reference-loyality__stat strong",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 79,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1054,
+      "end": 1058,
+      "selector": ".reference-loyality .reference-loyality__stat span",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 119,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1068,
+      "end": 1073,
+      "selector": ".reference-loyality .reference-loyality__ledger-head",
+      "absent": [
+        "reference-loyality__ledger-head"
+      ],
+      "sourceBytes": 130,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1075,
+      "end": 1079,
+      "selector": ".reference-loyality .reference-loyality__ledger-row",
+      "absent": [
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 147,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1081,
+      "end": 1083,
+      "selector": ".reference-loyality .reference-loyality__ledger-id",
+      "absent": [
+        "reference-loyality__ledger-id"
+      ],
+      "sourceBytes": 76,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1085,
+      "end": 1089,
+      "selector": ".reference-loyality .reference-loyality__ledger-desc",
+      "absent": [
+        "reference-loyality__ledger-desc"
+      ],
+      "sourceBytes": 121,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1091,
+      "end": 1094,
+      "selector": ".reference-loyality .reference-loyality__ledger-type",
+      "absent": [
+        "reference-loyality__ledger-type"
+      ],
+      "sourceBytes": 98,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1096,
+      "end": 1101,
+      "selector": ".reference-loyality .reference-loyality__ledger-row strong",
+      "absent": [
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 148,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1103,
+      "end": 1108,
+      "selector": ".reference-loyality .reference-loyality__ledger-foot",
+      "absent": [
+        "reference-loyality__ledger-foot"
+      ],
+      "sourceBytes": 131,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1141,
+      "end": 1143,
+      "selector": ".reference-loyality .reference-loyality__flex-note",
+      "absent": [
+        "reference-loyality__flex-note"
+      ],
+      "sourceBytes": 77,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1145,
+      "end": 1148,
+      "selector": ".reference-loyality .reference-loyality__support-grid .v2-glyph",
+      "absent": [
+        "reference-loyality__support-grid"
+      ],
+      "sourceBytes": 108,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1158,
+      "end": 1161,
+      "selector": ".reference-loyality .reference-loyality__steps",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 124,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1163,
+      "end": 1166,
+      "selector": ".reference-loyality .reference-loyality__steps article",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 107,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1168,
+      "end": 1170,
+      "selector": ".reference-loyality .reference-loyality__steps h3",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 76,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1172,
+      "end": 1174,
+      "selector": ".reference-loyality .reference-loyality__steps p",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 75,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1181,
+      "end": 1184,
+      "selector": ".reference-loyality .reference-loyality__features article",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 108,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1186,
+      "end": 1190,
+      "selector": ".reference-loyality .reference-loyality__features h3",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 123,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1192,
+      "end": 1194,
+      "selector": ".reference-loyality .reference-loyality__features p",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 78,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1208,
+      "end": 1212,
+      "selector": ".reference-loyality .reference-loyality__guarantee",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 122,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1214,
+      "end": 1216,
+      "selector": ".reference-loyality .reference-loyality__guarantee h2",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 80,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1218,
+      "end": 1220,
+      "selector": ".reference-loyality .reference-loyality__guarantee p",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 79,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1222,
+      "end": 1224,
+      "selector": ".reference-loyality .reference-loyality__plans",
+      "absent": [
+        "reference-loyality__plans"
+      ],
+      "sourceBytes": 84,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1226,
+      "end": 1228,
+      "selector": ".reference-loyality .reference-loyality__plan",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 70,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1230,
+      "end": 1232,
+      "selector": ".reference-loyality .reference-loyality__plan>strong",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 79,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1253,
+      "end": 1256,
+      "selector": ".reference-loyality .reference-loyality__pricing-box",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 97,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1258,
+      "end": 1260,
+      "selector": ".reference-loyality .reference-loyality__pricing-box h3",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 82,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1262,
+      "end": 1264,
+      "selector": ".reference-loyality .reference-loyality__pricing-box .reference-loyality__btn",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 105,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 1295,
+      "end": 1297,
+      "selector": ".reference-loyality .reference-loyality__steps",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 84,
+      "context": "@media (max-width:350px)"
+    },
+    {
+      "start": 1299,
+      "end": 1302,
+      "selector": ".reference-loyality .reference-loyality__highlight",
+      "absent": [
+        "reference-loyality__highlight"
+      ],
+      "sourceBytes": 95,
+      "context": "@media (max-width:350px)"
+    },
+    {
+      "start": 1304,
+      "end": 1306,
+      "selector": ".reference-loyality .reference-loyality__stat strong",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 79,
+      "context": "@media (max-width:350px)"
+    },
+    {
+      "start": 1308,
+      "end": 1310,
+      "selector": ".reference-loyality .reference-loyality__stat span",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 78,
+      "context": "@media (max-width:350px)"
+    },
+    {
+      "start": 1451,
+      "end": 1455,
+      "selector": ".reference-loyality .reference-loyality__hero-note",
+      "absent": [
+        "reference-loyality__hero-note"
+      ],
+      "sourceBytes": 120,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1457,
+      "end": 1459,
+      "selector": ".reference-loyality .reference-loyality__hero-note",
+      "absent": [
+        "reference-loyality__hero-note"
+      ],
+      "sourceBytes": 78,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1500,
+      "end": 1508,
+      "selector": ".reference-loyality .reference-loyality__highlight",
+      "absent": [
+        "reference-loyality__highlight"
+      ],
+      "sourceBytes": 211,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1510,
+      "end": 1517,
+      "selector": ".reference-loyality .reference-loyality__stat",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 190,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1519,
+      "end": 1521,
+      "selector": ".reference-loyality .reference-loyality__stat:last-child",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 83,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1523,
+      "end": 1526,
+      "selector": ".reference-loyality .reference-loyality__stat strong",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 100,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1528,
+      "end": 1533,
+      "selector": ".reference-loyality .reference-loyality__stat span",
+      "absent": [
+        "reference-loyality__stat"
+      ],
+      "sourceBytes": 135,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1535,
+      "end": 1538,
+      "selector": ".reference-loyality .reference-loyality__ledger-head",
+      "absent": [
+        "reference-loyality__ledger-head"
+      ],
+      "sourceBytes": 101,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1540,
+      "end": 1543,
+      "selector": ".reference-loyality .reference-loyality__ledger-desc",
+      "absent": [
+        "reference-loyality__ledger-desc"
+      ],
+      "sourceBytes": 101,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1545,
+      "end": 1547,
+      "selector": ".reference-loyality .reference-loyality__ledger-id, .reference-loyality .reference-loyality__ledger-type, .reference-loyality .reference-loyality__ledger-row strong",
+      "absent": [
+        "reference-loyality__ledger-id",
+        "reference-loyality__ledger-type",
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 191,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1549,
+      "end": 1552,
+      "selector": ".reference-loyality .reference-loyality__ledger-foot",
+      "absent": [
+        "reference-loyality__ledger-foot"
+      ],
+      "sourceBytes": 101,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1569,
+      "end": 1572,
+      "selector": ".reference-loyality .reference-loyality__flex-note",
+      "absent": [
+        "reference-loyality__flex-note"
+      ],
+      "sourceBytes": 99,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1578,
+      "end": 1581,
+      "selector": ".reference-loyality .reference-loyality__steps",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 99,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1583,
+      "end": 1587,
+      "selector": ".reference-loyality .reference-loyality__steps article",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 140,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1589,
+      "end": 1591,
+      "selector": ".reference-loyality .reference-loyality__steps article>span",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 86,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1593,
+      "end": 1596,
+      "selector": ".reference-loyality .reference-loyality__steps h3",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 100,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1598,
+      "end": 1601,
+      "selector": ".reference-loyality .reference-loyality__steps p",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 97,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1603,
+      "end": 1606,
+      "selector": ".reference-loyality .reference-loyality__plan li",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 97,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1608,
+      "end": 1611,
+      "selector": ".reference-loyality .reference-loyality__plan>small, .reference-loyality .reference-loyality__example-flag",
+      "absent": [
+        "reference-loyality__plan",
+        "reference-loyality__example-flag"
+      ],
+      "sourceBytes": 156,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1613,
+      "end": 1615,
+      "selector": ".reference-loyality .reference-loyality__guarantee-cards span",
+      "absent": [
+        "reference-loyality__guarantee-cards"
+      ],
+      "sourceBytes": 88,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1617,
+      "end": 1619,
+      "selector": ".reference-loyality .reference-loyality__stamp",
+      "absent": [
+        "reference-loyality__stamp"
+      ],
+      "sourceBytes": 73,
+      "context": "@media (max-width: 760px)"
+    },
+    {
+      "start": 1699,
+      "end": 1702,
+      "selector": ".reference-loyality .reference-loyality__steps",
+      "absent": [
+        "reference-loyality__steps"
+      ],
+      "sourceBytes": 103,
+      "context": "@media (min-width: 761px) and (max-width: 960px)"
+    },
+    {
+      "start": 1704,
+      "end": 1707,
+      "selector": ".reference-loyality .reference-loyality__guarantee",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 103,
+      "context": "@media (min-width: 761px) and (max-width: 960px)"
+    },
+    {
+      "start": 1709,
+      "end": 1711,
+      "selector": ".reference-loyality .reference-loyality__pricing-box",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 78,
+      "context": "@media (min-width: 761px) and (max-width: 960px)"
+    },
+    {
+      "start": 1713,
+      "end": 1715,
+      "selector": ".reference-loyality .reference-loyality__pricing-box .reference-loyality__btn",
+      "absent": [
+        "reference-loyality__pricing-box"
+      ],
+      "sourceBytes": 105,
+      "context": "@media (min-width: 761px) and (max-width: 960px)"
+    },
+    {
+      "start": 1758,
+      "end": 1760,
+      "selector": ".reference-loyality .reference-loyality__hero-note",
+      "absent": [
+        "reference-loyality__hero-note"
+      ],
+      "sourceBytes": 73,
+      "context": "root"
+    },
+    {
+      "start": 1876,
+      "end": 1879,
+      "selector": ".reference-loyality .reference-loyality__ledger-head",
+      "absent": [
+        "reference-loyality__ledger-head"
+      ],
+      "sourceBytes": 102,
+      "context": "root"
+    },
+    {
+      "start": 1881,
+      "end": 1883,
+      "selector": ".reference-loyality .reference-loyality__ledger-row",
+      "absent": [
+        "reference-loyality__ledger-row"
+      ],
+      "sourceBytes": 78,
+      "context": "root"
+    },
+    {
+      "start": 1895,
+      "end": 1900,
+      "selector": ".reference-loyality #features .final-feature-layout",
+      "absent": [
+        "final-feature-layout"
+      ],
+      "sourceBytes": 146,
+      "context": "root"
+    },
+    {
+      "start": 1902,
+      "end": 1908,
+      "selector": ".reference-loyality #features .final-feature-media",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 135,
+      "context": "root"
+    },
+    {
+      "start": 1910,
+      "end": 1915,
+      "selector": ".reference-loyality #features .final-feature-media img",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 147,
+      "context": "root"
+    },
+    {
+      "start": 1917,
+      "end": 1921,
+      "selector": ".reference-loyality #features .final-feature-media figcaption",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 129,
+      "context": "root"
+    },
+    {
+      "start": 1923,
+      "end": 1926,
+      "selector": ".reference-loyality #features .final-feature-media figcaption span",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 107,
+      "context": "root"
+    },
+    {
+      "start": 1928,
+      "end": 1933,
+      "selector": ".reference-loyality #features .final-feature-media figcaption p",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 144,
+      "context": "root"
+    },
+    {
+      "start": 1935,
+      "end": 1938,
+      "selector": ".reference-loyality .reference-loyality__features article",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 102,
+      "context": "root"
+    },
+    {
+      "start": 1940,
+      "end": 1945,
+      "selector": ".reference-loyality .reference-loyality__features article>span",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 146,
+      "context": "root"
+    },
+    {
+      "start": 1947,
+      "end": 1952,
+      "selector": ".reference-loyality .reference-loyality__features h3",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 142,
+      "context": "root"
+    },
+    {
+      "start": 1954,
+      "end": 1957,
+      "selector": ".reference-loyality .reference-loyality__features p",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 94,
+      "context": "root"
+    },
+    {
+      "start": 1959,
+      "end": 1963,
+      "selector": ".reference-loyality .reference-loyality__guarantee",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 107,
+      "context": "root"
+    },
+    {
+      "start": 1965,
+      "end": 1967,
+      "selector": ".reference-loyality .reference-loyality__guarantee h2",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 76,
+      "context": "root"
+    },
+    {
+      "start": 1969,
+      "end": 1972,
+      "selector": ".reference-loyality .reference-loyality__plans",
+      "absent": [
+        "reference-loyality__plans"
+      ],
+      "sourceBytes": 82,
+      "context": "root"
+    },
+    {
+      "start": 1974,
+      "end": 1976,
+      "selector": ".reference-loyality .reference-loyality__plan",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 66,
+      "context": "root"
+    },
+    {
+      "start": 1991,
+      "end": 1994,
+      "selector": ".reference-loyality #features .final-feature-layout",
+      "absent": [
+        "final-feature-layout"
+      ],
+      "sourceBytes": 111,
+      "context": "@media (min-width:961px) and (max-width:1100px)"
+    },
+    {
+      "start": 2000,
+      "end": 2002,
+      "selector": ".reference-loyality #features .final-feature-media img",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 79,
+      "context": "@media (min-width:961px) and (max-width:1100px)"
+    },
+    {
+      "start": 2010,
+      "end": 2013,
+      "selector": ".reference-loyality #features .final-feature-layout",
+      "absent": [
+        "final-feature-layout"
+      ],
+      "sourceBytes": 104,
+      "context": "@media (max-width:960px)"
+    },
+    {
+      "start": 2015,
+      "end": 2017,
+      "selector": ".reference-loyality #features .final-feature-media",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 78,
+      "context": "@media (max-width:960px)"
+    },
+    {
+      "start": 2019,
+      "end": 2022,
+      "selector": ".reference-loyality #features .final-feature-media img",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 109,
+      "context": "@media (max-width:960px)"
+    },
+    {
+      "start": 2111,
+      "end": 2113,
+      "selector": ".reference-loyality .reference-loyality__hero-note",
+      "absent": [
+        "reference-loyality__hero-note"
+      ],
+      "sourceBytes": 77,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2139,
+      "end": 2141,
+      "selector": ".reference-loyality .reference-loyality__ledger-head",
+      "absent": [
+        "reference-loyality__ledger-head"
+      ],
+      "sourceBytes": 83,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2152,
+      "end": 2155,
+      "selector": ".reference-loyality #features .final-feature-media",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 88,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2157,
+      "end": 2161,
+      "selector": ".reference-loyality #features .final-feature-media img",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 134,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2163,
+      "end": 2165,
+      "selector": ".reference-loyality #features .final-feature-media figcaption",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 90,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2167,
+      "end": 2169,
+      "selector": ".reference-loyality #features .final-feature-media figcaption span",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 93,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2171,
+      "end": 2173,
+      "selector": ".reference-loyality #features .final-feature-media figcaption p",
+      "absent": [
+        "final-feature-media"
+      ],
+      "sourceBytes": 90,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2175,
+      "end": 2177,
+      "selector": ".reference-loyality .reference-loyality__features article",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 88,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2179,
+      "end": 2181,
+      "selector": ".reference-loyality .reference-loyality__features article>span",
+      "absent": [
+        "reference-loyality__features"
+      ],
+      "sourceBytes": 89,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2183,
+      "end": 2186,
+      "selector": ".reference-loyality .reference-loyality__guarantee",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 90,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2188,
+      "end": 2190,
+      "selector": ".reference-loyality .reference-loyality__guarantee h2",
+      "absent": [
+        "reference-loyality__guarantee"
+      ],
+      "sourceBytes": 80,
+      "context": "@media (max-width:760px)"
+    },
+    {
+      "start": 2192,
+      "end": 2194,
+      "selector": ".reference-loyality .reference-loyality__plan",
+      "absent": [
+        "reference-loyality__plan"
+      ],
+      "sourceBytes": 70,
+      "context": "@media (max-width:760px)"
+    }
+  ],
+  "estimates": {
+    "lightningcss": {
+      "before": 43505,
+      "after": 28965,
+      "saved": 14540
+    },
+    "esbuild": {
+      "before": 43817,
+      "after": 29212,
+      "saved": 14605
+    }
+  }
+}

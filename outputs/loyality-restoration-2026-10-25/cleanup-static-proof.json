@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "inputSha256": "191697e56fc4dc5041b9162aa7926c44e6cafd5ceaf916d9b44b36486d0d150f",
+  "candidateSha256": "7e218b17150bccec31fc29ee07aace49350960f176000ae536a70e0232992889",
+  "survivingRules": 299,
+  "removedRules": 148,
+  "proof": "Every surviving rule retains identical selector, declarations, order and at-rule context"
+}
