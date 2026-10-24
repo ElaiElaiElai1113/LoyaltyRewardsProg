@@ -130,54 +130,54 @@ test.describe('public acquisition workflow', () => {
     await page.goto('/')
 
     await expect(page).toHaveTitle('RewardMe')
-    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: "Three steps. That's the whole system." })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Discover the offers available to you.' })).toBeVisible()
-    await expect(page.locator('.reference-rewardme__fine')).toHaveText('Create an account with your name, email, phone and password. Membership is free.')
-    await expect(page.locator('.reference-rewardme__balance')).toContainText('Available to redeem')
-    await expect(page.locator('.reference-rewardme__passbook-title')).toContainText('NO. 00482')
-    await expect(page.locator('.reference-rewardme__stamp')).toHaveText('Illustrative account preview')
-    await expect(page.locator('.reference-rewardme__entry')).toHaveCount(4)
-    await expect(page.locator('.reference-rewardme__entry').nth(0)).toHaveText('Example purchase recordedRecorded')
-    await expect(page.locator('.reference-rewardme__entry').nth(1)).toHaveText('Example reward earnedRecorded')
-    await expect(page.locator('.reference-rewardme__entry').nth(2)).toHaveText('Example voucher selectedRecorded')
-    await expect(page.locator('.reference-rewardme__entry').nth(3)).toHaveText('Savings unavailablePlanned')
-    await expect(page.locator('.reference-rewardme__balance strong')).toHaveText('—')
-    await expect(page.getByRole('link', { name: 'Join free', exact: true }).first()).toHaveAttribute('href', '/join')
+    await expect(page.getByRole('heading', { level: 1, name: 'Get rewarded for spending where you already love.', exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Three steps. Zero cost.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Built to feel like a win, every visit.' })).toBeVisible()
+    await expect(page.locator('.reference-rewardme__hero .reference-rewardme__lead')).toHaveText('Earn real rewards every time you visit your favorite local cafés, boutiques, and studios. No cost to join, no catch — just points that turn into things you actually want.')
+    await expect(page.locator('.restored-rewardme__balance')).toContainText('YOUR BALANCE')
+    await expect(page.locator('.restored-rewardme__account h2')).toHaveText('Maria')
+    await expect(page.locator('.restored-rewardme__time')).toHaveText('9:41')
+    await expect(page.locator('.restored-rewardme__streak')).toContainText('4-week streak')
+    await expect(page.locator('.restored-rewardme__rewards li')).toHaveCount(3)
+    await expect(page.locator('.restored-rewardme__rewards li').nth(0)).toContainText('150 pts — Free coffee')
+    await expect(page.locator('.restored-rewardme__rewards li').nth(1)).toContainText('300 pts — 15% off')
+    await expect(page.locator('.restored-rewardme__rewards li').nth(2)).toContainText('500 pts — Free appetizer')
+    await expect(page.locator('.restored-rewardme__balance strong')).toHaveText('2,340 PTS')
+    await expect(page.getByText('Worth ~$23.40 in rewards', { exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'Join Free', exact: true }).first()).toHaveAttribute('href', '/join')
     await expect(page.getByRole('link', { name: 'See how it works' })).toHaveAttribute('href', '#how')
     const header = page.getByLabel('RewardMe navigation')
-    await expect(header.getByRole('link', { name: 'How it works' })).toHaveAttribute('href', '#how')
-    await expect(header.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '#business')
-    await expect(header.getByRole('link', { name: 'The store' })).toHaveAttribute('href', '#store')
+    await expect(header.getByRole('link', { name: 'How It Works' })).toHaveAttribute('href', '#how')
+    await expect(header.getByRole('link', { name: 'For Business', exact: true })).toHaveAttribute('href', '/business')
+    await expect(header.getByRole('link', { name: 'Rewards', exact: true })).toHaveAttribute('href', '#rewards')
     await expect(header.getByRole('link', { name: 'Sign in' })).toHaveAttribute('href', '/signin')
     await expect(page.locator('body')).not.toContainText('Pinas Rewards')
   })
 
   test('legacy landing URL resolves to the RewardMe homepage', async ({ page }) => {
     await page.goto('/landing-page')
-    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
   })
 
   test('homepage uses the approved editorial typography and clean media', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' }))
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' }))
       .toHaveCSS('font-family', /Fraunces/)
-    await expect(page.getByText('Earn eligible rewards with participating local businesses and explore the available catalog.', { exact: true }))
+    await expect(page.locator('.reference-rewardme__hero .reference-rewardme__lead'))
       .toHaveCSS('font-family', /IBM Plex Sans/)
-    await expect(page.locator('.reference-rewardme img')).toHaveCount(9)
+    await expect(page.locator('.reference-rewardme img')).toHaveCount(6)
     await expect(page.locator('.reference-rewardme__passbook')).toBeVisible()
-    await expect(page.locator('.reference-rewardme__logo').first()).toContainText('RewardMe')
-    await expect(page.locator('.reference-rewardme__balance strong')).toHaveText('—')
+    await expect(page.locator('.reference-rewardme__logo').first()).toContainText('REWARDME')
+    await expect(page.locator('.restored-rewardme__balance strong')).toHaveText('2,340 PTS')
 
     const editorialPhotos = page.locator([
       '.reference-rewardme__wide-photo img',
-      '.reference-rewardme__hero-list img',
       '.reference-rewardme__photo-grid img',
       '.reference-rewardme__business-card img',
     ].join(','))
-    await expect(editorialPhotos).toHaveCount(8)
-    for (let index = 0; index < 8; index += 1) {
+    await expect(editorialPhotos).toHaveCount(5)
+    for (let index = 0; index < 5; index += 1) {
       const photo = editorialPhotos.nth(index)
       await photo.scrollIntoViewIfNeeded()
       await expect(photo).toHaveCSS('object-fit', 'cover')
@@ -191,14 +191,14 @@ test.describe('public acquisition workflow', () => {
     await page.setViewportSize({ width: 320, height: 740 })
     await page.goto('/')
 
-    await expect(page.getByRole('heading', { name: 'Earn amazing rewards while supporting local businesses.' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Get rewarded for spending where you already love.' })).toBeVisible()
     const menuToggle = page.locator('.reference-rewardme__menu-toggle')
     await expect(menuToggle).toBeVisible()
     await menuToggle.click()
     const mobileNavigation = page.locator('#rewardme-mobile-navigation')
-    await expect(mobileNavigation.getByRole('link', { name: 'Join free', exact: true })).toBeVisible()
+    await expect(mobileNavigation.getByRole('link', { name: 'Join Free', exact: true })).toBeVisible()
     await expect(page.getByRole('link', { name: 'See how it works' })).toBeVisible()
-    await expect(mobileNavigation.getByRole('link', { name: 'For businesses' })).toHaveAttribute('href', '#business')
+    await expect(mobileNavigation.getByRole('link', { name: 'For Business', exact: true })).toHaveAttribute('href', '/business')
     const dimensions = await page.evaluate(() => ({
       clientWidth: document.documentElement.clientWidth,
       scrollWidth: document.documentElement.scrollWidth,

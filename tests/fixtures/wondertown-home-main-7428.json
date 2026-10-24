@@ -1,0 +1,399 @@
+{
+  "source": "7428dcfc4f50f31a222908be8648eab2f59b4de7",
+  "snapshots": {
+    "en": {
+      "text": "Wondertown Rewards How it works The store Savings plan For businesses Test guide Sign in Join free How it works The store Savings plan For businesses Test guide Sign in Join free RewardMe test environment · fictional data Earn amazing rewards while supporting local businesses. Join free See how it works Wondertown mirrors the RewardMe experience with fictional businesses and safe test data. No real payment card is collected. Join local businesses and discover eligible rewards in rewards. Earn eligible rewards with participating local businesses and explore the available catalog. Your rewards can be used for so many things: Treat yourself to a night out on the town Explore participating partners Check each offer before spending Sandbox account My Wondertown Rewards Account NO. 00482 Example purchase recorded Recorded Example reward earned Recorded Example voucher selected Recorded Savings unavailable Planned Available to redeem — How it works Three steps. That's the whole system. No app gymnastics, no fine print you need a lawyer for. Just join, spend like you normally would, and watch your account fill up. 01 Join free Create your account in your browser. No membership payment is required. 02 Earn as you spend Check the offer at each participating business before you spend. Eligible purchases earn the published rewards. 03 Choose a reward Use your available points for eligible rewards in the catalog. Availability and partner conditions apply. The store Your rewards are real credit — spendable in one place, made for you. Think of it like store credit, not cash you can spend anywhere: you earn it, then redeem it somewhere it's actually good for something — food, drink, stays, and bigger-ticket items too. Browse any time The open store is always there — see what's available and shop it yourself, whenever you like. Ask a concierge Our virtual assistants can find things you won't see browsing on your own — a members-only selection, found for you. The store Reward rates Discover the offers available to you. Reward rates vary by business — here's roughly what to expect. Participating businesses Offers Each business publishes its own eligible reward offer. Available rewards Catalog Review the points required and availability before redeeming. Your activity History See recorded purchases and reward activity in your account. Savings plan Planned — not available Savings is not open for deposits, locking funds or payouts. Its terms and operation remain under review. Membership Free membership for everyone. Everyone starts free. Regular and Gold are planned additional tiers with no paid activation available yet. Free Available now Free Free membership for everyone. Earn and redeem eligible rewards. Regular Additional tier Planned Benefits and pricing await approval. Register interest without payment. Gold Additional tier Planned Benefits and pricing await approval. Register interest without payment. Explore membership Own a restaurant, hotel, or shop? Join the RewardMe network, put your slow hours to work, and bring in customers who are already looking for a reason to choose you. See how businesses join → Wondertown Rewards Production-equivalent RewardMe flows with fictional test data. How it works Membership Businesses Test guide Terms Privacy Contact",
+      "links": [
+        {
+          "href": "#top",
+          "label": "Wondertown Rewards",
+          "ariaLabel": "Wondertown Rewards homepage"
+        },
+        {
+          "href": "#how",
+          "label": "How it works",
+          "ariaLabel": null
+        },
+        {
+          "href": "#store",
+          "label": "The store",
+          "ariaLabel": null
+        },
+        {
+          "href": "#savings",
+          "label": "Savings plan",
+          "ariaLabel": null
+        },
+        {
+          "href": "#business",
+          "label": "For businesses",
+          "ariaLabel": null
+        },
+        {
+          "href": "/guide",
+          "label": "Test guide",
+          "ariaLabel": null
+        },
+        {
+          "href": "/signin",
+          "label": "Sign in",
+          "ariaLabel": null
+        },
+        {
+          "href": "/join",
+          "label": "Join free",
+          "ariaLabel": null
+        },
+        {
+          "href": "#how",
+          "label": "How it works",
+          "ariaLabel": null
+        },
+        {
+          "href": "#store",
+          "label": "The store",
+          "ariaLabel": null
+        },
+        {
+          "href": "#savings",
+          "label": "Savings plan",
+          "ariaLabel": null
+        },
+        {
+          "href": "#business",
+          "label": "For businesses",
+          "ariaLabel": null
+        },
+        {
+          "href": "/guide",
+          "label": "Test guide",
+          "ariaLabel": null
+        },
+        {
+          "href": "/signin",
+          "label": "Sign in",
+          "ariaLabel": null
+        },
+        {
+          "href": "/join",
+          "label": "Join free",
+          "ariaLabel": null
+        },
+        {
+          "href": "/join",
+          "label": "Join free",
+          "ariaLabel": null
+        },
+        {
+          "href": "#how",
+          "label": "See how it works",
+          "ariaLabel": null
+        },
+        {
+          "href": "/shop",
+          "label": "The store",
+          "ariaLabel": null
+        },
+        {
+          "href": "/membership",
+          "label": "Explore membership",
+          "ariaLabel": null
+        },
+        {
+          "href": "/business",
+          "label": "See how businesses join →",
+          "ariaLabel": null
+        },
+        {
+          "href": "#top",
+          "label": "Wondertown Rewards",
+          "ariaLabel": null
+        },
+        {
+          "href": "#how",
+          "label": "How it works",
+          "ariaLabel": null
+        },
+        {
+          "href": "#membership",
+          "label": "Membership",
+          "ariaLabel": null
+        },
+        {
+          "href": "/business",
+          "label": "Businesses",
+          "ariaLabel": null
+        },
+        {
+          "href": "/guide",
+          "label": "Test guide",
+          "ariaLabel": null
+        },
+        {
+          "href": "/terms",
+          "label": "Terms",
+          "ariaLabel": null
+        },
+        {
+          "href": "/privacy",
+          "label": "Privacy",
+          "ariaLabel": null
+        },
+        {
+          "href": "mailto:support@wondertown.test",
+          "label": "Contact",
+          "ariaLabel": null
+        }
+      ],
+      "images": [
+        {
+          "src": "/wondertown-rewards-logo.svg",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/landing/coffee-member-wide.webp",
+          "alt": "Member using a phone while paying at a local café",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/landing/dinner-rewards.webp",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/business/hotel-partner.webp",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/landing/salon-rewards.webp",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/landing/dinner-rewards.webp",
+          "alt": "Dinner reward from a participating restaurant",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/business/hotel-partner.webp",
+          "alt": "Hotel reward from a participating property",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/landing/salon-rewards.webp",
+          "alt": "Salon reward from a participating business",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/business/local-business-owner-wide.webp",
+          "alt": "Local business owner ready to welcome rewards members",
+          "decorative": null
+        },
+        {
+          "src": "/wondertown-rewards-logo.svg",
+          "alt": "",
+          "decorative": "true"
+        }
+      ]
+    },
+    "es": {
+      "text": "Wondertown Rewards Cómo funciona La tienda Plan de ahorro Para negocios Guía de prueba Iniciar sesión Únete gratis Cómo funciona La tienda Plan de ahorro Para negocios Guía de prueba Iniciar sesión Únete gratis Entorno de prueba de RewardMe · datos ficticios Obtén recompensas increíbles mientras apoyas a los negocios locales. Únete gratis Ver cómo funciona Wondertown reproduce la experiencia de RewardMe con negocios ficticios y datos de prueba seguros. No se recopila ninguna tarjeta de pago real. Apoya a negocios locales y descubre recompensas elegibles en recompensas. Gana recompensas elegibles en negocios locales participantes y explora el catálogo disponible. Puedes usar tus recompensas para muchas cosas: Date el gusto de una noche en la ciudad Explorar negocios participantes Consulta cada oferta antes de gastar Cuenta de prueba Mi cuenta de Wondertown Rewards NO. 00482 Compra de ejemplo registrada Recorded Recompensa de ejemplo obtenida Recorded Vale de ejemplo seleccionado Recorded Ahorro no disponible Previsto Disponible para canjear — Cómo funciona Tres pasos. Ese es todo el sistema. Sin complicaciones en la aplicación ni letra pequeña que requiera un abogado. Solo únete, gasta como siempre y mira cómo crece tu cuenta. 01 Únete gratis Crea tu cuenta en el navegador. No se requiere pagar una membresía. 02 Obtén recompensas al gastar Consulta la oferta de cada negocio participante antes de gastar. Las compras elegibles generan las recompensas publicadas. 03 Choose a reward Usa tus puntos disponibles para recompensas elegibles del catálogo. Se aplican condiciones y disponibilidad. La tienda Tus recompensas son crédito real: se gastan en un solo lugar y están hechas para ti. Piénsalo como crédito de tienda, no como efectivo que puedes gastar en cualquier lugar: lo obtienes y luego lo canjeas donde realmente sirve para algo —comida, bebida, estadías y también artículos de mayor valor—. Explora cuando quieras La tienda abierta siempre está disponible: mira qué hay y compra por tu cuenta cuando quieras. Pide ayuda a un asistente Nuestros asistentes virtuales pueden encontrar cosas que no verás al explorar por tu cuenta: una selección exclusiva para miembros, encontrada para ti. La tienda Tasas de recompensa Descubre las ofertas disponibles para ti. Las tasas de recompensa varían según el negocio; esto es aproximadamente lo que puedes esperar. Participating businesses Offers Cada negocio publica su propia oferta de recompensas. Recompensas disponibles Catálogo Consulta los puntos necesarios y la disponibilidad antes de canjear. Your activity Historial Consulta las compras registradas y la actividad de recompensas en tu cuenta. Plan de ahorro Previsto — no disponible El ahorro no admite depósitos, bloqueo de fondos ni pagos. Sus condiciones y operación siguen en revisión. Membresia Membresía gratuita para todos. Todos empiezan gratis. Regular y Gold son niveles adicionales previstos que aún no se pueden activar. Gratis Disponible ahora Gratis Membresía gratuita para todos. Gana y canjea recompensas elegibles. Regular Nivel adicional Previsto Beneficios y precios pendientes de aprobación. Registra tu interés sin pagar. Gold Nivel adicional Previsto Beneficios y precios pendientes de aprobación. Registra tu interés sin pagar. Explorar membresía ¿Tienes un restaurante, hotel o tienda? Únete a la red RewardMe, aprovecha tus horas de menor actividad y atrae a clientes que ya buscan una razón para elegirte. Descubre cómo se unen los negocios → Wondertown Rewards Flujos equivalentes a producción de RewardMe con datos de prueba ficticios. Cómo funciona Membresia Negocios Guía de prueba Terminos Privacidad Contacto",
+      "links": [
+        {
+          "href": "#top",
+          "label": "Wondertown Rewards",
+          "ariaLabel": "Página de inicio de Wondertown Rewards"
+        },
+        {
+          "href": "#how",
+          "label": "Cómo funciona",
+          "ariaLabel": null
+        },
+        {
+          "href": "#store",
+          "label": "La tienda",
+          "ariaLabel": null
+        },
+        {
+          "href": "#savings",
+          "label": "Plan de ahorro",
+          "ariaLabel": null
+        },
+        {
+          "href": "#business",
+          "label": "Para negocios",
+          "ariaLabel": null
+        },
+        {
+          "href": "/guide",
+          "label": "Guía de prueba",
+          "ariaLabel": null
+        },
+        {
+          "href": "/signin",
+          "label": "Iniciar sesión",
+          "ariaLabel": null
+        },
+        {
+          "href": "/join",
+          "label": "Únete gratis",
+          "ariaLabel": null
+        },
+        {
+          "href": "#how",
+          "label": "Cómo funciona",
+          "ariaLabel": null
+        },
+        {
+          "href": "#store",
+          "label": "La tienda",
+          "ariaLabel": null
+        },
+        {
+          "href": "#savings",
+          "label": "Plan de ahorro",
+          "ariaLabel": null
+        },
+        {
+          "href": "#business",
+          "label": "Para negocios",
+          "ariaLabel": null
+        },
+        {
+          "href": "/guide",
+          "label": "Guía de prueba",
+          "ariaLabel": null
+        },
+        {
+          "href": "/signin",
+          "label": "Iniciar sesión",
+          "ariaLabel": null
+        },
+        {
+          "href": "/join",
+          "label": "Únete gratis",
+          "ariaLabel": null
+        },
+        {
+          "href": "/join",
+          "label": "Únete gratis",
+          "ariaLabel": null
+        },
+        {
+          "href": "#how",
+          "label": "Ver cómo funciona",
+          "ariaLabel": null
+        },
+        {
+          "href": "/shop",
+          "label": "La tienda",
+          "ariaLabel": null
+        },
+        {
+          "href": "/membership",
+          "label": "Explorar membresía",
+          "ariaLabel": null
+        },
+        {
+          "href": "/business",
+          "label": "Descubre cómo se unen los negocios →",
+          "ariaLabel": null
+        },
+        {
+          "href": "#top",
+          "label": "Wondertown Rewards",
+          "ariaLabel": null
+        },
+        {
+          "href": "#how",
+          "label": "Cómo funciona",
+          "ariaLabel": null
+        },
+        {
+          "href": "#membership",
+          "label": "Membresia",
+          "ariaLabel": null
+        },
+        {
+          "href": "/business",
+          "label": "Negocios",
+          "ariaLabel": null
+        },
+        {
+          "href": "/guide",
+          "label": "Guía de prueba",
+          "ariaLabel": null
+        },
+        {
+          "href": "/terms",
+          "label": "Terminos",
+          "ariaLabel": null
+        },
+        {
+          "href": "/privacy",
+          "label": "Privacidad",
+          "ariaLabel": null
+        },
+        {
+          "href": "mailto:support@wondertown.test",
+          "label": "Contacto",
+          "ariaLabel": null
+        }
+      ],
+      "images": [
+        {
+          "src": "/wondertown-rewards-logo.svg",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/landing/coffee-member-wide.webp",
+          "alt": "Miembro usando un teléfono mientras paga en una cafetería local",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/landing/dinner-rewards.webp",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/business/hotel-partner.webp",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/landing/salon-rewards.webp",
+          "alt": "",
+          "decorative": "true"
+        },
+        {
+          "src": "/src/assets/landing/dinner-rewards.webp",
+          "alt": "Recompensa de cena de un restaurante participante",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/business/hotel-partner.webp",
+          "alt": "Recompensa de hotel de un establecimiento participante",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/landing/salon-rewards.webp",
+          "alt": "Recompensa de salón de un negocio participante",
+          "decorative": null
+        },
+        {
+          "src": "/src/assets/business/local-business-owner-wide.webp",
+          "alt": "Propietario de un negocio local listo para recibir a miembros de recompensas",
+          "decorative": null
+        },
+        {
+          "src": "/wondertown-rewards-logo.svg",
+          "alt": "",
+          "decorative": "true"
+        }
+      ]
+    }
+  }
+}

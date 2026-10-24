@@ -4,14 +4,20 @@ import { Link, useLocation } from 'react-router'
 
 import { useTenant } from '@/hooks/use-tenant'
 import { useLanguage } from '@/lib/language'
+import { translateRewardMeReference } from '../pages/rewardme-reference-copy'
 
 import '../pages/rewardme-home.css'
 
-const navigation = [
+const legacyNavigation = [
   { id: 'how', label: 'How it works', business: false },
   { id: 'store', label: 'The store', business: false },
   { id: 'savings', label: 'Savings plan', business: false },
   { id: 'business', label: 'For businesses', business: true },
+] as const
+const restoredNavigation = [
+  { id: 'how', label: 'How It Works', business: false },
+  { id: 'business', label: 'For Business', business: true },
+  { id: 'rewards', label: 'Rewards', business: false },
 ] as const
 
 export function RewardMeLedgerMark() {
@@ -29,7 +35,7 @@ export function RewardMeLedgerMark() {
 
 export function RewardMePublicHeader() {
   const { program } = useTenant()
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const location = useLocation()
   const toggleRef = useRef<HTMLButtonElement>(null)
   const headerRef = useRef<HTMLElement>(null)
@@ -39,6 +45,9 @@ export function RewardMePublicHeader() {
   const locationKey = `${location.pathname}${location.hash}`
   const mobileMenuOpen = openAtLocation === locationKey
   const isHome = location.pathname === '/'
+  const isRestoredHome = isHome && program.slug === 'pinas'
+  const navigation = isRestoredHome ? restoredNavigation : legacyNavigation
+  const label = (text: string) => isRestoredHome ? translateRewardMeReference(text, language, t) : t(text)
   const isWondertown = program.slug === 'wondertown'
   const brand = program.name
 
@@ -59,7 +68,8 @@ export function RewardMePublicHeader() {
     // destinations after that effect, including links from other public pages.
     const frame = requestAnimationFrame(() => {
       const section = location.hash.slice(1)
-      if (location.pathname === '/' && navigation.some(item => item.id === section)) {
+      const knownSection = isRestoredHome ? ['how', 'rewards', 'business', 'join', 'store', 'savings', 'membership'].includes(section) : legacyNavigation.some(item => item.id === section)
+      if (location.pathname === '/' && knownSection) {
         document.getElementById(section)?.scrollIntoView({ behavior: 'auto' })
       }
       updateScroll()
@@ -69,7 +79,7 @@ export function RewardMePublicHeader() {
       window.removeEventListener('scroll', updateScroll)
       window.removeEventListener('resize', handleResize)
     }
-  }, [location.hash, location.pathname])
+  }, [location.hash, location.pathname, isRestoredHome])
 
   useEffect(() => {
     if (!mobileMenuOpen) return
@@ -100,31 +110,31 @@ export function RewardMePublicHeader() {
       <nav className="reference-rewardme__nav" aria-label={t('{brand} navigation', { brand })}>
         {isHome ? <a className="reference-rewardme__logo" href="#top" aria-label={t('{brand} homepage', { brand })} onClick={closeMobileMenu}>
           {isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <RewardMeLedgerMark />}
-          <span className="reference-rewardme__brand-name">{brand}</span>
+          <span className="reference-rewardme__brand-name">{isRestoredHome ? 'REWARDME' : brand}</span>
         </a> : <Link className="reference-rewardme__logo" to="/" aria-label={t('{brand} homepage', { brand })}>
           {isWondertown && program.logoUrl ? <img src={program.logoUrl} alt="" aria-hidden="true" /> : <RewardMeLedgerMark />}
           <span className="reference-rewardme__brand-name">{brand}</span>
         </Link>}
         <div className="reference-rewardme__nav-links">
-          {navigation.map((item) => isHome ? (
+          {navigation.map((item) => isHome && !(isRestoredHome && item.business) ? (
             <a
               key={item.id}
               className={item.business ? 'reference-rewardme__business-link' : undefined}
               href={`#${item.id}`}
               aria-current={activeSection === item.id ? 'location' : undefined}
             >
-              {t(item.label)}
+              {label(item.label)}
             </a>
           ) : (
-            <Link key={item.id} className={item.business ? 'reference-rewardme__business-link' : undefined} to={targetFor(item.id)}>
-              {t(item.label)}
+            <Link key={item.id} className={item.business ? 'reference-rewardme__business-link' : undefined} to={isRestoredHome ? '/business' : targetFor(item.id)}>
+              {label(item.label)}
             </Link>
           ))}
           {isWondertown ? <Link to="/guide">{t('Test guide')}</Link> : null}
         </div>
         <div className="reference-rewardme__nav-actions">
           <Link className="reference-rewardme__text-link" to="/signin">{t('Sign in')}</Link>
-          <Link className="reference-rewardme__button" to="/join">{t('Join free')}</Link>
+          <Link className="reference-rewardme__button" to="/join">{label(isRestoredHome ? 'Join Free' : 'Join free')}</Link>
         </div>
         <button
           ref={toggleRef}
@@ -144,7 +154,7 @@ export function RewardMePublicHeader() {
         aria-label={t('{brand} mobile navigation', { brand })}
         hidden={!mobileMenuOpen}
       >
-        {navigation.map((item) => isHome ? (
+        {navigation.map((item) => isHome && !(isRestoredHome && item.business) ? (
           <a
             key={item.id}
             className={item.business ? 'reference-rewardme__business-link' : undefined}
@@ -152,17 +162,17 @@ export function RewardMePublicHeader() {
             aria-current={activeSection === item.id ? 'location' : undefined}
             onClick={closeMobileMenu}
           >
-            {t(item.label)}
+            {label(item.label)}
           </a>
         ) : (
-          <Link key={item.id} className={item.business ? 'reference-rewardme__business-link' : undefined} to={targetFor(item.id)} onClick={closeMobileMenu}>
-            {t(item.label)}
+          <Link key={item.id} className={item.business ? 'reference-rewardme__business-link' : undefined} to={isRestoredHome ? '/business' : targetFor(item.id)} onClick={closeMobileMenu}>
+            {label(item.label)}
           </Link>
         ))}
         {isWondertown ? <Link to="/guide" onClick={closeMobileMenu}>{t('Test guide')}</Link> : null}
         <div className="reference-rewardme__mobile-actions">
           <Link className="reference-rewardme__button reference-rewardme__button--outline" to="/signin" onClick={closeMobileMenu}>{t('Sign in')}</Link>
-          <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{t('Join free')}</Link>
+          <Link className="reference-rewardme__button" to="/join" onClick={closeMobileMenu}>{label(isRestoredHome ? 'Join Free' : 'Join free')}</Link>
         </div>
       </nav>
     </header>

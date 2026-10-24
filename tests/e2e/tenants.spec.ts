@@ -8,7 +8,7 @@ const tenants = [
     slug: 'pinas',
     name: 'RewardMe',
     color: '#b8862e',
-    heading: 'Earn amazing rewards while supporting local businesses.',
+    heading: 'Get rewarded for spending where you already love.',
   },
   {
     slug: 'pinasrewards',
@@ -64,7 +64,7 @@ test.describe('white-label tenant resolution', () => {
         await expect(page.locator('.reference-rewardme')).toHaveAttribute('data-wondertown-rewardme-mirror', 'true')
         await expect(page.locator('.reference-rewardme__stamp')).toHaveText('Sandbox account')
       } else if (tenant.slug === 'pinas') {
-        await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('RewardMe')
+        await expect(page.locator('.reference-rewardme__logo').first()).toHaveText('REWARDME')
       } else {
         await expect(page.locator('.figma-home__brand').first()).toContainText(tenant.name.toUpperCase())
       }
