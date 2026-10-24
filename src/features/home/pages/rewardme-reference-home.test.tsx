@@ -2,9 +2,9 @@ import { readFileSync } from 'node:fs'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { MemoryRouter } from 'react-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import reference from '../../../../tests/fixtures/rewardme-reference-copy.json'
-import baseline from '../../../../tests/fixtures/wondertown-home-main-7428.json'
-import { homeMarkupSnapshot, visibleWords } from '../../../../tests/fixtures/home-markup'
+import reference from './__fixtures__/rewardme-reference-copy.json'
+import baseline from './__fixtures__/wondertown-home-main-7428.json'
+import { homeMarkupSnapshot, visibleWords } from './__fixtures__/home-markup'
 import { RewardMeHomePage } from './rewardme-home'
 
 const current = vi.hoisted(() => ({ slug: 'pinas', language: 'en' as 'en' | 'es' }))
