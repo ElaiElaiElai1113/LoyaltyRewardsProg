@@ -21,6 +21,19 @@ function mapping(record) {
 }
 function same(left, right) { return JSON.stringify(left) === JSON.stringify(right) }
 
+export function publicationSummary(state) {
+  const allowed = targets[state.target]?.aliases ?? []
+  return {
+    source: /^[a-f0-9]{40}$/.test(state.sha ?? '') ? state.sha : null,
+    phase: ['preflight', 'stage', 'verified', 'assign', 'complete'].includes(state.phase) ? state.phase : null,
+    candidate: /^https:\/\/[a-z0-9-]+\.vercel\.app$/i.test(state.candidate ?? '') ? state.candidate : null,
+    id: /^dpl_[a-z0-9]+$/i.test(state.deploymentId ?? '') ? state.deploymentId : null,
+    assigned: Array.isArray(state.assigned) ? state.assigned.filter(host => allowed.includes(host)) : [],
+    pending: allowed.includes(state.pendingAlias) ? state.pendingAlias : null,
+    error: state.error ? 'publication_failed' : null,
+  }
+}
+
 export function vercelArguments(args, token) {
   // Vercel curl forwards even nominal global flags to OS curl. Use its linked
   // cwd and supported VERCEL_TOKEN environment authentication instead.
@@ -154,6 +167,7 @@ async function main() {
     if (remote.status !== 0 || remote.stdout.trim().split(/\s+/)[0] !== expected) throw new Error('Source is stale or origin/main cannot be verified; publication stopped')
   }
   await publishReviewedSite({ target, sha }, { run, assertCurrentMain, health: (origin, bypass) => readCandidateHealth(origin, run, healthDirectory, bypass), record: async state => {
+    console.log(`Publication summary: ${JSON.stringify(publicationSummary(state))}`)
     await mkdir(dirname(resolve(output)), { recursive: true })
     await writeFile(output, JSON.stringify(state, null, 2))
   } })

@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import test from 'node:test'
 import yaml from 'js-yaml'
 
@@ -97,4 +97,27 @@ test('scope regression tests are enforced in main CI and legacy verifier remains
   const ci = read('ci')
   assert(ci.jobs.frontend.steps.some(step => step.run?.includes('node --test scripts/deployment-workflows.test.mjs')))
   assert.equal(read('post-deployment').jobs.verify.if, "github.event_name == 'workflow_dispatch'")
+})
+
+test('only the three optional evidence uploads tolerate artifact storage failure; quality gates remain strict', () => {
+  const expected = new Map([
+    ['ci', 'Upload production build'], ['tenant-deployment', 'Upload deployment evidence'],
+    ['loyality-production', 'Upload bounded publication evidence'],
+  ])
+  for (const [name, uploadName] of expected) {
+    const jobs = read(name).jobs
+    const tolerated = Object.values(jobs).flatMap(job => job.steps || []).filter(step => step['continue-on-error'] === true)
+    assert.deepEqual(tolerated.map(step => step.name), [uploadName])
+    assert(tolerated.every(step => step.uses?.startsWith('actions/upload-artifact@')))
+    assert(Object.values(jobs).every(job => !job['continue-on-error']))
+  }
+})
+
+test('production build artifact has no workflow consumer; encrypted backup download remains required', () => {
+  for (const filename of readdirSync('.github/workflows').filter(name => name.endsWith('.yml'))) {
+    const workflow = read(filename.slice(0, -4))
+    const downloads = Object.values(workflow.jobs || {}).flatMap(job => job.steps || []).filter(step => step.uses?.startsWith('actions/download-artifact@'))
+    assert(downloads.every(step => step.with?.name !== 'frontend-dist'))
+    assert(downloads.every(step => !step['continue-on-error']))
+  }
 })

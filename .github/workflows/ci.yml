@@ -134,6 +134,7 @@ jobs:
         run: npm run test:load
 
       - name: Upload production build
+        continue-on-error: true
         uses: actions/upload-artifact@v7
         with:
           name: frontend-dist

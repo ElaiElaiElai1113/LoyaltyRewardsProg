@@ -6,12 +6,21 @@ import { join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { execFileSync, spawnSync } from 'node:child_process'
 import { publishReviewedSite, readCandidateHealth, vercelArguments, scope, targets, teamId, protectedMappings } from './publish-reviewed-site.mjs'
+import * as publisher from './publish-reviewed-site.mjs'
 
 const sha = 'a'.repeat(40)
 const stagingAliases = {
   rewardme: 'loyalty-rewards-prog-elaielaielai1113s-projects.vercel.app',
   loyality: 'loyality-rewards-elaielaielai1113s-projects.vercel.app',
 }
+
+test('job log summary whitelists release fields and cannot expose credentials or full project metadata',()=>{
+  const summary=publisher.publicationSummary({target:'rewardme',sha,phase:'assign',candidate:'https://reviewed-candidate.vercel.app',deploymentId:'dpl_candidate',assigned:['myrewardme.com','unapproved.example'],pendingAlias:'www.myrewardme.com',error:'Bearer PRIVATE_TOKEN',project:{protectionBypass:{PRIVATE_TOKEN:{}}},before:{private:'data'}})
+  assert.deepEqual(summary,{source:sha,phase:'assign',candidate:'https://reviewed-candidate.vercel.app',id:'dpl_candidate',assigned:['myrewardme.com'],pending:'www.myrewardme.com',error:'publication_failed'})
+  assert(!JSON.stringify(summary).includes('PRIVATE_TOKEN'))
+  const invalid=publisher.publicationSummary({target:'rewardme',sha:'PRIVATE_TOKEN',phase:'PRIVATE_TOKEN',candidate:'https://user:PRIVATE_TOKEN@host.vercel.app',deploymentId:'PRIVATE_TOKEN',assigned:['PRIVATE_TOKEN'],pendingAlias:'PRIVATE_TOKEN'})
+  assert.deepEqual(invalid,{source:null,phase:null,candidate:null,id:null,assigned:[],pending:null,error:null})
+})
 function harness(target = 'rewardme', options = {}) {
   const config = targets[target], commands = [], evidence = []
   const aliases = new Map(Object.values(targets).flatMap(t => t.aliases.map(alias => [alias, {alias,projectId:t.projectId,deploymentId:'dpl_old',redirect:null}])))

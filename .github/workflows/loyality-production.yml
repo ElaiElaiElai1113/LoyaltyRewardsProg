@@ -104,6 +104,7 @@ jobs:
         run: node scripts/publish-reviewed-site.mjs loyality "$EXPECTED_COMMIT_SHA" artifacts/deployment/loyality.json
 
       - name: Upload bounded publication evidence
+        continue-on-error: true
         if: always()
         uses: actions/upload-artifact@v7
         with:
