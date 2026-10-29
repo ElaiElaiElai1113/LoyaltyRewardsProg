@@ -137,7 +137,9 @@ test.describe('public acquisition workflow', () => {
     await expect(page.locator('.restored-rewardme__balance')).toContainText('YOUR BALANCE')
     await expect(page.locator('.restored-rewardme__account h2')).toHaveText('Maria')
     await expect(page.locator('.restored-rewardme__time')).toHaveText('9:41')
-    await expect(page.locator('.restored-rewardme__streak')).toContainText('4-week streak')
+    // Approved 2026-10-28 launch removal; ordinary rewards/balance stay above.
+    await expect(page.locator('.restored-rewardme__streak')).toHaveCount(0)
+    await expect(page.getByText('Streak bonuses', { exact: true })).toHaveCount(0)
     await expect(page.locator('.restored-rewardme__rewards li')).toHaveCount(3)
     await expect(page.locator('.restored-rewardme__rewards li').nth(0)).toContainText('150 pts — Free coffee')
     await expect(page.locator('.restored-rewardme__rewards li').nth(1)).toContainText('300 pts — 15% off')

@@ -403,7 +403,7 @@ export function RewardMeJoinPage() {
   return (
     <main className="rewardme-join" data-rewardme-editorial-join data-wondertown-rewardme-mirror={isWondertown || undefined}>
       <header className="rewardme-join__header">
-        <Link to="/" className="rewardme-join__logo"><span aria-hidden="true">✦</span>{program.name}</Link>
+        <Link to="/" className="rewardme-join__logo">{program.slug === 'pinas' ? <img className="rewardme-join__client-logo" src="/rewardme-client-logo-132.webp" width="33" height="27" alt="" aria-hidden="true" /> : <span aria-hidden="true">✦</span>}{program.name}</Link>
         <div className="rewardme-join__controls">
           <ThemeToggle className="rewardme-join__theme" />
           <LanguagePicker compact condenseOnNarrowScreens />

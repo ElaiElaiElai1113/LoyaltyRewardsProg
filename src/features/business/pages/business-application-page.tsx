@@ -112,7 +112,7 @@ function BusinessApplicationPage({ model }: { model: ApplicationModel }) {
 
   return (
     <main className="rewardme-application" data-business-application={model}>
-      <header className="rewardme-application__header"><Link to="/" className="rewardme-application__logo"><span aria-hidden="true">✦</span>{program.name}</Link><Link to="/business">{t("Back to business overview")}</Link></header>
+      <header className="rewardme-application__header"><Link to="/" className="rewardme-application__logo">{program.slug === 'pinas' ? <img className="rewardme-application__client-logo" src="/rewardme-client-logo-132.webp" width="33" height="27" alt="" aria-hidden="true" /> : <span aria-hidden="true">✦</span>}{program.name}</Link><Link to="/business">{t("Back to business overview")}</Link></header>
       <section className="rewardme-application__hero">
         <h1>{t('Join {brand} — {model}.',{brand:program.name,model:t(modelName)})}</h1>
         <span>{t("Share your business details and proposed offer for review. Any commercial terms will require separate approval and acceptance.")}{isWondertown ? ' Use fictional test information only; this sandbox submission creates no real offer or commercial relationship.' : ''}</span>
