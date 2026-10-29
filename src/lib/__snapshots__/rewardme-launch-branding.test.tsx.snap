@@ -1,0 +1,391 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact en Wondertown supporting-page copy, links, images and form controls > /business/apply/commission 1`] = `
+{
+  "controls": [
+    "<input class="rewardme-application__honeypot" tabindex="-1" autoComplete="off" aria-hidden="true" name="companyWebsite"/>",
+    "<input required="" maxLength="140" name="legalName"/>",
+    "<input maxLength="140" name="dba"/>",
+    "<input required="" maxLength="100" placeholder="e.g. Restaurant, Hotel, Salon" name="industry"/>",
+    "<input required="" maxLength="180" placeholder="Street address" name="street"/>",
+    "<input required="" maxLength="100" name="city"/>",
+    "<input required="" maxLength="100" name="region"/>",
+    "<input required="" maxLength="30" name="postal"/>",
+    "<input required="" maxLength="100" name="country"/>",
+    "<input maxLength="200" placeholder="www.yourbusiness.com" name="website"/>",
+    "<input maxLength="160" placeholder="e.g. Weekday afternoons" name="offPeak"/>",
+    "<input required="" maxLength="100" name="representativeName"/>",
+    "<input required="" maxLength="100" placeholder="e.g. Owner, General Manager" name="representativeTitle"/>",
+    "<input type="email" required="" maxLength="160" name="representativeEmail"/>",
+    "<input type="tel" required="" maxLength="50" name="representativePhone"/>",
+    "<select name="rewardRate" required="">",
+    "<option value="" disabled="" selected="">",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<select name="redemptionAccess" required="">",
+    "<option value="earn-and-redeem" selected="">",
+    "<option value="earn-only">",
+    "<input type="checkbox" required="" name="contactConsent"/>",
+    "<button type="submit">",
+  ],
+  "images": [],
+  "links": [
+    {
+      "ariaLabel": null,
+      "href": "/",
+      "label": "✦ Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/business",
+      "label": "Back to business overview",
+    },
+    {
+      "ariaLabel": null,
+      "href": "mailto:support@wondertown.test",
+      "label": "support@wondertown.test",
+    },
+  ],
+  "text": "✦ Wondertown Rewards Back to business overview Join Wondertown Rewards — Commission Model. Share your business details and proposed offer for review. Any commercial terms will require separate approval and acceptance. Use fictional test information only; this sandbox submission creates no real offer or commercial relationship. 1 Business information Legal business name * Trade name / DBA (if different) Industry / type of business * Business address * City * State / Province * Postal code * Country * Website / social page (optional) Slow / off-peak times (optional) 2 Authorized representative Full name * Title / position * Email * Phone * 3 Proposed reward offer Standard reward rate * Select one 20% back 30% back 50% back 100% back Other — discuss with the team Redemption access Members can earn and redeem here Earn-only (no redemption at my business) 4 Application review acknowledgement Wondertown is a fictional RewardMe test environment. Submit fictional test information only; no application submitted here can activate a real offer, payment, or business relationship. This is an application for review. Contact consent permits follow-up about this application. Submission does not accept commercial terms, approve membership, activate a business, or authorize payment. I consent to being contacted about this application and understand that submission is for review only. Submit Application Questions about Commission Model? Contact your representative before submitting. support@wondertown.test",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact en Wondertown supporting-page copy, links, images and form controls > /business/apply/credit 1`] = `
+{
+  "controls": [
+    "<input class="rewardme-application__honeypot" tabindex="-1" autoComplete="off" aria-hidden="true" name="companyWebsite"/>",
+    "<input required="" maxLength="140" name="legalName"/>",
+    "<input maxLength="140" name="dba"/>",
+    "<input required="" maxLength="100" placeholder="e.g. Restaurant, Hotel, Salon" name="industry"/>",
+    "<input required="" maxLength="180" placeholder="Street address" name="street"/>",
+    "<input required="" maxLength="100" name="city"/>",
+    "<input required="" maxLength="100" name="region"/>",
+    "<input required="" maxLength="30" name="postal"/>",
+    "<input required="" maxLength="100" name="country"/>",
+    "<input maxLength="200" placeholder="www.yourbusiness.com" name="website"/>",
+    "<input maxLength="160" placeholder="e.g. Weekday afternoons" name="offPeak"/>",
+    "<input required="" maxLength="100" name="representativeName"/>",
+    "<input required="" maxLength="100" placeholder="e.g. Owner, General Manager" name="representativeTitle"/>",
+    "<input type="email" required="" maxLength="160" name="representativeEmail"/>",
+    "<input type="tel" required="" maxLength="50" name="representativePhone"/>",
+    "<select name="rewardRate" required="">",
+    "<option value="" disabled="" selected="">",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<select name="redemptionAccess" required="">",
+    "<option value="earn-and-redeem" selected="">",
+    "<option value="earn-only">",
+    "<input maxLength="180" placeholder="e.g. in-store account credit or gift-card balance" name="creditMethod"/>",
+    "<input type="checkbox" required="" name="contactConsent"/>",
+    "<button type="submit">",
+  ],
+  "images": [],
+  "links": [
+    {
+      "ariaLabel": null,
+      "href": "/",
+      "label": "✦ Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/business",
+      "label": "Back to business overview",
+    },
+    {
+      "ariaLabel": null,
+      "href": "mailto:support@wondertown.test",
+      "label": "support@wondertown.test",
+    },
+  ],
+  "text": "✦ Wondertown Rewards Back to business overview Join Wondertown Rewards — Credit Model. Share your business details and proposed offer for review. Any commercial terms will require separate approval and acceptance. Use fictional test information only; this sandbox submission creates no real offer or commercial relationship. 1 Business information Legal business name * Trade name / DBA (if different) Industry / type of business * Business address * City * State / Province * Postal code * Country * Website / social page (optional) Slow / off-peak times (optional) 2 Authorized representative Full name * Title / position * Email * Phone * 3 Proposed reward offer Standard reward rate * Select one 20% back 30% back 50% back 100% back Other — discuss with the team Redemption access Members can earn and redeem here Earn-only (no redemption at my business) How you'd like to issue credit (optional) 4 Application review acknowledgement Wondertown is a fictional RewardMe test environment. Submit fictional test information only; no application submitted here can activate a real offer, payment, or business relationship. This is an application for review. Contact consent permits follow-up about this application. Submission does not accept commercial terms, approve membership, activate a business, or authorize payment. I consent to being contacted about this application and understand that submission is for review only. Submit Application Questions about Credit Model? Contact your representative before submitting. support@wondertown.test",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact en Wondertown supporting-page copy, links, images and form controls > /join 1`] = `
+{
+  "controls": [
+    "<button type="button">",
+    "<select aria-label="Language" style="font-size:16px" class="absolute inset-0 z-10 h-full w-full cursor-pointer appearance-none opacity-0">",
+    "<option value="en" selected="">",
+    "<option value="es">",
+    "<input type="radio" name="membershipPlan" checked="" value="free"/>",
+    "<input type="radio" disabled="" name="membershipPlan" value="regular"/>",
+    "<input type="radio" disabled="" name="membershipPlan" value="gold"/>",
+    "<input class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-name" placeholder="Your full name" name="fullName"/>",
+    "<input type="email" class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-email" placeholder="you@example.com" name="email"/>",
+    "<input type="tel" class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-phone" placeholder="+1 555 000 0000" name="phone"/>",
+    "<input class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-referral" maxLength="120" placeholder="Enter a referral code" value=""/>",
+    "<input type="password" class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-password" placeholder="Use at least 12 characters for your new password." name="password"/>",
+    "<button type="button" aria-label="Show password">",
+    "<input type="checkbox" required=""/>",
+    "<button class="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-70 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)] h-10 px-4 py-2" type="submit">",
+  ],
+  "images": [],
+  "links": [
+    {
+      "ariaLabel": null,
+      "href": "/",
+      "label": "✦ Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/signin",
+      "label": "Already a member? Sign in",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/terms",
+      "label": "Terms of Service",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/privacy",
+      "label": "Privacy Policy",
+    },
+  ],
+  "text": "✦ Wondertown Rewards Theme control LANG EN English Spanish Already a member? Sign in Join Wondertown Rewards. Create a test account with fictional information. Wondertown mirrors RewardMe and never collects a real card or online payment. Choose your membership * Free Free Free membership for everyone. Earn and redeem eligible rewards. Regular Planned Additional tier planned. Register interest from Membership after signing in. Gold Planned Planned Additional tier planned. Register interest from Membership after signing in. Full name * Email * Phone * Referral code (optional) Password * I agree to the Terms of Service and Privacy Policy for my free account. Terms of Service · Privacy Policy Join Wondertown Rewards",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact en Wondertown supporting-page copy, links, images and form controls > /signin 1`] = `
+{
+  "controls": [
+    "<select aria-label="Language" style="font-size:16px" class="absolute inset-0 z-10 h-full w-full cursor-pointer appearance-none opacity-0">",
+    "<option value="en" selected="">",
+    "<option value="es">",
+    "<button type="button">",
+    "<button type="submit">",
+  ],
+  "images": [
+    {
+      "alt": "Wondertown Rewards",
+      "decorative": null,
+      "src": "/wondertown-rewards-logo.svg",
+    },
+  ],
+  "links": [
+    {
+      "ariaLabel": "Wondertown Rewards homepage",
+      "href": "/landing-page",
+      "label": "Wondertown Rewards Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/landing-page",
+      "label": "Back",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/signin",
+      "label": "Sign in",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/join",
+      "label": "Create account",
+    },
+  ],
+  "text": "Wondertown Rewards Wondertown Rewards Back LANG EN English Spanish Theme control Sign in One account. Clear offers. Local rewards. Enter your email and password. We will open the workspace assigned to your account. Member account Wondertown Rewards Offer terms Published Your account Available now Sign in Create account Controlled sign-in form Production-equivalent RewardMe flows with fictional test data.",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact es Wondertown supporting-page copy, links, images and form controls > /business/apply/commission 1`] = `
+{
+  "controls": [
+    "<input class="rewardme-application__honeypot" tabindex="-1" autoComplete="off" aria-hidden="true" name="companyWebsite"/>",
+    "<input required="" maxLength="140" name="legalName"/>",
+    "<input maxLength="140" name="dba"/>",
+    "<input required="" maxLength="100" placeholder="p. ej. restaurante, hotel, salón" name="industry"/>",
+    "<input required="" maxLength="180" placeholder="Dirección postal" name="street"/>",
+    "<input required="" maxLength="100" name="city"/>",
+    "<input required="" maxLength="100" name="region"/>",
+    "<input required="" maxLength="30" name="postal"/>",
+    "<input required="" maxLength="100" name="country"/>",
+    "<input maxLength="200" placeholder="www.tunegocio.com" name="website"/>",
+    "<input maxLength="160" placeholder="p. ej. tardes entre semana" name="offPeak"/>",
+    "<input required="" maxLength="100" name="representativeName"/>",
+    "<input required="" maxLength="100" placeholder="p. ej. propietario, gerente general" name="representativeTitle"/>",
+    "<input type="email" required="" maxLength="160" name="representativeEmail"/>",
+    "<input type="tel" required="" maxLength="50" name="representativePhone"/>",
+    "<select name="rewardRate" required="">",
+    "<option value="" disabled="" selected="">",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<select name="redemptionAccess" required="">",
+    "<option value="earn-and-redeem" selected="">",
+    "<option value="earn-only">",
+    "<input type="checkbox" required="" name="contactConsent"/>",
+    "<button type="submit">",
+  ],
+  "images": [],
+  "links": [
+    {
+      "ariaLabel": null,
+      "href": "/",
+      "label": "✦ Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/business",
+      "label": "Volver al resumen del negocio",
+    },
+    {
+      "ariaLabel": null,
+      "href": "mailto:support@wondertown.test",
+      "label": "support@wondertown.test",
+    },
+  ],
+  "text": "✦ Wondertown Rewards Volver al resumen del negocio Únete a Wondertown Rewards — Modelo de Comisión. Comparte los datos de tu negocio y la oferta propuesta para su revisión. Las condiciones comerciales requieren aprobación y aceptación por separado. Use fictional test information only; this sandbox submission creates no real offer or commercial relationship. 1 Información del negocio Nombre legal del negocio * Nombre comercial (si es diferente) Sector / tipo de negocio * Dirección del negocio * Ciudad * Estado / provincia * Código postal * País * Sitio web / red social (opcional) Horarios de menor demanda (opcional) 2 Representante autorizado Nombre completo * Cargo / puesto * Correo * Teléfono * 3 Oferta de recompensa propuesta Tasa de recompensa propuesta * Selecciona una opción 20% back 30% back 50% back 100% back Other — discuss with the team Acceso al canje Los miembros pueden ganar y canjear aquí Solo acumulación (sin canjes en mi negocio) 4 Confirmación de revisión de la solicitud Wondertown es un entorno ficticio de pruebas de RewardMe. Envía solo información ficticia; ninguna solicitud puede activar una oferta, pago o relación comercial real. Esta solicitud está sujeta a revisión. El consentimiento permite contactarte sobre ella. Enviarla no acepta condiciones comerciales, aprueba membresías, activa negocios ni autoriza pagos. Acepto que me contacten sobre esta solicitud y entiendo que se envía únicamente para revisión. Enviar solicitud ¿Tienes preguntas sobre Modelo de Comisión? Contacta a tu representante antes de enviar. support@wondertown.test",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact es Wondertown supporting-page copy, links, images and form controls > /business/apply/credit 1`] = `
+{
+  "controls": [
+    "<input class="rewardme-application__honeypot" tabindex="-1" autoComplete="off" aria-hidden="true" name="companyWebsite"/>",
+    "<input required="" maxLength="140" name="legalName"/>",
+    "<input maxLength="140" name="dba"/>",
+    "<input required="" maxLength="100" placeholder="p. ej. restaurante, hotel, salón" name="industry"/>",
+    "<input required="" maxLength="180" placeholder="Dirección postal" name="street"/>",
+    "<input required="" maxLength="100" name="city"/>",
+    "<input required="" maxLength="100" name="region"/>",
+    "<input required="" maxLength="30" name="postal"/>",
+    "<input required="" maxLength="100" name="country"/>",
+    "<input maxLength="200" placeholder="www.tunegocio.com" name="website"/>",
+    "<input maxLength="160" placeholder="p. ej. tardes entre semana" name="offPeak"/>",
+    "<input required="" maxLength="100" name="representativeName"/>",
+    "<input required="" maxLength="100" placeholder="p. ej. propietario, gerente general" name="representativeTitle"/>",
+    "<input type="email" required="" maxLength="160" name="representativeEmail"/>",
+    "<input type="tel" required="" maxLength="50" name="representativePhone"/>",
+    "<select name="rewardRate" required="">",
+    "<option value="" disabled="" selected="">",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<option>",
+    "<select name="redemptionAccess" required="">",
+    "<option value="earn-and-redeem" selected="">",
+    "<option value="earn-only">",
+    "<input maxLength="180" placeholder="p. ej. crédito en tienda o saldo de tarjeta regalo" name="creditMethod"/>",
+    "<input type="checkbox" required="" name="contactConsent"/>",
+    "<button type="submit">",
+  ],
+  "images": [],
+  "links": [
+    {
+      "ariaLabel": null,
+      "href": "/",
+      "label": "✦ Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/business",
+      "label": "Volver al resumen del negocio",
+    },
+    {
+      "ariaLabel": null,
+      "href": "mailto:support@wondertown.test",
+      "label": "support@wondertown.test",
+    },
+  ],
+  "text": "✦ Wondertown Rewards Volver al resumen del negocio Únete a Wondertown Rewards — Modelo de Crédito. Comparte los datos de tu negocio y la oferta propuesta para su revisión. Las condiciones comerciales requieren aprobación y aceptación por separado. Use fictional test information only; this sandbox submission creates no real offer or commercial relationship. 1 Información del negocio Nombre legal del negocio * Nombre comercial (si es diferente) Sector / tipo de negocio * Dirección del negocio * Ciudad * Estado / provincia * Código postal * País * Sitio web / red social (opcional) Horarios de menor demanda (opcional) 2 Representante autorizado Nombre completo * Cargo / puesto * Correo * Teléfono * 3 Oferta de recompensa propuesta Tasa de recompensa propuesta * Selecciona una opción 20% back 30% back 50% back 100% back Other — discuss with the team Acceso al canje Los miembros pueden ganar y canjear aquí Solo acumulación (sin canjes en mi negocio) Cómo deseas emitir crédito (opcional) 4 Confirmación de revisión de la solicitud Wondertown es un entorno ficticio de pruebas de RewardMe. Envía solo información ficticia; ninguna solicitud puede activar una oferta, pago o relación comercial real. Esta solicitud está sujeta a revisión. El consentimiento permite contactarte sobre ella. Enviarla no acepta condiciones comerciales, aprueba membresías, activa negocios ni autoriza pagos. Acepto que me contacten sobre esta solicitud y entiendo que se envía únicamente para revisión. Enviar solicitud ¿Tienes preguntas sobre Modelo de Crédito? Contacta a tu representante antes de enviar. support@wondertown.test",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact es Wondertown supporting-page copy, links, images and form controls > /join 1`] = `
+{
+  "controls": [
+    "<button type="button">",
+    "<select aria-label="Idioma" style="font-size:16px" class="absolute inset-0 z-10 h-full w-full cursor-pointer appearance-none opacity-0">",
+    "<option value="en">",
+    "<option value="es" selected="">",
+    "<input type="radio" name="membershipPlan" checked="" value="free"/>",
+    "<input type="radio" disabled="" name="membershipPlan" value="regular"/>",
+    "<input type="radio" disabled="" name="membershipPlan" value="gold"/>",
+    "<input class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-name" placeholder="Tu nombre completo" name="fullName"/>",
+    "<input type="email" class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-email" placeholder="tu@ejemplo.com" name="email"/>",
+    "<input type="tel" class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-phone" placeholder="+1 555 000 0000" name="phone"/>",
+    "<input class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-referral" maxLength="120" placeholder="Ingresa un código de referido" value=""/>",
+    "<input type="password" class="flex h-12 w-full rounded-2xl border border-[var(--input)] bg-[var(--card)] px-4 py-3 text-base font-medium text-[var(--foreground)] shadow-soft outline-none transition-colors placeholder:text-[var(--muted-foreground)] focus-visible:ring-2 focus-visible:ring-[var(--ring)]/30" id="join-password" placeholder="Usa al menos 12 caracteres para tu nueva contraseña." name="password"/>",
+    "<button type="button" aria-label="Mostrar contraseña">",
+    "<input type="checkbox" required=""/>",
+    "<button class="inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold transition-all duration-200 disabled:pointer-events-none disabled:opacity-70 outline-none focus-visible:ring-2 focus-visible:ring-[var(--ring)] focus-visible:ring-offset-2 bg-[var(--primary)] text-[var(--primary-foreground)] shadow-soft hover:-translate-y-0.5 hover:bg-[var(--primary-container)] h-10 px-4 py-2" type="submit">",
+  ],
+  "images": [],
+  "links": [
+    {
+      "ariaLabel": null,
+      "href": "/",
+      "label": "✦ Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/signin",
+      "label": "¿Ya eres miembro? Iniciar sesión",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/terms",
+      "label": "Términos del servicio",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/privacy",
+      "label": "Politica de privacidad",
+    },
+  ],
+  "text": "✦ Wondertown Rewards Theme control LANG ES Inglés Español ¿Ya eres miembro? Iniciar sesión Únete a Wondertown Rewards. Crea una cuenta de prueba con información ficticia. Wondertown replica RewardMe y nunca recopila una tarjeta real ni un pago en línea. Elige tu membresía * Gratis Free Membresía gratuita para todos. Gana y canjea recompensas elegibles. Regular Planned Nivel adicional previsto. Registra tu interés en Membresía después de iniciar sesión. Gold Planned Previsto Nivel adicional previsto. Registra tu interés en Membresía después de iniciar sesión. Nombre completo * Correo * Teléfono * Código de referido (opcional) Contraseña * Acepto los Términos de servicio y la Política de privacidad para mi cuenta gratuita. Términos del servicio · Politica de privacidad Únete a Wondertown Rewards",
+}
+`;
+
+exports[`2026-10-28 RewardMe launch logo correction > preserves exact es Wondertown supporting-page copy, links, images and form controls > /signin 1`] = `
+{
+  "controls": [
+    "<select aria-label="Idioma" style="font-size:16px" class="absolute inset-0 z-10 h-full w-full cursor-pointer appearance-none opacity-0">",
+    "<option value="en">",
+    "<option value="es" selected="">",
+    "<button type="button">",
+    "<button type="submit">",
+  ],
+  "images": [
+    {
+      "alt": "Wondertown Rewards",
+      "decorative": null,
+      "src": "/wondertown-rewards-logo.svg",
+    },
+  ],
+  "links": [
+    {
+      "ariaLabel": "Página de inicio de Wondertown Rewards",
+      "href": "/landing-page",
+      "label": "Wondertown Rewards Wondertown Rewards",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/landing-page",
+      "label": "Volver",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/signin",
+      "label": "Iniciar sesión",
+    },
+    {
+      "ariaLabel": null,
+      "href": "/join",
+      "label": "Crear cuenta",
+    },
+  ],
+  "text": "Wondertown Rewards Wondertown Rewards Volver LANG ES Inglés Español Theme control Iniciar sesión Una cuenta. Ofertas claras. Recompensas locales. Ingresa tu correo y contraseña. Abriremos el espacio de trabajo asignado a tu cuenta. Cuenta de miembro Wondertown Rewards Términos de la oferta Publicada Tu cuenta Disponible ahora Iniciar sesión Crear cuenta Controlled sign-in form Flujos equivalentes a producción de RewardMe con datos de prueba ficticios.",
+}
+`;

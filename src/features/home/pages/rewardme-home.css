@@ -1662,8 +1662,6 @@
 .restored-rewardme__balance p { font: 600 11px 'IBM Plex Mono',monospace; letter-spacing: .06em; }
 .restored-rewardme__balance strong { font: 500 38px/1.3 Fraunces,Georgia,serif; }
 .restored-rewardme__balance span { font-size: 13px; }
-.restored-rewardme__streak { margin-top: 14px; border-radius: 8px; padding: 17px 20px; background: #1f3a2e; color: #f6f1e4; }
-.restored-rewardme__streak p { margin-top: 4px; font-size: 13px; color: #e0e3d6; }
 .restored-rewardme__nearby { margin: 24px 0 8px !important; font-size: 18px; }
 .restored-rewardme__nearby a { display: inline-flex; min-height: 44px; align-items: center; text-decoration: underline; text-underline-offset: 4px; }
 .restored-rewardme__rewards li { display: flex; align-items: center; gap: 15px; padding-block: 15px; border-bottom: 1px solid #bfccac; }
@@ -1674,7 +1672,7 @@
 .restored-rewardme .reference-rewardme__ledger-list li { padding-right: 36px; }
 .restored-rewardme .reference-rewardme__ledger-list h3 { margin-top: 5px; }
 :root[data-program="pinas"] .restored-rewardme .reference-rewardme__section--deep .reference-rewardme__eyebrow { color: #d8b765; }
-.restored-rewardme__benefits { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 24px; }
+.restored-rewardme__benefits { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 24px; }
 .restored-rewardme__benefits article { border: 1px solid #627564; border-radius: 12px; padding: 30px; background: #294636; }
 .restored-rewardme__benefit-icon { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; margin-bottom: 22px; border: 1px solid #a68c4d; border-radius: 10px; color: #d8b765; }
 .restored-rewardme__benefits h3 { font-size: 23px; margin-bottom: 14px; }

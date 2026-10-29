@@ -17,7 +17,6 @@ const steps = [
 ] as const
 
 const benefits = [
-  ['🔥', 'Streak bonuses', 'Keep your visit streak alive and unlock bonus points the longer it runs.'],
   ['★', 'Real local rewards', 'Free coffee, discounts, appetizers — rewards from the independent businesses you already visit.'],
   ['◎', 'Growing network', "New cafés, boutiques, and studios join every month, so there's always somewhere new to earn."],
 ] as const
@@ -52,7 +51,6 @@ export function RewardMeReferenceHomePage() {
           <div className="restored-rewardme__balance">
             <p>{t('YOUR BALANCE')}</p><strong>2,340 PTS</strong><span>{t('Worth ~$23.40 in rewards')}</span>
           </div>
-          <div className="restored-rewardme__streak"><strong><span aria-hidden="true">🔥</span> {t('4-week streak')}</strong><p>{t('Visit once more this week to keep it')}</p></div>
           <h3 className="restored-rewardme__nearby"><Link to="/shop">{t('Nearby Rewards')}</Link></h3>
           <ul className="restored-rewardme__rewards">
             <li><span className="restored-rewardme__dot" aria-hidden="true" /><div><strong>Casa Verde Café</strong><p>{t('150 pts — Free coffee')}</p></div></li>

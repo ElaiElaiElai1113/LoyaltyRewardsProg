@@ -17,7 +17,7 @@ const benefits = [
     icon: Repeat2,
     label: 'Retention built in',
     title: 'Bring the right customers back.',
-    body: 'Set visit milestones, vouchers, and private offers around the behavior that matters to your business.',
+    body: 'Set vouchers and private offers around the behavior that matters to your business.',
   },
   {
     icon: BarChart3,
@@ -69,7 +69,7 @@ export function LoyalityBusinessPage() {
         <div className="loyality-business__wrap loyality-business__steps-grid">
           <div><p className="loyality-business__eyebrow">{t('A focused setup')}</p><h2 id="loyality-steps-title">{t('Launch the program your business actually needs.')}</h2><p>{t('There is no public partner network and no commission calculator. The program is configured for one business and its own customers.')}</p></div>
           <ol>
-            <li><span>01</span><div><h3>{t('Define your rules')}</h3><p>{t('Choose visit milestones, vouchers, referral incentives, and any private offers.')}</p></div></li>
+            <li><span>01</span><div><h3>{t('Define your rules')}</h3><p>{t('Choose vouchers, referral incentives, and any private offers.')}</p></div></li>
             <li><span>02</span><div><h3>{t('Apply your brand')}</h3><p>{t('Set the customer-facing name, colors, and business identity before launch.')}</p></div></li>
             <li><span>03</span><div><h3>{t('Invite and measure')}</h3><p>{t('Share the QR or referral link, serve customers, and review every resulting visit.')}</p></div></li>
           </ol>

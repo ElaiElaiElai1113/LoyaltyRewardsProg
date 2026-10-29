@@ -12,7 +12,16 @@ describe('public logo source override', () => {
     expect(html).toContain('alt="RewardMe"')
     expect(html).toContain('class="sr-only">RewardMe</span>')
   })
-  it('keeps a private/custom configured logo when the public override is absent', () => {
+  it('uses the official pinas client logo even when an old configured mark is present', () => {
+    const html = renderToStaticMarkup(<BrandLogo />)
+    expect(html).toContain('src="/rewardme-client-logo-132.webp"')
+    expect(html).not.toContain('/private-custom-logo.svg')
+  })
+  it('retains an explicit caller image override for pinas', () => {
+    expect(renderToStaticMarkup(<BrandLogo imageSrc="/explicit-caller-logo.svg" />)).toContain('src="/explicit-caller-logo.svg"')
+  })
+  it('keeps a non-pinas private/custom configured logo when the caller override is absent', () => {
+    tenant.program = { name: 'Custom', slug: 'guatemala', logoUrl: '/private-custom-logo.svg' }
     expect(renderToStaticMarkup(<BrandLogo />)).toContain('src="/private-custom-logo.svg"')
   })
   it('does not change Wondertown default branding', () => {
